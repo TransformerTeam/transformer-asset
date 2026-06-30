@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Condition Monitoring Dashboard</title>
+  
+  <!-- Tailwind is avoided per guidelines, using vanilla style.css -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- ApexCharts JS -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>GPSC's GROUP Transformer Asset Management</h1>
+          <p>HV NETWORK MAINTENANCE</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- CSV File Upload Trigger -->
+        <div class="upload-btn-wrapper">
+          <button class="btn"><i class="fa-solid fa-file-import"></i> Import CSV</button>
+          <input type="file" id="csv-file-input" accept=".csv" />
+        </div>
+        
+        <button class="btn btn-primary" id="btn-export-filtered"><i class="fa-solid fa-file-export"></i> Export CSV</button>
+        <button class="btn" id="btn-export-pptx" style="background-color: #d24726; border-color: #d24726; color: #ffffff;"><i class="fa-solid fa-file-powerpoint"></i> Export PPTX</button>
+        <button class="btn" id="btn-reset-filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
+          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
+          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
+        <a href="assessment.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">Health Assessment</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">Overall Transformer</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-btn active">
+          <i class="fa-solid fa-heart-pulse"></i> <span class="nav-label">Health Index</span>
+        </a>
+        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation</span>
+        </button>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="scada-content">
+
+    <!-- Filters Card -->
+    <section class="filters-card">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="filter-site">Site</label>
+          <select id="filter-site" class="filter-select">
+            <option value="all">All Sites</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-brand">Brand</label>
+          <select id="filter-brand" class="filter-select">
+            <option value="all">All Brands</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-insulation">Insulation Type</label>
+          <select id="filter-insulation" class="filter-select">
+            <option value="all">All Types</option>
+            <option value="OIL TYPE">Oil Type</option>
+            <option value="DRY TYPE">Dry Type</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-tapchanger">Tap Changer Type</label>
+          <select id="filter-tapchanger" class="filter-select">
+            <option value="all">All Tap Changers</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-status">Health Status</label>
+          <select id="filter-status" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="Healthy">Healthy (≥80)</option>
+            <option value="Monitoring">Monitoring (70-79)</option>
+            <option value="Warning">Warning (50-69)</option>
+            <option value="Critical">Critical (<50)</option>
+            <option value="No Assess">No Assess (=0)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Summary Row -->
+    <section class="kpi-grid">
+      <!-- Total Transformers -->
+      <div class="kpi-card kpi-total">
+        <div class="kpi-info">
+          <h3>Total Assets</h3>
+          <div class="kpi-value" id="kpi-total-val">0</div>
+          <div class="kpi-sub" id="kpi-total-sub">0 Oil Type | 0 Dry Type</div>
+        </div>
+        <div class="kpi-icon">
+          <i class="fa-solid fa-network-wired"></i>
+        </div>
+      </div>
+      
+      <!-- Average Health Index -->
+      <div class="kpi-card kpi-health" id="kpi-health-card">
+        <div class="kpi-info">
+          <h3>Avg Health Index</h3>
+          <div class="kpi-value" id="kpi-health-val">0%</div>
+          <div class="kpi-sub" id="kpi-health-sub">Fleet Overall Condition</div>
+        </div>
+        <div class="kpi-icon">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+      </div>
+      
+      <!-- Critical Transformers -->
+      <div class="kpi-card kpi-warning">
+        <div class="kpi-info">
+          <h3>Critical Assets</h3>
+          <div class="kpi-value text-danger" id="kpi-critical-val">0</div>
+          <div class="kpi-sub">Health Index &lt; 50%</div>
+        </div>
+        <div class="kpi-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+      </div>
+      
+      <!-- Active Sites -->
+      <div class="kpi-card kpi-active">
+        <div class="kpi-info">
+          <h3>Locations & Sites</h3>
+          <div class="kpi-value" id="kpi-active-val">0</div>
+          <div class="kpi-sub">Sites under Monitoring</div>
+        </div>
+        <div class="kpi-icon">
+          <i class="fa-solid fa-industry"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Main Content Grid (Charts + Map) -->
+    <div class="dashboard-grid">
+      <!-- Charts Column -->
+      <section class="dashboard-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-chart-pie"></i> Fleet Performance Metrics</h2>
+        </div>
+        <div class="charts-container">
+          <!-- Chart 1: Health Distribution -->
+          <div class="chart-wrapper">
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Condition Distribution</h4>
+            <div id="chart-health-dist"></div>
+          </div>
+          
+          <!-- Chart 2: Average Health Index by Site -->
+          <div class="chart-wrapper">
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Site Health Averages</h4>
+            <div id="chart-site-health"></div>
+          </div>
+          
+          <!-- Chart 3: Top Brands Health -->
+          <div class="chart-wrapper span-full">
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Brand Distribution & Performance</h4>
+            <div id="chart-brand-health"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map Column -->
+      <section class="dashboard-card" style="position: relative;">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-map-location-dot"></i> Geographical Distribution</h2>
+        </div>
+        <!-- Map Container -->
+        <div id="map"></div>
+        
+        <!-- Legend overlays inside map wrapper -->
+        <div class="map-legend">
+          <div class="legend-item">
+            <div class="legend-color good"></div>
+            <span>Good (&ge;85%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color fair"></div>
+            <span>Fair (70-84%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color poor"></div>
+            <span>Poor (50-69%)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color critical"></div>
+            <span>Critical (&lt;50%)</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Data Table Section -->
+    <section class="dashboard-card table-card">
+      <div class="card-header">
+        <h2><i class="fa-solid fa-list-check"></i> Transformer Asset Registry</h2>
+      </div>
+      
+      <div class="table-header-controls">
+        <div class="table-search-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="table-search" class="search-input" placeholder="Search by Serial, Code, Model...">
+        </div>
+        
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-secondary); margin-right: 0.5rem;">Show</label>
+          <select id="table-page-size" class="filter-select" style="width: auto; padding: 0.35rem 0.5rem; display: inline-block;">
+            <option value="10">10 entries</option>
+            <option value="25" selected>25 entries</option>
+            <option value="50">50 entries</option>
+            <option value="100">100 entries</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="tr-table" id="transformers-table">
+          <thead>
+            <tr>
+              <th data-sort="SERIAL_NUMBER">Serial Number <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="DEVICE_CODE">Device Code <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="SITE">Site <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="BRAND">Brand <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="DATA">Insulation Type <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="HI" style="text-align: center;">Health Index <i class="fa-solid fa-sort"></i></th>
+              <th data-sort="Result_Date">Inspection Date <i class="fa-solid fa-sort"></i></th>
+              <th style="text-align: center; width: 100px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination Controls -->
+      <div class="pagination-controls">
+        <div class="pagination-info" id="pagination-info-text">
+          Showing 1 to 25 of 224 entries
+        </div>
+        <div class="pagination-pages" id="pagination-buttons">
+          <!-- Dynamically populated buttons -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCADA Style Bottom Overview Row -->
+    <section class="scada-bottom-row">
+      <div class="scada-pill">
+        <div class="pill-icon yellow"><i class="fa-solid fa-bolt"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Total Assets</span>
+          <span class="pill-value" id="bottom-total-assets">224 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon cyan"><i class="fa-solid fa-oil-can"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Oil Type TR</span>
+          <span class="pill-value">195 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon orange"><i class="fa-solid fa-wind"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Dry Type TR</span>
+          <span class="pill-value">29 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon green"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Fleet Avg Health</span>
+          <span class="pill-value" id="bottom-avg-health">87.4%</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon red"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">System Status</span>
+          <span class="pill-value">ONLINE (99.8%)</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon yellow"><i class="fa-solid fa-clock"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Last Updated</span>
+          <span class="pill-value">Realtime</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Marquee -->
+    <footer class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+      </div>
+    </footer>
+      </main>
+    </div> <!-- end of main-workspace -->
+  </div> <!-- end of app-container -->
+
+  <!-- Detail Modal Overlay -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="modal-transformer-title">TCC-TR3 (Aux. Transformer)</h2>
+          <p id="modal-transformer-subtitle">Serial: 14231662_1 | Device Code: 23-90-ED-XT-TR3</p>
+        </div>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Left: Technical Specs -->
+        <div>
+          <h3 class="modal-section-title"><i class="fa-solid fa-circle-info"></i> Technical Specifications</h3>
+          <div class="specs-grid">
+            <div class="spec-item">
+              <span class="spec-label">Site / Location</span>
+              <span class="spec-value" id="spec-site">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Company Code</span>
+              <span class="spec-value" id="spec-company">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Brand / Manufacturer</span>
+              <span class="spec-value" id="spec-brand">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Manufacturing Date</span>
+              <span class="spec-value" id="spec-mfg-date">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Power Rating</span>
+              <span class="spec-value" id="spec-power-rating">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Type of Cooling</span>
+              <span class="spec-value" id="spec-cooling">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Tap Changer Type</span>
+              <span class="spec-value" id="spec-tap-changer">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Vector Group</span>
+              <span class="spec-value" id="spec-vector-group">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">HV Rated Voltage / A</span>
+              <span class="spec-value" id="spec-hv-voltage">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">LV Rated Voltage / A</span>
+              <span class="spec-value" id="spec-lv-voltage">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Insulation Type</span>
+              <span class="spec-value" id="spec-insulation">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Total Mass / Oil Mass</span>
+              <span class="spec-value" id="spec-mass">-</span>
+            </div>
+            <div class="spec-item" style="grid-column: span 2;">
+              <span class="spec-label">GPS Coordinate</span>
+              <span class="spec-value" id="spec-gps">-</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Health Dashboard -->
+        <div class="health-dashboard">
+          <h3 class="modal-section-title"><i class="fa-solid fa-heart-pulse"></i> Condition Assessment</h3>
+          
+          <div class="health-gauge-box">
+            <div class="gauge-chart-container">
+              <!-- Radial SVG Progress Ring -->
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle good" id="modal-health-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div style="position: absolute; text-align: center;">
+                <span class="gauge-score" id="modal-health-score">100</span>
+                <span style="font-size: 0.6rem; display: block; color: var(--text-secondary); margin-top: -3px;">HI %</span>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Health Condition</span>
+              <span class="badge" id="modal-health-badge">GOOD</span>
+              <span class="gauge-title" style="margin-top: 0.5rem;">Last Inspected</span>
+              <span id="modal-inspection-date" style="font-size: 0.8rem; font-weight: 500;">9/16/2019</span>
+            </div>
+          </div>
+
+          <div class="subscores-list">
+            <!-- GI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name">General Inspection (GI)</span>
+                <span class="subscore-value" id="val-gi">5 / 5</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-gi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- API -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name">Accessory Protection Inspection (API)</span>
+                <span class="subscore-value" id="val-api">20 / 20</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-api" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- IOI (Conditional) -->
+            <div class="subscore-row" id="row-ioi">
+              <div class="subscore-info">
+                <span class="subscore-name">Insulating Oil Inspection (IOI)</span>
+                <span class="subscore-value" id="val-ioi">15 / 15</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-ioi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- OLTCI (Conditional) -->
+            <div class="subscore-row" id="row-oltci">
+              <div class="subscore-info">
+                <span class="subscore-name">OLTC Inspection (OLTCI)</span>
+                <span class="subscore-value" id="val-oltci">20 / 20</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-oltci" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- BI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name">Bushing Inspection (BI)</span>
+                <span class="subscore-value" id="val-bi">20 / 20</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-bi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- ARI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name">Arrester Inspection (ARI)</span>
+                <span class="subscore-value" id="val-ari">20 / 20</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-ari" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- DGA (Conditional) -->
+            <div class="subscore-row" id="row-dga">
+              <div class="subscore-info">
+                <span class="subscore-name">Dissolved Gas Analysis (DGA)</span>
+                <span class="subscore-value" id="val-dga">20 / 20</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-dga" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recommendation text -->
+          <div class="recommendation-card" id="rec-card">
+            <div class="rec-title" id="rec-title">Normal Operation & Routine Maintenance</div>
+            <div class="rec-text" id="rec-text">The transformer health condition is excellent. Perform normal scheduled monitoring and routine visual inspection.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PptxGenJS Library -->
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+  <!-- Loaded datasets -->
+  <script src="data.js"></script>
+  
+  <!-- Dashboard core script -->
+  <script src="app.js"></script>
+
+</body>
+</html>

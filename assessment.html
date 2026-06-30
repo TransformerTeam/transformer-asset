@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Health Assessment</title>
+  <meta name="description" content="Comprehensive Transformer Health Assessment Dashboard with detailed condition monitoring, test parameter analysis, and maintenance recommendations.">
+  
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ApexCharts -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
+  <!-- Assessment Styles -->
+  <link rel="stylesheet" href="assessment.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>GPSC's GROUP Transformer Asset Management</h1>
+          <p>HV NETWORK MAINTENANCE</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btn-export-report"><i class="fa-solid fa-file-export"></i> Export Report</button>
+        <button class="btn btn-primary" id="btn-export-pptx" style="background-color: #d24726; border-color: #d24726; color: #ffffff;"><i class="fa-solid fa-file-powerpoint"></i> Export PPTX</button>
+        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
+          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
+          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
+        <a href="assessment.html" class="sidebar-nav-btn active">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">Health Assessment</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">Overall Transformer</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-heart-pulse"></i> <span class="nav-label">Health Index</span>
+        </a>
+        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation</span>
+        </button>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="scada-content">
+
+    <!-- Filters -->
+    <section class="filters-card">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="filter-site">Site</label>
+          <select id="filter-site" class="filter-select">
+            <option value="all">All Sites</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-service">Service Type</label>
+          <select id="filter-service" class="filter-select">
+            <option value="all">All Types</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-health-status">Health Status</label>
+          <select id="filter-health-status" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="Healthy">Healthy (≥80)</option>
+            <option value="Monitoring">Monitoring (70-79)</option>
+            <option value="Warning">Warning (50-69)</option>
+            <option value="Critical">Critical (<50)</option>
+            <option value="No Assess">No Assess (=0)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-param">Parameter Alert</label>
+          <select id="filter-param" class="filter-select">
+            <option value="all">All Parameters</option>
+            <option value="has-U">Has Unacceptable (U)</option>
+            <option value="has-Q">Has Questionable (Q)</option>
+            <option value="all-A">All Acceptable (A)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="search-box">Search</label>
+          <input type="text" id="search-box" class="filter-select" placeholder="Name, Serial No...">
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Summary -->
+    <section class="kpi-grid">
+      <div class="kpi-card kpi-total">
+        <div class="kpi-info">
+          <h3>Total Unit</h3>
+          <div class="kpi-value" id="kpi-assessed">0</div>
+          <div class="kpi-sub" id="kpi-assessed-sub">0 with Health Index</div>
+        </div>
+        <div class="kpi-icon">
+          <svg viewBox="0 0 100 100" style="width: 48px; height: 48px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.85;">
+            <defs>
+              <g id="bushing">
+                <line x1="0" y1="10" x2="0" y2="36" />
+                <rect x="-8" y="12" width="16" height="4" rx="2" fill="var(--bg-card, #0d2149)" />
+                <rect x="-8" y="18" width="16" height="4" rx="2" fill="var(--bg-card, #0d2149)" />
+                <rect x="-8" y="24" width="16" height="4" rx="2" fill="var(--bg-card, #0d2149)" />
+                <rect x="-8" y="30" width="16" height="4" rx="2" fill="var(--bg-card, #0d2149)" />
+                <path d="M -4 12 A 4 4 0 0 1 4 12" />
+              </g>
+            </defs>
+            <use href="#bushing" x="31" y="0" />
+            <use href="#bushing" x="50" y="0" />
+            <use href="#bushing" x="69" y="0" />
+            <rect x="17" y="36" width="66" height="4" rx="1" />
+            <rect x="20" y="40" width="60" height="40" rx="2" />
+            <rect x="11" y="43" width="9" height="34" rx="1" />
+            <rect x="80" y="43" width="9" height="34" rx="1" />
+            <path d="M 25 80 L 25 86 A 2 2 0 0 0 27 88 L 37 88 A 2 2 0 0 0 39 86 L 39 80" />
+            <path d="M 61 80 L 61 86 A 2 2 0 0 0 63 88 L 73 88 A 2 2 0 0 0 75 86 L 75 80" />
+            <rect x="26" y="46" width="48" height="28" />
+            <path d="M 52 50 L 44 60 H 50 L 46 70 L 56 58 H 50 Z" />
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-card kpi-healthy">
+        <div class="kpi-info">
+          <h3>Healthy</h3>
+          <div class="kpi-value" id="kpi-healthy">0</div>
+          <div class="kpi-sub">HI ≥ 80%</div>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+      </div>
+      <div class="kpi-card kpi-monitor">
+        <div class="kpi-info">
+          <h3>Monitoring</h3>
+          <div class="kpi-value" id="kpi-monitor">0</div>
+          <div class="kpi-sub">HI 70-79%</div>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-eye"></i></div>
+      </div>
+      <div class="kpi-card kpi-warning-card">
+        <div class="kpi-info">
+          <h3>Warning</h3>
+          <div class="kpi-value" id="kpi-warning">0</div>
+          <div class="kpi-sub">HI 50-69%</div>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      </div>
+      <div class="kpi-card kpi-critical-card">
+        <div class="kpi-info">
+          <h3>Critical</h3>
+          <div class="kpi-value text-danger" id="kpi-critical">0</div>
+          <div class="kpi-sub">HI < 50%</div>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-radiation"></i></div>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+      <section class="dashboard-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-chart-pie"></i> Health Status Distribution</h2>
+        </div>
+        <div id="chart-health-dist"></div>
+      </section>
+      <section class="dashboard-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-chart-bar"></i> Health Index by Site</h2>
+        </div>
+        <div id="chart-site-health"></div>
+      </section>
+      <section class="dashboard-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-chart-line"></i> Parameter Alert Heatmap</h2>
+        </div>
+        <div id="chart-param-heatmap"></div>
+      </section>
+      <section class="dashboard-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-chart-column"></i> Service Type Breakdown</h2>
+        </div>
+        <div id="chart-service-type"></div>
+      </section>
+    </div>
+
+    <!-- Assessment Table -->
+    <section class="dashboard-card table-card">
+      <div class="card-header">
+        <h2><i class="fa-solid fa-table-cells-large"></i> Health Index Assessment Summary</h2>
+      </div>
+      
+      <div class="table-container">
+        <table class="assessment-table" id="assessment-table">
+          <thead>
+            <tr>
+              <th class="sticky-col" data-sort="no">No.</th>
+              <th data-sort="name">Equipment Name</th>
+              <th data-sort="site">Site</th>
+              <th data-sort="ratedPower">MVA</th>
+              <th data-sort="ratedVoltage">Voltage (kV)</th>
+              <th data-sort="serviceType">Service</th>
+              <th data-sort="healthIndex">HI %</th>
+              <th data-sort="healthStatus">Status</th>
+              <th data-sort="estimatedDP">Est. DP</th>
+              <th>Visual</th>
+              <th>Active Part</th>
+              <th>Oil Condition</th>
+              <th>Bushing</th>
+              <th>OLTC</th>
+              <th data-sort="dateToAssess">Assessed</th>
+              <th data-sort="lastPM">Last PM</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-controls">
+        <div class="pagination-info" id="pagination-info">Showing 0 entries</div>
+        <div class="pagination-pages" id="pagination-buttons"></div>
+      </div>
+    </section>
+
+    <!-- SCADA Style Bottom Overview Row -->
+    <section class="scada-bottom-row">
+      <div class="scada-pill">
+        <div class="pill-icon yellow"><i class="fa-solid fa-bolt"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Total Assets</span>
+          <span class="pill-value" id="bottom-total-assets">0 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon cyan"><i class="fa-solid fa-oil-can"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Oil Type TR</span>
+          <span class="pill-value">195 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon orange"><i class="fa-solid fa-wind"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Dry Type TR</span>
+          <span class="pill-value">29 Units</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon green"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Fleet Avg Health</span>
+          <span class="pill-value" id="bottom-avg-health">0%</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon red"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">System Status</span>
+          <span class="pill-value">ONLINE (99.8%)</span>
+        </div>
+      </div>
+      <div class="scada-pill">
+        <div class="pill-icon yellow"><i class="fa-solid fa-clock"></i></div>
+        <div class="pill-data">
+          <span class="pill-label">Last Updated</span>
+          <span class="pill-value">Realtime</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Marquee -->
+    <footer class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+      </div>
+    </footer>
+      </main>
+    </div> <!-- end of main-workspace -->
+  </div> <!-- end of app-container -->
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-window modal-wide">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="modal-title">Transformer Detail</h2>
+          <p id="modal-subtitle">Serial: - | Site: -</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="btn-capture-modal" id="btn-capture-modal" title="Capture Modal as JPG">
+            <i class="fa-solid fa-camera"></i>
+          </button>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- Left: Health Gauge + Info -->
+        <div class="modal-left">
+          <div class="health-gauge-box">
+            <div class="gauge-chart-container">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle good" id="modal-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div class="gauge-center">
+                <span class="gauge-score" id="modal-score">100</span>
+                <span class="gauge-label">% HI</span>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="badge" id="modal-badge">HEALTHY</span>
+              <div class="gauge-meta">
+                <div><strong>Est. DP:</strong> <span id="modal-dp">-</span></div>
+                <div><strong>Assessed:</strong> <span id="modal-date">-</span></div>
+                <div><strong>Last PM:</strong> <span id="modal-lastpm">-</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipment Info -->
+          <div class="specs-grid">
+            <div class="spec-item">
+              <span class="spec-label">Rated Power</span>
+              <span class="spec-value" id="modal-power">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Voltage Rating</span>
+              <span class="spec-value" id="modal-voltage">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Service Type</span>
+              <span class="spec-value" id="modal-service">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Site</span>
+              <span class="spec-value" id="modal-site">-</span>
+            </div>
+          </div>
+
+          <!-- Recommendation -->
+          <div class="recommendation-card" id="modal-rec-card">
+            <div class="rec-title"><i class="fa-solid fa-clipboard-list"></i> Recommendation</div>
+            <div class="rec-text" id="modal-rec-text">-</div>
+          </div>
+
+          <!-- Transformer Photo -->
+          <div class="transformer-photo-card" id="transformer-photo-card">
+            <img id="modal-transformer-img" src="" alt="Transformer Photo">
+            <div class="photo-placeholder" id="photo-placeholder">
+              <i class="fa-solid fa-bolt"></i>
+              <span>No Photo Available</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Detailed Parameters -->
+        <div class="modal-right">
+          <h3 class="section-title"><i class="fa-solid fa-microscope"></i> Test Parameter Details</h3>
+
+          <!-- Active Part -->
+          <div class="param-group">
+            <h4 class="param-group-title"><i class="fa-solid fa-gear"></i> Active Part</h4>
+            <div class="param-grid" id="params-active-part"></div>
+          </div>
+
+          <!-- Visual & Others -->
+          <div class="param-group">
+            <h4 class="param-group-title"><i class="fa-solid fa-eye"></i> VISUAL & SPECIAL TESTS</h4>
+            <div class="param-grid" id="params-additional"></div>
+          </div>
+
+          <!-- Bushing & Surge Arrester (Side by Side Row) -->
+          <div class="bushing-arrester-row">
+            <div class="param-group">
+              <h4 class="param-group-title"><i class="fa-solid fa-circle-nodes"></i> Bushing</h4>
+              <div class="param-grid" id="params-bushing"></div>
+            </div>
+            <div class="param-group">
+              <h4 class="param-group-title"><i class="fa-solid fa-shield-halved"></i> Surge Arrester</h4>
+              <div class="param-grid" id="params-arrester"></div>
+            </div>
+          </div>
+
+          <!-- Main Tank Oil -->
+          <div class="param-group">
+            <h4 class="param-group-title"><i class="fa-solid fa-oil-can"></i> Main Tank Oil</h4>
+            <div class="param-grid" id="params-oil"></div>
+          </div>
+
+          <!-- OLTC Oil -->
+          <div class="param-group">
+            <h4 class="param-group-title"><i class="fa-solid fa-arrows-rotate"></i> OLTC Oil</h4>
+            <div class="param-grid" id="params-oltc"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PptxGenJS Library -->
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Data & Logic Scripts -->
+  <script src="health_data.js"></script>
+  <script src="assessment.js"></script>
+</body>
+</html>

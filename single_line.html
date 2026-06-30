@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCADA Single Line - Transformer Asset Management</title>
+  <meta name="description" content="SCADA Single Line Dashboard for GPSC's Group Transformer Asset Management. Monitor real-time condition index, estimated DP, and active statuses.">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom SCADA Stylesheet -->
+  <link rel="stylesheet" href="single_line.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>GPSC's GROUP Transformer Asset Management</h1>
+          <p>HV NETWORK MAINTENANCE</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn"><i class="fa-solid fa-chart-line"></i> Fleet Dashboard</a>
+        <a href="assessment.html" class="btn"><i class="fa-solid fa-clipboard-check"></i> Assessment</a>
+        
+        <!-- CSV Import -->
+        <div class="upload-btn-wrapper">
+          <button class="btn btn-primary"><i class="fa-solid fa-file-import"></i> Import CSV</button>
+          <input type="file" id="csv-file-input" accept=".csv" />
+        </div>
+        
+        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
+          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
+          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
+        <a href="assessment.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">Health Assessment</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn active">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">Overall Transformer</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-heart-pulse"></i> <span class="nav-label">Health Index</span>
+        </a>
+        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation</span>
+        </button>
+      </aside>
+
+      <!-- SCADA Display Content -->
+      <main class="scada-content">
+        <!-- Site Selector Bar -->
+        <section class="site-selector-bar" id="site-tabs">
+          <!-- Site buttons dynamically added here -->
+        </section>
+
+        <!-- Search and Controls Row -->
+        <section class="search-controls">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="scada-search" class="search-box" placeholder="Search by name, serial...">
+          </div>
+
+          <!-- Quick Stats Display -->
+          <div class="scada-search-stats">
+            <span class="search-stat-item"><span class="stat-lbl">Total:</span> <strong id="search-stat-total">0 Units</strong></span>
+            <span class="search-stat-item"><span class="stat-lbl">Assessed:</span> <strong id="search-stat-assessed" style="color: #10b981;">0%</strong></span>
+            <span class="search-stat-item"><span class="stat-lbl">No Assess:</span> <strong id="search-stat-noassess" style="color: #94a3b8;">0%</strong></span>
+          </div>
+          
+          <!-- Zoom Controls -->
+          <div class="scada-zoom-controls">
+            <button class="btn btn-zoom" id="btn-zoom-out" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            <span class="zoom-level" id="zoom-level-val">100%</span>
+            <button class="btn btn-zoom" id="btn-zoom-in" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button class="btn btn-zoom" id="btn-zoom-reset" title="Reset Zoom"><i class="fa-solid fa-arrows-to-eye"></i></button>
+            <button class="btn btn-zoom" id="btn-capture-scada" title="Capture to PNG (Transparent)"><i class="fa-solid fa-camera"></i></button>
+          </div>
+        </section>
+
+        <!-- SCADA Canvas -->
+        <section class="scada-panel">
+          <div class="scada-zoom-container" id="scada-zoom-container" style="transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: top left; width: max-content; min-width: 100%;">
+            <!-- Busbar Level 1: 230 kV -->
+            <div class="busbar-container">
+              <div class="voltage-tag indigo">230 kV</div>
+              <div class="busbar" id="busbar-230kv"></div>
+              <div class="transformer-row-grid" id="row-230kv">
+                <!-- Dynamically populated 230 kV transformers -->
+              </div>
+            </div>
+
+            <!-- Busbar Level 2: 115 kV -->
+            <div class="busbar-container">
+              <div class="voltage-tag blue">115 kV</div>
+              <div class="busbar" id="busbar-115kv"></div>
+              <div class="transformer-row-grid" id="row-115kv">
+                <!-- Dynamically populated 115 kV transformers -->
+              </div>
+            </div>
+
+            <!-- Busbar Level 3: 22 kV -->
+            <div class="busbar-container">
+              <div class="voltage-tag yellow" id="tag-22kv">22 kV</div>
+              <div class="busbar" id="busbar-22kv"></div>
+              <div class="transformer-row-grid" id="row-22kv">
+                <!-- Dynamically populated 22 kV transformers -->
+              </div>
+            </div>
+
+            <!-- Busbar Level 4: 11 kV -->
+            <div class="busbar-container">
+              <div class="voltage-tag amber">11 kV</div>
+              <div class="busbar" id="busbar-11kv"></div>
+              <div class="transformer-row-grid" id="row-11kv">
+                <!-- Dynamically populated 11 kV transformers -->
+              </div>
+            </div>
+
+            <!-- Busbar Level 5: 6.9 kV -->
+            <div class="busbar-container">
+              <div class="voltage-tag orange">6.9 kV</div>
+              <div class="busbar" id="busbar-69kv"></div>
+              <div class="transformer-row-grid" id="row-69kv">
+                <!-- Dynamically populated 6.9 kV transformers -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom Stats Row -->
+        <section class="scada-stats-bar">
+          <div class="stat-pill">
+            <div class="stat-icon blue"><i class="fa-solid fa-bolt"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Total Units</span>
+              <span class="stat-val" id="stat-total-units">0 Units</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon green"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Avg Health Index</span>
+              <span class="stat-val" id="stat-avg-health">0%</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Healthy (≥80%)</span>
+              <span class="stat-val" id="stat-healthy">0</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon yellow"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Monitoring (70-79%)</span>
+              <span class="stat-val" id="stat-monitoring">0</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon orange"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Warning (50-69%)</span>
+              <span class="stat-val" id="stat-warning">0</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Critical (<50%)</span>
+              <span class="stat-val" id="stat-critical">0</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-icon gray"><i class="fa-solid fa-circle-question"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">No Assess (=0)</span>
+              <span class="stat-val" id="stat-noassess">0</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Footer scrolling Marquee -->
+    <footer class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Detail Modal Overlay -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="modal-transformer-title">TCC-TR3 (Aux. Transformer)</h2>
+          <p id="modal-transformer-subtitle">Serial: 14231662_1 | Site: CUP-1</p>
+        </div>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Left: Technical Specs -->
+        <div>
+          <h3 class="modal-section-title"><i class="fa-solid fa-circle-info"></i> Technical Specifications</h3>
+          <div class="specs-grid">
+            <div class="spec-item">
+              <span class="spec-label">Site / Location</span>
+              <span class="spec-value" id="spec-site">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Company Code</span>
+              <span class="spec-value" id="spec-company">GPSC</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Brand / Manufacturer</span>
+              <span class="spec-value" id="spec-brand">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Manufacturing Date</span>
+              <span class="spec-value" id="spec-mfg-date">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Power Rating</span>
+              <span class="spec-value" id="spec-power-rating">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Type of Cooling</span>
+              <span class="spec-value" id="spec-cooling">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Tap Changer Type</span>
+              <span class="spec-value" id="spec-tap-changer">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Vector Group</span>
+              <span class="spec-value" id="spec-vector-group">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">HV Rated Voltage</span>
+              <span class="spec-value" id="spec-hv-voltage">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">LV Rated Voltage</span>
+              <span class="spec-value" id="spec-lv-voltage">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Insulation Type</span>
+              <span class="spec-value" id="spec-insulation">-</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Total Mass / Oil Mass</span>
+              <span class="spec-value" id="spec-mass">-</span>
+            </div>
+            <div class="spec-item" style="grid-column: span 2;">
+              <span class="spec-label">GPS Coordinate</span>
+              <span class="spec-value" id="spec-gps">-</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Health Dashboard -->
+        <div class="health-dashboard">
+          <h3 class="modal-section-title"><i class="fa-solid fa-heart-pulse"></i> Condition Assessment</h3>
+          
+          <div class="health-gauge-box">
+            <div class="gauge-chart-container">
+              <!-- Radial SVG Progress Ring -->
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle good" id="modal-health-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div style="position: absolute; text-align: center;">
+                <span class="gauge-score" id="modal-health-score">100</span>
+                <span style="font-size: 0.6rem; display: block; color: var(--scada-text-secondary); margin-top: -3px;">HI %</span>
+              </div>
+            </div>
+            <div class="gauge-info">
+              <span class="gauge-title">Health Condition</span>
+              <span class="badge" id="modal-health-badge">GOOD</span>
+              <span class="gauge-title" style="margin-top: 0.5rem;">Date of Assessment</span>
+              <span id="modal-inspection-date" style="font-size: 0.8rem; font-weight: 500;">-</span>
+            </div>
+          </div>
+
+          <div class="subscores-list">
+            <!-- GI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-gi">General Inspection (GI)</span>
+                <span class="subscore-value" id="val-gi">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-gi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- API -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-api">Active Part Inspection</span>
+                <span class="subscore-value" id="val-api">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-api" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- IOI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-ioi">Insulating Oil Inspection</span>
+                <span class="subscore-value" id="val-ioi">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-ioi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- OLTCI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-oltci">OLTC Oil Inspection</span>
+                <span class="subscore-value" id="val-oltci">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-oltci" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- BI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-bi">Bushing Test</span>
+                <span class="subscore-value" id="val-bi">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-bi" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- ARI -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-ari">Surge Arrester Test</span>
+                <span class="subscore-value" id="val-ari">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-ari" style="width: 100%;"></div>
+              </div>
+            </div>
+            <!-- DGA -->
+            <div class="subscore-row">
+              <div class="subscore-info">
+                <span class="subscore-name" id="name-dga">Dissolved Gas Analysis (DGA)</span>
+                <span class="subscore-value" id="val-dga">A</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="bar-dga" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recommendation text -->
+          <div class="recommendation-card" id="rec-card">
+            <div class="rec-title" id="rec-title">Assessment & Recommendations</div>
+            <div class="rec-text" id="rec-text">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- SCADA script -->
+  <script src="single_line.js"></script>
+
+</body>
+</html>

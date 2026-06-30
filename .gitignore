@@ -1,0 +1,7 @@
+.git-portable/
+.agents/
+.gemini/
+*.zip
+*.log
+serve.ps1
+START_SERVER.bat
