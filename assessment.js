@@ -1121,11 +1121,11 @@ function openDetail(no) {
       recEl.style.fontWeight = '';
     }
 
-    // Format recommendations into list items split by comma
+    // Format recommendations into list items split by comma with distinct line breaks and spacing
     const rawItems = recText.split(/,\s*/).map(s => s.trim()).filter(s => s.length > 0);
     if (rawItems.length > 1) {
-      recEl.innerHTML = '<ul style="margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 4px; list-style-type: disc;">' +
-        rawItems.map(it => `<li>${it}</li>`).join('') +
+      recEl.innerHTML = '<ul style="margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 8px; list-style-type: disc; line-height: 1.5;">' +
+        rawItems.map(it => `<li style="margin-bottom: 2px;">${it}</li>`).join('') +
         '</ul>';
     } else {
       recEl.textContent = recText;
