@@ -1085,43 +1085,31 @@ function openDetail(no) {
     `;
   }
 
-  // 2. Center Top Gauge and Remaining Life (Circular style)
+  // 2. Center Top: Speedometer Gauge + Remaining Life
   const hi = item.healthIndex;
   document.getElementById('ex-est-life').textContent = item.estimatedLife || '-';
   document.getElementById('ex-est-dp').textContent = item.estimatedDP || '0';
 
-  const ring = document.getElementById('ex-gauge-ring');
+  const needleGroup = document.getElementById('ex-gauge-needle-group');
   const score = document.getElementById('ex-gauge-score');
 
   if (score) {
-    score.textContent = hi !== null ? hi : '--';
+    score.textContent = (hi !== null && hi !== undefined) ? hi : '--';
+    const hiVal = (hi !== null && hi !== undefined) ? hi : 0;
+    if (hiVal >= 80) {
+      score.style.color = '#22c55e';
+    } else if (hiVal >= 51) {
+      score.style.color = '#facc15';
+    } else {
+      score.style.color = '#ff4d4d';
+    }
   }
 
-  if (ring) {
-    // Semi-circular gauge: 100% = 50 length
-    const ringVal = (hi || 0) * 0.5;
-    ring.setAttribute('stroke-dasharray', `${ringVal}, 100`);
-
-    // Status color class mapping
-    ring.className.baseVal = 'circle'; // Reset classes
-    if (hi !== null && hi !== undefined && hi !== 0) {
-      if (hi >= 80) {
-        ring.classList.add('healthy');
-        if (score) score.style.color = 'var(--color-good)';
-      } else if (hi >= 70) {
-        ring.classList.add('monitoring');
-        if (score) score.style.color = 'var(--color-fair)';
-      } else if (hi >= 50) {
-        ring.classList.add('warning');
-        if (score) score.style.color = 'var(--color-poor)';
-      } else {
-        ring.classList.add('critical');
-        if (score) score.style.color = 'var(--color-critical)';
-      }
-    } else {
-      ring.classList.add('no-assess');
-      if (score) score.style.color = 'var(--text-muted)';
-    }
+  if (needleGroup) {
+    const hiVal = (hi !== null && hi !== undefined) ? Math.max(0, Math.min(100, hi)) : 0;
+    // Angle ranges from -90deg (0% HI, pointing left) to +90deg (100% HI, pointing right)
+    const angle = -90 + (hiVal * 1.8);
+    needleGroup.setAttribute('transform', `rotate(${angle} 60 60)`);
   }
   
   // Model Image fallback logic
