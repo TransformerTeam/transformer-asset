@@ -1068,21 +1068,11 @@ function openDetail(no) {
     exVisualText.className = `excel-visual-box ${getStatusClass(visVal)}`;
   }
   
-  // Work Backlog & History Dynamic Populations
-  const backlogBody = document.getElementById('ex-backlog-rows');
-  if (backlogBody) {
-    backlogBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">-</td></tr>`;
-  }
-  
-  const historyBody = document.getElementById('ex-history-rows');
-  if (historyBody) {
-    historyBody.innerHTML = `
-      <tr>
-        <td>06-Oct-22</td>
-        <td><span class="badge badge-warning" style="background:#e67e22; color:#fff; padding:2px 4px; border-radius:3px;">CM</span></td>
-        <td>Lamp indicator is damage</td>
-      </tr>
-    `;
+  // Recommendation Dynamic Population from HealthIndexSum
+  const recEl = document.getElementById('ex-recommendation-text');
+  if (recEl) {
+    const recText = (item.recommendation && item.recommendation.trim()) ? item.recommendation.trim() : 'No specific recommendation recorded.';
+    recEl.textContent = recText;
   }
 
   // 2. Center Top: Speedometer Gauge + Remaining Life
