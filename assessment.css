@@ -1819,9 +1819,9 @@ header p {
 
 .test-table th:nth-child(2),
 .test-table td:nth-child(2) {
-  width: 75px !important;
-  min-width: 75px !important;
-  max-width: 75px !important;
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
   text-align: center !important;
   white-space: nowrap !important;
 }
