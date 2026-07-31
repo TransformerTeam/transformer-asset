@@ -386,26 +386,14 @@
     </table>
 
     <!-- 1. Test Instrument & Load Data -->
-    <div class="section-banner">• Visual Inspection Test Information & Instrument Information</div>
+    <div class="section-banner">• Visual Inspection Test Instrument Information</div>
     <table class="report-table">
       <tbody>
         <tr>
-          <th style="width: 25%;">Date of Test</th>
-          <td style="width: 25%; font-weight: 700; color: #1e3a8a;" id="info-date">-</td>
-          <th style="width: 25%;">Work Order / Test No.</th>
-          <td style="width: 25%; font-weight: 700; color: #1e3a8a;" id="info-workorder">-</td>
-        </tr>
-        <tr>
-          <th>Tag No.</th>
-          <td id="info-tagno">-</td>
-          <th>Tested By / Witnessed By</th>
-          <td id="info-testers">-</td>
-        </tr>
-        <tr>
-          <th>Humidity (%)</th>
-          <td id="inst-humidity">-</td>
-          <th>Ambient Temp. (Celsius)</th>
-          <td id="inst-ambient-temp">-</td>
+          <th style="width: 25%;">Humidity (%)</th>
+          <td style="width: 25%;" id="inst-humidity">-</td>
+          <th style="width: 25%;">Ambient Temp. (Celsius)</th>
+          <td style="width: 25%;" id="inst-ambient-temp">-</td>
         </tr>
         <tr>
           <th>Oil Temp. (Celsius)</th>
@@ -872,11 +860,7 @@
         }
       }
 
-      // 1. Test & Instrument Information
-      document.getElementById('info-date').textContent = r.date || '-';
-      document.getElementById('info-workorder').textContent = r.Test_No || '-';
-      document.getElementById('info-tagno').textContent = r.COMP1 || r.COMP2 || '-';
-      document.getElementById('info-testers').textContent = `${r.Tested_by || '-'} / ${r.Witnessed_by || '-'}`;
+      // 1. Instrument Information
       document.getElementById('inst-humidity').textContent = r.Humidity ? `${r.Humidity}%` : '-';
       document.getElementById('inst-ambient-temp').textContent = r.Ambient_temp ? `${r.Ambient_temp} °C` : '-';
       document.getElementById('inst-oil-temp').textContent = r.Oil_temp ? `${r.Oil_temp} °C` : '-';
