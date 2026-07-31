@@ -205,18 +205,8 @@
     .report-table th {
       background-color: #f1f5f9;
       color: var(--report-primary);
-    /* Info Table (2-column key-value grid matching PI Report) */
-    table.info-table td.lbl {
-      width: 15%;
       font-weight: 700;
-      color: #1e3a8a;
-      background-color: #f0f4f8;
-    }
-
-    table.info-table td.val {
-      width: 35%;
-      color: #0f172a;
-      font-weight: 500;
+      text-align: left;
     }
 
     .section-banner {
@@ -364,39 +354,57 @@
       </div>
     </div>
 
-    <!-- Header Metadata Table (Matching PI Report & VisualForm) -->
-    <table class="report-table info-table">
+    <!-- Standard Equipment Header Info Table -->
+    <table class="report-table">
       <tbody>
         <tr>
-          <td class="lbl">Serial No.</td>
-          <td class="val" id="hdr-serial" style="font-weight: 700;">-</td>
-          <td class="lbl">Work Order</td>
-          <td class="val" id="hdr-workorder">-</td>
+          <th style="width: 15%;">Equipment Name</th>
+          <td style="width: 35%; font-weight: 700; color: #1e3a8a;" id="meta-name">-</td>
+          <th style="width: 15%;">Site</th>
+          <td style="width: 35%; font-weight: 700; color: #1e3a8a;" id="meta-site">-</td>
         </tr>
         <tr>
-          <td class="lbl">Device Name</td>
-          <td class="val" id="hdr-devicename">-</td>
-          <td class="lbl">Date</td>
-          <td class="val" id="hdr-date" style="font-weight: 700;">-</td>
+          <th>Serial No.</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-serial">-</td>
+          <th>Power Rating (kVA)</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-power">-</td>
         </tr>
         <tr>
-          <td class="lbl">Tag No.</td>
-          <td class="val" id="hdr-tagno">-</td>
-          <td class="lbl">Manufacture</td>
-          <td class="val" id="hdr-manufacture">-</td>
+          <th>Manufacture</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-manufacture">-</td>
+          <th>Voltage Rating (kV)</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-voltage">-</td>
+        </tr>
+        <tr>
+          <th>Fluid Type</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-fluid">Mineral oil</td>
+          <th>Service Type</th>
+          <td style="font-weight: 700; color: #1e3a8a;" id="meta-service">-</td>
         </tr>
       </tbody>
     </table>
 
     <!-- 1. Test Instrument & Load Data -->
-    <div class="section-banner">• Visual Inspection Test Instrument Information</div>
+    <div class="section-banner">• Visual Inspection Test Information & Instrument Information</div>
     <table class="report-table">
       <tbody>
         <tr>
-          <th style="width: 25%;">Humidity (%)</th>
-          <td style="width: 25%;" id="inst-humidity">-</td>
-          <th style="width: 25%;">Ambient Temp. (Celsius)</th>
-          <td style="width: 25%;" id="inst-ambient-temp">-</td>
+          <th style="width: 25%;">Date of Test</th>
+          <td style="width: 25%; font-weight: 700; color: #1e3a8a;" id="info-date">-</td>
+          <th style="width: 25%;">Work Order / Test No.</th>
+          <td style="width: 25%; font-weight: 700; color: #1e3a8a;" id="info-workorder">-</td>
+        </tr>
+        <tr>
+          <th>Tag No.</th>
+          <td id="info-tagno">-</td>
+          <th>Tested By / Witnessed By</th>
+          <td id="info-testers">-</td>
+        </tr>
+        <tr>
+          <th>Humidity (%)</th>
+          <td id="inst-humidity">-</td>
+          <th>Ambient Temp. (Celsius)</th>
+          <td id="inst-ambient-temp">-</td>
         </tr>
         <tr>
           <th>Oil Temp. (Celsius)</th>
@@ -841,25 +849,33 @@
       items.sort((a, b) => new Date(b.date) - new Date(a.date));
       const r = items[0];
 
-      // Header Metadata
-      document.getElementById('hdr-serial').textContent = r.serial || serial;
-      document.getElementById('hdr-workorder').textContent = r.Test_No || '-';
-      document.getElementById('hdr-date').textContent = r.date || '-';
-      document.getElementById('hdr-tagno').textContent = r.COMP1 || r.COMP2 || '-';
-      
-      let devName = r.serial;
-      let manufacture = 'DAIHEN';
+      // Standard Header Metadata Binding
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
         const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
         if (meta) {
-          devName = meta.name;
-          manufacture = meta.manufacture || manufacture;
+          document.getElementById('meta-name').textContent = meta.name || r.serial || serial;
+          document.getElementById('meta-serial').textContent = meta.serial || r.serial || serial;
+          document.getElementById('meta-manufacture').textContent = meta.manufacture || r.COMP2 || 'TIRATHAI';
+          document.getElementById('meta-site').textContent = meta.site || '-';
+          document.getElementById('meta-power').textContent = meta.ratedPower ? Number(meta.ratedPower).toLocaleString() : '-';
+          document.getElementById('meta-voltage').textContent = meta.ratedVoltage ? `${meta.ratedVoltage}` : '-';
+          document.getElementById('meta-service').textContent = meta.serviceType || '-';
+        } else {
+          document.getElementById('meta-name').textContent = r.serial || serial;
+          document.getElementById('meta-serial').textContent = r.serial || serial;
+          document.getElementById('meta-manufacture').textContent = r.COMP2 || 'TIRATHAI';
+          document.getElementById('meta-site').textContent = '-';
+          document.getElementById('meta-power').textContent = '-';
+          document.getElementById('meta-voltage').textContent = '-';
+          document.getElementById('meta-service').textContent = '-';
         }
       }
-      document.getElementById('hdr-devicename').textContent = devName;
-      document.getElementById('hdr-manufacture').textContent = r.COMP2 || manufacture;
 
-      // 1. Instrument Information
+      // 1. Test & Instrument Information
+      document.getElementById('info-date').textContent = r.date || '-';
+      document.getElementById('info-workorder').textContent = r.Test_No || '-';
+      document.getElementById('info-tagno').textContent = r.COMP1 || r.COMP2 || '-';
+      document.getElementById('info-testers').textContent = `${r.Tested_by || '-'} / ${r.Witnessed_by || '-'}`;
       document.getElementById('inst-humidity').textContent = r.Humidity ? `${r.Humidity}%` : '-';
       document.getElementById('inst-ambient-temp').textContent = r.Ambient_temp ? `${r.Ambient_temp} °C` : '-';
       document.getElementById('inst-oil-temp').textContent = r.Oil_temp ? `${r.Oil_temp} °C` : '-';
