@@ -52,16 +52,6 @@ function initAssessment() {
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
   setTheme(savedTheme);
   applyFilters();
-
-  // Auto-open Detail modal if serial parameter is present in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const serialParam = urlParams.get('serial');
-  if (serialParam && assessmentData.length > 0) {
-    const target = assessmentData.find(x => x.serial === serialParam || x.serial.startsWith(serialParam) || serialParam.startsWith(x.serial));
-    if (target) {
-      setTimeout(() => openDetail(target.no), 100);
-    }
-  }
 }
 
 function setupListeners() {
@@ -1024,51 +1014,18 @@ function updatePagination(total) {
   container.appendChild(next);
 }
 
-// ============ DETAIL MODAL & DYNAMIC SELECTOR ============
-
-function populateModalTransformerDropdown(currentSerial) {
-  const selectEl = document.getElementById('modal-transformer-select');
-  if (!selectEl || !assessmentData || assessmentData.length === 0) return;
-  selectEl.innerHTML = '';
-  assessmentData.forEach(item => {
-    const opt = document.createElement('option');
-    opt.value = item.serial;
-    opt.textContent = `${item.name} (${item.serial})`;
-    selectEl.appendChild(opt);
-  });
-  if (currentSerial) {
-    selectEl.value = currentSerial;
-  }
-}
-
-function onModalTransformerChange(serial) {
-  if (!assessmentData) return;
-  const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
-  if (!item) return;
-  
-  // Update URL search param seamlessly without page reload
-  const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(item.serial)}`;
-  window.history.replaceState(null, '', newUrl);
-  
-  // Re-populate Detail view dynamically
-  openDetail(item.no);
-}
+// ============ DETAIL MODAL ============
 
 function openDetail(no) {
   const item = assessmentData.find(i => i.no === no);
   if (!item) return;
   
-  const detailModal = document.getElementById('detail-modal');
-  const isModalActive = detailModal && detailModal.classList.contains('active');
-  const hasUrlSerial = new URLSearchParams(window.location.search).has('serial');
-
-  if (!isModalActive && !hasUrlSerial) {
-    window.open(`assessment.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
+  if (!window.location.pathname.endsWith('detail.html')) {
+    window.open(`detail.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
     return;
   }
 
   currentActiveItem = item;
-  populateModalTransformerDropdown(item.serial);
   
   // Status Class Mapper
   function getStatusClass(status) {
@@ -1126,6 +1083,37 @@ function openDetail(no) {
   if (recEl) {
     const recText = (item.recommendation && item.recommendation.trim()) ? item.recommendation.trim() : 'No specific recommendation recorded.';
     recEl.textContent = recText;
+
+    const recCardParent = recEl.closest('.excel-card');
+    const recCardHeader = recCardParent ? recCardParent.querySelector('.excel-card-header') : null;
+
+    const isRoutine = /^routine/i.test(recText);
+    if (!isRoutine) {
+      if (recCardParent) {
+        recCardParent.style.border = '2px solid #f97316';
+        recCardParent.style.borderRadius = '6px';
+        recCardParent.style.boxShadow = '0 0 10px rgba(249, 115, 22, 0.4)';
+      }
+      if (recCardHeader) {
+        recCardHeader.style.setProperty('background', 'linear-gradient(135deg, #ea580c, #c2410c)', 'important');
+        recCardHeader.style.setProperty('color', '#ffffff', 'important');
+      }
+      recEl.style.setProperty('background', 'rgba(249, 115, 22, 0.18)', 'important');
+      recEl.style.setProperty('color', '#ffedd5', 'important');
+      recEl.style.setProperty('font-weight', '600', 'important');
+    } else {
+      if (recCardParent) {
+        recCardParent.style.border = '';
+        recCardParent.style.boxShadow = '';
+      }
+      if (recCardHeader) {
+        recCardHeader.style.background = '';
+        recCardHeader.style.color = '';
+      }
+      recEl.style.background = '';
+      recEl.style.color = '';
+      recEl.style.fontWeight = '';
+    }
   }
 
   // 2. Center Top: Speedometer Gauge + Remaining Life

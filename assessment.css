@@ -1599,7 +1599,7 @@ header p {
 }
 
 [data-theme="light"] .excel-body {
-  background: #f8fafc !important;
+  background: #cbd5e1 !important;
 }
 
 .excel-col {
@@ -1609,46 +1609,47 @@ header p {
 }
 
 .excel-card {
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="light"] .excel-card {
-  background: rgba(237, 237, 237, 0.95) !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
 }
 
 .excel-card-header {
   background: #1e293b;
-  color: #f1f5f9;
+  color: #ffffff;
   font-weight: 700;
   padding: 6px 10px;
   font-size: 0.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   letter-spacing: 0.02em;
 }
 
 [data-theme="light"] .excel-card-header {
-  background: #cbd5e1 !important;
-  color: #0f172a !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #cbd5e1 !important;
 }
 
 .card-update-time {
   float: right;
   font-size: 0.65rem;
-  font-weight: normal;
+  font-weight: 600;
   color: #38bdf8;
 }
 
 [data-theme="light"] .card-update-time {
-  color: #0284c7 !important;
+  color: #93c5fd !important;
 }
 
-/* Excel Style Tables */
+/* Excel Style Tables High Contrast */
 .excel-table {
   width: 100%;
   border-collapse: collapse;
@@ -1656,42 +1657,51 @@ header p {
 }
 
 .excel-table th, .excel-table td {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 4px 6px;
   text-align: left;
   vertical-align: middle;
+  color: #ffffff;
 }
 
 [data-theme="light"] .excel-table th, 
 [data-theme="light"] .excel-table td {
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  color: #334155;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
 }
 
 .excel-table th {
-  background: rgba(255, 255, 255, 0.03);
-  font-weight: 600;
-  color: #94a3b8;
+  background: #1e293b;
+  font-weight: 700;
+  color: #e2e8f0;
 }
 
 [data-theme="light"] .excel-table th {
-  background: rgba(0, 0, 0, 0.03) !important;
-  color: #475569 !important;
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
 /* Specific table columns */
 .info-table td:first-child {
-  font-weight: 600;
+  font-weight: 700;
   width: 40%;
-  color: #94a3b8;
+  color: #cbd5e1;
 }
 [data-theme="light"] .info-table td:first-child {
-  color: #475569 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
 }
 
 .info-table td:last-child {
   text-align: right;
-  font-weight: 500;
+  font-weight: 600;
+  color: #ffffff;
+}
+[data-theme="light"] .info-table td:last-child {
+  color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
 .excel-visual-box {
@@ -1699,6 +1709,7 @@ header p {
   font-size: 0.75rem;
   min-height: 40px;
   line-height: 1.4;
+  font-weight: 600;
 }
 
 /* Center Top Row */
@@ -1724,32 +1735,34 @@ header p {
 }
 
 .life-box {
-  background: rgba(30, 41, 59, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   padding: 6px;
   text-align: center;
 }
 
 [data-theme="light"] .life-box {
-  background: rgba(0, 0, 0, 0.02) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
 .life-label {
   display: block;
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: #cbd5e1;
+  font-weight: 700;
   margin-bottom: 2px;
 }
 
 [data-theme="light"] .life-label {
-  color: #475569 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
 }
 
 .life-value {
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 800;
   font-family: 'Outfit', sans-serif;
   color: #38bdf8;
 }
