@@ -1019,6 +1019,12 @@ function updatePagination(total) {
 function openDetail(no) {
   const item = assessmentData.find(i => i.no === no);
   if (!item) return;
+  
+  if (!window.location.pathname.endsWith('detail.html')) {
+    window.open(`detail.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
+    return;
+  }
+
   currentActiveItem = item;
   
   // Status Class Mapper

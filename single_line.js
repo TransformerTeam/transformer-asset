@@ -595,24 +595,10 @@ function applySearchFilter() {
   });
 }
 
-// Open Detail Modal and Populate Data
+// Open Detail Page in New Tab
 function openDetailModal(serialNumber) {
-  const tr = rawTransformers.find(item => item["Serial No"] === serialNumber);
-  if (!tr) return;
-  
-  // Map fields from CSV
-  const name = tr["Equipment Name"] || '-';
-  const serial = tr["Serial No"] || '-';
-  const site = tr["SITE"] || '-';
-  const ratedPower = tr["Rated Power (MVA)"] || tr["Rated Power\n(MVA)"] || '-';
-  const ratedVoltage = tr["Rated Voltage (kV)"] || tr["Rated Voltage\n(kV)"] || '-';
-  const hvRate = tr["HV Rate (kV)"] || '-';
-  const lvRate = tr["LV Rate (kV)"] || '-';
-  const serviceType = tr["Service Type"] || '-';
-  const serviceAge = tr["Service Age (Year)"] || tr["Service Age\n(Year)"] || '-';
-  const hiVal = parseInt(tr["Condition Health Index"]) || 0;
-  const dateToAssess = tr["Date To Assess"] || '-';
-  const lastPM = tr["Last PM"] || '-';
+  window.open(`detail.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
+}
   const nextPM = tr["Next PM"] || '-';
   const recommendation = tr["Recommendation"] || 'No specific maintenance recommended at this time.';
 

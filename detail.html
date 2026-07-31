@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Detail - GPSC Asset Management</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Core & Page Styles -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assessment.css">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color, #0b0f19);
+      color: var(--text-color, #f8fafc);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-topbar {
+      background: #152e6f;
+      color: #ffffff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #102456;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .detail-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .detail-topbar-left img {
+      height: 32px;
+      background: #ffffff;
+      padding: 3px;
+      border-radius: 4px;
+    }
+
+    .detail-topbar-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      margin: 0;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .detail-topbar-title .subtitle {
+      color: #93c5fd;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .detail-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-select {
+      background: rgba(15, 23, 42, 0.6);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      min-width: 220px;
+    }
+
+    .search-select option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .detail-content-wrapper {
+      flex: 1;
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .detail-footer {
+      padding: 6px 20px;
+      background: #0b193c;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .detail-footer-text {
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <div class="detail-topbar">
+    <div class="detail-topbar-left">
+      <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+      <div class="detail-topbar-title">
+        <h1>GPSC's GROUP Transformer Asset Management</h1>
+        <div class="subtitle">HV NETWORK MAINTENANCE</div>
+      </div>
+    </div>
+
+    <div class="detail-topbar-right">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 0.8rem; color: #cbd5e1; font-weight: 500;"><i class="fa-solid fa-bolt"></i> Transformer:</span>
+        <select id="detail-transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+          <!-- Dynamic Options -->
+        </select>
+      </div>
+
+      <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-sun" id="theme-icon"></i> Theme</button>
+      <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-camera"></i> Export JPG</button>
+      <button class="btn-action" onclick="window.close()"><i class="fa-solid fa-xmark"></i> Close</button>
+    </div>
+  </div>
+
+  <!-- Main Detail View Body -->
+  <div class="detail-content-wrapper" id="detail-paper">
+    <div class="excel-body" style="margin: 0; padding: 0;">
+      
+      <!-- Left Column: Transformer Info & Visual & Recommendation -->
+      <div class="excel-col excel-col-left">
+        
+        <!-- Transformer Information -->
+        <div class="excel-card">
+          <div class="excel-card-header">Transformer Information</div>
+          <table class="excel-table info-table">
+            <tbody>
+              <tr><td class="info-label">Device Name</td><td class="info-val" id="ex-info-name">-</td></tr>
+              <tr><td class="info-label">Serial No.</td><td class="info-val" id="ex-info-serial">-</td></tr>
+              <tr><td class="info-label">Device Code</td><td class="info-val" id="ex-info-code">-</td></tr>
+              <tr><td class="info-label">Manufacture</td><td class="info-val" id="ex-info-manuf">DAIHEN</td></tr>
+              <tr><td class="info-label">Fluid Type</td><td class="info-val">Mineral Oil</td></tr>
+              <tr><td class="info-label">Site</td><td class="info-val" id="ex-info-site">-</td></tr>
+              <tr><td class="info-label">Power Rating</td><td class="info-val" id="ex-info-power">-</td></tr>
+              <tr><td class="info-label">Voltage Rating</td><td class="info-val" id="ex-info-voltage">-</td></tr>
+              <tr><td class="info-label">Service Type</td><td class="info-val" id="ex-info-service">-</td></tr>
+              <tr><td class="info-label">Service Year</td><td class="info-val" id="ex-info-year">-</td></tr>
+              <tr><td class="info-label">Vector Group</td><td class="info-val">Dyn1</td></tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Visual Inspection -->
+        <div class="excel-card">
+          <div class="excel-card-header">
+            Visual Inspection
+            <a id="ex-visual-link" href="#" target="_blank" title="Open Visual Report" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none;">
+              <i class="fa-solid fa-file-invoice"></i>
+            </a>
+          </div>
+          <div class="excel-card-body" style="padding: 10px; text-align: center;">
+            <div class="excel-visual-box ex-status-good" id="ex-visual-text">Normal (A)</div>
+          </div>
+        </div>
+        
+        <!-- Recommendation Dynamic Card -->
+        <div class="excel-card">
+          <div class="excel-card-header" style="color: #60a5fa;"><i class="fa-solid fa-clipboard-check"></i> Recommendation</div>
+          <div class="excel-card-body" style="padding: 10px; font-size: 0.8rem; line-height: 1.4; color: #e2e8f0; min-height: 50px;" id="ex-recommendation-text">
+            Loading recommendation...
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Center Column: Speedometer, Photo, Bushing, Surge Arrester, Active Part -->
+      <div class="excel-col excel-col-center">
+        
+        <!-- Top Row: Speedometer HI + Life + Model Image -->
+        <div class="excel-center-top-row">
+          
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Speedometer Gauge Box -->
+            <div class="life-box" style="padding: 6px; position: relative; text-align: center;">
+              <div style="width: 120px; height: 60px; margin: 0 auto; position: relative;">
+                <svg viewBox="0 0 120 65" style="width: 100%; height: 100%;">
+                  <path d="M 10 60 A 50 50 0 0 1 42.4 13.8" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="butt" />
+                  <path d="M 42.4 13.8 A 50 50 0 0 1 77.6 13.8" fill="none" stroke="#eab308" stroke-width="12" stroke-linecap="butt" />
+                  <path d="M 77.6 13.8 A 50 50 0 0 1 110 60" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="butt" />
+                  <circle cx="60" cy="60" r="4" fill="#ffffff" />
+                  <g id="ex-gauge-needle-group" transform="rotate(75.6 60 60)" style="transition: transform 1s ease-out;">
+                    <line x1="60" y1="60" x2="16" y2="60" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+                    <circle cx="60" cy="60" r="2" fill="#0f172a" />
+                  </g>
+                </svg>
+              </div>
+              <div id="ex-gauge-score" style="font-size: 1rem; font-weight: 800; color: #22c55e; margin-top: -6px;">HI --%</div>
+            </div>
+
+            <!-- Estimated Remaining Life Box -->
+            <div class="life-box">
+              <div class="life-title">Estimated Remaining Life</div>
+              <div class="life-val" id="ex-est-life">-</div>
+            </div>
+            <!-- Estimated DP Box -->
+            <div class="life-box">
+              <div class="life-title">Estimated DP</div>
+              <div class="life-val" id="ex-est-dp">806</div>
+            </div>
+          </div>
+
+          <div class="model-img-box" style="height: 100%;">
+            <img id="ex-model-img" src="background.jpg" alt="Transformer Photo" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        </div>
+
+        <!-- Bushing -->
+        <div class="excel-card">
+          <div class="excel-card-header">Bushing <span class="card-update-time" id="ex-update-bushing">Updated tests: -</span></div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standard</th>
+                <th>HV. A</th>
+                <th>HV. B</th>
+                <th>HV. C</th>
+                <th>LV. A</th>
+                <th>LV. B</th>
+                <th>LV. C</th>
+              </tr>
+            </thead>
+            <tbody id="ex-bushing-rows"></tbody>
+          </table>
+        </div>
+
+        <!-- Surge Arrester -->
+        <div class="excel-card">
+          <div class="excel-card-header">Surge Arrester <span class="card-update-time" id="ex-update-arrester">Updated tests: -</span></div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standard</th>
+                <th>HV. A</th>
+                <th>HV. B</th>
+                <th>HV. C</th>
+                <th>HV. A/2</th>
+                <th>HV. B/2</th>
+                <th>HV. C/2</th>
+              </tr>
+            </thead>
+            <tbody id="ex-arrester-rows"></tbody>
+          </table>
+        </div>
+
+        <!-- Active Part -->
+        <div class="excel-card">
+          <div class="excel-card-header">Active Part <span class="card-update-time" id="ex-update-active">Updated tests: -</span></div>
+          <div class="sub-card-header">Basic Test</div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Date</th>
+                <th>Standard</th>
+                <th colspan="3">Results & Status</th>
+              </tr>
+            </thead>
+            <tbody id="ex-active-basic-rows"></tbody>
+          </table>
+
+          <div class="sub-card-header">Advanced Test</div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Date</th>
+                <th>Standard</th>
+                <th colspan="3">Results & Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SFRA</td>
+                <td>-</td>
+                <td>IEEE C57.149</td>
+                <td colspan="3" class="ex-status-good">Normal (Good)</td>
+              </tr>
+              <tr>
+                <td>Frequency Response of Stray Losses (FRSL)</td>
+                <td>-</td>
+                <td>CIGRE WG A2.26</td>
+                <td colspan="3">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Main Tank DGA, Oil Properties, OLTC -->
+      <div class="excel-col excel-col-right">
+        
+        <!-- Main Tank DGA -->
+        <div class="excel-card">
+          <div class="excel-card-header">
+            Main Tank DGA
+            <a href="dga_report.html" target="_blank" title="Open DGA Report" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none;">
+              <i class="fa-solid fa-file-invoice"></i>
+            </a>
+            <span class="card-update-time" id="ex-dga-date">03-Nov-25</span>
+          </div>
+          <table class="excel-table dga-mini-table">
+            <thead>
+              <tr>
+                <th>Gas</th>
+                <th>H₂</th>
+                <th>CH₄</th>
+                <th>C₂H₂</th>
+                <th>C₂H₄</th>
+                <th>C₂H₆</th>
+                <th>CO</th>
+                <th>CO₂</th>
+                <th>TDCG</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 700;">ppm</td>
+                <td id="dga-h2">2</td>
+                <td id="dga-ch4">23</td>
+                <td id="dga-c2h2">6</td>
+                <td id="dga-c2h4">2</td>
+                <td id="dga-c2h6">0</td>
+                <td id="dga-co">479</td>
+                <td id="dga-co2">6665</td>
+                <td id="dga-tdcg" style="font-weight: 700;">492</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="dga-diag-list">
+            <div class="dga-diag-item"><strong>Duval Method:</strong> <span class="dga-diag-val ex-status-good" id="ex-duval-method">Normal</span></div>
+            <div class="dga-diag-item"><strong>Fault Diagnosis:</strong> <span class="dga-diag-val ex-status-good" id="ex-fault-diag">Normal / No Fault Detected</span></div>
+            <div class="dga-diag-item"><strong>IEEE C57.104 Evaluation:</strong> <span class="dga-diag-val ex-status-good" id="ex-ieee-eval">DGA Status 1 (Normal)</span></div>
+            <div class="dga-diag-item"><strong>IEC 60599 Diagnosis:</strong> <span class="dga-diag-val ex-status-good" id="ex-iec-diag">Normal</span></div>
+            <div class="dga-diag-item"><strong>Paper Insulation Condition:</strong> <span class="dga-diag-val ex-status-good" id="ex-paper-cond">Normal Paper Aging (CO2/CO > 10)</span></div>
+          </div>
+        </div>
+
+        <!-- Main Tank Oil Properties -->
+        <div class="excel-card">
+          <div class="excel-card-header">Main Tank Oil Properties <span class="card-update-time" id="ex-update-oil">Updated tests: -</span></div>
+          <div class="sub-card-header">Electrical Chemical and Physical</div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standards</th>
+                <th>Result</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="ex-oil-elec-rows"></tbody>
+          </table>
+
+          <div class="sub-card-header">Paper Aging</div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standards</th>
+                <th>Result</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="ex-oil-paper-rows"></tbody>
+          </table>
+
+          <div class="sub-card-header">Corrosive Sulfur</div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standards</th>
+                <th>Result</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="ex-oil-sulfur-rows"></tbody>
+          </table>
+        </div>
+
+        <!-- OLTC Oil -->
+        <div class="excel-card">
+          <div class="excel-card-header">On Load Tap Changer Oil (OLTC1) <span class="card-update-time" id="ex-update-oltc">Updated tests: -</span></div>
+          <table class="excel-table test-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standards</th>
+                <th>Result</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="ex-oltc-rows"></tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Footer Bar -->
+  <div class="detail-footer">
+    <div class="detail-footer-text">Last Updated V.23 (1 Oct 2025)</div>
+    <div class="detail-footer-text" id="footer-serial-text">Serial: -</div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+  <script src="assessment.js"></script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Populate Dropdown Options
+      const selectEl = document.getElementById('detail-transformer-select');
+      if (selectEl && typeof assessmentData !== 'undefined') {
+        selectEl.innerHTML = '';
+        assessmentData.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = `${item.name} (${item.serial})`;
+          selectEl.appendChild(opt);
+        });
+      }
+
+      // 2. Read Serial Parameter from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      let serialParam = urlParams.get('serial');
+
+      if (!serialParam && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+        serialParam = assessmentData[0].serial;
+      }
+
+      if (serialParam) {
+        if (selectEl) selectEl.value = serialParam;
+        loadDetailBySerial(serialParam);
+      }
+    });
+
+    function switchTransformer(serial) {
+      // Update URL without reload
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadDetailBySerial(serial);
+    }
+
+    function loadDetailBySerial(serial) {
+      if (typeof assessmentData === 'undefined') return;
+      const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+      if (!item) return;
+
+      // Update footer serial text
+      const ftSerial = document.getElementById('footer-serial-text');
+      if (ftSerial) ftSerial.textContent = `Serial: ${item.serial}`;
+
+      // Call assessment.js openDetail logic with item.no
+      if (typeof openDetail === 'function') {
+        openDetail(item.no);
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    function exportToJPG() {
+      const paper = document.getElementById('detail-paper');
+      html2canvas(paper, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Transformer_Detail_${document.getElementById('ex-info-serial').textContent || 'Report'}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
