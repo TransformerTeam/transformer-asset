@@ -415,51 +415,54 @@
           <!-- Center Top: Life & Gauge Row -->
           <div class="excel-center-top-row">
             
-            <!-- Stacked info boxes (Left) -->
+            <!-- Stacked info & gauge boxes (Left) -->
             <div class="excel-life-dp-boxes">
+              <!-- Speedometer Gauge (Top Left) -->
+              <div class="excel-gauge-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px 0 2px 0;">
+                <div class="gauge-chart-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px;">
+                  <svg viewBox="0 0 120 72" style="width: 120px; height: 72px; overflow: visible;">
+                    <!-- Red Zone: 0% to 50% -->
+                    <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ff4d4d" stroke-width="12" stroke-linecap="butt"/>
+                    <!-- Yellow Zone: 51% to 79% -->
+                    <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#facc15" stroke-width="12" stroke-linecap="butt"/>
+                    <!-- Green Zone: 80% to 100% -->
+                    <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="butt"/>
+                    
+                    <!-- Range Labels -->
+                    <text x="14" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
+                    <text x="106" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
+
+                    <!-- Pointer Needle -->
+                    <g id="ex-gauge-needle-group" transform="rotate(0 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                      <polygon points="56.5,60 63.5,60 60,20" fill="#0f172a" stroke="#ffffff" stroke-width="1"/>
+                      <circle cx="60" cy="60" r="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5"/>
+                      <circle cx="60" cy="60" r="2" fill="#ffffff"/>
+                    </g>
+                  </svg>
+
+                  <div class="gauge-center-text" style="text-align: center; margin-top: 2px; line-height: 1.1;">
+                    <span class="gauge-score" id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 700; color: #10b981;">100</span>
+                    <span class="gauge-label" style="font-size: 0.6rem; color: #94a3b8; margin-left: 2px;">% HI</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estimated Remaining Life Box -->
               <div class="life-box">
                 <span class="life-label">Estimated Remaining Life</span>
                 <span class="life-value" id="ex-est-life">-</span>
               </div>
+              
+              <!-- Estimated DP Box -->
               <div class="life-box">
                 <span class="life-label">Estimated DP</span>
                 <span class="life-value" id="ex-est-dp">0</span>
               </div>
             </div>
 
-            <!-- Enlarged Transformer photo container (Center) -->
+            <!-- Enlarged Transformer photo container (Right) -->
             <div class="excel-model-container" style="display: flex; justify-content: center; align-items: center; overflow: hidden;">
               <img id="ex-model-img" src="background.jpg" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); display: block;" alt="Transformer Photo">
-            </div>
-
-            <!-- Speedometer Gauge (Right) -->
-            <div class="excel-gauge-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-              <div class="gauge-chart-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px;">
-                <svg viewBox="0 0 120 72" style="width: 120px; height: 72px; overflow: visible;">
-                  <!-- Red Zone: 0% to 50% -->
-                  <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ff4d4d" stroke-width="12" stroke-linecap="butt"/>
-                  <!-- Yellow Zone: 51% to 79% -->
-                  <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#facc15" stroke-width="12" stroke-linecap="butt"/>
-                  <!-- Green Zone: 80% to 100% -->
-                  <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="butt"/>
-                  
-                  <!-- Range Labels -->
-                  <text x="14" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
-                  <text x="106" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
-
-                  <!-- Pointer Needle -->
-                  <g id="ex-gauge-needle-group" transform="rotate(0 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-                    <polygon points="56.5,60 63.5,60 60,20" fill="#0f172a" stroke="#ffffff" stroke-width="1"/>
-                    <circle cx="60" cy="60" r="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5"/>
-                    <circle cx="60" cy="60" r="2" fill="#ffffff"/>
-                  </g>
-                </svg>
-
-                <div class="gauge-center-text" style="text-align: center; margin-top: 2px; line-height: 1.1;">
-                  <span class="gauge-score" id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 700; color: #10b981;">100</span>
-                  <span class="gauge-label" style="font-size: 0.6rem; color: #94a3b8; margin-left: 2px;">% HI</span>
-                </div>
-              </div>
             </div>
 
           </div>
