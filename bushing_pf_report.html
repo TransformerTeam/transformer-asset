@@ -555,8 +555,8 @@
         <tr>
           <td class="lbl">Fluid Type</td>
           <td class="val" id="info-fluid">-</td>
-          <td class="lbl">Date of Test</td>
-          <td class="val" id="info-test-date">-</td>
+          <td class="lbl">Service Type</td>
+          <td class="val" id="info-service-type">-</td>
         </tr>
       </table>
 
@@ -566,7 +566,11 @@
           <div class="section-title">Test Information</div>
           <table class="report-table">
             <tr>
-              <td style="width: 40%; font-weight:700;">Test Instrument</td>
+              <td style="width: 40%; font-weight:700;">Date of Test</td>
+              <td id="info-test-date">-</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Test Instrument</td>
               <td id="info-instrument">-</td>
             </tr>
             <tr>
@@ -828,6 +832,7 @@
   <script>
     let bushingInfoList = [];
     let bushingPfDataList = [];
+    let trInfoList = [];
     let currentSerial = '';
     let trendChart = null;
 
@@ -839,12 +844,14 @@
 
       // Fetch CSVs
       try {
-        const [infoResp, pfResp] = await Promise.all([
+        const [infoResp, pfResp, trInfoResp] = await Promise.all([
           fetch('TestData/BushingInfo.csv'),
-          fetch('TestData/BushingPFData.csv')
+          fetch('TestData/BushingPFData.csv'),
+          fetch('TRInfo.csv')
         ]);
-        if (infoResp.ok) bushingInfoList = parseCSV(await infoResp.text());
-        if (pfResp.ok)   bushingPfDataList = parseCSV(await pfResp.text());
+        if (infoResp.ok)   bushingInfoList  = parseCSV(await infoResp.text());
+        if (pfResp.ok)     bushingPfDataList = parseCSV(await pfResp.text());
+        if (trInfoResp.ok) trInfoList        = parseCSV(await trInfoResp.text());
       } catch (e) {
         console.error('Failed to load Bushing CSV databases', e);
       }
@@ -922,20 +929,55 @@
 
     // ─── Render Report ────────────────────────────────────────────────────────────
     function renderBushingReport(serial) {
-      // Equipment Info
+      // Equipment Info — priority: TRInfo.csv > health_data.js assessmentData
       let item = null;
       if (typeof assessmentData !== 'undefined') {
         item = assessmentData.find(x => matchSerial(x.serial, serial));
       }
-      if (item) {
-        document.getElementById('info-eq-name').textContent  = item.name      || '-';
-        document.getElementById('info-site').textContent     = item.site      || '-';
-        document.getElementById('info-serial').textContent   = item.serial    || '-';
-        document.getElementById('info-power').textContent    = item.power     || '-';
-        document.getElementById('info-mfg').textContent      = item.manufacture || '-';
-        document.getElementById('info-voltage').textContent  = item.voltage   || '-';
-        document.getElementById('info-fluid').textContent    = item.fluid     || 'Mineral Oil';
+      // Find matching TRInfo record
+      const trInfo = trInfoList.find(r => matchSerial(r.SERIAL_NUMBER, serial));
+
+      // Populate equipment details from TRInfo.csv (richer data source)
+      document.getElementById('info-eq-name').textContent =
+        (item && item.name) ? item.name : (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || '-') : '-');
+
+      document.getElementById('info-site').textContent =
+        trInfo ? (trInfo.SITE || '-') : (item ? (item.site || '-') : '-');
+
+      document.getElementById('info-serial').textContent = serial || '-';
+
+      // Power Rating: TRInfo POWER_RATING (MVA → kVA ×1000 if needed), else health_data ratedPower
+      const trPower = trInfo ? trInfo.POWER_RATING : null;
+      const hPower  = item   ? item.ratedPower     : null;
+      document.getElementById('info-power').textContent =
+        trPower ? `${Number(trPower).toLocaleString()} kVA` :
+        hPower  ? `${Number(hPower) >= 100 ? Number(hPower).toLocaleString() : Number(hPower) * 1000} kVA` : '-';
+
+      // Manufacture
+      document.getElementById('info-mfg').textContent =
+        trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || '-') : (item ? (item.manufacture || '-') : '-');
+
+      // Voltage Rating
+      const hvRated = trInfo ? trInfo.HV_RATED  : (item ? item.hvRate  : null);
+      const lvRated = trInfo ? trInfo.LV_RATED  : (item ? item.lvRate  : null);
+      const lv2Rated = trInfo ? trInfo.LV2_RATED : null;
+      let voltStr = '-';
+      if (hvRated) {
+        voltStr = hvRated;
+        if (lvRated && lvRated !== '-') voltStr += ' / ' + lvRated;
+        if (lv2Rated && lv2Rated !== '-' && lv2Rated !== '') voltStr += ' / ' + lv2Rated;
+      } else if (item && item.ratedVoltage) {
+        voltStr = item.ratedVoltage;
       }
+      document.getElementById('info-voltage').textContent = voltStr;
+
+      // Fluid Type (WINDING_INSULATION in TRInfo)
+      document.getElementById('info-fluid').textContent =
+        trInfo ? (trInfo.WINDING_INSULATION || 'Mineral oil') : (item ? (item.fluid || 'Mineral oil') : 'Mineral oil');
+
+      // Service Type
+      document.getElementById('info-service-type').textContent =
+        trInfo ? (trInfo.Service_Type || trInfo.APPLICATION || '-') : (item ? (item.serviceType || '-') : '-');
 
       // Filter BushingInfo records
       const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No, serial));
@@ -949,11 +991,11 @@
       const latest = pfRecords.length > 0 ? pfRecords[0] : null;
 
       if (latest) {
-        document.getElementById('info-test-date').textContent        = latest.date             || '-';
-        document.getElementById('info-instrument').textContent       = latest.test_instrument  || '-';
-        document.getElementById('info-instrument-serial').textContent = latest.serial_instrument || '-';
-        document.getElementById('info-instrument-calib').textContent  = latest.date_calibation  || '-';
-        document.getElementById('info-wo').textContent               = latest.test_NO           || '-';
+        document.getElementById('info-test-date').textContent          = latest.date             || '-';
+        document.getElementById('info-instrument').textContent          = latest.test_instrument  || '-';
+        document.getElementById('info-instrument-serial').textContent   = latest.serial_instrument || '-';
+        document.getElementById('info-instrument-calib').textContent    = latest.date_calibation  || '-';
+        document.getElementById('info-wo').textContent                  = latest.test_NO           || '-';
         document.getElementById('env-ambient').textContent           = latest.ambient_temp      || '-';
         document.getElementById('env-oil').textContent               = latest.oil_temp          || '-';
         document.getElementById('env-winding').textContent           = latest.winding_temp      || '-';
