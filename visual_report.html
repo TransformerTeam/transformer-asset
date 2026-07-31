@@ -205,8 +205,18 @@
     .report-table th {
       background-color: #f1f5f9;
       color: var(--report-primary);
+    /* Info Table (2-column key-value grid matching PI Report) */
+    table.info-table td.lbl {
+      width: 15%;
       font-weight: 700;
-      text-align: left;
+      color: #1e3a8a;
+      background-color: #f0f4f8;
+    }
+
+    table.info-table td.val {
+      width: 35%;
+      color: #0f172a;
+      font-weight: 500;
     }
 
     .section-banner {
@@ -354,26 +364,26 @@
       </div>
     </div>
 
-    <!-- Header Metadata Table -->
-    <table class="report-table">
+    <!-- Header Metadata Table (Matching PI Report & VisualForm) -->
+    <table class="report-table info-table">
       <tbody>
         <tr>
-          <th style="width: 15%;">Serial No.</th>
-          <td style="width: 35%; font-weight: 700;" id="hdr-serial">-</td>
-          <th style="width: 15%;">Work Order</th>
-          <td style="width: 35%;" id="hdr-workorder">-</td>
+          <td class="lbl">Serial No.</td>
+          <td class="val" id="hdr-serial" style="font-weight: 700;">-</td>
+          <td class="lbl">Work Order</td>
+          <td class="val" id="hdr-workorder">-</td>
         </tr>
         <tr>
-          <th>Device Name</th>
-          <td id="hdr-devicename">-</td>
-          <th>Date</th>
-          <td id="hdr-date" style="font-weight: 600;">-</td>
+          <td class="lbl">Device Name</td>
+          <td class="val" id="hdr-devicename">-</td>
+          <td class="lbl">Date</td>
+          <td class="val" id="hdr-date" style="font-weight: 700;">-</td>
         </tr>
         <tr>
-          <th>Tag No.</th>
-          <td id="hdr-tagno">-</td>
-          <th>Manufacture</th>
-          <td id="hdr-manufacture">-</td>
+          <td class="lbl">Tag No.</td>
+          <td class="val" id="hdr-tagno">-</td>
+          <td class="lbl">Manufacture</td>
+          <td class="val" id="hdr-manufacture">-</td>
         </tr>
       </tbody>
     </table>
