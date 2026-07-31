@@ -426,37 +426,26 @@
                 <span class="life-value" id="ex-est-dp">0</span>
               </div>
             </div>
-            
+
             <!-- Enlarged Transformer photo container (Center) -->
             <div class="excel-model-container" style="display: flex; justify-content: center; align-items: center; overflow: hidden;">
               <img id="ex-model-img" src="background.jpg" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); display: block;" alt="Transformer Photo">
             </div>
 
-            <!-- Speedometer Gauge (Right) -->
-            <div class="excel-gauge-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-              <div style="position: relative; width: 110px; height: 65px; overflow: visible;">
-                <svg id="ex-speedometer-svg" viewBox="0 0 110 65" style="width: 110px; height: 65px; overflow: visible;">
-                  <!-- Color arc zones (semicircle) -->
-                  <!-- Red zone 0-50 (180°->90°) -->
-                  <path d="M10,55 A45,45 0 0,1 55,10" fill="none" stroke="#ef4444" stroke-width="9" stroke-linecap="butt"/>
-                  <!-- Orange zone 50-79 (90°->37°) -->
-                  <path d="M55,10 A45,45 0 0,1 96,29" fill="none" stroke="#f97316" stroke-width="9" stroke-linecap="butt"/>
-                  <!-- Green zone 80-100 (37°->0°) -->
-                  <path d="M96,29 A45,45 0 0,1 100,55" fill="none" stroke="#10b981" stroke-width="9" stroke-linecap="butt"/>
-                  <!-- Background ring underneath -->
-                  <!-- Needle -->
-                  <line id="ex-gauge-needle" x1="55" y1="55" x2="55" y2="14" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(0,55,55)"/>
-                  <!-- Center dot -->
-                  <circle cx="55" cy="55" r="4" fill="white"/>
+            <!-- Circular Ring Gauge (Right) -->
+            <div class="excel-gauge-container" style="position: relative; display: flex; justify-content: center; align-items: center;">
+              <div class="gauge-chart-container" style="position: relative; display: flex; justify-content: center; align-items: center; width: 90px; height: 90px;">
+                <svg viewBox="0 0 36 36" class="circular-chart" style="width: 90px; height: 90px; overflow: visible;">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle good" id="ex-gauge-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
-                <!-- Score label -->
-                <div style="position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); text-align: center; line-height: 1;">
-                  <span id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 700; color: #10b981;">100</span><br>
-                  <span style="font-size: 0.55rem; color: #94a3b8;">% HI</span>
+                <div class="gauge-center" style="position: absolute; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%;">
+                  <span class="gauge-score" id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: #10b981; line-height: 1.1;">100</span>
+                  <span class="gauge-label" style="font-size: 0.55rem; color: #94a3b8; display: block; margin-top: 2px;">% HI</span>
                 </div>
               </div>
             </div>
-            
+
           </div>
           
           <!-- Bushing Card -->

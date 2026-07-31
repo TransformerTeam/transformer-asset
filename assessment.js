@@ -1085,33 +1085,42 @@ function openDetail(no) {
     `;
   }
 
-  // 2. Center Top: Speedometer Gauge + Remaining Life
+  // 2. Center Top Gauge and Remaining Life (Circular style)
   const hi = item.healthIndex;
   document.getElementById('ex-est-life').textContent = item.estimatedLife || '-';
   document.getElementById('ex-est-dp').textContent = item.estimatedDP || '0';
 
-  const needle = document.getElementById('ex-gauge-needle');
-  const score  = document.getElementById('ex-gauge-score');
+  const ring = document.getElementById('ex-gauge-ring');
+  const score = document.getElementById('ex-gauge-score');
 
   if (score) {
     score.textContent = hi !== null ? hi : '--';
   }
 
-  if (needle) {
-    // Map HI 0→100 to angle -90°(left/red) → +90°(right/green)
-    const hiVal = (hi !== null && hi !== undefined) ? Math.max(0, Math.min(100, hi)) : 0;
-    const angle = -90 + (hiVal / 100) * 180;
-    needle.setAttribute('transform', `rotate(${angle},55,55)`);
-  }
+  if (ring) {
+    // Semi-circular gauge: 100% = 50 length
+    const ringVal = (hi || 0) * 0.5;
+    ring.setAttribute('stroke-dasharray', `${ringVal}, 100`);
 
-  if (score) {
-    const hiVal = hi !== null ? hi : 0;
-    if (hiVal >= 80) {
-      score.style.setProperty('color', '#10b981', 'important');
-    } else if (hiVal >= 51) {
-      score.style.setProperty('color', '#f97316', 'important');
+    // Status color class mapping
+    ring.className.baseVal = 'circle'; // Reset classes
+    if (hi !== null && hi !== undefined && hi !== 0) {
+      if (hi >= 80) {
+        ring.classList.add('healthy');
+        if (score) score.style.color = 'var(--color-good)';
+      } else if (hi >= 70) {
+        ring.classList.add('monitoring');
+        if (score) score.style.color = 'var(--color-fair)';
+      } else if (hi >= 50) {
+        ring.classList.add('warning');
+        if (score) score.style.color = 'var(--color-poor)';
+      } else {
+        ring.classList.add('critical');
+        if (score) score.style.color = 'var(--color-critical)';
+      }
     } else {
-      score.style.setProperty('color', '#ef4444', 'important');
+      ring.classList.add('no-assess');
+      if (score) score.style.color = 'var(--text-muted)';
     }
   }
   
