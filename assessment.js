@@ -1202,6 +1202,19 @@ function openDetail(no) {
   const saClass = getStatusClass(saVal);
   saBody.innerHTML = `
     <tr>
+      <td>Insulation Resistance (MΩ)</td>
+      <td>EGAT</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
       <td>%Dev Current (mA)</td>
       <td>EGAT</td>
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.12'}</td>
