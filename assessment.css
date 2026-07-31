@@ -1709,10 +1709,10 @@ header p {
 }
 
 .excel-visual-box {
-  padding: 8px 10px;
-  font-size: 0.75rem;
-  min-height: 40px;
-  line-height: 1.4;
+  padding: 6px 10px;
+  font-size: 0.68rem;
+  min-height: 36px;
+  line-height: 1.35;
   font-weight: 600;
 }
 
