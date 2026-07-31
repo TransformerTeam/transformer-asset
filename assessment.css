@@ -1809,6 +1809,23 @@ header p {
   font-weight: 400 !important;
 }
 
+/* Bushing & Surge Arrester Table Column Alignment */
+.test-table th:first-child,
+.test-table td:first-child {
+  width: 145px !important;
+  min-width: 135px !important;
+  white-space: nowrap !important;
+}
+
+.test-table th:nth-child(2),
+.test-table td:nth-child(2) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
 /* Center alignment for Bushing & Surge Arrester phase columns (HV.A through LV.C) */
 .test-table th:nth-child(n+3),
 .test-table td:nth-child(n+3) {
