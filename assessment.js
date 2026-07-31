@@ -1094,7 +1094,7 @@ function openDetail(no) {
   const score = document.getElementById('ex-gauge-score');
 
   if (score) {
-    score.textContent = (hi !== null && hi !== undefined) ? hi : '--';
+    score.textContent = (hi !== null && hi !== undefined) ? `HI ${hi}%` : 'HI --%';
     const hiVal = (hi !== null && hi !== undefined) ? hi : 0;
     if (hiVal >= 80) {
       score.style.color = '#22c55e';
