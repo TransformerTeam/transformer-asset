@@ -1363,8 +1363,27 @@ function openDetail(no) {
     return `${day}-${month}-${year}`;
   }
 
-  // Populate Gas Concentrations from CSV
-  const latestDGA = mainTankDgaCsvData.filter(d => d.serial === item.serial).pop();
+  // Populate Gas Concentrations from CSV with date sorting
+  const dgaMatches = mainTankDgaCsvData.filter(d => {
+    if (!d.serial) return false;
+    const cleanD = String(d.serial).trim();
+    const cleanItem = String(item.serial).trim();
+    const numD = cleanD.replace(/\D/g, '');
+    const numItem = cleanItem.replace(/\D/g, '');
+    return cleanD === cleanItem || cleanD.startsWith(cleanItem) || cleanItem.startsWith(cleanD) || (numD && numItem && numD === numItem);
+  });
+
+  if (dgaMatches.length > 0) {
+    dgaMatches.sort((a, b) => {
+      const dA = new Date(a.date);
+      const dB = new Date(b.date);
+      if (isNaN(dA.getTime())) return 1;
+      if (isNaN(dB.getTime())) return -1;
+      return dB - dA;
+    });
+  }
+
+  const latestDGA = dgaMatches.length > 0 ? dgaMatches[0] : null;
   
   // Helper to color cells
   function colorGasCell(elId, val, limit) {
@@ -2071,13 +2090,13 @@ function parseDgaCSV(text) {
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const row = parseDgaCSVRow(lines[i]);
-    if (row.length === headers.length) {
+    if (row.length >= 2) {
       const obj = {};
       headers.forEach((h, idx) => {
-        obj[h] = row[idx].trim();
+        obj[h] = row[idx] ? row[idx].trim() : '';
       });
-      obj.serial = obj.Serial_No || obj.serial;
-      obj.date = obj.Date || obj.date;
+      obj.serial = obj.Serial_No || obj.serial || obj.Serial || obj.SERIAL_NUMBER || '';
+      obj.date = obj.Date || obj.date || obj.DATE || obj.sampling_date || obj.Sampling_Date || '';
       results.push(obj);
     }
   }
