@@ -1207,6 +1207,9 @@ function openDetail(no) {
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.12'}</td>
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.15'}</td>
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.11'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.10'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.13'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.09'}</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -1217,6 +1220,9 @@ function openDetail(no) {
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '12'}</td>
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '14'}</td>
       <td class="${saClass}">${saVal === 'N/A' ? '-' : '11'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '10'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '13'}</td>
+      <td class="${saClass}">${saVal === 'N/A' ? '-' : '9'}</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
