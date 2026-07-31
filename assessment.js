@@ -1088,7 +1088,6 @@ function openDetail(no) {
   const recEl = document.getElementById('ex-recommendation-text');
   if (recEl) {
     const recText = (item.recommendation && item.recommendation.trim()) ? item.recommendation.trim() : 'No specific recommendation recorded.';
-    recEl.textContent = recText;
 
     const recCardParent = recEl.closest('.excel-card');
     const recCardHeader = recCardParent ? recCardParent.querySelector('.excel-card-header') : null;
@@ -1120,6 +1119,16 @@ function openDetail(no) {
       recEl.style.background = '';
       recEl.style.color = '';
       recEl.style.fontWeight = '';
+    }
+
+    // Format recommendations into list items split by comma
+    const rawItems = recText.split(/,\s*/).map(s => s.trim()).filter(s => s.length > 0);
+    if (rawItems.length > 1) {
+      recEl.innerHTML = '<ul style="margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 4px; list-style-type: disc;">' +
+        rawItems.map(it => `<li>${it}</li>`).join('') +
+        '</ul>';
+    } else {
+      recEl.textContent = recText;
     }
   }
 
