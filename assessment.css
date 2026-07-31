@@ -1762,6 +1762,17 @@ header p {
 .excel-gauge-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 8px 6px;
+}
+
+[data-theme="light"] .excel-gauge-container {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
 .excel-gauge-wrapper {
