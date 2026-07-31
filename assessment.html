@@ -327,15 +327,24 @@
         <div style="display: flex; align-items: center; gap: 12px;">
           <img src="GPSC_logo_ART.png" alt="GPSC Logo" style="height: 28px; background: white; padding: 2px; border-radius: 4px;">
           <div>
-            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: -0.01em; line-height: 1.1;">GPSC's GROUP Transformer Asset Management</h2>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; margin: 0; color: #fff; letter-spacing: -0.01em; line-height: 1.1;">GPSC's GROUP Transformer Asset Management</h2>
             <div style="color: #93c5fd; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; margin-top: 2px;">HV NETWORK MAINTENANCE</div>
           </div>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center; margin-left: auto;">
-          <button class="btn-capture-modal" id="btn-capture-modal" title="Capture Modal as JPG">
-            <i class="fa-solid fa-camera"></i>
+        
+        <!-- Control Bar: Transformer Dropdown, Theme Toggle, Export JPG -->
+        <div style="display: flex; gap: 10px; align-items: center; margin-left: auto;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.8rem; color: #cbd5e1; font-weight: 600;"><i class="fa-solid fa-flask"></i> Transformer:</span>
+            <select id="modal-transformer-select" class="search-select" style="background: #0f172a; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 6px; padding: 5px 10px; font-size: 0.8rem; font-weight: 600; outline: none; cursor: pointer; min-width: 240px;" onchange="onModalTransformerChange(this.value)">
+              <!-- Options dynamically populated -->
+            </select>
+          </div>
+          <button class="btn-action" onclick="toggleTheme()" style="background: rgba(255, 255, 255, 0.12); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-sun" id="theme-icon-modal"></i> Theme</button>
+          <button class="btn-capture-modal" id="btn-capture-modal" title="Export Modal as JPG" style="background: #3b82f6; border-color: #3b82f6; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-file-image"></i> Export JPG
           </button>
-          <button class="modal-close" id="modal-close">&times;</button>
+          <button class="modal-close" id="modal-close" style="margin-left: 4px;">&times;</button>
         </div>
       </div>
       

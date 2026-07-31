@@ -1024,7 +1024,35 @@ function updatePagination(total) {
   container.appendChild(next);
 }
 
-// ============ DETAIL MODAL ============
+// ============ DETAIL MODAL & DYNAMIC SELECTOR ============
+
+function populateModalTransformerDropdown(currentSerial) {
+  const selectEl = document.getElementById('modal-transformer-select');
+  if (!selectEl || !assessmentData || assessmentData.length === 0) return;
+  selectEl.innerHTML = '';
+  assessmentData.forEach(item => {
+    const opt = document.createElement('option');
+    opt.value = item.serial;
+    opt.textContent = `${item.name} (${item.serial})`;
+    selectEl.appendChild(opt);
+  });
+  if (currentSerial) {
+    selectEl.value = currentSerial;
+  }
+}
+
+function onModalTransformerChange(serial) {
+  if (!assessmentData) return;
+  const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+  if (!item) return;
+  
+  // Update URL search param seamlessly without page reload
+  const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(item.serial)}`;
+  window.history.replaceState(null, '', newUrl);
+  
+  // Re-populate Detail view dynamically
+  openDetail(item.no);
+}
 
 function openDetail(no) {
   const item = assessmentData.find(i => i.no === no);
@@ -1040,6 +1068,7 @@ function openDetail(no) {
   }
 
   currentActiveItem = item;
+  populateModalTransformerDropdown(item.serial);
   
   // Status Class Mapper
   function getStatusClass(status) {
