@@ -1007,7 +1007,7 @@ function toggleTheme() {
 }
 
 function openDetailModal(serialNumber) {
-  window.open(`detail.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
+  window.open(`assessment.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
 }
 
 function updateSubscoreBar(id, val, max) {

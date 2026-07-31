@@ -597,7 +597,7 @@ function applySearchFilter() {
 
 // Open Detail Page in New Tab
 function openDetailModal(serialNumber) {
-  window.open(`detail.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
+  window.open(`assessment.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
 }
   const nextPM = tr["Next PM"] || '-';
   const recommendation = tr["Recommendation"] || 'No specific maintenance recommended at this time.';

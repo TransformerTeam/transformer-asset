@@ -52,6 +52,16 @@ function initAssessment() {
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
   setTheme(savedTheme);
   applyFilters();
+
+  // Auto-open Detail modal if serial parameter is present in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const serialParam = urlParams.get('serial');
+  if (serialParam && assessmentData.length > 0) {
+    const target = assessmentData.find(x => x.serial === serialParam || x.serial.startsWith(serialParam) || serialParam.startsWith(x.serial));
+    if (target) {
+      setTimeout(() => openDetail(target.no), 100);
+    }
+  }
 }
 
 function setupListeners() {
@@ -1020,8 +1030,12 @@ function openDetail(no) {
   const item = assessmentData.find(i => i.no === no);
   if (!item) return;
   
-  if (!window.location.pathname.endsWith('detail.html')) {
-    window.open(`detail.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
+  const detailModal = document.getElementById('detail-modal');
+  const isModalActive = detailModal && detailModal.classList.contains('active');
+  const hasUrlSerial = new URLSearchParams(window.location.search).has('serial');
+
+  if (!isModalActive && !hasUrlSerial) {
+    window.open(`assessment.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
     return;
   }
 
