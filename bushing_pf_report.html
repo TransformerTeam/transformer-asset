@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bushing Insulation Power Factor Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #000000;
+      --report-primary: #1e3a8a; /* Navy blue header */
+      --report-accent: #b91c1c;
+    }
+
+    [data-theme="light"] {
+      --bg-dark: #e2e8f0;
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.1);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    .topbar {
+      background: #152e6f;
+      color: #ffffff;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #102456;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-left img {
+      height: 28px;
+      background: #ffffff;
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .topbar-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      margin: 0;
+      color: #ffffff;
+    }
+
+    .topbar-title .subtitle {
+      color: #93c5fd;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .select-transformer {
+      background: rgba(15, 23, 42, 0.7);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      min-width: 220px;
+    }
+
+    .select-transformer option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    /* Report Page Container */
+    .report-container {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    /* Print Paper Container */
+    .report-sheet {
+      background-color: var(--report-bg);
+      color: var(--report-text);
+      width: 210mm;
+      min-height: 297mm;
+      padding: 12mm 15mm;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 9.5px;
+      line-height: 1.25;
+    }
+
+    /* Header Banner */
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--report-primary);
+      padding-bottom: 6px;
+    }
+
+    .sheet-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sheet-header-left img {
+      height: 34px;
+    }
+
+    .sheet-header-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-header-title h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      color: var(--report-primary);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .sheet-header-title span {
+      font-size: 8.5px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .sheet-header-right {
+      text-align: right;
+      font-size: 8.5px;
+      color: #4b5563;
+    }
+
+    /* Standard Tables */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+      margin-bottom: 4px;
+    }
+
+    .report-table th, 
+    .report-table td {
+      border: 1px solid #000000;
+      padding: 2px 4px;
+      vertical-align: middle;
+    }
+
+    .report-table th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    .report-table-navy th {
+      background-color: var(--report-primary) !important;
+      color: #ffffff !important;
+      font-weight: 700;
+    }
+
+    .lbl {
+      background-color: #f8fafc;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .val {
+      color: #000000;
+    }
+
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .font-bold { font-weight: 700 !important; }
+
+    /* Section Title */
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--report-primary);
+      margin-top: 4px;
+      margin-bottom: 2px;
+      border-left: 3px solid var(--report-primary);
+      padding-left: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Status Colors */
+    .status-good { background-color: #dcfce7 !important; color: #15803d !important; font-weight: 700; }
+    .status-fair { background-color: #fef9c3 !important; color: #a16207 !important; font-weight: 700; }
+    .status-poor { background-color: #fee2e2 !important; color: #b91c1c !important; font-weight: 700; }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: none !important;
+        color: #000000 !important;
+      }
+      .topbar {
+        display: none !important;
+      }
+      .report-container {
+        padding: 0 !important;
+      }
+      .report-sheet {
+        box-shadow: none !important;
+        width: 100% !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+      <div class="topbar-title">
+        <h1>Bushing Insulation Power Factor Report</h1>
+        <div class="subtitle">HV NETWORK MAINTENANCE</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 0.78rem; color: #cbd5e1; font-weight: 500;"><i class="fa-solid fa-bolt"></i> Transformer:</span>
+        <select id="select-transformer-serial" class="select-transformer" onchange="switchTransformer(this.value)">
+          <!-- Options populated dynamically -->
+        </select>
+      </div>
+
+      <button class="btn-action" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <i id="theme-icon" class="fa-solid fa-sun"></i> Theme
+      </button>
+
+      <button class="btn-action btn-primary" onclick="exportToJPG()" title="Export Report as JPG Image">
+        <i class="fa-solid fa-camera"></i> Export JPG
+      </button>
+
+      <button class="btn-action btn-primary" onclick="window.print()" title="Print Report">
+        <i class="fa-solid fa-print"></i> Print
+      </button>
+
+      <button class="btn-action" onclick="window.close()" title="Close Tab">
+        <i class="fa-solid fa-xmark"></i> Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Page Container -->
+  <div class="report-container">
+    <div class="report-sheet" id="report-sheet-paper">
+      
+      <!-- Header Banner -->
+      <div class="sheet-header">
+        <div class="sheet-header-left">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+          <div class="sheet-header-title">
+            <h2>TRANSFORMER HEALTH INDEX</h2>
+            <span>GPSC GROUP - HV NETWORK MAINTENANCE</span>
+          </div>
+        </div>
+        <div class="sheet-header-right">
+          <div style="font-size: 13px; font-weight: 700; color: var(--report-primary);">BUSHING INSULATION POWER FACTOR REPORT</div>
+          <div id="report-doc-date">Date of Test: -</div>
+        </div>
+      </div>
+
+      <!-- Equipment Information Table -->
+      <div class="section-title">1. Equipment Information</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <td class="lbl" style="width: 15%;">Equipment Name</td>
+            <td class="val font-bold" id="eq-name" style="width: 35%;">-</td>
+            <td class="lbl" style="width: 15%;">Site / Substation</td>
+            <td class="val" id="eq-site" style="width: 35%;">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td>
+            <td class="val font-bold" id="eq-serial">-</td>
+            <td class="lbl">Power Rating</td>
+            <td class="val" id="eq-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Device Code</td>
+            <td class="val" id="eq-code">-</td>
+            <td class="lbl">Voltage Rating</td>
+            <td class="val" id="eq-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacturer</td>
+            <td class="val" id="eq-manufacture">-</td>
+            <td class="lbl">Fluid / Insulation</td>
+            <td class="val" id="eq-fluid">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Test Information Header Table -->
+      <div class="section-title">2. Test Information</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <td class="lbl" style="width: 15%;">Date of Test</td>
+            <td class="val" id="test-date" style="width: 35%;">-</td>
+            <td class="lbl" style="width: 15%;">Test Instrument</td>
+            <td class="val" id="test-instrument" style="width: 35%;">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Work Order / Tag</td>
+            <td class="val" id="test-wo">-</td>
+            <td class="lbl">Instrument Serial</td>
+            <td class="val" id="test-inst-serial">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Ambient Temp (°C)</td>
+            <td class="val" id="test-ambient-temp">-</td>
+            <td class="lbl">Oil Temp (°C)</td>
+            <td class="val" id="test-oil-temp">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Humidity (%)</td>
+            <td class="val" id="test-humidity">-</td>
+            <td class="lbl">Winding Temp (°C)</td>
+            <td class="val" id="test-winding-temp">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Bushing Nameplate Information (From BushingInfo.csv) -->
+      <div class="section-title">3. Bushing Nameplate Information (BushingInfo)</div>
+      <table class="report-table">
+        <thead>
+          <tr class="report-table-navy">
+            <th style="width: 10%;">Phase</th>
+            <th style="width: 16%;">Bushing Serial</th>
+            <th style="width: 14%;">Manufacturer</th>
+            <th style="width: 8%;">Year</th>
+            <th style="width: 16%;">Model / Type</th>
+            <th style="width: 9%;">Rating (kV/A)</th>
+            <th style="width: 9%;">Nameplate C1 (pF)</th>
+            <th style="width: 9%;">Nameplate %PF C1</th>
+            <th style="width: 9%;">Nameplate C2 (pF)</th>
+          </tr>
+        </thead>
+        <tbody id="bushing-nameplate-body">
+          <!-- Dynamically populated from BushingInfo.csv -->
+        </tbody>
+      </table>
+
+      <!-- Bushing Power Factor Test Results (From BushingPFData.csv) -->
+      <div class="section-title">
+        <span>4. Bushing Power Factor & Capacitance Test Results (BushingPFData)</span>
+        <span style="font-size: 8.5px; font-weight: normal; color: #475569;">Reference Standard: IEEE C57.152 / CIGRE</span>
+      </div>
+
+      <!-- C1 Insulation Power Factor Table -->
+      <table class="report-table">
+        <thead>
+          <tr class="report-table-navy">
+            <th colspan="9" style="text-align: left; padding-left: 8px;">Main Insulation C1 Test Results</th>
+          </tr>
+          <tr>
+            <th style="width: 10%;">Phase</th>
+            <th style="width: 10%;">Test Voltage (kV)</th>
+            <th style="width: 12%;">Current (mA)</th>
+            <th style="width: 12%;">Power (mW)</th>
+            <th style="width: 13%;">Measured C1 (pF)</th>
+            <th style="width: 11%;">Meas. %PF</th>
+            <th style="width: 11%;">Corr. %PF @20°C</th>
+            <th style="width: 11%;">ΔC1 vs NP (%)</th>
+            <th style="width: 10%;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="bushing-c1-results-body">
+          <!-- Dynamically populated from BushingPFData.csv -->
+        </tbody>
+      </table>
+
+      <!-- C2 Insulation Power Factor Table -->
+      <table class="report-table">
+        <thead>
+          <tr class="report-table-navy">
+            <th colspan="9" style="text-align: left; padding-left: 8px;">Tap Insulation C2 Test Results</th>
+          </tr>
+          <tr>
+            <th style="width: 10%;">Phase</th>
+            <th style="width: 10%;">Test Voltage (kV)</th>
+            <th style="width: 12%;">Current (mA)</th>
+            <th style="width: 12%;">Power (mW)</th>
+            <th style="width: 13%;">Measured C2 (pF)</th>
+            <th style="width: 11%;">Meas. %PF</th>
+            <th style="width: 11%;">Corr. %PF @20°C</th>
+            <th style="width: 11%;">ΔC2 vs NP (%)</th>
+            <th style="width: 10%;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="bushing-c2-results-body">
+          <!-- Dynamically populated from BushingPFData.csv -->
+        </tbody>
+      </table>
+
+      <!-- Evaluation Criteria Reference Section -->
+      <div class="section-title">5. Bushing Evaluation Criteria (IEEE C57.152-2013)</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Insulation Type</th>
+            <th style="width: 23%;">Good (Normal)</th>
+            <th style="width: 23%;">Acceptable (Caution)</th>
+            <th style="width: 24%;">Investigate (Critical)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Oil-Impregnated Paper (OIP) %PF @20°C</td>
+            <td class="text-center status-good">&lt; 0.50 %</td>
+            <td class="text-center status-fair">0.50 - 1.00 %</td>
+            <td class="text-center status-poor">&gt; 1.00 %</td>
+          </tr>
+          <tr>
+            <td class="lbl">Resin-Impregnated Paper (RIP) %PF @20°C</td>
+            <td class="text-center status-good">&lt; 0.70 %</td>
+            <td class="text-center status-fair">0.70 - 1.00 %</td>
+            <td class="text-center status-poor">&gt; 1.00 %</td>
+          </tr>
+          <tr>
+            <td class="lbl">Capacitance Change ΔC1 / ΔC2 vs Nameplate</td>
+            <td class="text-center status-good">Within ± 5.0 %</td>
+            <td class="text-center status-fair">± 5.0 - 10.0 %</td>
+            <td class="text-center status-poor">&gt; ± 10.0 %</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Signatures & Approval Section -->
+      <div class="section-title" style="margin-top: 6px;">6. Signatures & Approval</div>
+      <table class="report-table">
+        <thead>
+          <tr style="background-color: #1e3a8a; color: #ffffff;">
+            <th style="width: 20%; background-color: #1e3a8a; color: #ffffff;">Response</th>
+            <th style="width: 26.6%; background-color: #1e3a8a; color: #ffffff;">Tested By</th>
+            <th style="width: 26.6%; background-color: #1e3a8a; color: #ffffff;">Review By</th>
+            <th style="width: 26.6%; background-color: #1e3a8a; color: #ffffff;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val text-center font-bold" id="sig-tested-name">-</td>
+            <td class="val text-center font-bold" id="sig-review-name">-</td>
+            <td class="val text-center font-bold" id="sig-approved-name">Mr. Jirasak Suksakun</td>
+          </tr>
+          <tr>
+            <td class="lbl">Company / Department</td>
+            <td class="val text-center" id="sig-tested-comp">Hitachi Energy / TIS</td>
+            <td class="val text-center" id="sig-review-comp">GPSC HV Maintenance</td>
+            <td class="val text-center">GPSC HV Maintenance</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="height: 32px;">Signature</td>
+            <td class="val text-center" style="vertical-align: bottom; font-style: italic; color: #475569;">[ Signed ]</td>
+            <td class="val text-center" style="vertical-align: bottom; font-style: italic; color: #475569;">[ Signed ]</td>
+            <td class="val text-center" style="vertical-align: bottom; font-style: italic; color: #475569;">[ Signed ]</td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val text-center" id="sig-tested-date">-</td>
+            <td class="val text-center" id="sig-review-date">-</td>
+            <td class="val text-center" id="sig-approved-date">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- Data Scripts -->
+  <script src="health_data.js"></script>
+  <script src="data.js"></script>
+
+  <script>
+    let bushingInfoList = [];
+    let bushingPfDataList = [];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Initialize theme
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Fetch BushingInfo.csv and BushingPFData.csv
+      try {
+        const [infoResp, pfResp] = await Promise.all([
+          fetch('TestData/BushingInfo.csv'),
+          fetch('TestData/BushingPFData.csv')
+        ]);
+
+        if (infoResp.ok) {
+          const infoText = await infoResp.text();
+          bushingInfoList = parseCSV(infoText);
+        }
+
+        if (pfResp.ok) {
+          const pfText = await pfResp.text();
+          bushingPfDataList = parseCSV(pfText);
+        }
+      } catch (e) {
+        console.error("Failed to load Bushing CSV databases", e);
+      }
+
+      // Populate Dropdown
+      const selectEl = document.getElementById('select-transformer-serial');
+      if (selectEl && typeof assessmentData !== 'undefined') {
+        selectEl.innerHTML = '';
+        assessmentData.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = `${item.name} (${item.serial})`;
+          selectEl.appendChild(opt);
+        });
+      }
+
+      // Get Serial from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      let serial = urlParams.get('serial');
+      if (!serial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+        serial = assessmentData[0].serial;
+      }
+
+      if (serial) {
+        if (selectEl) selectEl.value = serial;
+        renderBushingReport(serial);
+      }
+    });
+
+    function switchTransformer(serial) {
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      renderBushingReport(serial);
+    }
+
+    // CSV Parser
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim());
+      const results = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const row = parseCSVRow(lines[i]);
+        if (row.length >= 2) {
+          const obj = {};
+          headers.forEach((h, idx) => {
+            obj[h] = row[idx] ? row[idx].trim() : '';
+          });
+          results.push(obj);
+        }
+      }
+      return results;
+    }
+
+    function parseCSVRow(rowStr) {
+      const result = [];
+      let insideQuotes = false;
+      let entry = '';
+      for (let i = 0; i < rowStr.length; i++) {
+        const char = rowStr[i];
+        if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+          result.push(entry.trim());
+          entry = '';
+        } else {
+          entry += char;
+        }
+      }
+      result.push(entry.trim());
+      return result;
+    }
+
+    function renderBushingReport(serial) {
+      // 1. Render Equipment Info from assessmentData / health_data.js
+      let item = null;
+      if (typeof assessmentData !== 'undefined') {
+        item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+      }
+
+      if (item) {
+        document.getElementById('eq-name').textContent = item.name || '-';
+        document.getElementById('eq-site').textContent = item.site || '-';
+        document.getElementById('eq-serial').textContent = item.serial || '-';
+        document.getElementById('eq-power').textContent = item.power || '-';
+        document.getElementById('eq-code').textContent = item.code || '-';
+        document.getElementById('eq-voltage').textContent = item.voltage || '-';
+        document.getElementById('eq-manufacture').textContent = item.manufacture || '-';
+        document.getElementById('eq-fluid').textContent = item.fluid || 'Mineral Oil';
+      }
+
+      // 2. Filter BushingInfo records matching transformer serial
+      const infoRecords = bushingInfoList.filter(b => {
+        const pSerial = b.Parent_Serial_No || b.parent_serial_no || '';
+        return pSerial === serial || pSerial.startsWith(serial) || serial.startsWith(pSerial) || pSerial.includes(serial.replace(/\D/g, ''));
+      });
+
+      const nameplateBody = document.getElementById('bushing-nameplate-body');
+      nameplateBody.innerHTML = '';
+
+      if (infoRecords.length > 0) {
+        infoRecords.forEach(rec => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="text-center font-bold">${rec.Phase || '-'}</td>
+            <td class="text-center font-bold">${rec.Serial_No || '-'}</td>
+            <td class="text-center">${rec.Manufacturer || '-'}</td>
+            <td class="text-center">${rec.Manufacturer_Year || '-'}</td>
+            <td class="text-center">${rec.Model || '-'} ${rec.Type ? '(' + rec.Type + ')' : ''}</td>
+            <td class="text-center">${rec.kV || '-'} kV / ${rec.mA || '-'} A</td>
+            <td class="text-center font-bold">${rec.Capacitance_C1 || '-'}</td>
+            <td class="text-center font-bold">${rec.Meas_PF_C1 || rec.Corr_PF || '-'} %</td>
+            <td class="text-center">${rec.Capacitance_C2 || '-'}</td>
+          `;
+          nameplateBody.appendChild(tr);
+        });
+      } else {
+        nameplateBody.innerHTML = `<tr><td colspan="9" class="text-center" style="color: #94a3b8; padding: 8px;">No Bushing Nameplate records found for Serial: ${serial}</td></tr>`;
+      }
+
+      // 3. Filter BushingPFData test records matching transformer serial
+      const pfRecords = bushingPfDataList.filter(d => {
+        const s = d.serial || d.Serial || '';
+        return s === serial || s.startsWith(serial) || serial.startsWith(s) || s.includes(serial.replace(/\D/g, ''));
+      });
+
+      // Sort by Date descending
+      pfRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const latestTest = pfRecords.length > 0 ? pfRecords[0] : null;
+
+      if (latestTest) {
+        document.getElementById('report-doc-date').textContent = `Date of Test: ${latestTest.date || '-'}`;
+        document.getElementById('test-date').textContent = latestTest.date || '-';
+        document.getElementById('test-instrument').textContent = latestTest.test_instrument || 'TESTRANO 600';
+        document.getElementById('test-wo').textContent = latestTest.test_NO || '-';
+        document.getElementById('test-inst-serial').textContent = latestTest.serial_instrument || '-';
+        document.getElementById('test-ambient-temp').textContent = latestTest.ambient_temp || '-';
+        document.getElementById('test-oil-temp').textContent = latestTest.oil_temp || '-';
+        document.getElementById('test-humidity').textContent = latestTest.humidity || '-';
+        document.getElementById('test-winding-temp').textContent = latestTest.winding_temp || '-';
+
+        document.getElementById('sig-tested-name').textContent = latestTest.test_name || '-';
+        document.getElementById('sig-review-name').textContent = latestTest.witness_name || '-';
+        document.getElementById('sig-tested-date').textContent = latestTest.date || '-';
+        document.getElementById('sig-review-date').textContent = latestTest.date || '-';
+        document.getElementById('sig-approved-date').textContent = latestTest.date || '-';
+
+        // Render C1 and C2 Test Results Table
+        renderC1Table(latestTest, infoRecords);
+        renderC2Table(latestTest, infoRecords);
+      } else {
+        document.getElementById('report-doc-date').textContent = 'Date of Test: -';
+        document.getElementById('test-date').textContent = '-';
+        document.getElementById('bushing-c1-results-body').innerHTML = `<tr><td colspan="9" class="text-center" style="color: #94a3b8; padding: 8px;">No Bushing PF test results found for Serial: ${serial}</td></tr>`;
+        document.getElementById('bushing-c2-results-body').innerHTML = `<tr><td colspan="9" class="text-center" style="color: #94a3b8; padding: 8px;">No Bushing PF test results found for Serial: ${serial}</td></tr>`;
+      }
+    }
+
+    function renderC1Table(test, infoRecords) {
+      const c1Body = document.getElementById('bushing-c1-results-body');
+      c1Body.innerHTML = '';
+
+      const phases = [
+        { key: 'h1', label: 'H1 (HV Phase A)', capKey: 'bushing_h1_c1', maKey: 'bushing_h1_c1_ma', wattKey: 'bushing_h1_watt', pfKey: 'bushing_h1_pf_tan', pf20Key: 'bushing_h1_pf_20c' },
+        { key: 'h2', label: 'H2 (HV Phase B)', capKey: 'bushing_h2_c1', maKey: 'bushing_h2_c1_ma', wattKey: 'bushing_h2_watt', pfKey: 'bushing_h2_pf_tan', pf20Key: 'bushing_h2_pf_20c' },
+        { key: 'h3', label: 'H3 (HV Phase C)', capKey: 'bushing_h3_c1', maKey: 'bushing_h3_ma', wattKey: 'bushing_h3_watt', pfKey: 'bushing_h3_pf_tan', pf20Key: 'bushing_h3_pf_20c' },
+        { key: 'h0', label: 'H0 (HV Neutral)', capKey: 'bushing_h0_cap', maKey: 'bushing_h0_ma', wattKey: 'bushing_h0_watt', pfKey: 'bushing_h0_pf_tan', pf20Key: 'bushing_h0_pf_20c' },
+        { key: 'l1', label: 'X1 / L1 (LV Phase A)', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma', wattKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c' },
+        { key: 'l2', label: 'X2 / L2 (LV Phase B)', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma', wattKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c' },
+        { key: 'l3', label: 'X3 / L3 (LV Phase C)', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma', wattKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c' }
+      ];
+
+      const c1Kv = test.bushing_c1kv || '10';
+
+      phases.forEach(p => {
+        const cap = parseFloat(test[p.capKey] || 0);
+        const ma = parseFloat(test[p.maKey] || 0);
+        const watt = parseFloat(test[p.wattKey] || 0);
+        const pf = parseFloat(test[p.pfKey] || 0);
+        const pf20 = parseFloat(test[p.pf20Key] || pf || 0);
+
+        if (cap > 0 || ma > 0 || pf > 0) {
+          // Find matching nameplate capacitance from infoRecords
+          const matchInfo = infoRecords.find(i => (i.Phase || '').toUpperCase() === p.key.toUpperCase() || (i.Phase || '').toUpperCase().includes(p.key.toUpperCase()));
+          const npCap = matchInfo ? parseFloat(matchInfo.Capacitance_C1 || 0) : 0;
+          let capDev = '-';
+          if (npCap > 0 && cap > 0) {
+            capDev = (((cap - npCap) / npCap) * 100).toFixed(2);
+            capDev = (capDev > 0 ? '+' : '') + capDev + '%';
+          }
+
+          let statusText = 'Good';
+          let statusClass = 'status-good';
+
+          if (pf20 > 1.0) {
+            statusText = 'Investigate';
+            statusClass = 'status-poor';
+          } else if (pf20 > 0.5) {
+            statusText = 'Acceptable';
+            statusClass = 'status-fair';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="lbl font-bold text-center">${p.label}</td>
+            <td class="text-center">${c1Kv}</td>
+            <td class="text-center">${ma > 0 ? ma.toFixed(3) : '-'}</td>
+            <td class="text-center">${watt > 0 ? watt.toFixed(2) : '-'}</td>
+            <td class="text-center font-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
+            <td class="text-center">${pf > 0 ? pf.toFixed(3) : '-'} %</td>
+            <td class="text-center font-bold">${pf20 > 0 ? pf20.toFixed(3) : '-'} %</td>
+            <td class="text-center">${capDev}</td>
+            <td class="text-center ${statusClass}">${statusText}</td>
+          `;
+          c1Body.appendChild(tr);
+        }
+      });
+
+      if (c1Body.children.length === 0) {
+        c1Body.innerHTML = `<tr><td colspan="9" class="text-center" style="color: #94a3b8; padding: 8px;">No C1 test data recorded</td></tr>`;
+      }
+    }
+
+    function renderC2Table(test, infoRecords) {
+      const c2Body = document.getElementById('bushing-c2-results-body');
+      c2Body.innerHTML = '';
+
+      const phases = [
+        { key: 'h1', label: 'H1 (HV Phase A)', capKey: 'bushing_h1_c2', maKey: 'bushing_h1_c2_ma', wattKey: 'bushing_h1_c2_watt', pfKey: 'bushing_h1_c2_pf_tan', pf20Key: 'bushing_h1_c2_pf_20c' },
+        { key: 'h2', label: 'H2 (HV Phase B)', capKey: 'bushing_h2_c2', maKey: 'bushing_h2_c2_ma', wattKey: 'bushing_h2_c2_watt', pfKey: 'bushing_h2_c2_pf_tan', pf20Key: 'bushing_h2_c2_pf_20c' },
+        { key: 'h3', label: 'H3 (HV Phase C)', capKey: 'bushing_h3_c2', maKey: 'bushing_h3_c2_ma', wattKey: 'bushing_h3_c2_watt', pfKey: 'bushing_h3_c2_pf_tan', pf20Key: 'bushing_h3_c2_pf_20c' },
+        { key: 'h0', label: 'H0 (HV Neutral)', capKey: 'bushing_h0_c2', maKey: 'bushing_h0_c2_ma', wattKey: 'bushing_h0_c2_watt', pfKey: 'bushing_h0_c2_pf_tan', pf20Key: 'bushing_h0_c2_pf_20c' },
+        { key: 'l1', label: 'X1 / L1 (LV Phase A)', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma', wattKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c' },
+        { key: 'l2', label: 'X2 / L2 (LV Phase B)', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma', wattKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c' },
+        { key: 'l3', label: 'X3 / L3 (LV Phase C)', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma', wattKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c' }
+      ];
+
+      const c2Kv = test.bushing_c2kv || '0.5';
+
+      phases.forEach(p => {
+        const cap = parseFloat(test[p.capKey] || 0);
+        const ma = parseFloat(test[p.maKey] || 0);
+        const watt = parseFloat(test[p.wattKey] || 0);
+        const pf = parseFloat(test[p.pfKey] || 0);
+        const pf20 = parseFloat(test[p.pf20Key] || pf || 0);
+
+        if (cap > 0 || ma > 0 || pf > 0) {
+          const matchInfo = infoRecords.find(i => (i.Phase || '').toUpperCase() === p.key.toUpperCase() || (i.Phase || '').toUpperCase().includes(p.key.toUpperCase()));
+          const npCap = matchInfo ? parseFloat(matchInfo.Capacitance_C2 || 0) : 0;
+          let capDev = '-';
+          if (npCap > 0 && cap > 0) {
+            capDev = (((cap - npCap) / npCap) * 100).toFixed(2);
+            capDev = (capDev > 0 ? '+' : '') + capDev + '%';
+          }
+
+          let statusText = 'Good';
+          let statusClass = 'status-good';
+
+          if (pf20 > 1.0) {
+            statusText = 'Investigate';
+            statusClass = 'status-poor';
+          } else if (pf20 > 0.5) {
+            statusText = 'Acceptable';
+            statusClass = 'status-fair';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="lbl font-bold text-center">${p.label}</td>
+            <td class="text-center">${c2Kv}</td>
+            <td class="text-center">${ma > 0 ? ma.toFixed(3) : '-'}</td>
+            <td class="text-center">${watt > 0 ? watt.toFixed(2) : '-'}</td>
+            <td class="text-center font-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
+            <td class="text-center">${pf > 0 ? pf.toFixed(3) : '-'} %</td>
+            <td class="text-center font-bold">${pf20 > 0 ? pf20.toFixed(3) : '-'} %</td>
+            <td class="text-center">${capDev}</td>
+            <td class="text-center ${statusClass}">${statusText}</td>
+          `;
+          c2Body.appendChild(tr);
+        }
+      });
+
+      if (c2Body.children.length === 0) {
+        c2Body.innerHTML = `<tr><td colspan="9" class="text-center" style="color: #94a3b8; padding: 8px;">No C2 test data recorded</td></tr>`;
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    function exportToJPG() {
+      const paper = document.getElementById('report-sheet-paper');
+      html2canvas(paper, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0a0f1d' : '#e2e8f0'
+      }).then(canvas => {
+        const serial = document.getElementById('eq-serial').textContent || 'Report';
+        const link = document.createElement('a');
+        link.download = `Bushing_Power_Factor_Report_${serial}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
