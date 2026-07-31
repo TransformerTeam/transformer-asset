@@ -1106,8 +1106,8 @@ function openDetail(no) {
       }
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       recEl.style.setProperty('background', isDark ? 'rgba(249, 115, 22, 0.22)' : '#fff7ed', 'important');
-      recEl.style.setProperty('color', isDark ? '#ffedd5' : '#7c2d12', 'important');
-      recEl.style.setProperty('font-weight', '700', 'important');
+      recEl.style.setProperty('color', isDark ? '#ffedd5' : '#0f172a', 'important');
+      recEl.style.setProperty('font-weight', isDark ? '600' : '400', 'important');
     } else {
       if (recCardParent) {
         recCardParent.style.border = '';

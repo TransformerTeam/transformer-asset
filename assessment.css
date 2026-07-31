@@ -1804,9 +1804,9 @@ header p {
 }
 
 [data-theme="light"] #ex-recommendation-text {
-  color: #7c2d12 !important;
+  color: #0f172a !important;
   background: #fff7ed !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
 }
 
 /* Gauge styling */
