@@ -1104,9 +1104,10 @@ function openDetail(no) {
         recCardHeader.style.setProperty('background', 'linear-gradient(135deg, #ea580c, #c2410c)', 'important');
         recCardHeader.style.setProperty('color', '#ffffff', 'important');
       }
-      recEl.style.setProperty('background', 'rgba(249, 115, 22, 0.18)', 'important');
-      recEl.style.setProperty('color', '#ffedd5', 'important');
-      recEl.style.setProperty('font-weight', '600', 'important');
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      recEl.style.setProperty('background', isDark ? 'rgba(249, 115, 22, 0.22)' : '#fff7ed', 'important');
+      recEl.style.setProperty('color', isDark ? '#ffedd5' : '#7c2d12', 'important');
+      recEl.style.setProperty('font-weight', '700', 'important');
     } else {
       if (recCardParent) {
         recCardParent.style.border = '';
