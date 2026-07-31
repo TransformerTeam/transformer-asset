@@ -1707,7 +1707,7 @@ header p {
   grid-template-columns: 200px 1fr;
   gap: 12px;
   align-items: stretch;
-  min-height: 110px;
+  height: 330px;
 }
 
 .excel-model-container {
