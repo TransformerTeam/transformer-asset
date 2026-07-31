@@ -695,72 +695,73 @@
       </div>
 
       <!-- Criteria & Legend -->
-      <div class="criteria-container">
-        <!-- Power Factor Criteria -->
-        <div class="criteria-box">
-          <div class="criteria-title">Criteria: IEEE C57.152-2013 (% Power Factor at 20 °C)</div>
-          <table style="width:100%; font-size:9px; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom:1px solid #ddd;">
-                <th style="padding:3px; text-align:left;">Insulation Type</th>
-                <th colspan="3" style="padding:3px; text-align:center;">% Power Factor at 20 °C</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background-color:#f9fafb; font-weight:700; text-align:center; border-bottom:1px solid #eee;">
-                <td style="text-align:left; padding:3px;">Bushing Type</td>
-                <td style="padding:3px; color:#375623;">Good</td>
-                <td style="padding:3px; color:#b79500;">Acceptable</td>
-                <td style="padding:3px; color:#cc0000;">Investigate</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:3px;">OIP — Oil Impregnated Paper</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 0.50%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">0.50 – 1.00%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 1.00%</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:3px;">RIP — Resin Impregnated Paper</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 0.70%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">0.70 – 1.00%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 1.00%</td>
-              </tr>
-              <tr>
-                <td style="padding:3px;">Epoxy Resin / Dry Type</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 2.00%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">2.00 – 5.00%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 5.00%</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Capacitance Criteria -->
-        <div class="criteria-box">
-          <div class="criteria-title">Criteria: Bushing Capacitance Change (ΔC vs Nameplate)</div>
-          <table style="width:100%; font-size:9px; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom:1px solid #ddd;">
-                <th style="padding:3px; text-align:left; width:40%;">% Change</th>
-                <th style="padding:3px; text-align:center;">Interpreted</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="text-align:center; padding:4px; font-weight:700;">Within ± 5%</td>
-                <td class="color-cell status-normal" style="padding:4px;">Normal</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="text-align:center; padding:4px; font-weight:700;">± 5% – 10%</td>
-                <td class="color-cell status-questionable" style="padding:4px;">Questionable</td>
-              </tr>
-              <tr>
-                <td style="text-align:center; padding:4px; font-weight:700;">&gt; ± 10%</td>
-                <td class="color-cell status-danger" style="padding:4px;">Should not be returned to service</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="criteria-title" style="border-bottom:1px solid #bdc3c7; padding-bottom:4px; margin-top:14px; margin-bottom:6px;">Criteria:</div>
+      <div class="criteria-box" style="border:1px solid #bdc3c7; border-radius:4px; padding:6px; margin-top:0;">
+        <table style="width:100%; font-size:8.5px; border-collapse: collapse; text-align: center;">
+          <thead>
+            <tr style="background-color:#1e3a8a; color:#ffffff;">
+              <th rowspan="2" style="padding:4px 6px; text-align:left; width:9%;">Bushing<br>Type</th>
+              <th colspan="2" style="padding:4px 6px; border-left:1px solid #fff;">IEEEC57.152-2013</th>
+              <th colspan="2" style="padding:4px 6px; border-left:1px solid #fff;">ABB</th>
+              <th colspan="2" style="padding:4px 6px; border-left:1px solid #fff;">TRENCH</th>
+              <th colspan="2" style="padding:4px 6px; border-left:1px solid #fff;">PASSONI VILLA</th>
+              <th colspan="2" style="padding:4px 6px; border-left:1px solid #fff;">MGC</th>
+            </tr>
+            <tr style="background-color:#e5e7eb; color:#0f172a; font-weight:700;">
+              <th style="padding:3px 4px; border-left:1px solid #9ca3af; width:9%;">Error %PF<br>(C1)</th>
+              <th style="padding:3px 4px; width:9%;">Error Cap<br>(C1)</th>
+              <th style="padding:3px 4px; border-left:1px solid #9ca3af; width:9%;">Error %PF<br>(C1)</th>
+              <th style="padding:3px 4px; width:9%;">Error Cap<br>(C1)</th>
+              <th style="padding:3px 4px; border-left:1px solid #9ca3af; width:9%;">Error %PF<br>(C1)</th>
+              <th style="padding:3px 4px; width:9%;">Error Cap<br>(C1)</th>
+              <th style="padding:3px 4px; border-left:1px solid #9ca3af; width:9%;">Error %PF<br>(C1)</th>
+              <th style="padding:3px 4px; width:9%;">Error Cap<br>(C1)</th>
+              <th style="padding:3px 4px; border-left:1px solid #9ca3af; width:9%;">Error %PF<br>(C1)</th>
+              <th style="padding:3px 4px; width:9%;">Error Cap<br>(C1)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #e5e7eb;">
+              <td style="text-align:left; font-weight:700; padding:3px 6px; background:#f9fafb;">OIP</td>
+              <td style="padding:3px;">1.5-2 time</td>
+              <td style="padding:3px;">&lt;5%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt;75%</td>
+              <td style="padding:3px;">&lt;3%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">Double</td>
+              <td style="padding:3px;">&lt;110%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e5e7eb; background:#f9fafb;">
+              <td style="text-align:left; font-weight:700; padding:3px 6px;">RIP</td>
+              <td style="padding:3px;">1.5-2 time</td>
+              <td style="padding:3px;">&lt;5%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt;75%</td>
+              <td style="padding:3px;">&lt;3%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt;30%</td>
+              <td style="padding:3px;">&lt;1%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt;10%</td>
+              <td style="padding:3px;">&lt; 0.7%</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; font-weight:700; padding:3px 6px; background:#f9fafb;">RIS</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb; color:#9ca3af;">-</td>
+              <td style="padding:3px; color:#9ca3af;">-</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Trending Section (screen only) -->
