@@ -562,6 +562,9 @@
       if (serialParam) {
         if (selectEl) selectEl.value = serialParam;
         loadDetailBySerial(serialParam);
+        setTimeout(() => {
+          loadDetailBySerial(serialParam);
+        }, 150);
       }
     });
 

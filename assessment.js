@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(r => r.text())
     .then(txt => {
       mainTankDgaCsvData = parseDgaCSV(txt);
+      if (currentActiveItem && typeof openDetail === 'function') {
+        openDetail(currentActiveItem.no);
+      }
     })
     .catch(e => console.error("Failed to load MainTankOilData.csv", e));
 
@@ -43,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(r => r.text())
     .then(txt => {
       piCsvData = parseDgaCSV(txt);
+      if (currentActiveItem && typeof openDetail === 'function') {
+        openDetail(currentActiveItem.no);
+      }
     })
     .catch(e => console.error("Failed to load PIData.csv", e));
 });
