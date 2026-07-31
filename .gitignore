@@ -1,7 +1,30 @@
-.git-portable/
+# ZIP exports
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Agent files
 .agents/
 .gemini/
-*.zip
-*.log
+
+# Portable Git (do not commit)
+.git-portable/
+
+# Dev/scratch scripts
+scratch/
 serve.ps1
-START_SERVER.bat
+serve.py
+start_internet_server.bat
+start_internet_server.ps1
+cloudflared.exe
+convert_to_aspx.ps1
+deploy-github.bat
+update_health_data.ps1
+update_health_data.py
+config.yml

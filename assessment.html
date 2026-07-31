@@ -15,12 +15,23 @@
   <!-- ApexCharts -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
   <!-- Assessment Styles -->
   <link rel="stylesheet" href="assessment.css">
 </head>
 <body>
 
   <div class="app-container">
+    <!-- Top Marquee -->
+    <div class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+      </div>
+    </div>
+
     <!-- Header -->
     <header>
       <div class="header-title-section">
@@ -32,7 +43,6 @@
       </div>
       <div class="header-actions">
         <button class="btn" id="btn-export-report"><i class="fa-solid fa-file-export"></i> Export Report</button>
-        <button class="btn btn-primary" id="btn-export-pptx" style="background-color: #d24726; border-color: #d24726; color: #ffffff;"><i class="fa-solid fa-file-powerpoint"></i> Export PPTX</button>
         <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
           <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
           <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
@@ -58,55 +68,12 @@
         <a href="dashboard.html" class="sidebar-nav-btn">
           <i class="fa-solid fa-heart-pulse"></i> <span class="nav-label">Health Index</span>
         </a>
-        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed; display: none;">
           <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation</span>
         </button>
       </aside>
 
-      <!-- Main Content Area -->
       <main class="scada-content">
-
-    <!-- Filters -->
-    <section class="filters-card">
-      <div class="filters-grid">
-        <div class="filter-group">
-          <label for="filter-site">Site</label>
-          <select id="filter-site" class="filter-select">
-            <option value="all">All Sites</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filter-service">Service Type</label>
-          <select id="filter-service" class="filter-select">
-            <option value="all">All Types</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filter-health-status">Health Status</label>
-          <select id="filter-health-status" class="filter-select">
-            <option value="all">All Statuses</option>
-            <option value="Healthy">Healthy (≥80)</option>
-            <option value="Monitoring">Monitoring (70-79)</option>
-            <option value="Warning">Warning (50-69)</option>
-            <option value="Critical">Critical (<50)</option>
-            <option value="No Assess">No Assess (=0)</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filter-param">Parameter Alert</label>
-          <select id="filter-param" class="filter-select">
-            <option value="all">All Parameters</option>
-            <option value="has-U">Has Unacceptable (U)</option>
-            <option value="has-Q">Has Questionable (Q)</option>
-            <option value="all-A">All Acceptable (A)</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="search-box">Search</label>
-          <input type="text" id="search-box" class="filter-select" placeholder="Name, Serial No...">
-        </div>
-      </div>
-    </section>
 
     <!-- KPI Summary -->
     <section class="kpi-grid">
@@ -170,37 +137,97 @@
         <div class="kpi-info">
           <h3>Critical</h3>
           <div class="kpi-value text-danger" id="kpi-critical">0</div>
-          <div class="kpi-sub">HI < 50%</div>
+          <div class="kpi-sub">HI &lt; 50%</div>
         </div>
         <div class="kpi-icon"><i class="fa-solid fa-radiation"></i></div>
       </div>
     </section>
 
+    <!-- Filters -->
+    <section class="filters-card">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="filter-site">Site</label>
+          <select id="filter-site" class="filter-select">
+            <option value="all">All Sites</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-service">Service Type</label>
+          <select id="filter-service" class="filter-select">
+            <option value="all">All Types</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-health-status">Health Status</label>
+          <select id="filter-health-status" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="Healthy">Healthy (>= 80)</option>
+            <option value="Monitoring">Monitoring (70-79)</option>
+            <option value="Warning">Warning (50-69)</option>
+            <option value="Critical">Critical (<50)</option>
+            <option value="No Assess">No Assess (=0)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-param">Parameter Alert</label>
+          <select id="filter-param" class="filter-select">
+            <option value="all">All Parameters</option>
+            <option value="has-U">Has Unacceptable (U)</option>
+            <option value="has-Q">Has Questionable (Q)</option>
+            <option value="all-A">All Acceptable (A)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="search-box">Search</label>
+          <input type="text" id="search-box" class="filter-select" placeholder="Name, Serial No...">
+        </div>
+      </div>
+    </section>
+
     <!-- Charts Section -->
     <div class="charts-grid">
-      <section class="dashboard-card">
+      <section class="dashboard-card" style="position: relative;">
         <div class="card-header">
           <h2><i class="fa-solid fa-chart-pie"></i> Health Status Distribution</h2>
         </div>
-        <div id="chart-health-dist"></div>
+        <!-- Stats overlay inside the chart container at the top left -->
+        <div id="health-dist-stats" style="position: absolute; top: 68px; left: 24px; font-size: 11px; font-weight: 500; color: var(--text-sub); display: flex; flex-direction: column; gap: 4px; z-index: 10; pointer-events: none; background: rgba(10, 15, 29, 0.6); padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(4px);">
+          <span>Assessed: <strong id="stat-assessed-val" style="color: #10b981;">-</strong></span>
+          <span>Non-Assessed: <strong id="stat-non-assessed-val" style="color: #94a3b8;">-</strong></span>
+        </div>
+        <div id="chart-health-dist" style="position: relative; z-index: 1;"></div>
+      </section>
+      <section class="dashboard-card" style="grid-row: span 2; display: flex; flex-direction: column; position: relative;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+          <h2><i class="fa-solid fa-map-location-dot"></i> Geographical Distribution</h2>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <select id="map-type-select" class="filter-select" style="min-width: 140px; padding: 4px 8px; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer;">
+              <option value="theme">Default Theme</option>
+              <option value="satellite">Satellite (ดาวเทียม)</option>
+              <option value="streets">Street Map (ถนน)</option>
+            </select>
+            <button id="btn-map-fullscreen" class="filter-select" style="min-width: auto; width: 32px; padding: 4px 0; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="Toggle Fullscreen">
+              <i class="fa-solid fa-expand"></i>
+            </button>
+          </div>
+        </div>
+        <div class="map-wrapper" style="position: relative; flex: 1; min-height: 580px; width: 100%; margin-top: 10px;">
+          <div id="map" style="height: 100%; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;"></div>
+          <!-- Legend overlays inside map wrapper -->
+          <div class="map-legend" style="position: absolute; bottom: 10px; right: 10px; z-index: 1000; background: rgba(10, 15, 29, 0.85); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; pointer-events: none; backdrop-filter: blur(8px); display: flex; gap: 6px; flex-direction: column;">
+            <div style="display: flex; align-items: center; gap: 6px; color: #fff;"><span class="legend-color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #10b981;"></span> Healthy (&ge;80%)</div>
+            <div style="display: flex; align-items: center; gap: 6px; color: #fff;"><span class="legend-color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #eab308;"></span> Monitor (70-79%)</div>
+            <div style="display: flex; align-items: center; gap: 6px; color: #fff;"><span class="legend-color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #f97316;"></span> Warning (50-69%)</div>
+            <div style="display: flex; align-items: center; gap: 6px; color: #fff;"><span class="legend-color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #ef4444;"></span> Critical (&lt;50%)</div>
+          </div>
+        </div>
       </section>
       <section class="dashboard-card">
         <div class="card-header">
-          <h2><i class="fa-solid fa-chart-bar"></i> Health Index by Site</h2>
+          <h2><i class="fa-solid fa-chart-bar"></i> Parameter Alert Breakdown <span id="param-filter-status" style="font-size: 11px; font-weight: normal; color: #f97316; margin-left: 8px;"></span></h2>
         </div>
-        <div id="chart-site-health"></div>
-      </section>
-      <section class="dashboard-card">
-        <div class="card-header">
-          <h2><i class="fa-solid fa-chart-line"></i> Parameter Alert Heatmap</h2>
-        </div>
-        <div id="chart-param-heatmap"></div>
-      </section>
-      <section class="dashboard-card">
-        <div class="card-header">
-          <h2><i class="fa-solid fa-chart-column"></i> Service Type Breakdown</h2>
-        </div>
-        <div id="chart-service-type"></div>
+        <div id="chart-param-heatmap" style="height: 280px; padding: 10px;"></div>
       </section>
     </div>
 
@@ -228,7 +255,6 @@
               <th>Oil Condition</th>
               <th>Bushing</th>
               <th>OLTC</th>
-              <th data-sort="dateToAssess">Assessed</th>
               <th data-sort="lastPM">Last PM</th>
               <th>Actions</th>
             </tr>
@@ -290,13 +316,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Footer Marquee -->
-    <footer class="scada-footer">
-      <div class="marquee-content">
-        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
-      </div>
-    </footer>
       </main>
     </div> <!-- end of main-workspace -->
   </div> <!-- end of app-container -->
@@ -304,127 +323,346 @@
   <!-- Detail Modal -->
   <div class="modal-overlay" id="detail-modal">
     <div class="modal-window modal-wide">
-      <div class="modal-header">
-        <div class="modal-title">
-          <h2 id="modal-title">Transformer Detail</h2>
-          <p id="modal-subtitle">Serial: - | Site: -</p>
+      <div class="modal-header excel-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" style="height: 28px; background: white; padding: 2px; border-radius: 4px;">
+          <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; margin: 0; color: #fff; letter-spacing: -0.01em;">GPSC's GROUP Transformer Asset Management</h2>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <div style="text-align: right; color: #cbd5e1; font-size: 0.72rem; line-height: 1.3;">
+          <div style="font-weight: 600;">HV NETWORK MAINTENANCE</div>
+          <div id="modal-last-update-v">Last Updated V.23 (1 Oct 2025)</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-left: 15px;">
           <button class="btn-capture-modal" id="btn-capture-modal" title="Capture Modal as JPG">
             <i class="fa-solid fa-camera"></i>
           </button>
           <button class="modal-close" id="modal-close">&times;</button>
         </div>
       </div>
-      <div class="modal-body">
-        <!-- Left: Health Gauge + Info -->
-        <div class="modal-left">
-          <div class="health-gauge-box">
-            <div class="gauge-chart-container">
-              <svg viewBox="0 0 36 36" class="circular-chart">
-                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path class="circle good" id="modal-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              </svg>
-              <div class="gauge-center">
-                <span class="gauge-score" id="modal-score">100</span>
-                <span class="gauge-label">% HI</span>
-              </div>
-            </div>
-            <div class="gauge-info">
-              <span class="badge" id="modal-badge">HEALTHY</span>
-              <div class="gauge-meta">
-                <div><strong>Est. DP:</strong> <span id="modal-dp">-</span></div>
-                <div><strong>Assessed:</strong> <span id="modal-date">-</span></div>
-                <div><strong>Last PM:</strong> <span id="modal-lastpm">-</span></div>
-              </div>
-            </div>
+      
+      <div class="modal-body excel-body">
+        
+        <!-- Left Column: Transformer Info & Visual & Backlog & History -->
+        <div class="excel-col excel-col-left">
+          
+          <!-- Transformer Information -->
+          <div class="excel-card">
+            <div class="excel-card-header">Transformer Information</div>
+            <table class="excel-table info-table">
+              <tbody>
+                <tr><td>Device Name</td><td id="ex-info-name">-</td></tr>
+                <tr><td>Serial No.</td><td id="ex-info-serial">-</td></tr>
+                <tr><td>Device Code</td><td id="ex-info-code">-</td></tr>
+                <tr><td>Manufacture</td><td id="ex-info-manufacture">DAIHEN</td></tr>
+                <tr><td>Fluid Type</td><td id="ex-info-fluid">Mineral Oil</td></tr>
+                <tr><td>Site</td><td id="ex-info-site">-</td></tr>
+                <tr><td>Power Rating</td><td id="ex-info-power">-</td></tr>
+                <tr><td>Voltage Rating</td><td id="ex-info-voltage">-</td></tr>
+                <tr><td>Service Type</td><td id="ex-info-service">-</td></tr>
+                <tr><td>Service Year</td><td id="ex-info-year">-</td></tr>
+                <tr><td>Vector Group</td><td id="ex-info-vector">Dyn1</td></tr>
+              </tbody>
+            </table>
           </div>
-
-          <!-- Equipment Info -->
-          <div class="specs-grid">
-            <div class="spec-item">
-              <span class="spec-label">Rated Power</span>
-              <span class="spec-value" id="modal-power">-</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Voltage Rating</span>
-              <span class="spec-value" id="modal-voltage">-</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Service Type</span>
-              <span class="spec-value" id="modal-service">-</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Site</span>
-              <span class="spec-value" id="modal-site">-</span>
-            </div>
+          
+          <!-- Visual Inspection -->
+          <div class="excel-card">
+            <div class="excel-card-header">Visual Inspection</div>
+            <div class="excel-visual-box" id="ex-visual-text">Normal</div>
           </div>
-
-          <!-- Recommendation -->
-          <div class="recommendation-card" id="modal-rec-card">
-            <div class="rec-title"><i class="fa-solid fa-clipboard-list"></i> Recommendation</div>
-            <div class="rec-text" id="modal-rec-text">-</div>
+          
+          <!-- Work Backlog [SAP] -->
+          <div class="excel-card">
+            <div class="excel-card-header">Work Backlog [SAP]</div>
+            <table class="excel-table backlog-table">
+              <thead>
+                <tr>
+                  <th>Order No.</th>
+                  <th>Detail</th>
+                  <th>Basic Finish</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ex-backlog-rows">
+                <tr><td colspan="5" style="text-align:center; color: var(--text-muted);">-</td></tr>
+              </tbody>
+            </table>
           </div>
-
-          <!-- Transformer Photo -->
-          <div class="transformer-photo-card" id="transformer-photo-card">
-            <img id="modal-transformer-img" src="" alt="Transformer Photo">
-            <div class="photo-placeholder" id="photo-placeholder">
-              <i class="fa-solid fa-bolt"></i>
-              <span>No Photo Available</span>
-            </div>
+          
+          <!-- History -->
+          <div class="excel-card">
+            <div class="excel-card-header" style="background: #e67e22; color: #fff;">History</div>
+            <table class="excel-table history-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="ex-history-rows">
+                <tr><td>06-Oct-22</td><td><span class="badge badge-warning">CM</span></td><td>Lamp indicator is damage</td></tr>
+              </tbody>
+            </table>
           </div>
+          
         </div>
-
-        <!-- Right: Detailed Parameters -->
-        <div class="modal-right">
-          <h3 class="section-title"><i class="fa-solid fa-microscope"></i> Test Parameter Details</h3>
-
-          <!-- Active Part -->
-          <div class="param-group">
-            <h4 class="param-group-title"><i class="fa-solid fa-gear"></i> Active Part</h4>
-            <div class="param-grid" id="params-active-part"></div>
-          </div>
-
-          <!-- Visual & Others -->
-          <div class="param-group">
-            <h4 class="param-group-title"><i class="fa-solid fa-eye"></i> VISUAL & SPECIAL TESTS</h4>
-            <div class="param-grid" id="params-additional"></div>
-          </div>
-
-          <!-- Bushing & Surge Arrester (Side by Side Row) -->
-          <div class="bushing-arrester-row">
-            <div class="param-group">
-              <h4 class="param-group-title"><i class="fa-solid fa-circle-nodes"></i> Bushing</h4>
-              <div class="param-grid" id="params-bushing"></div>
+        
+        <!-- Center Column: Bushing & Surge Arrester & Remaining Life & Active Part -->
+        <div class="excel-col excel-col-center">
+          
+          <!-- Center Top: Life & Gauge Row -->
+          <div class="excel-center-top-row">
+            
+            <!-- Stacked info boxes (Left) -->
+            <div class="excel-life-dp-boxes">
+              <div class="life-box">
+                <span class="life-label">Estimated Remaining Life</span>
+                <span class="life-value" id="ex-est-life">-</span>
+              </div>
+              <div class="life-box">
+                <span class="life-label">Estimated DP</span>
+                <span class="life-value" id="ex-est-dp">0</span>
+              </div>
             </div>
-            <div class="param-group">
-              <h4 class="param-group-title"><i class="fa-solid fa-shield-halved"></i> Surge Arrester</h4>
-              <div class="param-grid" id="params-arrester"></div>
+            
+            <!-- Enlarged Transformer photo container (Center) -->
+            <div class="excel-model-container" style="display: flex; justify-content: center; align-items: center;">
+              <img id="ex-model-img" src="background.jpg" style="height: 100px; width: 100%; max-width: 240px; object-fit: cover; opacity: 0.85; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);" alt="Transformer Render">
+            </div>
+
+            <!-- Old Style Progress Gauge (Right) -->
+            <div class="excel-gauge-container" style="position: relative; display: flex; justify-content: center; align-items: center;">
+              <div class="gauge-chart-container" style="position: relative; display: flex; justify-content: center; align-items: center; width: 90px; height: 90px;">
+                <svg viewBox="0 0 36 36" class="circular-chart" style="width: 90px; height: 90px; overflow: visible;">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle good" id="ex-gauge-ring" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <div class="gauge-center" style="position: absolute; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 100%;">
+                  <span class="gauge-score" id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: #10b981; line-height: 1.1;">100</span>
+                  <span class="gauge-label" style="font-size: 0.55rem; color: #94a3b8; display: block; margin-top: 2px;">% HI</span>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          
+          <!-- Bushing Card -->
+          <div class="excel-card">
+            <div class="excel-card-header">Bushing <span class="card-update-time" id="ex-update-bushing">Updated tests: -</span></div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th>HV. A</th>
+                  <th>HV. B</th>
+                  <th>HV. C</th>
+                  <th>LV. A</th>
+                  <th>LV. B</th>
+                  <th>LV. C</th>
+                </tr>
+              </thead>
+              <tbody id="ex-bushing-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Surge Arrester Card -->
+          <div class="excel-card">
+            <div class="excel-card-header">Surge Arrester <span class="card-update-time" id="ex-update-arrester">Updated tests: -</span></div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th>HV. A</th>
+                  <th>HV. B</th>
+                  <th>HV. C</th>
+                  <th>HV. A/2</th>
+                  <th>HV. B/2</th>
+                  <th>HV. C/2</th>
+                </tr>
+              </thead>
+              <tbody id="ex-arrester-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Active Part Card -->
+          <div class="excel-card">
+            <div class="excel-card-header">Active Part <span class="card-update-time" id="ex-update-active">Updated tests: -</span></div>
+            
+            <div class="active-part-sub-title">Basic Test</div>
+            <table class="excel-table test-table active-part-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Date</th>
+                  <th>Standard</th>
+                  <th colspan="3">Results & Status</th>
+                </tr>
+              </thead>
+              <tbody id="ex-active-basic-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+            
+            <div class="active-part-sub-title">Special Test</div>
+            <table class="excel-table test-table active-part-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Date</th>
+                  <th>Standard</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="ex-active-special-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+          
+        </div>
+        
+        <!-- Right Column: DGA & Oil Properties & OLTC Oil -->
+        <div class="excel-col excel-col-right">
+          
+          <!-- Main Tank DGA -->
+          <div class="excel-card">
+            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: inline-flex; align-items: center; gap: 6px;">
+                <span>Main Tank DGA</span>
+                <a href="#" id="ex-dga-link" target="_blank" class="btn-report-link" title="Open DGA Report" style="color: #38bdf8; font-size: 0.85rem;">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </a>
+              </div>
+              <span class="card-update-time" id="ex-update-dga">-</span>
+            </div>
+            
+            <!-- Gas Concentrations Table -->
+             <table class="excel-table dga-summary-table" style="text-align: center;">
+              <thead>
+                <tr>
+                  <th>Gas</th>
+                  <th>H₂</th>
+                  <th>CH₄</th>
+                  <th>C₂H₆</th>
+                  <th>C₂H₄</th>
+                  <th>C₂H₂</th>
+                  <th>CO</th>
+                  <th>CO₂</th>
+                  <th>TDCG</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ppm</strong></td>
+                  <td id="ex-dga-h2">-</td>
+                  <td id="ex-dga-ch4">-</td>
+                  <td id="ex-dga-c2h6">-</td>
+                  <td id="ex-dga-c2h4">-</td>
+                  <td id="ex-dga-c2h2">-</td>
+                  <td id="ex-dga-co">-</td>
+                  <td id="ex-dga-co2">-</td>
+                  <td id="ex-dga-tdcg">-</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Duval Triangle 1 / Diagnosis Details -->
+            <div style="padding: 6px 10px; font-size: 0.7rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 4px; background: rgba(0,0,0,0.08);">
+              <div><strong>Duval Method:</strong> <span id="ex-dga-duval1" style="font-weight: 600;">-</span></div>
+              <div><strong>Fault Diagnosis:</strong> <span id="ex-dga-fault" style="font-weight: 600;">-</span></div>
+              <div><strong>IEEE C57.104 Evaluation:</strong> <span id="ex-dga-ieee-status" style="font-weight: 600;">-</span></div>
+              <div><strong>IEC 60599 Diagnosis:</strong> <span id="ex-dga-iec-status" style="font-weight: 600;">-</span></div>
+              <div><strong>Paper Insulation Condition:</strong> <span id="ex-dga-paper-status" style="font-weight: 600;">-</span></div>
             </div>
           </div>
-
-          <!-- Main Tank Oil -->
-          <div class="param-group">
-            <h4 class="param-group-title"><i class="fa-solid fa-oil-can"></i> Main Tank Oil</h4>
-            <div class="param-grid" id="params-oil"></div>
+          
+          <!-- Main Tank Oil Properties -->
+          <div class="excel-card">
+            <div class="excel-card-header">Main Tank Oil Properties <span class="card-update-time" id="ex-update-oil">Updated tests: -</span></div>
+            
+            <div class="active-part-sub-title">Electrical Chemical and Physical</div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standards</th>
+                  <th>Result</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oil-physical-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+            
+            <div class="active-part-sub-title">Paper Aging</div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standards</th>
+                  <th>Result</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oil-aging-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
+            
+            <div class="active-part-sub-title">Corrosive Sulfur</div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standards</th>
+                  <th>Result</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oil-sulfur-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
           </div>
-
+          
           <!-- OLTC Oil -->
-          <div class="param-group">
-            <h4 class="param-group-title"><i class="fa-solid fa-arrows-rotate"></i> OLTC Oil</h4>
-            <div class="param-grid" id="params-oltc"></div>
+          <div class="excel-card">
+            <div class="excel-card-header">On Load Tap Changer Oil (OLTC1) <span class="card-update-time" id="ex-update-oltc">Updated tests: -</span></div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standards</th>
+                  <th>Result</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oltc-rows">
+                <!-- Will be dynamically populated -->
+              </tbody>
+            </table>
           </div>
+          
         </div>
+        
       </div>
     </div>
   </div>
 
-  <!-- PptxGenJS Library -->
-  <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+
   <!-- html2canvas Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <!-- Data & Logic Scripts -->
+  <script src="data.js"></script>
   <script src="health_data.js"></script>
   <script src="assessment.js"></script>
 </body>

@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DGA Report (Main Tank Analysis) | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- ApexCharts JS -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <style>
+    /* Global Variables matching main dashboard theme */
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --report-primary: #1e3a8a;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --primary: #4f46e5;
+      --report-primary: #1e3a8a;
+      --glass-glow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 900px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 250px;
+      max-width: 380px;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Report Sheet Layout Container */
+    .report-wrapper {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .report-page {
+      background-color: #ffffff;
+      color: #000000;
+      width: 100%;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    /* Header Bar */
+    /* Header Bar (Matching Power Factor Report Theme) */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 3px solid var(--report-primary);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      background: transparent;
+    }
+
+    .report-title-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--report-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .report-subtitle {
+      font-size: 12px;
+      color: #b91c1c;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .logo-container img {
+      height: 44px;
+      object-fit: contain;
+    }
+
+    /* Tables Style */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+      font-size: 10px;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #718096;
+      padding: 3px 6px;
+    }
+
+    .report-table th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .tbl-meta td.lbl {
+      background-color: #f9fafb;
+      color: #0f172a;
+      font-weight: 700;
+      width: 15%;
+    }
+
+    .tbl-meta td.val {
+      font-weight: 600;
+      color: #1e3a8a;
+      width: 35%;
+    }
+
+    .section-title {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: none;
+      border-radius: 2px;
+    }
+
+    /* Dark Mode card background #353839 with high contrast text */
+    [data-theme="dark"] .trend-box,
+    [data-theme="dark"] .keygas-chart-container,
+    [data-theme="dark"] .criteria-box-summary {
+      background-color: #353839 !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      color: #f3f4f6 !important;
+    }
+    [data-theme="dark"] .trend-title {
+      color: #93c5fd !important;
+    }
+    [data-theme="dark"] .criteria-title-txt {
+      color: #93c5fd !important;
+    }
+    [data-theme="dark"] #summary-text-desc {
+      color: #e2e8f0 !important;
+    }
+    [data-theme="dark"] .gas-bar-label-top,
+    [data-theme="dark"] .gas-bar-val-bottom {
+      color: #ffffff !important;
+    }
+    [data-theme="dark"] .criteria-box-summary table {
+      background-color: #353839 !important;
+    }
+    [data-theme="dark"] .criteria-box-summary table th {
+      background-color: #262829 !important;
+      color: #ffffff !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    [data-theme="dark"] .criteria-box-summary table td {
+      background-color: transparent !important;
+      color: #f8fafc !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    [data-theme="dark"] .criteria-box-summary table td strong {
+      color: #ffffff !important;
+    }
+    [data-theme="dark"] .criteria-box-summary table td span.status-pill {
+      font-weight: 800 !important;
+    }
+
+    /* Criteria Summary Box (IEEE C57.104-2019) */
+    .criteria-box-summary {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #2563eb;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+    }
+
+    .criteria-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .criteria-title-txt {
+      font-weight: 700;
+      font-size: 10.5px;
+      color: #1e3a8a;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+    .status-pill.status-a { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .status-pill.status-b { background-color: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+    .status-pill.status-c { background-color: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+    .status-pill.status-d { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    /* Results Table */
+    .tbl-results td.lbl {
+      font-weight: 600;
+    }
+    .tbl-results td.status-col {
+      text-align: center;
+      font-weight: 800;
+    }
+    .tbl-results td.val-col {
+      text-align: right;
+      font-weight: 600;
+      padding-right: 12px;
+    }
+
+    /* Key Gas Column Chart Container */
+    .keygas-chart-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 225px;
+      border: 1px solid #cbd5e1;
+      padding: 8px 6px;
+      background: #fafafa;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+
+    .gas-bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 12%;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .gas-bar-label-top {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .gas-bar-stack {
+      width: 24px;
+      height: 180px;
+      display: flex;
+      flex-direction: column-reverse;
+      border: 1px solid #64748b;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bar-seg {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 600;
+      color: #000;
+    }
+    .bar-seg.green { background-color: #22c55e; }
+    .bar-seg.yellow { background-color: #eab308; }
+    .bar-seg.red { background-color: #ef4444; }
+
+    .gas-bar-val-bottom {
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Trending Grid */
+    .trending-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .trend-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px;
+      background: #ffffff;
+      height: 145px;
+    }
+
+    .trend-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 2px;
+    }
+
+    /* Signatures Table */
+    table.response-table th {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    table.response-table td.lbl {
+      width: 15%;
+      font-weight: 700;
+      background-color: #f9fafb;
+    }
+
+    table.response-table td.val {
+      text-align: center;
+      font-weight: 600;
+      color: #1e40af;
+      height: 20px;
+    }
+
+    table.response-table td.sig-cell {
+      height: 35px;
+    }
+
+    /* Print Overrides */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 4mm 5mm;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+      .control-panel, .no-print {
+        display: none !important;
+      }
+      .report-wrapper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        gap: 0 !important;
+      }
+      .report-page {
+        box-shadow: none !important;
+        padding: 4mm !important;
+        border: none !important;
+        width: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      .keygas-chart-container {
+        height: 180px !important;
+      }
+      .gas-bar-stack {
+        height: 120px !important;
+      }
+    }
+
+    .trending-grid .trend-box {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .trending-grid .trend-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    }
+    .trending-grid .trend-box::after {
+      content: '\f00e';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 11px;
+      color: var(--text-sub);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .trending-grid .trend-box:hover::after {
+      opacity: 0.8;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 750px;
+      padding: 20px;
+      box-shadow: var(--glass-glow);
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-dark);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .modal-close-btn:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <span class="selector-label"><i class="fa-solid fa-flask"></i> Transformer:</span>
+      <select id="transformer-select" class="search-select" onchange="loadReportBySerial(this.value)">
+        <!-- Dynamic options -->
+      </select>
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i> Theme
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print Report
+      </button>
+      <button class="btn btn-primary" onclick="exportReportAsJPG()">
+        <i class="fa-solid fa-file-image"></i> Export JPG
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Capture Wrapper -->
+  <div class="report-wrapper" id="report-capture-area">
+    
+    <!-- PAGE 1: Dissolve Gas Analysis & IEEE C57.104-2019 Criteria Summary -->
+    <div class="report-page" id="page-1">
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
+          <div class="report-subtitle">DISSOLVED GAS ANALYSIS (DGA) & OIL DIAGNOSTIC REPORT</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
+        </div>
+      </div>
+
+      <!-- Equipment Metadata Table -->
+      <table class="report-table tbl-meta" style="margin-top:6px;">
+        <tbody>
+          <tr>
+            <td class="lbl">Equipment Name</td>
+            <td class="val" id="meta-name">-</td>
+            <td class="lbl">Site</td>
+            <td class="val" id="meta-site">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td>
+            <td class="val" id="meta-serial">-</td>
+            <td class="lbl">Power Rating (kVA)</td>
+            <td class="val" id="meta-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacture</td>
+            <td class="val" id="meta-mfg">-</td>
+            <td class="lbl">Voltage Rating (kV)</td>
+            <td class="val" id="meta-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Fluid Type</td>
+            <td class="val" id="meta-fluid">Mineral Oil</td>
+            <td class="lbl">Service Type</td>
+            <td class="val" id="meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Dissolve Gas Analysis</div>
+
+      <!-- IEEE C57.104-2019 Summary Section BEFORE Test Result (as requested) -->
+      <div class="criteria-box-summary">
+        <div class="criteria-header-row">
+          <span class="criteria-title-txt"><i class="fa-solid fa-shield-halved"></i> DGA Evaluation Summary according to IEEE Std C57.104-2019</span>
+          <span class="status-pill status-a" id="summary-status-pill">Normal</span>
+        </div>
+        <p style="margin-bottom:6px; color:#334155;" id="summary-text-desc">
+          DGA evaluation per IEEE Std C57.104-2019 indicates all combustible gas levels are within the 90th percentile baseline limits.
+        </p>
+        <table class="report-table" style="margin-bottom:0; background:#ffffff;">
+          <thead>
+            <tr>
+              <th style="width:18%; white-space:nowrap;">Gas</th>
+              <th style="width:13%; white-space:nowrap; text-align:right;">Measured (ppm)</th>
+              <th style="width:14%; white-space:nowrap; text-align:right;">Table 1 Limit</th>
+              <th style="width:14%; white-space:nowrap; text-align:right;">Table 2 Limit</th>
+              <th style="width:15%; white-space:nowrap; text-align:center;">DGA Status</th>
+              <th style="width:26%;">Recommendation</th>
+            </tr>
+          </thead>
+          <tbody id="summary-table-body">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- IEC 60599 Gas Ratio Analysis Section -->
+      <div class="criteria-box-summary" style="margin-top:6px; border-left: 4px solid #0284c7;">
+        <div class="criteria-header-row">
+          <span class="criteria-title-txt"><i class="fa-solid fa-calculator"></i> IEC 60599 Gas Ratio & Fault Diagnosis</span>
+          <span class="status-pill status-a" id="iec-status-pill">Normal</span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 5px;">
+          <!-- Left: Gas Ratios Table -->
+          <table class="report-table" style="margin-bottom:0; background:#ffffff;">
+            <thead>
+              <tr>
+                <th style="width:45%;">IEC Ratios</th>
+                <th style="width:25%;">Formula</th>
+                <th style="width:30%;">Calculated Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ratio 1 (Acetylene / Ethylene)</strong></td>
+                <td>C2H2 / C2H4</td>
+                <td style="text-align:right; font-weight:700;" id="iec-r1">-</td>
+              </tr>
+              <tr>
+                <td><strong>Ratio 2 (Methane / Hydrogen)</strong></td>
+                <td>CH4 / H2</td>
+                <td style="text-align:right; font-weight:700;" id="iec-r2">-</td>
+              </tr>
+              <tr>
+                <td><strong>Ratio 3 (Ethylene / Ethane)</strong></td>
+                <td>C2H4 / C2H6</td>
+                <td style="text-align:right; font-weight:700;" id="iec-r3">-</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon Ratio (Paper Aging)</strong></td>
+                <td>CO2 / CO</td>
+                <td style="text-align:right; font-weight:700;" id="iec-r-co2co">-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Right: Fault Diagnosis Summary Card -->
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-size:9.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+                <i class="fa-solid fa-stethoscope"></i> IEC 60599 Fault Diagnosis:
+              </div>
+              <div style="font-size:11.5px; font-weight:800; color:#0369a1; margin-bottom:3px;" id="iec-fault-name">
+                Normal / No Fault Detected
+              </div>
+              <div style="font-size:8.5px; color:#334155; line-height:1.35;" id="iec-fault-desc">
+                All gas concentrations are within normal limits of IEC 60599.
+              </div>
+            </div>
+
+            <div style="margin-top:4px; padding-top:4px; border-top:1px dashed #cbd5e1; font-size:8.5px; color:#334155;">
+              <strong>Paper Insulation Condition:</strong> <span id="iec-paper-desc">Normal Paper Aging</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Result Section -->
+      <div style="font-weight:700; font-size:10px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+        <span>Test Result</span>
+        <span style="font-size:9px; color:#475569;">O2/N2 Ratio: <strong id="lbl-o2n2-ratio">0.24</strong></span>
+      </div>
+
+      <table class="report-table tbl-results">
+        <thead>
+          <tr>
+            <th style="width:30%; text-align:left;">Parameter</th>
+            <th style="width:23%;" colspan="2">Current Sampling<br><span id="date-sample-curr" style="font-weight:400; font-size:9px;">-</span></th>
+            <th style="width:23%;" colspan="2">Previous Sampling<br><span id="date-sample-prev1" style="font-weight:400; font-size:9px;">-</span></th>
+            <th style="width:24%;" colspan="2">Previous Sampling<br><span id="date-sample-prev2" style="font-weight:400; font-size:9px;">-</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- General Dissolve Gas -->
+          <tr style="background:#f8fafc;"><td colspan="7" style="font-weight:700;">General Dissolve Gas</td></tr>
+          <tr>
+            <td class="lbl">Nitrogen [N2]</td>
+            <td class="status-col">-</td><td class="val-col" id="res-n2-curr">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-n2-p1">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-n2-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Oxygen [O2]</td>
+            <td class="status-col">-</td><td class="val-col" id="res-o2-curr">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-o2-p1">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-o2-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Carbon Dioxide [CO2]</td>
+            <td class="status-col" id="st-co2-curr">Normal</td><td class="val-col" id="res-co2-curr">-</td>
+            <td class="status-col" id="st-co2-p1">Normal</td><td class="val-col" id="res-co2-p1">-</td>
+            <td class="status-col" id="st-co2-p2">Normal</td><td class="val-col" id="res-co2-p2">-</td>
+          </tr>
+
+          <!-- Dissolve Combustible Gas -->
+          <tr style="background:#f8fafc;"><td colspan="7" style="font-weight:700;">Dissolve Combustible Gas</td></tr>
+          <tr>
+            <td class="lbl">Hydrogen [H2]</td>
+            <td class="status-col" id="st-h2-curr">Normal</td><td class="val-col" id="res-h2-curr">-</td>
+            <td class="status-col" id="st-h2-p1">Normal</td><td class="val-col" id="res-h2-p1">-</td>
+            <td class="status-col" id="st-h2-p2">Normal</td><td class="val-col" id="res-h2-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Methane [CH4]</td>
+            <td class="status-col" id="st-ch4-curr">Normal</td><td class="val-col" id="res-ch4-curr">-</td>
+            <td class="status-col" id="st-ch4-p1">Normal</td><td class="val-col" id="res-ch4-p1">-</td>
+            <td class="status-col" id="st-ch4-p2">Normal</td><td class="val-col" id="res-ch4-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Ethane [C2H6]</td>
+            <td class="status-col" id="st-c2h6-curr">Normal</td><td class="val-col" id="res-c2h6-curr">-</td>
+            <td class="status-col" id="st-c2h6-p1">Normal</td><td class="val-col" id="res-c2h6-p1">-</td>
+            <td class="status-col" id="st-c2h6-p2">Normal</td><td class="val-col" id="res-c2h6-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Ethylene [C2H4]</td>
+            <td class="status-col" id="st-c2h4-curr">Normal</td><td class="val-col" id="res-c2h4-curr">-</td>
+            <td class="status-col" id="st-c2h4-p1">Normal</td><td class="val-col" id="res-c2h4-p1">-</td>
+            <td class="status-col" id="st-c2h4-p2">Normal</td><td class="val-col" id="res-c2h4-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Acetylene [C2H2]</td>
+            <td class="status-col" id="st-c2h2-curr">Normal</td><td class="val-col" id="res-c2h2-curr">-</td>
+            <td class="status-col" id="st-c2h2-p1">Normal</td><td class="val-col" id="res-c2h2-p1">-</td>
+            <td class="status-col" id="st-c2h2-p2">Normal</td><td class="val-col" id="res-c2h2-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Carbon Monoxide [CO]</td>
+            <td class="status-col" id="st-co-curr">Normal</td><td class="val-col" id="res-co-curr">-</td>
+            <td class="status-col" id="st-co-p1">Normal</td><td class="val-col" id="res-co-p1">-</td>
+            <td class="status-col" id="st-co-p2">Normal</td><td class="val-col" id="res-co-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="font-weight:700;">Total Dissolve Combustible Gas [TDCG]</td>
+            <td class="status-col">-</td><td class="val-col" id="res-tdcg-curr" style="font-weight:700;">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-tdcg-p1" style="font-weight:700;">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-tdcg-p2" style="font-weight:700;">-</td>
+          </tr>
+
+          <!-- Other Gas -->
+          <tr style="background:#f8fafc;"><td colspan="7" style="font-weight:700;">Other Gas</td></tr>
+          <tr>
+            <td class="lbl">Propylene [C3H6]</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h6-curr">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h6-p1">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h6-p2">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Propane [C3H8]</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h8-curr">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h8-p1">-</td>
+            <td class="status-col">-</td><td class="val-col" id="res-c3h8-p2">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Signatures Block -->
+      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <table class="report-table response-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Response</th>
+            <th style="width: 28%;">Tested By</th>
+            <th style="width: 28%;">Review By</th>
+            <th style="width: 29%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Company</td>
+            <td class="val" id="resp-company-tested">-</td>
+            <td class="val" id="resp-company-reviewed">-</td>
+            <td class="val" id="resp-company-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val" id="resp-name-tested">-</td>
+            <td class="val" id="resp-name-reviewed">-</td>
+            <td class="val" id="resp-name-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="height:35px;">Signature</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val" id="resp-date-tested">-</td>
+            <td class="val" id="resp-date-reviewed">-</td>
+            <td class="val" id="resp-date-approved">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGE 2: Key Gas Trending -->
+    <div class="report-page" id="page-2">
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
+          <div class="report-subtitle">DISSOLVED GAS ANALYSIS (DGA) & OIL DIAGNOSTIC REPORT</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
+        </div>
+      </div>
+
+      <table class="report-table tbl-meta" style="margin-top:6px;">
+        <tbody>
+          <tr>
+            <td class="lbl">Equipment Name</td><td class="val p2-meta-name">-</td>
+            <td class="lbl">Site</td><td class="val p2-meta-site">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td><td class="val p2-meta-serial">-</td>
+            <td class="lbl">Power Rating (kVA)</td><td class="val p2-meta-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacture</td><td class="val p2-meta-mfg">-</td>
+            <td class="lbl">Voltage Rating (kV)</td><td class="val p2-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Fluid Type</td><td class="val">Mineral Oil</td>
+            <td class="lbl">Service Type</td><td class="val p2-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Dissolve Gas Analysis - Key Gas Trending</div>
+
+      <!-- Key Gas Analysis Stacked Bar Chart [IEEE C57.104-2019] -->
+      <div style="font-weight:700; font-size:10px; margin-top:6px; margin-bottom:4px;">Key Gas Analysis [IEEE C57.104-2019]</div>
+      <div class="keygas-chart-container" id="keygas-stacked-bars" style="margin-bottom:8px;">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="trending-grid">
+        <div class="trend-box"><div class="trend-title">H2 (ppm)</div><div id="chart-trend-h2"></div></div>
+        <div class="trend-box"><div class="trend-title">CH4 (ppm)</div><div id="chart-trend-ch4"></div></div>
+        <div class="trend-box"><div class="trend-title">C2H6 (ppm)</div><div id="chart-trend-c2h6"></div></div>
+        <div class="trend-box"><div class="trend-title">C2H4 (ppm)</div><div id="chart-trend-c2h4"></div></div>
+        <div class="trend-box"><div class="trend-title">C2H2 (ppm)</div><div id="chart-trend-c2h2"></div></div>
+        <div class="trend-box"><div class="trend-title">CO (ppm)</div><div id="chart-trend-co"></div></div>
+        <div class="trend-box"><div class="trend-title">O2 (ppm)</div><div id="chart-trend-o2"></div></div>
+        <div class="trend-box"><div class="trend-title">CO2 (ppm)</div><div id="chart-trend-co2"></div></div>
+      </div>
+
+      <!-- Signatures Block -->
+      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <table class="report-table response-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Response</th>
+            <th style="width: 28%;">Tested By</th>
+            <th style="width: 28%;">Review By</th>
+            <th style="width: 29%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Company</td>
+            <td class="val p2-resp-company-tested">-</td>
+            <td class="val p2-resp-company-reviewed">-</td>
+            <td class="val p2-resp-company-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val p2-resp-name-tested">-</td>
+            <td class="val p2-resp-name-reviewed">-</td>
+            <td class="val p2-resp-name-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="height:35px;">Signature</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val p2-resp-date-tested">-</td>
+            <td class="val p2-resp-date-reviewed">-</td>
+            <td class="val p2-resp-date-approved">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGE 3: Gas Pattern Method -->
+    <div class="report-page" id="page-3">
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
+          <div class="report-subtitle">DISSOLVED GAS ANALYSIS (DGA) & OIL DIAGNOSTIC REPORT</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
+        </div>
+      </div>
+
+      <table class="report-table tbl-meta" style="margin-top:6px;">
+        <tbody>
+          <tr>
+            <td class="lbl">Equipment Name</td><td class="val p3-meta-name">-</td>
+            <td class="lbl">Site</td><td class="val p3-meta-site">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td><td class="val p3-meta-serial">-</td>
+            <td class="lbl">Power Rating (kVA)</td><td class="val p3-meta-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacture</td><td class="val p3-meta-mfg">-</td>
+            <td class="lbl">Voltage Rating (kV)</td><td class="val p3-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Fluid Type</td><td class="val">Mineral Oil</td>
+            <td class="lbl">Service Type</td><td class="val p3-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Dissolve Gas Analysis - Gas Pattern Method</div>
+
+      <div class="trending-grid">
+        <div class="trend-box" style="height:210px;"><div class="trend-title">Arcing in Oil</div><div id="pattern-arcing"></div></div>
+        <div class="trend-box" style="height:210px;"><div class="trend-title">Partial Discharge in Oil</div><div id="pattern-pd"></div></div>
+        <div class="trend-box" style="height:210px;"><div class="trend-title">Overheated Cellulose</div><div id="pattern-cellulose"></div></div>
+        <div class="trend-box" style="height:210px;"><div class="trend-title">Overheated Oil</div><div id="pattern-oil"></div></div>
+      </div>
+
+      <!-- Signatures Block -->
+      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <table class="report-table response-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Response</th>
+            <th style="width: 28%;">Tested By</th>
+            <th style="width: 28%;">Review By</th>
+            <th style="width: 29%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Company</td>
+            <td class="val p3-resp-company-tested">-</td>
+            <td class="val p3-resp-company-reviewed">-</td>
+            <td class="val p3-resp-company-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val p3-resp-name-tested">-</td>
+            <td class="val p3-resp-name-reviewed">-</td>
+            <td class="val p3-resp-name-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="height:35px;">Signature</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val p3-resp-date-tested">-</td>
+            <td class="val p3-resp-date-reviewed">-</td>
+            <td class="val p3-resp-date-approved">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGE 4: Duval Triangle & Pentagon Analysis -->
+    <div class="report-page" id="page-4">
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
+          <div class="report-subtitle">DISSOLVED GAS ANALYSIS (DGA) & OIL DIAGNOSTIC REPORT</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
+        </div>
+      </div>
+
+      <table class="report-table tbl-meta" style="margin-top:6px;">
+        <tbody>
+          <tr>
+            <td class="lbl">Equipment Name</td><td class="val p4-meta-name">-</td>
+            <td class="lbl">Site</td><td class="val p4-meta-site">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td><td class="val p4-meta-serial">-</td>
+            <td class="lbl">Power Rating (kVA)</td><td class="val p4-meta-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacture</td><td class="val p4-meta-mfg">-</td>
+            <td class="lbl">Voltage Rating (kV)</td><td class="val p4-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Fluid Type</td><td class="val">Mineral Oil</td>
+            <td class="lbl">Service Type</td><td class="val p4-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Dissolve Gas Analysis - Duval Triangles & Pentagons</div>
+
+      <div class="trending-grid" style="grid-template-columns: 1fr 1fr;">
+        <!-- Duval Triangle 1 -->
+        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+          <div class="trend-title" style="margin-bottom:2px;">Triangle 1</div>
+          <div style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+            <span id="res-duval-1-code">-</span>
+          </div>
+          <div id="svg-duval-1" style="height:305px; width:100%;"></div>
+        </div>
+
+        <!-- Duval Triangle 4 -->
+        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+          <div class="trend-title" style="margin-bottom:2px;">Triangle 4</div>
+          <div style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+            <span id="res-duval-4-code">-</span>
+          </div>
+          <div id="svg-duval-4" style="height:305px; width:100%;"></div>
+        </div>
+
+        <!-- Pentagon 1 -->
+        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+          <div class="trend-title" style="margin-bottom:2px;">Pentagon 1</div>
+          <div id="res-pentagon-1-text" style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+            Duval Pentagon 1 Diagram
+          </div>
+          <div id="svg-pentagon-1" style="height:305px; width:100%;"></div>
+        </div>
+
+        <!-- Pentagon 2 -->
+        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+          <div class="trend-title" style="margin-bottom:2px;">Pentagon 2</div>
+          <div id="res-pentagon-2-text" style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+            Duval Pentagon 2 Diagram
+          </div>
+          <div id="svg-pentagon-2" style="height:305px; width:100%;"></div>
+        </div>
+      </div>
+
+
+
+      <!-- Signatures Block -->
+      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <table class="report-table response-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Response</th>
+            <th style="width: 28%;">Tested By</th>
+            <th style="width: 28%;">Review By</th>
+            <th style="width: 29%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Company</td>
+            <td class="val p4-resp-company-tested">-</td>
+            <td class="val p4-resp-company-reviewed">-</td>
+            <td class="val p4-resp-company-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val p4-resp-name-tested">-</td>
+            <td class="val p4-resp-name-reviewed">-</td>
+            <td class="val p4-resp-name-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl" style="height:35px;">Signature</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val p4-resp-date-tested">-</td>
+            <td class="val p4-resp-date-reviewed">-</td>
+            <td class="val p4-resp-date-approved">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Load Scripts -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+
+  <script>
+    let dgaDataList = [];
+    let factoryDataList = [];
+
+    // IEEE C57.104-2019 90th percentile limits for O2/N2 > 0.2
+    const IEEE_LIMITS_90TH = {
+      H2: 40,
+      CH4: 20,
+      C2H6: 15,
+      C2H4: 50,
+      C2H2: 2,
+      CO: 500,
+      CO2: 5500
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Restore theme
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Fetch MainTankOilData.csv
+      try {
+        const resp = await fetch('TestData/MainTankOilData.csv');
+        const csvTxt = await resp.text();
+        dgaDataList = parseCSV(csvTxt);
+      } catch(e) {
+        console.error("Failed to load MainTankOilData.csv", e);
+      }
+
+      // Fetch FactoryData.csv
+      try {
+        const respFac = await fetch('TestData/FactoryData.csv');
+        const facTxt = await respFac.text();
+        factoryDataList = parseCSV(facTxt);
+      } catch(e) {
+        console.error("Failed to load FactoryData.csv", e);
+      }
+
+      populateTransformerSelect();
+
+      // Get serial from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const serialParam = urlParams.get('serial');
+      if (serialParam) {
+        const selectEl = document.getElementById('transformer-select');
+        selectEl.value = serialParam;
+        loadReportBySerial(serialParam);
+      } else if (dgaDataList.length > 0) {
+        loadReportBySerial(dgaDataList[0].serial);
+      }
+    });
+
+    // Simple CSV parser
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) {
+        text = text.substring(1);
+      }
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim());
+      const results = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const row = parseCSVRow(lines[i]);
+        if (row.length === headers.length) {
+          const obj = {};
+          headers.forEach((h, idx) => {
+            obj[h] = row[idx].trim();
+          });
+          obj.serial = obj.Serial_No || obj.serial;
+          obj.date = obj.Date || obj.date;
+          results.push(obj);
+        }
+      }
+      return results;
+    }
+
+    function parseCSVRow(rowStr) {
+      const result = [];
+      let insideQuotes = false;
+      let entry = '';
+      for (let i = 0; i < rowStr.length; i++) {
+        const char = rowStr[i];
+        if (char === '"') {
+          insideQuotes = !insideQuotes;
+        } else if (char === ',' && !insideQuotes) {
+          result.push(entry);
+          entry = '';
+        } else {
+          entry += char;
+        }
+      }
+      result.push(entry);
+      return result;
+    }
+
+    function populateTransformerSelect() {
+      const selectEl = document.getElementById('transformer-select');
+      selectEl.innerHTML = '';
+      
+      const uniqueSerials = [...new Set(dgaDataList.map(item => item.serial))].filter(Boolean);
+      
+      uniqueSerials.forEach(serial => {
+        let displayName = serial;
+        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+          const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+          if (meta) displayName = `${meta.name} (${serial})`;
+        }
+        const opt = document.createElement('option');
+        opt.value = serial;
+        opt.textContent = displayName;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    // Main loading and populating function
+    function loadReportBySerial(serial) {
+      const rawItems = dgaDataList.filter(x => x.serial === serial);
+      if (!rawItems || rawItems.length === 0) {
+        alert(`No DGA data found for Serial: ${serial}`);
+        return;
+      }
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        if (dStr.includes('/')) {
+          const pts = dStr.split('/');
+          if (pts.length === 3) {
+            return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+          }
+        }
+        return new Date(dStr);
+      };
+
+      const hasValidDGAData = (item) => {
+        if (!item) return false;
+        const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
+        return gases.some(g => {
+          const val = item[g];
+          if (val === undefined || val === null) return false;
+          const s = val.toString().trim();
+          if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+          return !isNaN(parseFloat(s.replace(/,/g, '')));
+        });
+      };
+
+      // Filter out items with no gas test data at all
+      const validItems = rawItems.filter(hasValidDGAData);
+      if (validItems.length === 0) {
+        alert(`No valid DGA test records found for Serial: ${serial}`);
+        return;
+      }
+
+      // Sort descending (latest date first)
+      validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      
+      // Deduplicate items by test date timestamp so each test date appears only once per Serial No.
+      const seenDates = new Set();
+      const items = [];
+      for (const item of validItems) {
+        const dt = parseDate(item.date);
+        const key = dt.getTime() > 0 ? dt.getTime() : item.date;
+        if (!seenDates.has(key)) {
+          seenDates.add(key);
+          items.push(item);
+        }
+      }
+      
+      const curr = items[0] || {};
+      const prev1 = items[1] || {};
+      const prev2 = items[2] || {};
+
+      // Metadata lookup (matches Power Factor report dynamic resolution)
+      let name = '-';
+      let site = '-';
+      let mfg = '-';
+      let power = '-';
+      let voltage = '-';
+      let fluid = 'Mineral Oil';
+      let service = '-';
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+        if (meta) {
+          name = meta.name || name;
+          site = meta.site || site;
+          power = meta.ratedPower ? (meta.ratedPower * 1000) : (meta.powerRating || power);
+          voltage = meta.ratedVoltage || meta.voltageRating || voltage;
+          service = meta.serviceType || service;
+        }
+      }
+
+      if (typeof TR_DATA !== 'undefined') {
+        const rawMeta = TR_DATA.find(x => x.SERIAL_NUMBER === serial);
+        if (rawMeta) {
+          if (rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND) mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND;
+          if (rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
+          if (rawMeta.POWER_RATING && rawMeta.POWER_RATING !== '-') power = rawMeta.POWER_RATING;
+          if (rawMeta.MANUFACTURING_DATE) curr.MANUFACTURING_DATE = rawMeta.MANUFACTURING_DATE;
+          if (rawMeta.HV_RATED && rawMeta.LV_RATED) {
+            voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
+            if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') {
+              voltage += ` / ${rawMeta.LV2_RATED}`;
+            }
+          }
+        }
+      }
+
+      const facItem = factoryDataList.find(x => x.Serial_No === serial) || {};
+      if (facItem) {
+        if (facItem.Manufacturer && facItem.Manufacturer !== '-') mfg = facItem.Manufacturer;
+        if ((site === '-' || !site) && facItem.Site && facItem.Site !== '-') site = facItem.Site;
+      }
+
+      // Populate Metadata
+      const setMeta = (cls, val) => {
+        document.querySelectorAll('.' + cls).forEach(el => el.textContent = val);
+      };
+      document.getElementById('meta-name').textContent = name;
+      document.getElementById('meta-site').textContent = site;
+      document.getElementById('meta-serial').textContent = serial;
+      document.getElementById('meta-power').textContent = power;
+      document.getElementById('meta-mfg').textContent = mfg;
+      document.getElementById('meta-voltage').textContent = voltage;
+      document.getElementById('meta-service').textContent = service;
+
+      setMeta('p2-meta-name', name); setMeta('p2-meta-site', site); setMeta('p2-meta-serial', serial); setMeta('p2-meta-power', power); setMeta('p2-meta-mfg', mfg); setMeta('p2-meta-voltage', voltage); setMeta('p2-meta-service', service);
+      setMeta('p3-meta-name', name); setMeta('p3-meta-site', site); setMeta('p3-meta-serial', serial); setMeta('p3-meta-power', power); setMeta('p3-meta-mfg', mfg); setMeta('p3-meta-voltage', voltage); setMeta('p3-meta-service', service);
+      setMeta('p4-meta-name', name); setMeta('p4-meta-site', site); setMeta('p4-meta-serial', serial); setMeta('p4-meta-power', power); setMeta('p4-meta-mfg', mfg); setMeta('p4-meta-voltage', voltage); setMeta('p4-meta-service', service);
+
+      // Sampling Dates
+      document.getElementById('date-sample-curr').textContent = formatDate(curr.date);
+      document.getElementById('date-sample-prev1').textContent = formatDate(prev1.date);
+      document.getElementById('date-sample-prev2').textContent = formatDate(prev2.date);
+
+      // O2/N2 Ratio
+      const n2 = parseFloat(curr.N2 || 0);
+      const o2 = parseFloat(curr.O2 || 0);
+      const o2n2Ratio = n2 > 0 ? (o2 / n2).toFixed(2) : '0.24';
+      document.getElementById('lbl-o2n2-ratio').textContent = o2n2Ratio;
+
+      // Populate Test Result values
+      const setGasVal = (gasId, val) => {
+        const el = document.getElementById(gasId);
+        if (el) el.textContent = formatNum(val);
+      };
+
+      setGasVal('res-n2-curr', curr.N2); setGasVal('res-n2-p1', prev1.N2); setGasVal('res-n2-p2', prev2.N2);
+      setGasVal('res-o2-curr', curr.O2); setGasVal('res-o2-p1', prev1.O2); setGasVal('res-o2-p2', prev2.O2);
+      setGasVal('res-co2-curr', curr.CO2); setGasVal('res-co2-p1', prev1.CO2); setGasVal('res-co2-p2', prev2.CO2);
+
+      setGasVal('res-h2-curr', curr.H2); setGasVal('res-h2-p1', prev1.H2); setGasVal('res-h2-p2', prev2.H2);
+      setGasVal('res-ch4-curr', curr.CH4); setGasVal('res-ch4-p1', prev1.CH4); setGasVal('res-ch4-p2', prev2.CH4);
+      setGasVal('res-c2h6-curr', curr.C2H6); setGasVal('res-c2h6-p1', prev1.C2H6); setGasVal('res-c2h6-p2', prev2.C2H6);
+      setGasVal('res-c2h4-curr', curr.C2H4); setGasVal('res-c2h4-p1', prev1.C2H4); setGasVal('res-c2h4-p2', prev2.C2H4);
+      setGasVal('res-c2h2-curr', curr.C2H2); setGasVal('res-c2h2-p1', prev1.C2H2); setGasVal('res-c2h2-p2', prev2.C2H2);
+      setGasVal('res-co-curr', curr.CO); setGasVal('res-co-p1', prev1.CO); setGasVal('res-co-p2', prev2.CO);
+      setGasVal('res-tdcg-curr', curr.TDCG); setGasVal('res-tdcg-p1', prev1.TDCG); setGasVal('res-tdcg-p2', prev2.TDCG);
+
+      setGasVal('res-c3h6-curr', curr.C3H6); setGasVal('res-c3h6-p1', prev1.C3H6); setGasVal('res-c3h6-p2', prev2.C3H6);
+      setGasVal('res-c3h8-curr', curr.C3H8); setGasVal('res-c3h8-p1', prev1.C3H8); setGasVal('res-c3h8-p2', prev2.C3H8);
+
+      // Gas Statuses (IEEE C57.104-2019)
+      const getGasNormsForRecord = (rec) => {
+        if (!rec) return null;
+        const o2Val = parseFloat(rec.O2 || 0);
+        const n2Val = parseFloat(rec.N2 || 0);
+        const ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+        const mfgYear = parseMfgYear(rec.MANUFACTURING_DATE || curr.MANUFACTURING_DATE || curr.mfgYear);
+        let age = null;
+        const sampleYear = rec.date ? (new Date(rec.date).getFullYear() || 2026) : 2026;
+        if (mfgYear) {
+          age = sampleYear - mfgYear;
+        }
+        return getIEEENorms(ratio, age);
+      };
+
+      const getGasStatus = (gas, val, rec) => {
+        const num = parseFloat(val);
+        if (isNaN(num)) return 'Normal';
+        const norms = getGasNormsForRecord(rec);
+        const limit = (norms && norms.table1 && norms.table1[gas] !== undefined) ? norms.table1[gas] : (IEEE_LIMITS_90TH[gas] || 50);
+        if (num <= limit) return 'Normal';
+        if (num <= limit * 1.5) return 'Monitoring';
+        if (num <= limit * 2.5) return 'Warning';
+        return 'Critical';
+      };
+
+      const setStatus = (stId, gas, val, rec) => {
+        const el = document.getElementById(stId);
+        if (el) {
+          const st = getGasStatus(gas, val, rec);
+          el.textContent = (val !== undefined && val !== null && val !== '') ? st : '-';
+          if (st === 'Normal') el.style.color = '#15803d';
+          else if (st === 'Monitoring') el.style.color = '#a16207';
+          else if (st === 'Warning') el.style.color = '#c2410c';
+          else if (st === 'Critical') el.style.color = '#b91c1c';
+        }
+      };
+
+      setStatus('st-co2-curr', 'CO2', curr.CO2, curr); setStatus('st-co2-p1', 'CO2', prev1.CO2, prev1); setStatus('st-co2-p2', 'CO2', prev2.CO2, prev2);
+      setStatus('st-h2-curr', 'H2', curr.H2, curr); setStatus('st-h2-p1', 'H2', prev1.H2, prev1); setStatus('st-h2-p2', 'H2', prev2.H2, prev2);
+      setStatus('st-ch4-curr', 'CH4', curr.CH4, curr); setStatus('st-ch4-p1', 'CH4', prev1.CH4, prev1); setStatus('st-ch4-p2', 'CH4', prev2.CH4, prev2);
+      setStatus('st-c2h6-curr', 'C2H6', curr.C2H6, curr); setStatus('st-c2h6-p1', 'C2H6', prev1.C2H6, prev1); setStatus('st-c2h6-p2', 'C2H6', prev2.C2H6, prev2);
+      setStatus('st-c2h4-curr', 'C2H4', curr.C2H4, curr); setStatus('st-c2h4-p1', 'C2H4', prev1.C2H4, prev1); setStatus('st-c2h4-p2', 'C2H4', prev2.C2H4, prev2);
+      setStatus('st-c2h2-curr', 'C2H2', curr.C2H2, curr); setStatus('st-c2h2-p1', 'C2H2', prev1.C2H2, prev1); setStatus('st-c2h2-p2', 'C2H2', prev2.C2H2, prev2);
+      setStatus('st-co-curr', 'CO', curr.CO, curr); setStatus('st-co-p1', 'CO', prev1.CO, prev1); setStatus('st-co-p2', 'CO', prev2.CO, prev2);
+
+      // Render IEEE C57.104-2019 Summary Section (Clause 6)
+      const norms = renderSummarySection(curr, prev1);
+
+      // Render Key Gas Bar Chart
+      renderKeyGasBars(curr, norms);
+
+      // Render IEC 60599 Ratio Analysis
+      renderIEC60599Section(curr);
+
+      // Render Page 2 Key Gas Trending
+      renderKeyGasTrending(items);
+
+      // Render Page 3 Gas Pattern Method
+      renderGasPatterns(curr);
+
+      // Render Page 4 Duval Triangles & Pentagons
+      renderDuvalAndPentagon(curr);
+
+      // Populate Signatures Block
+      const cleanSigVal = (v, fallback) => {
+        if (!v || v === '-' || v === 'N/A' || v === 'null' || v.trim() === '') return fallback;
+        return v;
+      };
+
+      const setSig = (prefix) => {
+        const compTested = cleanSigVal(curr.COMP1, 'Hitachi Energy');
+        const compRev = cleanSigVal(curr.COMP_REV, '-');
+        const compApp = cleanSigVal(curr.COMP2, 'GPSC');
+
+        const nameTested = cleanSigVal(curr.Name1 || curr.test_name, 'Mr. Aekapong Klamchang');
+        const nameRev = cleanSigVal(curr.Name_Rev, '-');
+        const nameApp = cleanSigVal(curr.Name2 || curr.witness_name, 'Mr. Pimchart P.');
+
+        const dtTested = formatDate(curr.date);
+        const dtRev = '-';
+        const dtApp = formatDate(curr.date);
+
+        document.querySelectorAll(`.${prefix}resp-company-tested, #${prefix}resp-company-tested`).forEach(e => e.textContent = compTested);
+        document.querySelectorAll(`.${prefix}resp-company-reviewed, #${prefix}resp-company-reviewed`).forEach(e => e.textContent = compRev);
+        document.querySelectorAll(`.${prefix}resp-company-approved, #${prefix}resp-company-approved`).forEach(e => e.textContent = compApp);
+
+        document.querySelectorAll(`.${prefix}resp-name-tested, #${prefix}resp-name-tested`).forEach(e => e.textContent = nameTested);
+        document.querySelectorAll(`.${prefix}resp-name-reviewed, #${prefix}resp-name-reviewed`).forEach(e => e.textContent = nameRev);
+        document.querySelectorAll(`.${prefix}resp-name-approved, #${prefix}resp-name-approved`).forEach(e => e.textContent = nameApp);
+
+        document.querySelectorAll(`.${prefix}resp-date-tested, #${prefix}resp-date-tested`).forEach(e => e.textContent = dtTested);
+        document.querySelectorAll(`.${prefix}resp-date-reviewed, #${prefix}resp-date-reviewed`).forEach(e => e.textContent = dtRev);
+        document.querySelectorAll(`.${prefix}resp-date-approved, #${prefix}resp-date-approved`).forEach(e => e.textContent = dtApp);
+      };
+      setSig('');
+      setSig('p2-');
+      setSig('p3-');
+      setSig('p4-');
+    }
+
+    // IEEE Std C57.104-2019 Clause 6.1.3 Norm Tables
+    function getIEEENorms(o2n2Ratio, ageYears) {
+      const isLowRatio = (o2n2Ratio !== null && o2n2Ratio !== undefined && o2n2Ratio <= 0.2);
+      
+      let ageCat = 'Unknown';
+      if (ageYears !== null && ageYears !== undefined && !isNaN(ageYears) && ageYears >= 1) {
+        if (ageYears <= 9) ageCat = '1-9';
+        else if (ageYears <= 30) ageCat = '10-30';
+        else ageCat = '>30';
+      }
+
+      // Table 1: 90th percentile gas concentrations (ppm)
+      const T1 = {
+        'low': {
+          'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
+          '1-9':     { H2: 75, CH4: 45, C2H6: 30, C2H4: 20, C2H2: 1, CO: 900, CO2: 5000 },
+          '10-30':   { H2: 100, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 10000 },
+          '>30':     { H2: 110, CH4: 110, C2H6: 150, C2H4: 90, C2H2: 2, CO: 900, CO2: 10000 }
+        },
+        'high': {
+          'Unknown': { H2: 40, CH4: 20, C2H6: 15, C2H4: 50, C2H2: 2, CO: 500, CO2: 5000 },
+          '1-9':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 25, C2H2: 1, CO: 500, CO2: 3500 },
+          '10-30':   { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 },
+          '>30':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 }
+        }
+      };
+
+      // Table 2: 95th percentile gas concentrations (ppm)
+      const T2 = {
+        'low': {
+          'Unknown': { H2: 200, CH4: 150, C2H6: 175, C2H4: 100, C2H2: 2, CO: 1100, CO2: 12500 },
+          '1-9':     { H2: 200, CH4: 100, C2H6: 70, C2H4: 40, C2H2: 2, CO: 1100, CO2: 7000 },
+          '10-30':   { H2: 200, CH4: 150, C2H6: 175, C2H4: 95, C2H2: 2, CO: 1100, CO2: 14000 },
+          '>30':     { H2: 200, CH4: 200, C2H6: 250, C2H4: 175, C2H2: 4, CO: 1100, CO2: 14000 }
+        },
+        'high': {
+          'Unknown': { H2: 90, CH4: 50, C2H6: 40, C2H4: 100, C2H2: 7, CO: 600, CO2: 7000 },
+          '1-9':     { H2: 90, CH4: 30, C2H6: 30, C2H4: 80, C2H2: 2, CO: 600, CO2: 5000 },
+          '10-30':   { H2: 90, CH4: 60, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 },
+          '>30':     { H2: 90, CH4: 30, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 }
+        }
+      };
+
+      // Table 3: 95th percentile values for absolute level change Delta (ppm)
+      const T3 = isLowRatio 
+        ? { H2: 40, CH4: 30, C2H6: 25, C2H4: 20, C2H2: 1, CO: 250, CO2: 2500 }
+        : { H2: 25, CH4: 10, C2H6: 7, C2H4: 20, C2H2: 1, CO: 175, CO2: 1750 };
+
+      const catKey = isLowRatio ? 'low' : 'high';
+      return {
+        table1: T1[catKey][ageCat],
+        table2: T2[catKey][ageCat],
+        table3: T3,
+        isLowRatio: isLowRatio,
+        ageCategory: ageCat
+      };
+    }
+
+    function parseMfgYear(mfgStr) {
+      if (!mfgStr) return null;
+      const str = mfgStr.toString().trim();
+      if (/^\d{4}$/.test(str)) {
+        return parseInt(str, 10);
+      }
+      const y4 = str.match(/\b(19\d\d|20\d\d)\b/);
+      if (y4) {
+        return parseInt(y4[1], 10);
+      }
+      const y2 = str.match(/-(\d{2})$/);
+      if (y2) {
+        const yr = parseInt(y2[1], 10);
+        return yr < 50 ? (2000 + yr) : (1900 + yr);
+      }
+      return null;
+    }
+
+    // Render IEEE C57.104-2019 Clause 6 Suggested Interpretation Procedure
+    function renderSummarySection(curr, prev1) {
+      const tbody = document.getElementById('summary-table-body');
+      tbody.innerHTML = '';
+
+      // Calculate O2/N2 ratio
+      const o2Val = parseFloat(curr.O2 || 0);
+      const n2Val = parseFloat(curr.N2 || 0);
+      const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+
+      // Calculate transformer age from TRInfo MANUFACTURING_DATE
+      const mfgYear = parseMfgYear(curr.MANUFACTURING_DATE || curr.mfgYear);
+      let ageYears = null;
+      const sampleYear = curr.date ? (new Date(curr.date).getFullYear() || 2026) : 2026;
+      if (mfgYear) {
+        ageYears = sampleYear - mfgYear;
+      }
+
+      const norms = getIEEENorms(o2n2Ratio, ageYears);
+
+      const gases = [
+        { name: 'Hydrogen', symbol: 'H2', val: curr.H2, key: 'H2' },
+        { name: 'Methane', symbol: 'CH4', val: curr.CH4, key: 'CH4' },
+        { name: 'Ethane', symbol: 'C2H6', val: curr.C2H6, key: 'C2H6' },
+        { name: 'Ethylene', symbol: 'C2H4', val: curr.C2H4, key: 'C2H4' },
+        { name: 'Acetylene', symbol: 'C2H2', val: curr.C2H2, key: 'C2H2' },
+        { name: 'Carbon Monoxide', symbol: 'CO', val: curr.CO, key: 'CO' },
+        { name: 'Carbon Dioxide', symbol: 'CO2', val: curr.CO2, key: 'CO2' }
+      ];
+
+      let maxDGAStatus = 1;
+
+      gases.forEach(g => {
+        const num = parseFloat(g.val || 0);
+        const prevNum = (prev1 && prev1[g.key] !== undefined && prev1[g.key] !== null) ? parseFloat(prev1[g.key] || 0) : null;
+        const delta = prevNum !== null ? Math.max(0, num - prevNum) : 0;
+
+        const t1Norm = norms.table1[g.key];
+        const t2Norm = norms.table2[g.key];
+        const t3Norm = norms.table3[g.key];
+
+        let gasStatus = 1;
+        let statusPillText = 'DGA Status 1';
+        let statusClass = 'status-a';
+        let rec = 'Normal';
+
+        // IEEE C57.104-2019 Clause 6.1.1 Flowchart Logic (Step 4, 5, 6)
+        if (num > t2Norm) {
+          gasStatus = 3;
+          statusPillText = 'DGA Status 3';
+          statusClass = 'status-d';
+          rec = `Critical - Concentration (${formatNum(num)} ppm) exceeds Table 2 limit (${formatNum(t2Norm)} ppm). Perform fault identification.`;
+        } else if (num > t1Norm) {
+          gasStatus = 2;
+          statusPillText = 'DGA Status 2';
+          statusClass = 'status-b';
+          rec = `Caution - Concentration (${formatNum(num)} ppm) exceeds Table 1 limit (${formatNum(t1Norm)} ppm). Increased sampling recommended.`;
+        } else if (prevNum !== null && delta > t3Norm) {
+          gasStatus = 2;
+          statusPillText = 'DGA Status 2';
+          statusClass = 'status-b';
+          rec = `Caution - Level within Table 1, but cumulative delta (Δ = ${formatNum(delta)} ppm) exceeds Table 3 limit (${formatNum(t3Norm)} ppm). Confirmation sample recommended.`;
+        }
+
+        if (gasStatus > maxDGAStatus) {
+          maxDGAStatus = gasStatus;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="white-space:nowrap;"><strong>${g.name} [${g.symbol}]</strong></td>
+          <td style="text-align:right; font-weight:700; white-space:nowrap;">${formatNum(g.val)}</td>
+          <td style="text-align:right; white-space:nowrap;">${t1Norm}</td>
+          <td style="text-align:right; white-space:nowrap;">${t2Norm}</td>
+          <td style="text-align:center; white-space:nowrap;"><span class="status-pill ${statusClass}">${statusPillText}</span></td>
+          <td style="font-size:8.5px; color:#334155; line-height:1.35;">${rec}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Overall DGA Status Pill and Clause 6 Description
+      const pill = document.getElementById('summary-status-pill');
+      const desc = document.getElementById('summary-text-desc');
+
+      if (maxDGAStatus === 1) {
+        pill.className = 'status-pill status-a';
+        pill.textContent = 'DGA Status 1';
+        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates all combustible gas levels are normal (DGA Status 1: Unexceptional DGA). 6-Month Routine Sampling recommended.`;
+      } else if (maxDGAStatus === 2) {
+        pill.className = 'status-pill status-b';
+        pill.textContent = 'DGA Status 2';
+        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates caution state (DGA Status 2: Possibly Suspicious DGA) due to gas concentration exceeding Table 1 (90th%) or cumulative rate (Delta) exceeding Table 3. Increased sampling frequency recommended.`;
+      } else {
+        pill.className = 'status-pill status-d';
+        pill.textContent = 'DGA Status 3';
+        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates critical state (DGA Status 3: Probably Suspicious DGA) due to gas concentration exceeding Table 2 (95th%). Perform fault identification via Duval Triangle/Pentagon and close surveillance.`;
+      }
+
+      return norms;
+    }
+
+    // Render IEC 60599 Gas Ratio Analysis & Fault Diagnosis
+    function renderIEC60599Section(curr) {
+      const h2   = parseFloat(curr.H2 || 0);
+      const ch4  = parseFloat(curr.CH4 || 0);
+      const c2h6 = parseFloat(curr.C2H6 || 0);
+      const c2h4 = parseFloat(curr.C2H4 || 0);
+      const c2h2 = parseFloat(curr.C2H2 || 0);
+      const co   = parseFloat(curr.CO || 0);
+      const co2  = parseFloat(curr.CO2 || 0);
+
+      // IEC 60599 Ratios
+      const r1 = c2h4 > 0 ? (c2h2 / c2h4) : 0; // C2H2 / C2H4
+      const r2 = h2 > 0   ? (ch4 / h2)   : 0; // CH4 / H2
+      const r3 = c2h6 > 0 ? (c2h4 / c2h6) : 0; // C2H4 / C2H6
+      const rCo2Co = co > 0 ? (co2 / co) : 0; // CO2 / CO
+
+      const elR1 = document.getElementById('iec-r1');
+      if (elR1) elR1.textContent = c2h4 > 0 ? r1.toFixed(2) : '-';
+      
+      const elR2 = document.getElementById('iec-r2');
+      if (elR2) elR2.textContent = h2 > 0 ? r2.toFixed(2) : '-';
+
+      const elR3 = document.getElementById('iec-r3');
+      if (elR3) elR3.textContent = c2h6 > 0 ? r3.toFixed(2) : '-';
+
+      const elCo2Co = document.getElementById('iec-r-co2co');
+      if (elCo2Co) elCo2Co.textContent = co > 0 ? rCo2Co.toFixed(2) : '-';
+
+      // Check gas thresholds for significance (IEC 60599 Section 6 typical limits for hydrocarbon/hydrogen gases)
+      const isSignificant = (h2 > 60 || ch4 > 50 || c2h6 > 60 || c2h4 > 100 || c2h2 > 2);
+
+      let faultCode = 'Normal';
+      let faultName = 'Normal / No Fault Detected';
+      let faultDesc = 'All gas concentrations are within normal limits of IEC 60599.';
+      let pillClass = 'status-a';
+      let pillText = 'Normal (IEC 60599)';
+
+      if (!isSignificant && c2h2 < 1) {
+        faultCode = 'Normal';
+        faultName = 'Normal / No Fault Detected';
+        faultDesc = 'All gas concentrations are within normal baseline limits of IEC 60599.';
+        pillClass = 'status-a';
+        pillText = 'Normal';
+      } else {
+        // IEC 60599 Ratio Diagnosis Code Table 1
+        if (r1 < 0.1 && r2 < 0.1 && r3 < 0.2) {
+          faultCode = 'PD';
+          faultName = 'PD - Partial Discharge';
+          faultDesc = 'Partial discharge of cold plasma (corona type) in gas-filled cavities or insulation.';
+          pillClass = 'status-c';
+          pillText = 'PD Fault';
+        } else if (r1 > 1 && r2 >= 0.1 && r2 <= 0.5 && r3 > 1) {
+          faultCode = 'D1';
+          faultName = 'D1 - Discharges of Low Energy';
+          faultDesc = 'Discharges of low energy (Sparking / Low energy arcing).';
+          pillClass = 'status-c';
+          pillText = 'D1 Fault';
+        } else if (r1 >= 0.6 && r1 <= 2.5 && r2 >= 0.1 && r2 <= 1 && r3 > 2) {
+          faultCode = 'D2';
+          faultName = 'D2 - Discharges of High Energy';
+          faultDesc = 'Discharges of high energy (High energy arcing with severe risk to transformer).';
+          pillClass = 'status-d';
+          pillText = 'D2 Fault';
+        } else if (r1 < 0.1 && r2 > 1 && r3 < 1) {
+          faultCode = 'T1';
+          faultName = 'T1 - Thermal Fault < 300°C';
+          faultDesc = 'Low temperature thermal fault (< 300°C) at local spot or connections.';
+          pillClass = 'status-b';
+          pillText = 'T1 Thermal Fault';
+        } else if (r1 < 0.1 && r2 > 1 && r3 >= 1 && r3 <= 4) {
+          faultCode = 'T2';
+          faultName = 'T2 - Thermal Fault 300°C - 700°C';
+          faultDesc = 'Medium temperature thermal fault (300°C - 700°C) causing oil decomposition.';
+          pillClass = 'status-c';
+          pillText = 'T2 Thermal Fault';
+        } else if (r1 < 0.1 && r2 > 1 && r3 > 4) {
+          faultCode = 'T3';
+          faultName = 'T3 - Thermal Fault > 700°C';
+          faultDesc = 'High temperature thermal fault (> 700°C) at core or winding connections.';
+          pillClass = 'status-d';
+          pillText = 'T3 Thermal Fault';
+        } else if (c2h2 >= 2) {
+          faultCode = 'D';
+          faultName = 'D - Electrical Discharge Suspected';
+          faultDesc = 'Elevated Acetylene (C2H2) detected, indicating electrical discharge or arcing.';
+          pillClass = 'status-d';
+          pillText = 'Discharge Fault';
+        } else if (c2h4 > 100 || r3 > 3) {
+          faultCode = 'T';
+          faultName = 'T - Thermal Overheating Suspected';
+          faultDesc = 'Elevated Ethylene (C2H4) ratio detected, indicating thermal overheating.';
+          pillClass = 'status-c';
+          pillText = 'Thermal Overheating';
+        } else {
+          faultCode = 'Mix';
+          faultName = 'Mixed / Non-typical Pattern';
+          faultDesc = 'Mixed gas pattern. Further verification via Duval Triangles / Pentagons recommended.';
+          pillClass = 'status-b';
+          pillText = 'Mix Fault';
+        }
+      }
+
+      // Paper Insulation Degradation check (CO2 / CO ratio section)
+      let paperDesc = 'Normal Paper Aging';
+      if (co > 500 && rCo2Co > 0 && rCo2Co < 3) {
+        paperDesc = 'Paper Overheating Suspected (CO2/CO < 3)';
+      } else if (co > 500 && rCo2Co >= 3 && rCo2Co <= 10) {
+        paperDesc = 'Moderate Paper Degradation (CO2/CO = 3-10)';
+      } else if (rCo2Co > 10) {
+        paperDesc = 'Normal Paper Aging (CO2/CO > 10)';
+      }
+
+      const pillEl = document.getElementById('iec-status-pill');
+      if (pillEl) {
+        pillEl.className = 'status-pill ' + pillClass;
+        pillEl.textContent = pillText;
+      }
+
+      const nameEl = document.getElementById('iec-fault-name');
+      if (nameEl) nameEl.textContent = faultName;
+
+      const descEl = document.getElementById('iec-fault-desc');
+      if (descEl) descEl.textContent = faultDesc;
+
+      const paperEl = document.getElementById('iec-paper-desc');
+      if (paperEl) paperEl.textContent = paperDesc;
+    }
+
+    // Render Key Gas Analysis Thermometer Charts (Left Criteria Numbers + Inner Black Mercury Fluid Column)
+    function renderKeyGasBars(curr, norms) {
+      const container = document.getElementById('keygas-stacked-bars');
+      container.innerHTML = '';
+
+      const t1 = norms ? norms.table1 : IEEE_LIMITS_90TH;
+      const t2 = norms ? norms.table2 : { H2: 90, CH4: 30, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 };
+
+      const gases = [
+        { label: 'H2', max: Math.round(t2.H2 * 1.2), green: t1.H2, yellow: t2.H2, val: parseFloat(curr.H2 || 0) },
+        { label: 'CH4', max: Math.round(t2.CH4 * 1.2), green: t1.CH4, yellow: t2.CH4, val: parseFloat(curr.CH4 || 0) },
+        { label: 'C2H6', max: Math.round(t2.C2H6 * 1.2), green: t1.C2H6, yellow: t2.C2H6, val: parseFloat(curr.C2H6 || 0) },
+        { label: 'C2H4', max: Math.round(t2.C2H4 * 1.2), green: t1.C2H4, yellow: t2.C2H4, val: parseFloat(curr.C2H4 || 0) },
+        { label: 'C2H2', max: Math.round(t2.C2H2 * 2.0), green: t1.C2H2, yellow: t2.C2H2, val: parseFloat(curr.C2H2 || 0) },
+        { label: 'CO', max: Math.round(t2.CO * 1.2), green: t1.CO, yellow: t2.CO, val: parseFloat(curr.CO || 0) },
+        { label: 'CO2', max: Math.round(t2.CO2 * 1.2), green: t1.CO2, yellow: t2.CO2, val: parseFloat(curr.CO2 || 0) }
+      ];
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const txtColor = isDark ? '#f8fafc' : '#0f172a';
+      const strokeColor = isDark ? '#94a3b8' : '#334155';
+      const bulbBg = isDark ? '#1e293b' : '#ffffff';
+
+      gases.forEach(g => {
+        // Segment heights inside 135px tube (y: 28 to 163)
+        const tubeH = 135;
+        const greenH = Math.max(Math.round((g.green / g.max) * tubeH), 12);
+        const yellowH = Math.max(Math.round(((g.yellow - g.green) / g.max) * tubeH), 12);
+        const redH = tubeH - greenH - yellowH;
+
+        const yGreenTop = 28 + redH + yellowH;
+        const yYellowTop = 28 + redH;
+        const yRedTop = 28;
+
+        // Current value inner black column height (y: 163 is 0, 28 is max)
+        const valPct = Math.min(Math.max(g.val / g.max, 0), 1);
+        const yMeasured = 163 - (valPct * tubeH);
+        const barHeight = Math.max(163 - yMeasured, 4);
+
+        const svgHtml = `
+          <svg viewBox="0 0 92 198" style="width:100%; height:100%; display:block;">
+            <!-- Gas Title Above Column -->
+            <text x="56" y="16" font-size="12" font-weight="800" text-anchor="middle" fill="${txtColor}">${g.label}</text>
+
+            <!-- Thermometer Column Mask & Background Threshold Color Fills -->
+            <defs>
+              <clipPath id="tube-clip-${g.label}">
+                <rect x="45" y="28" width="22" height="135" rx="3" ry="3"/>
+              </clipPath>
+            </defs>
+
+            <!-- Color Segments Fills inside Column (Background Criteria) -->
+            <g clip-path="url(#tube-clip-${g.label})">
+              <!-- Red Segment (Top) -->
+              <rect x="45" y="${yRedTop}" width="22" height="${redH}" fill="#ef4444" opacity="0.85"/>
+              <!-- Yellow Segment (Middle) -->
+              <rect x="45" y="${yYellowTop}" width="22" height="${yellowH}" fill="#eab308" opacity="0.85"/>
+              <!-- Green Segment (Bottom) -->
+              <rect x="45" y="${yGreenTop}" width="22" height="${greenH}" fill="#22c55e" opacity="0.85"/>
+
+              <!-- Inner Black Mercury Column (แท่งสีดำอยู่กลางกระเปาะ) -->
+              <rect x="52" y="${yMeasured}" width="8" height="${barHeight + 10}" rx="2" fill="#000000"/>
+            </g>
+
+            <!-- Column Outer Border -->
+            <rect x="45" y="28" width="22" height="135" rx="3" ry="3" fill="none" stroke="${strokeColor}" stroke-width="2"/>
+
+            <!-- Criteria Scale Ticks & Numbers (Left Side) -->
+            <line x1="40" y1="${yRedTop}" x2="45" y2="${yRedTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="37" y="${yRedTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.max}</text>
+
+            <line x1="40" y1="${yYellowTop}" x2="45" y2="${yYellowTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="37" y="${yYellowTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.yellow}</text>
+
+            <line x1="40" y1="${yGreenTop}" x2="45" y2="${yGreenTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="37" y="${yGreenTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.green}</text>
+
+            <line x1="40" y1="163" x2="45" y2="163" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="37" y="166.5" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">0</text>
+
+            <!-- Measured Value Label Below Column -->
+            <text x="56" y="184" font-size="11" font-weight="800" fill="${txtColor}" text-anchor="middle">${g.val} ppm.</text>
+          </svg>
+        `;
+
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '13%';
+        wrapper.style.height = '100%';
+        wrapper.innerHTML = svgHtml;
+        container.appendChild(wrapper);
+      });
+    }
+
+    // Render Page 2 Key Gas Trending Charts
+    function renderKeyGasTrending(items) {
+      const parseDate = (dStr) => {
+        if (!dStr) return new Date(0);
+        if (dStr.includes('/')) {
+          const pts = dStr.split('/');
+          if (pts.length === 3) return new Date(pts[2], pts[0] - 1, pts[1]);
+        }
+        return new Date(dStr);
+      };
+
+      // Sort chronologically
+      const sorted = [...items].sort((a, b) => parseDate(a.date) - parseDate(b.date));
+      const dates = sorted.map(x => formatDate(x.date));
+
+      const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const labelColor = isDark ? '#f3f4f6' : '#0f172a';
+      const gridBorder = isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0';
+
+      const gasColorMap = {
+        'H2': '#3b82f6',   // Bright Blue
+        'CH4': '#10b981',  // Emerald Green
+        'C2H6': '#f59e0b', // Amber Yellow
+        'C2H4': '#ef4444', // Vibrant Red
+        'C2H2': '#8b5cf6', // Purple
+        'CO': '#ec4899',   // Magenta Pink
+        'O2': '#06b6d4',   // Cyan
+        'CO2': '#f97316'   // Orange
+      };
+
+      gases.forEach(gas => {
+        const vals = sorted.map(x => {
+          const v = parseFloat(x[gas]);
+          return isNaN(v) ? null : v;
+        });
+
+        const gasColor = gasColorMap[gas] || '#3b82f6';
+
+        const options = {
+          series: [{ name: gas, data: vals }],
+          chart: { height: 115, type: 'line', toolbar: { show: false }, background: 'transparent' },
+          stroke: { width: 2, curve: 'straight' },
+          colors: [gasColor],
+          markers: { size: 4, colors: [gasColor] },
+          dataLabels: {
+            enabled: true,
+            offsetY: -6,
+            style: { fontSize: '8.5px', fontWeight: 'bold', colors: [labelColor] },
+            background: { enabled: false }
+          },
+          xaxis: { categories: dates, labels: { style: { fontSize: '7px', colors: labelColor } } },
+          yaxis: { labels: { style: { fontSize: '7px', colors: labelColor } } },
+          grid: { borderColor: gridBorder, strokeDashArray: 2 }
+        };
+
+        const targetEl = document.getElementById(`chart-trend-${gas.toLowerCase()}`);
+        if (targetEl) {
+          targetEl.innerHTML = '';
+          const parentBox = targetEl.closest('.trend-box');
+          if (parentBox) {
+            const titleEl = parentBox.querySelector('.trend-title');
+            if (titleEl) titleEl.style.color = gasColor;
+            parentBox.onclick = () => {
+              openExpandedChart(gas, dates, vals, gasColor);
+            };
+          }
+          const chart = new ApexCharts(targetEl, options);
+          chart.render();
+        }
+      });
+    }
+
+    let activeExpandedChart = null;
+
+    function openExpandedChart(gas, dates, vals, gasColor) {
+      const modal = document.getElementById('chart-modal');
+      const title = document.getElementById('modal-chart-title');
+      const body = document.getElementById('modal-chart-body');
+      
+      title.textContent = `${gas} (ppm) - Historic Trending`;
+      title.style.color = gasColor;
+      body.innerHTML = '';
+      
+      modal.style.display = 'flex';
+      // Force reflow
+      modal.offsetHeight;
+      modal.classList.add('show');
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const labelColor = isDark ? '#f3f4f6' : '#0f172a';
+      const gridBorder = isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0';
+
+      const options = {
+        series: [{ name: gas, data: vals }],
+        chart: {
+          height: 380,
+          type: 'line',
+          toolbar: {
+            show: true,
+            tools: {
+              download: true,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true
+            }
+          },
+          background: 'transparent'
+        },
+        stroke: { width: 3, curve: 'smooth' },
+        colors: [gasColor],
+        markers: { size: 5, colors: [gasColor] },
+        dataLabels: {
+          enabled: true,
+          offsetY: -8,
+          style: { fontSize: '10px', fontWeight: 'bold', colors: [labelColor] },
+          background: {
+            enabled: true,
+            foreColor: isDark ? '#0f172a' : '#ffffff',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: gasColor,
+            opacity: 0.9
+          }
+        },
+        xaxis: {
+          categories: dates,
+          labels: { style: { fontSize: '9px', colors: labelColor } }
+        },
+        yaxis: {
+          labels: { style: { fontSize: '9px', colors: labelColor } }
+        },
+        grid: { borderColor: gridBorder, strokeDashArray: 3 },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          x: { show: true }
+        }
+      };
+
+      activeExpandedChart = new ApexCharts(body, options);
+      activeExpandedChart.render();
+    }
+
+    function closeChartModal(e) {
+      const modal = document.getElementById('chart-modal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        if (activeExpandedChart) {
+          activeExpandedChart.destroy();
+          activeExpandedChart = null;
+        }
+      }, 250);
+    }
+
+    // Render Page 3 Gas Pattern Method
+    function renderGasPatterns(curr) {
+      const patterns = [
+        { id: 'pattern-arcing', name: 'Arcing in Oil', ref: [0, 60, 5, 2, 5, 28] },
+        { id: 'pattern-pd', name: 'Partial Discharge in Oil', ref: [0, 85, 12, 1, 1, 1] },
+        { id: 'pattern-cellulose', name: 'Overheated Cellulose', ref: [90, 2, 2, 1, 1, 4] },
+        { id: 'pattern-oil', name: 'Overheated Oil', ref: [0, 2, 8, 8, 52, 30] }
+      ];
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const labelColor = isDark ? '#f3f4f6' : '#0f172a';
+      const gridBorder = isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0';
+
+      // Calculate measured relative % of gases: CO, H2, CH4, C2H6, C2H4, C2H2
+      const rawGases = [
+        parseFloat(curr.CO || 0),
+        parseFloat(curr.H2 || 0),
+        parseFloat(curr.CH4 || 0),
+        parseFloat(curr.C2H6 || 0),
+        parseFloat(curr.C2H4 || 0),
+        parseFloat(curr.C2H2 || 0)
+      ];
+
+      const sum = rawGases.reduce((a, b) => a + b, 0);
+      const measuredPct = sum > 0 ? rawGases.map(v => Math.round((v / sum) * 100)) : [0, 0, 0, 0, 0, 0];
+
+      patterns.forEach(p => {
+        const options = {
+          series: [
+            { name: 'Key Gas Pattern', data: p.ref },
+            { name: 'Gas Measured', data: measuredPct }
+          ],
+          chart: { height: 175, type: 'bar', toolbar: { show: false }, background: 'transparent' },
+          colors: ['#a8a29e', '#3b82f6'],
+          plotOptions: { bar: { columnWidth: '55%' } },
+          dataLabels: { enabled: false },
+          xaxis: { categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'], labels: { style: { fontSize: '8px', colors: labelColor } } },
+          yaxis: { max: 100, labels: { formatter: val => val + '%', style: { fontSize: '7px', colors: labelColor } } },
+          legend: { position: 'top', fontSize: '8px', labels: { colors: labelColor } },
+          grid: { borderColor: gridBorder }
+        };
+
+        const targetEl = document.getElementById(p.id);
+        if (targetEl) {
+          targetEl.innerHTML = '';
+          const chart = new ApexCharts(targetEl, options);
+          chart.render();
+        }
+      });
+    }
+
+    // Excel Evaluation Logic from DuvalTriangles1_7-29Mar2016.xls
+    function evaluateDuval1(ch4, c2h4, c2h2) {
+      const sum = ch4 + c2h4 + c2h2;
+      if (sum <= 0) return { code: 'PD', name: 'PD Partial discharges', ch4Pct: 100, c2h4Pct: 0, c2h2Pct: 0 };
+      const ch4Pct = (ch4 / sum) * 100;
+      const c2h4Pct = (c2h4 / sum) * 100;
+      const c2h2Pct = (c2h2 / sum) * 100;
+
+      let code = 'D2';
+      let name = 'D2 Discharges of high energy';
+
+      if (ch4Pct >= 98) {
+        code = 'PD'; name = 'PD Partial discharges';
+      } else if (ch4Pct < 98 && c2h4Pct <= 20 && c2h2Pct <= 4) {
+        code = 'T1'; name = 'T1 Thermal faults (T < 300°C)';
+      } else if (c2h4Pct > 20 && c2h4Pct < 50 && c2h2Pct <= 4) {
+        code = 'T2'; name = 'T2 Thermal faults (300°C < T < 700°C)';
+      } else if (c2h4Pct >= 50 && c2h2Pct <= 15) {
+        code = 'T3'; name = 'T3 Thermal faults (T > 700°C)';
+      } else if (c2h4Pct <= 23 && c2h2Pct >= 13) {
+        code = 'D1'; name = 'D1 Discharges of low energy';
+      } else if ((c2h4Pct > 23 && c2h4Pct <= 40 && c2h2Pct >= 13 && c2h2Pct < 29) || (c2h4Pct > 23 && c2h2Pct >= 29)) {
+        code = 'D2'; name = 'D2 Discharges of high energy';
+      } else if ((c2h4Pct < 50 && c2h2Pct > 4 && c2h2Pct < 13) ||
+                 (c2h4Pct > 40 && c2h2Pct > 15 && c2h2Pct < 29) ||
+                 (c2h4Pct > 40 && c2h4Pct < 50 && c2h2Pct >= 13 && c2h2Pct <= 15)) {
+        code = 'DT'; name = 'DT Mixed thermal and discharge faults';
+      }
+
+      return { code, name, ch4Pct, c2h4Pct, c2h2Pct };
+    }
+
+    function evaluateDuval4(h2, ch4, c2h6) {
+      const sum = h2 + ch4 + c2h6;
+      if (sum <= 0) return { code: 'S', name: 'S Stray gases', h2Pct: 100, ch4Pct: 0, c2h6Pct: 0 };
+      const h2Pct = (h2 / sum) * 100;
+      const ch4Pct = (ch4 / sum) * 100;
+      const c2h6Pct = (c2h6 / sum) * 100;
+
+      let code = 'S';
+      let name = 'S Stray gases';
+
+      if (ch4Pct >= 2 && ch4Pct <= 15 && c2h6Pct <= 1) {
+        code = 'PD'; name = 'PD Partial discharges';
+      } else if (h2Pct <= 9 && c2h6Pct > 30) {
+        code = 'O'; name = 'O Overheating';
+      } else if (
+        (h2Pct <= 15 && c2h6Pct <= 30) ||
+        (h2Pct > 15 && c2h6Pct <= 24 && ch4Pct >= 36) ||
+        (h2Pct > 15 && c2h6Pct > 24 && c2h6Pct <= 36 && h2Pct <= 15 - (25 / 12) * (c2h6Pct - 36))
+      ) {
+        code = 'C'; name = 'C Carbonization';
+      } else if (h2Pct > 9 && h2Pct <= 2.5 * c2h6Pct - 75) {
+        code = 'N/D'; name = 'N/D Not determined';
+      } else {
+        code = 'S'; name = 'S Stray gases';
+      }
+
+      return { code, name, h2Pct, ch4Pct, c2h6Pct };
+    }
+
+    // Render Page 4 Duval Triangles & Pentagons
+    function renderDuvalAndPentagon(curr) {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const strokeColor = isDark ? '#94a3b8' : '#1e293b';
+      const txtColor = isDark ? '#f8fafc' : '#0f172a';
+      const polyFill = isDark ? '#1e293b' : '#f8fafc';
+      const polyStroke = isDark ? '#64748b' : '#334155';
+
+      // Check if DGA is Status 1 (Unexceptional) per IEEE C57.104-2019
+      const isStatus1 = (() => {
+        const o2Val = parseFloat(curr.O2 || 0);
+        const n2Val = parseFloat(curr.N2 || 0);
+        const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+
+        const mfgYear = parseMfgYear(curr.MANUFACTURING_DATE || curr.mfgYear);
+        let ageYears = null;
+        const sampleYear = curr.date ? (new Date(curr.date).getFullYear() || 2026) : 2026;
+        if (mfgYear) {
+          ageYears = sampleYear - mfgYear;
+        }
+
+        const norms = getIEEENorms(o2n2Ratio, ageYears);
+        const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+
+        for (let key of gases) {
+          const num = parseFloat(curr[key] || 0);
+          const t1Norm = norms.table1[key];
+          if (num > t1Norm) {
+            return false; // exceeds Table 1 limit (Caution/Critical)
+          }
+        }
+        return true; // all gases within normal baseline
+      })();
+
+      const isLowGases = isStatus1;
+
+      function getPolygonCentroid(h2, ch4, c2h6, c2h4, c2h2) {
+        const total = h2 + ch4 + c2h6 + c2h4 + c2h2;
+        if (total === 0) return null;
+        
+        const pH2 = (h2 / total) * 100;
+        const pCH4 = (ch4 / total) * 100;
+        const pC2H6 = (c2h6 / total) * 100;
+        const pC2H4 = (c2h4 / total) * 100;
+        const pC2H2 = (c2h2 / total) * 100;
+        
+        const d_H2 = pH2 * 0.4;
+        const d_C2H2 = pC2H2 * 0.4;
+        const d_C2H4 = pC2H4 * 0.4;
+        const d_CH4 = pCH4 * 0.4;
+        const d_C2H6 = pC2H6 * 0.4;
+        
+        const p0 = [0, d_H2];
+        const p1 = [d_C2H2 * Math.cos(18 * Math.PI / 180), d_C2H2 * Math.sin(18 * Math.PI / 180)];
+        const p2 = [d_C2H4 * Math.cos(-54 * Math.PI / 180), d_C2H4 * Math.sin(-54 * Math.PI / 180)];
+        const p3 = [d_CH4 * Math.cos(-126 * Math.PI / 180), d_CH4 * Math.sin(-126 * Math.PI / 180)];
+        const p4 = [d_C2H6 * Math.cos(162 * Math.PI / 180), d_C2H6 * Math.sin(162 * Math.PI / 180)];
+        
+        const pts = [p0, p1, p2, p3, p4, p0];
+        
+        let A = 0;
+        let cx = 0;
+        let cy = 0;
+        
+        for (let i = 0; i < 5; i++) {
+          const factor = (pts[i][0] * pts[i+1][1] - pts[i+1][0] * pts[i][1]);
+          A += factor;
+          cx += (pts[i][0] + pts[i+1][0]) * factor;
+          cy += (pts[i][1] + pts[i+1][1]) * factor;
+        }
+        
+        A *= 0.5;
+        if (Math.abs(A) < 1e-5) {
+          return {
+            x: (p0[0] + p1[0] + p2[0] + p3[0] + p4[0]) / 5,
+            y: (p0[1] + p1[1] + p2[1] + p3[1] + p4[1]) / 5
+          };
+        }
+        
+        cx /= (6 * A);
+        cy /= (6 * A);
+        
+        return { x: cx, y: cy };
+      }
+
+      function isPointInPolygon(point, vs) {
+        const x = point[0], y = point[1];
+        let inside = false;
+        for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+          const xi = vs[i][0], yi = vs[i][1];
+          const xj = vs[j][0], yj = vs[j][1];
+          const intersect = ((yi > y) !== (yj > y))
+              && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          if (intersect) inside = !inside;
+        }
+        return inside;
+      }
+
+      // SVG Renderer for Duval Triangle 1
+      const drawDuval1 = () => {
+        const ch4 = parseFloat(curr.CH4 || 0);
+        const c2h4 = parseFloat(curr.C2H4 || 0);
+        const c2h2 = parseFloat(curr.C2H2 || 0);
+        const h2 = parseFloat(curr.H2 || 0);
+        const res = evaluateDuval1(ch4, c2h4, c2h2);
+
+        const codeEl = document.getElementById('res-duval-1-code');
+        if (isLowGases) {
+          if (codeEl) codeEl.textContent = `The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.`;
+        } else {
+          if (codeEl) codeEl.textContent = `${res.name}`;
+        }
+
+        const tooltipText = `CH₄: ${formatNum(ch4)} ppm. (${res.ch4Pct.toFixed(1)}%)<br>C₂H₄: ${formatNum(c2h4)} ppm. (${res.c2h4Pct.toFixed(1)}%)<br>C₂H₂: ${formatNum(c2h2)} ppm. (${res.c2h2Pct.toFixed(1)}%)`;
+
+        // Ternary coordinate mapper: Apex=CH4(150,25), Left=C2H2(30,215), Right=C2H4(270,215)
+        const xy = (a, b, c) => [
+          (a * 150 + b * 270 + c * 30) / 100,
+          (a * 25 + b * 215 + c * 215) / 100
+        ];
+        const pStr = (pts) => pts.map(p => xy(p[0], p[1], p[2]).join(',')).join(' ');
+
+        const polyPD = pStr([[100,0,0], [98,2,0], [98,0,2]]);
+        const polyT1 = pStr([[98,0,2], [98,2,0], [80,20,0], [76,20,4], [96,0,4]]);
+        const polyT2 = pStr([[80,20,0], [50,50,0], [46,50,4], [76,20,4]]);
+        const polyT3 = pStr([[50,50,0], [0,100,0], [0,85,15], [35,50,15], [46,50,4]]);
+        const polyD1 = pStr([[87,0,13], [0,0,100], [0,23,77], [64,23,13]]);
+        const polyD2 = pStr([[0,23,77], [0,71,29], [31,40,29], [47,40,13], [64,23,13]]);
+        const polyDT = pStr([[96,0,4], [76,20,4], [46,50,4], [35,50,15], [0,85,15], [0,71,29], [31,40,29], [47,40,13], [64,23,13], [87,0,13]]);
+
+        const pt = xy(res.ch4Pct, res.c2h4Pct, res.c2h2Pct);
+
+        // Generate Ticks
+        let ticksHtml = '';
+        // Left edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(v, 0, 100 - v);
+          const p2 = xy(v, 2.5, 97.5 - v);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+        // Right edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(100 - v, v, 0);
+          const p2 = xy(97.5 - v, v, 2.5);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+        // Bottom edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(0, 100 - v, v);
+          const p2 = xy(2.5, 97.5 - v, v);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+
+        return `
+          <svg viewBox="0 0 310 340" style="width:100%; height:100%; font-family:sans-serif;">
+            <!-- Outer border -->
+            <polygon points="150,25 270,215 30,215" fill="none" stroke="${strokeColor}" stroke-width="1.8"/>
+
+            <!-- Polygons -->
+            <polygon points="${polyD1}" fill="#598fe6" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyD2}" fill="#ea85ea" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyDT}" fill="#addce6" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyT1}" fill="#f2e779" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyT2}" fill="#f08913" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyT3}" fill="#e62e43" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyPD}" fill="#ffffff" stroke="${strokeColor}" stroke-width="0.8"/>
+
+            <!-- Tick Lines -->
+            ${ticksHtml}
+
+            <!-- Axis Labels & Arrows -->
+            <text x="38" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(-60 38 125)" text-anchor="middle">% CH₄ ⟶</text>
+            <text x="262" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(60 262 125)" text-anchor="middle">% C₂H₄ ⟶</text>
+            <text x="150" y="242" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₂</text>
+
+            <!-- Ticks Labels -->
+            <!-- CH4 Left Axis -->
+            <text x="50" y="175" font-size="8.5" fill="${txtColor}" text-anchor="end">20</text>
+            <text x="74" y="137" font-size="8.5" fill="${txtColor}" text-anchor="end">40</text>
+            <text x="98" y="99" font-size="8.5" fill="${txtColor}" text-anchor="end">60</text>
+            <text x="122" y="61" font-size="8.5" fill="${txtColor}" text-anchor="end">80</text>
+
+            <!-- C2H4 Right Axis -->
+            <text x="178" y="61" font-size="8.5" fill="${txtColor}" text-anchor="start">20</text>
+            <text x="202" y="99" font-size="8.5" fill="${txtColor}" text-anchor="start">40</text>
+            <text x="226" y="137" font-size="8.5" fill="${txtColor}" text-anchor="start">60</text>
+            <text x="250" y="175" font-size="8.5" fill="${txtColor}" text-anchor="start">80</text>
+
+            <!-- C2H2 Bottom Axis -->
+            <text x="78" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">80</text>
+            <text x="126" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">60</text>
+            <text x="174" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">40</text>
+            <text x="222" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">20</text>
+
+            <!-- Zone Labels inside the triangle -->
+            <text x="156" y="18" font-size="9" font-weight="bold" fill="${txtColor}">PD</text>
+            <text x="170" y="42" font-size="9" font-weight="bold" fill="${txtColor}">T1</text>
+            <text x="196" y="80" font-size="9" font-weight="bold" fill="${txtColor}">T2</text>
+            <text x="220" y="168" font-size="10" font-weight="bold" fill="#000000">T3</text>
+            <text x="100" y="130" font-size="11" font-weight="bold" fill="#000000">D1</text>
+            <text x="145" y="172" font-size="11" font-weight="bold" fill="#000000">D2</text>
+            <text x="180" y="140" font-size="10" font-weight="bold" fill="#000000">DT</text>
+
+            <!-- Target Point (Solid Red Dot with white outline) -->
+            <circle cx="${pt[0]}" cy="${pt[1]}" r="3.5" fill="#dc2626" stroke="#ffffff" stroke-width="1.0" class="duval-point" data-tooltip="${tooltipText}" style="${isLowGases ? 'display: none;' : ''}"/>
+
+            <!-- Legend matching screenshot -->
+            <g transform="translate(10, 248)">
+              <rect x="0" y="0" width="10" height="10" fill="#598fe6"/>
+              <text x="14" y="8" font-size="8.5" fill="${txtColor}">D1 Discharges of low energy</text>
+
+              <rect x="0" y="12" width="10" height="10" fill="#ea85ea"/>
+              <text x="14" y="20" font-size="8.5" fill="${txtColor}">D2 Discharges of high energy</text>
+
+              <rect x="0" y="24" width="10" height="10" fill="#addce6"/>
+              <text x="14" y="32" font-size="8.5" fill="${txtColor}">DT Mixed thermal and discharge faults</text>
+
+              <rect x="0" y="36" width="10" height="10" fill="#f2e779"/>
+              <text x="14" y="44" font-size="8.5" fill="${txtColor}">T1 Thermal faults (T &lt; 300°C)</text>
+
+              <rect x="0" y="48" width="10" height="10" fill="#f08913"/>
+              <text x="14" y="56" font-size="8.5" fill="${txtColor}">T2 Thermal faults (300°C &lt; T &lt; 700°C)</text>
+
+              <rect x="0" y="60" width="10" height="10" fill="#e62e43"/>
+              <text x="14" y="68" font-size="8.5" fill="${txtColor}">T3 Thermal faults (T &gt; 700°C)</text>
+
+              <rect x="0" y="72" width="10" height="10" fill="#ffffff" stroke="#94a3b8" stroke-width="0.5"/>
+              <text x="14" y="80" font-size="8.5" fill="${txtColor}">PD Partial discharges</text>
+            </g>
+          </svg>
+        `;
+      };
+
+      // SVG Renderer for Duval Triangle 4
+      const drawDuval4 = () => {
+        const h2 = parseFloat(curr.H2 || 0);
+        const ch4 = parseFloat(curr.CH4 || 0);
+        const c2h6 = parseFloat(curr.C2H6 || 0);
+        const c2h4 = parseFloat(curr.C2H4 || 0);
+        const c2h2 = parseFloat(curr.C2H2 || 0);
+        const res = evaluateDuval4(h2, ch4, c2h6);
+
+        const codeEl = document.getElementById('res-duval-4-code');
+        if (isLowGases) {
+          if (codeEl) codeEl.textContent = `The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.`;
+        } else {
+          if (codeEl) codeEl.textContent = `${res.name}`;
+        }
+
+        const tooltipText = `H₂: ${formatNum(h2)} ppm. (${res.h2Pct.toFixed(1)}%)<br>CH₄: ${formatNum(ch4)} ppm. (${res.ch4Pct.toFixed(1)}%)<br>C₂H₆: ${formatNum(c2h6)} ppm. (${res.c2h6Pct.toFixed(1)}%)`;
+
+        // Ternary coordinate mapper: Apex=H2(150,25), Left=C2H6(30,215), Right=CH4(270,215)
+        const xy = (a, b, c) => [
+          (a * 150 + b * 270 + c * 30) / 100,
+          (a * 25 + b * 215 + c * 215) / 100
+        ];
+        const pStr = (pts) => pts.map(p => xy(p[0], p[1], p[2]).join(',')).join(' ');
+
+        const polyPD = pStr([[98,2,0], [97,2,1], [84,15,1], [85,15,0]]);
+        const polyS = pStr([[54,0,46], [100,0,0], [98,2,0], [97,2,1], [84,15,1], [85,15,0], [64,36,0], [40,36,24], [15,61,24], [15,55,30], [9,61,30], [9,45,46]]);
+        const polyO = pStr([[0,0,100], [9,0,91], [9,61,30], [0,70,30]]);
+        const polyC = pStr([[64,36,0], [40,36,24], [15,61,24], [15,55,30], [0,70,30], [0,100,0]]);
+
+        const pt = xy(res.h2Pct, res.ch4Pct, res.c2h6Pct);
+
+        // Generate Ticks
+        let ticksHtml = '';
+        // Left edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(v, 0, 100 - v);
+          const p2 = xy(v, 2.5, 97.5 - v);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+        // Right edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(100 - v, v, 0);
+          const p2 = xy(97.5 - v, v, 2.5);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+        // Bottom edge ticks
+        for (let v = 20; v <= 80; v += 20) {
+          const p1 = xy(0, 100 - v, v);
+          const p2 = xy(2.5, 97.5 - v, v);
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
+        }
+
+        return `
+          <svg viewBox="0 0 310 340" style="width:100%; height:100%; font-family:sans-serif;">
+            <!-- Outer border -->
+            <polygon points="150,25 270,215 30,215" fill="none" stroke="${strokeColor}" stroke-width="1.8"/>
+
+            <!-- Polygons -->
+            <polygon points="${polyS}" fill="#9ebbf8" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyC}" fill="#f7b7f2" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyO}" fill="#67c5cd" stroke="${strokeColor}" stroke-width="0.8"/>
+            <polygon points="${polyPD}" fill="#e2e8f0" stroke="${strokeColor}" stroke-width="0.8"/>
+
+            <!-- Tick Lines -->
+            ${ticksHtml}
+
+            <!-- Axis Labels & Arrows -->
+            <text x="38" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(-60 38 125)" text-anchor="middle">% H₂ ⟶</text>
+            <text x="262" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(60 262 125)" text-anchor="middle">% CH₄ ⟶</text>
+            <text x="150" y="242" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₆</text>
+
+            <!-- Ticks Labels -->
+            <!-- H2 Left Axis -->
+            <text x="50" y="175" font-size="8.5" fill="${txtColor}" text-anchor="end">20</text>
+            <text x="74" y="137" font-size="8.5" fill="${txtColor}" text-anchor="end">40</text>
+            <text x="98" y="99" font-size="8.5" fill="${txtColor}" text-anchor="end">60</text>
+            <text x="122" y="61" font-size="8.5" fill="${txtColor}" text-anchor="end">80</text>
+
+            <!-- CH4 Right Axis -->
+            <text x="178" y="61" font-size="8.5" fill="${txtColor}" text-anchor="start">20</text>
+            <text x="202" y="99" font-size="8.5" fill="${txtColor}" text-anchor="start">40</text>
+            <text x="226" y="137" font-size="8.5" fill="${txtColor}" text-anchor="start">60</text>
+            <text x="250" y="175" font-size="8.5" fill="${txtColor}" text-anchor="start">80</text>
+
+            <!-- C2H6 Bottom Axis -->
+            <text x="78" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">80</text>
+            <text x="126" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">60</text>
+            <text x="174" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">40</text>
+            <text x="222" y="223" font-size="8.5" fill="${txtColor}" text-anchor="middle">20</text>
+
+            <!-- Zone Labels inside the triangle -->
+            <text x="166" y="38" font-size="9" font-weight="bold" fill="${txtColor}">PD</text>
+            <text x="135" y="110" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">S</text>
+            <text x="220" y="170" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">C</text>
+            <text x="114" y="211" font-size="11" font-weight="bold" fill="#000000" text-anchor="middle">O</text>
+
+            <!-- Target Point (Solid Red Dot with white outline) -->
+            <circle cx="${pt[0]}" cy="${pt[1]}" r="3.5" fill="#dc2626" stroke="#ffffff" stroke-width="1.0" class="duval-point" data-tooltip="${tooltipText}" style="${isLowGases ? 'display: none;' : ''}"/>
+
+            <!-- Legend matching screenshot -->
+            <g transform="translate(10, 248)">
+              <rect x="0" y="0" width="11" height="11" fill="#f7b7f2"/>
+              <text x="16" y="9" font-size="9" fill="${txtColor}">C Carbonization</text>
+
+              <rect x="0" y="14" width="11" height="11" fill="#9ebbf8"/>
+              <text x="16" y="23" font-size="9" fill="${txtColor}">S Stray gases</text>
+
+              <rect x="0" y="28" width="11" height="11" fill="#67c5cd"/>
+              <text x="16" y="37" font-size="9" fill="${txtColor}">O Overheating</text>
+
+              <rect x="0" y="42" width="11" height="11" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.5"/>
+              <text x="16" y="51" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+            </g>
+          </svg>
+        `;
+      };
+
+      const drawPentagonSVG = (title, labels) => {
+        const h2 = parseFloat(curr.H2 || 0);
+        const ch4 = parseFloat(curr.CH4 || 0);
+        const c2h6 = parseFloat(curr.C2H6 || 0);
+        const c2h4 = parseFloat(curr.C2H4 || 0);
+        const c2h2 = parseFloat(curr.C2H2 || 0);
+        
+        const total = h2 + ch4 + c2h6 + c2h4 + c2h2;
+        let pt = [20, 55]; // default top-left point as in user's image (further left due to expanded pentagon)
+        let tooltipText = "No significant DGA fault (Low gas levels)";
+        let resultText = '';
+        
+        if (isLowGases || total === 0) {
+          resultText = 'No significant DGA fault (Low gas level)';
+        } else {
+          const centroid = getPolygonCentroid(h2, ch4, c2h6, c2h4, c2h2);
+          if (centroid) {
+            pt = [150 + centroid.x * 3.0, 135 - centroid.y * 3.0];
+            const pctH2 = (h2 / total) * 100;
+            const pctCH4 = (ch4 / total) * 100;
+            const pctC2H6 = (c2h6 / total) * 100;
+            const pctC2H4 = (c2h4 / total) * 100;
+            const pctC2H2 = (c2h2 / total) * 100;
+            tooltipText = `Centroid: X=${centroid.x.toFixed(2)}, Y=${centroid.y.toFixed(2)} | H₂: ${pctH2.toFixed(1)}% | CH₄: ${pctCH4.toFixed(1)}% | C₂H₆: ${pctC2H6.toFixed(1)}% | C₂H₄: ${pctC2H4.toFixed(1)}% | C₂H₂: ${pctC2H2.toFixed(1)}%`;
+            
+            const cp = [centroid.x, centroid.y];
+            if (title === 'Pentagon 1') {
+              if (isPointInPolygon(cp, [[0, 33], [-1, 33], [-1, 24.5], [0, 24.5]])) {
+                resultText = 'PD: Partial Discharges (low-energy electrical)';
+              } else if (isPointInPolygon(cp, [[0, 40], [38, 12], [32, -6.1], [4, 16], [0, 1.5]])) {
+                resultText = 'D1: Low-Energy Discharges';
+              } else if (isPointInPolygon(cp, [[4, 16], [32, -6.1], [24.3, -30], [0, -3], [0, 1.5]])) {
+                resultText = 'D2: High-Energy Discharges';
+              } else if (isPointInPolygon(cp, [[0, -3], [24.3, -30], [23.5, -32.4], [1, -32], [-6, -4]])) {
+                resultText = 'T3: Thermal Faults > 700°C';
+              } else if (isPointInPolygon(cp, [[-6, -4], [1, -32.4], [-22.5, -32.4]])) {
+                resultText = 'T2: Thermal Faults 300–700°C';
+              } else if (isPointInPolygon(cp, [[-6, -4], [-22.5, -32.4], [-23.5, -32.4], [-35, 3], [0, 1.5], [0, -3]])) {
+                resultText = 'T1: Thermal Faults < 300°C';
+              } else if (isPointInPolygon(cp, [[0, 1.5], [-35, 3.1], [-38, 12.4], [0, 40], [0, 33], [-1, 33], [-1, 24.5], [0, 24.5]])) {
+                resultText = 'S: Stray Gassing (gas released from oil, not a fault)';
+              } else {
+                resultText = 'Duval Pentagon 1 Diagram';
+              }
+            } else {
+              if (isPointInPolygon(cp, [[0, 33], [-1, 33], [-1, 24.5], [0, 24.5]])) {
+                resultText = 'PD: Partial Discharges (low-energy electrical)';
+              } else if (isPointInPolygon(cp, [[0, 40], [38, 12.4], [32, -6], [4, 16], [0, 1.5]])) {
+                resultText = 'D1: Low-Energy Discharges';
+              } else if (isPointInPolygon(cp, [[4, 16], [32, -6], [24, -30], [0, -3], [0, 1.5]])) {
+                resultText = 'D2: High-Energy Discharges';
+              } else if (isPointInPolygon(cp, [[24, -30], [0, -3], [-3.5, -3], [2.5, -32.4], [23.5, -32.4]])) {
+                resultText = 'T3-H: T3 in Oil only';
+              } else if (isPointInPolygon(cp, [[2.5, -32.4], [-3.5, -3], [-11, -8], [-21.5, -32.4]])) {
+                resultText = 'C: Possible Carbonization of Paper';
+              } else if (isPointInPolygon(cp, [[-21.5, -32.4], [-11, -8], [-3.5, -3], [0, -3], [0, 1.5], [-35, 3], [-23.5, -32.4]])) {
+                resultText = 'O: Overheating < 250°C';
+              } else if (isPointInPolygon(cp, [[0, 1.5], [-35, 3.1], [-38, 12.4], [0, 40], [0, 33], [-1, 33], [-1, 24.5], [0, 24.5]])) {
+                resultText = 'S: Stray Gassing (gas released from oil, not a fault)';
+              } else {
+                resultText = 'Duval Pentagon 2 Diagram';
+              }
+            }
+          } else {
+            resultText = 'No significant DGA fault (Low gas level)';
+          }
+        }
+        
+        // Dynamically update sub-headers
+        if (title === 'Pentagon 1') {
+          setTimeout(() => {
+            const el = document.getElementById('res-pentagon-1-text');
+            if (el) el.innerText = resultText;
+          }, 0);
+        } else {
+          setTimeout(() => {
+            const el = document.getElementById('res-pentagon-2-text');
+            if (el) el.innerText = resultText;
+          }, 0);
+        }
+
+        let polygonsHtml = '';
+        if (title === 'Pentagon 1') {
+          polygonsHtml = `
+            <!-- Zone S (Stray Gases) -->
+            <polygon points="150,130.5 45,125.7 36,97.8 150,15 150,36 147,36 147,61.5 150,61.5" fill="#9ebbf8" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone T1 -->
+            <polygon points="132,147 82.5,232.2 79.5,232.2 45,126 150,130.5 150,144" fill="#ebd15b" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone T2 -->
+            <polygon points="132,147 153,232.2 82.5,232.2" fill="#f97316" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone T3 -->
+            <polygon points="150,144 222.9,225 220.5,232.2 153,231 132,147" fill="#e03e52" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone D2 -->
+            <polygon points="162,87 246,153.3 222.9,225 150,144 150,130.5" fill="#f7b7f2" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone D1 -->
+            <polygon points="150,15 264,99 246,153.3 162,87 150,130.5" fill="#5da4e6" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone PD - Overlay thin polygon -->
+            <polygon points="150,36 147,36 147,61.5 150,61.5" fill="#cbd5e1" stroke="#475569" stroke-width="0.8"/>
+          `;
+        } else {
+          polygonsHtml = `
+            <!-- Zone S (Stray Gases) -->
+            <polygon points="150,130.5 45,125.7 36,97.8 150,15 150,36 147,36 147,61.5 150,61.5" fill="#9ebbf8" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone O -->
+            <polygon points="85.5,232.2 117,159 139.5,144 150,144 150,130.5 45,126 79.5,232.2" fill="#7bc0cf" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone C -->
+            <polygon points="157.5,232.2 139.5,144 117,159 85.5,232.2" fill="#fcc8f8" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone T3-H -->
+            <polygon points="222,225 150,144 139.5,144 157.5,232.2 220.5,232.2" fill="#e03e52" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone D2 -->
+            <polygon points="162,87 246,153.3 222.9,225 150,144 150,130.5" fill="#f7b7f2" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone D1 -->
+            <polygon points="150,15 264,99 246,153.3 162,87 150,130.5" fill="#5da4e6" stroke="${polyStroke}" stroke-width="1"/>
+            <!-- Zone PD - Overlay thin polygon -->
+            <polygon points="150,36 147,36 147,61.5 150,61.5" fill="#cbd5e1" stroke="#475569" stroke-width="0.8"/>
+          `;
+        }
+
+        let legendHtml = '';
+        if (title === 'Pentagon 1') {
+          legendHtml = `
+            <g transform="translate(10, 250)">
+              <!-- Item 1: D1 -->
+              <rect x="0" y="0" width="11" height="11" fill="#5da4e6" rx="1"/>
+              <text x="16" y="9" font-size="9" fill="${txtColor}">D1 Discharges of low energy</text>
+
+              <!-- Item 2: D2 -->
+              <rect x="0" y="15" width="11" height="11" fill="#f7b7f2" rx="1"/>
+              <text x="16" y="24" font-size="9" fill="${txtColor}">D2 Discharges of high energy</text>
+
+              <!-- Item 3: T1 -->
+              <rect x="0" y="30" width="11" height="11" fill="#ebd15b" rx="1"/>
+              <text x="16" y="39" font-size="9" fill="${txtColor}">T1 Thermal faults (T &lt; 300°C)</text>
+
+              <!-- Item 4: T2 -->
+              <rect x="0" y="45" width="11" height="11" fill="#f97316" rx="1"/>
+              <text x="16" y="54" font-size="9" fill="${txtColor}">T2 Thermal faults (300°C &lt; T &lt; 700°C)</text>
+
+              <!-- Item 5: T3 -->
+              <rect x="0" y="60" width="11" height="11" fill="#e03e52" rx="1"/>
+              <text x="16" y="69" font-size="9" fill="${txtColor}">T3 Thermal faults (T &gt; 700°C)</text>
+
+              <!-- Item 6: S -->
+              <rect x="0" y="75" width="11" height="11" fill="#9ebbf8" rx="1"/>
+              <text x="16" y="84" font-size="9" fill="${txtColor}">S Stray gases</text>
+
+              <!-- Item 7: PD -->
+              <rect x="0" y="90" width="11" height="11" fill="#cbd5e1" rx="1"/>
+              <text x="16" y="99" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+            </g>
+          `;
+        } else {
+          legendHtml = `
+            <g transform="translate(10, 250)">
+              <!-- Item 1: C -->
+              <rect x="0" y="0" width="11" height="11" fill="#fcc8f8" rx="1"/>
+              <text x="16" y="9" font-size="9" fill="${txtColor}">C Carbonization</text>
+
+              <!-- Item 2: S -->
+              <rect x="0" y="15" width="11" height="11" fill="#9ebbf8" rx="1"/>
+              <text x="16" y="24" font-size="9" fill="${txtColor}">S Stray gases</text>
+
+              <!-- Item 3: O -->
+              <rect x="0" y="30" width="11" height="11" fill="#7bc0cf" rx="1"/>
+              <text x="16" y="39" font-size="9" fill="${txtColor}">O Overheating</text>
+
+              <!-- Item 4: D1 -->
+              <rect x="0" y="45" width="11" height="11" fill="#5da4e6" rx="1"/>
+              <text x="16" y="54" font-size="9" fill="${txtColor}">D1 Discharges of low energy</text>
+
+              <!-- Item 5: D2 -->
+              <rect x="0" y="60" width="11" height="11" fill="#f7b7f2" rx="1"/>
+              <text x="16" y="69" font-size="9" fill="${txtColor}">D2 Discharges of high energy</text>
+
+              <!-- Item 6: T3-H -->
+              <rect x="0" y="75" width="11" height="11" fill="#e03e52" rx="1"/>
+              <text x="16" y="84" font-size="9" fill="${txtColor}">T3-H Thermal faults T3 in oil only</text>
+
+              <!-- Item 7: PD -->
+              <rect x="0" y="90" width="11" height="11" fill="#cbd5e1" rx="1"/>
+              <text x="16" y="99" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+            </g>
+          `;
+        }
+
+        return `
+          <svg viewBox="0 0 300 365" style="width:100%; height:305px;">
+            ${polygonsHtml}
+            
+            <!-- Outer pentagon border -->
+            <polygon points="150,15 264.1,97.9 220.5,232.1 79.5,232.1 35.9,97.9" fill="none" stroke="${polyStroke}" stroke-width="2"/>
+ 
+            <!-- Axis Labels -->
+            <text x="150" y="9" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">H2</text>
+            <text x="276" y="103" font-size="9" font-weight="700" text-anchor="start" fill="${txtColor}">C2H2</text>
+            <text x="228" y="246" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">C2H4</text>
+            <text x="72" y="246" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">CH4</text>
+            <text x="24" y="103" font-size="9" font-weight="700" text-anchor="end" fill="${txtColor}">C2H6</text>
+ 
+            <!-- Zone Labels -->
+            <text x="90" y="80" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[0]}</text>
+            <text x="131" y="48" font-size="8" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[1]}</text>
+            <text x="204" y="93" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[2]}</text>
+            <text x="186" y="159" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[3]}</text>
+            <text x="168" y="207" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[4]}</text>
+            <text x="120" y="213" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[5]}</text>
+            <text x="84" y="165" font-size="10" font-weight="700" fill="#1e293b" text-anchor="middle">${labels[6]}</text>
+ 
+            <!-- Target Point (Solid Red Dot with white outline) -->
+            <circle cx="${pt[0]}" cy="${pt[1]}" r="4" fill="#dc2626" stroke="#ffffff" stroke-width="1.2" class="duval-point" data-tooltip="${tooltipText}" style="${isLowGases ? 'display: none;' : ''}"/>
+
+            <!-- Interactive Legend Group -->
+            ${legendHtml}
+          </svg>
+        `;
+      };
+
+      document.getElementById('svg-duval-1').innerHTML = drawDuval1();
+      document.getElementById('svg-duval-4').innerHTML = drawDuval4();
+      document.getElementById('svg-pentagon-1').innerHTML = drawPentagonSVG('Pentagon 1', ['S', 'PD', 'D1', 'D2', 'T3', 'T2', 'T1']);
+      document.getElementById('svg-pentagon-2').innerHTML = drawPentagonSVG('Pentagon 2', ['S', 'PD', 'D1', 'D2', 'T3-H', 'C', 'O']);
+    }
+
+    // Helper Formatters
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00') return '-';
+      if (dateStr.includes('/')) {
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+          const day = parseInt(parts[1], 10);
+          const monthIndex = parseInt(parts[0], 10) - 1;
+          const year = parts[2];
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          if (monthIndex >= 0 && monthIndex < 12) {
+            const formattedDay = day < 10 ? '0' + day : day;
+            return `${formattedDay}-${months[monthIndex]}-${year}`;
+          }
+        }
+      }
+      const d = new Date(dateStr);
+      if (!isNaN(d.getTime())) {
+        const day = d.getDate();
+        const monthIndex = d.getMonth();
+        const year = d.getFullYear();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formattedDay = day < 10 ? '0' + day : day;
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+      }
+      return dateStr;
+    }
+
+    function formatNum(val) {
+      if (val === undefined || val === null || val === '' || val === '-') return '-';
+      const clean = val.toString().replace(/,/g, '');
+      const num = parseFloat(clean);
+      if (isNaN(num)) return val;
+      return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('tr-dashboard-theme', target);
+      updateThemeIcon(target);
+
+      const selectEl = document.getElementById('transformer-select');
+      if (selectEl && selectEl.value) {
+        loadReportBySerial(selectEl.value);
+      }
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (theme === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+      } else {
+        icon.className = 'fa-solid fa-moon';
+      }
+    }
+
+    function exportReportAsJPG() {
+      const captureArea = document.getElementById('report-capture-area');
+      const selectEl = document.getElementById('transformer-select');
+      const filename = `${selectEl.value || 'DGA'}_MainTankOil_Report.jpg`;
+
+      html2canvas(captureArea, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      }).catch(err => {
+        console.error("Export failed:", err);
+        alert("Failed to capture report image. Try printing to PDF instead.");
+      });
+    }
+
+    // Global Tooltip listeners for Duval points
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.classList.contains('duval-point')) {
+        const tooltip = document.getElementById('duval-tooltip');
+        tooltip.innerHTML = e.target.getAttribute('data-tooltip');
+        tooltip.style.display = 'block';
+      }
+    });
+    document.addEventListener('mousemove', (e) => {
+      const tooltip = document.getElementById('duval-tooltip');
+      if (tooltip.style.display === 'block') {
+        tooltip.style.left = (e.pageX + 12) + 'px';
+        tooltip.style.top = (e.pageY + 12) + 'px';
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.classList.contains('duval-point')) {
+        const tooltip = document.getElementById('duval-tooltip');
+        tooltip.style.display = 'none';
+      }
+    });
+  </script>
+  <div id="duval-tooltip" style="position: absolute; display: none; background: rgba(15, 23, 42, 0.95); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 8px 12px; font-size: 11px; font-family: sans-serif; pointer-events: none; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.5); line-height: 1.5; backdrop-filter: blur(4px);"></div>
+
+  <!-- Modal for expanded charts -->
+  <div id="chart-modal" class="modal-overlay" onclick="closeChartModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-chart-title" style="margin: 0; font-size: 16px; font-weight: 600;"></h3>
+        <button class="modal-close-btn" onclick="closeChartModal()">&times;</button>
+      </div>
+      <div id="modal-chart-body" style="height: 400px; width: 100%; margin-top: 10px;"></div>
+    </div>
+  </div>
+</body>
+</html>

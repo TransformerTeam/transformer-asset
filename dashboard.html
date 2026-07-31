@@ -21,6 +21,13 @@
 <body>
 
   <div class="app-container">
+    <!-- Top Marquee -->
+    <div class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+      </div>
+    </div>
+
     <!-- Header -->
     <header>
       <div class="header-title-section">
@@ -66,12 +73,11 @@
         <a href="dashboard.html" class="sidebar-nav-btn active">
           <i class="fa-solid fa-heart-pulse"></i> <span class="nav-label">Health Index</span>
         </a>
-        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+        <button class="sidebar-nav-btn" disabled style="opacity: 0.5; cursor: not-allowed; display: none;">
           <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation</span>
         </button>
       </aside>
 
-      <!-- Main Content Area -->
       <main class="scada-content">
 
     <!-- Filters Card -->
@@ -107,7 +113,7 @@
           <label for="filter-status">Health Status</label>
           <select id="filter-status" class="filter-select">
             <option value="all">All Statuses</option>
-            <option value="Healthy">Healthy (≥80)</option>
+            <option value="Healthy">Healthy (>= 80)</option>
             <option value="Monitoring">Monitoring (70-79)</option>
             <option value="Warning">Warning (50-69)</option>
             <option value="Critical">Critical (<50)</option>
@@ -198,8 +204,18 @@
 
       <!-- Map Column -->
       <section class="dashboard-card" style="position: relative;">
-        <div class="card-header">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
           <h2><i class="fa-solid fa-map-location-dot"></i> Geographical Distribution</h2>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <select id="map-type-select" class="filter-select" style="min-width: 140px; padding: 4px 8px; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer;">
+              <option value="theme">Default Theme</option>
+              <option value="satellite">Satellite (ดาวเทียม)</option>
+              <option value="streets">Street Map (ถนน)</option>
+            </select>
+            <button id="btn-map-fullscreen" class="filter-select" style="min-width: auto; width: 32px; padding: 4px 0; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="Toggle Fullscreen">
+              <i class="fa-solid fa-expand"></i>
+            </button>
+          </div>
         </div>
         <!-- Map Container -->
         <div id="map"></div>
@@ -325,13 +341,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Footer Marquee -->
-    <footer class="scada-footer">
-      <div class="marquee-content">
-        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
-      </div>
-    </footer>
       </main>
     </div> <!-- end of main-workspace -->
   </div> <!-- end of app-container -->

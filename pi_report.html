@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insulation Resistance and PI Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* Global Variables matching main dashboard theme */
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      /* Print/Report specific variables (matches standard report color scheme) */
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #000000;
+      --report-primary: #1e3a8a; /* Navy blue */
+      --report-accent: #b91c1c; /* Crimson */
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 900px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 250px;
+      max-width: 380px;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Report Sheet Preview Layout (Word-like A4 Preview) */
+    .report-wrapper {
+      width: 100%;
+      max-width: 900px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      background-color: var(--report-bg);
+      color: var(--report-text);
+      border-radius: 4px;
+      padding: 40px;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    /* Print styling embedded in preview to guarantee visual fidelity */
+    .report-sheet {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    /* Document Header */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 3px solid var(--report-primary);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .report-title-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--report-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .report-subtitle {
+      font-size: 12px;
+      color: var(--report-accent);
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .logo-container img {
+      height: 48px;
+      object-fit: contain;
+    }
+
+    /* Section styling */
+    .section-title {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tables */
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+
+    table.report-table th, 
+    table.report-table td {
+      border: 1px solid #7f8c8d;
+      padding: 5px 6px;
+      text-align: left;
+    }
+
+    table.report-table th {
+      background-color: #f2f2f2;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Info Table (2-column key-value grid) */
+    table.info-table td.lbl {
+      width: 15%;
+      font-weight: 700;
+      background-color: #f9fafb;
+    }
+
+    table.info-table td.val {
+      width: 35%;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+
+    /* Side by Side Test Info & Environment */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    /* Winding Test layout */
+    .winding-section {
+      margin-bottom: 12px;
+    }
+    
+    .winding-header {
+      font-weight: 700;
+      font-size: 10.5px;
+      margin-bottom: 4px;
+      color: #333;
+      border-left: 3px solid var(--report-accent);
+      padding-left: 6px;
+    }
+
+    .voltage-line {
+      font-size: 10px;
+      margin-bottom: 4px;
+      color: #555;
+    }
+
+    .voltage-val {
+      font-weight: 700;
+      color: var(--report-primary);
+    }
+
+    table.winding-table th {
+      font-size: 9px;
+      padding: 4px;
+    }
+
+    table.winding-table td {
+      text-align: center;
+      font-size: 10px;
+      padding: 4px;
+    }
+
+    /* Criteria and Legend Blocks */
+    .criteria-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .criteria-box {
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      padding: 8px;
+    }
+
+    .criteria-title {
+      font-weight: 700;
+      font-size: 10px;
+      margin-bottom: 6px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+
+    .color-cell {
+      text-align: center;
+      font-weight: 700;
+      font-size: 9px;
+      border-radius: 3px;
+    }
+
+    /* Signature & Response Box */
+    table.response-table th {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    table.response-table td.lbl {
+      width: 15%;
+      font-weight: 700;
+      background-color: #f9fafb;
+    }
+
+    table.response-table td.val {
+      text-align: center;
+      font-weight: 600;
+      color: #2c3e50;
+      height: 24px;
+    }
+
+    table.response-table td.sig-cell {
+      height: 45px;
+    }
+
+    /* Status Coloring classes */
+    .pi-dangerous { background-color: #ffcccc !important; color: #cc0000 !important; font-weight: bold; }
+    .pi-poor { background-color: #ffe6cc !important; color: #d35400 !important; font-weight: bold; }
+    .pi-questionable { background-color: #ffffcc !important; color: #b79500 !important; font-weight: bold; }
+    .pi-fair { background-color: #e2f0d9 !important; color: #385723 !important; font-weight: bold; }
+    .pi-good { background-color: #c6e0b4 !important; color: #375623 !important; font-weight: bold; }
+
+    .ir-normal { background-color: #e2f0d9 !important; color: #385723 !important; }
+    .ir-deterioration { background-color: #ffffcc !important; color: #b79500 !important; }
+    .ir-investigate { background-color: #ffcccc !important; color: #cc0000 !important; }
+
+    /* Print override for perfect A4 single-page fit, stretched to fill page height */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 6mm 6mm 6mm 6mm;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+      .control-panel {
+        display: none !important;
+      }
+      .report-wrapper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+      }
+      .report-sheet {
+        font-size: 9.8px !important;
+        line-height: 1.35 !important;
+        width: 100% !important;
+      }
+      .report-header {
+        padding-bottom: 6px !important;
+        margin-bottom: 10px !important;
+      }
+      .report-title {
+        font-size: 18px !important;
+      }
+      .report-subtitle {
+        font-size: 11px !important;
+      }
+      .logo-container img {
+        height: 42px !important;
+      }
+      .section-title {
+        font-size: 9.5px !important;
+        padding: 3px 6px !important;
+        margin-top: 10px !important;
+        margin-bottom: 5px !important;
+      }
+      table.report-table {
+        margin-bottom: 8px !important;
+      }
+      table.report-table th, 
+      table.report-table td {
+        padding: 3.5px 5px !important;
+        font-size: 8.8px !important;
+      }
+      .row-split {
+        gap: 12px !important;
+      }
+      .winding-section {
+        margin-bottom: 8px !important;
+      }
+      .winding-header {
+        font-size: 9.5px !important;
+        margin-bottom: 2px !important;
+        padding-left: 4px !important;
+      }
+      .voltage-line {
+        font-size: 8.8px !important;
+        margin-bottom: 2px !important;
+      }
+      .criteria-container {
+        margin-top: 8px !important;
+        gap: 12px !important;
+      }
+      .criteria-box {
+        padding: 5px !important;
+      }
+      .criteria-title {
+        font-size: 9px !important;
+        margin-bottom: 4px !important;
+        padding-bottom: 2px !important;
+      }
+      table.response-table td.sig-cell {
+        height: 65px !important;
+      }
+      table.response-table td.val {
+        height: 18px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <span class="selector-label"><i class="fa-solid fa-bolt"></i> Transformer:</span>
+      <select id="transformer-select" class="search-select" onchange="loadReportBySerial(this.value)">
+        <!-- Options populated dynamically -->
+      </select>
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i> Theme
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print Report
+      </button>
+      <button class="btn btn-primary" onclick="exportReportAsJPG()">
+        <i class="fa-solid fa-file-image"></i> Export JPG
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Sheet Preview Area -->
+  <div class="report-wrapper" id="report-capture-area">
+    <div class="report-sheet">
+      
+      <!-- Document Header -->
+      <div class="report-header">
+        <div class="report-title-container">
+          <span class="report-title">INSULATION RESISTANCE AND PI REPORT</span>
+          <span class="report-subtitle">Criteria: IEEE C57.152-2013</span>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- Equipment Details -->
+      <table class="report-table info-table">
+        <tr>
+          <td class="lbl">Equipment Name</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Site</td>
+          <td class="val" id="info-site">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Serial No.</td>
+          <td class="val" id="info-serial">-</td>
+          <td class="lbl">Power Rating (kVA)</td>
+          <td class="val" id="info-power">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Manufacture</td>
+          <td class="val" id="info-mfg">-</td>
+          <td class="lbl">Voltage Rating (kV)</td>
+          <td class="val" id="info-voltage">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Fluid Type</td>
+          <td class="val" id="info-fluid">-</td>
+          <td class="lbl">Service Type</td>
+          <td class="val" id="info-service">-</td>
+        </tr>
+      </table>
+
+      <!-- Test Info & Environment Side by Side -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">Test Information</div>
+          <table class="report-table">
+            <tr>
+              <td style="width: 40%; font-weight:700;">Test Instrument</td>
+              <td id="info-instrument">-</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Serial Number</td>
+              <td id="info-instrument-serial">-</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Calibration Date</td>
+              <td id="info-instrument-calib">-</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">Environment</div>
+          <table class="report-table">
+            <tr>
+              <td style="width: 40%; font-weight:700;">Ambient Temp.</td>
+              <td><span id="env-ambient">-</span> °C</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Oil Temp.</td>
+              <td><span id="env-oil">-</span> °C</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Winding Temp.</td>
+              <td><span id="env-winding">-</span> °C</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;">Humidity.</td>
+              <td><span id="env-humidity">-</span> %</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Primary Winding Test -->
+      <div class="section-title">Winding Insulation Resistance & Polarization Index (PI)</div>
+      
+      <div class="winding-section">
+        <div class="winding-header">Primary Winding Test [HV-(LV+GND)]</div>
+        <div class="voltage-line">Test Voltage: <span id="h-voltage" class="voltage-val">-</span> Vdc</div>
+        <table class="report-table winding-table">
+          <thead>
+            <tr>
+              <th>Min.1 (MΩ)</th>
+              <th>Min.2 (MΩ)</th>
+              <th>Min.3 (MΩ)</th>
+              <th>Min.4 (MΩ)</th>
+              <th>Min.5 (MΩ)</th>
+              <th>Min.6 (MΩ)</th>
+              <th>Min.7 (MΩ)</th>
+              <th>Min.8 (MΩ)</th>
+              <th>Min.9 (MΩ)</th>
+              <th>Min.10 (MΩ)</th>
+              <th style="width: 10%;">PI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="h-1">-</td>
+              <td id="h-2">-</td>
+              <td id="h-3">-</td>
+              <td id="h-4">-</td>
+              <td id="h-5">-</td>
+              <td id="h-6">-</td>
+              <td id="h-7">-</td>
+              <td id="h-8">-</td>
+              <td id="h-9">-</td>
+              <td id="h-10">-</td>
+              <td id="h-pi">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Secondary Winding Test -->
+      <div class="winding-section">
+        <div class="winding-header">Secondary Winding Test [LV-(HV+GND)]</div>
+        <div class="voltage-line">Test Voltage: <span id="l-voltage" class="voltage-val">-</span> Vdc</div>
+        <table class="report-table winding-table">
+          <thead>
+            <tr>
+              <th>Min.1 (MΩ)</th>
+              <th>Min.2 (MΩ)</th>
+              <th>Min.3 (MΩ)</th>
+              <th>Min.4 (MΩ)</th>
+              <th>Min.5 (MΩ)</th>
+              <th>Min.6 (MΩ)</th>
+              <th>Min.7 (MΩ)</th>
+              <th>Min.8 (MΩ)</th>
+              <th>Min.9 (MΩ)</th>
+              <th>Min.10 (MΩ)</th>
+              <th style="width: 10%;">PI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="l-1">-</td>
+              <td id="l-2">-</td>
+              <td id="l-3">-</td>
+              <td id="l-4">-</td>
+              <td id="l-5">-</td>
+              <td id="l-6">-</td>
+              <td id="l-7">-</td>
+              <td id="l-8">-</td>
+              <td id="l-9">-</td>
+              <td id="l-10">-</td>
+              <td id="l-pi">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tertiary Winding Test -->
+      <div class="winding-section">
+        <div class="winding-header">Primary to Secondary Winding Test [HV-LV]</div>
+        <div class="voltage-line">Test Voltage: <span id="t-voltage" class="voltage-val">-</span> Vdc</div>
+        <table class="report-table winding-table">
+          <thead>
+            <tr>
+              <th>Min.1 (MΩ)</th>
+              <th>Min.2 (MΩ)</th>
+              <th>Min.3 (MΩ)</th>
+              <th>Min.4 (MΩ)</th>
+              <th>Min.5 (MΩ)</th>
+              <th>Min.6 (MΩ)</th>
+              <th>Min.7 (MΩ)</th>
+              <th>Min.8 (MΩ)</th>
+              <th>Min.9 (MΩ)</th>
+              <th>Min.10 (MΩ)</th>
+              <th style="width: 10%;">PI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="t-1">-</td>
+              <td id="t-2">-</td>
+              <td id="t-3">-</td>
+              <td id="t-4">-</td>
+              <td id="t-5">-</td>
+              <td id="t-6">-</td>
+              <td id="t-7">-</td>
+              <td id="t-8">-</td>
+              <td id="t-9">-</td>
+              <td id="t-10">-</td>
+              <td id="t-pi">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Core Insulation Test -->
+      <div class="section-title">Core Insulation Test</div>
+      <div class="voltage-line">Test Voltage: <span id="core-voltage" class="voltage-val">-</span> Vdc</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">CORE-GROUND (MΩ)</th>
+            <th style="width: 33.3%;">FRAME(CLAMP)-GROUND (MΩ)</th>
+            <th style="width: 33.3%;">CORE-FRAME(CLAMP) (MΩ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="core-gnd" style="text-align: center; font-weight: 600;">-</td>
+            <td id="frame-gnd" style="text-align: center; font-weight: 600;">-</td>
+            <td id="core-frame" style="text-align: center; font-weight: 600;">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Criteria Section -->
+      <div class="criteria-container">
+        <!-- Polarization Index Legend -->
+        <div class="criteria-box">
+          <div class="criteria-title">Criteria: Polarization Index (PI)</div>
+          <table style="width:100%; font-size:9px; border-collapse: collapse;">
+            <tr style="border-bottom:1px solid #ddd;"><th style="padding:3px; text-align:left;">Polarization Index (PI)</th><th style="padding:3px; text-align:center;">Condition</th></tr>
+            <tr><td style="padding:3px;">&le; 1.0</td><td class="color-cell pi-dangerous" style="padding:3px;">Dangerous</td></tr>
+            <tr><td style="padding:3px;">1.0 - 1.1</td><td class="color-cell pi-poor" style="padding:3px;">Poor</td></tr>
+            <tr><td style="padding:3px;">1.1 - 1.25</td><td class="color-cell pi-questionable" style="padding:3px;">Questionable</td></tr>
+            <tr><td style="padding:3px;">1.25 - 2.0</td><td class="color-cell pi-fair" style="padding:3px;">Fair</td></tr>
+            <tr><td style="padding:3px;">&gt; 2.0</td><td class="color-cell pi-good" style="padding:3px;">Good</td></tr>
+          </table>
+        </div>
+
+        <!-- Insulation Resistance Legend -->
+        <div class="criteria-box">
+          <div class="criteria-title">Criteria: Core Insulation (MΩ)</div>
+          <table style="width:100%; font-size:9px; border-collapse: collapse;">
+            <tr style="border-bottom:1px solid #ddd;"><th style="padding:3px; text-align:left;">Type</th><th style="padding:3px; text-align:left;">Condition</th><th style="padding:3px; text-align:center;">Status</th></tr>
+            <tr><td style="padding:3px; font-weight:bold;">New TR</td><td style="padding:3px;">&gt; 500</td><td class="color-cell ir-normal" style="padding:3px;">Normal</td></tr>
+            <tr style="border-top:1px solid #eee;"><td rowspan="3" style="padding:3px; font-weight:bold; vertical-align:middle;">Service aged</td><td style="padding:3px;">&gt; 100</td><td class="color-cell ir-normal" style="padding:3px;">Normal</td></tr>
+            <tr><td style="padding:3px;">10 - 100</td><td class="color-cell ir-deterioration" style="padding:3px;">Insulation deterioration</td></tr>
+            <tr><td style="padding:3px;">&lt; 10</td><td class="color-cell ir-investigate" style="padding:3px;">Needs to be investigated</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Response block -->
+      <div class="section-title">Signatures / Approval</div>
+      <table class="report-table response-table">
+        <thead>
+          <tr>
+            <th style="width: 10%;"></th>
+            <th style="width: 30%;">Tested By</th>
+            <th style="width: 30%;">Reviewed By</th>
+            <th style="width: 30%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Company</td>
+            <td class="val" id="resp-company-tested">-</td>
+            <td class="val" id="resp-company-reviewed">-</td>
+            <td class="val" id="resp-company-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Name</td>
+            <td class="val" id="resp-name-tested">-</td>
+            <td class="val" id="resp-name-reviewed">-</td>
+            <td class="val" id="resp-name-approved">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Signature</td>
+            <td class="val sig-cell"></td>
+            <td class="val sig-cell"></td>
+            <td class="val sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="lbl">Date</td>
+            <td class="val" id="resp-date-tested">-</td>
+            <td class="val" id="resp-date-reviewed">-</td>
+            <td class="val" id="resp-date-approved">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- Load script files -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+  
+  <script>
+    // In-memory data store for PIData.csv
+    let piDataList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Setup UI themes
+      const activeTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', activeTheme);
+      updateThemeIcon(activeTheme);
+
+      // 1. Fetch and Parse PIData.csv
+      try {
+        const response = await fetch('TestData/PIData.csv');
+        if (!response.ok) throw new Error("Failed to fetch PIData.csv");
+        const csvText = await response.text();
+        piDataList = parseCSV(csvText);
+      } catch (err) {
+        console.error("Error loading PIData.csv:", err);
+        alert("Unable to load insulation resistance test data (PIData.csv). Make sure the server is running on port 9090.");
+        return;
+      }
+
+      // 2. Populate Dropdown list of transformers that exist in the csv
+      populateDropdown();
+
+      // 3. Resolve initial selection from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      let serial = urlParams.get('serial');
+      const name = urlParams.get('name');
+      const no = urlParams.get('no');
+
+      // Helper lookup
+      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.name.toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial;
+      }
+      if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
+        if (item) serial = item.serial;
+      }
+
+      // Default selection fallback if no match found
+      if (!serial && piDataList.length > 0) {
+        serial = piDataList[0].serial;
+      }
+
+      if (serial) {
+        document.getElementById('transformer-select').value = serial;
+        loadReportBySerial(serial);
+      }
+    });
+
+    // Simple CSV parser supporting double quotes in comments
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) {
+        text = text.substring(1);
+      }
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+      const result = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        result.push(obj);
+      }
+      return result;
+    }
+
+    // Populate Selector options with Name + Serial
+    function populateDropdown() {
+      const selectEl = document.getElementById('transformer-select');
+      selectEl.innerHTML = '';
+      
+      // Match each csv serial to metadata name
+      piDataList.forEach(piItem => {
+        let displayName = piItem.serial;
+        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+          const meta = HEALTH_INDEX_DATA.find(x => x.serial === piItem.serial);
+          if (meta) {
+            displayName = `${meta.name} (${piItem.serial})`;
+          }
+        }
+        
+        const opt = document.createElement('option');
+        opt.value = piItem.serial;
+        opt.textContent = displayName;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    // Main loading and populating function
+    function loadReportBySerial(serial) {
+      const rawItems = piDataList.filter(x => x.serial === serial);
+      if (!rawItems || rawItems.length === 0) {
+        alert(`No insulation resistance data found for Serial: ${serial}`);
+        return;
+      }
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        if (dStr.includes('/')) {
+          const pts = dStr.split('/');
+          if (pts.length === 3) {
+            return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+          }
+        }
+        return new Date(dStr);
+      };
+
+      const hasValidPIData = (item) => {
+        if (!item) return false;
+        const keys = Object.keys(item);
+        return keys.some(k => {
+          if (k === 'serial' || k === 'date' || k === 'temp') return false;
+          const val = item[k];
+          if (val === undefined || val === null) return false;
+          const s = val.toString().trim();
+          if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+          return !isNaN(parseFloat(s.replace(/,/g, '')));
+        });
+      };
+
+      const validItems = rawItems.filter(hasValidPIData);
+      if (validItems.length === 0) {
+        alert(`No valid Insulation Resistance test records found for Serial: ${serial}`);
+        return;
+      }
+
+      validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+      const seenDates = new Set();
+      const items = [];
+      for (const item of validItems) {
+        const dt = parseDate(item.date);
+        const key = dt.getTime() > 0 ? dt.getTime() : item.date;
+        if (!seenDates.has(key)) {
+          seenDates.add(key);
+          items.push(item);
+        }
+      }
+
+      const piItem = items[0];
+
+      // Fetch metadata from TR_DATA (data.js) and HEALTH_INDEX_DATA (health_data.js)
+      let name = '-';
+      let site = '-';
+      let mfg = '-';
+      let power = '-';
+      let voltage = '-';
+      let fluid = 'Mineral Oil';
+      let service = '-';
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+        if (meta) {
+          name = meta.name;
+          site = meta.site;
+          power = meta.ratedPower ? (meta.ratedPower * 1000) : '-'; // convert MVA to kVA
+          voltage = meta.ratedVoltage;
+          service = meta.serviceType;
+        }
+      }
+
+      if (typeof TR_DATA !== 'undefined') {
+        const rawMeta = TR_DATA.find(x => x.SERIAL_NUMBER === serial);
+        if (rawMeta) {
+          mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
+          if (rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
+          if (rawMeta.POWER_RATING) power = rawMeta.POWER_RATING;
+          if (rawMeta.HV_RATED && rawMeta.LV_RATED) {
+            voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
+          }
+        }
+      }
+
+      // Fill Info Elements
+      document.getElementById('info-eq-name').textContent = name;
+      document.getElementById('info-site').textContent = site;
+      document.getElementById('info-serial').textContent = serial;
+      document.getElementById('info-power').textContent = formatNumber(power);
+      document.getElementById('info-mfg').textContent = mfg;
+      document.getElementById('info-voltage').textContent = voltage;
+      document.getElementById('info-fluid').textContent = fluid;
+      document.getElementById('info-service').textContent = service;
+
+      // Fill Test Instrument Info
+      document.getElementById('info-instrument').textContent = piItem.test_instrument || '-';
+      document.getElementById('info-instrument-serial').textContent = piItem.serial_instrument || '-';
+      document.getElementById('info-instrument-calib').textContent = formatDate(piItem.date_calibation);
+
+      // Fill Environment Info
+      document.getElementById('env-ambient').textContent = piItem.ambient_temp || '-';
+      document.getElementById('env-oil').textContent = piItem.oil_temp || '-';
+      document.getElementById('env-winding').textContent = piItem.winding_temp || '-';
+      document.getElementById('env-humidity').textContent = piItem.humidity || '-';
+
+      // Fill Primary Winding (HV) Table
+      document.getElementById('h-voltage').textContent = piItem.test_voltage || '-';
+      for (let i = 1; i <= 10; i++) {
+        document.getElementById(`h-${i}`).textContent = formatVal(piItem[`H_${i}`]);
+      }
+      const hPiVal = formatPI(piItem.H_PI);
+      const hPiCell = document.getElementById('h-pi');
+      hPiCell.textContent = hPiVal;
+      hPiCell.className = getPIClass(hPiVal);
+
+      // Fill Secondary Winding (LV) Table
+      document.getElementById('l-voltage').textContent = piItem.test_voltage2 || '-';
+      for (let i = 1; i <= 10; i++) {
+        document.getElementById(`l-${i}`).textContent = formatVal(piItem[`L_${i}`]);
+      }
+      const lPiVal = formatPI(piItem.L_PI);
+      const lPiCell = document.getElementById('l-pi');
+      lPiCell.textContent = lPiVal;
+      lPiCell.className = getPIClass(lPiVal);
+
+      // Fill Tertiary Winding (TV) Table
+      document.getElementById('t-voltage').textContent = piItem.test_voltage3 || '-';
+      for (let i = 1; i <= 10; i++) {
+        document.getElementById(`t-${i}`).textContent = formatVal(piItem[`T_${i}`]);
+      }
+      const tPiVal = formatPI(piItem.T_PI);
+      const tPiCell = document.getElementById('t-pi');
+      tPiCell.textContent = tPiVal;
+      tPiCell.className = getPIClass(tPiVal);
+
+      // Fill Core Insulation Test
+      document.getElementById('core-voltage').textContent = '-'; // empty or resolved Vdc
+      document.getElementById('core-gnd').textContent = formatVal(piItem.coregnd);
+      document.getElementById('frame-gnd').textContent = formatVal(piItem.framegnd);
+      document.getElementById('core-frame').textContent = formatVal(piItem.coreframe);
+
+      // Signatures
+      document.getElementById('resp-company-tested').textContent = piItem.COMP1 || 'GPSC';
+      document.getElementById('resp-company-reviewed').textContent = piItem.COMP2 || 'GPSC';
+      document.getElementById('resp-name-tested').textContent = piItem.test_name || '-';
+      document.getElementById('resp-name-reviewed').textContent = piItem.witness_name || '-';
+      document.getElementById('resp-date-tested').textContent = formatDate(piItem.date);
+      document.getElementById('resp-date-reviewed').textContent = formatDate(piItem.date);
+      document.getElementById('resp-date-approved').textContent = formatDate(piItem.date);
+    }
+
+    // Helper formatter functions
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr === '0000-00-00') return '-';
+      const d = new Date(dateStr);
+      if (!isNaN(d.getTime())) {
+        const day = d.getDate();
+        const monthIndex = d.getMonth();
+        const year = d.getFullYear();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const formattedDay = day < 10 ? '0' + day : day;
+        return `${formattedDay}-${months[monthIndex]}-${year}`;
+      }
+      return dateStr;
+    }
+
+    function formatVal(val) {
+      if (val === undefined || val === null || val === '' || val === '-') return '-';
+      return formatNumber(val);
+    }
+
+    // Helper number formatter to format commas in values
+    function formatNumber(numStr) {
+      if (numStr === undefined || numStr === null || numStr === '' || numStr === '-') return '-';
+      const cleanStr = numStr.toString().replace(/,/g, '');
+      const val = parseFloat(cleanStr);
+      if (isNaN(val)) return numStr;
+      return val.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    function formatPI(piStr) {
+      if (piStr === undefined || piStr === null || piStr === '' || piStr === '-') return '-';
+      const cleanStr = piStr.toString().replace(/,/g, '');
+      const val = parseFloat(cleanStr);
+      if (isNaN(val)) return piStr;
+      return val.toFixed(2);
+    }
+
+    function getPIClass(piVal) {
+      const val = parseFloat(piVal);
+      if (isNaN(val)) return '';
+      if (val <= 1.0) return 'pi-dangerous';
+      if (val <= 1.1) return 'pi-poor';
+      if (val <= 1.25) return 'pi-questionable';
+      if (val <= 2.0) return 'pi-fair';
+      return 'pi-good';
+    }
+
+    // Theme switching logic
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('tr-dashboard-theme', target);
+      updateThemeIcon(target);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (theme === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+      } else {
+        icon.className = 'fa-solid fa-moon';
+      }
+    }
+
+    // Export report wrapper as a beautiful high-quality JPG image
+    function exportReportAsJPG() {
+      const captureArea = document.getElementById('report-capture-area');
+      const selectEl = document.getElementById('transformer-select');
+      const filename = `${selectEl.value || 'Insulation'}_PI_Report.jpg`;
+
+      // Save original styling
+      const originalBoxShadow = captureArea.style.boxShadow;
+      const originalBorderRadius = captureArea.style.borderRadius;
+      
+      // Clean borders for print style
+      captureArea.style.boxShadow = 'none';
+      captureArea.style.borderRadius = '0';
+
+      html2canvas(captureArea, {
+        scale: 2, // High DPI capture
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        // Restore styling
+        captureArea.style.boxShadow = originalBoxShadow;
+        captureArea.style.borderRadius = originalBorderRadius;
+
+        // Download
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      }).catch(err => {
+        console.error("Export failed:", err);
+        alert("Failed to capture report. Try printing to PDF instead.");
+      });
+    }
+  </script>
+</body>
+</html>

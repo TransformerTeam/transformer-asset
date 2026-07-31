@@ -39,14 +39,14 @@
 }
 
 [data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --border-color: rgba(0, 0, 0, 0.08);
+  --bg-primary: #cbd5e1;
+  --bg-secondary: #ededed;
+  --bg-tertiary: #e2e8f0;
+  --bg-card: rgba(237, 237, 237, 0.95);
+  --border-color: rgba(0, 0, 0, 0.12);
   --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   --primary: #4f46e5;
   --primary-glow: rgba(79, 70, 229, 0.15);
   --primary-hover: #4338ca;
@@ -56,12 +56,12 @@
   --color-poor-glow: rgba(249, 115, 22, 0.15);
   --color-critical-glow: rgba(239, 68, 68, 0.15);
   --color-monitor-glow: rgba(59, 130, 246, 0.15);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.12);
+  --glass-bg: rgba(237, 237, 237, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.10);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,9 +76,7 @@ body {
   overflow-x: hidden;
 }
 
-[data-theme="light"] body {
-  background: var(--bg-primary);
-}
+
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
@@ -90,10 +88,10 @@ h1, h2, h3, h4, h5, h6 {
 .app-container {
   max-width: 1700px;
   margin: 0 auto;
-  padding: 1rem 1.5rem 3rem;
+  padding: 1rem 1rem 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -1101,20 +1099,26 @@ header p {
   margin-top: 0.1rem;
 }
 
-/* SCADA Footer Marquee */
+/* SCADA Top Marquee Glassmorphism */
 .scada-footer {
   width: 100%;
-  background: rgba(10, 20, 40, 0.85);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.75rem 1.5rem;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 1.25rem;
   border-radius: 8px;
   overflow: hidden;
-  margin-top: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 [data-theme="light"] .scada-footer {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
 }
 
 .marquee-content {
@@ -1275,24 +1279,23 @@ header p {
 }
 
 [data-theme="light"] .modal-window {
-  background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('background.jpg') no-repeat center center !important;
-  background-size: cover !important;
+  background: rgba(237, 237, 237, 0.95) !important;
 }
 
 /* Inner Panels: Glassmorphism Overrides */
 [data-theme="dark"] .health-gauge-box,
 [data-theme="dark"] .spec-item,
 [data-theme="dark"] .param-group {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 
 [data-theme="dark"] .param-item {
-  background: rgba(255, 255, 255, 0.02) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
@@ -1301,7 +1304,7 @@ header p {
 [data-theme="light"] .health-gauge-box,
 [data-theme="light"] .spec-item,
 [data-theme="light"] .param-group {
-  background: rgba(0, 0, 0, 0.03) !important;
+  background: rgba(0, 0, 0, 0.1) !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
@@ -1309,7 +1312,7 @@ header p {
 }
 
 [data-theme="light"] .param-item {
-  background: rgba(0, 0, 0, 0.01) !important;
+  background: rgba(0, 0, 0, 0.08) !important;
   border: 1px solid rgba(0, 0, 0, 0.04) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1401,7 +1404,7 @@ header p {
 }
 
 [data-theme="light"] .transformer-photo-card {
-  background: rgba(0, 0, 0, 0.03) !important;
+  background: rgba(0, 0, 0, 0.1) !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
@@ -1425,4 +1428,404 @@ header p {
   font-size: 2.2rem;
   color: var(--primary);
   opacity: 0.85;
+}
+
+/* Report link button next to parameter */
+.param-value-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-report-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.btn-report-link:hover {
+  color: var(--color-fair);
+  transform: scale(1.2);
+}
+
+/* Customized Leaflet Tooltip/Popup Styles */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-secondary) !important;
+}
+
+.map-popup-container {
+  padding: 0.25rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.map-popup-header {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.25rem;
+}
+
+.map-popup-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  gap: 1.5rem;
+}
+
+.map-popup-label {
+  color: var(--text-muted);
+}
+
+.map-popup-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+.map-popup-btn {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Custom Marker Pins */
+.custom-marker-pin {
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--primary);
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -14px 0 0 -14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  border: 2px solid white;
+}
+
+.custom-marker-pin::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  position: absolute;
+}
+
+.custom-marker-pin.good, .custom-marker-pin.healthy { background-color: var(--color-good); }
+.custom-marker-pin.fair, .custom-marker-pin.monitoring { background-color: var(--color-fair); }
+.custom-marker-pin.poor, .custom-marker-pin.warning { background-color: var(--color-poor); }
+.custom-marker-pin.critical { background-color: var(--color-critical); }
+.custom-marker-pin.no-assess { background-color: #6b7280; }
+
+/* Fullscreen Map Override Styles */
+.dashboard-card.map-fullscreen-active {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  background: var(--bg-primary) !important;
+  padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.dashboard-card.map-fullscreen-active .map-wrapper {
+  height: calc(100vh - 80px) !important;
+  min-height: auto !important;
+  flex: 1 !important;
+}
+
+.dashboard-card.map-fullscreen-active #map {
+  height: calc(100vh - 80px) !important;
+  min-height: auto !important;
+  flex: 1 !important;
+}
+
+/* ==========================================================================
+   EXCEL REPLICA DETAIL MODAL STYLES
+   ========================================================================== */
+
+/* Overrides for Wide Modal Window */
+.modal-window.modal-wide {
+  max-width: 1720px;
+  width: 98vw;
+  max-height: 96vh;
+  height: 96vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.excel-header {
+  background: #152e6f !important;
+  color: white !important;
+  padding: 8px 15px !important;
+  border-bottom: 2px solid #102456 !important;
+}
+
+.excel-body {
+  display: grid !important;
+  grid-template-columns: 20% 51% 29% !important;
+  gap: 12px !important;
+  padding: 12px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+  background: #0f172a;
+}
+
+[data-theme="light"] .excel-body {
+  background: #f8fafc !important;
+}
+
+.excel-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.excel-card {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .excel-card {
+  background: rgba(237, 237, 237, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.excel-card-header {
+  background: #1e293b;
+  color: #f1f5f9;
+  font-weight: 700;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.02em;
+}
+
+[data-theme="light"] .excel-card-header {
+  background: #cbd5e1 !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-update-time {
+  float: right;
+  font-size: 0.65rem;
+  font-weight: normal;
+  color: #38bdf8;
+}
+
+[data-theme="light"] .card-update-time {
+  color: #0284c7 !important;
+}
+
+/* Excel Style Tables */
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.excel-table th, .excel-table td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+[data-theme="light"] .excel-table th, 
+[data-theme="light"] .excel-table td {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155;
+}
+
+.excel-table th {
+  background: rgba(255, 255, 255, 0.03);
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+[data-theme="light"] .excel-table th {
+  background: rgba(0, 0, 0, 0.03) !important;
+  color: #475569 !important;
+}
+
+/* Specific table columns */
+.info-table td:first-child {
+  font-weight: 600;
+  width: 40%;
+  color: #94a3b8;
+}
+[data-theme="light"] .info-table td:first-child {
+  color: #475569 !important;
+}
+
+.info-table td:last-child {
+  text-align: right;
+  font-weight: 500;
+}
+
+.excel-visual-box {
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  min-height: 40px;
+  line-height: 1.4;
+}
+
+/* Center Top Row */
+.excel-center-top-row {
+  display: grid;
+  grid-template-columns: 22% 53% 25%;
+  gap: 10px;
+  align-items: center;
+}
+
+.excel-life-dp-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.life-box {
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 6px;
+  text-align: center;
+}
+
+[data-theme="light"] .life-box {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.life-label {
+  display: block;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+[data-theme="light"] .life-label {
+  color: #475569 !important;
+}
+
+.life-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  color: #38bdf8;
+}
+
+[data-theme="light"] .life-value {
+  color: #0284c7 !important;
+}
+
+/* Gauge styling */
+.excel-gauge-container {
+  display: flex;
+  justify-content: center;
+}
+
+.excel-gauge-wrapper {
+  width: 90px;
+  text-align: center;
+}
+
+.needle-gauge {
+  width: 100%;
+  height: auto;
+}
+
+.excel-gauge-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  color: #10b981;
+  margin-top: -3px;
+}
+
+/* Sub-titles under Active Part */
+.active-part-sub-title {
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.72rem;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #38bdf8;
+}
+
+[data-theme="light"] .active-part-sub-title {
+  background: rgba(0, 0, 0, 0.01) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  color: #0284c7 !important;
+}
+
+/* Result cell status styling */
+.ex-status-good {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #10b981 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ex-status-fair {
+  background-color: rgba(234, 179, 8, 0.2) !important;
+  color: #eab308 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ex-status-poor {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+  color: #f97316 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ex-status-critical {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: #ef4444 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* DGA card styles */
+.dga-status-summary {
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 6px 10px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPSC Transformer Asset Management Portal</title>
+  <meta name="description" content="Integrated Web Browser Portal for GPSC Transformer Asset Management System including Dashboard, Assessment, DGA Report, and SCADA Single Line Diagram.">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --bar-bg: #121829;
+      --tab-active-bg: #1e293b;
+      --tab-inactive-bg: #0f172a;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #6366f1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    .browser-container {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Top Chrome / Window Bar */
+    .browser-chrome {
+      background: #090d16;
+      display: flex;
+      align-items: center;
+      padding: 6px 12px 0 12px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 12px;
+      user-select: none;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+      padding-right: 8px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .dot-close { background: #ef4444; }
+    .dot-min { background: #f59e0b; }
+    .dot-max { background: #22c55e; }
+
+    /* Tab Bar */
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    .browser-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      background: var(--tab-inactive-bg);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      max-width: 220px;
+    }
+
+    .browser-tab:hover {
+      background: rgba(30, 41, 59, 0.7);
+      color: var(--text-main);
+    }
+
+    .browser-tab.active {
+      background: var(--bar-bg);
+      color: #38bdf8;
+      font-weight: 600;
+      border-top: 2px solid #38bdf8;
+    }
+
+    .tab-icon {
+      font-size: 13px;
+    }
+
+    .tab-close {
+      margin-left: auto;
+      font-size: 10px;
+      opacity: 0.6;
+      padding: 2px;
+      border-radius: 50%;
+    }
+    .tab-close:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+
+    /* Address & Navigation Bar */
+    .nav-bar {
+      background: var(--bar-bg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-main);
+    }
+
+    .address-bar-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 4px 14px;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+    .address-bar-container:focus-within {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .lock-icon {
+      color: #22c55e;
+      font-size: 11px;
+    }
+
+    .address-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f1f5f9;
+      font-size: 12.5px;
+      font-family: 'Inter', monospace;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-sub);
+      border: none;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .copy-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Serial Selector in Address Bar */
+    .serial-quick-select {
+      background: rgba(30, 41, 59, 0.8);
+      color: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Web Canvas Iframe */
+    .content-viewport {
+      flex: 1;
+      position: relative;
+      background: #0a0f1d;
+    }
+
+    iframe#web-canvas {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 15, 29, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .loading-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(56, 189, 248, 0.2);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="browser-container">
+    <!-- Top Window & Tab Bar -->
+    <div class="browser-chrome">
+      <div class="window-dots">
+        <div class="dot dot-close"></div>
+        <div class="dot dot-min"></div>
+        <div class="dot dot-max"></div>
+      </div>
+
+      <!-- Tab Items -->
+      <div class="tab-bar" id="tab-bar">
+        <div class="browser-tab active" data-url="dashboard.html" onclick="switchTab(this)">
+          <i class="fa-solid fa-chart-pie tab-icon" style="color:#38bdf8;"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="browser-tab" data-url="assessment.html" onclick="switchTab(this)">
+          <i class="fa-solid fa-stethoscope tab-icon" style="color:#34d399;"></i>
+          <span>Assessment</span>
+        </div>
+        <div class="browser-tab" data-url="dga_report.html?serial=383204886" onclick="switchTab(this)">
+          <i class="fa-solid fa-flask tab-icon" style="color:#fbbf24;"></i>
+          <span>DGA Report</span>
+        </div>
+        <div class="browser-tab" data-url="single_line.html" onclick="switchTab(this)">
+          <i class="fa-solid fa-bolt tab-icon" style="color:#f43f5e;"></i>
+          <span>SCADA Single Line</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation & Address Bar -->
+    <div class="nav-bar">
+      <button class="nav-btn" onclick="historyBack()" title="Back"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="nav-btn" onclick="historyForward()" title="Forward"><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="nav-btn" onclick="reloadFrame()" title="Reload"><i class="fa-solid fa-rotate-right"></i></button>
+      <button class="nav-btn" onclick="goHome()" title="Home"><i class="fa-solid fa-house"></i></button>
+
+      <!-- Address Input -->
+      <div class="address-bar-container">
+        <i class="fa-solid fa-lock lock-icon" title="Secure Local/Network Connection"></i>
+        <input type="text" id="address-bar" class="address-input" value="" onkeydown="handleAddressKey(event)">
+        <button class="copy-btn" onclick="copyCurrentUrl()"><i class="fa-regular fa-copy"></i> Copy Link</button>
+      </div>
+
+      <!-- Quick Serial Switcher for DGA Report -->
+      <select id="serial-selector" class="serial-quick-select" onchange="changeDGAData(this.value)">
+        <option value="383204886">TR: 383204886</option>
+        <option value="383204887">TR: 383204887</option>
+        <option value="383204888">TR: 383204888</option>
+      </select>
+
+      <!-- Fullscreen toggle -->
+      <button class="nav-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen"><i class="fa-solid fa-expand"></i></button>
+    </div>
+
+    <!-- Content Iframe Canvas -->
+    <div class="content-viewport">
+      <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <span style="font-size:12px; color:#94a3b8; font-weight:500;">Loading page...</span>
+      </div>
+      <iframe id="web-canvas" src="dashboard.html" onload="onFrameLoaded()"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('web-canvas');
+    const addressBar = document.getElementById('address-bar');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const serialSelector = document.getElementById('serial-selector');
+
+    function updateAddressBar(relativeUrl) {
+      const fullUrl = window.location.origin + '/' + relativeUrl;
+      addressBar.value = fullUrl;
+    }
+
+    function navigateTo(url) {
+      loadingOverlay.classList.add('show');
+      iframe.src = url;
+      updateAddressBar(url);
+    }
+
+    function switchTab(tabEl) {
+      document.querySelectorAll('.browser-tab').forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+      const targetUrl = tabEl.getAttribute('data-url');
+      navigateTo(targetUrl);
+    }
+
+    function onFrameLoaded() {
+      loadingOverlay.classList.remove('show');
+      try {
+        const framePath = iframe.contentWindow.location.pathname.substring(1) + iframe.contentWindow.location.search;
+        if (framePath) {
+          updateAddressBar(framePath);
+          syncActiveTab(framePath);
+        }
+      } catch (e) {}
+    }
+
+    function syncActiveTab(path) {
+      document.querySelectorAll('.browser-tab').forEach(tab => {
+        const tabUrl = tab.getAttribute('data-url');
+        if (path.includes(tabUrl.split('?')[0])) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+    }
+
+    function reloadFrame() {
+      loadingOverlay.classList.add('show');
+      iframe.contentWindow.location.reload();
+    }
+
+    function goHome() {
+      const firstTab = document.querySelector('.browser-tab');
+      if (firstTab) switchTab(firstTab);
+    }
+
+    function historyBack() {
+      try { iframe.contentWindow.history.back(); } catch(e) {}
+    }
+
+    function historyForward() {
+      try { iframe.contentWindow.history.forward(); } catch(e) {}
+    }
+
+    function handleAddressKey(e) {
+      if (e.key === 'Enter') {
+        let val = addressBar.value.trim();
+        if (val.startsWith(window.location.origin)) {
+          val = val.replace(window.location.origin + '/', '');
+        }
+        navigateTo(val);
+      }
+    }
+
+    function changeDGAData(serial) {
+      const dgaTab = document.querySelectorAll('.browser-tab')[2];
+      const newUrl = `dga_report.html?serial=${serial}`;
+      dgaTab.setAttribute('data-url', newUrl);
+      switchTab(dgaTab);
+    }
+
+    function copyCurrentUrl() {
+      navigator.clipboard.writeText(addressBar.value).then(() => {
+        alert("Link copied to clipboard!\n" + addressBar.value);
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Initial setup
+    updateAddressBar('dashboard.html');
+  </script>
+</body>
+</html>

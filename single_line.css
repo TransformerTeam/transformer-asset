@@ -58,9 +58,9 @@
 [data-theme="light"] {
   /* Light Theme Variables */
   --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
+  --bg-secondary: #ededed;
   --bg-tertiary: #f1f5f9;
-  --bg-card: rgba(255, 255, 255, 0.8);
+  --bg-card: rgba(237, 237, 237, 0.95);
   --border-color: rgba(0, 0, 0, 0.08);
   --text-primary: #0f172a;
   --text-secondary: #475569;
@@ -110,9 +110,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-[data-theme="light"] body {
-  background: var(--bg-primary);
-}
+
 
 .app-container {
   max-width: 1700px;
@@ -849,10 +847,13 @@ header p {
   color: var(--scada-text-primary);
 }
 
-/* Footer Marquee */
+/* Top Marquee Glassmorphism */
 .scada-footer {
-  background-color: #061539;
-  border-top: 1px solid #0056b3;
+  background: rgba(6, 21, 57, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 86, 179, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   color: #8bb6ec;
   padding: 0.35rem 1rem;
   font-size: 0.75rem;
@@ -860,7 +861,9 @@ header p {
   white-space: nowrap;
   overflow: hidden;
   position: relative;
-  height: 30px;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
 }
 
 .marquee-content {

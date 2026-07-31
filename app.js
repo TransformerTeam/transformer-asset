@@ -16,6 +16,7 @@ let chartSiteHealth = null;
 let chartBrandHealth = null;
 let mapInstance = null;
 let markersLayer = null;
+let currentMapType = 'theme';
 
 // Initialize Dashboard
 document.addEventListener('DOMContentLoaded', () => {
@@ -135,10 +136,53 @@ function setupEventListeners() {
     if (e.target.id === 'detail-modal') closeModal();
   });
   
-  // Escape key close modal
+  // Map Type Selector
+  const mapTypeSelect = document.getElementById('map-type-select');
+  if (mapTypeSelect) {
+    mapTypeSelect.addEventListener('change', (e) => {
+      currentMapType = e.target.value;
+      const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+      updateMapLayer(isDarkTheme);
+    });
+  }
+  
+  // Escape key close modal and map fullscreen
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') {
+      closeModal();
+      const mapCard = document.querySelector('.dashboard-card.map-fullscreen-active');
+      if (mapCard) {
+        mapCard.classList.remove('map-fullscreen-active');
+        const btn = document.getElementById('btn-map-fullscreen');
+        if (btn) btn.querySelector('i').className = 'fa-solid fa-expand';
+        setTimeout(() => {
+          if (mapInstance) mapInstance.invalidateSize();
+        }, 200);
+      }
+    }
   });
+
+  // Map Fullscreen Toggle
+  const btnMapFullscreen = document.getElementById('btn-map-fullscreen');
+  if (btnMapFullscreen) {
+    btnMapFullscreen.addEventListener('click', () => {
+      const mapCard = btnMapFullscreen.closest('.dashboard-card');
+      const isFullscreen = mapCard.classList.toggle('map-fullscreen-active');
+      
+      const icon = btnMapFullscreen.querySelector('i');
+      if (isFullscreen) {
+        icon.className = 'fa-solid fa-compress';
+      } else {
+        icon.className = 'fa-solid fa-expand';
+      }
+      
+      setTimeout(() => {
+        if (mapInstance) {
+          mapInstance.invalidateSize();
+        }
+      }, 200);
+    });
+  }
 }
 
 // Initialize Dashboard Components with Data
@@ -346,6 +390,36 @@ function resetFilters() {
   applyFilters();
 }
 
+// Custom Leaflet class to load Bing Maps tiles without requiring external plugins
+if (typeof L !== 'undefined') {
+  L.BingLayer = L.TileLayer.extend({
+    getTileUrl: function(coords) {
+      let quadKey = '';
+      let x = coords.x;
+      let y = coords.y;
+      let z = coords.z;
+      for (let i = z; i > 0; i--) {
+        let digit = 0;
+        let mask = 1 << (i - 1);
+        if ((x & mask) !== 0) {
+          digit++;
+        }
+        if ((y & mask) !== 0) {
+          digit += 2;
+        }
+        quadKey += digit;
+      }
+      let s = (x + y) % 4; // VirtualEarth usually uses 0, 1, 2, 3 subdomains
+      let type = this.options.type || 'r'; // r = road, a = aerial, h = hybrid
+      return `https://ecn.t${s}.tiles.virtualearth.net/tiles/${type}${quadKey}.jpeg?g=587&mkt=en-US`;
+    }
+  });
+
+  L.bingLayer = function(options) {
+    return new L.BingLayer('', options);
+  };
+}
+
 // Initialize Leaflet Map
 function initMap() {
   if (mapInstance) return;
@@ -365,9 +439,11 @@ function initMap() {
   updateMapLayer(isDarkTheme);
   
   markersLayer = L.layerGroup().addTo(mapInstance);
+  setTimeout(() => {
+    if (mapInstance) mapInstance.invalidateSize();
+  }, 300);
 }
 
-// Switch map style depending on active theme
 function updateMapLayer(isDark) {
   if (!mapInstance) return;
   
@@ -378,23 +454,37 @@ function updateMapLayer(isDark) {
     }
   });
   
-  let tileUrl = '';
-  let attribution = '';
-  
-  if (isDark) {
-    // CartoDB Dark Matter
-    tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-    attribution = '&copy; OpenStreetMap &copy; CartoDB';
+  if (currentMapType === 'satellite') {
+    // Bing Hybrid (aerial + labels)
+    L.bingLayer({
+      type: 'h',
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Microsoft Bing'
+    }).addTo(mapInstance);
+  } else if (currentMapType === 'streets') {
+    // Bing Road
+    L.bingLayer({
+      type: 'r',
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Microsoft Bing'
+    }).addTo(mapInstance);
   } else {
-    // OpenStreetMap standard or Voyager
-    tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-    attribution = '&copy; OpenStreetMap &copy; CartoDB';
+    // Default Theme Sync
+    if (isDark) {
+      // CartoDB Dark Matter
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap &copy; CartoDB'
+      }).addTo(mapInstance);
+    } else {
+      // Bing Road
+      L.bingLayer({
+        type: 'r',
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Microsoft Bing'
+      }).addTo(mapInstance);
+    }
   }
-  
-  L.tileLayer(tileUrl, {
-    maxZoom: 19,
-    attribution: attribution
-  }).addTo(mapInstance);
 }
 
 // Re-plot map markers based on filteredData
@@ -506,7 +596,7 @@ function renderCharts() {
   
   const donutOptions = {
     series: [counts.healthy, counts.monitoring, counts.warning, counts.critical, counts.noassess],
-    labels: ['Healthy (≥80%)', 'Monitoring (70-79%)', 'Warning (50-69%)', 'Critical (<50%)', 'No Assess (=0)'],
+    labels: ['Healthy (>=80%)', 'Monitoring (70-79%)', 'Warning (50-69%)', 'Critical (<50%)', 'No Assess (=0)'],
     chart: {
       type: 'donut',
       height: 250,
