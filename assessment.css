@@ -1590,11 +1590,15 @@ header p {
 
 .excel-body {
   display: grid !important;
-  grid-template-columns: 20% 51% 29% !important;
-  gap: 12px !important;
-  padding: 12px !important;
+  grid-template-columns: minmax(0, 20fr) minmax(0, 51fr) minmax(0, 29fr) !important;
+  gap: 10px !important;
+  padding: 10px !important;
   overflow-y: auto !important;
+  overflow-x: hidden !important;
   flex: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   background: #0f172a;
 }
 
