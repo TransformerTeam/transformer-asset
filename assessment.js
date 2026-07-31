@@ -1175,7 +1175,7 @@ function openDetail(no) {
   bushingBody.innerHTML = `
     <tr>
       <td>%Error PF [C1]</td>
-      <td>IEEE C57.152</td>
+      <td>EGAT</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.45' : '1.35')}</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.38' : '2.10')}</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.42' : '0.98')}</td>
@@ -1185,7 +1185,7 @@ function openDetail(no) {
     </tr>
     <tr>
       <td>%Error Capacitance [C1]</td>
-      <td>IEEE C57.152</td>
+      <td>EGAT</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : '0.85'}</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : '1.10'}</td>
       <td class="${bClass}">${bVal === 'N/A' ? '-' : '0.65'}</td>
