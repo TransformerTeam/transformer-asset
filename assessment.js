@@ -1067,6 +1067,10 @@ function openDetail(no) {
     exVisualText.textContent = visVal === 'A' ? 'Normal (A)' : (visVal === 'Q' ? 'Questionable (Q)' : (visVal === 'U' ? 'Unacceptable (U)' : 'N/A'));
     exVisualText.className = `excel-visual-box ${getStatusClass(visVal)}`;
   }
+  const exVisualLink = document.getElementById('ex-visual-link');
+  if (exVisualLink) {
+    exVisualLink.href = `visual_report.html?serial=${item.serial}`;
+  }
   
   // Recommendation Dynamic Population from HealthIndexSum
   const recEl = document.getElementById('ex-recommendation-text');
