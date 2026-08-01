@@ -1,0 +1,5 @@
+﻿Equipment Name,Serial No.,SITE,Tap Changer Type,Test Name,Test Company,Withness Name,Withness Company,Test Date,Test Instrument,Summary,Up Phase A,Up Phase B,Up Phase C,Down Phase A,Down Phase B,Down Phase C,Synchronicity Diff,Ripple Diff,Slope
+14100-TR-003,PP0084B01,CUP-1,OLTC1,Mr.Jirasak S.,GPSC,Mr.Suchat M.,GPSC,2025-03-20 00:00:00,TESTRANO 600,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal
+KT6A.30.EN,PTE 1689/03,SITE3,OLTC3,Mr.Jirasak S.,GPSC,Mr.Suchat M.,GPSC,2025-01-26 00:00:00,TESTRANO 600,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal
+KT2A.30.EN,510049,SITE3,OLTC3,Mr.Jirasak S.,GPSC,Mr.Suchat M.,GPSC,2025-02-06 00:00:00,TESTRANO 600,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal
+KT12A.30.EN,EDP008001,SITE3,OLTC1,Mr.Jirasak S.,GPSC,Mr.Suchat M.,GPSC,2025-02-06 00:00:00,TESTRANO 600,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal,Normal
