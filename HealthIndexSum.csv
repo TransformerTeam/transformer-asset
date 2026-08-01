@@ -1,261 +1,255 @@
-﻿3,,,,,,,,,,,,,,,,Active Part,,,,,,,,,,,,,,Transformer Oil in Main Tank,,,,,,,,,,,,,,,"Transformer Oil
-in OLTC",,,,,,,,,,
-No.,Equipment Name,Serial No,SITE,"Rated Power
-(MVA)",HV Rate (kV),LV Rate (kV),"Rated Voltage
-(kV)",Service Type,"Service Age
-(Year)",Condition Health Index,Health Index Status,Estimated DP (From Furan),Estimated Remaining Life time (Year),Visual Inspection,Active Part,Insulation Resistance & PI,Insulation Power Factor,Exciting Current,Ratio&Polarity,Winding Resistance,1∅ Short Circuit Impedance,3∅ Short Circuit Impedance,Core to Ground,Bushing,Surge Arrester,Dynamic Resistance Measurement (OLTC),Frequency Response Analysis (FRA),%Moisture in paper (FDS),Main Tank Oil,DGA,Water Content,Dielectric Breakdown,PF at 25 °C,PF at 100 °C,Conductivity,Interfratial Tension (IFT),Acidity,Color,Inhibitor,Corrosive Sulfur,Passivator,Furan,Sludge,OLTC Oil,DGA (OLTC),Dielectric Breakdown (OLTC),Water Content (OLTC),Date To Assess,FAT,2011,2012,2013,Last PM,Next PM,Recommendation
-1,16120-TR-001,4803321,CUP-1,6,11,6.9, 11/6.9 ,UAT,21,92,Monitor,937,,Q,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,A,Q,A,A,A,A,Q,U,A,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,"Repair oil leak and hot oil purify, Add passivator.
-Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), "
-2,16120-TR-003,4902687,CUP-1,6,11,6.9, 11/6.9 ,UAT,20,92,Monitor,1003,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2023,2026," Add passivator, Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b)."
-3,16120-TR-004,5001769,CUP-1,6,11,6.9, 11/6.9 ,UAT,19,92,Monitor,1003,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,Q,Q,A,A,A,A,A,Q,U,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2021,2024,"Plan for oil regeneration/Change Oil: Concern IFT is unacceptable limit and conductivity is questionable limit, Suspect corrosive (3b), Add passivator. Plan for drying transformer (insulation paper degradation)."
-4,16120-TR-006,5101711,CUP-1,6,11,6.9, 11/6.9 ,UAT,21,72,Monitor,1003,,A,A,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,A,Q,Q,A,A,A,A,A,U,Q,A,A,A,A,N/A,A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,Plan for oil regeneration/Change Oil: Concern conductivity is unacceptable limit and IFT is questionable limit. Plan for drying transformer (insulation paper degradation).
-5,10060-TR-101,5201090,CUP-1,6,11,6.9, 11/6.9 ,UAT,17,80,Monitor,1031,,A,Q,A,U,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,20-Jan-26,,,,,2025,2028,Follow power factor test period shutdown and DFR test.
-6,10060-TR-102,5201091,CUP-1,6,11,6.9, 11/6.9 ,UAT,17,100,Healthy,1152,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,20-Jan-26,,,,,2023,2026,
-7,14100-TR-001 (GTG11),4810106,CUP-1,55,115,10.5, 115/10.5 ,GSUT,21,96,Healthy,970,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,Q,Q,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit.
-8,14100-TR-002 (GTG12),4811735,CUP-1,55,115,10.5, 115/10.5 ,GSUT,20,96,Monitor,859,,Q,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2023,2026,"Repair hot spot: HV cable terminator phase A and B (Max. 52 °C), Plan for oil regeneration: Concern IFT are questionable limit, Add passivator."
-9,14100-TR-005 (GTG13),PP0174B01,CUP-1,55,115,10.5, 115/10.5 ,GSUT,18,92,Monitor,862,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,U,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2024,2027,Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
-10,14100-TR-006 (GTG14),PP0225B01,CUP-1,55,115,10.5, 115/10.5 ,GSUT,17,92,Monitor,917,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,Q,Q,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit.
-11,10060-TR-001 (GTG15),5110021,CUP-1,55,118,11, 118/11 ,GSUT,18,92,Monitor,945,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,Plan for oil regeneration: Concern IFT is unacceptable limit.
-12,10060-TR-002 (GTG16),5110022,CUP-1,55,118,11, 118/11 ,GSUT,18,92,Monitor,806,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2026,2029,Plan for oil regeneration: Concern IFT is unacceptable limit.
-13,14100-TR-003,PP0084B01,CUP-1,40,115,22, 115/22 ,Distribution,20,92,Monitor,917,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,Q,A,A,A,A,A,U,A,A,A,A,Q,Q,A,A,A,A,A,A,19-Jan-26,,,,,2023,2026,"Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator."
-14,14100-TR-004,PP0102B01,CUP-1,40,115,22, 115/22 ,Distribution,20,100,Healthy,1003,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,19-Jan-26,,,,,2023,2026,Routine 3Y PM Program.
-15,16120-TR-002A,4803168,CUP-1,2.66,6.9,0.4, 6.9/0.4 ,Auxiliary,21,87,Monitor,-,,Q,Q,Q,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,19-Jan-26,,,,,2025,2028,"Plan for oil top-up and N2 fill up for Positive Pressure, Follow to confirm test: Insulation resistance."
-16,16120-TR-002B,4803167,CUP-1,2.66,6.9,0.4, 6.9/0.4 ,Auxiliary,21,76,Monitor,-,,Q,Q,Q,A,A,A,A,U,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,N/A,A,A,A,N/A,Q,Q,N/A,N/A,N/A,N/A,N/A,N/A,20-Jan-26,,,,,2023,2026,"Plan for oil top-up and N2 fill up for Positive Pressure, Plan for oil regeneration: Concern oil conductivity is questionable limit, Re-test Insulation resistance and short circuit test."
-17,16120-TR-005A,5001766,CUP-1,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,19,82,Monitor,1066,,A,A,A,A,A,A,A,Q,Q,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,Q,U,A,A,N/A,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,20-Jan-26,,,,,2021,2024,"Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit., Re-test 1 and 3 Phase Short Circuit."
-18,16120-TR-005B,5001700,CUP-1,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,19,87,Monitor,930,,Q,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,U,A,A,Q,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Replacement new oil and hot oil purify in the next shutdown.
-19,10060-TR-201,5200523,CUP-1,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,17,80,Monitor,1047,,Q,Q,Q,U,A,A,A,A,A,N/A,N/A,N/A,N/A,A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,"Plan for oil top up, Re-test the Insulaion resistance and power factor (If not pass, require to change new oil.)"
-20,10060-TR-202,5200524,CUP-1,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,17,80,Monitor,-,,Q,Q,A,A,A,A,A,U,U,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"Plan for oil top up, Re-test 1 and 3 Phase short circuit impedance."
-21,24201-TR-011,4912022,CUP-2,8.8,11,7, 11/7 ,UAT,19,82,Monitor,1066,,A,A,A,A,A,A,A,A,A,A,N/A,N/A,A,A,N/A,Q,A,A,A,A,U,U,Q,A,A,N/A,A,N/A,A,A,A,A,A,A,1-Mar-26,,,,,2023,2026,"Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
-22,24201-TR-012,4912023,CUP-2,8.8,11,7, 11/7 ,UAT,19,84,Monitor,1089,,A,A,A,A,A,A,A,A,A,A,N/A,N/A,A,A,N/A,Q,A,A,A,A,U,U,Q,A,A,N/A,A,N/A,A,A,A,A,A,A,1-Mar-26,,,,,2023,2026,"Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
-23,23901-TR-011 (GTG21),4912019,CUP-2,55,117,11, 117/11 ,GSUT,19,92,Monitor,900,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,U,U,A,Q,N/A,A,Q,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2024,2027,"Plan for oil regeneration, Concern IFT, Condutivity are unacceaptable limit, Color is questionable limit."
-24,23902-TR-012 (GTG22),4912020,CUP-2,55,117,11, 117/11 ,GSUT,19,92,Monitor,980,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2024,2027,Plan for oil regeneration; there is a concern that the IFT is below the acceptable limit.
-25,23911-TR-010 (STG21),4912021,CUP-2,54,117,11, 117/11 ,GSUT,19,96,Monitor,884,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,A,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2023,2026,Plan for oil regeneration; there is a concern that the IFT is decrease closely the acceptable limit.
-26,24201-TR-111,5000574,CUP-2,2,6.9,0.4, 6.9/0.4 ,Auxiliary,19,76,Monitor,1003,,A,Q,Q,A,A,A,A,U,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Plan for oil regeneration; there is a concern that the IFT Conductivity are qeustionable limit. Re-test Insulation resistance and short circuit test.
-27,24201-TR-112,5000575,CUP-2,2,6.9,0.4, 6.9/0.4 ,Auxiliary,19,76,Monitor,1066,,A,Q,A,A,A,A,A,U,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,Q,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test.
-28,24201-TR-121,5000576,CUP-2,2,6.9,0.4, 6.9/0.4 ,Auxiliary,19,81,Monitor,1047,,A,Q,A,A,A,A,A,Q,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,Q,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test.
-29,24201-TR-122,5000577,CUP-2,2,6.9,0.4, 6.9/0.4 ,Auxiliary,19,76,Monitor,1066,,A,Q,A,A,A,A,A,U,U,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity is qeustionable limit. Re-test short circuit test.
-30,36120-TR-103 (STG31),5110023,CUP-3,21,118,11, 118/11 ,GSUT,18,96,Healthy,1152,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2025,2028,Routine 3Y PM Program.
-31,34101-TR-001,PP0158B01,CUP-3,40,115,22, 115/22 ,Distribution,18,100,Healthy,1089,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,1-Mar-26,,,,,2023,2026,Routine 3Y PM Program.
-32,34101-TR-002,PP0181B01,CUP-3,40,115,22, 115/22 ,Distribution,18,100,Healthy,1089,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,1-Mar-26,,,,,2023,2026,Routine 3Y PM Program.
-33,36120-TR-201,5102852,CUP-3,10,22,6.9, 22/6.9 ,Auxiliary,18,91,Monitor,1031,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"3Y PM program overdue, Plan for oil reganeration; there is a concern that the Conductivity is qeustionable limit."
-34,36120-TR-202,5103176,CUP-3,10,22,6.9, 22/6.9 ,Auxiliary,18,86,Monitor,1089,,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,3Y PM program overdue. Re-test 1 phase short circuit.
-35,36120-TR-301,5103168,CUP-3,2,6.6,0.4, 6.6/0.4 ,Auxiliary,18,86,Monitor,1089,,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,A,N/A,A,A,A,A,A,A,U,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"3Y PM program overdue, Re-test 1 phase short circuit."
-36,36120-TR-302,5103169,CUP-3,2,6.6,0.4, 6.6/0.4 ,Auxiliary,18,72,Monitor,1089,,A,Q,A,A,A,A,A,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,Q,Q,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"3Y PM program overdue, Re-test 1 phase short circuit, Plan for oil regeneration (PF 100C, Conductivity, IFT)."
-37,36120-TR-303,5103170,CUP-3,2,6.6,0.4, 6.6/0.4 ,Auxiliary,18,76,Monitor,1016,,A,Q,A,Q,A,A,U,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,Q,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"3Y PM program overdue, Re-test short circuit, Power factor, Plan for oil regeneration (Conductivity, Sludge)."
-38,36120-TR-304,5103171,CUP-3,2,6.6,0.4, 6.6/0.4 ,Auxiliary,18,76,Monitor,1152,,A,A,A,Q,A,A,A,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,Q,N/A,N/A,N/A,N/A,1-Mar-26,,,,,2022,2025,"3Y PM program overdue, Re-test short circuit, Power factor, Plan for hot oil purify (Sludge)."
-39,41BAT01 (GTG41),6110201,CUP-4,91,115,11, 115/11 ,GSUT,8,96,Healthy,1066,,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,Q,A,A,A,A,A,A,Q,A,A,A,A,N/A,A,A,A,A,A,A,1-Mar-26,,,,,2023,2026,Routine 6Y PM Program (Overhaul OLTC).
-40,41BAT02,6110202,CUP-4,52,115,22, 115/22 ,Distribution,7,100,Healthy,1066,,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,1-Mar-26,,,,,2024,2027,Routine 6Y PM Program (Overhaul OLTC).
-41,41BBT20GT001,6110203,CUP-4,10,11,6.9, 11/6.9 ,UAT,7,92,Monitor,1031,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,A,A,N/A,A,A,A,A,A,A,1-Apr-26,,,,,2023,2026,Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
-42,41BFT20GT001,6110204,CUP-4,2.8,6.6,0.4, 6.6/0.4 ,Auxiliary,7,87,Monitor,1289,,A,Q,A,A,N/A,A,A,A,Q,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,U,A,A,A,A,N/A,A,A,A,A,A,A,1-Apr-26,,,,,2023,2026,Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit.
-43,41BFT80GT001,6110245,CUP-4,1,6.6,0.4, 6.6/0.4 ,Auxiliary,7,,,1117,,,,,,,,,,,,,,,,,Q,A,A,A,A,A,U,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2024,2027,Update PM data. Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
-44,41BBT10,6410137,GEN,6,11,6.6, 11/6.6 ,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2021,2024,3Y PM Program overdue.
-45,42BBT10,6410130,GEN,6,11,6.6, 11/6.6 ,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2021,2024,3Y PM Program overdue.
-46,61BBT10,6410131,GEN,6,11,6.6, 11/6.6 ,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2021,2024,3Y PM Program overdue.
-47,62BBT10,6410132,GEN,6,11,6.6, 11/6.6 ,UAT,5,,,,,A,,,,,,,N/A,N/A,A,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-48,GT2B GSUT,4710348,GEN,50,123,11, 123/11 ,GSUT,21,96,Monitor,905,,Q,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,Q,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2024,2027,"Replacement buchholz relay (oil leak), Add passivator and budget plan for oil regeneration (IFT questinable limit)."
-49,GT2C GSUT,4710349,GEN,50,123,11, 123/11 ,GSUT,21,96,Monitor,930,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,N/A,N/A,A,A,A,A,A,A,A,Q,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2023,2026,Add passivator and budget plan for oil regeneration (IFT questinable limit).
-50,41BAT10 (GTG41),6310537,GEN,65,120,11, 120/11 ,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-51,42BAT10 (GTG42),6310535,GEN,65,120,11, 120/11 ,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-52,61BAT10 (GTG61),6310534,GEN,65,120,11, 120/11 ,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-53,62BAT10 (GTG62),6310536,GEN,65,120,11, 120/11 ,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-54,TR1,54002,GEN,50,115,23, 115/23 ,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-55,TR2,508038,GEN,50,115,23, 115/23 ,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-56,TR3,54001,GEN,50,115,23, 115/23 ,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-57,GT2B Bleeding,383204884,GEN,4.5,11,6.9, 11/6.9 ,Auxiliary,31,92,Monitor,1774,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,Q,U,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2024,2027,"Plan for oil regeneration: Concern oil conductivity is unacceptable limit, PF 100C and IFT are questionable limit."
-58,GT2C Bleeding,383204886,GEN,4.5,11,6.9, 11/6.9 ,Auxiliary,31,92,Monitor,1774,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,N/A,Q,N/A,A,A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2021,2024,"3Y PM program overdue, Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Corrosive sulfur is suspect corrosive (3b)."
-59,ETR1,6611059,GEN,315,22,0.4, 22/0.4 ,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-60,ETR2,6611060,GEN,315,22,0.4, 22/0.4 ,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-61,ETR3,5310991,GEN,315,22,0.4, 22/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-62,EDTRF-TCC1 (TR7),3905095,GEN,4,22,6.6, 22/6.6 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-63,EDTRF-TCC2 (TR6),56118448EE,GEN,2,22,0.4, 22/0.4 ,Auxiliary,13,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-64,EDTRF-TCC3 (TR5),50310092,GEN,1.6,22,0.4, 22/0.4 ,Auxiliary,19,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-65,41BFT30 (Starting Transformer),E541351_1,GEN,1.25,11,0.69, 11/0.69 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-66,42BFT30 (Starting Transformer),E541351_2,GEN,1.25,11,0.69, 11/0.69 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-67,61BFT30 (Starting Transformer),E541361_1,GEN,1.25,11,0.69, 11/0.69 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-68,62BFT30 (Starting Transformer),E541361_2,GEN,1.25,11,0.69, 11/0.69 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-69,40BFT10,6410133,GEN,1.25,11,0.4, 11/0.4 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-70,40BFT20,6410134,GEN,1.25,11,0.4, 11/0.4 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-71,60BFT10,6410135,GEN,1.25,11,0.4, 11/0.4 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-72,60BFT20,6410136,GEN,1.25,11,0.4, 11/0.4 ,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-73,2BBFT20,3902641,GEN,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-74,2CBFT20,3902642,GEN,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-75,21-90-ED-XT-TR1,14231662_2,GEN,1.6,6.6,0.4, 6.6/0.4 ,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2019,2022,3Y PM program overdue.
-76,21-90-ED-XT-TR2,14231662_3,GEN,1.6,6.6,0.4, 6.6/0.4 ,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2019,2022,3Y PM program overdue.
-77,21-90-ED-XT-TR3,14231662_1,GEN,1.6,6.6,0.4, 6.6/0.4 ,Auxiliary,33,95,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2019,2022,3Y PM program overdue.
-78,21-90-ED-XT-TR4,14231662_4,GEN,1.6,6.6,0.4, 6.6/0.4 ,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,1-Apr-26,,,,,2019,2022,3Y PM program overdue.
-79,61BBT01 (GH1 UAT1),3011080055,GHECO-ONE,60,23,11, 23/11 ,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-80,61BBT02 (GH1 UAT2),3011080056,GHECO-ONE,60,23,11, 23/11 ,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-81,61BBT03 (GH1 Excitation),JD85034202,GHECO-ONE,7,23,0.92, 23/0.92 ,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-82,61BAT01 (GH1 GSUT),TP70279703,GHECO-ONE,875,245,23, 245/23 ,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-83,61BMT03 (Back Up),5513053,GHECO-ONE,10,22,11, 22/11 ,Auxiliary,14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-84,61BFT01 (LV TR-1),VN85040201_1,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-85,61BFT02 (LV TR-2),VN85040201_2,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-86,61BFT03 (LV TR-3),VN85040201_3,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-87,61BFT04 (LV TR-4),VN85040201_4,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-88,61BFT05 (LV TR-5),VN85040204_1,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-89,61BFT06 (LV TR-6),VN85040204_2,GHECO-ONE,2.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-90,61BGT01 (LV ESP-1),VN85042301_1,GHECO-ONE,3.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-91,61BGT02 (LV ESP-2),VN85042301_2,GHECO-ONE,3.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-92,61BGT09 (LV SWFGD-1),VN85040202_1,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-93,61BGT10 (LV SWFGD-2),VN85040202_2,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-94,61BGT07 (LV ASH-1),VN85042302_2,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-95,61BGT08 (LV ASH-2),VN85042302_1,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-96,61BGT05 (LV CHS-1),VN13700702_2,GHECO-ONE,1,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-97,61BGT06 (LV CHS-2),VN13700702_1,GHECO-ONE,1,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-98,61BGT03 (LV CHS-3),VN13700701_2,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-99,61BGT04 (LV CHS-4),VN13700701_1,GHECO-ONE,1.5,10.5,0.4, 10.5/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-100,61GBY01GT001.35.EN,170709/1,GHECO-ONE,1.17,10.5,0.15, 10.5/0.15 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-101,61GBY01GT002.35.EN,170709/2,GHECO-ONE,1.17,10.5,0.15, 10.5/0.15 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-102,61HDE10GT001.35.EN,N09057,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-103,61HDE10GT002.35.EN,N09058,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-104,61HDE10GT003.35.EN,N09059,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-105,61HDE10GT004.35.EN,N09060,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-106,61HDE10GT005.35.EN,N09061,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-107,61HDE10GT006.35.EN,N09062,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-108,61HDE10GT007.35.EN,N09063,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-109,61HDE10GT008.35.EN,N09064,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-110,61HDE10GT009.35.EN,N09065,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-111,61HDE10GT010.35.EN,N09066,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-112,61HDE10GT011.35.EN,N09067,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-113,61HDE10GT012.35.EN,N09068,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-114,61HDE20GT001.35.EN,N09069,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-115,61HDE20GT002.35.EN,N09070,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-116,61HDE20GT003.35.EN,N09071,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-117,61HDE20GT004.35.EN,N09072,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-118,61HDE20GT005.35.EN,N09073,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-119,61HDE20GT006.35.EN,N09074,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-120,61HDE20GT007.35.EN,N09075,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-121,61HDE20GT008.35.EN,N09076,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-122,61HDE20GT009.35.EN,N09077,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-123,61HDE20GT010.35.EN,N09078,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-124,61HDE20GT011.35.EN,N09079,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-125,61HDE20GT012.35.EN,N09080,GHECO-ONE,0.136,0.4,0.11, 0.4/0.11 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-126,11BBT20,T013001,GIPP,40,21,6.75, 21/6.75 ,UAT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-127,21BBT20,T013007,GIPP,40,21,6.75, 21/6.75 ,UAT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-128,11BAT10,T012006,GIPP,500,235,121, 235/121 ,GSUT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-129,21BAT10,T012023,GIPP,500,235,121, 235/121 ,GSUT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-130,11MKC50 (Excitation),5217613,GIPP,4.1,21,0.52, 21/0.52 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-131,21MKC50 (Excitation),5217612,GIPP,4.1,21,0.52, 21/0.52 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-132,11BFT10,424758_03,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-133,11BFT20,424758_04,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-134,11BFT30,424759_01,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-135,21BFT10,424758_01,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-136,21BFT20,424759_02,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-137,21BFT30,424758_02,GIPP,2.5,6.6,0.4, 6.6/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-138,TR-1501,EV9277_1,GSPP11 PLT1,4.75,11,6.9, 11/6.9 ,UAT,26,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-139,TR-1502,EV9277_2,GSPP11 PLT1,4.75,11,6.9, 11/6.9 ,UAT,26,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-140,TR-101,ET8712/1,GSPP11 PLT1,48,123,11, 123/11 ,GSUT,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-141,TR-201,ET8712_2,GSPP11 PLT1,48,123,11, 123/11 ,GSUT,33,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-142,TR-301,ET8713/1,GSPP11 PLT1,52,123,10.5, 123/10.5 ,GSUT,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-143,GE-TR1,PP0091B01,GSPP11 PLT1,26,22,11, 22/11 ,GSUT,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-144,GE-TR2,5710877,GSPP11 PLT1,25,22,11, 22/11 ,GSUT,12,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-145,TR-401,EDP004301,GSPP11 PLT1,25,115,22, 115/22 ,Distribution,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-146,TR-501,EDP018401,GSPP11 PLT1,25,115,22, 115/22 ,Distribution,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-147,TR-601,PP0041B01,GSPP11 PLT1,20,115,22, 115/22 ,Distribution,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-148,TR-40001,4700831,GSPP11 PLT1,2.5,22,0.4, 22/0.4 ,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-149,TR-40002,4700830,GSPP11 PLT1,2.5,22,0.4, 22/0.4 ,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-150,GE-TR1 Aux.,O61539,GSPP11 PLT1,1.25,11,0.4, 11/0.4 ,Auxiliary,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-151,GE-TR2 Aux.,5710876,GSPP11 PLT1,0.63,11,0.4, 11/0.4 ,Auxiliary,12,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-152,GSUT-1,PP0284B01,GSPP11 PLT2,90,115,11, 115/11 ,GSUT,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-153,GSUT-2,PP0285B01,GSPP11 PLT2,55,115,11, 115/11 ,GSUT,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-154,DT-3,56016,GSPP11 PLT2,50,115,22, 115/22 ,Distribution,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-155,SST-1,54110640EE,GSPP11 PLT2,6.25,11,3.3, 11/3.3 ,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-156,SST-2,54110641EE,GSPP11 PLT2,6.25,11,3.3, 11/3.3 ,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-157,SAT-1,54110621EE,GSPP11 PLT2,2.3,11,0.4, 11/0.4 ,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-158,SAT-2,54110620EE,GSPP11 PLT2,2.3,11,0.4, 11/0.4 ,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-159,COGEN UAT,9624007,GSPP2&3,13.4,11.5,7.2, 11.5/7.2 ,UAT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-160,STG3C UAT,5011858,GSPP2&3,20,15.75,7.2, 15.75/7.2 ,UAT,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-161,71BBT10 (CTG7A UAT),225307,GSPP2&3,8,11,6.9, 11/6.9 ,UAT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-162,72BBT10 (CTG7B UAT),225308,GSPP2&3,8,11,6.9, 11/6.9 ,UAT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-163,STG1C UAT,9724074,GSPP2&3,22.4,15.75,7.2, 15.75/7.2 ,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-164,STG2C UAT1,9724076,GSPP2&3,22.4,11.5,7.2, 11.5/7.2 ,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-165,STG2C UAT2,9724075,GSPP2&3,22.4,15.75,7.2, 15.75/7.2 ,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-166,31BBT10 (CTG3A UAT),4711343,GSPP2&3,2,11.5,7.2, 11.5/7.2 ,UAT,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-167,32BBT10 (CTG3B UAT),4612314,GSPP2&3,2,11.5,7.2, 11.5/7.2 ,UAT,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-168,51BBT01 (CTG5 GSUT),VN00408,GSPP2&3,20,20,6.9, 20/6.9 ,UAT,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-169,COGEN GSUT (CTG1&2),9640548,GSPP2&3,90,118,11.5/11.5, 118/11.5/11.5 ,GSUT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-170,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5, 118/11.5/11.5 ,GSUT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-171,CTG2A&2B GSUT,57005,GSPP2&3,90,118,11.5/11.5, 118/11.5/11.5 ,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-172,STG3C GSUT,5011857,GSPP2&3,155,118,15.75, 118/15.75 ,GSUT,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-173,71BAT10 (CTG7A GSUT),6512362,GSPP2&3,72,118,11, 118/11 ,GSUT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-174,72BAT10 (CTG7B GSUT),6512363,GSPP2&3,72,118,11, 118/11 ,GSUT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-175,STG1C GSUT,57011,GSPP2&3,215,118,15.75, 118/15.75 ,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-176,STG2C GSUT,57012,GSPP2&3,215,118,15.75, 118/15.75 ,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-177,31BAT10 (CTG3A GSUT),PP0050B01,GSPP2&3,51.5,118,11.5, 118/11.5 ,GSUT,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-178,32BAT10 (CTG3B GSUT),PP0016B01,GSPP2&3,51.5,118,11.5, 118/11.5 ,GSUT,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-179,50BAT10 (CTG5 GSUT),20083122TIC003,GSPP2&3,325,115,20, 115/20 ,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-180,52BAT01 (STG5 GSUT),20083122TIC008,GSPP2&3,175,115,15.75, 115/15.75 ,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-181,KT2A,510049,GSPP2&3,200,230,121, 230/121 ,Distribution,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-182,KT4A,PTE 1689/01,GSPP2&3,200,230,121, 230/121 ,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-183,KT5A,PTE 1689/02,GSPP2&3,200,230,121, 230/121 ,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-184,KT6A,PTE 1689/03,GSPP2&3,200,230,121, 230/121 ,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-185,KT7A,PTE 1689/04,GSPP2&3,200,230,121, 230/121 ,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-186,KT12A,EDP008001,GSPP2&3,50,112.5,23, 112.5/23 ,Distribution,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-187,KT13A,EDP011601,GSPP2&3,50,112.5,23, 112.5/23 ,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-188,KT14A,512033,GSPP2&3,50,112.5,23, 112.5/23 ,Distribution,14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-189,CTG1 Aux.,PBE0580,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-190,CTG2 Aux.,PBE0579,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-191,COGEN SUS11,243597801,GSPP2&3,2,6.9,0.4, 6.9/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-192,COGEN SUS12,243597802,GSPP2&3,2,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-193,CTG1A Aux.,PBJ1200,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-194,CTG1B Aux.,PBJ1198,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-195,CTG2A Aux.,PBK1325,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-196,CTG2B Aux.,PBL1465,GSPP2&3,1.15,11.5,0.4, 11.5/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-197,KW1A,3911888,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-198,KW2A,4010922,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-199,KW3A,4010291,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-200,KW4A,4010290,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-201,KW5A,5513260,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,13,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-202,TR-103 (WTP SST),53105200EE,GSPP2&3,0.4,22,0.4, 22/0.4 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-203,Admin Building SST,48310781,GSPP2&3,0.5,22,0.4, 22/0.4 ,Auxiliary,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-204,70BFT10 (CTG7A Aux.),225309,GSPP2&3,1.5,6.6,0.4, 6.6/0.4 ,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-205,70BFT20 (CTG7B Aux.),225310,GSPP2&3,1.5,6.6,0.4, 6.6/0.4 ,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-206,71BFT30 (Starting Transformer),E54623,GSPP2&3,1.25,6.6,0.69, 6.6/0.69 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-207,72BFT30 (Starting Transformer),E54624,GSPP2&3,1.25,6.6,0.69, 6.6/0.69 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-208,TR-1 (Coal Handling),4104759,GSPP2&3,6,22,7.2, 22/7.2 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-209,TR-2 (Coal Handling),4104758,GSPP2&3,6,22,7.2, 22/7.2 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-210,TR-3 (Coal Handling),4104077,GSPP2&3,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-211,TR-4 (Coal Handling),4104453,GSPP2&3,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-212,TR-5 (Coal Handling),xx,GSPP2&3,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-213,1APC-XF-24 (Block1 SUS24),PCL1429,GSPP2&3,0.862,6.9,0.4, 6.9/0.4 ,Auxiliary,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-214,2APC-XF-24 (Block2 SUS24),PCD0277,GSPP2&3,0.862,6.9,0.4, 6.9/0.4 ,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-215,Coal Harbor Tower 1,K757927,GSPP2&3,0.8,6.9,0.4, 6.9/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-216,Coal Harbor Tower 2,K757926,GSPP2&3,1,6.9,0.4, 6.9/0.4 ,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-217,1APC-XF-11 (Block1 SUS11),332162H5018727A,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-218,1APC-XF-12 (Block1 SUS12),332162H501_8727B,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-219,1APC-XF-21 (Block1 SUS21),332162H501_8727E,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-220,1APC-XF-22 (Block1 SUS22),332162H502_8727F,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-221,1APC-XF-23 (Block1 SUS23),331000H509_8727J,GSPP2&3,1.333,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-222,2APC-XF-11 (Block2 SUS11),332152H501_8727C,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-223,2APC-XF-12 (Block2 SUS12),331000H508_8727I,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-224,2APC-XF-21 (Block2 SUS21),332162H501_8727D,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-225,2APC-XF-22 (Block2 SUS22),332162H502_8727G,GSPP2&3,2.882,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-226,2APC-XF-23  (Block2 SUS23),332162H502_8727H,GSPP2&3,1.333,6.9,0.4, 6.9/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-227,CFB3 SUS11,VN85030801_1,GSPP2&3,2.5,6.9,0.4, 6.9/0.4 ,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-228,CFB3 SUS12,VN85030801_2,GSPP2&3,2.5,6.9,0.4, 6.9/0.4 ,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-229,Wharehouse SST,FC203816,GSPP2&3,1.6,6.9,0.4, 6.9/0.4 ,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-230,51BFT11 (CTG5 SUS11),1LKR091730,GSPP2&3,3.325,6.9,0.4, 6.9/0.4 ,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-231,51BFT12 (CTG5 SUS12),1LKR091729,GSPP2&3,3.325,6.9,0.4, 6.9/0.4 ,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-232,51BFT13 (Electrochlorination Plant),1LKR091731,GSPP2&3,0.4,6.9,0.4, 6.9/0.4 ,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-233,31BFT10 (CTG3A SUS),1LKR050450TER,GSPP2&3,1,6.9,0.4, 6.9/0.4 ,Auxiliary,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-234,32BFT10 (CTG3B SUS),1LKR040038TER,GSPP2&3,1,6.9,0.4, 6.9/0.4 ,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-235,REC-TR1 (Rectifier),6210508,GSPP2&3,0.8,6.9,0.077, 6.9/0.077 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-236,REC-TR2 (Rectifier),6210509,GSPP2&3,0.8,6.9,0.077, 6.9/0.077 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-237,50MBJ01 (CTG5 SFC),K810289,GSPP2&3,2.9,6.9,1.8, 6.9/1.8 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-238,50MKC01 (CTG5 SEE),K810290,GSPP2&3,1.43,6.9,0.5, 6.9/0.5 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-239,52MKC01 (STG5 SEE),K810291,GSPP2&3,0.85,6.9,0.54, 6.9/0.54 ,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-240,51PBQ20,xxx,GSPP2&3,,,, / ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-241,CFB3 Back Up,4202021,GSPP2&3,0.5,6.9,0.4, 6.9/0.4 ,Auxiliary,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-242,KT51A,6012333,MTP-1,40,115,22, 115/22 ,Distribution,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-243,EKT51A,6110289,MTP-1,0.5,22,0.4, 22/0.4 ,Auxiliary,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-244,TR141,4011560,MTP-3,1,22,0.4, 22/0.4 ,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-245,1BDT10GT001,190869,RDF,13,22,6.9, 22/6.9 ,GSUT,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-246,TR1,61310601,RDF,3,22,0.4, 22/0.4 ,Distribution,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-247,1BFT11GT001,196057,RDF,3,6.9,0.4, 6.9/0.4 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-248,1BFT12GT001,196058,RDF,3,6.9,0.4, 6.9/0.4 ,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-249,SPARE  3 MVA 22/11 kV (Scrap),63310466,Scrap,3,22,11, 22/11 ,,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-250,SPARE 0.315 MVA 22/0.4 kV (Scrap),3710737,Scrap,0.315,22,0.4, 22/0.4 ,,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-251,SPARE 0.315 MVA 22/0.4 kV (Scrap),3710738,Scrap,0.315,22,0.4, 22/0.4 ,,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-252,SPARE 50 MVA 123/11 kV,4710346,SPARE GSPP2&3,50,123,11, 123/11 ,,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-253,SPARE 63.5 MVA 123/11 kV,EDP021401,SPARE GSPP2&3,63.5,123,11, 123/11 ,,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
-,,,,,,,,,Total,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+﻿No.,Equipment Name,Serial No,SITE,Rated Power (MVA),HV Rate (kV),LV Rate (kV),Rated Voltage (kV),Service Type,Service Age (Year),Condition Health Index,Health Index Status,Estimated DP (From Furan),Estimated Remaining Life time (Year),Visual Inspection,Active Part,Insulation Resistance & PI,Insulation Power Factor,Exciting Current,Ratio&Polarity,Winding Resistance,1∅ Short Circuit Impedance,3∅ Short Circuit Impedance,Core to Ground,Bushing,Surge Arrester,Dynamic Resistance Measurement (OLTC),Frequency Response Analysis (FRA),%Moisture in paper (FDS),Main Tank Oil,DGA,Water Content,Dielectric Breakdown,PF at 25 °C,PF at 100 °C,Conductivity,Interfratial Tension (IFT),Acidity,Color,Inhibitor,Corrosive Sulfur,Passivator,Furan,Sludge,OLTC Oil,DGA (OLTC),Dielectric Breakdown (OLTC),Water Content (OLTC),Date To Assess,FAT,2011,2012,2013,Last PM,Next PM,Recommendation
+0,16120-TR-001,4803321,CUP-1,6,11,6.9,11/6.9,UAT,21,92,Monitor,937,,Q,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,A,Q,A,A,A,A,Q,U,A,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,"Repair oil leak and hot oil purify, Add passivator.
+Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b),"
+0,16120-TR-003,4902687,CUP-1,6,11,6.9,11/6.9,UAT,20,92,Monitor,1003,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2023,2026,"Add passivator, Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b)."
+0,16120-TR-004,5001769,CUP-1,6,11,6.9,11/6.9,UAT,19,92,Monitor,1003,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,Q,Q,A,A,A,A,A,Q,U,A,A,A,Q,N/A,A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2021,2024,"Plan for oil regeneration/Change Oil: Concern IFT is unacceptable limit and conductivity is questionable limit, Suspect corrosive (3b), Add passivator. Plan for drying transformer (insulation paper degradation)."
+0,16120-TR-006,5101711,CUP-1,6,11,6.9,11/6.9,UAT,21,72,Monitor,1003,,A,A,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,A,Q,Q,A,A,A,A,A,U,Q,A,A,A,A,N/A,A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,Plan for oil regeneration/Change Oil: Concern conductivity is unacceptable limit and IFT is questionable limit. Plan for drying transformer (insulation paper degradation).
+0,10060-TR-101,5201090,CUP-1,6,11,6.9,11/6.9,UAT,17,80,Monitor,1031,,A,Q,A,U,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,01/20/2026,,,,,2025,2028,Follow power factor test period shutdown and DFR test.
+0,10060-TR-102,5201091,CUP-1,6,11,6.9,11/6.9,UAT,17,100,Healthy,1152,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,01/20/2026,,,,,2023,2026,
+0,14100-TR-001 (GTG11),4810106,CUP-1,55,115,10.5,115/10.5,GSUT,21,96,Healthy,970,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,Q,Q,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit.
+0,14100-TR-002 (GTG12),4811735,CUP-1,55,115,10.5,115/10.5,GSUT,20,96,Monitor,859,,Q,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2023,2026,"Repair hot spot: HV cable terminator phase A and B (Max. 52 °C), Plan for oil regeneration: Concern IFT are questionable limit, Add passivator."
+0,14100-TR-005 (GTG13),PP0174B01,CUP-1,55,115,10.5,115/10.5,GSUT,18,92,Monitor,862,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,U,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2024,2027,Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
+0,14100-TR-006 (GTG14),PP0225B01,CUP-1,55,115,10.5,115/10.5,GSUT,17,92,Monitor,917,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,Q,Q,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit.
+0,10060-TR-001 (GTG15),5110021,CUP-1,55,118,11,118/11,GSUT,18,92,Monitor,945,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,Plan for oil regeneration: Concern IFT is unacceptable limit.
+0,10060-TR-002 (GTG16),5110022,CUP-1,55,118,11,118/11,GSUT,18,92,Monitor,806,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2026,2029,Plan for oil regeneration: Concern IFT is unacceptable limit.
+0,14100-TR-003,PP0084B01,CUP-1,40,115,22,115/22,Distribution,20,92,Monitor,917,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,Q,A,A,A,A,A,U,A,A,A,A,Q,Q,A,A,A,A,A,A,01/19/2026,,,,,2023,2026,"Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator."
+0,14100-TR-004,PP0102B01,CUP-1,40,115,22,115/22,Distribution,20,100,Healthy,1003,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,01/19/2026,,,,,2023,2026,Routine 3Y PM Program.
+0,16120-TR-002A,4803168,CUP-1,2.66,6.9,0.4,6.9/0.4,Auxiliary,21,87,Monitor,-,,Q,Q,Q,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,01/19/2026,,,,,2025,2028,"Plan for oil top-up and N2 fill up for Positive Pressure, Follow to confirm test: Insulation resistance."
+0,16120-TR-002B,4803167,CUP-1,2.66,6.9,0.4,6.9/0.4,Auxiliary,21,76,Monitor,-,,Q,Q,Q,A,A,A,A,U,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,N/A,A,A,A,N/A,Q,Q,N/A,N/A,N/A,N/A,N/A,N/A,01/20/2026,,,,,2023,2026,"Plan for oil top-up and N2 fill up for Positive Pressure, Plan for oil regeneration: Concern oil conductivity is questionable limit, Re-test Insulation resistance and short circuit test."
+0,16120-TR-005A,5001766,CUP-1,1.6,6.9,0.4,6.9/0.4,Auxiliary,19,82,Monitor,1066,,A,A,A,A,A,A,A,Q,Q,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,Q,U,A,A,N/A,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,01/20/2026,,,,,2021,2024,"Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit., Re-test 1 and 3 Phase Short Circuit."
+0,16120-TR-005B,5001700,CUP-1,1.6,6.9,0.4,6.9/0.4,Auxiliary,19,87,Monitor,930,,Q,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,U,A,A,Q,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Replacement new oil and hot oil purify in the next shutdown.
+0,10060-TR-201,5200523,CUP-1,1.6,6.9,0.4,6.9/0.4,Auxiliary,17,80,Monitor,1047,,Q,Q,Q,U,A,A,A,A,A,N/A,N/A,N/A,N/A,A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,"Plan for oil top up, Re-test the Insulaion resistance and power factor (If not pass, require to change new oil.)"
+0,10060-TR-202,5200524,CUP-1,1.6,6.9,0.4,6.9/0.4,Auxiliary,17,80,Monitor,-,,Q,Q,A,A,A,A,A,U,U,N/A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,N/A,N/A,N/A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"Plan for oil top up, Re-test 1 and 3 Phase short circuit impedance."
+0,24201-TR-011,4912022,CUP-2,8.8,11,7,11/7,UAT,19,82,Monitor,1066,,A,A,A,A,A,A,A,A,A,A,N/A,N/A,A,A,N/A,Q,A,A,A,A,U,U,Q,A,A,N/A,A,N/A,A,A,A,A,A,A,03/01/2026,,,,,2023,2026,"Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
+0,24201-TR-012,4912023,CUP-2,8.8,11,7,11/7,UAT,19,84,Monitor,1089,,A,A,A,A,A,A,A,A,A,A,N/A,N/A,A,A,N/A,Q,A,A,A,A,U,U,Q,A,A,N/A,A,N/A,A,A,A,A,A,A,03/01/2026,,,,,2023,2026,"Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
+0,23901-TR-011 (GTG21),4912019,CUP-2,55,117,11,117/11,GSUT,19,92,Monitor,900,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,U,U,A,Q,N/A,A,Q,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2024,2027,"Plan for oil regeneration, Concern IFT, Condutivity are unacceaptable limit, Color is questionable limit."
+0,23902-TR-012 (GTG22),4912020,CUP-2,55,117,11,117/11,GSUT,19,92,Monitor,980,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,A,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2024,2027,Plan for oil regeneration; there is a concern that the IFT is below the acceptable limit.
+0,23911-TR-010 (STG21),4912021,CUP-2,54,117,11,117/11,GSUT,19,96,Monitor,884,,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,Q,A,A,A,A,A,A,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2023,2026,Plan for oil regeneration; there is a concern that the IFT is decrease closely the acceptable limit.
+0,24201-TR-111,5000574,CUP-2,2,6.9,0.4,6.9/0.4,Auxiliary,19,76,Monitor,1003,,A,Q,Q,A,A,A,A,U,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Plan for oil regeneration; there is a concern that the IFT Conductivity are qeustionable limit. Re-test Insulation resistance and short circuit test.
+0,24201-TR-112,5000575,CUP-2,2,6.9,0.4,6.9/0.4,Auxiliary,19,76,Monitor,1066,,A,Q,A,A,A,A,A,U,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,Q,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test.
+0,24201-TR-121,5000576,CUP-2,2,6.9,0.4,6.9/0.4,Auxiliary,19,81,Monitor,1047,,A,Q,A,A,A,A,A,Q,Q,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,Q,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test.
+0,24201-TR-122,5000577,CUP-2,2,6.9,0.4,6.9/0.4,Auxiliary,19,76,Monitor,1066,,A,Q,A,A,A,A,A,U,U,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Plan for oil regeneration; there is a concern that the Conductivity is qeustionable limit. Re-test short circuit test.
+0,36120-TR-103 (STG31),5110023,CUP-3,21,118,11,118/11,GSUT,18,96,Healthy,1152,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2025,2028,Routine 3Y PM Program.
+0,34101-TR-001,PP0158B01,CUP-3,40,115,22,115/22,Distribution,18,100,Healthy,1089,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,03/01/2026,,,,,2023,2026,Routine 3Y PM Program.
+0,34101-TR-002,PP0181B01,CUP-3,40,115,22,115/22,Distribution,18,100,Healthy,1089,,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,03/01/2026,,,,,2023,2026,Routine 3Y PM Program.
+0,36120-TR-201,5102852,CUP-3,10,22,6.9,22/6.9,Auxiliary,18,91,Monitor,1031,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"3Y PM program overdue, Plan for oil reganeration; there is a concern that the Conductivity is qeustionable limit."
+0,36120-TR-202,5103176,CUP-3,10,22,6.9,22/6.9,Auxiliary,18,86,Monitor,1089,,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,3Y PM program overdue. Re-test 1 phase short circuit.
+0,36120-TR-301,5103168,CUP-3,2,6.6,0.4,6.6/0.4,Auxiliary,18,86,Monitor,1089,,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,A,N/A,A,A,A,A,A,A,U,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"3Y PM program overdue, Re-test 1 phase short circuit."
+0,36120-TR-302,5103169,CUP-3,2,6.6,0.4,6.6/0.4,Auxiliary,18,72,Monitor,1089,,A,Q,A,A,A,A,A,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,Q,Q,U,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"3Y PM program overdue, Re-test 1 phase short circuit, Plan for oil regeneration (PF 100C, Conductivity, IFT)."
+0,36120-TR-303,5103170,CUP-3,2,6.6,0.4,6.6/0.4,Auxiliary,18,76,Monitor,1016,,A,Q,A,Q,A,A,U,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,Q,A,A,A,N/A,A,N/A,A,Q,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"3Y PM program overdue, Re-test short circuit, Power factor, Plan for oil regeneration (Conductivity, Sludge)."
+0,36120-TR-304,5103171,CUP-3,2,6.6,0.4,6.6/0.4,Auxiliary,18,76,Monitor,1152,,A,A,A,Q,A,A,A,U,A,N/A,N/A,N/A,N/A,A,N/A,Q,A,A,A,A,A,A,A,A,A,N/A,A,N/A,A,Q,N/A,N/A,N/A,N/A,03/01/2026,,,,,2022,2025,"3Y PM program overdue, Re-test short circuit, Power factor, Plan for hot oil purify (Sludge)."
+0,41BAT01 (GTG41),6110201,CUP-4,91,115,11,115/11,GSUT,8,96,Healthy,1066,,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,Q,A,A,A,A,A,A,Q,A,A,A,A,N/A,A,A,A,A,A,A,03/01/2026,,,,,2023,2026,Routine 6Y PM Program (Overhaul OLTC).
+0,41BAT02,6110202,CUP-4,52,115,22,115/22,Distribution,7,100,Healthy,1066,,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,N/A,A,A,A,A,A,A,03/01/2026,,,,,2024,2027,Routine 6Y PM Program (Overhaul OLTC).
+0,41BBT20GT001,6110203,CUP-4,10,11,6.9,11/6.9,UAT,7,92,Monitor,1031,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,A,A,N/A,A,A,A,A,A,A,04/01/2026,,,,,2023,2026,Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
+0,41BFT20GT001,6110204,CUP-4,2.8,6.6,0.4,6.6/0.4,Auxiliary,7,87,Monitor,1289,,A,Q,A,A,N/A,A,A,A,Q,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,U,A,A,A,A,N/A,A,A,A,A,A,A,04/01/2026,,,,,2023,2026,Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit.
+0,41BFT80GT001,6110245,CUP-4,1,6.6,0.4,6.6/0.4,Auxiliary,7,,,1117,,,,,,,,,,,,,,,,,Q,A,A,A,A,A,U,A,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2024,2027,Update PM data. Plan for oil regeneration: Concern oil conductivity is unacceptable limit.
+1,41BBT10,6410137,GEN,6,11,6.6,11/6.6,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2021,2024,3Y PM Program overdue.
+2,42BBT10,6410130,GEN,6,11,6.6,11/6.6,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2021,2024,3Y PM Program overdue.
+3,61BBT10,6410131,GEN,6,11,6.6,11/6.6,UAT,5,100,Healthy,1152,,A,A,A,A,A,A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,N/A,A,N/A,N/A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2021,2024,3Y PM Program overdue.
+4,62BBT10,6410132,GEN,6,11,6.6,11/6.6,UAT,5,,,,,A,,,,,,,N/A,N/A,A,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+5,GT2B GSUT,4710348,GEN,50,123,11,123/11,GSUT,21,96,Monitor,905,,Q,A,A,A,A,A,A,A,A,N/A,A,A,N/A,A,A,Q,A,A,A,A,A,A,Q,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2024,2027,"Replacement buchholz relay (oil leak), Add passivator and budget plan for oil regeneration (IFT questinable limit)."
+6,GT2C GSUT,4710349,GEN,50,123,11,123/11,GSUT,21,96,Monitor,930,,A,A,A,A,A,A,A,A,A,N/A,A,A,N/A,N/A,N/A,A,A,A,A,A,A,A,Q,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2023,2026,Add passivator and budget plan for oil regeneration (IFT questinable limit).
+7,41BAT10 (GTG41),6310537,GEN,65,120,11,120/11,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+8,42BAT10 (GTG42),6310535,GEN,65,120,11,120/11,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+9,61BAT10 (GTG61),6310534,GEN,65,120,11,120/11,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+10,62BAT10 (GTG62),6310536,GEN,65,120,11,120/11,GSUT,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+11,TR1,54002,GEN,50,115,23,115/23,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+12,TR2,508038,GEN,50,115,23,115/23,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+13,TR3,54001,GEN,50,115,23,115/23,Distribution,32,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+14,GT2B Bleeding,383204884,GEN,4.5,11,6.9,11/6.9,Auxiliary,31,92,Monitor,1774,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,Q,U,Q,A,A,N/A,A,N/A,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2024,2027,"Plan for oil regeneration: Concern oil conductivity is unacceptable limit, PF 100C and IFT are questionable limit."
+15,GT2C Bleeding,383204886,GEN,4.5,11,6.9,11/6.9,Auxiliary,31,92,Monitor,1774,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,U,A,A,A,N/A,Q,N/A,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2021,2024,"3Y PM program overdue, Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Corrosive sulfur is suspect corrosive (3b)."
+16,ETR1,6611059,GEN,315,22,0.4,22/0.4,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+17,ETR2,6611060,GEN,315,22,0.4,22/0.4,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+18,ETR3,5310991,GEN,315,22,0.4,22/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+19,EDTRF-TCC1 (TR7),3905095,GEN,4,22,6.6,22/6.6,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+20,EDTRF-TCC2 (TR6),56118448EE,GEN,2,22,0.4,22/0.4,Auxiliary,13,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+21,EDTRF-TCC3 (TR5),50310092,GEN,1.6,22,0.4,22/0.4,Auxiliary,19,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+22,41BFT30 (Starting TR),E541351_1,GEN,1.25,11,0.69,11/0.69,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+23,42BFT30 (Starting TR),E541351_2,GEN,1.25,11,0.69,11/0.69,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+24,61BFT30 (Starting TR),E541361_1,GEN,1.25,11,0.69,11/0.69,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+25,62BFT30 (Starting TR),E541361_2,GEN,1.25,11,0.69,11/0.69,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+26,40BFT10,6410133,GEN,1.25,11,0.4,11/0.4,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+27,40BFT20,6410134,GEN,1.25,11,0.4,11/0.4,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+28,60BFT10,6410135,GEN,1.25,11,0.4,11/0.4,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+29,60BFT20,6410136,GEN,1.25,11,0.4,11/0.4,Auxiliary,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+30,2BBFT20,3902641,GEN,2.5,6.6,0.4,6.6/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+31,2CBFT20,3902642,GEN,2.5,6.6,0.4,6.6/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+32,21-90-ED-XT-TR1,14231662_2,GEN,1.6,6.6,0.4,6.6/0.4,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2019,2022,3Y PM program overdue.
+33,21-90-ED-XT-TR2,14231662_3,GEN,1.6,6.6,0.4,6.6/0.4,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2019,2022,3Y PM program overdue.
+34,21-90-ED-XT-TR3,14231662_1,GEN,1.6,6.6,0.4,6.6/0.4,Auxiliary,33,95,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2019,2022,3Y PM program overdue.
+35,21-90-ED-XT-TR4,14231662_4,GEN,1.6,6.6,0.4,6.6/0.4,Auxiliary,33,90,Healthy,-,-,A,A,A,A,A,A,A,Q,A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2019,2022,3Y PM program overdue.
+35,61BBT01 (GH1 UAT1),3011080055,GHECO-ONE,60,23,11,23/11,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BBT02 (GH1 UAT2),3011080056,GHECO-ONE,60,23,11,23/11,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BBT03 (GH1 Excitation),JD85034202,GHECO-ONE,7,23,0.92,23/0.92,UAT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BAT01 (GH1 GSUT),TP70279703,GHECO-ONE,875,245,23,245/23,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BMT03 (Back Up),5513053,GHECO-ONE,10,22,11,22/11,Auxiliary,14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT01 (LV TR-1),VN85040201_1,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT02 (LV TR-2),VN85040201_2,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT03 (LV TR-3),VN85040201_3,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT04 (LV TR-4),VN85040201_4,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT05 (LV TR-5),VN85040204_1,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BFT06 (LV TR-6),VN85040204_2,GHECO-ONE,2.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT01 (LV ESP-1),VN85042301_1,GHECO-ONE,3.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT02 (LV ESP-2),VN85042301_2,GHECO-ONE,3.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT09 (LV SWFGD-1),VN85040202_1,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT10 (LV SWFGD-2),VN85040202_2,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT07 (LV ASH-1),VN85042302_2,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT08 (LV ASH-2),VN85042302_1,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT05 (LV CHS-1),VN13700702_2,GHECO-ONE,1,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT06 (LV CHS-2),VN13700702_1,GHECO-ONE,1,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT03 (LV CHS-3),VN13700701_2,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61BGT04 (LV CHS-4),VN13700701_1,GHECO-ONE,1.5,10.5,0.4,10.5/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61GBY01GT001.35.EN,170709/1,GHECO-ONE,1.17,10.5,0.15,10.5/0.15,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61GBY01GT002.35.EN,170709/2,GHECO-ONE,1.17,10.5,0.15,10.5/0.15,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT001.35.EN,N09057,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT002.35.EN,N09058,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT003.35.EN,N09059,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT004.35.EN,N09060,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT005.35.EN,N09061,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT006.35.EN,N09062,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT007.35.EN,N09063,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT008.35.EN,N09064,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT009.35.EN,N09065,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT010.35.EN,N09066,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT011.35.EN,N09067,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE10GT012.35.EN,N09068,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT001.35.EN,N09069,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT002.35.EN,N09070,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT003.35.EN,N09071,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT004.35.EN,N09072,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT005.35.EN,N09073,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT006.35.EN,N09074,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT007.35.EN,N09075,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT008.35.EN,N09076,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT009.35.EN,N09077,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT010.35.EN,N09078,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT011.35.EN,N09079,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,61HDE20GT012.35.EN,N09080,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11BBT20,T013001,GIPP,40,21,6.75,21/6.75,UAT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21BBT20,T013007,GIPP,40,21,6.75,21/6.75,UAT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11BAT10,T012006,GIPP,500,235,121,235/121,GSUT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21BAT10,T012023,GIPP,500,235,121,235/121,GSUT,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11MKC50 (Excitation),5217613,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21MKC50 (Excitation),5217612,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11BFT10,424758_03,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11BFT20,424758_04,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,11BFT30,424759_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21BFT10,424758_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21BFT20,424759_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,21BFT30,424758_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-1501,EV9277_1,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-1502,EV9277_2,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-101,ET8712/1,GSPP11 PLT1,48,123,11,123/11,GSUT,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-201,ET8712_2,GSPP11 PLT1,48,123,11,123/11,GSUT,33,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-301,ET8713/1,GSPP11 PLT1,52,123,10.5,123/10.5,GSUT,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GE-TR1,PP0091B01,GSPP11 PLT1,26,22,11,22/11,GSUT,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GE-TR2,5710877,GSPP11 PLT1,25,22,11,22/11,GSUT,12,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-401,EDP004301,GSPP11 PLT1,25,115,22,115/22,Distribution,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-501,EDP018401,GSPP11 PLT1,25,115,22,115/22,Distribution,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-601,PP0041B01,GSPP11 PLT1,20,115,22,115/22,Distribution,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-40001,4700831,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,TR-40002,4700830,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GE-TR1 Aux.,O61539,GSPP11 PLT1,1.25,11,0.4,11/0.4,Auxiliary,20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GE-TR2 Aux.,5710876,GSPP11 PLT1,0.63,11,0.4,11/0.4,Auxiliary,12,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GSUT-1,PP0284B01,GSPP11 PLT2,90,115,11,115/11,GSUT,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,GSUT-2,PP0285B01,GSPP11 PLT2,55,115,11,115/11,GSUT,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,DT-3,56016,GSPP11 PLT2,50,115,22,115/22,Distribution,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,SST-1,54110640EE,GSPP11 PLT2,6.25,11,3.3,11/3.3,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,SST-2,54110641EE,GSPP11 PLT2,6.25,11,3.3,11/3.3,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,SAT-1,54110621EE,GSPP11 PLT2,2.3,11,0.4,11/0.4,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+35,SAT-2,54110620EE,GSPP11 PLT2,2.3,11,0.4,11/0.4,Auxiliary,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+36,COGEN UAT,9624007,GSPP2&3,13.4,11.5,7.2,11.5/7.2,UAT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+37,STG3C UAT,5011858,GSPP2&3,20,15.75,7.2,15.75/7.2,UAT,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+38,71BBT10 (CTG7A UAT),225307,GSPP2&3,8,11,6.9,11/6.9,UAT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+39,72BBT10 (CTG7B UAT),225308,GSPP2&3,8,11,6.9,11/6.9,UAT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+40,STG1C UAT,9724074,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+41,STG2C UAT1,9724076,GSPP2&3,22.4,11.5,7.2,11.5/7.2,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+42,STG2C UAT2,9724075,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+43,31BBT10 (CTG3A UAT),4711343,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+44,32BBT10 (CTG3B UAT),4612314,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+45,51BBT01 (CTG5 GSUT),VN00408,GSPP2&3,20,20,6.9,20/6.9,UAT,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+46,COGEN GSUT (CTG1&2),9640548,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+47,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+48,CTG2A&2B GSUT,57005,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+49,STG3C GSUT,5011857,GSPP2&3,155,118,15.75,118/15.75,GSUT,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+50,71BAT10 (CTG7A GSUT),6512362,GSPP2&3,72,118,11,118/11,GSUT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+51,72BAT10 (CTG7B GSUT),6512363,GSPP2&3,72,118,11,118/11,GSUT,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+52,STG1C GSUT,57011,GSPP2&3,215,118,15.75,118/15.75,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+53,STG2C GSUT,57012,GSPP2&3,215,118,15.75,118/15.75,GSUT,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+54,31BAT10 (CTG3A GSUT),PP0050B01,GSPP2&3,51.5,118,11.5,118/11.5,GSUT,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+55,32BAT10 (CTG3B GSUT),PP0016B01,GSPP2&3,51.5,118,11.5,118/11.5,GSUT,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+56,50BAT10 (CTG5 GSUT),20083122TIC003,GSPP2&3,325,115,20,115/20,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+57,52BAT01 (STG5 GSUT),20083122TIC008,GSPP2&3,175,115,15.75,115/15.75,GSUT,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+58,KT2A,510049,GSPP2&3,200,230,121,230/121,Distribution,15,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+59,KT4A,PTE 1689/01,GSPP2&3,200,230,121,230/121,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+60,KT5A,PTE 1689/02,GSPP2&3,200,230,121,230/121,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+61,KT6A,PTE 1689/03,GSPP2&3,200,230,121,230/121,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+62,KT7A,PTE 1689/04,GSPP2&3,200,230,121,230/121,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+63,KT12A,EDP008001,GSPP2&3,50,112.5,23,112.5/23,Distribution,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+64,KT13A,EDP011601,GSPP2&3,50,112.5,23,112.5/23,Distribution,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+65,KT14A,512033,GSPP2&3,50,112.5,23,112.5/23,Distribution,14,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+66,CTG1 Aux.,PBE0580,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+67,CTG2 Aux.,PBE0579,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+68,COGEN SUS11,243597801,GSPP2&3,2,6.9,0.4,6.9/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+69,COGEN SUS12,243597802,GSPP2&3,2,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+70,CTG1A Aux.,PBJ1200,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+71,CTG1B Aux.,PBJ1198,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+72,CTG2A Aux.,PBK1325,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+73,CTG2B Aux.,PBL1465,GSPP2&3,1.15,11.5,0.4,11.5/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+74,KW1A,3911888,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,30,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+75,KW2A,4010922,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+76,KW3A,4010291,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+77,KW4A,4010290,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+78,KW5A,5513260,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,13,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+79,TR-103 (WTP SST),53105200EE,GSPP2&3,0.4,22,0.4,22/0.4,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+80,Admin Building SST,48310781,GSPP2&3,0.5,22,0.4,22/0.4,Auxiliary,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+81,70BFT10 (CTG7A Aux.),225309,GSPP2&3,1.5,6.6,0.4,6.6/0.4,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+82,70BFT20 (CTG7B Aux.),225310,GSPP2&3,1.5,6.6,0.4,6.6/0.4,Auxiliary,3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+83,71BFT30 (Starting Transformer),E54623,GSPP2&3,1.25,6.6,0.69,6.6/0.69,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+84,72BFT30 (Starting Transformer),E54624,GSPP2&3,1.25,6.6,0.69,6.6/0.69,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+85,TR-1 (Coal Handling),4104759,GSPP2&3,6,22,7.2,22/7.2,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+86,TR-2 (Coal Handling),4104758,GSPP2&3,6,22,7.2,22/7.2,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+87,TR-3 (Coal Handling),4104077,GSPP2&3,1.6,6.9,0.4,6.9/0.4,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+88,TR-4 (Coal Handling),4104453,GSPP2&3,1.6,6.9,0.4,6.9/0.4,Auxiliary,28,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+89,TR-5 (Coal Handling),xx,GSPP2&3,1.6,6.9,0.4,6.9/0.4,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+90,1APC-XF-24 (Block1 SUS24),PCL1429,GSPP2&3,0.862,6.9,0.4,6.9/0.4,Auxiliary,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+91,2APC-XF-24 (Block2 SUS24),PCD0277,GSPP2&3,0.862,6.9,0.4,6.9/0.4,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+92,Coal Harbor Tower 1,K757927,GSPP2&3,0.8,6.9,0.4,6.9/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+93,Coal Harbor Tower 2,K757926,GSPP2&3,1,6.9,0.4,6.9/0.4,Auxiliary,25,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+94,1APC-XF-11 (Block1 SUS11),332162H5018727A,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+95,1APC-XF-12 (Block1 SUS12),332162H501_8727B,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+96,1APC-XF-21 (Block1 SUS21),332162H501_8727E,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+97,1APC-XF-22 (Block1 SUS22),332162H502_8727F,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+98,1APC-XF-23 (Block1 SUS23),331000H509_8727J,GSPP2&3,1.333,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+99,2APC-XF-11 (Block2 SUS11),332152H501_8727C,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+100,2APC-XF-12 (Block2 SUS12),331000H508_8727I,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+101,2APC-XF-21 (Block2 SUS21),332162H501_8727D,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+102,2APC-XF-22 (Block2 SUS22),332162H502_8727G,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+103,2APC-XF-23  (Block2 SUS23),332162H502_8727H,GSPP2&3,1.333,6.9,0.4,6.9/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+104,CFB3 SUS11,VN85030801_1,GSPP2&3,2.5,6.9,0.4,6.9/0.4,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+105,CFB3 SUS12,VN85030801_2,GSPP2&3,2.5,6.9,0.4,6.9/0.4,Auxiliary,18,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+106,Wharehouse SST,FC203816,GSPP2&3,1.6,6.9,0.4,6.9/0.4,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+107,51BFT11 (CTG5 SUS11),1LKR091730,GSPP2&3,3.325,6.9,0.4,6.9/0.4,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+108,51BFT12 (CTG5 SUS12),1LKR091729,GSPP2&3,3.325,6.9,0.4,6.9/0.4,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+109,51BFT13 (Electrochlorination Plant),1LKR091731,GSPP2&3,0.4,6.9,0.4,6.9/0.4,Auxiliary,17,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+110,31BFT10 (CTG3A SUS),1LKR050450TER,GSPP2&3,1,6.9,0.4,6.9/0.4,Auxiliary,21,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+111,32BFT10 (CTG3B SUS),1LKR040038TER,GSPP2&3,1,6.9,0.4,6.9/0.4,Auxiliary,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+112,REC-TR1 (Rectifier),6210508,GSPP2&3,0.8,6.9,0.077,6.9/0.077,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+113,REC-TR2 (Rectifier),6210509,GSPP2&3,0.8,6.9,0.077,6.9/0.077,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+114,50MBJ01 (CTG5 SFC),K810289,GSPP2&3,2.9,6.9,1.8,6.9/1.8,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+115,50MKC01 (CTG5 SEE),K810290,GSPP2&3,1.43,6.9,0.5,6.9/0.5,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+116,52MKC01 (STG5 SEE),K810291,GSPP2&3,0.85,6.9,0.54,6.9/0.54,Auxiliary,16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+117,51PBQ20,xxx,GSPP2&3,,,,/,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,CFB3 Back Up,4202021,GSPP2&3,0.5,6.9,0.4,6.9/0.4,Auxiliary,27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,KT51A,6012333,MTP-1,40,115,22,115/22,Distribution,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,EKT51A,6110289,MTP-1,0.5,22,0.4,22/0.4,Auxiliary,8,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,TR141,4011560,MTP-3,1,22,0.4,22/0.4,Auxiliary,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,1BDT10GT001,190869,RDF,13,22,6.9,22/6.9,GSUT,6,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,TR1,61310601,RDF,3,22,0.4,22/0.4,Distribution,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,1BFT11GT001,196057,RDF,3,6.9,0.4,6.9/0.4,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,1BFT12GT001,196058,RDF,3,6.9,0.4,6.9/0.4,Auxiliary,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,SPARE  3 MVA 22/11 kV (Scrap),63310466,Scrap,3,22,11,22/11,,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,SPARE 0.315 MVA 22/0.4 kV (Scrap),3710737,Scrap,0.315,22,0.4,22/0.4,,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,SPARE 0.315 MVA 22/0.4 kV (Scrap),3710738,Scrap,0.315,22,0.4,22/0.4,,31,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,SPARE 50 MVA 123/11 kV,4710346,SPARE GSPP2&3,50,123,11,123/11,,22,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
+118,SPARE 63.5 MVA 123/11 kV,EDP021401,SPARE GSPP2&3,63.5,123,11,123/11,,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,-,
