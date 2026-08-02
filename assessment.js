@@ -1308,6 +1308,11 @@ function openDetail(no) {
   document.getElementById('ex-est-life').textContent = item.estimatedLife || '-';
   document.getElementById('ex-est-dp').textContent = item.estimatedDP || '0';
 
+  const exEvalGaugeLink = document.getElementById('ex-eval-gauge-link');
+  if (exEvalGaugeLink) {
+    exEvalGaugeLink.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
+  }
+
   const needleGroup = document.getElementById('ex-gauge-needle-group');
   const score = document.getElementById('ex-gauge-score');
 
