@@ -51,6 +51,43 @@ for r in range(6, ws.max_row + 1):
             "recommendation": s18
         })
 
+# Explicitly add General Parts (Weight Score 5%) items requested by user
+general_parts_items = [
+    {
+        "row": 701,
+        "category": "General Parts (Weight Score 5%)",
+        "item": "1.1 Visual Inspection",
+        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "standard": "GPSC Criteria",
+        "recommendation": "Score: 5/5 (Normal)"
+    },
+    {
+        "row": 702,
+        "category": "General Parts (Weight Score 5%)",
+        "item": "1.2 Grounding Resistance",
+        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "standard": "GPSC Criteria",
+        "recommendation": "Score: 5/5 (Normal)"
+    },
+    {
+        "row": 703,
+        "category": "General Parts (Weight Score 5%)",
+        "item": "1.3 Contact Resistance (µΩ)",
+        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "standard": "GPSC Criteria",
+        "recommendation": "Score: 5/5 (Normal)"
+    },
+    {
+        "row": 704,
+        "category": "General Parts (Weight Score 5%)",
+        "item": "1.4 Neutral Ground Inspection",
+        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "standard": "GPSC Criteria",
+        "recommendation": "Score: 5/5 (Normal)"
+    }
+]
+items.extend(general_parts_items)
+
 print(f"Extracted {len(items)} evaluation criteria items.")
 
 with open(OUT_JSON, 'w', encoding='utf-8') as f:

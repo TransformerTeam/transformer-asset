@@ -1042,7 +1042,19 @@
       }
       if (nameLower.includes('visual inspection')) {
         const visRes = latestVis ? (latestVis.Test_Result || 'Normal (A)') : 'Normal (A)';
-        return { value: visRes, status: 'Normal' };
+        const isMonitor = visRes.toUpperCase().includes('Q') || visRes.toUpperCase().includes('MONITOR') || visRes.toUpperCase().includes('FAIR');
+        const score = isMonitor ? 3 : 5;
+        const statusStr = isMonitor ? 'Monitoring' : 'Normal';
+        return { value: `${statusStr} (Score: ${score}/5)`, status: isMonitor ? 'Warning' : 'Normal' };
+      }
+      if (nameLower.includes('grounding resistance')) {
+        return { value: 'Normal (Score: 5/5)', status: 'Normal' };
+      }
+      if (nameLower.includes('contact resistance')) {
+        return { value: 'Normal (Score: 5/5)', status: 'Normal' };
+      }
+      if (nameLower.includes('neutral ground')) {
+        return { value: 'Normal (Score: 5/5)', status: 'Normal' };
       }
 
       return { value: 'Normal / Pass', status: 'Normal' };

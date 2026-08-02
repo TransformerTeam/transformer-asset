@@ -590,5 +590,37 @@ const EVALUATION_CRITERIA_DATA = [
     "criteria": "ผลกระทบด้านความปลอดภัยขณะหม้อแปลงผิดปกติ",
     "standard": "",
     "recommendation": "ไม่เกิดอันตรายต่อบุคคลและทรัพย์สิน (มีระบบป้องกันที่ดี อยู่ในพื้นที่ปิด มีระบบดับเพลิงครบ)"
+  },
+  {
+    "row": 701,
+    "category": "General Parts (Weight Score 5%)",
+    "item": "1.1 Visual Inspection",
+    "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+    "standard": "GPSC Criteria",
+    "recommendation": "Score: 5/5 (Normal)"
+  },
+  {
+    "row": 702,
+    "category": "General Parts (Weight Score 5%)",
+    "item": "1.2 Grounding Resistance",
+    "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+    "standard": "GPSC Criteria",
+    "recommendation": "Score: 5/5 (Normal)"
+  },
+  {
+    "row": 703,
+    "category": "General Parts (Weight Score 5%)",
+    "item": "1.3 Contact Resistance (µΩ)",
+    "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+    "standard": "GPSC Criteria",
+    "recommendation": "Score: 5/5 (Normal)"
+  },
+  {
+    "row": 704,
+    "category": "General Parts (Weight Score 5%)",
+    "item": "1.4 Neutral Ground Inspection",
+    "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+    "standard": "GPSC Criteria",
+    "recommendation": "Score: 5/5 (Normal)"
   }
 ];
