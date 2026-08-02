@@ -1379,47 +1379,77 @@ function openDetail(no) {
     const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
     const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
 
+    const findBushingInfoRecord = (serial, phaseStr) => {
+      if (typeof bushingInfoCsvData === 'undefined' || !bushingInfoCsvData || !bushingInfoCsvData.length || !serial) return null;
+      const sTarget = String(serial).trim().toLowerCase();
+      const pTarget = String(phaseStr).trim().toUpperCase();
+      return bushingInfoCsvData.find(i => {
+        const s = String(i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '').trim().toLowerCase();
+        const p = String(i.Phase || '').trim().toUpperCase();
+        const matchSerial = (s === sTarget || s.startsWith(sTarget) || sTarget.startsWith(s));
+        if (!matchSerial) return false;
+
+        if (p === pTarget) return true;
+        if (pTarget === 'H1' && (p === 'HV PHASE A' || p === 'PHASE A' || p.endsWith('A'))) return true;
+        if (pTarget === 'H2' && (p === 'HV PHASE B' || p === 'PHASE B' || p.endsWith('B'))) return true;
+        if (pTarget === 'H3' && (p === 'HV PHASE C' || p === 'PHASE C' || p.endsWith('C'))) return true;
+        if (pTarget === 'H0' && (p === 'HV NEUTRAL' || p === 'NEUTRAL' || p === 'H0')) return true;
+        if (pTarget === 'X1' && (p === 'LV PHASE A' || p === 'X1')) return true;
+        if (pTarget === 'X2' && (p === 'LV PHASE B' || p === 'X2')) return true;
+        if (pTarget === 'X3' && (p === 'LV PHASE C' || p === 'X3')) return true;
+        if (pTarget === 'X0' && (p === 'LV NEUTRAL' || p === 'X0')) return true;
+        return p.endsWith(pTarget.toLowerCase()) || p.endsWith(pTarget);
+      });
+    };
+
     // Calculate %Error Capacitance against nameplate
     const getCapDev = (measCap, phaseStr) => {
       if (measCap === null) return null;
-      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
-        const info = bushingInfoCsvData.find(i => {
-          const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
-          const p = (i.Phase || '').toUpperCase();
-          return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
-        });
-        if (info && info.Capacitance_C1) {
-          const npCap = parseFloat(info.Capacitance_C1);
-          if (!isNaN(npCap) && npCap > 0) {
-            return ((measCap - npCap) / npCap) * 100;
-          }
+      const info = findBushingInfoRecord(item.serial, phaseStr);
+      if (info && info.Capacitance_C1) {
+        const npCap = parseFloat(info.Capacitance_C1);
+        if (!isNaN(npCap) && npCap > 0) {
+          return ((measCap - npCap) / npCap) * 100;
         }
       }
       return null;
     };
 
-    const h1_dev = parseNum(bushRec.maxbch1_change) ?? getCapDev(h1_c1, 'H1');
-    const h2_dev = parseNum(bushRec.maxbch2_change) ?? getCapDev(h2_c1, 'H2');
-    const h3_dev = parseNum(bushRec.maxbch3_change) ?? getCapDev(h3_c1, 'H3');
-    const l1_dev = parseNum(bushRec.maxbch0_change) ?? getCapDev(l1_c1, 'X1');
-    const l2_dev = getCapDev(l2_c1, 'X2');
-    const l3_dev = getCapDev(l3_c1, 'X3');
+    // Calculate %Error PF against nameplate
+    const getPfDev = (measPf, phaseStr) => {
+      if (measPf === null) return null;
+      const info = findBushingInfoRecord(item.serial, phaseStr);
+      if (info) {
+        const npPf = parseFloat(info.Meas_PF_C1 || info.Corr_PF || 0);
+        if (!isNaN(npPf) && npPf > 0) {
+          return ((measPf - npPf) / npPf) * 100;
+        }
+      }
+      return null;
+    };
+
+    const h1_cap_dev = getCapDev(h1_c1, 'H1') ?? parseNum(bushRec.maxbch1_change);
+    const h2_cap_dev = getCapDev(h2_c1, 'H2') ?? parseNum(bushRec.maxbch2_change);
+    const h3_cap_dev = getCapDev(h3_c1, 'H3') ?? parseNum(bushRec.maxbch3_change);
+    const l1_cap_dev = getCapDev(l1_c1, 'X1') ?? parseNum(bushRec.maxbch0_change);
+    const l2_cap_dev = getCapDev(l2_c1, 'X2');
+    const l3_cap_dev = getCapDev(l3_c1, 'X3');
+
+    const h1_pf_dev = getPfDev(h1_pf, 'H1');
+    const h2_pf_dev = getPfDev(h2_pf, 'H2');
+    const h3_pf_dev = getPfDev(h3_pf, 'H3');
+    const l1_pf_dev = getPfDev(l1_pf, 'X1');
+    const l2_pf_dev = getPfDev(l2_pf, 'X2');
+    const l3_pf_dev = getPfDev(l3_pf, 'X3');
 
     // Helper to get Manufacturer for a phase
     const getMfgForPhase = (phaseStr) => {
-      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
-        const info = bushingInfoCsvData.find(i => {
-          const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
-          const p = (i.Phase || '').toUpperCase();
-          return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
-        });
-        return info ? (info.Manufacturer || '') : '';
-      }
-      return '';
+      const info = findBushingInfoRecord(item.serial, phaseStr);
+      return info ? (info.Manufacturer || '') : '';
     };
 
     const getPfCell = (pfVal, pfDevVal, phaseStr) => {
-      if (pfVal === null) return `<td>-</td>`;
+      if (pfVal === null && pfDevVal === null) return `<td>-</td>`;
       const mfg = getMfgForPhase(phaseStr).toUpperCase();
       let statusCls = 'status-normal';
 
@@ -1433,13 +1463,14 @@ function openDetail(no) {
         } else if (mfg.includes('TRENCH')) {
           statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
         } else {
-          // IEEE C57.152 (1.5x - 2.0x, i.e. 50% - 100% error)
           statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 50.0 ? 'status-monitor' : 'status-normal');
         }
+        const sign = pfDevVal > 0 ? '+' : '';
+        return `<td class="${statusCls}">${sign}${pfDevVal.toFixed(2)}%</td>`;
       } else {
         statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+        return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
       }
-      return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
     };
 
     const getCapDevCell = (devVal, phaseStr) => {
@@ -1457,7 +1488,6 @@ function openDetail(no) {
       } else if (mfg.includes('TRENCH')) {
         statusCls = absDev > 110.0 ? 'status-critical' : 'status-normal';
       } else {
-        // IEEE C57.152 (< 5% Good, 5-10% Monitor, > 10% Critical)
         statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
       }
 
@@ -1469,22 +1499,22 @@ function openDetail(no) {
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        ${getPfCell(h1_pf, h1_dev, 'H1')}
-        ${getPfCell(h2_pf, h2_dev, 'H2')}
-        ${getPfCell(h3_pf, h3_dev, 'H3')}
-        ${getPfCell(l1_pf, l1_dev, 'X1')}
-        ${getPfCell(l2_pf, l2_dev, 'X2')}
-        ${getPfCell(l3_pf, l3_dev, 'X3')}
+        ${getPfCell(h1_pf, h1_pf_dev, 'H1')}
+        ${getPfCell(h2_pf, h2_pf_dev, 'H2')}
+        ${getPfCell(h3_pf, h3_pf_dev, 'H3')}
+        ${getPfCell(l1_pf, l1_pf_dev, 'X1')}
+        ${getPfCell(l2_pf, l2_pf_dev, 'X2')}
+        ${getPfCell(l3_pf, l3_pf_dev, 'X3')}
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
-        ${getCapDevCell(h1_dev, 'H1')}
-        ${getCapDevCell(h2_dev, 'H2')}
-        ${getCapDevCell(h3_dev, 'H3')}
-        ${getCapDevCell(l1_dev, 'X1')}
-        ${getCapDevCell(l2_dev, 'X2')}
-        ${getCapDevCell(l3_dev, 'X3')}
+        ${getCapDevCell(h1_cap_dev, 'H1')}
+        ${getCapDevCell(h2_cap_dev, 'H2')}
+        ${getCapDevCell(h3_cap_dev, 'H3')}
+        ${getCapDevCell(l1_cap_dev, 'X1')}
+        ${getCapDevCell(l2_cap_dev, 'X2')}
+        ${getCapDevCell(l3_cap_dev, 'X3')}
       </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
