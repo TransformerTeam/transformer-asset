@@ -704,14 +704,22 @@
   <script>
     let currentSerial = '';
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
+    document.addEventListener('allTestDataLoaded', () => {
+      populateEvalDropdown();
+      if (!currentSerial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+        currentSerial = assessmentData[0].serial;
+      }
+      if (currentSerial) {
+        const selectEl = document.getElementById('eval-transformer-select');
+        if (selectEl) selectEl.value = currentSerial;
+        loadEvaluationBySerial(currentSerial);
+      }
+    });
 
-      // Populate Dropdown Options
+    function populateEvalDropdown() {
       const selectEl = document.getElementById('eval-transformer-select');
-      if (selectEl && typeof assessmentData !== 'undefined') {
+      if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+        const curVal = selectEl.value;
         selectEl.innerHTML = '';
         assessmentData.forEach(item => {
           const opt = document.createElement('option');
@@ -719,7 +727,16 @@
           opt.textContent = `${item.name} (${item.serial})`;
           selectEl.appendChild(opt);
         });
+        if (curVal) selectEl.value = curVal;
       }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      populateEvalDropdown();
 
       // Read Serial Parameter from URL
       const urlParams = new URLSearchParams(window.location.search);
@@ -730,6 +747,7 @@
       }
 
       if (serialParam) {
+        const selectEl = document.getElementById('eval-transformer-select');
         if (selectEl) selectEl.value = serialParam;
         loadEvaluationBySerial(serialParam);
       }

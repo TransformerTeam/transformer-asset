@@ -99,6 +99,10 @@ function loadAllTestDataCSVs() {
     if (currentActiveItem && typeof openDetail === 'function') {
       openDetail(currentActiveItem.no);
     }
+    if (typeof loadEvaluationBySerial === 'function' && typeof currentSerial !== 'undefined' && currentSerial) {
+      loadEvaluationBySerial(currentSerial);
+    }
+    document.dispatchEvent(new CustomEvent('allTestDataLoaded'));
   });
 }
 
