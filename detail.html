@@ -607,9 +607,9 @@
       const evalBtn = document.getElementById('btn-eval-report');
       if (evalBtn) evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
 
-      // Call assessment.js openDetail logic with item.no
+      // Call assessment.js openDetail logic with item
       if (typeof openDetail === 'function') {
-        openDetail(item.no);
+        openDetail(item);
       }
     }
 

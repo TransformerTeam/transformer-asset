@@ -1199,9 +1199,28 @@ function updatePagination(total) {
 // ============ DETAIL MODAL ============
 
 function openDetail(no) {
-  const item = assessmentData.find(i => i.no === no);
+  let item = null;
+  if (typeof no === 'object' && no !== null && no.serial) {
+    item = no;
+  } else if (typeof no === 'number') {
+    item = assessmentData.find(i => Number(i.no) === Number(no));
+  } else if (typeof no === 'string') {
+    const sTarget = String(no).trim().toLowerCase();
+    item = assessmentData.find(i => String(i.no) === sTarget || String(i.serial).trim().toLowerCase() === sTarget || String(i.name).trim().toLowerCase() === sTarget);
+  }
+  if (!item && typeof no !== 'undefined' && no !== null) {
+    const sTarget = String(no).trim().toLowerCase();
+    item = assessmentData.find(i => {
+      const s = String(i.serial || '').trim().toLowerCase();
+      const n = String(i.name || '').trim().toLowerCase();
+      return s.includes(sTarget) || sTarget.includes(s) || n.includes(sTarget);
+    });
+  }
+  if (!item && assessmentData.length > 0) {
+    item = assessmentData[0];
+  }
   if (!item) return;
-  
+
   if (!window.location.pathname.endsWith('detail.html')) {
     window.open(`detail.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
     return;
