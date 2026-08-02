@@ -45,6 +45,8 @@ for r in range(6, ws.max_row + 1):
             continue
 
     if s1 or s10 or s16 or s18:
+        if "Core Insulation Resistance" in s1:
+            continue
         items.append({
             "row": r,
             "category": category,

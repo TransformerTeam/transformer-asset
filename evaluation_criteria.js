@@ -8,30 +8,6 @@ const EVALUATION_CRITERIA_DATA = [
     "recommendation": "Standard Recommendation"
   },
   {
-    "row": 9,
-    "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Core-Ground)",
-    "criteria": "Insulation Resistance > 100 MΩ",
-    "standard": "IEEE C57.152-2013",
-    "recommendation": ""
-  },
-  {
-    "row": 10,
-    "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Clamp-Ground)",
-    "criteria": "",
-    "standard": "",
-    "recommendation": ""
-  },
-  {
-    "row": 11,
-    "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Core-Clamp)",
-    "criteria": "",
-    "standard": "",
-    "recommendation": ""
-  },
-  {
     "row": 13,
     "category": "High Voltage Winding",
     "item": "Exciting Current",

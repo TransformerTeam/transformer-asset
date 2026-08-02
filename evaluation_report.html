@@ -864,7 +864,7 @@
 
       if (typeof EVALUATION_CRITERIA_DATA === 'undefined') return;
 
-      const part1Items = EVALUATION_CRITERIA_DATA.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index');
+      const part1Items = EVALUATION_CRITERIA_DATA.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index' && !r.item.includes('Core Insulation Resistance'));
 
       let currentCat = '';
       let idx = 1;
