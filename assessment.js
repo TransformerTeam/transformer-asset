@@ -1177,14 +1177,18 @@ function updatePagination(total) {
 // ============ DETAIL MODAL ============
 
 function openDetail(no) {
+  if ((typeof assessmentData === 'undefined' || !assessmentData || !assessmentData.length) && typeof HEALTH_INDEX_DATA !== 'undefined') {
+    assessmentData = HEALTH_INDEX_DATA;
+  }
+
   let item = null;
-  if (typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+  if (typeof assessmentData !== 'undefined' && assessmentData && assessmentData.length > 0) {
     if (typeof no === 'number') {
       item = assessmentData.find(i => i.no === no);
     }
     if (!item && no !== undefined && no !== null) {
       const target = String(no).trim();
-      item = assessmentData.find(i => i.no === Number(target) || i.serial === target || i.serial.includes(target) || target.includes(i.serial));
+      item = assessmentData.find(i => i.no === Number(target) || String(i.serial) === target || String(i.serial).includes(target) || target.includes(String(i.serial)));
     }
   }
   if (!item) return;

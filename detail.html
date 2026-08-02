@@ -549,11 +549,23 @@
   <script src="assessment.js?v=20260802"></script>
 
   <script>
+    function getAssessmentDataArray() {
+      if (typeof assessmentData !== 'undefined' && assessmentData && assessmentData.length > 0) {
+        return assessmentData;
+      }
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA && HEALTH_INDEX_DATA.length > 0) {
+        assessmentData = HEALTH_INDEX_DATA;
+        return assessmentData;
+      }
+      return [];
+    }
+
     function populateTransformerDropdown() {
+      const data = getAssessmentDataArray();
       const selectEl = document.getElementById('detail-transformer-select');
-      if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+      if (selectEl && data.length > 0) {
         selectEl.innerHTML = '';
-        assessmentData.forEach(item => {
+        data.forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.serial;
           opt.textContent = `${item.name} (${item.serial})`;
@@ -563,13 +575,14 @@
     }
 
     function initDetailPage() {
+      const data = getAssessmentDataArray();
       populateTransformerDropdown();
 
       const urlParams = new URLSearchParams(window.location.search);
       let serialParam = urlParams.get('serial');
 
-      if (!serialParam && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
-        serialParam = assessmentData[0].serial;
+      if (!serialParam && data.length > 0) {
+        serialParam = data[0].serial;
       }
 
       if (serialParam) {
@@ -603,8 +616,9 @@
     }
 
     function loadDetailBySerial(serial) {
-      if (typeof assessmentData === 'undefined' || !assessmentData.length) return;
-      const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+      const data = getAssessmentDataArray();
+      if (!data || !data.length) return;
+      const item = data.find(x => String(x.serial) === String(serial) || String(x.serial).startsWith(String(serial)) || String(serial).startsWith(String(x.serial)));
       if (!item) return;
 
       // Update Evaluation Report link
