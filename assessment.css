@@ -1894,9 +1894,23 @@ header p {
   text-align: center;
 }
 
-.ex-status-critical {
+.ex-status-critical, .status-critical {
   background-color: rgba(239, 68, 68, 0.2) !important;
   color: #ef4444 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-normal {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #10b981 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-monitor {
+  background-color: rgba(234, 179, 8, 0.2) !important;
+  color: #eab308 !important;
   font-weight: bold;
   text-align: center;
 }
