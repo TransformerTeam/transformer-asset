@@ -864,7 +864,7 @@
 
       if (typeof EVALUATION_CRITERIA_DATA === 'undefined') return;
 
-      const part1Items = EVALUATION_CRITERIA_DATA.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index' && !r.item.includes('Core Insulation Resistance'));
+      const part1Items = EVALUATION_CRITERIA_DATA.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index');
 
       let currentCat = '';
       let idx = 1;
@@ -880,13 +880,18 @@
 
         if (!row.item || row.item === 'Criteria') return;
 
+        let displayItem = row.item || '-';
+        if (displayItem.toLowerCase().includes('core insulation resistance')) {
+          displayItem = displayItem.replace(/Core Insulation Resistance\s*/gi, '').trim();
+        }
+
         const tr = document.createElement('tr');
         const matchVal = getMeasuredValueForItem(row.item, item);
         const evalBadge = getStandardRecommendBadge(matchVal.ratingScore);
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
-          <td style="font-weight: 600;">${row.item || '-'}</td>
+          <td style="font-weight: 600;">${displayItem}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">${row.standard || 'IEEE / ASTM'}</td>
           <td style="text-align: center; font-weight: 500; color: #475569;">${matchVal.testDate}</td>
