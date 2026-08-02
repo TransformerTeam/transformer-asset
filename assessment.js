@@ -1170,6 +1170,114 @@ function updatePagination(total) {
 
 // ============ DETAIL MODAL ============
 
+function getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins) {
+  let pfStatusText = '-';
+  let pfStatusCls = '';
+  let capStatusText = '-';
+  let capStatusCls = '';
+
+  const manufacturer = (mfg || '').toUpperCase().trim();
+  const insulation = (ins || '').toUpperCase().trim();
+
+  // --- PF Status Evaluation ---
+  if (npPf > 0 && pf20 > 0) {
+    const pfRatio = pf20 / npPf;
+    const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
+
+    if (manufacturer.includes('ABB')) {
+      if (pfErrPercent <= 40.0) {
+        pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+      } else if (pfErrPercent < 75.0) {
+        pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
+      } else {
+        pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('TRENCH')) {
+      if (pfRatio <= 1.5) {
+        pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+      } else if (pfRatio <= 2.0) {
+        pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
+      } else {
+        pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+      if (pfErrPercent <= 0) {
+        pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+      } else if (pfErrPercent < 30.0) {
+        pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
+      } else {
+        pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('MGC')) {
+      if (pfErrPercent <= 5.0) {
+        pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+      } else if (pfErrPercent < 10.0) {
+        pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
+      } else {
+        pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
+      }
+    } else {
+      // Fallback to IEEE C57.152-2013 (1.5 - 2 times nameplate)
+      if (pfRatio <= 1.5) {
+        pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+      } else if (pfRatio <= 2.0) {
+        pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
+      } else {
+        pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
+      }
+    }
+  }
+
+  // --- Cap Status Evaluation ---
+  if (npCap > 0 && cap > 0) {
+    const devVal = ((cap - npCap) / npCap) * 100;
+    const absDev = Math.abs(devVal);
+
+    if (manufacturer.includes('ABB')) {
+      if (absDev <= 3.0) {
+        capStatusText = 'Normal'; capStatusCls = 'status-normal';
+      } else if (absDev <= 5.0) {
+        capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
+      } else {
+        capStatusText = 'Critical'; capStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+      if (absDev <= 1.0) {
+        capStatusText = 'Normal'; capStatusCls = 'status-normal';
+      } else if (absDev <= 3.0) {
+        capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
+      } else {
+        capStatusText = 'Critical'; capStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('MGC')) {
+      if (absDev <= 0.7) {
+        capStatusText = 'Normal'; capStatusCls = 'status-normal';
+      } else if (absDev <= 3.0) {
+        capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
+      } else {
+        capStatusText = 'Critical'; capStatusCls = 'status-critical';
+      }
+    } else if (manufacturer.includes('TRENCH')) {
+      if (absDev <= 110.0) {
+        capStatusText = 'Normal'; capStatusCls = 'status-normal';
+      } else {
+        capStatusText = 'Critical'; capStatusCls = 'status-critical';
+      }
+    } else {
+      // Fallback to IEEE C57.152-2013 (< 5% Normal, 5-10% Monitoring, > 10% Critical)
+      if (absDev <= 5.0) {
+        capStatusText = 'Normal'; capStatusCls = 'status-normal';
+      } else if (absDev <= 10.0) {
+        capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
+      } else {
+        capStatusText = 'Critical'; capStatusCls = 'status-critical';
+      }
+    }
+  }
+
+  return { pfStatusText, pfStatusCls, capStatusText, capStatusCls };
+}
+
 function openDetail(no) {
   if ((typeof assessmentData === 'undefined' || !assessmentData || !assessmentData.length) && typeof HEALTH_INDEX_DATA !== 'undefined') {
     assessmentData = HEALTH_INDEX_DATA;
@@ -1405,122 +1513,95 @@ function openDetail(no) {
     const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
     const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
 
-    // Calculate %Error PF against nameplate
-    const getPfDev = (measPf, phaseStr) => {
-      if (measPf === null || isNaN(measPf)) return null;
+    // Helper to get Bushing Info record for a phase
+    const getBushingPhaseInfo = (phaseStr) => {
       if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
-        const info = bushingInfoCsvData.find(i => {
+        return bushingInfoCsvData.find(i => {
           const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
           const p = (i.Phase || '').toUpperCase();
           return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
         });
-        if (info) {
-          const npPf = parseFloat(info.Meas_PF_C1 || info.Corr_PF || 0);
-          if (!isNaN(npPf) && npPf > 0) {
-            return ((measPf - npPf) / npPf) * 100;
-          }
-        }
       }
       return null;
     };
 
-    const h1_pf_dev = parseNum(bushRec.maxbh1_tand) ?? getPfDev(h1_pf, 'H1');
-    const h2_pf_dev = parseNum(bushRec.maxbh2_tand) ?? getPfDev(h2_pf, 'H2');
-    const h3_pf_dev = parseNum(bushRec.maxbh3_tand) ?? getPfDev(h3_pf, 'H3');
-    const l1_pf_dev = parseNum(bushRec.xbushingl1_pf_error) ?? getPfDev(l1_pf, 'X1');
-    const l2_pf_dev = parseNum(bushRec.xbushingl2_pf_error) ?? getPfDev(l2_pf, 'X2');
-    const l3_pf_dev = parseNum(bushRec.xbushingl3_pf_error) ?? getPfDev(l3_pf, 'X3');
+    const getBushingEvalForPhase = (pf20, cap, phaseStr, csvPfErr, csvCapErr) => {
+      const info = getBushingPhaseInfo(phaseStr);
+      const npPf = info ? parseFloat(info.Meas_PF_C1 || info.Corr_PF || 0) : 0;
+      const npCap = info ? parseFloat(info.Capacitance_C1 || 0) : 0;
+      const mfg = info ? (info.Manufacturer || '') : '';
+      const ins = info ? (info.Type || info.Insulation || '') : '';
 
-    const h1_cap_dev = parseNum(bushRec.maxbch1_change) ?? getCapDev(h1_c1, 'H1');
-    const h2_cap_dev = parseNum(bushRec.maxbch2_change) ?? getCapDev(h2_c1, 'H2');
-    const h3_cap_dev = parseNum(bushRec.maxbch3_change) ?? getCapDev(h3_c1, 'H3');
-    const l1_cap_dev = parseNum(bushRec.xbushingl1_cap_error) ?? parseNum(bushRec.maxbch0_change) ?? getCapDev(l1_c1, 'X1');
-    const l2_cap_dev = parseNum(bushRec.xbushingl2_cap_error) ?? getCapDev(l2_c1, 'X2');
-    const l3_cap_dev = parseNum(bushRec.xbushingl3_cap_error) ?? getCapDev(l3_c1, 'X3');
+      let pfErrVal = (npPf > 0 && pf20 > 0) ? (((pf20 - npPf) / npPf) * 100) : (csvPfErr !== null ? csvPfErr : null);
+      let capErrVal = (npCap > 0 && cap > 0) ? (((cap - npCap) / npCap) * 100) : (csvCapErr !== null ? csvCapErr : null);
 
-    // Helper to get Manufacturer for a phase
-    const getMfgForPhase = (phaseStr) => {
-      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
-        const info = bushingInfoCsvData.find(i => {
-          const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
-          const p = (i.Phase || '').toUpperCase();
-          return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
-        });
-        return info ? (info.Manufacturer || '') : '';
-      }
-      return '';
-    };
+      let pfTd = '<td>-</td>';
+      let capTd = '<td>-</td>';
 
-    const getPfDevCell = (pfDevVal, phaseStr) => {
-      if (pfDevVal === null || isNaN(pfDevVal)) return `<td>-</td>`;
-      const mfg = getMfgForPhase(phaseStr).toUpperCase();
-      let statusCls = 'status-normal';
-
-      if (mfg.includes('ABB')) {
-        statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 40.0 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
-        statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('MGC')) {
-        statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 5.0 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('TRENCH')) {
-        statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
-      } else {
-        // IEEE C57.152
-        statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 50.0 ? 'status-monitor' : 'status-normal');
-      }
-      const sign = pfDevVal > 0 ? '+' : '';
-      return `<td class="${statusCls}">${sign}${pfDevVal.toFixed(2)}%</td>`;
-    };
-
-    const getCapDevCell = (devVal, phaseStr) => {
-      if (devVal === null || isNaN(devVal)) return `<td>-</td>`;
-      const absDev = Math.abs(devVal);
-      const mfg = getMfgForPhase(phaseStr).toUpperCase();
-      let statusCls = 'status-normal';
-
-      if (mfg.includes('ABB')) {
-        statusCls = absDev > 5.0 ? 'status-critical' : (absDev > 3.0 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
-        statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 1.0 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('MGC')) {
-        statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 0.7 ? 'status-monitor' : 'status-normal');
-      } else if (mfg.includes('TRENCH')) {
-        statusCls = absDev > 110.0 ? 'status-critical' : 'status-normal';
-      } else {
-        // IEEE C57.152
-        statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
+      if (pfErrVal !== null && !isNaN(pfErrVal)) {
+        const sign = pfErrVal >= 0 ? '+' : '';
+        const pfStr = `${sign}${pfErrVal.toFixed(2)}%`;
+        let statusCls = 'ex-status-good';
+        if (npPf > 0 && pf20 > 0) {
+          const evalRes = getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins);
+          if (evalRes.pfStatusCls === 'status-critical') statusCls = 'ex-status-poor';
+          else if (evalRes.pfStatusCls === 'status-monitor') statusCls = 'ex-status-fair';
+        } else {
+          const mfgUpper = mfg.toUpperCase();
+          if (mfgUpper.includes('ABB')) statusCls = pfErrVal >= 75.0 ? 'ex-status-poor' : (pfErrVal > 40.0 ? 'ex-status-fair' : 'ex-status-good');
+          else if (mfgUpper.includes('MGC')) statusCls = pfErrVal >= 10.0 ? 'ex-status-poor' : (pfErrVal > 5.0 ? 'ex-status-fair' : 'ex-status-good');
+          else statusCls = pfErrVal > 100.0 ? 'ex-status-poor' : (pfErrVal > 50.0 ? 'ex-status-fair' : 'ex-status-good');
+        }
+        pfTd = `<td class="${statusCls}">${pfStr}</td>`;
       }
 
-      const sign = devVal > 0 ? '+' : '';
-      return `<td class="${statusCls}">${sign}${devVal.toFixed(2)}%</td>`;
+      if (capErrVal !== null && !isNaN(capErrVal)) {
+        const sign = capErrVal >= 0 ? '+' : '';
+        const capStr = `${sign}${capErrVal.toFixed(2)}%`;
+        let statusCls = 'ex-status-good';
+        if (npCap > 0 && cap > 0) {
+          const evalRes = getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins);
+          if (evalRes.capStatusCls === 'status-critical') statusCls = 'ex-status-poor';
+          else if (evalRes.capStatusCls === 'status-monitor') statusCls = 'ex-status-fair';
+        } else {
+          const absCap = Math.abs(capErrVal);
+          const mfgUpper = mfg.toUpperCase();
+          if (mfgUpper.includes('ABB')) statusCls = absCap > 5.0 ? 'ex-status-poor' : (absCap > 3.0 ? 'ex-status-fair' : 'ex-status-good');
+          else statusCls = absCap > 10.0 ? 'ex-status-poor' : (absCap > 5.0 ? 'ex-status-fair' : 'ex-status-good');
+        }
+        capTd = `<td class="${statusCls}">${capStr}</td>`;
+      }
+
+      return { pfTd, capTd };
     };
 
-    const getRawPfCell = (pfVal) => {
-      if (pfVal === null || isNaN(pfVal)) return `<td>-</td>`;
-      const statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
-      return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
-    };
+    const h1_eval = getBushingEvalForPhase(h1_pf, h1_c1, 'H1', parseNum(bushRec.maxbh1_tand), parseNum(bushRec.maxbch1_change));
+    const h2_eval = getBushingEvalForPhase(h2_pf, h2_c1, 'H2', parseNum(bushRec.maxbh2_tand), parseNum(bushRec.maxbch2_change));
+    const h3_eval = getBushingEvalForPhase(h3_pf, h3_c1, 'H3', parseNum(bushRec.maxbh3_tand), parseNum(bushRec.maxbch3_change));
+    const l1_eval = getBushingEvalForPhase(l1_pf, l1_c1, 'X1', parseNum(bushRec.xbushingl1_pf_error), parseNum(bushRec.xbushingl1_cap_error) ?? parseNum(bushRec.maxbch0_change));
+    const l2_eval = getBushingEvalForPhase(l2_pf, l2_c1, 'X2', parseNum(bushRec.xbushingl2_pf_error), parseNum(bushRec.xbushingl2_cap_error));
+    const l3_eval = getBushingEvalForPhase(l3_pf, l3_c1, 'X3', parseNum(bushRec.xbushingl3_pf_error), parseNum(bushRec.xbushingl3_cap_error));
 
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        ${getPfDevCell(h1_pf_dev, 'H1')}
-        ${getPfDevCell(h2_pf_dev, 'H2')}
-        ${getPfDevCell(h3_pf_dev, 'H3')}
-        ${getPfDevCell(l1_pf_dev, 'X1')}
-        ${getPfDevCell(l2_pf_dev, 'X2')}
-        ${getPfDevCell(l3_pf_dev, 'X3')}
+        ${h1_eval.pfTd}
+        ${h2_eval.pfTd}
+        ${h3_eval.pfTd}
+        ${l1_eval.pfTd}
+        ${l2_eval.pfTd}
+        ${l3_eval.pfTd}
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
-        ${getCapDevCell(h1_cap_dev, 'H1')}
-        ${getCapDevCell(h2_cap_dev, 'H2')}
-        ${getCapDevCell(h3_cap_dev, 'H3')}
-        ${getCapDevCell(l1_cap_dev, 'X1')}
-        ${getCapDevCell(l2_cap_dev, 'X2')}
-        ${getCapDevCell(l3_cap_dev, 'X3')}
+        ${h1_eval.capTd}
+        ${h2_eval.capTd}
+        ${h3_eval.capTd}
+        ${l1_eval.capTd}
+        ${l2_eval.capTd}
+        ${l3_eval.capTd}
       </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
