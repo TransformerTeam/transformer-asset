@@ -705,6 +705,7 @@
     let currentSerial = '';
 
     document.addEventListener('allTestDataLoaded', () => {
+      ensureAssessmentData();
       populateEvalDropdown();
       if (!currentSerial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
         currentSerial = assessmentData[0].serial;
@@ -716,7 +717,14 @@
       }
     });
 
+    function ensureAssessmentData() {
+      if ((typeof assessmentData === 'undefined' || !assessmentData || assessmentData.length === 0) && typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+        assessmentData = HEALTH_INDEX_DATA;
+      }
+    }
+
     function populateEvalDropdown() {
+      ensureAssessmentData();
       const selectEl = document.getElementById('eval-transformer-select');
       if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
         const curVal = selectEl.value;
@@ -736,6 +744,7 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
+      ensureAssessmentData();
       populateEvalDropdown();
 
       // Read Serial Parameter from URL
@@ -760,9 +769,21 @@
     }
 
     function loadEvaluationBySerial(serial) {
+      ensureAssessmentData();
+      if (!assessmentData || assessmentData.length === 0) return;
+
+      if (!serial) {
+        serial = assessmentData[0].serial;
+      }
       currentSerial = serial;
-      if (typeof assessmentData === 'undefined') return;
-      const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith?.(serial) || serial.startsWith?.(x.serial));
+
+      const item = assessmentData.find(x => {
+        if (!x || !x.serial) return false;
+        const s1 = String(x.serial).trim().toLowerCase();
+        const s2 = String(serial).trim().toLowerCase();
+        return s1 === s2 || s1.includes(s2) || s2.includes(s1);
+      }) || assessmentData[0];
+
       if (!item) return;
 
       // Update Report Links
