@@ -1507,16 +1507,6 @@ function openDetail(no) {
         ${getCapDevCell(l2_cap_dev, 'X2')}
         ${getCapDevCell(l3_cap_dev, 'X3')}
       </tr>
-      <tr>
-        <td>Power Factor @ 20°C [C1]</td>
-        <td>IEEE C57.152</td>
-        ${getRawPfCell(h1_pf)}
-        ${getRawPfCell(h2_pf)}
-        ${getRawPfCell(h3_pf)}
-        ${getRawPfCell(l1_pf)}
-        ${getRawPfCell(l2_pf)}
-        ${getRawPfCell(l3_pf)}
-      </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
     document.getElementById('ex-update-bushing').textContent = `Updated tests: ${bDate ? formatDgaDate(bDate) : '-'}`;
@@ -1534,16 +1524,6 @@ function openDetail(no) {
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
-        <td>IEEE C57.152</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <td>Power Factor @ 20°C [C1]</td>
         <td>IEEE C57.152</td>
         <td>-</td>
         <td>-</td>
