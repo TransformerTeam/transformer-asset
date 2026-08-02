@@ -574,11 +574,7 @@
       }
     }
 
-    async function initDetailPage() {
-      if (typeof window.allCSVsPromise !== 'undefined') {
-        await window.allCSVsPromise;
-      }
-
+    function initDetailPage() {
       const data = getAssessmentDataArray();
       populateTransformerDropdown();
 
@@ -596,21 +592,18 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded', () => {
       // Initialize theme
       const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      await initDetailPage();
+      initDetailPage();
     });
 
-    async function switchTransformer(serial) {
+    function switchTransformer(serial) {
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
-      if (typeof window.allCSVsPromise !== 'undefined') {
-        await window.allCSVsPromise;
-      }
       loadDetailBySerial(serial);
     }
 
