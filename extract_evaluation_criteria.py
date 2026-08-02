@@ -45,8 +45,6 @@ for r in range(6, ws.max_row + 1):
             continue
 
     if s1 or s10 or s16 or s18:
-        if "Core Insulation Resistance" in s1:
-            continue
         items.append({
             "row": r,
             "category": category,
@@ -88,10 +86,9 @@ general_parts_items = [
         "item": "1.4 Neutral Ground Inspection",
         "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
         "standard": "GPSC Criteria",
-        "recommendation": "Score: 5/5 (Normal)"
     }
 ]
-items.extend(general_parts_items)
+items = general_parts_items + [x for x in items if not (x.get('item') == 'Criteria' and x.get('category') == 'General Parts (Weight Score 5%)')]
 
 print(f"Extracted {len(items)} evaluation criteria items.")
 
