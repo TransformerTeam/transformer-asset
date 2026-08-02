@@ -97,13 +97,7 @@ function loadAllTestDataCSVs() {
           if (txt) item.target(parseDgaCSV(txt));
         })
     )
-  ).then(() => {
-    if (typeof window.onAllCSVsLoaded === 'function') {
-      window.onAllCSVsLoaded();
-    } else if (currentActiveItem && typeof openDetail === 'function') {
-      openDetail(currentActiveItem.no);
-    }
-  });
+  );
 }
 
 function parseHealthIndexSumCSV(rows) {
