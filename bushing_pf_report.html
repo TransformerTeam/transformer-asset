@@ -1125,36 +1125,17 @@
           capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
         }
 
-        // PF Status & pf20 display
-        let pf20Str = '-';
-        let pfStatusText = '-';
-        let pfStatusCls = '';
+        // PF Status & Cap Status evaluation based on Manufacturer criteria (or IEEE C57.152 fallback)
+        const mfg = matchInfo ? (matchInfo.Manufacturer || '') : '';
+        const ins = matchInfo ? (matchInfo.Type || matchInfo.Insulation || '') : '';
+        const evalRes = hasNameplate ? getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins) : { pfStatusText: '-', pfStatusCls: '', capStatusText: '-', capStatusCls: '' };
 
-        if (hasNameplate && pf20 > 0) {
-          pf20Str = pf20.toFixed(3) + ' %';
-          const stat = getStatus(pf20);
-          pfStatusText = stat.text;
-          pfStatusCls = stat.cls;
-        }
+        let pf20Str = (hasNameplate && pf20 > 0) ? pf20.toFixed(3) + ' %' : '-';
+        let pfStatusText = evalRes.pfStatusText;
+        let pfStatusCls = evalRes.pfStatusCls;
 
-        // Cap Status & dev display
-        let capStatusText = '-';
-        let capStatusCls = '';
-        if (hasNameplate && npCap > 0 && cap > 0) {
-          const devVal = ((cap - npCap) / npCap) * 100;
-          const absDev = Math.abs(devVal);
-          capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
-          if (absDev > 10.0) {
-            capStatusText = 'Investigate';
-            capStatusCls = 'status-investigate';
-          } else if (absDev > 5.0) {
-            capStatusText = 'Acceptable';
-            capStatusCls = 'status-acceptable';
-          } else {
-            capStatusText = 'Good';
-            capStatusCls = 'status-good';
-          }
-        }
+        let capStatusText = evalRes.capStatusText;
+        let capStatusCls = evalRes.capStatusCls;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1175,6 +1156,114 @@
       if (!hasData) {
         body.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:6px;">No ${capType} test data recorded</td></tr>`;
       }
+    }
+
+    function getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins) {
+      let pfStatusText = '-';
+      let pfStatusCls = '';
+      let capStatusText = '-';
+      let capStatusCls = '';
+
+      const manufacturer = (mfg || '').toUpperCase().trim();
+      const insulation = (ins || '').toUpperCase().trim();
+
+      // --- PF Status Evaluation ---
+      if (npPf > 0 && pf20 > 0) {
+        const pfRatio = pf20 / npPf;
+        const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
+
+        if (manufacturer.includes('ABB')) {
+          if (pfErrPercent <= 0) {
+            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+          } else if (pfErrPercent < 75.0) {
+            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+          } else {
+            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('TRENCH')) {
+          if (pfRatio <= 1.0) {
+            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+          } else if (pfRatio <= 2.0) {
+            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+          } else {
+            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+          if (pfErrPercent <= 0) {
+            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+          } else if (pfErrPercent < 30.0) {
+            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+          } else {
+            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('MGC')) {
+          if (pfErrPercent <= 0) {
+            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+          } else if (pfErrPercent < 10.0) {
+            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+          } else {
+            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+          }
+        } else {
+          // Fallback to IEEE C57.152-2013 (1.5 - 2 times nameplate)
+          if (pfRatio <= 1.5) {
+            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+          } else if (pfRatio <= 2.0) {
+            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+          } else {
+            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+          }
+        }
+      }
+
+      // --- Cap Status Evaluation ---
+      if (npCap > 0 && cap > 0) {
+        const devVal = ((cap - npCap) / npCap) * 100;
+        const absDev = Math.abs(devVal);
+
+        if (manufacturer.includes('ABB')) {
+          if (absDev <= 3.0) {
+            capStatusText = 'Good'; capStatusCls = 'status-good';
+          } else if (absDev <= 5.0) {
+            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+          } else {
+            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+          if (absDev <= 1.0) {
+            capStatusText = 'Good'; capStatusCls = 'status-good';
+          } else if (absDev <= 3.0) {
+            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+          } else {
+            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('MGC')) {
+          if (absDev <= 0.7) {
+            capStatusText = 'Good'; capStatusCls = 'status-good';
+          } else if (absDev <= 3.0) {
+            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+          } else {
+            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+          }
+        } else if (manufacturer.includes('TRENCH')) {
+          if (absDev <= 110.0) {
+            capStatusText = 'Good'; capStatusCls = 'status-good';
+          } else {
+            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+          }
+        } else {
+          // Fallback to IEEE C57.152-2013 (< 5% Good, 5-10% Acceptable, > 10% Investigate)
+          if (absDev <= 5.0) {
+            capStatusText = 'Good'; capStatusCls = 'status-good';
+          } else if (absDev <= 10.0) {
+            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+          } else {
+            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+          }
+        }
+      }
+
+      return { pfStatusText, pfStatusCls, capStatusText, capStatusCls };
     }
 
     function getStatus(pf20) {
