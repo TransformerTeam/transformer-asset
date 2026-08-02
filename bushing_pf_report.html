@@ -642,22 +642,22 @@
           <thead>
             <tr>
               <th style="width: 14%; text-align: left;">Phase</th>
-              <th style="width: 9%;">Current<br>(mA)</th>
-              <th style="width: 9%;">Power<br>(mW)</th>
-              <th colspan="3">Power Factor</th>
-              <th colspan="2">Capacitance C1</th>
-              <th style="width: 10%;">Status</th>
+              <th style="width: 8%;">Current<br>(mA)</th>
+              <th style="width: 8%;">Power<br>(mW)</th>
+              <th colspan="4">Power Factor</th>
+              <th colspan="3">Capacitance C1</th>
             </tr>
             <tr>
               <th style="text-align: left;">Bushing</th>
               <th></th>
               <th></th>
-              <th style="width: 9%;">Meas. (%)</th>
+              <th style="width: 8%;">Meas. (%)</th>
               <th style="width: 9%;">at 20°C (%)</th>
-              <th style="width: 10%;">%PF Error</th>
-              <th style="width: 10%;">Meas. (pF)</th>
-              <th style="width: 10%;">Cap. Error (%)</th>
-              <th></th>
+              <th style="width: 9%;">%PF Error</th>
+              <th style="width: 9%;">PF Status</th>
+              <th style="width: 9%;">Meas. (pF)</th>
+              <th style="width: 9%;">Cap. Error (%)</th>
+              <th style="width: 9%;">Cap. Status</th>
             </tr>
           </thead>
           <tbody id="bushing-c1-body">
@@ -676,22 +676,22 @@
           <thead>
             <tr>
               <th style="width: 14%; text-align: left;">Phase</th>
-              <th style="width: 9%;">Current<br>(mA)</th>
-              <th style="width: 9%;">Power<br>(mW)</th>
-              <th colspan="3">Power Factor</th>
-              <th colspan="2">Capacitance C2</th>
-              <th style="width: 10%;">Status</th>
+              <th style="width: 8%;">Current<br>(mA)</th>
+              <th style="width: 8%;">Power<br>(mW)</th>
+              <th colspan="4">Power Factor</th>
+              <th colspan="3">Capacitance C2</th>
             </tr>
             <tr>
               <th style="text-align: left;">Bushing</th>
               <th></th>
               <th></th>
-              <th style="width: 9%;">Meas. (%)</th>
+              <th style="width: 8%;">Meas. (%)</th>
               <th style="width: 9%;">at 20°C (%)</th>
-              <th style="width: 10%;">%PF Error</th>
-              <th style="width: 10%;">Meas. (pF)</th>
-              <th style="width: 10%;">Cap. Error (%)</th>
-              <th></th>
+              <th style="width: 9%;">%PF Error</th>
+              <th style="width: 9%;">PF Status</th>
+              <th style="width: 9%;">Meas. (pF)</th>
+              <th style="width: 9%;">Cap. Error (%)</th>
+              <th style="width: 9%;">Cap. Status</th>
             </tr>
           </thead>
           <tbody id="bushing-c2-body">
@@ -1125,16 +1125,35 @@
           capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
         }
 
-        // Status & pf20 display
+        // PF Status & pf20 display
         let pf20Str = '-';
-        let statusText = '-';
-        let statusCls = '';
+        let pfStatusText = '-';
+        let pfStatusCls = '';
 
         if (hasNameplate && pf20 > 0) {
           pf20Str = pf20.toFixed(3) + ' %';
           const stat = getStatus(pf20);
-          statusText = stat.text;
-          statusCls = stat.cls;
+          pfStatusText = stat.text;
+          pfStatusCls = stat.cls;
+        }
+
+        // Cap Status & dev display
+        let capStatusText = '-';
+        let capStatusCls = '';
+        if (hasNameplate && npCap > 0 && cap > 0) {
+          const devVal = ((cap - npCap) / npCap) * 100;
+          const absDev = Math.abs(devVal);
+          capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
+          if (absDev > 10.0) {
+            capStatusText = 'Investigate';
+            capStatusCls = 'status-investigate';
+          } else if (absDev > 5.0) {
+            capStatusText = 'Acceptable';
+            capStatusCls = 'status-acceptable';
+          } else {
+            capStatusText = 'Good';
+            capStatusCls = 'status-good';
+          }
         }
 
         const tr = document.createElement('tr');
@@ -1145,15 +1164,16 @@
           <td>${pf > 0 ? pf.toFixed(3) : '-'} %</td>
           <td class="val-bold">${pf20Str}</td>
           <td>${pfErr}</td>
+          <td class="${pfStatusCls}">${pfStatusText}</td>
           <td class="val-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
           <td>${capDev}</td>
-          <td class="${statusCls}">${statusText}</td>
+          <td class="${capStatusCls}">${capStatusText}</td>
         `;
         body.appendChild(tr);
       });
 
       if (!hasData) {
-        body.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:6px;">No ${capType} test data recorded</td></tr>`;
+        body.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:6px;">No ${capType} test data recorded</td></tr>`;
       }
     }
 
