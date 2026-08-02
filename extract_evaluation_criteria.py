@@ -92,7 +92,7 @@ general_parts_items = [
         "row": 704,
         "category": "General Parts (Weight Score 5%)",
         "item": "Neutral Ground Inspection",
-        "criteria": "-",
+        "criteria": "Rated voltage 6.9-15 kV IR≥1 GΩ, Rated voltage 22-33 kV IR≥5 GΩ",
         "standard": "IEC 60076-25:2023",
         "recommendation": "Score: 5/5 (Normal)"
     }
