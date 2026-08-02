@@ -1012,7 +1012,11 @@
       document.getElementById('info-service-type').textContent = item ? (item.serviceType || '-') : (trInfo ? (trInfo.Service_Type || '-') : '-');
 
       // Filter BushingInfo records
-      const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No, serial));
+      const infoRecords = bushingInfoList.filter(b =>
+        matchSerial(b.Parent_Serial_No, serial) ||
+        matchSerial(b.Serial_No, serial) ||
+        matchSerial(b['SN&Phase'], serial)
+      );
 
       // Render Nameplate Table
       renderNameplateTable(infoRecords);
@@ -1084,25 +1088,25 @@
 
     // ─── C1 Results Table ───────────────────────────────────────────────────────
     const C1_PHASES = [
-      { label: 'H1', capKey: 'bushing_h1_c1',  maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt',  pfKey: 'bushing_h1_pf_tan',  pf20Key: 'bushing_h1_pf_20c',  npPhase: 'H1' },
-      { label: 'H2', capKey: 'bushing_h2_c1',  maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt',  pfKey: 'bushing_h2_pf_tan',  pf20Key: 'bushing_h2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3', capKey: 'bushing_h3_c1',  maKey: 'bushing_h3_ma',    wKey: 'bushing_h3_watt',  pfKey: 'bushing_h3_pf_tan',  pf20Key: 'bushing_h3_pf_20c',  npPhase: 'H3' },
-      { label: 'H0', capKey: 'bushing_h0_cap', maKey: 'bushing_h0_ma',    wKey: 'bushing_h0_watt',  pfKey: 'bushing_h0_pf_tan',  pf20Key: 'bushing_h0_pf_20c',  npPhase: 'H0' },
-      { label: 'X1', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma',wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', npPhase: 'X1' },
-      { label: 'X2', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma',wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', npPhase: 'X2' },
-      { label: 'X3', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma',wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', npPhase: 'X3' },
-      { label: 'X0', capKey: 'xbushing_h0_c1', maKey: 'xbushing_h0_c1_ma',wKey: 'xbushing_h0_watt', pfKey: 'xbushing_h0_pf_tan', pf20Key: 'xbushing_h0_pf_20c', npPhase: 'X0' },
+      { label: 'H1', npPhase: 'H1', capKey: 'bushing_h1_c1',  maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt',  pfKey: 'bushing_h1_pf_tan',  pf20Key: 'bushing_h1_pf_20c' },
+      { label: 'H2', npPhase: 'H2', capKey: 'bushing_h2_c1',  maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt',  pfKey: 'bushing_h2_pf_tan',  pf20Key: 'bushing_h2_pf_20c' },
+      { label: 'H3', npPhase: 'H3', capKey: 'bushing_h3_c1',  maKey: 'bushing_h3_ma',    wKey: 'bushing_h3_watt',  pfKey: 'bushing_h3_pf_tan',  pf20Key: 'bushing_h3_pf_20c' },
+      { label: 'H0', npPhase: 'H0', capKey: 'bushing_h0_cap', maKey: 'bushing_h0_ma',    wKey: 'bushing_h0_watt',  pfKey: 'bushing_h0_pf_tan',  pf20Key: 'bushing_h0_pf_20c', altCapKey: 'bushing_h0_c1', altMaKey: 'bushing_h0_c1_ma' },
+      { label: 'X1', npPhase: 'X1', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma',wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', altCapKey: 'bushing_l1_cap', altMaKey: 'bushing_l1_ma', altWKey: 'bushing_l1_watt', altPfKey: 'bushing_l1_pf_tan', altPf20Key: 'bushing_l1_pf_20c' },
+      { label: 'X2', npPhase: 'X2', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma',wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', altCapKey: 'bushing_l2_cap', altMaKey: 'bushing_l2_ma', altWKey: 'bushing_l2_watt', altPfKey: 'bushing_l2_pf_tan', altPf20Key: 'bushing_l2_pf_20c' },
+      { label: 'X3', npPhase: 'X3', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma',wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', altCapKey: 'bushing_l3_cap', altMaKey: 'bushing_l3_ma', altWKey: 'bushing_l3_watt', altPfKey: 'bushing_l3_pf_tan', altPf20Key: 'bushing_l3_pf_20c' },
+      { label: 'X0', npPhase: 'X0', capKey: 'xbushing_h0_c1', maKey: 'xbushing_h0_c1_ma',wKey: 'xbushing_h0_watt', pfKey: 'xbushing_h0_pf_tan', pf20Key: 'xbushing_h0_pf_20c', altCapKey: 'xbushing_h0_cap', altMaKey: 'xbushing_h0_ma' },
     ];
 
     const C2_PHASES = [
-      { label: 'H1', capKey: 'bushing_h1_c2',  maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt',  pfKey: 'bushing_h1_c2_pf_tan',  pf20Key: 'bushing_h1_c2_pf_20c',  npPhase: 'H1' },
-      { label: 'H2', capKey: 'bushing_h2_c2',  maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt',  pfKey: 'bushing_h2_c2_pf_tan',  pf20Key: 'bushing_h2_c2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3', capKey: 'bushing_h3_c2',  maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt',  pfKey: 'bushing_h3_c2_pf_tan',  pf20Key: 'bushing_h3_c2_pf_20c',  npPhase: 'H3' },
-      { label: 'H0', capKey: 'bushing_h0_c2',  maKey: 'bushing_h0_c2_ma', wKey: 'bushing_h0_c2_watt',  pfKey: 'bushing_h0_c2_pf_tan',  pf20Key: 'bushing_h0_c2_pf_20c',  npPhase: 'H0' },
-      { label: 'X1', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma',wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c', npPhase: 'X1' },
-      { label: 'X2', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma',wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c', npPhase: 'X2' },
-      { label: 'X3', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma',wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c', npPhase: 'X3' },
-      { label: 'X0', capKey: 'xbushing_h0_c2', maKey: 'xbushing_h0_c2_ma',wKey: 'xbushing_h0_c2_watt', pfKey: 'xbushing_h0_c2_pf_tan', pf20Key: 'xbushing_h0_c2_pf_20c', npPhase: 'X0' },
+      { label: 'H1', npPhase: 'H1', capKey: 'bushing_h1_c2',  maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt',  pfKey: 'bushing_h1_c2_pf_tan',  pf20Key: 'bushing_h1_c2_pf_20c' },
+      { label: 'H2', npPhase: 'H2', capKey: 'bushing_h2_c2',  maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt',  pfKey: 'bushing_h2_c2_pf_tan',  pf20Key: 'bushing_h2_c2_pf_20c' },
+      { label: 'H3', npPhase: 'H3', capKey: 'bushing_h3_c2',  maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt',  pfKey: 'bushing_h3_c2_pf_tan',  pf20Key: 'bushing_h3_c2_pf_20c' },
+      { label: 'H0', npPhase: 'H0', capKey: 'bushing_h0_c2',  maKey: 'bushing_h0_c2_ma', wKey: 'bushing_h0_c2_watt',  pfKey: 'bushing_h0_c2_pf_tan',  pf20Key: 'bushing_h0_c2_pf_20c' },
+      { label: 'X1', npPhase: 'X1', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma',wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c' },
+      { label: 'X2', npPhase: 'X2', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma',wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c' },
+      { label: 'X3', npPhase: 'X3', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma',wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c' },
+      { label: 'X0', npPhase: 'X0', capKey: 'xbushing_h0_c2', maKey: 'xbushing_h0_c2_ma',wKey: 'xbushing_h0_c2_watt', pfKey: 'xbushing_h0_c2_pf_tan', pf20Key: 'xbushing_h0_c2_pf_20c' },
     ];
 
     function renderC1Table(test, infoRecords) {
@@ -1119,13 +1123,25 @@
       let hasData = false;
 
       phases.forEach(p => {
-        const cap  = parseFloat(test[p.capKey] || 0);
-        const ma   = parseFloat(test[p.maKey]  || 0);
-        const watt = parseFloat(test[p.wKey]   || 0);
-        const pf   = parseFloat(test[p.pfKey]  || 0);
-        const pf20 = parseFloat(test[p.pf20Key]|| pf || 0);
+        const cap  = parseFloat(test[p.capKey] || (p.altCapKey ? test[p.altCapKey] : 0) || 0);
+        const ma   = parseFloat(test[p.maKey]  || (p.altMaKey ? test[p.altMaKey] : 0)   || 0);
+        const watt = parseFloat(test[p.wKey]   || (p.altWKey ? test[p.altWKey] : 0)    || 0);
+        const pf   = parseFloat(test[p.pfKey]  || (p.altPfKey ? test[p.altPfKey] : 0)   || 0);
+        const pf20 = parseFloat(test[p.pf20Key]|| (p.altPf20Key ? test[p.altPf20Key] : 0) || pf || 0);
 
-        if (!(cap > 0 || ma > 0 || pf > 0)) return;
+        // Nameplate info matching
+        const matchInfo = findBushingInfoForPhase(infoRecords, p.npPhase);
+
+        const hasNameplate = matchInfo && (
+          parseFloat(matchInfo.Capacitance_C1 || 0) > 0 ||
+          parseFloat(matchInfo.Capacitance_C2 || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C2 || 0) > 0
+        );
+
+        const hasTestData = (cap > 0 || ma > 0 || pf > 0 || pf20 > 0);
+        if (!hasNameplate && !hasTestData) return;
+        hasData = true;
         hasData = true;
 
         // Nameplate info matching
