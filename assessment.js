@@ -49,6 +49,18 @@ let _csvDataReadyResolve;
 window.csvDataReady = new Promise(resolve => { _csvDataReadyResolve = resolve; });
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Inject global loading overlay
+  if (!document.getElementById('global-loading-overlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'global-loading-overlay';
+    overlay.className = 'global-loading-overlay';
+    overlay.innerHTML = `
+      <div class="global-loading-spinner"></div>
+      <div>Data Loading...</div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
   if (typeof HEALTH_INDEX_DATA !== 'undefined') {
     assessmentData = HEALTH_INDEX_DATA;
     initAssessment();
@@ -101,6 +113,13 @@ function loadAllTestDataCSVs() {
         })
     )
   ).then(() => {
+    // Hide overlay
+    const overlay = document.getElementById('global-loading-overlay');
+    if (overlay) {
+      overlay.classList.add('hidden');
+      setTimeout(() => overlay.remove(), 300); // Remove from DOM after fade out
+    }
+    
     // Signal that all CSV data is now available.
     if (typeof _csvDataReadyResolve === 'function') _csvDataReadyResolve();
   });
