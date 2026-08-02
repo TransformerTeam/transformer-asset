@@ -1425,7 +1425,7 @@ function openDetail(no) {
 
       if (pfDevVal !== null && !isNaN(pfDevVal)) {
         if (mfg.includes('ABB')) {
-          statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+          statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 40.0 ? 'status-monitor' : 'status-normal');
         } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
           statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
         } else if (mfg.includes('MGC')) {

@@ -1173,7 +1173,7 @@
         const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
 
         if (manufacturer.includes('ABB')) {
-          if (pfErrPercent <= 0) {
+          if (pfErrPercent <= 40.0) {
             pfStatusText = 'Good'; pfStatusCls = 'status-good';
           } else if (pfErrPercent < 75.0) {
             pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
