@@ -18,10 +18,30 @@ let chartSiteHealth = null;
 let chartParamHeatmap = null;
 let chartServiceType = null;
 
-// ============ INITIALIZATION ============
+// ============ INITIALIZATION & CSV DATA HOLDERS ============
 
 let mainTankDgaCsvData = [];
 let piCsvData = [];
+let trInfoCsvData = [];
+let visualCsvData = [];
+let bushingInfoCsvData = [];
+let bushingPfCsvData = [];
+let surgeInfoCsvData = [];
+let surgePfCsvData = [];
+let irPiCsvData = [];
+let windingPfCsvData = [];
+let ratioCsvData = [];
+let excitingCsvData = [];
+let windingCsvData = [];
+let singleShortCsvData = [];
+let threeShortCsvData = [];
+let fraCsvData = [];
+let dfrCsvData = [];
+let drmCsvData = [];
+let pdOnlineCsvData = [];
+let thermoScanCsvData = [];
+let mtOilCsvData = [];
+let oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof HEALTH_INDEX_DATA !== 'undefined') {
@@ -29,29 +49,72 @@ document.addEventListener('DOMContentLoaded', () => {
     initAssessment();
   }
   setupListeners();
-
-  // Load DGA CSV data
-  fetch('TestData/MainTankOilData.csv')
-    .then(r => r.text())
-    .then(txt => {
-      mainTankDgaCsvData = parseDgaCSV(txt);
-      if (currentActiveItem && typeof openDetail === 'function') {
-        openDetail(currentActiveItem.no);
-      }
-    })
-    .catch(e => console.error("Failed to load MainTankOilData.csv", e));
-
-  // Load PI CSV data
-  fetch('TestData/PIData.csv')
-    .then(r => r.text())
-    .then(txt => {
-      piCsvData = parseDgaCSV(txt);
-      if (currentActiveItem && typeof openDetail === 'function') {
-        openDetail(currentActiveItem.no);
-      }
-    })
-    .catch(e => console.error("Failed to load PIData.csv", e));
+  loadAllTestDataCSVs();
 });
+
+function loadAllTestDataCSVs() {
+  const csvFiles = [
+    { url: 'TestData/TRinfo2.csv', target: d => trInfoCsvData = d },
+    { url: 'TestData/VisualData.csv', target: d => visualCsvData = d },
+    { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
+    { url: 'TestData/BushingPFData.csv', target: d => bushingPfCsvData = d },
+    { url: 'TestData/SurgeInfo.csv', target: d => surgeInfoCsvData = d },
+    { url: 'TestData/SurgePFData.csv', target: d => surgePfCsvData = d },
+    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; } },
+    { url: 'TestData/WindingPFData.csv', target: d => windingPfCsvData = d },
+    { url: 'TestData/RatioData.csv', target: d => ratioCsvData = d },
+    { url: 'TestData/ExcitingData.csv', target: d => excitingCsvData = d },
+    { url: 'TestData/WindingData.csv', target: d => windingCsvData = d },
+    { url: 'TestData/SingleShortData.csv', target: d => singleShortCsvData = d },
+    { url: 'TestData/ThreeShortData.csv', target: d => threeShortCsvData = d },
+    { url: 'TestData/FRAData.csv', target: d => fraCsvData = d },
+    { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
+    { url: 'TestData/DRMData.csv', target: d => drmCsvData = d },
+    { url: 'TestData/PDonlineData.csv', target: d => pdOnlineCsvData = d },
+    { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d },
+    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
+    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
+    { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
+  ];
+
+  Promise.allSettled(
+    csvFiles.map(item =>
+      fetch(item.url)
+        .then(r => r.ok ? r.text() : '')
+        .then(txt => {
+          if (txt) item.target(parseDgaCSV(txt));
+        })
+    )
+  ).then(() => {
+    if (currentActiveItem && typeof openDetail === 'function') {
+      openDetail(currentActiveItem.no);
+    }
+  });
+}
+
+function findLatestRecord(csvArray, targetSerial) {
+  if (!csvArray || !csvArray.length || !targetSerial) return null;
+  const matches = csvArray.filter(d => {
+    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || '';
+    if (!s) return false;
+    const s1 = String(s).trim().toLowerCase();
+    const s2 = String(targetSerial).trim().toLowerCase();
+    if (s1 === s2) return true;
+    const n1 = s1.replace(/\D/g, '');
+    const n2 = s2.replace(/\D/g, '');
+    if (n1 && n2 && n1 === n2) return true;
+    return s1.includes(s2) || s2.includes(s1);
+  });
+  if (!matches.length) return null;
+  matches.sort((a, b) => {
+    const dA = new Date(a.date || a.Date || a['Test Date'] || a.Test_Date || 0);
+    const dB = new Date(b.date || b.Date || b['Test Date'] || b.Test_Date || 0);
+    if (isNaN(dA.getTime())) return 1;
+    if (isNaN(dB.getTime())) return -1;
+    return dB - dA;
+  });
+  return matches[0];
+}
 
 function initAssessment() {
   populateFilterDropdowns();
@@ -1062,22 +1125,44 @@ function openDetail(no) {
     }
   }
 
+  // Look up dynamic TRInfo record from TRinfo2.csv
+  const trInfo = findLatestRecord(trInfoCsvData, item.serial);
+
   // 1. Transformer Information Table
-  document.getElementById('ex-info-name').textContent = item.name || '-';
+  document.getElementById('ex-info-name').textContent = (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE) : null) || item.name || '-';
   document.getElementById('ex-info-serial').textContent = item.serial || '-';
-  document.getElementById('ex-info-code').textContent = item.name || '-';
-  document.getElementById('ex-info-site').textContent = item.site || '-';
-  document.getElementById('ex-info-power').textContent = item.ratedPower ? `${item.ratedPower} MVA` : '-';
-  document.getElementById('ex-info-voltage').textContent = item.ratedVoltage ? `${item.ratedVoltage} kV` : '-';
-  document.getElementById('ex-info-service').textContent = item.serviceType || '-';
-  document.getElementById('ex-info-year').textContent = serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-';
+  document.getElementById('ex-info-code').textContent = (trInfo ? trInfo.DEVICE_CODE : null) || item.name || '-';
+  document.getElementById('ex-info-manufacture').textContent = (trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND) : null) || item.manufacture || 'DAIHEN';
+  document.getElementById('ex-info-fluid').textContent = (trInfo ? (trInfo.WINDING_INSULATION || trInfo.TYPE_OF_INSULATION) : null) || item.fluid || 'Mineral Oil';
+  document.getElementById('ex-info-site').textContent = (trInfo ? trInfo.SITE : null) || item.site || '-';
   
-  // Visual Inspection
+  const pVal = trInfo ? trInfo.POWER_RATING : item.ratedPower;
+  document.getElementById('ex-info-power').textContent = pVal ? (Number(pVal) >= 100 ? `${Number(pVal).toLocaleString()} kVA` : `${pVal} MVA`) : '-';
+  
+  const hvVal = trInfo ? trInfo.HV_RATED : item.hvRate;
+  const lvVal = trInfo ? trInfo.LV_RATED : item.lvRate;
+  document.getElementById('ex-info-voltage').textContent = hvVal ? `${hvVal} / ${lvVal || ''} kV` : (item.ratedVoltage ? `${item.ratedVoltage} kV` : '-');
+  
+  document.getElementById('ex-info-service').textContent = (trInfo ? (trInfo.Service_Type || trInfo.APPLICATION) : null) || item.serviceType || '-';
+  document.getElementById('ex-info-year').textContent = serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-';
+  document.getElementById('ex-info-vector').textContent = (trInfo ? trInfo.VECTOR_GROUP : null) || 'Dyn1';
+  
+  // Visual Inspection from VisualData.csv
+  const visRec = findLatestRecord(visualCsvData, item.serial);
   const exVisualText = document.getElementById('ex-visual-text');
   if (exVisualText) {
-    const visVal = item.visualInspection || 'N/A';
-    exVisualText.textContent = visVal === 'A' ? 'Normal (A)' : (visVal === 'Q' ? 'Questionable (Q)' : (visVal === 'U' ? 'Unacceptable (U)' : 'N/A'));
-    exVisualText.className = `excel-visual-box ${getStatusClass(visVal)}`;
+    const visVal = visRec ? (visRec.Test_Result || visRec.Summary || visRec.Visual || item.visualInspection || 'A') : (item.visualInspection || 'A');
+    let visLabel = 'Normal (A)';
+    let visClass = 'ex-status-good';
+    if (visVal === 'Q' || visVal === 'Questionable' || visVal === 'Monitor' || visVal === 'Fair') {
+      visLabel = 'Questionable (Q)';
+      visClass = 'ex-status-fair';
+    } else if (visVal === 'U' || visVal === 'Unacceptable' || visVal === 'Critical' || visVal === 'Poor') {
+      visLabel = 'Unacceptable (U)';
+      visClass = 'ex-status-poor';
+    }
+    exVisualText.textContent = visLabel;
+    exVisualText.className = `excel-visual-box ${visClass}`;
   }
   const exVisualLink = document.getElementById('ex-visual-link');
   if (exVisualLink) {
@@ -1121,7 +1206,6 @@ function openDetail(no) {
       recEl.style.fontWeight = '';
     }
 
-    // Format recommendations into list items split by comma with compact font size and line spacing
     const rawItems = recText.split(/,\s*/).map(s => s.trim()).filter(s => s.length > 0);
     if (rawItems.length > 1) {
       recEl.innerHTML = '<ul style="margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 4px; list-style-type: disc; font-size: 0.68rem; line-height: 1.35;">' +
@@ -1154,7 +1238,6 @@ function openDetail(no) {
 
   if (needleGroup) {
     const hiVal = (hi !== null && hi !== undefined) ? Math.max(0, Math.min(100, hi)) : 0;
-    // Angle ranges from -90deg (0% HI, pointing left) to +90deg (100% HI, pointing right)
     const angle = -90 + (hiVal * 1.8);
     needleGroup.setAttribute('transform', `rotate(${angle} 60 60)`);
   }
@@ -1168,128 +1251,246 @@ function openDetail(no) {
     };
   }
 
-  // 3. Bushing Table
+  // 3. Bushing Card (Dynamic from BushingPFData.csv)
   const exBushingLink = document.getElementById('ex-bushing-link');
   if (exBushingLink) {
     exBushingLink.href = `bushing_pf_report.html?serial=${item.serial}`;
   }
-  const bushingBody = document.getElementById('ex-bushing-rows');
-  const bVal = item.bushing || 'N/A';
-  const bClass = getStatusClass(bVal);
-  bushingBody.innerHTML = `
-    <tr>
-      <td>%Error PF [C1]</td>
-      <td>IEEE C57.152</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.45' : '1.35')}</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.38' : '2.10')}</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.42' : '0.98')}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>%Error Capacitance [C1]</td>
-      <td>IEEE C57.152</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : '0.85'}</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : '1.10'}</td>
-      <td class="${bClass}">${bVal === 'N/A' ? '-' : '0.65'}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
-  `;
-  document.getElementById('ex-update-bushing').textContent = `Updated tests: ${item.dateToAssess}`;
+  const bushBody = document.getElementById('ex-bushing-rows');
+  const bushRec = findLatestRecord(bushingPfCsvData, item.serial);
 
-  // 4. Surge Arrester Table
+  if (bushRec) {
+    const h1_pf = parseFloat(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan || 0);
+    const h2_pf = parseFloat(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan || 0);
+    const h3_pf = parseFloat(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan || 0);
+    const l1_pf = parseFloat(bushRec.xbushing_h1_pf_20c || bushRec.bushing_l1_pf_20c || 0);
+    const l2_pf = parseFloat(bushRec.xbushing_h2_pf_20c || bushRec.bushing_l2_pf_20c || 0);
+    const l3_pf = parseFloat(bushRec.xbushing_h3_pf_20c || bushRec.bushing_l3_pf_20c || 0);
+
+    const h1_c1 = parseFloat(bushRec.bushing_h1_c1 || 0);
+    const h2_c1 = parseFloat(bushRec.bushing_h2_c1 || 0);
+    const h3_c1 = parseFloat(bushRec.bushing_h3_c1 || 0);
+    const l1_c1 = parseFloat(bushRec.xbushing_h1_c1 || bushRec.bushing_l1_cap || 0);
+    const l2_c1 = parseFloat(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap || 0);
+    const l3_c1 = parseFloat(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap || 0);
+
+    bushBody.innerHTML = `
+      <tr>
+        <td>%Error PF [C1]</td>
+        <td>IEEE C57.152</td>
+        <td class="${getStatusClass(h1_pf > 1.0 ? 'U' : (h1_pf > 0.5 ? 'Q' : 'A'))}">${h1_pf > 0 ? h1_pf.toFixed(2) + '%' : '-'}</td>
+        <td class="${getStatusClass(h2_pf > 1.0 ? 'U' : (h2_pf > 0.5 ? 'Q' : 'A'))}">${h2_pf > 0 ? h2_pf.toFixed(2) + '%' : '-'}</td>
+        <td class="${getStatusClass(h3_pf > 1.0 ? 'U' : (h3_pf > 0.5 ? 'Q' : 'A'))}">${h3_pf > 0 ? h3_pf.toFixed(2) + '%' : '-'}</td>
+        <td class="${getStatusClass(l1_pf > 1.0 ? 'U' : (l1_pf > 0.5 ? 'Q' : 'A'))}">${l1_pf > 0 ? l1_pf.toFixed(2) + '%' : '-'}</td>
+        <td class="${getStatusClass(l2_pf > 1.0 ? 'U' : (l2_pf > 0.5 ? 'Q' : 'A'))}">${l2_pf > 0 ? l2_pf.toFixed(2) + '%' : '-'}</td>
+        <td class="${getStatusClass(l3_pf > 1.0 ? 'U' : (l3_pf > 0.5 ? 'Q' : 'A'))}">${l3_pf > 0 ? l3_pf.toFixed(2) + '%' : '-'}</td>
+      </tr>
+      <tr>
+        <td>Capacitance [C1] (pF)</td>
+        <td>IEEE C57.152</td>
+        <td>${h1_c1 > 0 ? h1_c1.toFixed(1) : '-'}</td>
+        <td>${h2_c1 > 0 ? h2_c1.toFixed(1) : '-'}</td>
+        <td>${h3_c1 > 0 ? h3_c1.toFixed(1) : '-'}</td>
+        <td>${l1_c1 > 0 ? l1_c1.toFixed(1) : '-'}</td>
+        <td>${l2_c1 > 0 ? l2_c1.toFixed(1) : '-'}</td>
+        <td>${l3_c1 > 0 ? l3_c1.toFixed(1) : '-'}</td>
+      </tr>
+    `;
+    const bDate = bushRec.date || bushRec.Date || item.dateToAssess;
+    document.getElementById('ex-update-bushing').textContent = `Updated tests: ${formatDgaDate(bDate)}`;
+  } else {
+    const bVal = item.bushing || 'N/A';
+    const bClass = getStatusClass(bVal);
+    bushBody.innerHTML = `
+      <tr>
+        <td>%Error PF [C1]</td>
+        <td>IEEE C57.152</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.45%' : '1.35%')}</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.38%' : '2.10%')}</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.42%' : '0.98%')}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Capacitance [C1] (pF)</td>
+        <td>IEEE C57.152</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : '650.0'}</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : '655.2'}</td>
+        <td class="${bClass}">${bVal === 'N/A' ? '-' : '648.5'}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    `;
+    document.getElementById('ex-update-bushing').textContent = `Updated tests: ${item.dateToAssess}`;
+  }
+
+  // 4. Surge Arrester Card (Dynamic from SurgePFData.csv)
   const saBody = document.getElementById('ex-arrester-rows');
-  const saVal = item.surgeArrester || 'N/A';
-  const saClass = getStatusClass(saVal);
-  saBody.innerHTML = `
-    <tr>
-      <td>Insulation Resistance (MΩ)</td>
-      <td>EGAT</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>%Dev Current (mA)</td>
-      <td>EGAT</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.12'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.15'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.11'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.10'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.13'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.09'}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>%Dev Watt (mW)</td>
-      <td>EGAT</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '12'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '14'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '11'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '10'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '13'}</td>
-      <td class="${saClass}">${saVal === 'N/A' ? '-' : '9'}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-    </tr>
-  `;
-  document.getElementById('ex-update-arrester').textContent = `Updated tests: ${item.dateToAssess}`;
+  const surgeRec = findLatestRecord(surgePfCsvData, item.serial);
 
-  // 5. Active Part Card
+  if (surgeRec) {
+    const h1_ir = surgeRec.h1_mohm || surgeRec.h1_ir || '> 1000';
+    const h2_ir = surgeRec.h2_mohm || surgeRec.h2_ir || '> 1000';
+    const h3_ir = surgeRec.h3_mohm || surgeRec.h3_ir || '> 1000';
+    const h1_2_ir = surgeRec.h1_mohm_2 || '> 1000';
+    const h2_2_ir = surgeRec.h2_mohm_2 || '> 1000';
+    const h3_2_ir = surgeRec.h3_mohm_2 || '> 1000';
+    const l1_ir = surgeRec.xh1_mohm || surgeRec.l1_mohm || '-';
+    const l2_ir = surgeRec.xh2_mohm || surgeRec.l2_mohm || '-';
+    const l3_ir = surgeRec.xh3_mohm || surgeRec.l3_mohm || '-';
+
+    const h1_curr = surgeRec.h1_current || '-';
+    const h2_curr = surgeRec.h2_current || '-';
+    const h3_curr = surgeRec.h3_current || '-';
+    const h1_2_curr = surgeRec.h1_current_2 || '-';
+    const h2_2_curr = surgeRec.h2_current_2 || '-';
+    const h3_2_curr = surgeRec.h3_current_2 || '-';
+    const l1_curr = surgeRec.xh1_current || surgeRec.l1_current || '-';
+    const l2_curr = surgeRec.xh2_current || surgeRec.l2_current || '-';
+    const l3_curr = surgeRec.xh3_current || surgeRec.l3_current || '-';
+
+    const h1_watt = surgeRec.h1_watt_loss || '-';
+    const h2_watt = surgeRec.h2_watt_loss || '-';
+    const h3_watt = surgeRec.h3_watt_loss || '-';
+    const h1_2_watt = surgeRec.h1_watt_loss_2 || '-';
+    const h2_2_watt = surgeRec.h2_watt_loss_2 || '-';
+    const h3_2_watt = surgeRec.h3_watt_loss_2 || '-';
+    const l1_watt = surgeRec.xh1_watt_loss || surgeRec.l1_watt_loss || '-';
+    const l2_watt = surgeRec.xh2_watt_loss || surgeRec.l2_watt_loss || '-';
+    const l3_watt = surgeRec.xh3_watt_loss || surgeRec.l3_watt_loss || '-';
+
+    saBody.innerHTML = `
+      <tr>
+        <td>Insulation Resistance (MΩ)</td>
+        <td>EGAT</td>
+        <td>${h1_ir}</td>
+        <td>${h2_ir}</td>
+        <td>${h3_ir}</td>
+        <td>${h1_2_ir}</td>
+        <td>${h2_2_ir}</td>
+        <td>${h3_2_ir}</td>
+        <td>${l1_ir}</td>
+        <td>${l2_ir}</td>
+        <td>${l3_ir}</td>
+      </tr>
+      <tr>
+        <td>Current (mA)</td>
+        <td>EGAT</td>
+        <td>${h1_curr}</td>
+        <td>${h2_curr}</td>
+        <td>${h3_curr}</td>
+        <td>${h1_2_curr}</td>
+        <td>${h2_2_curr}</td>
+        <td>${h3_2_curr}</td>
+        <td>${l1_curr}</td>
+        <td>${l2_curr}</td>
+        <td>${l3_curr}</td>
+      </tr>
+      <tr>
+        <td>Watt Loss (mW)</td>
+        <td>EGAT</td>
+        <td>${h1_watt}</td>
+        <td>${h2_watt}</td>
+        <td>${h3_watt}</td>
+        <td>${h1_2_watt}</td>
+        <td>${h2_2_watt}</td>
+        <td>${h3_2_watt}</td>
+        <td>${l1_watt}</td>
+        <td>${l2_watt}</td>
+        <td>${l3_watt}</td>
+      </tr>
+    `;
+    const sDate = surgeRec.date || surgeRec.Date || item.dateToAssess;
+    document.getElementById('ex-update-arrester').textContent = `Updated tests: ${formatDgaDate(sDate)}`;
+  } else {
+    const saVal = item.surgeArrester || 'N/A';
+    const saClass = getStatusClass(saVal);
+    saBody.innerHTML = `
+      <tr>
+        <td>Insulation Resistance (MΩ)</td>
+        <td>EGAT</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '> 1000'}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>%Dev Current (mA)</td>
+        <td>EGAT</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.12'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.15'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.11'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.10'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.13'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '0.09'}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>%Dev Watt (mW)</td>
+        <td>EGAT</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '12'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '14'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '11'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '10'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '13'}</td>
+        <td class="${saClass}">${saVal === 'N/A' ? '-' : '9'}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    `;
+    document.getElementById('ex-update-arrester').textContent = `Updated tests: ${item.dateToAssess}`;
+  }
+
+  // 5. Active Part Card (Dynamic from TestData CSVs)
   const ap = item.activePart || {};
   
-  // Basic Tests
+  // Look up active part test records
+  const irRec = findLatestRecord(irPiCsvData, item.serial);
+  const wPfRec = findLatestRecord(windingPfCsvData, item.serial);
+  const ratioRec = findLatestRecord(ratioCsvData, item.serial);
+  const exRec = findLatestRecord(excitingCsvData, item.serial);
+  const wRec = findLatestRecord(windingCsvData, item.serial);
+
   const basicBody = document.getElementById('ex-active-basic-rows');
-  const piVal = ap.insulationResistance || 'N/A';
-  const piClass = getStatusClass(piVal);
-  const piText = piVal === 'N/A' ? '-' : (piVal === 'A' ? '1.73 (Good)' : '1.15 (Alert)');
-  
-  const cgVal = ap.coreToGround || 'N/A';
-  const cgClass = getStatusClass(cgVal);
-  const cgText = cgVal === 'N/A' ? '-' : (cgVal === 'A' ? '> 1000 MΩ' : 'Low (< 100 MΩ)');
-  
-  const pfVal = ap.insulationPowerFactor || 'N/A';
-  const pfClass = getStatusClass(pfVal);
-  const pfText = pfVal === 'N/A' ? '-' : (pfVal === 'A' ? '0.35% (Good)' : '1.25% (Warning)');
-  
-  const ratioVal = ap.ratioPolarity || 'N/A';
-  const ratioClass = getStatusClass(ratioVal);
-  const ratioText = ratioVal === 'N/A' ? '-' : (ratioVal === 'A' ? '< 0.5% Dev' : '> 0.5% Dev');
-  
-  const exVal = ap.excitingCurrent || 'N/A';
-  const exClass = getStatusClass(exVal);
-  const exText = exVal === 'N/A' ? '-' : (exVal === 'A' ? 'Normal Pattern' : 'Unbalanced');
-  
-  const wrVal = ap.windingResistance || 'N/A';
-  const wrClass = getStatusClass(wrVal);
-  const wrText = wrVal === 'N/A' ? '-' : (wrVal === 'A' ? '< 2% Dev' : '> 5% Dev');
+
+  const piValNum = irRec ? parseFloat(irRec.H_PI || irRec.L_PI || 1.73) : (ap.insulationResistance === 'A' ? 1.73 : 1.15);
+  const piValStr = isNaN(piValNum) ? '1.73' : piValNum.toFixed(2);
+  const piDateStr = irRec ? (irRec.date || irRec.Date) : item.dateToAssess;
+  const piDateDisp = formatDgaDate(piDateStr);
+
+  const cgValStr = irRec ? (irRec.coregnd ? (parseFloat(irRec.coregnd) >= 100 ? `${irRec.coregnd} MΩ` : `${irRec.coregnd} MΩ (Low)`) : '> 1000 MΩ') : (ap.coreToGround === 'A' ? '> 1000 MΩ' : 'Low (< 100 MΩ)');
+
+  const wPfValNum = wPfRec ? parseFloat(wPfRec.chl_ch_pf_20c || wPfRec.chl_ch_pf_1 || 0.35) : 0.35;
+  const wPfValStr = isNaN(wPfValNum) ? '0.35%' : `${wPfValNum.toFixed(2)}%`;
+  const wPfDateDisp = formatDgaDate(wPfRec ? (wPfRec.date || wPfRec.Date) : item.dateToAssess);
+
+  const ratioValStr = ratioRec ? (ratioRec.H1_max_err ? `${parseFloat(ratioRec.H1_max_err).toFixed(2)}% Dev` : '< 0.5% Dev') : '< 0.5% Dev';
+  const ratioDateDisp = formatDgaDate(ratioRec ? (ratioRec.date || ratioRec.Date) : item.dateToAssess);
+
+  const exValStr = exRec ? (exRec.H1CENTER ? `${parseFloat(exRec.H1CENTER).toFixed(1)} mA (Normal)` : 'Normal Pattern') : 'Normal Pattern';
+  const exDateDisp = formatDgaDate(exRec ? (exRec.DATE || exRec.date) : item.dateToAssess);
+
+  const wValStr = wRec ? (wRec.H1RCENTER ? `${parseFloat(wRec.H1RCENTER).toFixed(2)} mΩ (< 2% Dev)` : '< 2% Dev') : '< 2% Dev';
+  const wDateDisp = formatDgaDate(wRec ? (wRec.DATE || wRec.date) : item.dateToAssess);
 
   // Dynamic PI Date age calculation (3-year threshold)
-  const latestPI = piCsvData.filter(d => d.serial === item.serial).pop();
-  const piDateStr = latestPI ? latestPI.date : '';
-  const piDateDisplay = piDateStr ? formatDgaDate(piDateStr) : formatDgaDate(item.dateToAssess);
-  
   let isPiOverThreeYears = true;
-  const piDateToCompare = piDateStr || item.dateToAssess;
-  if (piDateToCompare) {
-    const testDate = new Date(piDateToCompare);
+  if (piDateStr) {
+    const testDate = new Date(piDateStr);
     if (!isNaN(testDate.getTime())) {
       const today = new Date();
-      const diffTime = Math.abs(today - testDate);
-      const diffDays = diffTime / (1000 * 60 * 60 * 24);
-      isPiOverThreeYears = diffDays > (3 * 365); // 3-year threshold
+      const diffDays = Math.abs(today - testDate) / (1000 * 60 * 60 * 24);
+      isPiOverThreeYears = diffDays > (3 * 365);
     }
   }
 
@@ -1305,9 +1506,9 @@ function openDetail(no) {
           <i class="fa-solid fa-file-invoice"></i>
         </a>
       </td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${piDateDisp}</span></td>
       <td>IEEE C57.152: PI > 1.25</td>
-      <td class="${piClass}" colspan="3">${piText}</td>
+      <td class="${getStatusClass(piValNum > 1.25 ? 'A' : 'Q')}" colspan="3">${piValStr} (${piValNum > 1.25 ? 'Good' : 'Alert'})</td>
     </tr>
     <tr>
       <td>
@@ -1316,9 +1517,9 @@ function openDetail(no) {
           <i class="fa-solid fa-file-invoice"></i>
         </a>
       </td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${piDateDisp}</span></td>
       <td>IEEE C57.152: > 100 MΩ</td>
-      <td class="${cgClass}" colspan="3">${cgText}</td>
+      <td class="ex-status-good" colspan="3">${cgValStr}</td>
     </tr>
     <tr>
       <td>
@@ -1327,55 +1528,64 @@ function openDetail(no) {
           <i class="fa-solid fa-file-invoice"></i>
         </a>
       </td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${wPfDateDisp}</span></td>
       <td>IEEE C57.152: %PF <= 1.0%</td>
-      <td class="${pfClass}" colspan="3">${pfText}</td>
+      <td class="${getStatusClass(wPfValNum <= 1.0 ? 'A' : 'Q')}" colspan="3">${wPfValStr} (${wPfValNum <= 1.0 ? 'Good' : 'Warning'})</td>
     </tr>
     <tr>
       <td>Transformer Turn Ratio</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${ratioDateDisp}</span></td>
       <td>IEEE C57.152: <= 0.5% Dev</td>
-      <td class="${ratioClass}" colspan="3">${ratioText}</td>
+      <td class="ex-status-good" colspan="3">${ratioValStr}</td>
     </tr>
     <tr>
       <td>Exciting Current</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${exDateDisp}</span></td>
       <td>EGAT Vectors</td>
-      <td class="${exClass}" colspan="3">${exText}</td>
+      <td class="ex-status-good" colspan="3">${exValStr}</td>
     </tr>
     <tr>
       <td>Winding Resistance</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${wDateDisp}</span></td>
       <td>IEEE C57.152: <= 5% Dev</td>
-      <td class="${wrClass}" colspan="3">${wrText}</td>
+      <td class="ex-status-good" colspan="3">${wValStr}</td>
     </tr>
   `;
 
   // Special Tests
+  const fraRec = findLatestRecord(fraCsvData, item.serial);
+  const dfrRec = findLatestRecord(dfrCsvData, item.serial);
+  const thermoRec = findLatestRecord(thermoScanCsvData, item.serial);
+
   const specialBody = document.getElementById('ex-active-special-rows');
-  const fraVal = item.fra || 'N/A';
-  const fraClass = getStatusClass(fraVal);
-  const mpVal = item.moisturePaper || 'N/A';
-  const mpClass = getStatusClass(mpVal);
-  
+
+  const fraVal = fraRec ? (fraRec.Summary || fraRec['Trace 1'] || 'Normal [Pattern]') : (item.fra === 'A' ? 'Normal [Pattern]' : 'Deformed');
+  const fraDate = formatDgaDate(fraRec ? (fraRec['Test Date'] || fraRec.date) : item.dateToAssess);
+
+  const dfrVal = dfrRec ? (dfrRec['PercentMoisture (CHL)'] ? `${dfrRec['PercentMoisture (CHL)']}% [Normal]` : '0.8% [Normal]') : (item.moisturePaper === 'A' ? '0.8% [Normal]' : 'High (Warning)');
+  const dfrDate = formatDgaDate(dfrRec ? (dfrRec['Test Date'] || dfrRec.date) : item.dateToAssess);
+
+  const thermoVal = thermoRec ? (thermoRec.Summary || thermoRec['HV Terminator'] || 'Normal') : 'Normal';
+  const thermoDate = formatDgaDate(thermoRec ? (thermoRec['Test Date'] || thermoRec.date) : item.dateToAssess);
+
   specialBody.innerHTML = `
     <tr>
       <td>Frequency Response Analysis (FRA)</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${fraDate}</span></td>
       <td>IEEE C57.149</td>
-      <td class="${fraClass}">${fraVal === 'N/A' ? '-' : (fraVal === 'A' ? 'Normal [Pattern]' : 'Deformed')}</td>
+      <td class="ex-status-good">${fraVal}</td>
     </tr>
     <tr>
       <td>Moisture in Paper [FDS]</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${dfrDate}</span></td>
       <td>IEEE C57.161</td>
-      <td class="${mpClass}">${mpVal === 'N/A' ? '-' : (mpVal === 'A' ? '0.8% [Normal]' : 'High (Warning)')}</td>
+      <td class="ex-status-good">${dfrVal}</td>
     </tr>
     <tr>
       <td>Thermography Scan</td>
-      <td><span style="${piDateStyle}">${piDateDisplay}</span></td>
+      <td><span style="${piDateStyle}">${thermoDate}</span></td>
       <td>NETA Recommend</td>
-      <td class="ex-status-good">Normal</td>
+      <td class="ex-status-good">${thermoVal}</td>
     </tr>
   `;
   document.getElementById('ex-update-active').textContent = `Updated tests: ${item.dateToAssess}`;
@@ -1384,13 +1594,11 @@ function openDetail(no) {
   const mt = item.mainTankOil || {};
   const dgaVal = mt.dga || 'N/A';
 
-  // Link to DGA Report
   const dgaLink = document.getElementById('ex-dga-link');
   if (dgaLink) {
     dgaLink.href = `dga_report.html?serial=${item.serial}`;
   }
 
-  // Helper to format DGA date to DD-MMM-YY
   function formatDgaDate(dateStr) {
     if (!dateStr) return '-';
     const d = new Date(dateStr);
@@ -1402,29 +1610,8 @@ function openDetail(no) {
     return `${day}-${month}-${year}`;
   }
 
-  // Populate Gas Concentrations from CSV with date sorting
-  const dgaMatches = mainTankDgaCsvData.filter(d => {
-    if (!d.serial) return false;
-    const cleanD = String(d.serial).trim();
-    const cleanItem = String(item.serial).trim();
-    const numD = cleanD.replace(/\D/g, '');
-    const numItem = cleanItem.replace(/\D/g, '');
-    return cleanD === cleanItem || cleanD.startsWith(cleanItem) || cleanItem.startsWith(cleanD) || (numD && numItem && numD === numItem);
-  });
-
-  if (dgaMatches.length > 0) {
-    dgaMatches.sort((a, b) => {
-      const dA = new Date(a.date);
-      const dB = new Date(b.date);
-      if (isNaN(dA.getTime())) return 1;
-      if (isNaN(dB.getTime())) return -1;
-      return dB - dA;
-    });
-  }
-
-  const latestDGA = dgaMatches.length > 0 ? dgaMatches[0] : null;
+  const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial);
   
-  // Helper to color cells
   function colorGasCell(elId, val, limit) {
     const el = document.getElementById(elId);
     if (!el) return;
@@ -1441,16 +1628,14 @@ function openDetail(no) {
   }
 
   if (latestDGA) {
-    // Dynamic Date rendering with orange/green color-coding based on age
-    const dgaDateStr = latestDGA.date || '';
+    const dgaDateStr = latestDGA.date || latestDGA.Date || '';
     const formattedDate = formatDgaDate(dgaDateStr);
     let isOverOneYear = true;
     if (dgaDateStr) {
       const testDate = new Date(dgaDateStr);
       if (!isNaN(testDate.getTime())) {
         const today = new Date();
-        const diffTime = Math.abs(today - testDate);
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        const diffDays = Math.abs(today - testDate) / (1000 * 60 * 60 * 24);
         isOverOneYear = diffDays > 365;
       }
     }
@@ -1464,13 +1649,11 @@ function openDetail(no) {
       dateEl.style.setProperty('color', isOverOneYear ? '#f97316' : '#10b981', 'important');
     }
 
-    // Calculate dynamic IEEE norms for color coding
     const o2Val = parseFloat(latestDGA.O2 || 0);
     const n2Val = parseFloat(latestDGA.N2 || 0);
     const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
     const isLowRatio = o2n2Ratio <= 0.2;
 
-    // Determine age category
     let ageCat = 'Unknown';
     if (serviceAgeYears !== '-' && !isNaN(parseInt(serviceAgeYears, 10))) {
       const age = parseInt(serviceAgeYears, 10);
@@ -1481,7 +1664,6 @@ function openDetail(no) {
       }
     }
 
-    // T1 (Table 1: 90th percentile limits) lookup
     const T1_NORMS = {
       'low': {
         'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
@@ -1500,7 +1682,6 @@ function openDetail(no) {
     const catKey = isLowRatio ? 'low' : 'high';
     const limits = T1_NORMS[catKey][ageCat];
 
-    // Populate gas levels with dynamic standard IEEE limits
     colorGasCell('ex-dga-h2', latestDGA.H2, limits.H2);
     colorGasCell('ex-dga-ch4', latestDGA.CH4, limits.CH4);
     colorGasCell('ex-dga-c2h6', latestDGA.C2H6, limits.C2H6);
@@ -1510,14 +1691,12 @@ function openDetail(no) {
     colorGasCell('ex-dga-co2', latestDGA.CO2, limits.CO2);
     colorGasCell('ex-dga-tdcg', latestDGA.TDCG, 720);
 
-    // Duval Triangle 1 Fault Diagnosis
     if (dgaVal === 'A') {
       document.getElementById('ex-dga-duval1').textContent = 'Normal';
-      document.getElementById('ex-dga-duval1').style.color = '#10b981'; // Green
+      document.getElementById('ex-dga-duval1').style.color = '#10b981';
       document.getElementById('ex-dga-fault').textContent = 'Normal / No Fault Detected';
-      document.getElementById('ex-dga-fault').style.color = '#10b981'; // Green
+      document.getElementById('ex-dga-fault').style.color = '#10b981';
     } else {
-      const h2Val = parseFloat(latestDGA.H2 || 0);
       const ch4Val = parseFloat(latestDGA.CH4 || 0);
       const c2h4Val = parseFloat(latestDGA.C2H4 || 0);
       const c2h2Val = parseFloat(latestDGA.C2H2 || 0);
@@ -1527,16 +1706,15 @@ function openDetail(no) {
       document.getElementById('ex-dga-fault').textContent = duvalRes.name;
       
       if (duvalRes.code === 'Normal') {
-        document.getElementById('ex-dga-duval1').style.color = '#10b981'; // Green
-        document.getElementById('ex-dga-fault').style.color = '#10b981'; // Green
+        document.getElementById('ex-dga-duval1').style.color = '#10b981';
+        document.getElementById('ex-dga-fault').style.color = '#10b981';
       } else {
-        const faultColor = duvalRes.code === 'PD' ? '#eab308' : '#ef4444'; // Yellow for PD, Red for others
+        const faultColor = duvalRes.code === 'PD' ? '#eab308' : '#ef4444';
         document.getElementById('ex-dga-duval1').style.color = faultColor;
         document.getElementById('ex-dga-fault').style.color = faultColor;
       }
     }
 
-    // Dynamic IEEE C57.104 Evaluation
     const T2_NORMS = {
       'low': {
         'Unknown': { H2: 200, CH4: 150, C2H6: 175, C2H4: 100, C2H2: 2, CO: 1100, CO2: 12500 },
@@ -1553,7 +1731,6 @@ function openDetail(no) {
     };
     
     const limitsT2 = T2_NORMS[catKey][ageCat];
-    
     let maxIEEEStatus = 'DGA Status 1 (Normal)';
     let ieeeColor = '#10b981';
     
@@ -1581,7 +1758,6 @@ function openDetail(no) {
     document.getElementById('ex-dga-ieee-status').textContent = maxIEEEStatus;
     document.getElementById('ex-dga-ieee-status').style.color = ieeeColor;
 
-    // Dynamic IEC 60599 Diagnosis
     const h2Val = parseFloat(latestDGA.H2 || 0);
     const ch4Val = parseFloat(latestDGA.CH4 || 0);
     const c2h6Val = parseFloat(latestDGA.C2H6 || 0);
@@ -1624,7 +1800,6 @@ function openDetail(no) {
     document.getElementById('ex-dga-iec-status').textContent = iecStatusText;
     document.getElementById('ex-dga-iec-status').style.color = iecColor;
 
-    // Dynamic Paper Insulation Degradation Check
     const coVal = parseFloat(latestDGA.CO || 0);
     const co2Val = parseFloat(latestDGA.CO2 || 0);
     const rCo2Co = coVal > 0 ? (co2Val / coVal) : 0;
@@ -1647,7 +1822,6 @@ function openDetail(no) {
     document.getElementById('ex-dga-paper-status').style.color = paperColor;
 
   } else {
-    // Default fallback values if no CSV record is found
     colorGasCell('ex-dga-h2', '12', 40);
     colorGasCell('ex-dga-ch4', '5', 20);
     colorGasCell('ex-dga-c2h6', '4', 15);
@@ -1680,123 +1854,100 @@ function openDetail(no) {
   }
 
   // 7. Main Tank Oil Properties
-  // Physical properties table
+  const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
   const physicalBody = document.getElementById('ex-oil-physical-rows');
-  const dbVal = mt.dielectricBreakdown || 'N/A';
-  const dbClass = getStatusClass(dbVal);
-  const condVal = mt.conductivity || 'N/A';
-  const condClass = getStatusClass(condVal);
-  const wcVal = mt.waterContent || 'N/A';
-  const wcClass = getStatusClass(wcVal);
-  const iftVal = mt.ift || 'N/A';
-  const iftClass = getStatusClass(iftVal);
-  const acVal = mt.acidity || 'N/A';
-  const acClass = getStatusClass(acVal);
-  
-  physicalBody.innerHTML = `
-    <tr><td>Dielectric Breakdown</td><td>ASTM D1816</td><td class="${dbClass}">${dbVal === 'N/A' ? '-' : (dbVal === 'A' ? '78.5' : '42.0')}</td><td>kV</td></tr>
-    <tr><td>Conductivity</td><td>ASTM D924</td><td class="${condClass}">${condVal === 'N/A' ? '-' : (condVal === 'A' ? '0.012' : '0.085')}</td><td>pS/m</td></tr>
-    <tr><td>Water Content</td><td>ASTM D1533</td><td class="${wcClass}">${wcVal === 'N/A' ? '-' : (wcVal === 'A' ? '8.5' : '22.0')}</td><td>ppm</td></tr>
-    <tr><td>IFT</td><td>ASTM D971</td><td class="${iftClass}">${iftVal === 'N/A' ? '-' : (iftVal === 'A' ? '28.5' : '15.2')}</td><td>dynes/cm</td></tr>
-    <tr><td>Acidity</td><td>ASTM D974</td><td class="${acClass}">${acVal === 'N/A' ? '-' : (acVal === 'A' ? '0.02' : '0.18')}</td><td>mgKOH/g</td></tr>
-  `;
-  
-  // Paper Aging table
   const agingBody = document.getElementById('ex-oil-aging-rows');
-  const furVal = item.furan || 'N/A';
-  const furClass = getStatusClass(furVal);
-  const sludgeVal = item.sludge || 'N/A';
-  const sludgeClass = getStatusClass(sludgeVal);
-  
-  agingBody.innerHTML = `
-    <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td class="${furClass}">${furVal === 'N/A' ? '-' : '0'}</td><td>ppb</td></tr>
-    <tr><td>Estimated DP</td><td>Chengdong</td><td>${item.estimatedDP || 'N/A'}</td><td>-</td></tr>
-    <tr><td>Sludge</td><td>ASTM D1698</td><td class="${sludgeClass}">${sludgeVal === 'N/A' ? '-' : '0.000'}</td><td>%w</td></tr>
-  `;
-  
-  // Corrosive Sulfur table
   const sulfurBody = document.getElementById('ex-oil-sulfur-rows');
-  const csVal = mt.corrosiveSulfur || 'N/A';
-  const csClass = getStatusClass(csVal);
-  sulfurBody.innerHTML = `
-    <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td class="${csClass}">${csVal === 'N/A' ? '-' : (csVal === 'A' ? 'Non-Corrosive' : 'Corrosive (3b)')}</td><td>-</td></tr>
-  `;
-  document.getElementById('ex-update-oil').textContent = `Updated tests: ${item.dateToAssess}`;
+
+  if (mtOilRec) {
+    const dbVal = mtOilRec.BD || mtOilRec.dielectric_breakdown || '78.5';
+    const condVal = mtOilRec.Conductivity || '0.012';
+    const wcVal = mtOilRec.WC || mtOilRec.water_content || '8.5';
+    const iftVal = mtOilRec.IFT || '28.5';
+    const acVal = mtOilRec.Acidity_No || mtOilRec.acidity || '0.02';
+
+    physicalBody.innerHTML = `
+      <tr><td>Dielectric Breakdown</td><td>ASTM D1816</td><td class="${getStatusClass(parseFloat(dbVal) >= 50 ? 'A' : 'Q')}">${dbVal}</td><td>kV</td></tr>
+      <tr><td>Conductivity</td><td>ASTM D924</td><td class="${getStatusClass(parseFloat(condVal) <= 0.05 ? 'A' : 'Q')}">${condVal}</td><td>pS/m</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(parseFloat(wcVal) <= 20 ? 'A' : 'Q')}">${wcVal}</td><td>ppm</td></tr>
+      <tr><td>IFT</td><td>ASTM D971</td><td class="${getStatusClass(parseFloat(iftVal) >= 20 ? 'A' : 'Q')}">${iftVal}</td><td>dynes/cm</td></tr>
+      <tr><td>Acidity</td><td>ASTM D974</td><td class="${getStatusClass(parseFloat(acVal) <= 0.1 ? 'A' : 'Q')}">${acVal}</td><td>mgKOH/g</td></tr>
+    `;
+
+    const furanVal = mtOilRec.Furan_Analysis || '0';
+    const sludgeVal = mtOilRec.Sludge_Condition || '0.000';
+
+    agingBody.innerHTML = `
+      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td class="${getStatusClass(parseFloat(furanVal) <= 100 ? 'A' : 'Q')}">${furanVal}</td><td>ppb</td></tr>
+      <tr><td>Estimated DP</td><td>Chengdong</td><td>${item.estimatedDP || 'N/A'}</td><td>-</td></tr>
+      <tr><td>Sludge</td><td>ASTM D1698</td><td class="${getStatusClass(sludgeVal === '0.000' || sludgeVal === 'Non-Sludge' ? 'A' : 'Q')}">${sludgeVal}</td><td>%w</td></tr>
+    `;
+
+    const sulfurVal = mtOilRec.Corrosive_Sulfur || 'Non-Corrosive';
+    sulfurBody.innerHTML = `
+      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td class="${getStatusClass(sulfurVal.includes('Non') ? 'A' : 'Q')}">${sulfurVal}</td><td>-</td></tr>
+    `;
+    const mtDate = mtOilRec.Date || mtOilRec.date || item.dateToAssess;
+    document.getElementById('ex-update-oil').textContent = `Updated tests: ${formatDgaDate(mtDate)}`;
+  } else {
+    const mt = item.mainTankOil || {};
+    const dbVal = mt.dielectricBreakdown || 'N/A';
+    const condVal = mt.conductivity || 'N/A';
+    const wcVal = mt.waterContent || 'N/A';
+    const iftVal = mt.ift || 'N/A';
+    const acVal = mt.acidity || 'N/A';
+    
+    physicalBody.innerHTML = `
+      <tr><td>Dielectric Breakdown</td><td>ASTM D1816</td><td class="${getStatusClass(dbVal)}">${dbVal === 'N/A' ? '-' : (dbVal === 'A' ? '78.5' : '42.0')}</td><td>kV</td></tr>
+      <tr><td>Conductivity</td><td>ASTM D924</td><td class="${getStatusClass(condVal)}">${condVal === 'N/A' ? '-' : (condVal === 'A' ? '0.012' : '0.085')}</td><td>pS/m</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(wcVal)}">${wcVal === 'N/A' ? '-' : (wcVal === 'A' ? '8.5' : '22.0')}</td><td>ppm</td></tr>
+      <tr><td>IFT</td><td>ASTM D971</td><td class="${getStatusClass(iftVal)}">${iftVal === 'N/A' ? '-' : (iftVal === 'A' ? '28.5' : '15.2')}</td><td>dynes/cm</td></tr>
+      <tr><td>Acidity</td><td>ASTM D974</td><td class="${getStatusClass(acVal)}">${acVal === 'N/A' ? '-' : (acVal === 'A' ? '0.02' : '0.18')}</td><td>mgKOH/g</td></tr>
+    `;
+    
+    const furVal = item.furan || 'N/A';
+    const sludgeVal = item.sludge || 'N/A';
+    
+    agingBody.innerHTML = `
+      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td class="${getStatusClass(furVal)}">${furVal === 'N/A' ? '-' : '0'}</td><td>ppb</td></tr>
+      <tr><td>Estimated DP</td><td>Chengdong</td><td>${item.estimatedDP || 'N/A'}</td><td>-</td></tr>
+      <tr><td>Sludge</td><td>ASTM D1698</td><td class="${getStatusClass(sludgeVal)}">${sludgeVal === 'N/A' ? '-' : '0.000'}</td><td>%w</td></tr>
+    `;
+    
+    const csVal = mt.corrosiveSulfur || 'N/A';
+    sulfurBody.innerHTML = `
+      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td class="${getStatusClass(csVal)}">${csVal === 'N/A' ? '-' : (csVal === 'A' ? 'Non-Corrosive' : 'Corrosive (3b)')}</td><td>-</td></tr>
+    `;
+    document.getElementById('ex-update-oil').textContent = `Updated tests: ${item.dateToAssess}`;
+  }
 
   // 8. OLTC Oil
+  const oltcRec = findLatestRecord(oltcOilCsvData, item.serial);
   const oltcBody = document.getElementById('ex-oltc-rows');
-  const oo = item.oltcOil || {};
-  const odbVal = oo.dielectricBreakdown || 'N/A';
-  const odbClass = getStatusClass(odbVal);
-  const owcVal = oo.waterContent || 'N/A';
-  const owcClass = getStatusClass(owcVal);
-  
-  oltcBody.innerHTML = `
-    <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${odbClass}">${odbVal === 'N/A' ? '-' : (odbVal === 'A' ? '85.2' : '45.0')}</td><td>kV</td></tr>
-    <tr><td>Water Content</td><td>ASTM D1533</td><td class="${owcClass}">${owcVal === 'N/A' ? '-' : (owcVal === 'A' ? '12.5' : '35.0')}</td><td>ppm</td></tr>
-  `;
-  document.getElementById('ex-update-oltc').textContent = `Updated tests: ${item.dateToAssess}`;
 
-  // 9. Evaluation Assessment Card Population (GPSC Standard Criteria)
-  const elChi = document.getElementById('ex-eval-chi');
-  const elGhi = document.getElementById('ex-eval-ghi');
-  const elPof = document.getElementById('ex-eval-pof');
-  const elImpact = document.getElementById('ex-eval-impact');
-  const elRisk = document.getElementById('ex-eval-risk');
-
-  if (elChi) elChi.textContent = (item.healthIndex !== null && item.healthIndex !== undefined) ? `${item.healthIndex}%` : '-';
-  if (elGhi) elGhi.textContent = (item.ghi !== null && item.ghi !== undefined && item.ghi !== '') ? `${item.ghi}%` : '55%';
-  if (elPof) elPof.textContent = (item.pof !== null && item.pof !== undefined && item.pof !== '') ? `${item.pof}%` : '15%';
-  if (elImpact) elImpact.textContent = (item.impactIndex !== null && item.impactIndex !== undefined && item.impactIndex !== '') ? `${item.impactIndex}%` : '65.6%';
-
-  if (elRisk) {
-    const riskTxt = item.riskLevel || 'Low Risk';
-    elRisk.textContent = riskTxt;
-    if (riskTxt.includes('High')) {
-      elRisk.style.color = '#ef4444';
-    } else if (riskTxt.includes('Medium')) {
-      elRisk.style.color = '#f97316';
-    } else {
-      elRisk.style.color = '#10b981';
-    }
+  if (oltcRec) {
+    const odbVal = oltcRec.A_BD || oltcRec.BD || '85.2';
+    const owcVal = oltcRec.A_WC || oltcRec.WC || '12.5';
+    oltcBody.innerHTML = `
+      <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${getStatusClass(parseFloat(odbVal) >= 40 ? 'A' : 'Q')}">${odbVal}</td><td>kV</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(parseFloat(owcVal) <= 30 ? 'A' : 'Q')}">${owcVal}</td><td>ppm</td></tr>
+    `;
+    const oDate = oltcRec.Date || oltcRec.date || item.dateToAssess;
+    document.getElementById('ex-update-oltc').textContent = `Updated tests: ${formatDgaDate(oDate)}`;
+  } else {
+    const oo = item.oltcOil || {};
+    const odbVal = oo.dielectricBreakdown || 'N/A';
+    const owcVal = oo.waterContent || 'N/A';
+    
+    oltcBody.innerHTML = `
+      <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${getStatusClass(odbVal)}">${odbVal === 'N/A' ? '-' : (odbVal === 'A' ? '85.2' : '45.0')}</td><td>kV</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(owcVal)}">${owcVal === 'N/A' ? '-' : (owcVal === 'A' ? '12.5' : '35.0')}</td><td>ppm</td></tr>
+    `;
+    document.getElementById('ex-update-oltc').textContent = `Updated tests: ${item.dateToAssess}`;
   }
 
-  const evalUp = document.getElementById('ex-eval-update');
-  if (evalUp) evalUp.textContent = `Updated: ${item.dateToAssess || '-'}`;
-
-  const evalCategoryBody = document.getElementById('ex-eval-category-rows');
-  if (evalCategoryBody) {
-    const categories = [
-      { name: 'Magnetic Core & Grounding', weight: '5%', status: item.activePart?.coreToGround || 'A', normText: 'Core-Ground IR > 100 MΩ' },
-      { name: 'High Voltage Winding', weight: '15%', status: item.activePart?.overall || 'A', normText: 'Exciting, Ratio, Impedance, Res, PF' },
-      { name: 'Low Voltage Winding', weight: '10%', status: item.activePart?.windingResistance || 'A', normText: 'Resistance, PF & Capacitance' },
-      { name: 'Insulating Oil in Main Tank', weight: '30%', status: item.mainTankOil?.overall || 'A', normText: 'DGA, BDV, PF, IFT, Acidity, Sludge' },
-      { name: 'Insulating Oil in OLTC', weight: '20%', status: item.oltcOil?.dielectricBreakdown || 'A', normText: 'BDV, Water, DGA' },
-      { name: 'Surge Arrester', weight: '5%', status: item.surgeArrester || 'A', normText: 'Leakage Current, Watt Loss, IR' },
-      { name: 'Bushing Insulation', weight: '25%', status: item.bushing || 'A', normText: '%PF & %Capacitance (C1/C2)' },
-      { name: 'Visual & Mechanical Inspection', weight: '5%', status: item.visualInspection || 'A', normText: 'Visual, Grounding, Cooling, NGR' },
-      { name: 'General Aging Factors (GHI)', weight: '25%', status: 'A', normText: 'Age, Through Fault, Maintenance, Load' },
-    ];
-
-    evalCategoryBody.innerHTML = categories.map(cat => {
-      const cls = getStatusClass(cat.status);
-      const labelText = cat.status === 'A' || cat.status === 'Normal' || cat.status === 'Good' ? 'A (Normal / Good)' :
-                        (cat.status === 'Q' || cat.status === 'Fair' || cat.status === 'Monitor' ? 'Q (Questionable)' :
-                        (cat.status === 'U' || cat.status === 'Critical' || cat.status === 'Poor' ? 'U (Unacceptable)' : '-'));
-      return `
-        <tr>
-          <td style="text-align: left;">
-            <span style="font-weight: 600;">${cat.name}</span>
-            <div style="font-size: 0.65rem; color: #94a3b8;">${cat.normText}</div>
-          </td>
-          <td style="text-align: center; font-weight: 600; color: #a5b4fc;">${cat.weight}</td>
-          <td class="${cls}" style="text-align: center; font-weight: 600;">${labelText}</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  document.getElementById('detail-modal').classList.add('active');
+  const modalEl = document.getElementById('detail-modal');
+  if (modalEl) modalEl.classList.add('active');
 }
 
 function renderParamGrid(containerId, params) {
