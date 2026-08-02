@@ -1102,10 +1102,17 @@
           return ph === p.npPhase || ph.endsWith(p.npPhase.replace(/[0-9]/g, '').toLowerCase() + p.npPhase.slice(-1));
         });
 
+        const hasNameplate = matchInfo && (
+          parseFloat(matchInfo.Capacitance_C1 || 0) > 0 ||
+          parseFloat(matchInfo.Capacitance_C2 || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C2 || 0) > 0
+        );
+
         // %PF Error calculation vs Nameplate PF
         const npPf = matchInfo ? parseFloat(capType === 'C1' ? (matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) : (matchInfo.Meas_PF_C2 || 0)) : 0;
         let pfErr = '-';
-        if (npPf > 0 && pf20 > 0) {
+        if (hasNameplate && npPf > 0 && pf20 > 0) {
           const errVal = ((pf20 - npPf) / npPf) * 100;
           pfErr = (errVal >= 0 ? '+' : '') + errVal.toFixed(2) + '%';
         }
@@ -1113,13 +1120,22 @@
         // Nameplate capacitance for deviation calc
         const npCap = matchInfo ? parseFloat(capType === 'C1' ? (matchInfo.Capacitance_C1 || 0) : (matchInfo.Capacitance_C2 || 0)) : 0;
         let capDev = '-';
-        if (npCap > 0 && cap > 0) {
+        if (hasNameplate && npCap > 0 && cap > 0) {
           const devVal = ((cap - npCap) / npCap) * 100;
           capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
         }
 
-        // Status
-        const { text: statusText, cls: statusCls } = getStatus(pf20);
+        // Status & pf20 display
+        let pf20Str = '-';
+        let statusText = '-';
+        let statusCls = '';
+
+        if (hasNameplate && pf20 > 0) {
+          pf20Str = pf20.toFixed(3) + ' %';
+          const stat = getStatus(pf20);
+          statusText = stat.text;
+          statusCls = stat.cls;
+        }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1127,7 +1143,7 @@
           <td>${ma > 0 ? ma.toFixed(3) : '-'}</td>
           <td>${watt > 0 ? watt.toFixed(2) : '-'}</td>
           <td>${pf > 0 ? pf.toFixed(3) : '-'} %</td>
-          <td class="val-bold">${pf20 > 0 ? pf20.toFixed(3) : '-'} %</td>
+          <td class="val-bold">${pf20Str}</td>
           <td>${pfErr}</td>
           <td class="val-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
           <td>${capDev}</td>
