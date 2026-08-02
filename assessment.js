@@ -1360,6 +1360,10 @@ function openDetail(no) {
       const num = parseFloat(val);
       return (!isNaN(num) && num > 0) ? num : null;
     };
+    const parseNum = (val) => {
+      const num = parseFloat(val);
+      return (!isNaN(num)) ? num : null;
+    };
 
     const h1_pf = parsePf(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan);
     const h2_pf = parsePf(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan);
@@ -1375,15 +1379,44 @@ function openDetail(no) {
     const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
     const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
 
+    // Calculate %Error Capacitance against nameplate
+    const getCapDev = (measCap, phaseStr) => {
+      if (measCap === null) return null;
+      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
+        const info = bushingInfoCsvData.find(i => {
+          const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
+          const p = (i.Phase || '').toUpperCase();
+          return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
+        });
+        if (info && info.Capacitance_C1) {
+          const npCap = parseFloat(info.Capacitance_C1);
+          if (!isNaN(npCap) && npCap > 0) {
+            return ((measCap - npCap) / npCap) * 100;
+          }
+        }
+      }
+      return null;
+    };
+
+    const h1_dev = parseNum(bushRec.maxbch1_change) ?? getCapDev(h1_c1, 'H1');
+    const h2_dev = parseNum(bushRec.maxbch2_change) ?? getCapDev(h2_c1, 'H2');
+    const h3_dev = parseNum(bushRec.maxbch3_change) ?? getCapDev(h3_c1, 'H3');
+    const l1_dev = parseNum(bushRec.maxbch0_change) ?? getCapDev(l1_c1, 'X1');
+    const l2_dev = getCapDev(l2_c1, 'X2');
+    const l3_dev = getCapDev(l3_c1, 'X3');
+
     const getPfCell = (pfVal) => {
       if (pfVal === null) return `<td>-</td>`;
       const statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
       return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
     };
 
-    const getCapCell = (capVal) => {
-      if (capVal === null) return `<td>-</td>`;
-      return `<td>${capVal.toFixed(1)}</td>`;
+    const getCapDevCell = (devVal) => {
+      if (devVal === null || isNaN(devVal)) return `<td>-</td>`;
+      const absDev = Math.abs(devVal);
+      const statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
+      const sign = devVal > 0 ? '+' : '';
+      return `<td class="${statusCls}">${sign}${devVal.toFixed(2)}%</td>`;
     };
 
     bushBody.innerHTML = `
@@ -1398,14 +1431,14 @@ function openDetail(no) {
         ${getPfCell(l3_pf)}
       </tr>
       <tr>
-        <td>Capacitance [C1] (pF)</td>
+        <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
-        ${getCapCell(h1_c1)}
-        ${getCapCell(h2_c1)}
-        ${getCapCell(h3_c1)}
-        ${getCapCell(l1_c1)}
-        ${getCapCell(l2_c1)}
-        ${getCapCell(l3_c1)}
+        ${getCapDevCell(h1_dev)}
+        ${getCapDevCell(h2_dev)}
+        ${getCapDevCell(h3_dev)}
+        ${getCapDevCell(l1_dev)}
+        ${getCapDevCell(l2_dev)}
+        ${getCapDevCell(l3_dev)}
       </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
@@ -1423,7 +1456,7 @@ function openDetail(no) {
         <td>-</td>
       </tr>
       <tr>
-        <td>Capacitance [C1] (pF)</td>
+        <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
         <td>-</td>
         <td>-</td>
