@@ -886,9 +886,9 @@
           displayItem = displayItem.replace(/Core Insulation Resistance\s*/gi, '').trim();
         }
 
-        const tr = document.createElement('tr');
         const matchVal = getMeasuredValueForItem(row.item, item);
         const evalBadge = getStandardRecommendBadge(matchVal.ratingScore);
+        const recText = (matchVal.ratingScore === 4 || matchVal.ratingScore === 5) ? '-' : (matchVal.recommendation || '-');
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
@@ -898,20 +898,24 @@
           <td style="text-align: center; font-weight: 500; color: #475569;">${matchVal.testDate}</td>
           <td style="font-weight: 700; color: #1e3a8a;">${matchVal.value}</td>
           <td style="text-align: center;">${evalBadge}</td>
-          <td style="font-size: 0.72rem; color: #475569;">${matchVal.recommendation}</td>
+          <td style="font-size: 0.72rem; color: #475569;">${recText}</td>
         `;
         tbody.appendChild(tr);
       });
 
       // Part 1 Summary Row
+      const chiScore = item.healthIndex || 90;
+      const chiRating = chiScore >= 80 ? 4 : 3;
+      const chiRec = (chiRating === 4 || chiRating === 5) ? '-' : (item.recommendation || 'Plan detailed inspection');
+
       const sumTr = document.createElement('tr');
       sumTr.style.background = '#eff6ff';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
         <td colspan="5" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
-        <td style="font-size: 0.9rem; color: #16a34a;">${item.healthIndex || 90}%</td>
-        <td style="text-align: center;">${getStandardRecommendBadge((item.healthIndex || 90) >= 80 ? 4 : 3)}</td>
-        <td style="font-size: 0.72rem; color: #1e3a8a;">${item.recommendation || 'Routine Inspection'}</td>
+        <td style="font-size: 0.9rem; color: #16a34a;">${chiScore}%</td>
+        <td style="text-align: center;">${getStandardRecommendBadge(chiRating)}</td>
+        <td style="font-size: 0.72rem; color: #1e3a8a;">${chiRec}</td>
       `;
       tbody.appendChild(sumTr);
     }
@@ -946,7 +950,7 @@
           <td style="text-align: center; font-weight: 500; color: #475569;">08/02/2026</td>
           <td style="font-weight: 700; color: #047857;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-          <td style="font-size: 0.72rem; color: #475569;">Normal Operating History</td>
+          <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
       });
@@ -959,7 +963,7 @@
         <td colspan="5" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE & RATING:</td>
         <td style="font-size: 0.9rem; color: #047857;">Low Risk (PoF 1)</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-        <td style="font-size: 0.72rem; color: #047857;">Acceptable Degradation</td>
+        <td style="font-size: 0.72rem; color: #047857;">-</td>
       `;
       tbody.appendChild(sumTr);
     }
@@ -998,7 +1002,7 @@
           <td style="text-align: center; font-weight: 500; color: #475569;">08/02/2026</td>
           <td style="font-weight: 700; color: #b91c1c;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-          <td style="font-size: 0.72rem; color: #475569;">Low Consequence Impact</td>
+          <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1011,7 +1015,7 @@
         <td colspan="5" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
         <td style="font-size: 0.9rem; color: #15803d;">Low Risk Category</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-        <td style="font-size: 0.72rem; color: #991b1b;">Acceptable Risk Level</td>
+        <td style="font-size: 0.72rem; color: #991b1b;">-</td>
       `;
       tbody.appendChild(sumTr);
     }
