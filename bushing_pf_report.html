@@ -401,6 +401,39 @@
       border-color: #e2e8f0;
     }
 
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      border: 1px solid #475569;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .pill-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #f1f5f9;
+    }
+    .pill-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #6366f1;
+      box-shadow: 0 0 6px rgba(79, 70, 229, 0.3);
+    }
+    [data-theme="light"] .pill-btn {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #cbd5e1;
+    }
+    [data-theme="light"] .pill-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
     /* Print override for perfect A4 single-page fit */
     @media print {
       @page {
@@ -763,13 +796,10 @@
       <!-- Trending Section (screen only) -->
       <div class="section-title no-print" style="margin-top:12px;">Historical Trending (Bushing Power Factor)</div>
       <div class="trending-panel no-print">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <span style="font-weight: 600; font-size: 11px; color: var(--text-sub);">Bushing PF Trend Analysis — Corrected at 20°C</span>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 10px; color: var(--text-sub);">Phase:</span>
-            <select id="trend-phase-select" style="background: rgba(0,0,0,0.3); color: var(--text-main); border: 1px solid var(--border-dark); padding: 4px 8px; border-radius: 4px; font-size: 10px; outline: none;" onchange="updateTrendChart()">
-              <!-- Options populated dynamically -->
-            </select>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;" id="trend-phase-pills">
+            <!-- Dynamic multi-select pill buttons populated by JS -->
           </div>
         </div>
         <div id="trend-chart" style="min-height: 250px;"></div>
@@ -1265,54 +1295,122 @@
     }
 
     // ─── Trending Chart ──────────────────────────────────────────────────────────
+    // ─── Trending Chart ──────────────────────────────────────────────────────────
     function buildTrendOptions(pfRecords) {
-      const sel = document.getElementById('trend-phase-select');
-      sel.innerHTML = '';
+      window._trendPfRecords = pfRecords;
       const phaseOptions = [
-        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan' },
-        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan' },
-        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan' },
-        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan' },
-        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan' },
-        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan' },
-        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan' },
-        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan' },
+        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', color: '#3b82f6' },
+        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', color: '#10b981' },
+        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan', color: '#f59e0b' },
+        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan', color: '#ef4444' },
+        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan', color: '#8b5cf6' },
+        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan', color: '#06b6d4' },
+        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', color: '#ec4899' },
+        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', color: '#eab308' },
       ];
+
+      // Find which phases have at least 1 non-zero value
+      const activePhases = new Set();
       phaseOptions.forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt.value;
-        o.textContent = opt.label;
-        sel.appendChild(o);
+        const hasValue = (pfRecords || []).some(r => {
+          const v = parseFloat(r[opt.pf20Key] || r[opt.pfKey] || 0);
+          return !isNaN(v) && v > 0;
+        });
+        if (hasValue) activePhases.add(opt.value);
       });
-      window._trendPhaseOptions = phaseOptions;
-      window._trendPfRecords    = pfRecords;
+
+      if (activePhases.size === 0) { ['h1', 'h2', 'h3'].forEach(p => activePhases.add(p)); }
+      window._selectedTrendPhases = activePhases;
+      window._trendPhaseOptions   = phaseOptions;
+
+      renderPhasePills();
       updateTrendChart();
     }
 
-    function updateTrendChart() {
-      const sel    = document.getElementById('trend-phase-select');
+    function renderPhasePills() {
+      const container = document.getElementById('trend-phase-pills');
+      if (!container) return;
+      container.innerHTML = '';
+
       const phOpts = window._trendPhaseOptions || [];
+      const selectedSet = window._selectedTrendPhases || new Set();
+
+      // "All" button
+      const allSelected = phOpts.length > 0 && phOpts.every(p => selectedSet.has(p.value));
+      const allBtn = document.createElement('button');
+      allBtn.type = 'button';
+      allBtn.className = 'pill-btn ' + (allSelected ? 'active' : '');
+      allBtn.textContent = 'All';
+      allBtn.onclick = () => {
+        if (allSelected) {
+          selectedSet.clear();
+        } else {
+          phOpts.forEach(p => selectedSet.add(p.value));
+        }
+        renderPhasePills();
+        updateTrendChart();
+      };
+      container.appendChild(allBtn);
+
+      phOpts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isSel = selectedSet.has(opt.value);
+        btn.className = 'pill-btn ' + (isSel ? 'active' : '');
+        btn.textContent = opt.label;
+        if (isSel) {
+          btn.style.borderColor = opt.color;
+          btn.style.backgroundColor = opt.color;
+          btn.style.color = '#ffffff';
+        }
+        btn.onclick = () => {
+          if (selectedSet.has(opt.value)) {
+            selectedSet.delete(opt.value);
+          } else {
+            selectedSet.add(opt.value);
+          }
+          renderPhasePills();
+          updateTrendChart();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function updateTrendChart() {
+      const phOpts = window._trendPhaseOptions || [];
+      const selectedSet = window._selectedTrendPhases || new Set();
       const records = (window._trendPfRecords || []).slice().sort((a, b) => parseDate(a.date) - parseDate(b.date));
-      const selected = phOpts.find(p => p.value === sel.value) || phOpts[0];
-      if (!selected) return;
+
+      const selectedOpts = phOpts.filter(p => selectedSet.has(p.value));
+      if (selectedOpts.length === 0) {
+        if (trendChart) { trendChart.destroy(); trendChart = null; }
+        document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
+        return;
+      }
 
       const dates = records.map(r => formatReportDate(r.date));
-      const values = records.map(r => {
-        let v = parseFloat(r[selected.pf20Key]);
-        if (isNaN(v) || v <= 0) {
-          v = parseFloat(r[selected.pfKey]);
-        }
-        return (!isNaN(v) && v > 0) ? v : null;
+      const series = selectedOpts.map(opt => {
+        const values = records.map(r => {
+          let v = parseFloat(r[opt.pf20Key]);
+          if (isNaN(v) || v <= 0) {
+            v = parseFloat(r[opt.pfKey]);
+          }
+          return (!isNaN(v) && v > 0) ? v : null;
+        });
+        return { name: `Phase ${opt.label}`, data: values };
       });
+
+      const colors = selectedOpts.map(opt => opt.color);
 
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#9ca3af' : '#475569';
       const gridColor = isDark ? '#ffffff18' : '#00000012';
 
       const opts = {
-        chart: { type: 'line', height: 250, background: 'transparent', toolbar: { show: true } },
+        chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: true } },
         theme: { mode: isDark ? 'dark' : 'light' },
-        series: [{ name: `%PF @20°C — ${selected.label}`, data: values }],
+        series: series,
+        colors: colors,
         xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
           title: { text: '% Power Factor @20°C', style: { color: textColor, fontSize: '9px' } },
@@ -1327,10 +1425,12 @@
         stroke: { curve: 'smooth', width: 2 },
         markers: { size: 5 },
         grid: { borderColor: gridColor },
+        legend: { show: true, position: 'top', labels: { colors: textColor }, fontSize: '10px' },
         tooltip: { theme: isDark ? 'dark' : 'light' },
       };
 
       if (trendChart) { trendChart.destroy(); }
+      document.getElementById('trend-chart').innerHTML = '';
       trendChart = new ApexCharts(document.getElementById('trend-chart'), opts);
       trendChart.render();
     }
