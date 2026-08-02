@@ -971,9 +971,8 @@
       const fluidVal = trInfo ? (trInfo.TYPE_OF_INSULATION && isNaN(trInfo.TYPE_OF_INSULATION) ? trInfo.TYPE_OF_INSULATION : (trInfo.WINDING_INSULATION && isNaN(trInfo.WINDING_INSULATION) ? trInfo.WINDING_INSULATION : 'Mineral oil')) : (item ? (item.fluid || 'Mineral oil') : 'Mineral oil');
       document.getElementById('info-fluid').textContent = fluidVal;
 
-      // Service Type
-      document.getElementById('info-service-type').textContent =
-        trInfo ? (trInfo.Service_Type || trInfo.APPLICATION || '-') : (item ? (item.serviceType || '-') : '-');
+      // Service Type (from HealthIndexSum.csv)
+      document.getElementById('info-service-type').textContent = item ? (item.serviceType || '-') : (trInfo ? (trInfo.Service_Type || '-') : '-');
 
       // Filter BushingInfo records
       const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No, serial));

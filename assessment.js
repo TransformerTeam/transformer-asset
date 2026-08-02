@@ -1230,7 +1230,7 @@ function openDetail(no) {
   const lvVal = trInfo ? trInfo.LV_RATED : item.lvRate;
   document.getElementById('ex-info-voltage').textContent = hvVal ? `${hvVal} / ${lvVal || ''} kV` : (item.ratedVoltage ? `${item.ratedVoltage} kV` : '-');
   
-  document.getElementById('ex-info-service').textContent = (trInfo ? (trInfo.Service_Type || trInfo.APPLICATION) : null) || item.serviceType || '-';
+  document.getElementById('ex-info-service').textContent = item.serviceType || (trInfo ? trInfo.Service_Type : null) || '-';
   document.getElementById('ex-info-year').textContent = serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-';
   document.getElementById('ex-info-vector').textContent = (trInfo ? trInfo.VECTOR_GROUP : null) || 'Dyn1';
   
