@@ -1174,44 +1174,44 @@
 
         if (manufacturer.includes('ABB')) {
           if (pfErrPercent <= 40.0) {
-            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+            pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfErrPercent < 75.0) {
-            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+            pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
-            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+            pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('TRENCH')) {
           if (pfRatio <= 1.5) {
-            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+            pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfRatio <= 2.0) {
-            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+            pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
-            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+            pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
           if (pfErrPercent <= 0) {
-            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+            pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfErrPercent < 30.0) {
-            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+            pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
-            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+            pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('MGC')) {
           if (pfErrPercent <= 0) {
-            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+            pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfErrPercent < 10.0) {
-            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+            pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
-            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+            pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else {
           // Fallback to IEEE C57.152-2013 (1.5 - 2 times nameplate)
           if (pfRatio <= 1.5) {
-            pfStatusText = 'Good'; pfStatusCls = 'status-good';
+            pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfRatio <= 2.0) {
-            pfStatusText = 'Acceptable'; pfStatusCls = 'status-acceptable';
+            pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
-            pfStatusText = 'Investigate'; pfStatusCls = 'status-investigate';
+            pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         }
       }
@@ -1223,42 +1223,42 @@
 
         if (manufacturer.includes('ABB')) {
           if (absDev <= 3.0) {
-            capStatusText = 'Good'; capStatusCls = 'status-good';
+            capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else if (absDev <= 5.0) {
-            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+            capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
           } else {
-            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+            capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
           if (absDev <= 1.0) {
-            capStatusText = 'Good'; capStatusCls = 'status-good';
+            capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else if (absDev <= 3.0) {
-            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+            capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
           } else {
-            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+            capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('MGC')) {
           if (absDev <= 0.7) {
-            capStatusText = 'Good'; capStatusCls = 'status-good';
+            capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else if (absDev <= 3.0) {
-            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+            capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
           } else {
-            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+            capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('TRENCH')) {
           if (absDev <= 110.0) {
-            capStatusText = 'Good'; capStatusCls = 'status-good';
+            capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else {
-            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+            capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         } else {
-          // Fallback to IEEE C57.152-2013 (< 5% Good, 5-10% Acceptable, > 10% Investigate)
+          // Fallback to IEEE C57.152-2013 (< 5% Normal, 5-10% Monitoring, > 10% Critical)
           if (absDev <= 5.0) {
-            capStatusText = 'Good'; capStatusCls = 'status-good';
+            capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else if (absDev <= 10.0) {
-            capStatusText = 'Acceptable'; capStatusCls = 'status-acceptable';
+            capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
           } else {
-            capStatusText = 'Investigate'; capStatusCls = 'status-investigate';
+            capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         }
       }
@@ -1267,9 +1267,9 @@
     }
 
     function getStatus(pf20) {
-      if (pf20 > 1.0)  return { text: 'Investigate',  cls: 'status-investigate' };
-      if (pf20 > 0.5)  return { text: 'Acceptable',   cls: 'status-acceptable'  };
-      if (pf20 > 0)    return { text: 'Good',          cls: 'status-good'        };
+      if (pf20 > 1.0)  return { text: 'Critical',    cls: 'status-critical' };
+      if (pf20 > 0.5)  return { text: 'Monitoring',  cls: 'status-monitor'  };
+      if (pf20 > 0)    return { text: 'Normal',      cls: 'status-normal'   };
       return { text: '-', cls: '' };
     }
 
@@ -1325,8 +1325,8 @@
         },
         annotations: {
           yaxis: [
-            { y: 0.5, borderColor: '#b79500', strokeDashArray: 4, label: { text: 'Acceptable Limit (0.5%)', style: { color: '#b79500', fontSize: '9px' } } },
-            { y: 1.0, borderColor: '#cc0000', strokeDashArray: 4, label: { text: 'Investigate Limit (1.0%)', style: { color: '#cc0000', fontSize: '9px' } } },
+            { y: 0.5, borderColor: '#b79500', strokeDashArray: 4, label: { text: 'Monitoring Limit (0.5%)', style: { color: '#b79500', fontSize: '9px' } } },
+            { y: 1.0, borderColor: '#cc0000', strokeDashArray: 4, label: { text: 'Critical Limit (1.0%)', style: { color: '#cc0000', fontSize: '9px' } } },
           ]
         },
         stroke: { curve: 'smooth', width: 2 },
