@@ -327,12 +327,12 @@
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>H1</th>
-                  <th>H2</th>
-                  <th>H3</th>
-                  <th>X1</th>
-                  <th>X2</th>
-                  <th>X3</th>
+                  <th>HV. A</th>
+                  <th>HV. B</th>
+                  <th>HV. C</th>
+                  <th>LV. A</th>
+                  <th>LV. B</th>
+                  <th>LV. C</th>
                 </tr>
               </thead>
               <tbody id="ex-bushing-rows">
@@ -547,21 +547,9 @@
   <script src="assessment.js"></script>
 
   <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Initialize theme
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
+    window.isDetailStandalonePage = true;
 
-      // Wait for ALL CSV files to finish downloading before rendering
-      if (window.csvDataReady) {
-        await window.csvDataReady;
-      }
-
-      initDetailPage();
-    });
-
-    function initDetailPage() {
+    function populateTransformerDropdown() {
       const selectEl = document.getElementById('detail-transformer-select');
       if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
         selectEl.innerHTML = '';
@@ -572,8 +560,11 @@
           selectEl.appendChild(opt);
         });
       }
+    }
 
-      // Read Serial Parameter from URL
+    function initDetailPage() {
+      populateTransformerDropdown();
+
       const urlParams = new URLSearchParams(window.location.search);
       let serialParam = urlParams.get('serial');
 
@@ -582,10 +573,25 @@
       }
 
       if (serialParam) {
+        const selectEl = document.getElementById('detail-transformer-select');
         if (selectEl) selectEl.value = serialParam;
         loadDetailBySerial(serialParam);
       }
     }
+
+    window.onAllCSVsLoaded = function() {
+      initDetailPage();
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Initialize theme
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      initDetailPage();
+      setTimeout(initDetailPage, 200);
+    });
 
     function switchTransformer(serial) {
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
@@ -594,22 +600,17 @@
     }
 
     function loadDetailBySerial(serial) {
-      if (typeof assessmentData === 'undefined' || !assessmentData || !assessmentData.length) return;
-      const sTarget = String(serial).trim().toLowerCase();
-      const item = assessmentData.find(x => {
-        const s = String(x.serial || '').trim().toLowerCase();
-        const n = String(x.name || '').trim().toLowerCase();
-        return s === sTarget || s.startsWith(sTarget) || sTarget.startsWith(s) || n === sTarget || n.includes(sTarget);
-      });
+      if (typeof assessmentData === 'undefined') return;
+      const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
       if (!item) return;
 
       // Update Evaluation Report link
       const evalBtn = document.getElementById('btn-eval-report');
       if (evalBtn) evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
 
-      // Call assessment.js openDetail logic with item
+      // Call assessment.js openDetail logic with item.no
       if (typeof openDetail === 'function') {
-        openDetail(item);
+        openDetail(item.no);
       }
     }
 
