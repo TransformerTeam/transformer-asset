@@ -553,9 +553,12 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      // Populate Dropdown Options
+      initDetailPage();
+    });
+
+    function initDetailPage() {
       const selectEl = document.getElementById('detail-transformer-select');
-      if (selectEl && typeof assessmentData !== 'undefined') {
+      if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
         selectEl.innerHTML = '';
         assessmentData.forEach(item => {
           const opt = document.createElement('option');
@@ -576,11 +579,8 @@
       if (serialParam) {
         if (selectEl) selectEl.value = serialParam;
         loadDetailBySerial(serialParam);
-        setTimeout(() => {
-          loadDetailBySerial(serialParam);
-        }, 150);
       }
-    });
+    }
 
     function switchTransformer(serial) {
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
@@ -589,8 +589,13 @@
     }
 
     function loadDetailBySerial(serial) {
-      if (typeof assessmentData === 'undefined') return;
-      const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+      if (typeof assessmentData === 'undefined' || !assessmentData || !assessmentData.length) return;
+      const sTarget = String(serial).trim().toLowerCase();
+      const item = assessmentData.find(x => {
+        const s = String(x.serial || '').trim().toLowerCase();
+        const n = String(x.name || '').trim().toLowerCase();
+        return s === sTarget || s.startsWith(sTarget) || sTarget.startsWith(s) || n === sTarget || n.includes(sTarget);
+      });
       if (!item) return;
 
       // Update Evaluation Report link

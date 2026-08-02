@@ -210,10 +210,13 @@ function findLatestRecord(csvArray, targetSerial) {
 }
 
 function initAssessment() {
-  populateFilterDropdowns();
+  if (document.getElementById('filter-site')) {
+    populateFilterDropdowns();
+    applyFilters();
+  }
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-  setTheme(savedTheme);
-  applyFilters();
+  if (typeof setTheme === 'function') setTheme(savedTheme);
+  if (typeof initDetailPage === 'function') initDetailPage();
 }
 
 function setupListeners() {
