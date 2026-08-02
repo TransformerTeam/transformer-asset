@@ -1504,6 +1504,50 @@
         }
       });
 
+      // --- Dynamic Zoom Fit Y-Axis Bounds ---
+      // 1. Power Factor Zoom Fit Bounds
+      const allPfVals = [];
+      selectedOpts.forEach(opt => {
+        if (opt.npPf > 0) allPfVals.push(opt.npPf);
+        records.forEach(r => {
+          let v = parseFloat(r[opt.pf20Key]);
+          if (isNaN(v) || v <= 0) v = parseFloat(r[opt.pfKey]);
+          if (!isNaN(v) && v > 0) allPfVals.push(v);
+        });
+      });
+
+      let pfYMin = undefined;
+      let pfYMax = undefined;
+      if (allPfVals.length > 0) {
+        const minPf = Math.min(...allPfVals);
+        const maxPf = Math.max(...allPfVals);
+        const range = maxPf - minPf;
+        const pad = range > 0 ? range * 0.25 : (minPf * 0.1 || 0.1);
+        pfYMin = Math.max(0, parseFloat((minPf - pad).toFixed(3)));
+        pfYMax = parseFloat((maxPf + pad).toFixed(3));
+      }
+
+      // 2. Capacitance Zoom Fit Bounds
+      const allCapVals = [];
+      selectedOpts.forEach(opt => {
+        if (opt.npCap > 0) allCapVals.push(opt.npCap);
+        records.forEach(r => {
+          const v = parseFloat(r[opt.capKey]);
+          if (!isNaN(v) && v > 0) allCapVals.push(v);
+        });
+      });
+
+      let capYMin = undefined;
+      let capYMax = undefined;
+      if (allCapVals.length > 0) {
+        const minCap = Math.min(...allCapVals);
+        const maxCap = Math.max(...allCapVals);
+        const range = maxCap - minCap;
+        const pad = range > 0 ? range * 0.25 : (minCap * 0.02 || 5);
+        capYMin = Math.max(0, parseFloat((minCap - pad).toFixed(1)));
+        capYMax = parseFloat((maxCap + pad).toFixed(1));
+      }
+
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#9ca3af' : '#475569';
       const gridColor = isDark ? '#ffffff18' : '#00000012';
@@ -1516,6 +1560,8 @@
         colors: colors,
         xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
+          min: pfYMin,
+          max: pfYMax,
           title: { text: '% Power Factor @20°C', style: { color: textColor, fontSize: '9px' } },
           labels: { style: { colors: textColor, fontSize: '9px' }, formatter: v => v !== null ? v.toFixed(3) : '' }
         },
@@ -1535,6 +1581,8 @@
         colors: colors,
         xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
+          min: capYMin,
+          max: capYMax,
           title: { text: 'Capacitance C1 (pF)', style: { color: textColor, fontSize: '9px' } },
           labels: { style: { colors: textColor, fontSize: '9px' }, formatter: v => v !== null ? v.toFixed(1) : '' }
         },
