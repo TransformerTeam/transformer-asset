@@ -346,7 +346,7 @@
     .eval-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.72rem;
+      font-size: 0.73rem;
       margin-bottom: 20px;
     }
 
@@ -611,19 +611,18 @@
       <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection & Maintenance.</div>
     </div>
 
-    <!-- Part 1 Table with 9 Requested Columns -->
+    <!-- Part 1 Table with 8 Columns (Diagnostics Item removed) -->
     <table class="eval-table" id="part1-table">
       <thead>
         <tr>
           <th class="th-part1" style="width: 3%;">#</th>
-          <th class="th-part1" style="width: 14%;">Diagnostics Item</th>
-          <th class="th-part1" style="width: 16%;">Test Item</th>
-          <th class="th-part1" style="width: 15%;">Criteria & Limit</th>
-          <th class="th-part1" style="width: 10%;">Standards</th>
+          <th class="th-part1" style="width: 22%;">Test Item</th>
+          <th class="th-part1" style="width: 18%;">Criteria & Limit</th>
+          <th class="th-part1" style="width: 11%;">Standards</th>
           <th class="th-part1" style="width: 9%;">Test Date</th>
-          <th class="th-part1" style="width: 11%;">Measurement Value</th>
-          <th class="th-part1" style="width: 12%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
-          <th class="th-part1" style="width: 10%;">Recommendation</th>
+          <th class="th-part1" style="width: 13%;">Measurement Value</th>
+          <th class="th-part1" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part1" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
       <tbody id="part1-table-body">
@@ -644,14 +643,13 @@
       <thead>
         <tr>
           <th class="th-part2" style="width: 3%;">#</th>
-          <th class="th-part2" style="width: 14%;">Diagnostics Item</th>
-          <th class="th-part2" style="width: 16%;">Test Item</th>
-          <th class="th-part2" style="width: 15%;">Criteria & Limit</th>
-          <th class="th-part2" style="width: 10%;">Standards</th>
+          <th class="th-part2" style="width: 22%;">Test Item</th>
+          <th class="th-part2" style="width: 18%;">Criteria & Limit</th>
+          <th class="th-part2" style="width: 11%;">Standards</th>
           <th class="th-part2" style="width: 9%;">Test Date</th>
-          <th class="th-part2" style="width: 11%;">Measurement Value</th>
-          <th class="th-part2" style="width: 12%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
-          <th class="th-part2" style="width: 10%;">Recommendation</th>
+          <th class="th-part2" style="width: 13%;">Measurement Value</th>
+          <th class="th-part2" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part2" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
       <tbody id="part2-table-body">
@@ -672,14 +670,13 @@
       <thead>
         <tr>
           <th class="th-part3" style="width: 3%;">#</th>
-          <th class="th-part3" style="width: 14%;">Diagnostics Item</th>
-          <th class="th-part3" style="width: 16%;">Test Item</th>
-          <th class="th-part3" style="width: 15%;">Criteria & Limit</th>
-          <th class="th-part3" style="width: 10%;">Standards</th>
+          <th class="th-part3" style="width: 22%;">Test Item</th>
+          <th class="th-part3" style="width: 18%;">Criteria & Limit</th>
+          <th class="th-part3" style="width: 11%;">Standards</th>
           <th class="th-part3" style="width: 9%;">Test Date</th>
-          <th class="th-part3" style="width: 11%;">Measurement Value</th>
-          <th class="th-part3" style="width: 12%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
-          <th class="th-part3" style="width: 10%;">Recommendation</th>
+          <th class="th-part3" style="width: 13%;">Measurement Value</th>
+          <th class="th-part3" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part3" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
       <tbody id="part3-table-body">
@@ -807,7 +804,7 @@
       setSubScoreBox('visual', item.visualInspection);
       setSubScoreBox('oltc', item.oltcOil?.overall || 'N/A');
 
-      // Render 3 Main Tables with 9 Requested Columns
+      // Render 3 Main Tables (8 Columns)
       renderPart1Table(item);
       renderPart2Table(item);
       renderPart3Table(item);
@@ -877,7 +874,7 @@
           currentCat = row.category;
           const catTr = document.createElement('tr');
           catTr.className = 'cat-row';
-          catTr.innerHTML = `<td colspan="9"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
+          catTr.innerHTML = `<td colspan="8"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
           tbody.appendChild(catTr);
         }
 
@@ -889,7 +886,6 @@
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
-          <td style="font-weight: 600; color: #1e3a8a;">${row.category || 'Condition Diagnostics'}</td>
           <td style="font-weight: 600;">${row.item || '-'}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">${row.standard || 'IEEE / ASTM'}</td>
@@ -906,7 +902,7 @@
       sumTr.style.background = '#eff6ff';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="6" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
+        <td colspan="5" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
         <td style="font-size: 0.9rem; color: #16a34a;">${item.healthIndex || 90}%</td>
         <td style="text-align: center;">${getStandardRecommendBadge((item.healthIndex || 90) >= 80 ? 4 : 3)}</td>
         <td style="font-size: 0.72rem; color: #1e3a8a;">${item.recommendation || 'Routine Inspection'}</td>
@@ -938,7 +934,6 @@
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
-          <td style="font-weight: 600; color: #047857;">General Health Index</td>
           <td style="font-weight: 600;">${row.item}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">GPSC Standard</td>
@@ -955,7 +950,7 @@
       sumTr.style.background = '#ecfdf5';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="6" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE & RATING:</td>
+        <td colspan="5" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE & RATING:</td>
         <td style="font-size: 0.9rem; color: #047857;">Low Risk (PoF 1)</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
         <td style="font-size: 0.72rem; color: #047857;">Acceptable Degradation</td>
@@ -991,7 +986,6 @@
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
-          <td style="font-weight: 600; color: #b91c1c;">Impact Index</td>
           <td style="font-weight: 600;">${row.item}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">GPSC Risk Criteria</td>
@@ -1008,7 +1002,7 @@
       sumTr.style.background = '#fef2f2';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="6" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
+        <td colspan="5" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
         <td style="font-size: 0.9rem; color: #15803d;">Low Risk Category</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
         <td style="font-size: 0.72rem; color: #991b1b;">Acceptable Risk Level</td>
