@@ -1228,24 +1228,35 @@ function openDetail(no) {
   // Look up dynamic TRInfo record from TRinfo2.csv
   const trInfo = findLatestRecord(trInfoCsvData, item.serial);
 
+  const setElTxt = (id, txt) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = txt;
+  };
+
   // 1. Transformer Information Table
-  document.getElementById('ex-info-name').textContent = (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE) : null) || item.name || '-';
-  document.getElementById('ex-info-serial').textContent = item.serial || '-';
-  document.getElementById('ex-info-code').textContent = (trInfo ? trInfo.DEVICE_CODE : null) || item.name || '-';
+  setElTxt('ex-info-name', (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE) : null) || item.name || '-');
+  setElTxt('ex-info-serial', item.serial || '-');
+  setElTxt('ex-info-code', (trInfo ? trInfo.DEVICE_CODE : null) || item.name || '-');
+  setElTxt('ex-info-manufacture', (trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND) : null) || item.manufacture || 'DAIHEN');
   const fluidVal = trInfo ? (trInfo.TYPE_OF_INSULATION && isNaN(trInfo.TYPE_OF_INSULATION) ? trInfo.TYPE_OF_INSULATION : (trInfo.WINDING_INSULATION && isNaN(trInfo.WINDING_INSULATION) ? trInfo.WINDING_INSULATION : null)) || item.fluid || 'Mineral Oil' : item.fluid || 'Mineral Oil';
-  document.getElementById('ex-info-fluid').textContent = fluidVal;
-  document.getElementById('ex-info-site').textContent = (trInfo ? trInfo.SITE : null) || item.site || '-';
+  setElTxt('ex-info-fluid', fluidVal);
+  setElTxt('ex-info-site', (trInfo ? trInfo.SITE : null) || item.site || '-');
   
   const pVal = trInfo ? trInfo.POWER_RATING : item.ratedPower;
-  document.getElementById('ex-info-power').textContent = pVal ? (Number(pVal) >= 100 ? `${Number(pVal).toLocaleString()} kVA` : `${pVal} MVA`) : '-';
+  let powerMvaStr = '-';
+  if (pVal !== null && pVal !== undefined && pVal !== '') {
+    const numP = Number(pVal);
+    powerMvaStr = numP >= 1000 ? `${(numP / 1000).toLocaleString()} MVA` : `${numP} MVA`;
+  }
+  setElTxt('ex-info-power', powerMvaStr);
   
   const hvVal = trInfo ? trInfo.HV_RATED : item.hvRate;
   const lvVal = trInfo ? trInfo.LV_RATED : item.lvRate;
-  document.getElementById('ex-info-voltage').textContent = hvVal ? `${hvVal} / ${lvVal || ''} kV` : (item.ratedVoltage ? `${item.ratedVoltage} kV` : '-');
+  setElTxt('ex-info-voltage', hvVal ? `${hvVal} / ${lvVal || ''} kV` : (item.ratedVoltage ? `${item.ratedVoltage} kV` : '-'));
   
-  document.getElementById('ex-info-service').textContent = item.serviceType || (trInfo ? trInfo.Service_Type : null) || '-';
-  document.getElementById('ex-info-year').textContent = serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-';
-  document.getElementById('ex-info-vector').textContent = (trInfo ? trInfo.VECTOR_GROUP : null) || 'Dyn1';
+  setElTxt('ex-info-service', item.serviceType || (trInfo ? trInfo.Service_Type : null) || '-');
+  setElTxt('ex-info-year', serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-');
+  setElTxt('ex-info-vector', (trInfo ? trInfo.VECTOR_GROUP : null) || 'Dyn1');
   
   // Visual Inspection from VisualData.csv
   const visRec = findLatestRecord(visualCsvData, item.serial);
@@ -1318,8 +1329,8 @@ function openDetail(no) {
 
   // 2. Center Top: Speedometer Gauge + Remaining Life
   const hi = item.healthIndex;
-  document.getElementById('ex-est-life').textContent = item.estimatedLife || '-';
-  document.getElementById('ex-est-dp').textContent = item.estimatedDP || '0';
+  setElTxt('ex-est-life', item.estimatedLife || '-');
+  setElTxt('ex-est-dp', item.estimatedDP || '0');
 
   const exEvalGaugeLink = document.getElementById('ex-eval-gauge-link');
   if (exEvalGaugeLink) {
