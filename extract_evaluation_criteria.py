@@ -20,7 +20,7 @@ if 'Evaluation' not in wb.sheetnames:
 ws = wb['Evaluation']
 items = []
 
-category = "General"
+category = "General Parts (Weight Score 5%)"
 for r in range(6, ws.max_row + 1):
     c1 = ws.cell(row=r, column=1).value
     c10 = ws.cell(row=r, column=10).value
@@ -34,7 +34,10 @@ for r in range(6, ws.max_row + 1):
 
     # Category header detection
     if s1 and not s10 and not s16 and not s18:
-        if s1 in ['Magnetic Core', 'High Voltage Winding', 'Low Voltage Winding', 'Tertiary Winding',
+        if s1 in ['General', 'General Parts', 'General Parts (Weight Score 5%)']:
+            category = "General Parts (Weight Score 5%)"
+            continue
+        elif s1 in ['Magnetic Core', 'High Voltage Winding', 'Low Voltage Winding', 'Tertiary Winding',
                   'Insulating Oil in Main Tank', 'Insulating Oil in OLTC', 'Surge Arrester', 'Bushing',
                   'OLTC', 'Visual Inspection', 'Grounding Measurement and Test', 'Neutral Ground Resistor',
                   'Cooling System Inspection', 'General Health Index', 'Impact Index', 'Summary']:
