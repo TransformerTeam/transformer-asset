@@ -33,7 +33,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 9,
     "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Core-Ground)",
+    "item": "Core-Ground Insulation Resistance",
     "criteria": "Insulation Resistance > 100 MΩ",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
@@ -41,7 +41,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 10,
     "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Clamp-Ground)",
+    "item": "Clamp-Ground Insulation Resistance",
     "criteria": "",
     "standard": "",
     "recommendation": ""
@@ -49,7 +49,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 11,
     "category": "Magnetic Core",
-    "item": "Core Insulation Resistance (Core-Clamp)",
+    "item": "Core-Clamp Insulation Resistance",
     "criteria": "",
     "standard": "",
     "recommendation": ""

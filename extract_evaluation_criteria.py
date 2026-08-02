@@ -45,10 +45,18 @@ for r in range(6, ws.max_row + 1):
             continue
 
     if s1 or s10 or s16 or s18:
+        item_title = s1
+        if "Core-Ground" in s1:
+            item_title = "Core-Ground Insulation Resistance"
+        elif "Clamp-Ground" in s1:
+            item_title = "Clamp-Ground Insulation Resistance"
+        elif "Core-Clamp" in s1:
+            item_title = "Core-Clamp Insulation Resistance"
+
         items.append({
             "row": r,
             "category": category,
-            "item": s1,
+            "item": item_title,
             "criteria": s10,
             "standard": s16,
             "recommendation": s18

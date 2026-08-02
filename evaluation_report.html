@@ -881,9 +881,6 @@
         if (!row.item || row.item === 'Criteria') return;
 
         let displayItem = row.item || '-';
-        if (displayItem.toLowerCase().includes('core insulation resistance')) {
-          displayItem = displayItem.replace(/Core Insulation Resistance\s*/gi, '').trim();
-        }
 
         const tr = document.createElement('tr');
         const matchVal = getMeasuredValueForItem(row.item, item);
