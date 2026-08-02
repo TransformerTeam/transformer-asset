@@ -99,10 +99,6 @@ function loadAllTestDataCSVs() {
     if (currentActiveItem && typeof openDetail === 'function') {
       openDetail(currentActiveItem.no);
     }
-    if (typeof loadEvaluationBySerial === 'function' && typeof currentSerial !== 'undefined' && currentSerial) {
-      loadEvaluationBySerial(currentSerial);
-    }
-    document.dispatchEvent(new CustomEvent('allTestDataLoaded'));
   });
 }
 
@@ -1356,54 +1352,72 @@ function openDetail(no) {
   const bushRec = findLatestRecord(bushingPfCsvData, item.serial);
 
   if (bushRec) {
-    const h1_pf = parseFloat(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan || 0);
-    const h2_pf = parseFloat(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan || 0);
-    const h3_pf = parseFloat(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan || 0);
-    const l1_pf = parseFloat(bushRec.xbushing_h1_pf_20c || bushRec.bushing_l1_pf_20c || 0);
-    const l2_pf = parseFloat(bushRec.xbushing_h2_pf_20c || bushRec.bushing_l2_pf_20c || 0);
-    const l3_pf = parseFloat(bushRec.xbushing_h3_pf_20c || bushRec.bushing_l3_pf_20c || 0);
+    const parsePf = (val) => {
+      const num = parseFloat(val);
+      return (!isNaN(num) && num > 0) ? num : null;
+    };
+    const parseCap = (val) => {
+      const num = parseFloat(val);
+      return (!isNaN(num) && num > 0) ? num : null;
+    };
 
-    const h1_c1 = parseFloat(bushRec.bushing_h1_c1 || 0);
-    const h2_c1 = parseFloat(bushRec.bushing_h2_c1 || 0);
-    const h3_c1 = parseFloat(bushRec.bushing_h3_c1 || 0);
-    const l1_c1 = parseFloat(bushRec.xbushing_h1_c1 || bushRec.bushing_l1_cap || 0);
-    const l2_c1 = parseFloat(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap || 0);
-    const l3_c1 = parseFloat(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap || 0);
+    const h1_pf = parsePf(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan);
+    const h2_pf = parsePf(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan);
+    const h3_pf = parsePf(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan);
+    const l1_pf = parsePf(bushRec.xbushing_h1_pf_20c || bushRec.bushing_l1_pf_20c);
+    const l2_pf = parsePf(bushRec.xbushing_h2_pf_20c || bushRec.bushing_l2_pf_20c);
+    const l3_pf = parsePf(bushRec.xbushing_h3_pf_20c || bushRec.bushing_l3_pf_20c);
+
+    const h1_c1 = parseCap(bushRec.bushing_h1_c1);
+    const h2_c1 = parseCap(bushRec.bushing_h2_c1);
+    const h3_c1 = parseCap(bushRec.bushing_h3_c1);
+    const l1_c1 = parseCap(bushRec.xbushing_h1_c1 || bushRec.bushing_l1_cap);
+    const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
+    const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
+
+    const getPfCell = (pfVal) => {
+      if (pfVal === null) return `<td>-</td>`;
+      const statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+      return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
+    };
+
+    const getCapCell = (capVal) => {
+      if (capVal === null) return `<td>-</td>`;
+      return `<td>${capVal.toFixed(1)}</td>`;
+    };
 
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        <td class="${getStatusClass(h1_pf > 1.0 ? 'U' : (h1_pf > 0.5 ? 'Q' : 'A'))}">${h1_pf > 0 ? h1_pf.toFixed(2) + '%' : '-'}</td>
-        <td class="${getStatusClass(h2_pf > 1.0 ? 'U' : (h2_pf > 0.5 ? 'Q' : 'A'))}">${h2_pf > 0 ? h2_pf.toFixed(2) + '%' : '-'}</td>
-        <td class="${getStatusClass(h3_pf > 1.0 ? 'U' : (h3_pf > 0.5 ? 'Q' : 'A'))}">${h3_pf > 0 ? h3_pf.toFixed(2) + '%' : '-'}</td>
-        <td class="${getStatusClass(l1_pf > 1.0 ? 'U' : (l1_pf > 0.5 ? 'Q' : 'A'))}">${l1_pf > 0 ? l1_pf.toFixed(2) + '%' : '-'}</td>
-        <td class="${getStatusClass(l2_pf > 1.0 ? 'U' : (l2_pf > 0.5 ? 'Q' : 'A'))}">${l2_pf > 0 ? l2_pf.toFixed(2) + '%' : '-'}</td>
-        <td class="${getStatusClass(l3_pf > 1.0 ? 'U' : (l3_pf > 0.5 ? 'Q' : 'A'))}">${l3_pf > 0 ? l3_pf.toFixed(2) + '%' : '-'}</td>
+        ${getPfCell(h1_pf)}
+        ${getPfCell(h2_pf)}
+        ${getPfCell(h3_pf)}
+        ${getPfCell(l1_pf)}
+        ${getPfCell(l2_pf)}
+        ${getPfCell(l3_pf)}
       </tr>
       <tr>
         <td>Capacitance [C1] (pF)</td>
         <td>IEEE C57.152</td>
-        <td>${h1_c1 > 0 ? h1_c1.toFixed(1) : '-'}</td>
-        <td>${h2_c1 > 0 ? h2_c1.toFixed(1) : '-'}</td>
-        <td>${h3_c1 > 0 ? h3_c1.toFixed(1) : '-'}</td>
-        <td>${l1_c1 > 0 ? l1_c1.toFixed(1) : '-'}</td>
-        <td>${l2_c1 > 0 ? l2_c1.toFixed(1) : '-'}</td>
-        <td>${l3_c1 > 0 ? l3_c1.toFixed(1) : '-'}</td>
+        ${getCapCell(h1_c1)}
+        ${getCapCell(h2_c1)}
+        ${getCapCell(h3_c1)}
+        ${getCapCell(l1_c1)}
+        ${getCapCell(l2_c1)}
+        ${getCapCell(l3_c1)}
       </tr>
     `;
-    const bDate = bushRec.date || bushRec.Date || item.dateToAssess;
-    document.getElementById('ex-update-bushing').textContent = `Updated tests: ${formatDgaDate(bDate)}`;
+    const bDate = bushRec.date || bushRec.Date;
+    document.getElementById('ex-update-bushing').textContent = `Updated tests: ${bDate ? formatDgaDate(bDate) : '-'}`;
   } else {
-    const bVal = item.bushing || 'N/A';
-    const bClass = getStatusClass(bVal);
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.45%' : '1.35%')}</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.38%' : '2.10%')}</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : (bVal === 'A' ? '0.42%' : '0.98%')}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -1411,15 +1425,15 @@ function openDetail(no) {
       <tr>
         <td>Capacitance [C1] (pF)</td>
         <td>IEEE C57.152</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : '650.0'}</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : '655.2'}</td>
-        <td class="${bClass}">${bVal === 'N/A' ? '-' : '648.5'}</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
       </tr>
     `;
-    document.getElementById('ex-update-bushing').textContent = `Updated tests: ${item.dateToAssess}`;
+    document.getElementById('ex-update-bushing').textContent = `Updated tests: -`;
   }
 
   // 4. Surge Arrester Card (Dynamic from SurgePFData.csv)
