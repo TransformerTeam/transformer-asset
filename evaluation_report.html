@@ -773,7 +773,7 @@
         document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || 'TIRATHAI';
         document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || 'Dyn1';
         document.getElementById('info-tap').textContent = trInfo.TAP_CHANGER_TYPE || 'OLTC';
-        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? trInfo.MANUFACTURING_DATE.substring(0, 10) : '-';
+        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : '-';
       } else {
         document.getElementById('info-manufacture').textContent = 'TIRATHAI';
         document.getElementById('info-vector').textContent = 'Dyn1';
@@ -803,7 +803,7 @@
       setSubScoreBox('visual', item.visualInspection);
       setSubScoreBox('oltc', item.oltcOil?.overall || 'N/A');
 
-      // Render 3 Main Tables (8 Columns)
+      // Render 3 Main Tables
       renderPart1Table(item);
       renderPart2Table(item);
       renderPart3Table(item);
@@ -850,7 +850,7 @@
       } else if (score === 1) {
         return '<span class="badge-status badge-danger">1 Critical</span>';
       }
-      return '<span class="badge-status badge-good">4 Good</span>';
+      return '-';
     }
 
     // ==========================================
@@ -945,7 +945,7 @@
           <td style="color: #475569; font-weight: 500;">GPSC Standard</td>
           <td style="text-align: center; font-weight: 500; color: #475569;">-</td>
           <td style="font-weight: 700; color: #047857;">${recVal}</td>
-          <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+          <td style="text-align: center;">-</td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
@@ -958,7 +958,7 @@
       sumTr.innerHTML = `
         <td colspan="5" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE & RATING:</td>
         <td style="font-size: 0.9rem; color: #047857;">Low Risk (PoF 1)</td>
-        <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+        <td style="text-align: center;">-</td>
         <td style="font-size: 0.72rem; color: #047857;">-</td>
       `;
       tbody.appendChild(sumTr);
@@ -997,7 +997,7 @@
           <td style="color: #475569; font-weight: 500;">GPSC Risk Criteria</td>
           <td style="text-align: center; font-weight: 500; color: #475569;">-</td>
           <td style="font-weight: 700; color: #b91c1c;">${recVal}</td>
-          <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+          <td style="text-align: center;">-</td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
@@ -1010,14 +1010,14 @@
       sumTr.innerHTML = `
         <td colspan="5" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
         <td style="font-size: 0.9rem; color: #15803d;">Low Risk Category</td>
-        <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+        <td style="text-align: center;">-</td>
         <td style="font-size: 0.72rem; color: #991b1b;">-</td>
       `;
       tbody.appendChild(sumTr);
     }
 
     function getMeasuredValueForItem(itemName, item) {
-      if (!itemName) return { value: '-', testDate: '08/02/2026', ratingScore: 4, recommendation: 'Routine Inspection' };
+      if (!itemName) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
       const nameLower = itemName.toLowerCase();
 
       const latestMt = findLatestRecord(mtOilCsvData, item.serial);
@@ -1026,71 +1026,68 @@
       const latestSurge = findLatestRecord(surgePfCsvData, item.serial);
       const latestPi = findLatestRecord(irPiCsvData, item.serial);
 
-      const dgaDate = latestMt ? (latestMt.date || latestMt.Date || '10/06/2025') : '10/06/2025';
-      const visDate = latestVis ? (latestVis.date || latestVis.Date || '08/11/2025') : '08/11/2025';
-      const bushDate = latestBush ? (latestBush.date || latestBush.Date || '11/26/2025') : '11/26/2025';
-      const piDate = latestPi ? (latestPi.date || latestPi.Date || '11/29/2025') : '11/29/2025';
+      const dgaDate = latestMt ? (latestMt.date || latestMt.Date) : null;
+      const visDate = latestVis ? (latestVis.date || latestVis.Date) : null;
+      const bushDate = latestBush ? (latestBush.date || latestBush.Date) : null;
+      const surgeDate = latestSurge ? (latestSurge.date || latestSurge.Date) : null;
+      const piDate = latestPi ? (latestPi.date || latestPi.Date) : null;
 
-      if (nameLower.includes('core insulation') || nameLower.includes('core-ground')) {
-        return { value: '> 100 MΩ', testDate: piDate, ratingScore: 5, recommendation: 'Core insulation healthy' };
-      }
-      if (nameLower.includes('exciting current')) {
-        return { value: 'A: 43.6mA, B: 55.2mA, C: 71.7mA', testDate: '11/26/2025', ratingScore: 4, recommendation: 'Normal excitation pattern' };
-      }
-      if (nameLower.includes('leakage impedance') || nameLower.includes('short circuit')) {
-        return { value: '%Dev < 1.5%', testDate: piDate, ratingScore: 5, recommendation: 'Winding geometry normal' };
-      }
-      if (nameLower.includes('turn ratio')) {
-        return { value: '%Error < 0.05%', testDate: '11/26/2025', ratingScore: 5, recommendation: 'Turns ratio normal' };
-      }
-      if (nameLower.includes('dc winding resistance')) {
-        return { value: '%Error < 0.5%', testDate: '11/28/2025', ratingScore: 4, recommendation: 'Winding resistance normal' };
-      }
-      if (nameLower.includes('insulation power factor') || nameLower.includes('pf @ 20')) {
-        return { value: '0.35 %', testDate: '11/27/2025', ratingScore: 4, recommendation: 'Insulation PF normal' };
+      if (nameLower.includes('core insulation') || nameLower.includes('core-ground') || nameLower.includes('clamp-ground') || nameLower.includes('core-clamp')) {
+        if (!latestPi) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        return { value: '> 100 MΩ', testDate: piDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('polarization index')) {
-        const pVal = latestPi ? (latestPi.H_PI || '1.85') : '1.85';
+        if (!latestPi || !latestPi.H_PI) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const pVal = latestPi.H_PI;
         const numP = parseFloat(pVal);
         const score = numP >= 1.5 ? 5 : (numP >= 1.25 ? 4 : 3);
-        return { value: pVal, testDate: piDate, ratingScore: score, recommendation: score >= 4 ? 'Good insulation dryness' : 'Check insulation dryness' };
+        return { value: pVal, testDate: piDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation dryness' };
       }
       if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
-        const dgaRes = latestMt ? (latestMt.IEEE_C57_104 || 'DGA Status 1 (Normal)') : 'Normal';
-        return { value: dgaRes, testDate: dgaDate, ratingScore: 5, recommendation: 'DGA within normal limit' };
+        if (!latestMt) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const dgaRes = latestMt.IEEE_C57_104 || 'DGA Status 1 (Normal)';
+        return { value: dgaRes, testDate: dgaDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
-        const bdvVal = latestMt ? (latestMt.BD || '75') : '75';
+        if (!latestMt || !latestMt.BD) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const bdvVal = latestMt.BD;
         const numBdv = parseFloat(bdvVal);
         const score = numBdv >= 60 ? 5 : (numBdv >= 50 ? 4 : 3);
-        return { value: `${bdvVal} kV`, testDate: dgaDate, ratingScore: score, recommendation: score >= 4 ? 'Dielectric breakdown good' : 'Plan oil filtration' };
+        return { value: `${bdvVal} kV`, testDate: dgaDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Plan oil filtration' };
       }
       if (nameLower.includes('water content')) {
-        const wcVal = latestMt ? (latestMt.WC || '12') : '12';
+        if (!latestMt || !latestMt.WC) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const wcVal = latestMt.WC;
         const numWc = parseFloat(wcVal);
         const score = numWc <= 15 ? 5 : (numWc <= 25 ? 4 : 3);
-        return { value: `${wcVal} ppm`, testDate: dgaDate, ratingScore: score, recommendation: score >= 4 ? 'Oil moisture normal' : 'Monitor water content' };
+        return { value: `${wcVal} ppm`, testDate: dgaDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor water content' };
       }
       if (nameLower.includes('interfatial tension') || nameLower.includes('ift')) {
-        const iftVal = latestMt ? (latestMt.IFT || '38') : '38';
-        return { value: `${iftVal} dynes/cm`, testDate: dgaDate, ratingScore: 5, recommendation: 'IFT normal' };
+        if (!latestMt || !latestMt.IFT) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const iftVal = latestMt.IFT;
+        return { value: `${iftVal} dynes/cm`, testDate: dgaDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('acidity')) {
-        const acidVal = latestMt ? (latestMt.ACIDITY || '0.02') : '0.02';
-        return { value: `${acidVal} mgKOH/g`, testDate: dgaDate, ratingScore: 5, recommendation: 'Acidity normal' };
+        if (!latestMt || !latestMt.ACIDITY) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const acidVal = latestMt.ACIDITY;
+        return { value: `${acidVal} mgKOH/g`, testDate: dgaDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('furan')) {
-        const furanVal = latestMt ? (latestMt.FURAN || '15') : '15';
-        return { value: `${furanVal} ppb`, testDate: dgaDate, ratingScore: 5, recommendation: 'Paper aging normal' };
+        if (!latestMt || !latestMt.FURAN) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const furanVal = latestMt.FURAN;
+        return { value: `${furanVal} ppb`, testDate: dgaDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('estimated dp')) {
-        return { value: `${item.estimatedDP || '950'}`, testDate: dgaDate, ratingScore: 5, recommendation: 'Paper DP normal' };
+        if (!item.estimatedDP) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        return { value: `${item.estimatedDP}`, testDate: dgaDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('bushing')) {
-        return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: bushDate, ratingScore: 4, recommendation: 'Bushing insulation good' };
+        if (!latestBush) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: bushDate, ratingScore: 4, recommendation: '-' };
       }
       if (nameLower.includes('surge arrester')) {
-        return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: bushDate, ratingScore: 5, recommendation: 'Arrester healthy' };
+        if (!latestSurge) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: surgeDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('visual inspection')) {
         if (!latestVis) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
