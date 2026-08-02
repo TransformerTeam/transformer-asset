@@ -1131,13 +1131,13 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="lbl">${p.label}</td>
-          <td>${ma > 0 ? ma.toFixed(3) : '-'}</td>
-          <td>${watt > 0 ? watt.toFixed(2) : '-'}</td>
-          <td>${pf > 0 ? pf.toFixed(3) : '-'} %</td>
+          <td>${(hasNameplate && ma > 0) ? ma.toFixed(3) : '-'}</td>
+          <td>${(hasNameplate && watt > 0) ? watt.toFixed(2) : '-'}</td>
+          <td>${(hasNameplate && pf > 0) ? pf.toFixed(3) + ' %' : '-'}</td>
           <td class="val-bold">${pf20Str}</td>
           <td>${pfErr}</td>
           <td class="${pfStatusCls}">${pfStatusText}</td>
-          <td class="val-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
+          <td class="val-bold">${(hasNameplate && cap > 0) ? cap.toFixed(1) : '-'}</td>
           <td>${capDev}</td>
           <td class="${capStatusCls}">${capStatusText}</td>
         `;
