@@ -1269,14 +1269,14 @@
       const sel = document.getElementById('trend-phase-select');
       sel.innerHTML = '';
       const phaseOptions = [
-        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c' },
-        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c' },
-        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c' },
-        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c' },
-        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c' },
-        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c' },
-        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c' },
-        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c' },
+        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan' },
+        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan' },
+        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan' },
+        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan' },
+        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan' },
+        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan' },
+        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan' },
+        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan' },
       ];
       phaseOptions.forEach(opt => {
         const o = document.createElement('option');
@@ -1298,8 +1298,11 @@
 
       const dates = records.map(r => formatReportDate(r.date));
       const values = records.map(r => {
-        const v = parseFloat(r[selected.pf20Key] || 0);
-        return v > 0 ? v : null;
+        let v = parseFloat(r[selected.pf20Key]);
+        if (isNaN(v) || v <= 0) {
+          v = parseFloat(r[selected.pfKey]);
+        }
+        return (!isNaN(v) && v > 0) ? v : null;
       });
 
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
@@ -1358,8 +1361,8 @@
           return `${dd}-${mmm}-${year}`;
         }
       }
-      const dt = new Date(dStr);
-      if (!isNaN(dt.getTime())) {
+      const dt = parseDate(dStr);
+      if (!isNaN(dt.getTime()) && dt.getTime() > 0) {
         const dd = String(dt.getDate()).padStart(2, '0');
         const mmm = MONTH_SHORT[dt.getMonth()];
         const yyyy = dt.getFullYear();
@@ -1369,8 +1372,28 @@
     }
 
     function parseDate(dStr) {
-      if (!dStr) return new Date(0);
-      try { return new Date(dStr); } catch (e) { return new Date(0); }
+      if (!dStr || dStr === '-') return new Date(0);
+      const str = String(dStr).trim();
+
+      const isoCandidate = new Date(str.replace(' ', 'T'));
+      if (!isNaN(isoCandidate.getTime())) return isoCandidate;
+
+      const directCandidate = new Date(str);
+      if (!isNaN(directCandidate.getTime())) return directCandidate;
+
+      // Handle DD-MMM-YYYY (e.g., 04-Jun-2026 or 4-Jun-2026)
+      const parts = str.split(/[-/.]/);
+      if (parts.length === 3) {
+        if (parts[2].length === 4) {
+          const day = parseInt(parts[0], 10);
+          const mIndex = MONTH_SHORT.findIndex(m => m.toLowerCase() === parts[1].toLowerCase());
+          const year = parseInt(parts[2], 10);
+          if (!isNaN(day) && mIndex >= 0 && !isNaN(year)) {
+            return new Date(year, mIndex, day);
+          }
+        }
+      }
+      return new Date(0);
     }
 
     function toggleTheme() {
