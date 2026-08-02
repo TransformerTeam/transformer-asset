@@ -1737,6 +1737,65 @@ function openDetail(no) {
   `;
   document.getElementById('ex-update-oltc').textContent = `Updated tests: ${item.dateToAssess}`;
 
+  // 9. Evaluation Assessment Card Population (GPSC Standard Criteria)
+  const elChi = document.getElementById('ex-eval-chi');
+  const elGhi = document.getElementById('ex-eval-ghi');
+  const elPof = document.getElementById('ex-eval-pof');
+  const elImpact = document.getElementById('ex-eval-impact');
+  const elRisk = document.getElementById('ex-eval-risk');
+
+  if (elChi) elChi.textContent = (item.healthIndex !== null && item.healthIndex !== undefined) ? `${item.healthIndex}%` : '-';
+  if (elGhi) elGhi.textContent = (item.ghi !== null && item.ghi !== undefined && item.ghi !== '') ? `${item.ghi}%` : '55%';
+  if (elPof) elPof.textContent = (item.pof !== null && item.pof !== undefined && item.pof !== '') ? `${item.pof}%` : '15%';
+  if (elImpact) elImpact.textContent = (item.impactIndex !== null && item.impactIndex !== undefined && item.impactIndex !== '') ? `${item.impactIndex}%` : '65.6%';
+
+  if (elRisk) {
+    const riskTxt = item.riskLevel || 'Low Risk';
+    elRisk.textContent = riskTxt;
+    if (riskTxt.includes('High')) {
+      elRisk.style.color = '#ef4444';
+    } else if (riskTxt.includes('Medium')) {
+      elRisk.style.color = '#f97316';
+    } else {
+      elRisk.style.color = '#10b981';
+    }
+  }
+
+  const evalUp = document.getElementById('ex-eval-update');
+  if (evalUp) evalUp.textContent = `Updated: ${item.dateToAssess || '-'}`;
+
+  const evalCategoryBody = document.getElementById('ex-eval-category-rows');
+  if (evalCategoryBody) {
+    const categories = [
+      { name: 'Magnetic Core & Grounding', weight: '5%', status: item.activePart?.coreToGround || 'A', normText: 'Core-Ground IR > 100 MΩ' },
+      { name: 'High Voltage Winding', weight: '15%', status: item.activePart?.overall || 'A', normText: 'Exciting, Ratio, Impedance, Res, PF' },
+      { name: 'Low Voltage Winding', weight: '10%', status: item.activePart?.windingResistance || 'A', normText: 'Resistance, PF & Capacitance' },
+      { name: 'Insulating Oil in Main Tank', weight: '30%', status: item.mainTankOil?.overall || 'A', normText: 'DGA, BDV, PF, IFT, Acidity, Sludge' },
+      { name: 'Insulating Oil in OLTC', weight: '20%', status: item.oltcOil?.dielectricBreakdown || 'A', normText: 'BDV, Water, DGA' },
+      { name: 'Surge Arrester', weight: '5%', status: item.surgeArrester || 'A', normText: 'Leakage Current, Watt Loss, IR' },
+      { name: 'Bushing Insulation', weight: '25%', status: item.bushing || 'A', normText: '%PF & %Capacitance (C1/C2)' },
+      { name: 'Visual & Mechanical Inspection', weight: '5%', status: item.visualInspection || 'A', normText: 'Visual, Grounding, Cooling, NGR' },
+      { name: 'General Aging Factors (GHI)', weight: '25%', status: 'A', normText: 'Age, Through Fault, Maintenance, Load' },
+    ];
+
+    evalCategoryBody.innerHTML = categories.map(cat => {
+      const cls = getStatusClass(cat.status);
+      const labelText = cat.status === 'A' || cat.status === 'Normal' || cat.status === 'Good' ? 'A (Normal / Good)' :
+                        (cat.status === 'Q' || cat.status === 'Fair' || cat.status === 'Monitor' ? 'Q (Questionable)' :
+                        (cat.status === 'U' || cat.status === 'Critical' || cat.status === 'Poor' ? 'U (Unacceptable)' : '-'));
+      return `
+        <tr>
+          <td style="text-align: left;">
+            <span style="font-weight: 600;">${cat.name}</span>
+            <div style="font-size: 0.65rem; color: #94a3b8;">${cat.normText}</div>
+          </td>
+          <td style="text-align: center; font-weight: 600; color: #a5b4fc;">${cat.weight}</td>
+          <td class="${cls}" style="text-align: center; font-weight: 600;">${labelText}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
   document.getElementById('detail-modal').classList.add('active');
 }
 
