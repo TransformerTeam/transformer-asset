@@ -1054,23 +1054,25 @@
 
     // ─── C1 Results Table ───────────────────────────────────────────────────────
     const C1_PHASES = [
-      { label: 'H1 (HV Phase A)',   capKey: 'bushing_h1_c1',  maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt',  pfKey: 'bushing_h1_pf_tan',  pf20Key: 'bushing_h1_pf_20c',  npPhase: 'H1' },
-      { label: 'H2 (HV Phase B)',   capKey: 'bushing_h2_c1',  maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt',  pfKey: 'bushing_h2_pf_tan',  pf20Key: 'bushing_h2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3 (HV Phase C)',   capKey: 'bushing_h3_c1',  maKey: 'bushing_h3_ma',    wKey: 'bushing_h3_watt',  pfKey: 'bushing_h3_pf_tan',  pf20Key: 'bushing_h3_pf_20c',  npPhase: 'H3' },
-      { label: 'H0 (HV Neutral)',   capKey: 'bushing_h0_cap', maKey: 'bushing_h0_ma',    wKey: 'bushing_h0_watt',  pfKey: 'bushing_h0_pf_tan',  pf20Key: 'bushing_h0_pf_20c',  npPhase: 'H0' },
-      { label: 'X1 / L1 (LV A)',   capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma',wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', npPhase: 'X1' },
-      { label: 'X2 / L2 (LV B)',   capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma',wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', npPhase: 'X2' },
-      { label: 'X3 / L3 (LV C)',   capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma',wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', npPhase: 'X3' },
+      { label: 'H1', capKey: 'bushing_h1_c1',  maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt',  pfKey: 'bushing_h1_pf_tan',  pf20Key: 'bushing_h1_pf_20c',  npPhase: 'H1' },
+      { label: 'H2', capKey: 'bushing_h2_c1',  maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt',  pfKey: 'bushing_h2_pf_tan',  pf20Key: 'bushing_h2_pf_20c',  npPhase: 'H2' },
+      { label: 'H3', capKey: 'bushing_h3_c1',  maKey: 'bushing_h3_ma',    wKey: 'bushing_h3_watt',  pfKey: 'bushing_h3_pf_tan',  pf20Key: 'bushing_h3_pf_20c',  npPhase: 'H3' },
+      { label: 'H0', capKey: 'bushing_h0_cap', maKey: 'bushing_h0_ma',    wKey: 'bushing_h0_watt',  pfKey: 'bushing_h0_pf_tan',  pf20Key: 'bushing_h0_pf_20c',  npPhase: 'H0' },
+      { label: 'X1', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma',wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', npPhase: 'X1' },
+      { label: 'X2', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma',wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', npPhase: 'X2' },
+      { label: 'X3', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma',wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', npPhase: 'X3' },
+      { label: 'X0', capKey: 'xbushing_h0_c1', maKey: 'xbushing_h0_c1_ma',wKey: 'xbushing_h0_watt', pfKey: 'xbushing_h0_pf_tan', pf20Key: 'xbushing_h0_pf_20c', npPhase: 'X0' },
     ];
 
     const C2_PHASES = [
-      { label: 'H1 (HV Phase A)',   capKey: 'bushing_h1_c2',  maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt',  pfKey: 'bushing_h1_c2_pf_tan',  pf20Key: 'bushing_h1_c2_pf_20c',  npPhase: 'H1' },
-      { label: 'H2 (HV Phase B)',   capKey: 'bushing_h2_c2',  maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt',  pfKey: 'bushing_h2_c2_pf_tan',  pf20Key: 'bushing_h2_c2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3 (HV Phase C)',   capKey: 'bushing_h3_c2',  maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt',  pfKey: 'bushing_h3_c2_pf_tan',  pf20Key: 'bushing_h3_c2_pf_20c',  npPhase: 'H3' },
-      { label: 'H0 (HV Neutral)',   capKey: 'bushing_h0_c2',  maKey: 'bushing_h0_c2_ma', wKey: 'bushing_h0_c2_watt',  pfKey: 'bushing_h0_c2_pf_tan',  pf20Key: 'bushing_h0_c2_pf_20c',  npPhase: 'H0' },
-      { label: 'X1 / L1 (LV A)',   capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma',wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c', npPhase: 'X1' },
-      { label: 'X2 / L2 (LV B)',   capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma',wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c', npPhase: 'X2' },
-      { label: 'X3 / L3 (LV C)',   capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma',wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c', npPhase: 'X3' },
+      { label: 'H1', capKey: 'bushing_h1_c2',  maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt',  pfKey: 'bushing_h1_c2_pf_tan',  pf20Key: 'bushing_h1_c2_pf_20c',  npPhase: 'H1' },
+      { label: 'H2', capKey: 'bushing_h2_c2',  maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt',  pfKey: 'bushing_h2_c2_pf_tan',  pf20Key: 'bushing_h2_c2_pf_20c',  npPhase: 'H2' },
+      { label: 'H3', capKey: 'bushing_h3_c2',  maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt',  pfKey: 'bushing_h3_c2_pf_tan',  pf20Key: 'bushing_h3_c2_pf_20c',  npPhase: 'H3' },
+      { label: 'H0', capKey: 'bushing_h0_c2',  maKey: 'bushing_h0_c2_ma', wKey: 'bushing_h0_c2_watt',  pfKey: 'bushing_h0_c2_pf_tan',  pf20Key: 'bushing_h0_c2_pf_20c',  npPhase: 'H0' },
+      { label: 'X1', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma',wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c', npPhase: 'X1' },
+      { label: 'X2', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma',wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c', npPhase: 'X2' },
+      { label: 'X3', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma',wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c', npPhase: 'X3' },
+      { label: 'X0', capKey: 'xbushing_h0_c2', maKey: 'xbushing_h0_c2_ma',wKey: 'xbushing_h0_c2_watt', pfKey: 'xbushing_h0_c2_pf_tan', pf20Key: 'xbushing_h0_c2_pf_20c', npPhase: 'X0' },
     ];
 
     function renderC1Table(test, infoRecords) {
@@ -1278,13 +1280,14 @@
       const sel = document.getElementById('trend-phase-select');
       sel.innerHTML = '';
       const phaseOptions = [
-        { value: 'h1', label: 'H1 (HV Phase A)', pf20Key: 'bushing_h1_pf_20c' },
-        { value: 'h2', label: 'H2 (HV Phase B)', pf20Key: 'bushing_h2_pf_20c' },
-        { value: 'h3', label: 'H3 (HV Phase C)', pf20Key: 'bushing_h3_pf_20c' },
-        { value: 'h0', label: 'H0 (HV Neutral)', pf20Key: 'bushing_h0_pf_20c' },
-        { value: 'x1', label: 'X1/L1 (LV A)',    pf20Key: 'xbushing_h1_pf_20c' },
-        { value: 'x2', label: 'X2/L2 (LV B)',    pf20Key: 'xbushing_h2_pf_20c' },
-        { value: 'x3', label: 'X3/L3 (LV C)',    pf20Key: 'xbushing_h3_pf_20c' },
+        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c' },
+        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c' },
+        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c' },
+        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c' },
+        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c' },
+        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c' },
+        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c' },
+        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c' },
       ];
       phaseOptions.forEach(opt => {
         const o = document.createElement('option');
