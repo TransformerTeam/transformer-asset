@@ -1306,6 +1306,24 @@
     }
 
     // ─── Trending Chart ──────────────────────────────────────────────────────────
+    function findBushingInfoForPhase(infoRecords, npPhase) {
+      if (!infoRecords || !infoRecords.length) return null;
+      const code = (npPhase || '').toUpperCase();
+      return infoRecords.find(i => {
+        const ph = (i.Phase || '').toUpperCase();
+        if (ph === code) return true;
+        if (code === 'H1' && (ph === 'HV PHASE A' || ph === 'PHASE A' || ph.endsWith('A'))) return true;
+        if (code === 'H2' && (ph === 'HV PHASE B' || ph === 'PHASE B' || ph.endsWith('B'))) return true;
+        if (code === 'H3' && (ph === 'HV PHASE C' || ph === 'PHASE C' || ph.endsWith('C'))) return true;
+        if (code === 'H0' && (ph === 'HV NEUTRAL' || ph === 'NEUTRAL' || ph === 'H0')) return true;
+        if (code === 'X1' && (ph === 'LV PHASE A' || ph === 'X1')) return true;
+        if (code === 'X2' && (ph === 'LV PHASE B' || ph === 'X2')) return true;
+        if (code === 'X3' && (ph === 'LV PHASE C' || ph === 'X3')) return true;
+        if (code === 'X0' && (ph === 'LV NEUTRAL' || ph === 'X0')) return true;
+        return ph.endsWith(code.toLowerCase()) || ph.endsWith(code);
+      });
+    }
+
     function buildTrendOptions(pfRecords, infoRecords) {
       window._trendPfRecords = pfRecords;
       const allPhaseOptions = [
@@ -1321,10 +1339,7 @@
 
       // Populate Nameplate values (npCap & npPf) for each phase option
       allPhaseOptions.forEach(opt => {
-        const matchInfo = (infoRecords || []).find(i => {
-          const ph = (i.Phase || '').toUpperCase();
-          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
-        });
+        const matchInfo = findBushingInfoForPhase(infoRecords, opt.npPhase);
         if (matchInfo) {
           opt.npCap = parseFloat(matchInfo.Capacitance_C1 || 0);
           opt.npPf  = parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0);
@@ -1336,10 +1351,7 @@
 
       // Only include phases that actually exist on this transformer (has Nameplate info)
       const phaseOptions = allPhaseOptions.filter(opt => {
-        const matchInfo = (infoRecords || []).find(i => {
-          const ph = (i.Phase || '').toUpperCase();
-          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
-        });
+        const matchInfo = findBushingInfoForPhase(infoRecords, opt.npPhase);
         const hasNp = matchInfo && (
           parseFloat(matchInfo.Capacitance_C1 || 0) > 0 ||
           parseFloat(matchInfo.Capacitance_C2 || 0) > 0 ||
