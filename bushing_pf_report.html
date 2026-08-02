@@ -794,15 +794,25 @@
       </div>
 
       <!-- Trending Section (screen only) -->
-      <div class="section-title no-print" style="margin-top:12px;">Historical Trending (Bushing Power Factor)</div>
+      <div class="section-title no-print" style="margin-top:12px;">Historical Trending (Bushing Diagnostic Parameters)</div>
       <div class="trending-panel no-print">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-          <span style="font-weight: 600; font-size: 11px; color: var(--text-sub);">Bushing PF Trend Analysis — Corrected at 20°C</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--text-main);">Select Bushing Phases for Trend Analysis:</span>
           <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;" id="trend-phase-pills">
             <!-- Dynamic multi-select pill buttons populated by JS -->
           </div>
         </div>
-        <div id="trend-chart" style="min-height: 250px;"></div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div>
+            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">1. Power Factor Trend (%PF @ 20°C)</div>
+            <div id="trend-chart" style="min-height: 250px;"></div>
+          </div>
+          <div>
+            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">2. Capacitance C1 Trend (pF)</div>
+            <div id="trend-cap-chart" style="min-height: 250px;"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Signatures Row -->
@@ -857,6 +867,7 @@
     let trInfoList = [];
     let currentSerial = '';
     let trendChart = null;
+    let trendCapChart = null;
 
     window.addEventListener('DOMContentLoaded', async () => {
       // Initialize theme
@@ -1298,14 +1309,14 @@
     function buildTrendOptions(pfRecords, infoRecords) {
       window._trendPfRecords = pfRecords;
       const allPhaseOptions = [
-        { value: 'h1', label: 'H1', npPhase: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', color: '#3b82f6' },
-        { value: 'h2', label: 'H2', npPhase: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', color: '#10b981' },
-        { value: 'h3', label: 'H3', npPhase: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan', color: '#f59e0b' },
-        { value: 'h0', label: 'H0', npPhase: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan', color: '#ef4444' },
-        { value: 'x1', label: 'X1', npPhase: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan', color: '#8b5cf6' },
-        { value: 'x2', label: 'X2', npPhase: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan', color: '#06b6d4' },
-        { value: 'x3', label: 'X3', npPhase: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', color: '#ec4899' },
-        { value: 'x0', label: 'X0', npPhase: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', color: '#eab308' },
+        { value: 'h1', label: 'H1', npPhase: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', capKey: 'bushing_h1_c1', color: '#3b82f6' },
+        { value: 'h2', label: 'H2', npPhase: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', capKey: 'bushing_h2_c1', color: '#10b981' },
+        { value: 'h3', label: 'H3', npPhase: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan', capKey: 'bushing_h3_c1', color: '#f59e0b' },
+        { value: 'h0', label: 'H0', npPhase: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan', capKey: 'bushing_h0_cap', color: '#ef4444' },
+        { value: 'x1', label: 'X1', npPhase: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan', capKey: 'xbushing_h1_c1', color: '#8b5cf6' },
+        { value: 'x2', label: 'X2', npPhase: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan', capKey: 'xbushing_h2_c1', color: '#06b6d4' },
+        { value: 'x3', label: 'X3', npPhase: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', capKey: 'xbushing_h3_c1', color: '#ec4899' },
+        { value: 'x0', label: 'X0', npPhase: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', capKey: 'xbushing_h0_cap', color: '#eab308' },
       ];
 
       // Only include phases that actually exist on this transformer (has Nameplate info)
@@ -1327,7 +1338,7 @@
       if (phaseOptions.length === 0) {
         allPhaseOptions.forEach(opt => {
           const hasValue = (pfRecords || []).some(r => {
-            const v = parseFloat(r[opt.pf20Key] || r[opt.pfKey] || 0);
+            const v = parseFloat(r[opt.pf20Key] || r[opt.pfKey] || r[opt.capKey] || 0);
             return !isNaN(v) && v > 0;
           });
           if (hasValue) phaseOptions.push(opt);
@@ -1403,12 +1414,17 @@
       const selectedOpts = phOpts.filter(p => selectedSet.has(p.value));
       if (selectedOpts.length === 0) {
         if (trendChart) { trendChart.destroy(); trendChart = null; }
+        if (trendCapChart) { trendCapChart.destroy(); trendCapChart = null; }
         document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
+        document.getElementById('trend-cap-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
         return;
       }
 
       const dates = records.map(r => formatReportDate(r.date));
-      const series = selectedOpts.map(opt => {
+      const colors = selectedOpts.map(opt => opt.color);
+
+      // --- 1. Power Factor Series ---
+      const pfSeries = selectedOpts.map(opt => {
         const values = records.map(r => {
           let v = parseFloat(r[opt.pf20Key]);
           if (isNaN(v) || v <= 0) {
@@ -1419,16 +1435,24 @@
         return { name: `Phase ${opt.label}`, data: values };
       });
 
-      const colors = selectedOpts.map(opt => opt.color);
+      // --- 2. Capacitance C1 Series ---
+      const capSeries = selectedOpts.map(opt => {
+        const values = records.map(r => {
+          const v = parseFloat(r[opt.capKey]);
+          return (!isNaN(v) && v > 0) ? v : null;
+        });
+        return { name: `Phase ${opt.label}`, data: values };
+      });
 
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#9ca3af' : '#475569';
       const gridColor = isDark ? '#ffffff18' : '#00000012';
 
-      const opts = {
+      // --- Power Factor Chart Options ---
+      const pfOpts = {
         chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: true } },
         theme: { mode: isDark ? 'dark' : 'light' },
-        series: series,
+        series: pfSeries,
         colors: colors,
         xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
@@ -1448,10 +1472,35 @@
         tooltip: { theme: isDark ? 'dark' : 'light' },
       };
 
+      // --- Capacitance Chart Options ---
+      const capOpts = {
+        chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: true } },
+        theme: { mode: isDark ? 'dark' : 'light' },
+        series: capSeries,
+        colors: colors,
+        xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
+        yaxis: {
+          title: { text: 'Capacitance C1 (pF)', style: { color: textColor, fontSize: '9px' } },
+          labels: { style: { colors: textColor, fontSize: '9px' }, formatter: v => v !== null ? v.toFixed(1) : '' }
+        },
+        stroke: { curve: 'smooth', width: 2 },
+        markers: { size: 5 },
+        grid: { borderColor: gridColor },
+        legend: { show: true, position: 'top', labels: { colors: textColor }, fontSize: '10px' },
+        tooltip: { theme: isDark ? 'dark' : 'light' },
+      };
+
       if (trendChart) { trendChart.destroy(); }
+      if (trendCapChart) { trendCapChart.destroy(); }
+
       document.getElementById('trend-chart').innerHTML = '';
-      trendChart = new ApexCharts(document.getElementById('trend-chart'), opts);
+      document.getElementById('trend-cap-chart').innerHTML = '';
+
+      trendChart = new ApexCharts(document.getElementById('trend-chart'), pfOpts);
       trendChart.render();
+
+      trendCapChart = new ApexCharts(document.getElementById('trend-cap-chart'), capOpts);
+      trendCapChart.render();
     }
 
     // ─── Utilities ────────────────────────────────────────────────────────────────
