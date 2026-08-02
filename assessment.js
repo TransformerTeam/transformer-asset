@@ -1429,7 +1429,7 @@ function openDetail(no) {
         } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
           statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
         } else if (mfg.includes('MGC')) {
-          statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+          statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 5.0 ? 'status-monitor' : 'status-normal');
         } else if (mfg.includes('TRENCH')) {
           statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
         } else {

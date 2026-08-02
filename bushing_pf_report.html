@@ -1192,7 +1192,7 @@
             pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('MGC')) {
-          if (pfErrPercent <= 0) {
+          if (pfErrPercent <= 5.0) {
             pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfErrPercent < 10.0) {
             pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
