@@ -562,7 +562,10 @@
       }
     }
 
-    function initDetailPage() {
+    async function initDetailPage() {
+      if (typeof window.allCSVsPromise !== 'undefined') {
+        await window.allCSVsPromise;
+      }
       populateTransformerDropdown();
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -575,7 +578,7 @@
       if (serialParam) {
         const selectEl = document.getElementById('detail-transformer-select');
         if (selectEl) selectEl.value = serialParam;
-        loadDetailBySerial(serialParam);
+        await loadDetailBySerial(serialParam);
       }
     }
 
@@ -589,18 +592,20 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      initDetailPage();
-      setTimeout(initDetailPage, 200);
+      await initDetailPage();
     });
 
-    function switchTransformer(serial) {
+    async function switchTransformer(serial) {
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
-      loadDetailBySerial(serial);
+      await loadDetailBySerial(serial);
     }
 
-    function loadDetailBySerial(serial) {
-      if (typeof assessmentData === 'undefined') return;
+    async function loadDetailBySerial(serial) {
+      if (typeof window.allCSVsPromise !== 'undefined') {
+        await window.allCSVsPromise;
+      }
+      if (typeof assessmentData === 'undefined' || !assessmentData.length) return;
       const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
       if (!item) return;
 

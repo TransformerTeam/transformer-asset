@@ -87,7 +87,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
   ];
 
-  Promise.allSettled(
+  window.allCSVsPromise = Promise.allSettled(
     csvFiles.map(item =>
       fetch(item.url)
         .then(r => r.ok ? r.text() : '')
@@ -102,6 +102,8 @@ function loadAllTestDataCSVs() {
       openDetail(currentActiveItem.no);
     }
   });
+
+  return window.allCSVsPromise;
 }
 
 function parseHealthIndexSumCSV(rows) {
