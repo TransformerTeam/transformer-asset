@@ -1390,31 +1390,38 @@ function openDetail(no) {
     const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
     const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
 
-    // Calculate %Error Capacitance against nameplate
-    const getCapDev = (measCap, phaseStr) => {
-      if (measCap === null) return null;
+    // Calculate %Error PF against nameplate
+    const getPfDev = (measPf, phaseStr) => {
+      if (measPf === null || isNaN(measPf)) return null;
       if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
         const info = bushingInfoCsvData.find(i => {
           const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
           const p = (i.Phase || '').toUpperCase();
           return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
         });
-        if (info && info.Capacitance_C1) {
-          const npCap = parseFloat(info.Capacitance_C1);
-          if (!isNaN(npCap) && npCap > 0) {
-            return ((measCap - npCap) / npCap) * 100;
+        if (info) {
+          const npPf = parseFloat(info.Meas_PF_C1 || info.Corr_PF || 0);
+          if (!isNaN(npPf) && npPf > 0) {
+            return ((measPf - npPf) / npPf) * 100;
           }
         }
       }
       return null;
     };
 
-    const h1_dev = parseNum(bushRec.maxbch1_change) ?? getCapDev(h1_c1, 'H1');
-    const h2_dev = parseNum(bushRec.maxbch2_change) ?? getCapDev(h2_c1, 'H2');
-    const h3_dev = parseNum(bushRec.maxbch3_change) ?? getCapDev(h3_c1, 'H3');
-    const l1_dev = parseNum(bushRec.maxbch0_change) ?? getCapDev(l1_c1, 'X1');
-    const l2_dev = getCapDev(l2_c1, 'X2');
-    const l3_dev = getCapDev(l3_c1, 'X3');
+    const h1_pf_dev = parseNum(bushRec.maxbh1_tand) ?? getPfDev(h1_pf, 'H1');
+    const h2_pf_dev = parseNum(bushRec.maxbh2_tand) ?? getPfDev(h2_pf, 'H2');
+    const h3_pf_dev = parseNum(bushRec.maxbh3_tand) ?? getPfDev(h3_pf, 'H3');
+    const l1_pf_dev = parseNum(bushRec.xbushingl1_pf_error) ?? getPfDev(l1_pf, 'X1');
+    const l2_pf_dev = parseNum(bushRec.xbushingl2_pf_error) ?? getPfDev(l2_pf, 'X2');
+    const l3_pf_dev = parseNum(bushRec.xbushingl3_pf_error) ?? getPfDev(l3_pf, 'X3');
+
+    const h1_cap_dev = parseNum(bushRec.maxbch1_change) ?? getCapDev(h1_c1, 'H1');
+    const h2_cap_dev = parseNum(bushRec.maxbch2_change) ?? getCapDev(h2_c1, 'H2');
+    const h3_cap_dev = parseNum(bushRec.maxbch3_change) ?? getCapDev(h3_c1, 'H3');
+    const l1_cap_dev = parseNum(bushRec.xbushingl1_cap_error) ?? parseNum(bushRec.maxbch0_change) ?? getCapDev(l1_c1, 'X1');
+    const l2_cap_dev = parseNum(bushRec.xbushingl2_cap_error) ?? getCapDev(l2_c1, 'X2');
+    const l3_cap_dev = parseNum(bushRec.xbushingl3_cap_error) ?? getCapDev(l3_c1, 'X3');
 
     // Helper to get Manufacturer for a phase
     const getMfgForPhase = (phaseStr) => {
@@ -1429,28 +1436,25 @@ function openDetail(no) {
       return '';
     };
 
-    const getPfCell = (pfVal, pfDevVal, phaseStr) => {
-      if (pfVal === null) return `<td>-</td>`;
+    const getPfDevCell = (pfDevVal, phaseStr) => {
+      if (pfDevVal === null || isNaN(pfDevVal)) return `<td>-</td>`;
       const mfg = getMfgForPhase(phaseStr).toUpperCase();
       let statusCls = 'status-normal';
 
-      if (pfDevVal !== null && !isNaN(pfDevVal)) {
-        if (mfg.includes('ABB')) {
-          statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 40.0 ? 'status-monitor' : 'status-normal');
-        } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
-          statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
-        } else if (mfg.includes('MGC')) {
-          statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 5.0 ? 'status-monitor' : 'status-normal');
-        } else if (mfg.includes('TRENCH')) {
-          statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
-        } else {
-          // IEEE C57.152 (1.5x - 2.0x, i.e. 50% - 100% error)
-          statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 50.0 ? 'status-monitor' : 'status-normal');
-        }
+      if (mfg.includes('ABB')) {
+        statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 40.0 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
+        statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('MGC')) {
+        statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 5.0 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('TRENCH')) {
+        statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
       } else {
-        statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+        // IEEE C57.152
+        statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 50.0 ? 'status-monitor' : 'status-normal');
       }
-      return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
+      const sign = pfDevVal > 0 ? '+' : '';
+      return `<td class="${statusCls}">${sign}${pfDevVal.toFixed(2)}%</td>`;
     };
 
     const getCapDevCell = (devVal, phaseStr) => {
@@ -1468,7 +1472,7 @@ function openDetail(no) {
       } else if (mfg.includes('TRENCH')) {
         statusCls = absDev > 110.0 ? 'status-critical' : 'status-normal';
       } else {
-        // IEEE C57.152 (< 5% Good, 5-10% Monitor, > 10% Critical)
+        // IEEE C57.152
         statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
       }
 
@@ -1476,26 +1480,42 @@ function openDetail(no) {
       return `<td class="${statusCls}">${sign}${devVal.toFixed(2)}%</td>`;
     };
 
+    const getRawPfCell = (pfVal) => {
+      if (pfVal === null || isNaN(pfVal)) return `<td>-</td>`;
+      const statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+      return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
+    };
+
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        ${getPfCell(h1_pf, h1_dev, 'H1')}
-        ${getPfCell(h2_pf, h2_dev, 'H2')}
-        ${getPfCell(h3_pf, h3_dev, 'H3')}
-        ${getPfCell(l1_pf, l1_dev, 'X1')}
-        ${getPfCell(l2_pf, l2_dev, 'X2')}
-        ${getPfCell(l3_pf, l3_dev, 'X3')}
+        ${getPfDevCell(h1_pf_dev, 'H1')}
+        ${getPfDevCell(h2_pf_dev, 'H2')}
+        ${getPfDevCell(h3_pf_dev, 'H3')}
+        ${getPfDevCell(l1_pf_dev, 'X1')}
+        ${getPfDevCell(l2_pf_dev, 'X2')}
+        ${getPfDevCell(l3_pf_dev, 'X3')}
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
-        ${getCapDevCell(h1_dev, 'H1')}
-        ${getCapDevCell(h2_dev, 'H2')}
-        ${getCapDevCell(h3_dev, 'H3')}
-        ${getCapDevCell(l1_dev, 'X1')}
-        ${getCapDevCell(l2_dev, 'X2')}
-        ${getCapDevCell(l3_dev, 'X3')}
+        ${getCapDevCell(h1_cap_dev, 'H1')}
+        ${getCapDevCell(h2_cap_dev, 'H2')}
+        ${getCapDevCell(h3_cap_dev, 'H3')}
+        ${getCapDevCell(l1_cap_dev, 'X1')}
+        ${getCapDevCell(l2_cap_dev, 'X2')}
+        ${getCapDevCell(l3_cap_dev, 'X3')}
+      </tr>
+      <tr>
+        <td>Power Factor @ 20°C [C1]</td>
+        <td>IEEE C57.152</td>
+        ${getRawPfCell(h1_pf)}
+        ${getRawPfCell(h2_pf)}
+        ${getRawPfCell(h3_pf)}
+        ${getRawPfCell(l1_pf)}
+        ${getRawPfCell(l2_pf)}
+        ${getRawPfCell(l3_pf)}
       </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
@@ -1514,6 +1534,16 @@ function openDetail(no) {
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
+        <td>IEEE C57.152</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Power Factor @ 20°C [C1]</td>
         <td>IEEE C57.152</td>
         <td>-</td>
         <td>-</td>
