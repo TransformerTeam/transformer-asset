@@ -1387,6 +1387,7 @@ function openDetail(no) {
       return (!isNaN(num) && num > 0) ? num : null;
     };
     const parseNum = (val) => {
+      if (val === null || val === undefined || val === '' || val === '-' || val === 'N/A') return null;
       const num = parseFloat(val);
       return (!isNaN(num)) ? num : null;
     };
@@ -1424,19 +1425,19 @@ function openDetail(no) {
       return null;
     };
 
-    const h1_pf_dev = parseNum(bushRec.bushing_h0_cap ?? bushRec.maxbh1_tand ?? bushRec.xbushingl1_pf_error) ?? getPfDev(h1_pf, 'H1');
-    const h2_pf_dev = parseNum(bushRec.bushing_h0_pf_20c ?? bushRec.maxbh2_tand ?? bushRec.xbushingl2_pf_error) ?? getPfDev(h2_pf, 'H2');
-    const h3_pf_dev = parseNum(bushRec.bushing_l1_pf_tan ?? bushRec.maxbh3_tand ?? bushRec.xbushingl3_pf_error) ?? getPfDev(h3_pf, 'H3');
-    const l1_pf_dev = parseNum(bushRec.xbushingl1_pf_error ?? bushRec.xbushing_h0_cap ?? bushRec.bushing_h0_cap) ?? getPfDev(l1_pf, 'X1');
-    const l2_pf_dev = parseNum(bushRec.xbushingl2_pf_error ?? bushRec.xbushing_h0_pf_20c ?? bushRec.bushing_h0_pf_20c) ?? getPfDev(l2_pf, 'X2');
-    const l3_pf_dev = parseNum(bushRec.xbushingl3_pf_error ?? bushRec.xbushing_l1_pf_tan ?? bushRec.bushing_l1_pf_tan) ?? getPfDev(l3_pf, 'X3');
+    const h1_pf_dev = parseNum(bushRec.maxbh1_tand) ?? parseNum(bushRec.bushing_h0_cap) ?? parseNum(bushRec.xbushingl1_pf_error) ?? getPfDev(h1_pf, 'H1');
+    const h2_pf_dev = parseNum(bushRec.maxbh2_tand) ?? parseNum(bushRec.bushing_h0_pf_20c) ?? parseNum(bushRec.xbushingl2_pf_error) ?? getPfDev(h2_pf, 'H2');
+    const h3_pf_dev = parseNum(bushRec.maxbh3_tand) ?? parseNum(bushRec.bushing_l1_pf_tan) ?? parseNum(bushRec.xbushingl3_pf_error) ?? getPfDev(h3_pf, 'H3');
+    const l1_pf_dev = parseNum(bushRec.xbushingl1_pf_error) ?? parseNum(bushRec.xbushing_h0_cap) ?? getPfDev(l1_pf, 'X1');
+    const l2_pf_dev = parseNum(bushRec.xbushingl2_pf_error) ?? parseNum(bushRec.xbushing_h0_pf_20c) ?? getPfDev(l2_pf, 'X2');
+    const l3_pf_dev = parseNum(bushRec.xbushingl3_pf_error) ?? parseNum(bushRec.xbushing_l1_pf_tan) ?? getPfDev(l3_pf, 'X3');
 
-    const h1_cap_dev = parseNum(bushRec.bushing_h0_ma ?? bushRec.maxbch1_change ?? bushRec.xbushingl1_cap_error) ?? getCapDev(h1_c1, 'H1');
-    const h2_cap_dev = parseNum(bushRec.bushing_l1_cap ?? bushRec.maxbch2_change ?? bushRec.xbushingl2_cap_error) ?? getCapDev(h2_c1, 'H2');
-    const h3_cap_dev = parseNum(bushRec.bushing_l1_pf_20c ?? bushRec.maxbch3_change ?? bushRec.xbushingl3_cap_error) ?? getCapDev(h3_c1, 'H3');
-    const l1_cap_dev = parseNum(bushRec.xbushingl1_cap_error ?? bushRec.xbushing_h0_ma ?? bushRec.bushing_h0_ma) ?? getCapDev(l1_c1, 'X1');
-    const l2_cap_dev = parseNum(bushRec.xbushingl2_cap_error ?? bushRec.xbushing_l1_cap ?? bushRec.bushing_l1_cap) ?? getCapDev(l2_c1, 'X2');
-    const l3_cap_dev = parseNum(bushRec.xbushingl3_cap_error ?? bushRec.xbushing_l1_pf_20c ?? bushRec.bushing_l1_pf_20c) ?? getCapDev(l3_c1, 'X3');
+    const h1_cap_dev = parseNum(bushRec.maxbch1_change) ?? parseNum(bushRec.bushing_h0_ma) ?? parseNum(bushRec.xbushingl1_cap_error) ?? getCapDev(h1_c1, 'H1');
+    const h2_cap_dev = parseNum(bushRec.maxbch2_change) ?? parseNum(bushRec.bushing_l1_cap) ?? parseNum(bushRec.xbushingl2_cap_error) ?? getCapDev(h2_c1, 'H2');
+    const h3_cap_dev = parseNum(bushRec.maxbch3_change) ?? parseNum(bushRec.bushing_l1_pf_20c) ?? parseNum(bushRec.xbushingl3_cap_error) ?? getCapDev(h3_c1, 'H3');
+    const l1_cap_dev = parseNum(bushRec.xbushingl1_cap_error) ?? parseNum(bushRec.xbushing_h0_ma) ?? getCapDev(l1_c1, 'X1');
+    const l2_cap_dev = parseNum(bushRec.xbushingl2_cap_error) ?? parseNum(bushRec.xbushing_l1_cap) ?? getCapDev(l2_c1, 'X2');
+    const l3_cap_dev = parseNum(bushRec.xbushingl3_cap_error) ?? parseNum(bushRec.xbushing_l1_pf_20c) ?? getCapDev(l3_c1, 'X3');
 
     // Helper to get Manufacturer for a phase
     const getMfgForPhase = (phaseStr) => {
