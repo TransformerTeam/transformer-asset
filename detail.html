@@ -553,6 +553,17 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
+      // Show loading indicator in Bushing section while waiting
+      const bushBody = document.getElementById('ex-bushing-rows');
+      if (bushBody) {
+        bushBody.innerHTML = '<tr><td colspan="8" style="text-align:center;opacity:0.6;"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดข้อมูล...</td></tr>';
+      }
+
+      // Wait for ALL CSV files to finish downloading before rendering
+      if (window.csvDataReady) {
+        await window.csvDataReady;
+      }
+
       initDetailPage();
     });
 

@@ -43,6 +43,11 @@ let thermoScanCsvData = [];
 let mtOilCsvData = [];
 let oltcOilCsvData = [];
 
+// Global promise that resolves when ALL CSV files have finished loading.
+// detail.html (and any other page) can await window.csvDataReady before rendering.
+let _csvDataReadyResolve;
+window.csvDataReady = new Promise(resolve => { _csvDataReadyResolve = resolve; });
+
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof HEALTH_INDEX_DATA !== 'undefined') {
     assessmentData = HEALTH_INDEX_DATA;
@@ -88,23 +93,16 @@ function loadAllTestDataCSVs() {
   ];
 
   Promise.allSettled(
-    csvFiles.map(item =>
-      fetch(item.url)
+    csvFiles.map(f =>
+      fetch(f.url)
         .then(r => r.ok ? r.text() : '')
         .then(txt => {
-          if (txt) item.target(parseDgaCSV(txt));
+          if (txt) f.target(parseDgaCSV(txt));
         })
     )
   ).then(() => {
-    if (typeof currentActiveItem !== 'undefined' && currentActiveItem && typeof openDetail === 'function') {
-      openDetail(currentActiveItem.no);
-    } else {
-      const urlParams = new URLSearchParams(window.location.search);
-      const serialParam = urlParams.get('serial');
-      if (serialParam && typeof loadDetailBySerial === 'function') {
-        loadDetailBySerial(serialParam);
-      }
-    }
+    // Signal that all CSV data is now available.
+    if (typeof _csvDataReadyResolve === 'function') _csvDataReadyResolve();
   });
 }
 
