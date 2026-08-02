@@ -2,7 +2,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 701,
     "category": "General Parts (Weight Score 5%)",
-    "item": "1.1 Visual Inspection",
+    "item": "Visual Inspection",
     "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
     "standard": "GPSC Criteria",
     "recommendation": "Score: 5/5 (Normal)"
@@ -10,7 +10,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 702,
     "category": "General Parts (Weight Score 5%)",
-    "item": "1.2 Grounding Resistance",
+    "item": "Grounding Resistance",
     "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
     "standard": "GPSC Criteria",
     "recommendation": "Score: 5/5 (Normal)"
@@ -18,7 +18,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 703,
     "category": "General Parts (Weight Score 5%)",
-    "item": "1.3 Contact Resistance (µΩ)",
+    "item": "Contact Resistance",
     "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
     "standard": "GPSC Criteria",
     "recommendation": "Score: 5/5 (Normal)"
@@ -26,7 +26,7 @@ const EVALUATION_CRITERIA_DATA = [
   {
     "row": 704,
     "category": "General Parts (Weight Score 5%)",
-    "item": "1.4 Neutral Ground Inspection",
+    "item": "Neutral Ground Inspection",
     "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
     "standard": "GPSC Criteria"
   },
