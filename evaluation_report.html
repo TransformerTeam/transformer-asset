@@ -943,7 +943,7 @@
           <td style="font-weight: 600;">${row.item}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">GPSC Standard</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">${formatDateToDdMmmYyyy('08/02/2026')}</td>
+          <td style="text-align: center; font-weight: 500; color: #475569;">-</td>
           <td style="font-weight: 700; color: #047857;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
@@ -995,7 +995,7 @@
           <td style="font-weight: 600;">${row.item}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">GPSC Risk Criteria</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">${formatDateToDdMmmYyyy('08/02/2026')}</td>
+          <td style="text-align: center; font-weight: 500; color: #475569;">-</td>
           <td style="font-weight: 700; color: #b91c1c;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
@@ -1093,23 +1093,24 @@
         return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: bushDate, ratingScore: 5, recommendation: 'Arrester healthy' };
       }
       if (nameLower.includes('visual inspection')) {
-        const visRes = latestVis ? (latestVis.Test_Result || 'Normal (A)') : 'Normal (A)';
+        if (!latestVis) return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
+        const visRes = latestVis.Test_Result || 'Normal (A)';
         const isMonitor = visRes.toUpperCase().includes('Q') || visRes.toUpperCase().includes('MONITOR') || visRes.toUpperCase().includes('FAIR');
         const score = isMonitor ? 3 : 5;
         const statusStr = isMonitor ? 'Monitoring' : 'Normal';
-        return { value: `${statusStr} (Score: ${score}/5)`, testDate: visDate, ratingScore: score, recommendation: isMonitor ? 'Plan visual touch-up' : 'Routine Inspection' };
+        return { value: `${statusStr} (Score: ${score}/5)`, testDate: visDate, ratingScore: score, recommendation: isMonitor ? 'Plan visual touch-up' : '-' };
       }
       if (nameLower.includes('grounding resistance')) {
-        return { value: 'Normal (Score: 5/5)', testDate: visDate, ratingScore: 5, recommendation: 'Grounding healthy' };
+        return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
       }
       if (nameLower.includes('contact resistance')) {
-        return { value: 'Normal (Score: 5/5)', testDate: visDate, ratingScore: 5, recommendation: 'Contact resistance normal' };
+        return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
       }
       if (nameLower.includes('neutral ground')) {
-        return { value: 'Normal (Score: 5/5)', testDate: visDate, ratingScore: 5, recommendation: 'NGR healthy' };
+        return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
       }
 
-      return { value: 'Normal / Pass', testDate: '08/02/2026', ratingScore: 4, recommendation: 'Routine Inspection' };
+      return { value: '-', testDate: '-', ratingScore: '-', recommendation: '-' };
     }
 
     function formatDateToDdMmmYyyy(dateStr) {
