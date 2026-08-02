@@ -169,12 +169,14 @@ def main():
                 continue
             while len(r) < 56:
                 r.append('')
-            rows.append(evaluate_transformer(r))
+            eval_r = evaluate_transformer(r)
+            clean_r = [str(c).replace('\r', ' ').replace('\n', ' ').strip() for c in eval_r]
+            rows.append(clean_r)
 
     print(f"Evaluated {len(rows)} transformers. Writing updated HealthIndexSum.csv...")
     with open(HEALTH_SUM_PATH, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
-        writer.writerow(headers)
+        writer.writerow([str(h).replace('\r', ' ').replace('\n', ' ').strip() for h in headers])
         writer.writerows(rows)
     print("HealthIndexSum.csv updated successfully!")
 

@@ -56,7 +56,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "01/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Repair oil leak and hot oil purify, Add passivator.\nPlan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b),"
+        "recommendation": "Repair oil leak and hot oil purify, Add passivator. Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b),"
     },
     {
         "no": 1,

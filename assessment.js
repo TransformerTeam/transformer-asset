@@ -2413,19 +2413,55 @@ function hasParamAlert(item, paramName) {
   return false;
 }
 
-// Simple DGA CSV Parser
+// Robust CSV Parser supporting multiline quotes
 function parseDgaCSV(text) {
   if (text.startsWith('\ufeff')) {
     text = text.substring(1);
   }
-  const lines = text.split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim());
+
+  const rows = [];
+  let currentRow = [];
+  let currentEntry = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && nextChar === '"') {
+        currentEntry += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      currentRow.push(currentEntry.trim());
+      currentEntry = '';
+    } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+      if (char === '\r' && nextChar === '\n') i++;
+      currentRow.push(currentEntry.trim());
+      if (currentRow.length > 0 && currentRow.some(c => c !== '')) {
+        rows.push(currentRow);
+      }
+      currentRow = [];
+      currentEntry = '';
+    } else {
+      currentEntry += char;
+    }
+  }
+  if (currentEntry !== '' || currentRow.length > 0) {
+    currentRow.push(currentEntry.trim());
+    if (currentRow.some(c => c !== '')) rows.push(currentRow);
+  }
+
+  if (rows.length < 2) return [];
+
+  const headers = rows[0].map(h => h.trim());
   const results = [];
 
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    const row = parseDgaCSVRow(lines[i]);
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
     if (row.length >= 2) {
       const obj = {};
       headers.forEach((h, idx) => {
@@ -2437,25 +2473,6 @@ function parseDgaCSV(text) {
     }
   }
   return results;
-}
-
-function parseDgaCSVRow(rowStr) {
-  const result = [];
-  let insideQuotes = false;
-  let entry = '';
-  for (let i = 0; i < rowStr.length; i++) {
-    const char = rowStr[i];
-    if (char === '"') {
-      insideQuotes = !insideQuotes;
-    } else if (char === ',' && !insideQuotes) {
-      result.push(entry);
-      entry = '';
-    } else {
-      entry += char;
-    }
-  }
-  result.push(entry);
-  return result;
 }
 
 // Duval 1 Evaluation
