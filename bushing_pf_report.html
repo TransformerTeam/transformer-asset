@@ -1307,9 +1307,7 @@
 
     // ─── Trending Chart ──────────────────────────────────────────────────────────
     function buildTrendOptions(pfRecords, infoRecords) {
-      window._trendPfRecords     = pfRecords;
-      window._bushingInfoRecords = infoRecords;
-
+      window._trendPfRecords = pfRecords;
       const allPhaseOptions = [
         { value: 'h1', label: 'H1', npPhase: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', capKey: 'bushing_h1_c1', color: '#3b82f6' },
         { value: 'h2', label: 'H2', npPhase: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', capKey: 'bushing_h2_c1', color: '#10b981' },
@@ -1320,6 +1318,21 @@
         { value: 'x3', label: 'X3', npPhase: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', capKey: 'xbushing_h3_c1', color: '#ec4899' },
         { value: 'x0', label: 'X0', npPhase: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', capKey: 'xbushing_h0_cap', color: '#eab308' },
       ];
+
+      // Populate Nameplate values (npCap & npPf) for each phase option
+      allPhaseOptions.forEach(opt => {
+        const matchInfo = (infoRecords || []).find(i => {
+          const ph = (i.Phase || '').toUpperCase();
+          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
+        });
+        if (matchInfo) {
+          opt.npCap = parseFloat(matchInfo.Capacitance_C1 || 0);
+          opt.npPf  = parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0);
+        } else {
+          opt.npCap = 0;
+          opt.npPf  = 0;
+        }
+      });
 
       // Only include phases that actually exist on this transformer (has Nameplate info)
       const phaseOptions = allPhaseOptions.filter(opt => {
@@ -1412,133 +1425,110 @@
       const phOpts = window._trendPhaseOptions || [];
       const selectedSet = window._selectedTrendPhases || new Set();
       const records = (window._trendPfRecords || []).slice().sort((a, b) => parseDate(a.date) - parseDate(b.date));
-      const infoRecords = window._bushingInfoRecords || [];
 
       const selectedOpts = phOpts.filter(p => selectedSet.has(p.value));
       if (selectedOpts.length === 0) {
         if (trendChart) { trendChart.destroy(); trendChart = null; }
         if (trendCapChart) { trendCapChart.destroy(); trendCapChart = null; }
-        document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend bar chart.</div>`;
-        document.getElementById('trend-cap-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend bar chart.</div>`;
+        document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
+        document.getElementById('trend-cap-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
         return;
       }
 
-      // Categories on X-axis: Selected Phase Labels (e.g. H1, H2, H3)
-      const categories = selectedOpts.map(opt => opt.label);
+      const dates = records.map(r => formatReportDate(r.date));
+      const colors = selectedOpts.map(opt => opt.color);
 
-      // Color Palette for Bars:
-      // Bar 1 = Nameplate (#64748b - Slate Grey)
-      // Bar 2..N = Historical Test Dates from oldest to newest
-      const palette = ['#64748b', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#eab308', '#ef4444'];
-
-      // --- 1. Build Power Factor Bar Series ---
-      const npPfData = selectedOpts.map(opt => {
-        const matchInfo = (infoRecords || []).find(i => {
-          const ph = (i.Phase || '').toUpperCase();
-          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
-        });
-        if (!matchInfo) return null;
-        const npPf = parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0);
-        return (!isNaN(npPf) && npPf > 0) ? npPf : null;
-      });
-
-      const pfSeries = [
-        { name: 'Nameplate', data: npPfData }
-      ];
-
-      records.forEach(r => {
-        const dLabel = formatReportDate(r.date);
-        const dataArr = selectedOpts.map(opt => {
+      // --- 1. Power Factor Series ---
+      const pfSeries = selectedOpts.map(opt => {
+        const values = records.map(r => {
           let v = parseFloat(r[opt.pf20Key]);
           if (isNaN(v) || v <= 0) {
             v = parseFloat(r[opt.pfKey]);
           }
           return (!isNaN(v) && v > 0) ? v : null;
         });
-        pfSeries.push({ name: dLabel, data: dataArr });
+        return { name: `Phase ${opt.label}`, data: values };
       });
 
-      // --- 2. Build Capacitance C1 Bar Series ---
-      const npCapData = selectedOpts.map(opt => {
-        const matchInfo = (infoRecords || []).find(i => {
-          const ph = (i.Phase || '').toUpperCase();
-          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
-        });
-        if (!matchInfo) return null;
-        const npCap = parseFloat(matchInfo.Capacitance_C1 || 0);
-        return (!isNaN(npCap) && npCap > 0) ? npCap : null;
-      });
-
-      const capSeries = [
-        { name: 'Nameplate', data: npCapData }
-      ];
-
-      records.forEach(r => {
-        const dLabel = formatReportDate(r.date);
-        const dataArr = selectedOpts.map(opt => {
+      // --- 2. Capacitance C1 Series ---
+      const capSeries = selectedOpts.map(opt => {
+        const values = records.map(r => {
           const v = parseFloat(r[opt.capKey]);
           return (!isNaN(v) && v > 0) ? v : null;
         });
-        capSeries.push({ name: dLabel, data: dataArr });
+        return { name: `Phase ${opt.label}`, data: values };
       });
 
-      const seriesColors = palette.slice(0, pfSeries.length);
+      // --- Annotations (Limits & Nameplate long dashed lines) ---
+      const pfAnnotations = [
+        { y: 0.5, borderColor: '#b79500', strokeDashArray: 4, label: { text: 'Monitoring Limit (0.5%)', style: { color: '#b79500', fontSize: '9px' } } },
+        { y: 1.0, borderColor: '#cc0000', strokeDashArray: 4, label: { text: 'Critical Limit (1.0%)', style: { color: '#cc0000', fontSize: '9px' } } },
+      ];
+
+      const capAnnotations = [];
+
+      selectedOpts.forEach(opt => {
+        if (opt.npPf > 0) {
+          pfAnnotations.push({
+            y: opt.npPf,
+            borderColor: opt.color,
+            strokeDashArray: 8,
+            label: {
+              text: `NP ${opt.label} (${opt.npPf.toFixed(3)}%)`,
+              style: { color: opt.color, fontSize: '9px', fontWeight: 'bold' }
+            }
+          });
+        }
+        if (opt.npCap > 0) {
+          capAnnotations.push({
+            y: opt.npCap,
+            borderColor: opt.color,
+            strokeDashArray: 8,
+            label: {
+              text: `NP ${opt.label} (${opt.npCap.toFixed(1)} pF)`,
+              style: { color: opt.color, fontSize: '9px', fontWeight: 'bold' }
+            }
+          });
+        }
+      });
 
       const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const textColor = isDark ? '#9ca3af' : '#475569';
       const gridColor = isDark ? '#ffffff18' : '#00000012';
 
-      // --- Power Factor Bar Chart Options ---
+      // --- Power Factor Chart Options ---
       const pfOpts = {
-        chart: { type: 'bar', height: 270, background: 'transparent', toolbar: { show: true } },
+        chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: true } },
         theme: { mode: isDark ? 'dark' : 'light' },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            borderRadius: 3
-          }
-        },
-        dataLabels: { enabled: false },
         series: pfSeries,
-        colors: seriesColors,
-        xaxis: { categories: categories, labels: { style: { colors: textColor, fontSize: '10px', fontWeight: 600 } } },
+        colors: colors,
+        xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
           title: { text: '% Power Factor @20°C', style: { color: textColor, fontSize: '9px' } },
           labels: { style: { colors: textColor, fontSize: '9px' }, formatter: v => v !== null ? v.toFixed(3) : '' }
         },
-        annotations: {
-          yaxis: [
-            { y: 0.5, borderColor: '#b79500', strokeDashArray: 4, label: { text: 'Monitoring Limit (0.5%)', style: { color: '#b79500', fontSize: '9px' } } },
-            { y: 1.0, borderColor: '#cc0000', strokeDashArray: 4, label: { text: 'Critical Limit (1.0%)', style: { color: '#cc0000', fontSize: '9px' } } },
-          ]
-        },
-        stroke: { show: true, width: 2, colors: ['transparent'] },
+        annotations: { yaxis: pfAnnotations },
+        stroke: { curve: 'smooth', width: 2 },
+        markers: { size: 5 },
         grid: { borderColor: gridColor },
         legend: { show: true, position: 'top', labels: { colors: textColor }, fontSize: '10px' },
         tooltip: { theme: isDark ? 'dark' : 'light' },
       };
 
-      // --- Capacitance Bar Chart Options ---
+      // --- Capacitance Chart Options ---
       const capOpts = {
-        chart: { type: 'bar', height: 270, background: 'transparent', toolbar: { show: true } },
+        chart: { type: 'line', height: 260, background: 'transparent', toolbar: { show: true } },
         theme: { mode: isDark ? 'dark' : 'light' },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            borderRadius: 3
-          }
-        },
-        dataLabels: { enabled: false },
         series: capSeries,
-        colors: seriesColors,
-        xaxis: { categories: categories, labels: { style: { colors: textColor, fontSize: '10px', fontWeight: 600 } } },
+        colors: colors,
+        xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px' }, rotate: -30 } },
         yaxis: {
           title: { text: 'Capacitance C1 (pF)', style: { color: textColor, fontSize: '9px' } },
           labels: { style: { colors: textColor, fontSize: '9px' }, formatter: v => v !== null ? v.toFixed(1) : '' }
         },
-        stroke: { show: true, width: 2, colors: ['transparent'] },
+        annotations: { yaxis: capAnnotations },
+        stroke: { curve: 'smooth', width: 2 },
+        markers: { size: 5 },
         grid: { borderColor: gridColor },
         legend: { show: true, position: 'top', labels: { colors: textColor }, fontSize: '10px' },
         tooltip: { theme: isDark ? 'dark' : 'light' },
