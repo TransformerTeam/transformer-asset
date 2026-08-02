@@ -572,7 +572,7 @@
         <tr>
           <td class="lbl">Serial No.</td>
           <td class="val" id="info-serial">-</td>
-          <td class="lbl">Power Rating (kVA)</td>
+          <td class="lbl">Power Rating (MVA)</td>
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
@@ -979,12 +979,18 @@
 
       document.getElementById('info-serial').textContent = serial || '-';
 
-      // Power Rating: TRInfo POWER_RATING (MVA → kVA ×1000 if needed), else health_data ratedPower
+      // Power Rating: Display in MVA
       const trPower = trInfo ? trInfo.POWER_RATING : null;
       const hPower  = item   ? item.ratedPower     : null;
-      document.getElementById('info-power').textContent =
-        trPower ? `${Number(trPower).toLocaleString()} kVA` :
-        hPower  ? `${Number(hPower) >= 100 ? Number(hPower).toLocaleString() : Number(hPower) * 1000} kVA` : '-';
+      let powerMvaStr = '-';
+      if (trPower !== null && trPower !== undefined && trPower !== '') {
+        const numP = Number(trPower);
+        powerMvaStr = numP >= 1000 ? `${(numP / 1000).toLocaleString()} MVA` : `${numP} MVA`;
+      } else if (hPower !== null && hPower !== undefined && hPower !== '') {
+        const numP = Number(hPower);
+        powerMvaStr = numP >= 1000 ? `${(numP / 1000).toLocaleString()} MVA` : `${numP} MVA`;
+      }
+      document.getElementById('info-power').textContent = powerMvaStr;
 
       // Manufacture
       document.getElementById('info-mfg').textContent =
