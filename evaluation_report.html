@@ -886,6 +886,7 @@
           displayItem = displayItem.replace(/Core Insulation Resistance\s*/gi, '').trim();
         }
 
+        const tr = document.createElement('tr');
         const matchVal = getMeasuredValueForItem(row.item, item);
         const evalBadge = getStandardRecommendBadge(matchVal.ratingScore);
         const recText = (matchVal.ratingScore === 4 || matchVal.ratingScore === 5) ? '-' : (matchVal.recommendation || '-');
