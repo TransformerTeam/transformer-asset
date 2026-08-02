@@ -967,9 +967,9 @@
       }
       document.getElementById('info-voltage').textContent = voltStr;
 
-      // Fluid Type (WINDING_INSULATION in TRInfo)
-      document.getElementById('info-fluid').textContent =
-        trInfo ? (trInfo.WINDING_INSULATION || 'Mineral oil') : (item ? (item.fluid || 'Mineral oil') : 'Mineral oil');
+      // Fluid Type (TYPE_OF_INSULATION in TRInfo)
+      const fluidVal = trInfo ? (trInfo.TYPE_OF_INSULATION && isNaN(trInfo.TYPE_OF_INSULATION) ? trInfo.TYPE_OF_INSULATION : (trInfo.WINDING_INSULATION && isNaN(trInfo.WINDING_INSULATION) ? trInfo.WINDING_INSULATION : 'Mineral oil')) : (item ? (item.fluid || 'Mineral oil') : 'Mineral oil');
+      document.getElementById('info-fluid').textContent = fluidVal;
 
       // Service Type
       document.getElementById('info-service-type').textContent =

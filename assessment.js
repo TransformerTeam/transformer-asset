@@ -1219,8 +1219,8 @@ function openDetail(no) {
   document.getElementById('ex-info-name').textContent = (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE) : null) || item.name || '-';
   document.getElementById('ex-info-serial').textContent = item.serial || '-';
   document.getElementById('ex-info-code').textContent = (trInfo ? trInfo.DEVICE_CODE : null) || item.name || '-';
-  document.getElementById('ex-info-manufacture').textContent = (trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND) : null) || item.manufacture || 'DAIHEN';
-  document.getElementById('ex-info-fluid').textContent = (trInfo ? (trInfo.WINDING_INSULATION || trInfo.TYPE_OF_INSULATION) : null) || item.fluid || 'Mineral Oil';
+  const fluidVal = trInfo ? (trInfo.TYPE_OF_INSULATION && isNaN(trInfo.TYPE_OF_INSULATION) ? trInfo.TYPE_OF_INSULATION : (trInfo.WINDING_INSULATION && isNaN(trInfo.WINDING_INSULATION) ? trInfo.WINDING_INSULATION : null)) || item.fluid || 'Mineral Oil' : item.fluid || 'Mineral Oil';
+  document.getElementById('ex-info-fluid').textContent = fluidVal;
   document.getElementById('ex-info-site').textContent = (trInfo ? trInfo.SITE : null) || item.site || '-';
   
   const pVal = trInfo ? trInfo.POWER_RATING : item.ratedPower;
