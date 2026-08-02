@@ -592,14 +592,6 @@
       }
     }
 
-    window.onHealthDataParsed = function() {
-      initDetailPage();
-    };
-
-    window.onAllCSVsLoaded = function() {
-      initDetailPage();
-    };
-
     window.addEventListener('DOMContentLoaded', () => {
       // Initialize theme
       const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
