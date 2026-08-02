@@ -44,13 +44,15 @@ let mtOilCsvData = [];
 let oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+  if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
     assessmentData = HEALTH_INDEX_DATA;
     initAssessment();
   }
   setupListeners();
-  loadAllTestDataCSVs();
 });
+
+// Start CSV fetch immediately
+window.allCSVsPromise = loadAllTestDataCSVs();
 
 function loadAllTestDataCSVs() {
   const csvFiles = [
@@ -87,7 +89,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
   ];
 
-  window.allCSVsPromise = Promise.allSettled(
+  return Promise.allSettled(
     csvFiles.map(item =>
       fetch(item.url)
         .then(r => r.ok ? r.text() : '')
@@ -102,8 +104,6 @@ function loadAllTestDataCSVs() {
       openDetail(currentActiveItem.no);
     }
   });
-
-  return window.allCSVsPromise;
 }
 
 function parseHealthIndexSumCSV(rows) {
