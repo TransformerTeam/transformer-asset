@@ -123,14 +123,14 @@ def main():
         else:
             print(f"WARNING: Sheet '{s_name}' not found in workbook.")
 
-    # Synchronize health_data.js
+    # Auto-evaluate missing Health Index scores & sync health_data.js
     try:
-        from update_health_data_js import convert_csv_to_js
-        convert_csv_to_js()
+        from evaluate_all_health_index import main as eval_main
+        eval_main()
     except Exception as e:
-        print(f"Error syncing health_data.js: {e}")
+        print(f"Error evaluating Health Index: {e}")
 
-    print(f"All exports completed successfully at {datetime.now()}.")
+    print(f"All exports and evaluations completed successfully at {datetime.now()}.")
 
 if __name__ == "__main__":
     main()
