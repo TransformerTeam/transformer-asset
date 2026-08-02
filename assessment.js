@@ -96,8 +96,14 @@ function loadAllTestDataCSVs() {
         })
     )
   ).then(() => {
-    if (currentActiveItem && typeof openDetail === 'function') {
+    if (typeof currentActiveItem !== 'undefined' && currentActiveItem && typeof openDetail === 'function') {
       openDetail(currentActiveItem.no);
+    } else {
+      const urlParams = new URLSearchParams(window.location.search);
+      const serialParam = urlParams.get('serial');
+      if (serialParam && typeof loadDetailBySerial === 'function') {
+        loadDetailBySerial(serialParam);
+      }
     }
   });
 }
@@ -1348,8 +1354,18 @@ function openDetail(no) {
   if (exBushingLink) {
     exBushingLink.href = `bushing_pf_report.html?serial=${item.serial}`;
   }
+  const findLatestRecordForItem = (csvArray, itemObj) => {
+    if (!csvArray || !csvArray.length || !itemObj) return null;
+    const targets = [itemObj.serial, itemObj.name, itemObj.code].filter(Boolean);
+    for (const target of targets) {
+      const res = findLatestRecord(csvArray, target);
+      if (res) return res;
+    }
+    return null;
+  };
+
   const bushBody = document.getElementById('ex-bushing-rows');
-  const bushRec = findLatestRecord(bushingPfCsvData, item.serial);
+  const bushRec = findLatestRecordForItem(bushingPfCsvData, item);
 
   if (bushRec) {
     const parsePf = (val) => {
@@ -1368,9 +1384,9 @@ function openDetail(no) {
     const h1_pf = parsePf(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan);
     const h2_pf = parsePf(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan);
     const h3_pf = parsePf(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan);
-    const l1_pf = parsePf(bushRec.xbushing_h1_pf_20c || bushRec.bushing_l1_pf_20c);
-    const l2_pf = parsePf(bushRec.xbushing_h2_pf_20c || bushRec.bushing_l2_pf_20c);
-    const l3_pf = parsePf(bushRec.xbushing_h3_pf_20c || bushRec.bushing_l3_pf_20c);
+    const l1_pf = parsePf(bushRec.xbushing_h1_pf_20c || bushRec.bushing_l1_pf_20c || bushRec.xbushing_h1_pf_tan);
+    const l2_pf = parsePf(bushRec.xbushing_h2_pf_20c || bushRec.bushing_l2_pf_20c || bushRec.xbushing_h2_pf_tan);
+    const l3_pf = parsePf(bushRec.xbushing_h3_pf_20c || bushRec.bushing_l3_pf_20c || bushRec.xbushing_h3_pf_tan);
 
     const h1_c1 = parseCap(bushRec.bushing_h1_c1);
     const h2_c1 = parseCap(bushRec.bushing_h2_c1);
@@ -1379,14 +1395,15 @@ function openDetail(no) {
     const l2_c1 = parseCap(bushRec.xbushing_h2_c1 || bushRec.bushing_l2_cap);
     const l3_c1 = parseCap(bushRec.xbushing_h3_c1 || bushRec.bushing_l3_cap);
 
-    const findBushingInfoRecord = (serial, phaseStr) => {
-      if (typeof bushingInfoCsvData === 'undefined' || !bushingInfoCsvData || !bushingInfoCsvData.length || !serial) return null;
-      const sTarget = String(serial).trim().toLowerCase();
+    const findBushingInfoRecord = (itemObj, phaseStr) => {
+      if (typeof bushingInfoCsvData === 'undefined' || !bushingInfoCsvData || !bushingInfoCsvData.length || !itemObj) return null;
+      const targets = [itemObj.serial, itemObj.name, itemObj.code].filter(Boolean).map(t => String(t).trim().toLowerCase());
       const pTarget = String(phaseStr).trim().toUpperCase();
+
       return bushingInfoCsvData.find(i => {
-        const s = String(i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '').trim().toLowerCase();
+        const s = String(i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || i.Local_Equipment_Code || i.DEVICE_CODE || '').trim().toLowerCase();
         const p = String(i.Phase || '').trim().toUpperCase();
-        const matchSerial = (s === sTarget || s.startsWith(sTarget) || sTarget.startsWith(s));
+        const matchSerial = targets.some(t => t && (s === t || s.startsWith(t) || t.startsWith(s)));
         if (!matchSerial) return false;
 
         if (p === pTarget) return true;
@@ -1405,7 +1422,7 @@ function openDetail(no) {
     // Calculate %Error Capacitance against nameplate
     const getCapDev = (measCap, phaseStr) => {
       if (measCap === null) return null;
-      const info = findBushingInfoRecord(item.serial, phaseStr);
+      const info = findBushingInfoRecord(item, phaseStr);
       if (info && info.Capacitance_C1) {
         const npCap = parseFloat(info.Capacitance_C1);
         if (!isNaN(npCap) && npCap > 0) {
@@ -1418,7 +1435,7 @@ function openDetail(no) {
     // Calculate %Error PF against nameplate
     const getPfDev = (measPf, phaseStr) => {
       if (measPf === null) return null;
-      const info = findBushingInfoRecord(item.serial, phaseStr);
+      const info = findBushingInfoRecord(item, phaseStr);
       if (info) {
         const npPf = parseFloat(info.Meas_PF_C1 || info.Corr_PF || 0);
         if (!isNaN(npPf) && npPf > 0) {
@@ -1444,7 +1461,7 @@ function openDetail(no) {
 
     // Helper to get Manufacturer for a phase
     const getMfgForPhase = (phaseStr) => {
-      const info = findBushingInfoRecord(item.serial, phaseStr);
+      const info = findBushingInfoRecord(item, phaseStr);
       return info ? (info.Manufacturer || '') : '';
     };
 
