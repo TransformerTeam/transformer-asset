@@ -92,8 +92,8 @@ general_parts_items = [
         "row": 704,
         "category": "General Parts (Weight Score 5%)",
         "item": "Neutral Ground Inspection",
-        "criteria": "IEC 60076-25:2023",
-        "standard": "GPSC Criteria",
+        "criteria": "-",
+        "standard": "IEC 60076-25:2023",
         "recommendation": "Score: 5/5 (Normal)"
     }
 ]
