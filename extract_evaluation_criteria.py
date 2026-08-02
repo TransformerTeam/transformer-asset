@@ -68,7 +68,7 @@ general_parts_items = [
         "row": 701,
         "category": "General Parts (Weight Score 5%)",
         "item": "Visual Inspection",
-        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "criteria": "-",
         "standard": "GPSC Criteria",
         "recommendation": "Score: 5/5 (Normal)"
     },
@@ -76,7 +76,7 @@ general_parts_items = [
         "row": 702,
         "category": "General Parts (Weight Score 5%)",
         "item": "Grounding Resistance",
-        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "criteria": "< 1 Ohm",
         "standard": "GPSC Criteria",
         "recommendation": "Score: 5/5 (Normal)"
     },
@@ -84,7 +84,7 @@ general_parts_items = [
         "row": 703,
         "category": "General Parts (Weight Score 5%)",
         "item": "Contact Resistance",
-        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "criteria": "≤ 10 MicroOhm",
         "standard": "GPSC Criteria",
         "recommendation": "Score: 5/5 (Normal)"
     },
@@ -92,8 +92,9 @@ general_parts_items = [
         "row": 704,
         "category": "General Parts (Weight Score 5%)",
         "item": "Neutral Ground Inspection",
-        "criteria": "Normal = 5, Monitoring = 3 (Default = 5 if no data)",
+        "criteria": "IEC 60076-25:2023",
         "standard": "GPSC Criteria",
+        "recommendation": "Score: 5/5 (Normal)"
     }
 ]
 items = general_parts_items + [x for x in items if not (x.get('item') == 'Criteria' and x.get('category') == 'General Parts (Weight Score 5%)')]
