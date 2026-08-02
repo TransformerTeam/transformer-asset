@@ -611,17 +611,16 @@
       <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection & Maintenance.</div>
     </div>
 
-    <!-- Part 1 Table with 8 Columns (Diagnostics Item removed) -->
+    <!-- Part 1 Table with 7 Columns (# removed) -->
     <table class="eval-table" id="part1-table">
       <thead>
         <tr>
-          <th class="th-part1" style="width: 3%;">#</th>
-          <th class="th-part1" style="width: 22%;">Test Item</th>
-          <th class="th-part1" style="width: 18%;">Criteria & Limit</th>
+          <th class="th-part1" style="width: 24%;">Test Item</th>
+          <th class="th-part1" style="width: 20%;">Criteria & Limit</th>
           <th class="th-part1" style="width: 11%;">Standards</th>
           <th class="th-part1" style="width: 9%;">Test Date</th>
           <th class="th-part1" style="width: 13%;">Measurement Value</th>
-          <th class="th-part1" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part1" style="width: 12%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
           <th class="th-part1" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
@@ -875,7 +874,7 @@
           currentCat = row.category;
           const catTr = document.createElement('tr');
           catTr.className = 'cat-row';
-          catTr.innerHTML = `<td colspan="8"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
+          catTr.innerHTML = `<td colspan="7"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
           tbody.appendChild(catTr);
         }
 
@@ -892,7 +891,6 @@
         const recText = (matchVal.ratingScore === 4 || matchVal.ratingScore === 5) ? '-' : (matchVal.recommendation || '-');
 
         tr.innerHTML = `
-          <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
           <td style="font-weight: 600;">${displayItem}</td>
           <td style="color: #334155;">${row.criteria || '-'}</td>
           <td style="color: #475569; font-weight: 500;">${row.standard || 'IEEE / ASTM'}</td>
@@ -913,7 +911,7 @@
       sumTr.style.background = '#eff6ff';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="5" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
+        <td colspan="4" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
         <td style="font-size: 0.9rem; color: #16a34a;">${chiScore}%</td>
         <td style="text-align: center;">${getStandardRecommendBadge(chiRating)}</td>
         <td style="font-size: 0.72rem; color: #1e3a8a;">${chiRec}</td>
