@@ -540,15 +540,15 @@
   <!-- Hidden dummy element to prevent assessment.js script error if modal-close or detail-modal is missing -->
   <div id="detail-modal" style="display:none;"><button id="modal-close"></button></div>
 
-  <!-- Scripts -->
+  <script>
+    window.isDetailStandalonePage = true;
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="data.js"></script>
   <script src="health_data.js"></script>
   <script src="assessment.js?v=20260802"></script>
 
   <script>
-    window.isDetailStandalonePage = true;
-
     function populateTransformerDropdown() {
       const selectEl = document.getElementById('detail-transformer-select');
       if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
@@ -578,6 +578,10 @@
         loadDetailBySerial(serialParam);
       }
     }
+
+    window.onHealthDataParsed = function() {
+      initDetailPage();
+    };
 
     window.onAllCSVsLoaded = function() {
       initDetailPage();

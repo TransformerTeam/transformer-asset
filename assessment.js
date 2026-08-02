@@ -1189,7 +1189,11 @@ function openDetail(no) {
   }
   if (!item) return;
   
-  if (!window.isDetailStandalonePage && !window.location.pathname.toLowerCase().endsWith('detail.html')) {
+  const isDetailPage = window.isDetailStandalonePage || 
+                       window.location.pathname.toLowerCase().includes('detail') || 
+                       document.getElementById('detail-paper') !== null;
+
+  if (!isDetailPage) {
     window.open(`detail.html?serial=${encodeURIComponent(item.serial)}`, '_blank');
     return;
   }
