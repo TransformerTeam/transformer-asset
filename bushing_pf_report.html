@@ -1042,7 +1042,7 @@
       }
 
       // Trend chart
-      buildTrendOptions(pfRecords);
+      buildTrendOptions(pfRecords, infoRecords);
     }
 
     // ─── Nameplate Table ────────────────────────────────────────────────────────
@@ -1295,31 +1295,50 @@
     }
 
     // ─── Trending Chart ──────────────────────────────────────────────────────────
-    // ─── Trending Chart ──────────────────────────────────────────────────────────
-    function buildTrendOptions(pfRecords) {
+    function buildTrendOptions(pfRecords, infoRecords) {
       window._trendPfRecords = pfRecords;
-      const phaseOptions = [
-        { value: 'h1', label: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', color: '#3b82f6' },
-        { value: 'h2', label: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', color: '#10b981' },
-        { value: 'h3', label: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan', color: '#f59e0b' },
-        { value: 'h0', label: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan', color: '#ef4444' },
-        { value: 'x1', label: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan', color: '#8b5cf6' },
-        { value: 'x2', label: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan', color: '#06b6d4' },
-        { value: 'x3', label: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', color: '#ec4899' },
-        { value: 'x0', label: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', color: '#eab308' },
+      const allPhaseOptions = [
+        { value: 'h1', label: 'H1', npPhase: 'H1', pf20Key: 'bushing_h1_pf_20c', pfKey: 'bushing_h1_pf_tan', color: '#3b82f6' },
+        { value: 'h2', label: 'H2', npPhase: 'H2', pf20Key: 'bushing_h2_pf_20c', pfKey: 'bushing_h2_pf_tan', color: '#10b981' },
+        { value: 'h3', label: 'H3', npPhase: 'H3', pf20Key: 'bushing_h3_pf_20c', pfKey: 'bushing_h3_pf_tan', color: '#f59e0b' },
+        { value: 'h0', label: 'H0', npPhase: 'H0', pf20Key: 'bushing_h0_pf_20c', pfKey: 'bushing_h0_pf_tan', color: '#ef4444' },
+        { value: 'x1', label: 'X1', npPhase: 'X1', pf20Key: 'xbushing_h1_pf_20c', pfKey: 'xbushing_h1_pf_tan', color: '#8b5cf6' },
+        { value: 'x2', label: 'X2', npPhase: 'X2', pf20Key: 'xbushing_h2_pf_20c', pfKey: 'xbushing_h2_pf_tan', color: '#06b6d4' },
+        { value: 'x3', label: 'X3', npPhase: 'X3', pf20Key: 'xbushing_h3_pf_20c', pfKey: 'xbushing_h3_pf_tan', color: '#ec4899' },
+        { value: 'x0', label: 'X0', npPhase: 'X0', pf20Key: 'xbushing_h0_pf_20c', pfKey: 'xbushing_h0_pf_tan', color: '#eab308' },
       ];
 
-      // Find which phases have at least 1 non-zero value
-      const activePhases = new Set();
-      phaseOptions.forEach(opt => {
-        const hasValue = (pfRecords || []).some(r => {
-          const v = parseFloat(r[opt.pf20Key] || r[opt.pfKey] || 0);
-          return !isNaN(v) && v > 0;
+      // Only include phases that actually exist on this transformer (has Nameplate info)
+      const phaseOptions = allPhaseOptions.filter(opt => {
+        const matchInfo = (infoRecords || []).find(i => {
+          const ph = (i.Phase || '').toUpperCase();
+          return ph === opt.npPhase || ph.endsWith(opt.npPhase.replace(/[0-9]/g, '').toLowerCase() + opt.npPhase.slice(-1));
         });
-        if (hasValue) activePhases.add(opt.value);
+        const hasNp = matchInfo && (
+          parseFloat(matchInfo.Capacitance_C1 || 0) > 0 ||
+          parseFloat(matchInfo.Capacitance_C2 || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) > 0 ||
+          parseFloat(matchInfo.Meas_PF_C2 || 0) > 0
+        );
+        return hasNp;
       });
 
-      if (activePhases.size === 0) { ['h1', 'h2', 'h3'].forEach(p => activePhases.add(p)); }
+      // Fallback if no nameplate match: check for non-zero test values
+      if (phaseOptions.length === 0) {
+        allPhaseOptions.forEach(opt => {
+          const hasValue = (pfRecords || []).some(r => {
+            const v = parseFloat(r[opt.pf20Key] || r[opt.pfKey] || 0);
+            return !isNaN(v) && v > 0;
+          });
+          if (hasValue) phaseOptions.push(opt);
+        });
+      }
+
+      if (phaseOptions.length === 0) {
+        phaseOptions.push(...allPhaseOptions.slice(0, 3));
+      }
+
+      const activePhases = new Set(phaseOptions.map(p => p.value));
       window._selectedTrendPhases = activePhases;
       window._trendPhaseOptions   = phaseOptions;
 
