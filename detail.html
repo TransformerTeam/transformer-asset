@@ -192,6 +192,7 @@
         </select>
       </div>
 
+      <a id="btn-eval-report" href="evaluation_report.html" class="btn-action" style="text-decoration:none; color:#ffffff; background:#4f46e5;"><i class="fa-solid fa-clipboard-check"></i> Evaluation Report</a>
       <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-sun" id="theme-icon"></i> Theme</button>
       <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-camera"></i> Export JPG</button>
       <button class="btn-action" onclick="window.close()"><i class="fa-solid fa-xmark"></i> Close</button>
@@ -589,9 +590,9 @@
       const item = assessmentData.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
       if (!item) return;
 
-      // Update footer serial text
-      const ftSerial = document.getElementById('footer-serial-text');
-      if (ftSerial) ftSerial.textContent = `Serial: ${item.serial}`;
+      // Update Evaluation Report link
+      const evalBtn = document.getElementById('btn-eval-report');
+      if (evalBtn) evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
 
       // Call assessment.js openDetail logic with item.no
       if (typeof openDetail === 'function') {

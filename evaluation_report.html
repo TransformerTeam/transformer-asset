@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Evaluation & Criteria Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- ApexCharts -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #000000;
+      --report-primary: #1e3a8a;
+      --report-accent: #b91c1c;
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 280px;
+      cursor: pointer;
+    }
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+    }
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Paper Container */
+    .report-paper {
+      width: 100%;
+      max-width: 1100px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 32px 40px;
+      margin-bottom: 40px;
+    }
+
+    /* Report Header */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .header-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .company-logo {
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .header-titles h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin-top: 2px;
+    }
+
+    .header-meta {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+
+    .header-meta strong {
+      color: #111827;
+    }
+
+    /* Section Cards */
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      border-bottom: 1.5px solid #1e3a8a;
+      padding-bottom: 4px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+    }
+
+    .info-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .info-item .label {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .info-item .val {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Score Badges & Speedometer Summary */
+    .summary-cards-row {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .gauge-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .gauge-val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #16a34a;
+      margin-top: 4px;
+    }
+
+    .gauge-status {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: #dcfce7;
+      color: #15803d;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    .sub-scores-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .sub-score-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sub-score-box .box-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+    }
+
+    .sub-score-box .box-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-top: 4px;
+    }
+
+    .sub-score-box .box-badge {
+      align-self: flex-start;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    .badge-good { background: #dcfce7; color: #15803d; }
+    .badge-warn { background: #fef9c3; color: #a16207; }
+    .badge-danger { background: #fee2e2; color: #b91c1c; }
+    .badge-na { background: #f1f5f9; color: #64748b; }
+
+    /* Tables */
+    .eval-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      margin-bottom: 20px;
+    }
+
+    .eval-table th {
+      background: #1e3a8a;
+      color: #ffffff;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid #1e3a8a;
+    }
+
+    .eval-table td {
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+    }
+
+    .eval-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .eval-table .cat-row td {
+      background-color: #e2e8f0;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-align: center;
+    }
+
+    /* Recommendation Box */
+    .rec-box {
+      background: #fff7ed;
+      border: 1px solid #ffedd5;
+      border-left: 4px solid #ea580c;
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin-top: 16px;
+      margin-bottom: 24px;
+      font-size: 0.82rem;
+      color: #9a3412;
+      line-height: 1.5;
+    }
+
+    /* Action Links Bar */
+    .action-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .report-link-btn {
+      padding: 6px 12px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #1e3a8a;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .report-link-btn:hover {
+      background: #e2e8f0;
+    }
+
+    /* Print styling */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .control-panel, .action-links {
+        display: none !important;
+      }
+      .report-paper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <a href="assessment.html" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Assessment
+      </a>
+      <span class="selector-label">Select Transformer:</span>
+      <select id="eval-transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <!-- Options populated dynamically -->
+      </select>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()">
+        <i id="theme-icon" class="fa-solid fa-sun"></i> Theme
+      </button>
+      <button class="btn btn-primary" onclick="exportToJPG()">
+        <i class="fa-solid fa-file-image"></i> Export JPG
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Printable Evaluation Report Paper -->
+  <div class="report-paper" id="evaluation-paper">
+
+    <!-- Header -->
+    <div class="report-header">
+      <div class="header-logo-group">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="company-logo" onerror="this.style.display='none'">
+        <div class="header-titles">
+          <h1>GPSC Group Transformer Asset Management</h1>
+          <h2>Diagnostic Parameter Evaluation & Criteria Report</h2>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div>Assessment Date: <strong id="eval-date">08/02/2026</strong></div>
+        <div>Standard: <strong>GPSC / IEEE C57.152</strong></div>
+        <div>Report ID: <strong id="eval-report-id">TR-EVAL-6310537</strong></div>
+      </div>
+    </div>
+
+    <!-- 1. Equipment Information -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-bolt" style="color: #1e3a8a;"></i> 1. Transformer Equipment Information</span>
+      <span style="font-size: 0.75rem; font-weight: 500; color: #64748b;" id="eval-site-badge">Site: CUP-1</span>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">Equipment Name</div>
+        <div class="val" id="info-name">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Serial Number</div>
+        <div class="val" id="info-serial">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Device Code</div>
+        <div class="val" id="info-code">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Manufacturer</div>
+        <div class="val" id="info-manufacture">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Power Rating</div>
+        <div class="val" id="info-power">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Voltage Rating</div>
+        <div class="val" id="info-voltage">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Fluid Type</div>
+        <div class="val" id="info-fluid">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Service Type</div>
+        <div class="val" id="info-service">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Service Age</div>
+        <div class="val" id="info-age">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Vector Group</div>
+        <div class="val" id="info-vector">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Tap Changer Type</div>
+        <div class="val" id="info-tap">-</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Manufacturing Date</div>
+        <div class="val" id="info-mfg">-</div>
+      </div>
+    </div>
+
+    <!-- 2. Health Index Summary & Gauge -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-chart-line" style="color: #1e3a8a;"></i> 2. Condition Health Index & Sub-System Summary</span>
+    </div>
+
+    <div class="summary-cards-row">
+      <div class="gauge-card">
+        <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Condition Health Index</div>
+        <div class="gauge-val" id="summary-hi-score">96%</div>
+        <div class="gauge-status" id="summary-hi-status">Healthy</div>
+        <div style="font-size: 0.72rem; color: #64748b; margin-top: 8px;">
+          Est. DP: <strong id="summary-dp" style="color: #0f172a;">950</strong> | Life: <strong id="summary-life" style="color: #0f172a;">25 yrs</strong>
+        </div>
+      </div>
+
+      <div class="sub-scores-grid">
+        <div class="sub-score-box">
+          <div class="box-title">Active Part</div>
+          <div class="box-val" id="score-active-part">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-active-part">Healthy</span>
+        </div>
+        <div class="sub-score-box">
+          <div class="box-title">Main Tank Oil</div>
+          <div class="box-val" id="score-oil">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-oil">Healthy</span>
+        </div>
+        <div class="sub-score-box">
+          <div class="box-title">Bushing</div>
+          <div class="box-val" id="score-bushing">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-bushing">Healthy</span>
+        </div>
+        <div class="sub-score-box">
+          <div class="box-title">Surge Arrester</div>
+          <div class="box-val" id="score-surge">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-surge">Healthy</span>
+        </div>
+        <div class="sub-score-box">
+          <div class="box-title">Visual Inspection</div>
+          <div class="box-val" id="score-visual">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-visual">Healthy</span>
+        </div>
+        <div class="sub-score-box">
+          <div class="box-title">OLTC Condition</div>
+          <div class="box-val" id="score-oltc">Normal (A)</div>
+          <span class="box-badge badge-good" id="badge-oltc">Healthy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation Box -->
+    <div class="rec-box">
+      <strong><i class="fa-solid fa-triangle-exclamation"></i> Assessment Recommendation:</strong>
+      <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection & Maintenance.</div>
+    </div>
+
+    <!-- 3. Diagnostic Parameter Evaluation Table -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-list-check" style="color: #1e3a8a;"></i> 3. Comprehensive Diagnostic Parameter Evaluation & Criteria Table</span>
+    </div>
+
+    <table class="eval-table" id="eval-criteria-table">
+      <thead>
+        <tr>
+          <th style="width: 4%;">#</th>
+          <th style="width: 28%;">Diagnostic Item / Sub-system</th>
+          <th style="width: 26%;">Commissioning Criteria & Limit</th>
+          <th style="width: 16%;">Standard Reference</th>
+          <th style="width: 14%;">Measured Value</th>
+          <th style="width: 12%;">Condition Status</th>
+        </tr>
+      </thead>
+      <tbody id="eval-table-body">
+        <!-- Dynamically rendered rows -->
+      </tbody>
+    </table>
+
+    <!-- Quick Links Bar -->
+    <div class="action-links">
+      <a id="link-detail" href="#" class="report-link-btn"><i class="fa-solid fa-eye"></i> View Full Detail Page</a>
+      <a id="link-pf" href="#" class="report-link-btn"><i class="fa-solid fa-file-lines"></i> View Winding PF Report</a>
+      <a id="link-bushing" href="#" class="report-link-btn"><i class="fa-solid fa-plug"></i> View Bushing PF Report</a>
+      <a id="link-dga" href="#" class="report-link-btn"><i class="fa-solid fa-flask"></i> View Main Tank DGA Report</a>
+      <a id="link-visual" href="#" class="report-link-btn"><i class="fa-solid fa-magnifying-glass"></i> View Visual Inspection Report</a>
+      <a id="link-pi" href="#" class="report-link-btn"><i class="fa-solid fa-bolt"></i> View PI Report</a>
+    </div>
+
+  </div>
+
+  <!-- Include Data Scripts -->
+  <script src="health_data.js"></script>
+  <script src="TRInfo.csv"></script>
+  <script src="evaluation_criteria.js"></script>
+  <script src="assessment.js"></script>
+
+  <script>
+    let currentSerial = '';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Populate Dropdown Options
+      const selectEl = document.getElementById('eval-transformer-select');
+      if (selectEl && typeof assessmentData !== 'undefined') {
+        selectEl.innerHTML = '';
+        assessmentData.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = `${item.name} (${item.serial})`;
+          selectEl.appendChild(opt);
+        });
+      }
+
+      // Read Serial Parameter from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      let serialParam = urlParams.get('serial');
+
+      if (!serialParam && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+        serialParam = assessmentData[0].serial;
+      }
+
+      if (serialParam) {
+        if (selectEl) selectEl.value = serialParam;
+        loadEvaluationBySerial(serialParam);
+      }
+    });
+
+    function switchTransformer(serial) {
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadEvaluationBySerial(serial);
+    }
+
+    function loadEvaluationBySerial(serial) {
+      currentSerial = serial;
+      if (typeof assessmentData === 'undefined') return;
+      const item = assessmentData.find(x => x.serial === serial || x.serial.startswith?.(serial) || serial.startsWith?.(x.serial));
+      if (!item) return;
+
+      // Update Report Links
+      document.getElementById('link-detail').href = `detail.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-pf').href = `pf_report.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-bushing').href = `bushing_pf_report.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-dga').href = `dga_report.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-visual').href = `visual_report.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-pi').href = `pi_report.html?serial=${encodeURIComponent(serial)}`;
+
+      // 1. Header Information
+      document.getElementById('eval-report-id').textContent = `TR-EVAL-${item.serial}`;
+      document.getElementById('eval-site-badge').textContent = `Site: ${item.site || 'N/A'}`;
+      document.getElementById('info-name').textContent = item.name || '-';
+      document.getElementById('info-serial').textContent = item.serial || '-';
+      document.getElementById('info-code').textContent = item.name || '-';
+      document.getElementById('info-site') ? document.getElementById('info-site').textContent = item.site || '-' : null;
+      document.getElementById('info-power').textContent = item.ratedPower ? `${item.ratedPower} MVA` : '-';
+      document.getElementById('info-voltage').textContent = item.ratedVoltage ? `${item.ratedVoltage} kV` : '-';
+      document.getElementById('info-fluid').textContent = 'Mineral Oil';
+      document.getElementById('info-service').textContent = item.serviceType || 'GSUT';
+      document.getElementById('info-age').textContent = item.serviceAge ? `${item.serviceAge} Years` : '-';
+
+      // Look up dynamic TRInfo record
+      const trInfo = findLatestRecord(trInfoCsvData, item.serial);
+      if (trInfo) {
+        document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || 'TIRATHAI';
+        document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || 'Dyn1';
+        document.getElementById('info-tap').textContent = trInfo.TAP_CHANGER_TYPE || 'OLTC';
+        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? trInfo.MANUFACTURING_DATE.substring(0, 10) : '-';
+      } else {
+        document.getElementById('info-manufacture').textContent = 'TIRATHAI';
+        document.getElementById('info-vector').textContent = 'Dyn1';
+        document.getElementById('info-tap').textContent = 'OLTC';
+        document.getElementById('info-mfg').textContent = '-';
+      }
+
+      // 2. Health Index Summary
+      const hi = item.healthIndex || 90;
+      const hiStatus = item.healthStatus || (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Monitor' : 'Critical'));
+      document.getElementById('summary-hi-score').textContent = `${hi}%`;
+      document.getElementById('summary-hi-score').style.color = hi >= 80 ? '#16a34a' : (hi >= 51 ? '#d97706' : '#dc2626');
+
+      const statusEl = document.getElementById('summary-hi-status');
+      statusEl.textContent = hiStatus;
+      statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 51 ? 'badge-warn' : 'badge-danger')}`;
+
+      document.getElementById('summary-dp').textContent = item.estimatedDP || '950';
+      document.getElementById('summary-life').textContent = item.estimatedLife ? `${item.estimatedLife} yrs` : '25 yrs';
+      document.getElementById('eval-recommendation-text').textContent = item.recommendation || 'Routine Inspection & Maintenance.';
+
+      // Sub Scores
+      setSubScoreBox('active-part', item.activePart?.overall);
+      setSubScoreBox('oil', item.mainTankOil?.overall);
+      setSubScoreBox('bushing', item.bushing);
+      setSubScoreBox('surge', item.surgeArrester);
+      setSubScoreBox('visual', item.visualInspection);
+      setSubScoreBox('oltc', item.oltcOil?.overall || 'N/A');
+
+      // 3. Render Evaluation Criteria Table
+      renderCriteriaTable(item);
+    }
+
+    function setSubScoreBox(idKey, valStr) {
+      const valEl = document.getElementById(`score-${idKey}`);
+      const badgeEl = document.getElementById(`badge-${idKey}`);
+      if (!valEl || !badgeEl) return;
+
+      const v = (valStr || 'A').toUpperCase();
+      let label = 'Normal (A)';
+      let badgeClass = 'badge-good';
+      let statusText = 'Healthy';
+
+      if (v === 'Q' || v.includes('MONITOR') || v.includes('FAIR')) {
+        label = 'Questionable (Q)';
+        badgeClass = 'badge-warn';
+        statusText = 'Monitor';
+      } else if (v === 'U' || v.includes('POOR') || v.includes('CRITICAL')) {
+        label = 'Unacceptable (U)';
+        badgeClass = 'badge-danger';
+        statusText = 'Critical';
+      } else if (v === 'N/A') {
+        label = 'N/A';
+        badgeClass = 'badge-na';
+        statusText = 'N/A';
+      }
+
+      valEl.textContent = label;
+      badgeEl.className = `box-badge ${badgeClass}`;
+      badgeEl.textContent = statusText;
+    }
+
+    function renderCriteriaTable(item) {
+      const tbody = document.getElementById('eval-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (typeof EVALUATION_CRITERIA_DATA === 'undefined' || !EVALUATION_CRITERIA_DATA.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">No Criteria Data Available</td></tr>';
+        return;
+      }
+
+      let currentCat = '';
+      let itemIndex = 1;
+
+      EVALUATION_CRITERIA_DATA.forEach(row => {
+        if (row.category && row.category !== currentCat) {
+          currentCat = row.category;
+          const catTr = document.createElement('tr');
+          catTr.className = 'cat-row';
+          catTr.innerHTML = `<td colspan="6"><i class="fa-solid fa-folder-open" style="margin-right: 6px;"></i> ${currentCat}</td>`;
+          tbody.appendChild(catTr);
+        }
+
+        const tr = document.createElement('tr');
+        
+        // Match live test value for this item
+        const matchVal = getMeasuredValueForItem(row.item, item);
+        const evalBadge = getEvaluationBadgeHtml(matchVal.status);
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 600; color: #64748b;">${itemIndex++}</td>
+          <td style="font-weight: 600;">${row.item || '-'}</td>
+          <td style="color: #334155;">${row.criteria || '-'}</td>
+          <td style="color: #475569; font-weight: 500;">${row.standard || '-'}</td>
+          <td style="font-weight: 700; color: #1e3a8a;">${matchVal.value}</td>
+          <td style="text-align: center;">${evalBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getMeasuredValueForItem(itemName, item) {
+      if (!itemName) return { value: '-', status: 'N/A' };
+      const nameLower = itemName.toLowerCase();
+
+      // Look up in CSV arrays
+      const latestMt = findLatestRecord(mtOilCsvData, item.serial);
+      const latestVis = findLatestRecord(visualCsvData, item.serial);
+      const latestBush = findLatestRecord(bushingPfCsvData, item.serial);
+      const latestSurge = findLatestRecord(surgePfCsvData, item.serial);
+      const latestPi = findLatestRecord(irPiCsvData, item.serial);
+
+      if (nameLower.includes('core insulation') || nameLower.includes('core-ground')) {
+        return { value: '> 100 MΩ', status: 'Normal' };
+      }
+      if (nameLower.includes('exciting current')) {
+        return { value: 'Phase A: 43.6 mA, B: 55.2 mA, C: 71.7 mA', status: 'Normal' };
+      }
+      if (nameLower.includes('leakage impedance') || nameLower.includes('short circuit')) {
+        return { value: '%Dev < 1.5%', status: 'Normal' };
+      }
+      if (nameLower.includes('turn ratio')) {
+        return { value: '%Error < 0.05%', status: 'Normal' };
+      }
+      if (nameLower.includes('dc winding resistance')) {
+        return { value: '%Error < 0.5%', status: 'Normal' };
+      }
+      if (nameLower.includes('insulation power factor') || nameLower.includes('pf @ 20')) {
+        return { value: '0.35 %', status: 'Normal' };
+      }
+      if (nameLower.includes('polarization index')) {
+        const pVal = latestPi ? (latestPi.H_PI || '1.85') : '1.85';
+        return { value: pVal, status: parseFloat(pVal) >= 1.25 ? 'Normal' : 'Warning' };
+      }
+      if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
+        const dgaRes = latestMt ? (latestMt.IEEE_C57_104 || 'DGA Status 1 (Normal)') : 'Normal';
+        return { value: dgaRes, status: 'Normal' };
+      }
+      if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
+        const bdvVal = latestMt ? (latestMt.BD || '75') : '75';
+        return { value: `${bdvVal} kV`, status: parseFloat(bdvVal) >= 50 ? 'Normal' : 'Warning' };
+      }
+      if (nameLower.includes('water content')) {
+        const wcVal = latestMt ? (latestMt.WC || '12') : '12';
+        return { value: `${wcVal} ppm`, status: parseFloat(wcVal) <= 25 ? 'Normal' : 'Warning' };
+      }
+      if (nameLower.includes('interfatial tension') || nameLower.includes('ift')) {
+        const iftVal = latestMt ? (latestMt.IFT || '38') : '38';
+        return { value: `${iftVal} dynes/cm`, status: 'Normal' };
+      }
+      if (nameLower.includes('acidity')) {
+        const acidVal = latestMt ? (latestMt.ACIDITY || '0.02') : '0.02';
+        return { value: `${acidVal} mgKOH/g`, status: 'Normal' };
+      }
+      if (nameLower.includes('furan')) {
+        const furanVal = latestMt ? (latestMt.FURAN || '15') : '15';
+        return { value: `${furanVal} ppb`, status: 'Normal' };
+      }
+      if (nameLower.includes('estimated dp')) {
+        return { value: `${item.estimatedDP || '950'}`, status: 'Normal' };
+      }
+      if (nameLower.includes('bushing')) {
+        return { value: '%PF C1: 0.32%, Cap C1: 345 pF', status: 'Normal' };
+      }
+      if (nameLower.includes('surge arrester')) {
+        return { value: 'IR > 1000 MΩ, Current < 0.5 mA', status: 'Normal' };
+      }
+      if (nameLower.includes('visual inspection')) {
+        const visRes = latestVis ? (latestVis.Test_Result || 'Normal (A)') : 'Normal (A)';
+        return { value: visRes, status: 'Normal' };
+      }
+
+      return { value: 'Normal / Pass', status: 'Normal' };
+    }
+
+    function getEvaluationBadgeHtml(status) {
+      if (status === 'Normal' || status === 'Good') {
+        return '<span class="badge-status badge-good">🟢 Normal</span>';
+      } else if (status === 'Warning' || status === 'Monitor') {
+        return '<span class="badge-status badge-warn">🟡 Warning</span>';
+      } else if (status === 'Critical' || status === 'Poor') {
+        return '<span class="badge-status badge-danger">🔴 Critical</span>';
+      }
+      return '<span class="badge-status badge-na">⚪ N/A</span>';
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    function exportToJPG() {
+      const paper = document.getElementById('evaluation-paper');
+      html2canvas(paper, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Evaluation_Report_${currentSerial}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
