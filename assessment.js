@@ -1405,16 +1405,62 @@ function openDetail(no) {
     const l2_dev = getCapDev(l2_c1, 'X2');
     const l3_dev = getCapDev(l3_c1, 'X3');
 
-    const getPfCell = (pfVal) => {
+    // Helper to get Manufacturer for a phase
+    const getMfgForPhase = (phaseStr) => {
+      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData.length > 0) {
+        const info = bushingInfoCsvData.find(i => {
+          const s = (i.Parent_Serial_No || i.Serial_No || i['SN&Phase'] || '');
+          const p = (i.Phase || '').toUpperCase();
+          return (s === item.serial || s.startsWith(item.serial) || item.serial.startsWith(s)) && (p === phaseStr || p.includes(phaseStr));
+        });
+        return info ? (info.Manufacturer || '') : '';
+      }
+      return '';
+    };
+
+    const getPfCell = (pfVal, pfDevVal, phaseStr) => {
       if (pfVal === null) return `<td>-</td>`;
-      const statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+      const mfg = getMfgForPhase(phaseStr).toUpperCase();
+      let statusCls = 'status-normal';
+
+      if (pfDevVal !== null && !isNaN(pfDevVal)) {
+        if (mfg.includes('ABB')) {
+          statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+        } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
+          statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+        } else if (mfg.includes('MGC')) {
+          statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+        } else if (mfg.includes('TRENCH')) {
+          statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
+        } else {
+          // IEEE C57.152 (1.5x - 2.0x, i.e. 50% - 100% error)
+          statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 50.0 ? 'status-monitor' : 'status-normal');
+        }
+      } else {
+        statusCls = pfVal > 1.0 ? 'status-critical' : (pfVal > 0.5 ? 'status-monitor' : 'status-normal');
+      }
       return `<td class="${statusCls}">${pfVal.toFixed(2)}%</td>`;
     };
 
-    const getCapDevCell = (devVal) => {
+    const getCapDevCell = (devVal, phaseStr) => {
       if (devVal === null || isNaN(devVal)) return `<td>-</td>`;
       const absDev = Math.abs(devVal);
-      const statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
+      const mfg = getMfgForPhase(phaseStr).toUpperCase();
+      let statusCls = 'status-normal';
+
+      if (mfg.includes('ABB')) {
+        statusCls = absDev > 5.0 ? 'status-critical' : (absDev > 3.0 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
+        statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 1.0 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('MGC')) {
+        statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 0.7 ? 'status-monitor' : 'status-normal');
+      } else if (mfg.includes('TRENCH')) {
+        statusCls = absDev > 110.0 ? 'status-critical' : 'status-normal';
+      } else {
+        // IEEE C57.152 (< 5% Good, 5-10% Monitor, > 10% Critical)
+        statusCls = absDev > 10.0 ? 'status-critical' : (absDev > 5.0 ? 'status-monitor' : 'status-normal');
+      }
+
       const sign = devVal > 0 ? '+' : '';
       return `<td class="${statusCls}">${sign}${devVal.toFixed(2)}%</td>`;
     };
@@ -1423,22 +1469,22 @@ function openDetail(no) {
       <tr>
         <td>%Error PF [C1]</td>
         <td>IEEE C57.152</td>
-        ${getPfCell(h1_pf)}
-        ${getPfCell(h2_pf)}
-        ${getPfCell(h3_pf)}
-        ${getPfCell(l1_pf)}
-        ${getPfCell(l2_pf)}
-        ${getPfCell(l3_pf)}
+        ${getPfCell(h1_pf, h1_dev, 'H1')}
+        ${getPfCell(h2_pf, h2_dev, 'H2')}
+        ${getPfCell(h3_pf, h3_dev, 'H3')}
+        ${getPfCell(l1_pf, l1_dev, 'X1')}
+        ${getPfCell(l2_pf, l2_dev, 'X2')}
+        ${getPfCell(l3_pf, l3_dev, 'X3')}
       </tr>
       <tr>
         <td>%Error Capacitance [C1]</td>
         <td>IEEE C57.152</td>
-        ${getCapDevCell(h1_dev)}
-        ${getCapDevCell(h2_dev)}
-        ${getCapDevCell(h3_dev)}
-        ${getCapDevCell(l1_dev)}
-        ${getCapDevCell(l2_dev)}
-        ${getCapDevCell(l3_dev)}
+        ${getCapDevCell(h1_dev, 'H1')}
+        ${getCapDevCell(h2_dev, 'H2')}
+        ${getCapDevCell(h3_dev, 'H3')}
+        ${getCapDevCell(l1_dev, 'X1')}
+        ${getCapDevCell(l2_dev, 'X2')}
+        ${getCapDevCell(l3_dev, 'X3')}
       </tr>
     `;
     const bDate = bushRec.date || bushRec.Date;
