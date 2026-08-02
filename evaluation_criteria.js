@@ -11,7 +11,7 @@ const EVALUATION_CRITERIA_DATA = [
     "row": 702,
     "category": "General Parts (Weight Score 5%)",
     "item": "Grounding Resistance",
-    "criteria": "< 1 Ohm",
+    "criteria": "< 1 Ω",
     "standard": "GPSC Criteria",
     "recommendation": "Score: 5/5 (Normal)"
   },
@@ -19,7 +19,7 @@ const EVALUATION_CRITERIA_DATA = [
     "row": 703,
     "category": "General Parts (Weight Score 5%)",
     "item": "Contact Resistance",
-    "criteria": "≤ 10 MicroOhm",
+    "criteria": "≤ 10 µΩ",
     "standard": "GPSC Criteria",
     "recommendation": "Score: 5/5 (Normal)"
   },
