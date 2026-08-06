@@ -802,14 +802,14 @@ function openDetail(no) {
     `;
     updateTestDate('ex-update-bushing', bushRec.date);
   } else {
-    // Standalone Mock Fallback
+    // Show '-' for all columns if no bushing data is recorded
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
         <td>OEM Criteria</td>
-        <td class="ex-status-good">+3.50%</td>
-        <td class="ex-status-good">+5.20%</td>
-        <td class="ex-status-good">+4.10%</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -817,15 +817,22 @@ function openDetail(no) {
       <tr>
         <td>%Error Capacitance (C1)</td>
         <td>OEM Criteria</td>
-        <td class="ex-status-good">+1.88%</td>
-        <td class="ex-status-good">+1.07%</td>
-        <td class="ex-status-good">+0.63%</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
       </tr>
     `;
-    updateTestDate('ex-update-bushing', item.dateToAssess);
+    const updateEl = document.getElementById('ex-update-bushing');
+    if (updateEl) {
+      updateEl.textContent = 'No Data';
+      updateEl.style.removeProperty('color');
+      updateEl.style.removeProperty('background-color');
+      updateEl.style.border = 'none';
+      updateEl.style.boxShadow = 'none';
+    }
   }
 
   // 4. Surge Arrester Mock Fallback
