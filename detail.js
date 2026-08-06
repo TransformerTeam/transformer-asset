@@ -190,15 +190,21 @@ function findLatestRecord(csvArray, targetSerial) {
 // Format DGA Date
 function formatDgaDate(dateStr) {
   if (!dateStr) return '-';
+  let d;
   if (dateStr instanceof Date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const day = String(dateStr.getDate()).padStart(2, '0');
-    const month = months[dateStr.getMonth()];
-    const year = String(dateStr.getFullYear()).slice(-2);
-    return `${day}-${month}-${year}`;
+    d = dateStr;
+  } else {
+    d = new Date(dateStr);
   }
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
+  if (isNaN(d.getTime())) {
+    // If it's not a valid date, clean up time part if any and return it
+    let clean = String(dateStr).trim();
+    if (clean.includes(' ')) {
+      clean = clean.split(' ')[0];
+    }
+    return clean;
+  }
+  
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const day = String(d.getDate()).padStart(2, '0');
   const month = months[d.getMonth()];
@@ -209,41 +215,68 @@ function formatDgaDate(dateStr) {
 // Robust date-parsing function that returns a Date object
 function parseDateRobust(dateStr) {
   if (!dateStr || dateStr === '-') return null;
-  const cleaned = String(dateStr).trim();
+  let cleaned = String(dateStr).trim();
   
+  // Strip off time component if present
+  if (cleaned.includes(' ')) {
+    cleaned = cleaned.split(' ')[0];
+  }
+  
+  // Try standard Date constructor first if it's a clean ISO or standard format
+  const parsed = Date.parse(cleaned);
+  if (!isNaN(parsed)) {
+    const d = new Date(parsed);
+    if (!isNaN(d.getTime())) return d;
+  }
+  
+  // Try simple slash format (e.g. DD/MM/YYYY or MM/DD/YYYY)
   if (cleaned.includes('/')) {
     const parts = cleaned.split('/');
-    if (parts[0].length === 4) {
-      return new Date(parts[0], parts[1] - 1, parts[2]);
-    }
-    if (parts[2] && parts[2].length === 4) {
-      return new Date(parts[2], parts[1] - 1, parts[0]);
+    if (parts.length === 3) {
+      const p0 = parseInt(parts[0]);
+      const p1 = parseInt(parts[1]);
+      let p2 = parseInt(parts[2]);
+      if (!isNaN(p0) && !isNaN(p1) && !isNaN(p2)) {
+        if (parts[0].length === 4) {
+          const d = new Date(p0, p1 - 1, p2);
+          if (!isNaN(d.getTime())) return d;
+        }
+        if (parts[2].length === 4) {
+          if (p0 > 12) { // Must be DD/MM/YYYY
+            const d = new Date(p2, p1 - 1, p0);
+            if (!isNaN(d.getTime())) return d;
+          } else { // Assume MM/DD/YYYY
+            const d = new Date(p2, p0 - 1, p1);
+            if (!isNaN(d.getTime())) return d;
+          }
+        }
+      }
     }
   }
   
+  // Try dash format (e.g. DD-MMM-YY)
   if (cleaned.includes('-')) {
     const parts = cleaned.split('-');
-    if (parts[0].length === 4) {
-      return new Date(parts[0], parts[1] - 1, parts[2]);
-    }
-    const months = {
-      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
-    };
-    if (parts[1]) {
-      const day = parseInt(parts[0]);
-      const month = months[parts[1].toLowerCase().substring(0, 3)];
-      let year = parseInt(parts[2]);
-      if (year < 100) {
-        year += year < 50 ? 2000 : 1900;
-      }
-      if (!isNaN(day) && month !== undefined && !isNaN(year)) {
-        return new Date(year, month, day);
+    if (parts.length === 3) {
+      const p0 = parseInt(parts[0]);
+      const p2 = parseInt(parts[2]);
+      const months = {
+        jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+      };
+      const monthPart = parts[1].toLowerCase().substring(0, 3);
+      if (months[monthPart] !== undefined) {
+        let year = p2;
+        if (year < 100) {
+          year += year < 50 ? 2000 : 1900;
+        }
+        if (!isNaN(p0) && !isNaN(year)) {
+          const d = new Date(year, months[monthPart], p0);
+          if (!isNaN(d.getTime())) return d;
+        }
       }
     }
   }
   
-  const parsed = Date.parse(cleaned);
-  if (!isNaN(parsed)) return new Date(parsed);
   return null;
 }
 
@@ -253,7 +286,12 @@ function updateTestDate(elId, rawDateStr) {
   if (!el) return;
 
   const dateObj = parseDateRobust(rawDateStr);
-  const formatted = dateObj ? formatDgaDate(dateObj) : (rawDateStr || '-');
+  
+  let cleanStr = String(rawDateStr || '-').trim();
+  if (cleanStr.includes(' ')) {
+    cleanStr = cleanStr.split(' ')[0];
+  }
+  const formatted = dateObj ? formatDgaDate(dateObj) : cleanStr;
   
   el.textContent = formatted;
   el.style.padding = '2px 6px';
