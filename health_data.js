@@ -116,20 +116,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-02-24"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4803321",
             "Date": "2025-11-04 00:00:00",
@@ -291,20 +278,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2024-03-06"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4902687",
             "Date": "2025-11-04 00:00:00",
@@ -466,20 +440,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2024-03-11"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5001769",
             "Date": "2025-11-04 00:00:00",
@@ -641,20 +602,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-02-26"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5101711",
             "Date": "2025-11-04 00:00:00",
@@ -816,20 +764,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "75",
             "Result_Date": "2024-02-28"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5201090",
             "Date": "2025-11-05 00:00:00",
@@ -991,20 +926,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2024-02-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5201091",
             "Date": "2023-11-13 00:00:00",
@@ -1294,18 +1216,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.09",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.42,
-            "h1_np_cap": 175.0,
-            "h2_np_pf": 0.43,
-            "h2_np_cap": 177.0,
-            "h3_np_pf": 0.41,
-            "h3_np_cap": 175.0,
-            "h0_np_pf": 0.42,
-            "h0_np_cap": 175.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4810106",
@@ -1596,18 +1512,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.87",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.41,
-            "h1_np_cap": 175.0,
-            "h2_np_pf": 0.42,
-            "h2_np_cap": 175.0,
-            "h3_np_pf": 0.41,
-            "h3_np_cap": 173.0,
-            "h0_np_pf": 0.42,
-            "h0_np_cap": 175.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4811735",
@@ -1961,18 +1871,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.97",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.22,
-            "h1_np_cap": 262.0,
-            "h2_np_pf": 0.21,
-            "h2_np_cap": 258.0,
-            "h3_np_pf": 0.21,
-            "h3_np_cap": 257.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0174B01",
@@ -2326,18 +2230,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.2",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.247,
-            "h1_np_cap": 252.5,
-            "h2_np_pf": 0.239,
-            "h2_np_cap": 249.1,
-            "h3_np_pf": 0.252,
-            "h3_np_cap": 252.7,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0225B01",
@@ -2628,18 +2526,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.2",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.46,
-            "h1_np_cap": 175.0,
-            "h2_np_pf": 0.45,
-            "h2_np_cap": 177.0,
-            "h3_np_pf": 0.43,
-            "h3_np_cap": 175.0,
-            "h0_np_pf": 0.45,
-            "h0_np_cap": 176.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5110021",
@@ -2930,18 +2822,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.65",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.44,
-            "h1_np_cap": 176.0,
-            "h2_np_pf": 0.45,
-            "h2_np_cap": 176.0,
-            "h3_np_pf": 0.45,
-            "h3_np_cap": 176.0,
-            "h0_np_pf": 0.44,
-            "h0_np_cap": 175.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5110022",
@@ -3295,18 +3181,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.68",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.27,
-            "h1_np_cap": 261.0,
-            "h2_np_pf": 0.26,
-            "h2_np_cap": 255.0,
-            "h3_np_pf": 0.28,
-            "h3_np_cap": 263.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0084B01",
@@ -3660,18 +3540,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.63",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.4,
-            "h1_np_cap": 165.0,
-            "h2_np_pf": 0.203,
-            "h2_np_cap": 253.0,
-            "h3_np_pf": 0.21,
-            "h3_np_cap": 255.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0102B01",
@@ -3897,20 +3771,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-02-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4803168",
             "Date": "2022-05-17 00:00:00",
@@ -4072,20 +3933,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "68",
             "Result_Date": "2024-03-06"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4803167",
             "Date": "2022-06-29 00:00:00",
@@ -4247,20 +4095,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2024-03-11"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5001766",
             "Date": "2025-11-04 00:00:00",
@@ -4422,20 +4257,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "63",
             "Result_Date": "2026-03-31"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5001700",
             "Date": "2023-11-13 00:00:00",
@@ -4597,20 +4419,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "43",
             "Result_Date": "2026-03-31"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5200523",
             "Date": "2023-11-13 00:00:00",
@@ -4772,20 +4581,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2024-02-28"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5200524",
             "Date": "2023-11-13 00:00:00",
@@ -4947,20 +4743,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "75",
             "Result_Date": "2026-03-31"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4912022",
             "Date": "2025-11-11 00:00:00",
@@ -5313,18 +5096,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4912023",
@@ -5678,18 +5455,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.8",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.43,
-            "h1_np_cap": 172.0,
-            "h2_np_pf": 0.44,
-            "h2_np_cap": 173.0,
-            "h3_np_pf": 0.43,
-            "h3_np_cap": 172.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4912019",
@@ -6043,18 +5814,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "5.45",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.43,
-            "h1_np_cap": 172.0,
-            "h2_np_pf": 0.44,
-            "h2_np_cap": 172.0,
-            "h3_np_pf": 0.43,
-            "h3_np_cap": 172.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4912020",
@@ -6408,18 +6173,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "5.39",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.44,
-            "h1_np_cap": 172.0,
-            "h2_np_pf": 0.42,
-            "h2_np_cap": 172.0,
-            "h3_np_pf": 0.42,
-            "h3_np_cap": 172.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4912021",
@@ -6773,18 +6532,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5000574",
@@ -7138,18 +6891,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5000575",
@@ -7503,18 +7250,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5000576",
@@ -7868,18 +7609,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5000577",
@@ -8233,18 +7968,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.24",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.45,
-            "h1_np_cap": 176.0,
-            "h2_np_pf": 0.45,
-            "h2_np_cap": 176.0,
-            "h3_np_pf": 0.45,
-            "h3_np_cap": 177.0,
-            "h0_np_pf": 0.45,
-            "h0_np_cap": 176.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5110023",
@@ -8598,18 +8327,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.4",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.204,
-            "h1_np_cap": 256.0,
-            "h2_np_pf": 0.203,
-            "h2_np_cap": 253.0,
-            "h3_np_pf": 0.45,
-            "h3_np_cap": 171.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0158B01",
@@ -8963,18 +8686,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.239,
-            "h1_np_cap": 261.1,
-            "h2_np_pf": 0.24,
-            "h2_np_cap": 256.8,
-            "h3_np_pf": 0.25,
-            "h3_np_cap": 256.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0181B01",
@@ -9200,20 +8917,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2026-04-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5102852",
             "Date": "2025-11-10 00:00:00",
@@ -9375,20 +9079,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2026-04-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5103176",
             "Date": "2025-11-10 00:00:00",
@@ -9550,20 +9241,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-04-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5103168",
             "Date": "2025-11-10 00:00:00",
@@ -9725,20 +9403,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-04-04"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5103169",
             "Date": "2025-11-10 00:00:00",
@@ -9900,20 +9565,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-04-04"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5103170",
             "Date": "2025-11-10 00:00:00",
@@ -10075,20 +9727,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-04-04"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5103171",
             "Date": "2025-11-10 00:00:00",
@@ -10378,18 +10017,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.33",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.42,
-            "h1_np_cap": 149.0,
-            "h2_np_pf": 0.43,
-            "h2_np_cap": 148.0,
-            "h3_np_pf": 0.44,
-            "h3_np_cap": 150.0,
-            "h0_np_pf": 0.42,
-            "h0_np_cap": 169.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "6110201",
@@ -10743,18 +10376,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.81",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.43,
-            "h1_np_cap": 149.0,
-            "h2_np_pf": 0.43,
-            "h2_np_cap": 149.0,
-            "h3_np_pf": 0.43,
-            "h3_np_cap": 149.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "6110202",
@@ -10980,20 +10607,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "67",
             "Result_Date": "2026-04-18"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6110203",
             "Date": "2025-11-17 00:00:00",
@@ -11218,20 +10832,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2026-04-18"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6110204",
             "Date": "2025-11-17 00:00:00",
@@ -11393,20 +10994,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2025-04-10"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6110245",
             "Date": "2025-11-17 00:00:00",
@@ -11568,20 +11156,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-02-04"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410137",
             "Date": "2025-10-08 00:00:00",
@@ -11743,20 +11318,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-04-19"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410130",
             "Date": "2025-10-08 00:00:00",
@@ -11918,20 +11480,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-04-19"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410131",
             "Date": "2025-10-08 00:00:00",
@@ -12093,20 +11642,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410132",
             "Date": "2025-10-07 00:00:00",
@@ -12396,18 +11932,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.83",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.41,
-            "h1_np_cap": 177.0,
-            "h2_np_pf": 0.4,
-            "h2_np_cap": 169.0,
-            "h3_np_pf": 0.4,
-            "h3_np_cap": 169.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4710348",
@@ -12761,18 +12291,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.45",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.49,
-            "h1_np_cap": 176.0,
-            "h2_np_pf": 0.48,
-            "h2_np_cap": 178.0,
-            "h3_np_pf": 0.49,
-            "h3_np_cap": 178.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4710349",
@@ -13063,18 +12587,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.2",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.23,
-            "h1_np_cap": 166.0,
-            "h2_np_pf": 0.24,
-            "h2_np_cap": 166.0,
-            "h3_np_pf": 0.23,
-            "h3_np_cap": 167.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "6310537",
@@ -13428,18 +12946,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.25",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.23,
-            "h1_np_cap": 167.0,
-            "h2_np_pf": 0.23,
-            "h2_np_cap": 166.0,
-            "h3_np_pf": 0.24,
-            "h3_np_cap": 168.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "6310535",
@@ -13665,20 +13177,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2023-03-20"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6310534",
             "Date": "2025-10-06 00:00:00",
@@ -13903,20 +13402,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2023-03-20"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6310536",
             "Date": "2025-10-06 00:00:00",
@@ -14269,18 +13755,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.4",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.496,
-            "h1_np_cap": 175.0,
-            "h2_np_pf": 0.45,
-            "h2_np_cap": 175.0,
-            "h3_np_pf": 0.464,
-            "h3_np_cap": 175.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "54002",
@@ -14634,18 +14114,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.65",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.46,
-            "h1_np_cap": 207.0,
-            "h2_np_pf": 0.42,
-            "h2_np_cap": 206.0,
-            "h3_np_pf": 0.42,
-            "h3_np_cap": 206.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "508038",
@@ -14999,18 +14473,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.65",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.31,
-            "h1_np_cap": 309.0,
-            "h2_np_pf": 0.31,
-            "h2_np_cap": 308.0,
-            "h3_np_pf": 0.31,
-            "h3_np_cap": 309.0,
-            "h0_np_pf": 0.31,
-            "h0_np_cap": 308.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "54001",
@@ -15236,20 +14704,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2024-09-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "383204884",
             "Date": "2025-10-07 00:00:00",
@@ -15411,20 +14866,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2021-08-26"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "383204886",
             "Date": "2025-10-07 00:00:00",
@@ -15586,20 +15028,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6611059",
             "Date": "2025-10-08 00:00:00",
@@ -15761,20 +15190,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6611060",
             "Date": "2025-10-08 00:00:00",
@@ -15936,20 +15352,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2023-09-19"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5310991",
             "Date": "2024-10-29 00:00:00",
@@ -16111,20 +15514,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2020-04-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3905095",
             "Date": "2026-10-16 00:00:00",
@@ -16286,20 +15676,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-10-24"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "56118448EE",
             "Date": "2025-10-16 00:00:00",
@@ -16461,20 +15838,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2019-10-26"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "50310092",
             "Date": "2025-10-08 00:00:00",
@@ -16636,20 +16000,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -16770,20 +16121,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -16904,20 +16242,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -17038,20 +16363,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -17172,20 +16484,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -17306,20 +16605,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410134",
             "Date": "2025-10-07 00:00:00",
@@ -17481,20 +16767,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410135",
             "Date": "2025-10-07 00:00:00",
@@ -17656,20 +16929,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6410136",
             "Date": "2025-10-07 00:00:00",
@@ -17831,20 +17091,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "96",
             "Result_Date": "2019-07-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -17965,20 +17212,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-07-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -18099,20 +17333,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-09-16"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -18233,20 +17454,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "96",
             "Result_Date": "2019-09-16"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -18367,20 +17575,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-09-16"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -18501,20 +17696,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-09-16"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -18635,20 +17817,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2023-03-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3011080055",
             "Date": "2025-10-16 00:00:00",
@@ -18810,20 +17979,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2020-09-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3011080056",
             "Date": "2025-10-17 00:00:00",
@@ -18985,20 +18141,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2026-01-22"
         },
-        "bushRec": {
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.25,
-            "h1_np_cap": 475.0,
-            "h2_np_pf": 0.25,
-            "h2_np_cap": 474.0,
-            "h3_np_pf": 0.24,
-            "h3_np_cap": 477.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "JD85034202",
             "Date": "2025-10-17 00:00:00",
@@ -19288,18 +18431,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "3.56",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "PASSONI VILLA",
-            "h2_mfg": "PASSONI VILLA",
-            "h3_mfg": "PASSONI VILLA",
-            "h0_mfg": "TRENCH(UK) LIMITED",
-            "h1_np_pf": 0.497,
-            "h1_np_cap": 403.0,
-            "h2_np_pf": 0.341,
-            "h2_np_cap": 362.8,
-            "h3_np_pf": 0.339,
-            "h3_np_cap": 365.1,
-            "h0_np_pf": 0.38,
-            "h0_np_cap": 929.0
+            "maxbl1_tand": "-18.26",
+            "maxbcl1_change": "-0.25",
+            "maxbl2_tand": "+5.00",
+            "maxbcl2_change": "-2.03",
+            "maxbl3_tand": "-10.51",
+            "maxbcl3_change": "-3.56"
         },
         "mtOilRec": {
             "Serial_No": "TP70279703",
@@ -19525,20 +18662,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-06-12"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5513053",
             "Date": "2025-10-17 00:00:00",
@@ -19763,20 +18887,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -19897,20 +19008,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20031,20 +19129,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20165,20 +19250,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20299,20 +19371,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20433,20 +19492,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20567,20 +19613,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20701,20 +19734,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20835,20 +19855,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -20969,20 +19976,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21103,20 +20097,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21237,20 +20218,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21371,20 +20339,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21505,20 +20460,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2019-10-02"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21639,20 +20581,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2021-05-27"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21773,20 +20702,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "92",
             "Result_Date": "2020-09-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -21907,20 +20823,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22041,20 +20944,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22117,20 +21007,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22193,20 +21070,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22269,20 +21133,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22345,20 +21196,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22421,20 +21259,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22497,20 +21322,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22573,20 +21385,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22649,20 +21448,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22725,20 +21511,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22801,20 +21574,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22877,20 +21637,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -22953,20 +21700,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23029,20 +21763,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23105,20 +21826,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23181,20 +21889,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23257,20 +21952,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23333,20 +22015,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23409,20 +22078,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23485,20 +22141,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23561,20 +22204,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23637,20 +22267,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23713,20 +22330,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23789,20 +22393,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23865,20 +22456,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -23999,20 +22577,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "T013001",
             "Date": "2022-06-28 00:00:00",
@@ -24174,20 +22739,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "T013007",
             "Date": "2022-06-28 00:00:00",
@@ -24349,20 +22901,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.43,
-            "h1_np_cap": 436.0,
-            "h2_np_pf": 0.43,
-            "h2_np_cap": 437.0,
-            "h3_np_pf": 0.43,
-            "h3_np_cap": 436.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "T012006",
             "Date": "2025-05-25 00:00:00",
@@ -24587,20 +23126,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.41,
-            "h1_np_cap": 433.0,
-            "h2_np_pf": 0.47,
-            "h2_np_cap": 437.0,
-            "h3_np_pf": 0.41,
-            "h3_np_cap": 432.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "T012023",
             "Date": "2025-05-09 00:00:00",
@@ -24825,20 +23351,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5217613",
             "Date": "2022-06-28 00:00:00",
@@ -25000,20 +23513,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5217612",
             "Date": "2022-06-28 00:00:00",
@@ -25175,20 +23675,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25309,20 +23796,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25443,20 +23917,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25577,20 +24038,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25711,20 +24159,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25845,20 +24280,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -25979,20 +24401,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "70",
             "Result_Date": "2024-01-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "EV9277_1",
             "Date": "2023-06-21 00:00:00",
@@ -26154,20 +24563,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "EV9277_2",
             "Date": "2023-06-21 00:00:00",
@@ -26457,18 +24853,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.32",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "Crompton Greaves",
-            "h2_mfg": "Crompton Greaves",
-            "h3_mfg": "Crompton Greaves",
-            "h0_mfg": "",
-            "h1_np_pf": 0.416,
-            "h1_np_cap": 293.1,
-            "h2_np_pf": 0.407,
-            "h2_np_cap": 292.8,
-            "h3_np_pf": 0.529,
-            "h3_np_cap": 285.1,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "ET8712/1",
@@ -26822,18 +25212,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "S&B Industries Limited",
-            "h2_mfg": "CG Power and Industrial Solution Limited",
-            "h3_mfg": "S&B Industries Limited",
-            "h0_mfg": "",
-            "h1_np_pf": 0.416,
-            "h1_np_cap": 278.6,
-            "h2_np_pf": 0.24,
-            "h2_np_cap": 304.6,
-            "h3_np_pf": 0.383,
-            "h3_np_cap": 280.9,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "ET8712_2",
@@ -27187,18 +25571,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.39",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "Crompton Greaves",
-            "h2_mfg": "Crompton Greaves",
-            "h3_mfg": "Crompton Greaves",
-            "h0_mfg": "",
-            "h1_np_pf": 0.505,
-            "h1_np_cap": 295.4,
-            "h2_np_pf": 0.505,
-            "h2_np_cap": 296.2,
-            "h3_np_pf": 0.489,
-            "h3_np_cap": 280.6,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "ET8713/1",
@@ -27424,20 +25802,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PP0091B01",
             "Date": "2023-06-21 00:00:00",
@@ -27662,20 +26027,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5710877",
             "Date": "2023-06-21 00:00:00",
@@ -27900,20 +26252,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-29"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "EDP004301",
             "Date": "2025-05-08 00:00:00",
@@ -28266,18 +26605,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.04",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.2,
-            "h1_np_cap": 250.0,
-            "h2_np_pf": 0.2,
-            "h2_np_cap": 250.0,
-            "h3_np_pf": 0.2,
-            "h3_np_cap": 250.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "EDP018401",
@@ -28503,20 +26836,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-25"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PP0041B01",
             "Date": "2025-05-08 00:00:00",
@@ -28741,20 +27061,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2024-01-29"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4700831",
             "Date": "2023-06-21 00:00:00",
@@ -28916,20 +27223,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2024-01-29"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4700830",
             "Date": "2023-02-09 00:00:00",
@@ -29091,20 +27385,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2024-01-29"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "O61539",
             "Date": "2023-06-21 00:00:00",
@@ -29266,20 +27547,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2020-04-17"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5710876",
             "Date": "2019-08-28 00:00:00",
@@ -29441,20 +27709,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PP0284B01",
             "Date": "2022-06-29 00:00:00",
@@ -29679,20 +27934,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PP0285B01",
             "Date": "2022-06-29 00:00:00",
@@ -30045,18 +28287,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.3665,
-            "h1_np_cap": 183.5,
-            "h2_np_pf": 0.254,
-            "h2_np_cap": 189.5,
-            "h3_np_pf": 0.271,
-            "h3_np_cap": 184.2,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "56016",
@@ -30282,20 +28518,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "54110640EE",
             "Date": "2022-06-29 00:00:00",
@@ -30457,20 +28680,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "54110641EE",
             "Date": "2022-06-29 00:00:00",
@@ -30632,20 +28842,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "54110621EE",
             "Date": "2022-06-29 00:00:00",
@@ -30807,20 +29004,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "54110620EE",
             "Date": "2022-06-29 00:00:00",
@@ -30982,20 +29166,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "97",
             "Result_Date": "2026-04-20"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "9624007",
             "Date": "2025-09-01 00:00:00",
@@ -31220,20 +29391,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "73",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5011858",
             "Date": "2025-09-22 00:00:00",
@@ -31458,20 +29616,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "225307",
             "Date": "2025-09-25 00:00:00",
@@ -31696,20 +29841,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "50",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "225308",
             "Date": "2025-09-25 00:00:00",
@@ -31934,20 +30066,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "67",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "9724074",
             "Date": "2025-09-24 00:00:00",
@@ -32172,20 +30291,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "53",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "9724076",
             "Date": "2025-09-23 00:00:00",
@@ -32410,20 +30516,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "9724075",
             "Date": "2025-09-23 00:00:00",
@@ -32648,20 +30741,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2026-04-20"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4711343",
             "Date": "2025-09-22 00:00:00",
@@ -32886,20 +30966,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4612314",
             "Date": "2025-09-22 00:00:00",
@@ -33124,20 +31191,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "VN00408",
             "Date": "2025-09-19 00:00:00",
@@ -33299,20 +31353,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-05-29"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "9640548",
             "Date": "2025-03-12 00:00:00",
@@ -33602,18 +31643,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "9640549",
@@ -33967,18 +32002,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.47,
-            "h1_np_cap": 162.0,
-            "h2_np_pf": 0.468,
-            "h2_np_cap": 162.0,
-            "h3_np_pf": 0.469,
-            "h3_np_cap": 162.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "57005",
@@ -34332,18 +32361,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "PASSONI VILLA",
-            "h2_mfg": "PASSONI VILLA",
-            "h3_mfg": "PASSONI VILLA",
-            "h0_mfg": "",
-            "h1_np_pf": 0.3,
-            "h1_np_cap": 298.3,
-            "h2_np_pf": 0.3,
-            "h2_np_cap": 297.9,
-            "h3_np_pf": 0.3,
-            "h3_np_cap": 297.7,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "5011857",
@@ -34569,20 +32592,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "TRENCH",
-            "h2_mfg": "TRENCH",
-            "h3_mfg": "TRENCH",
-            "h0_mfg": "",
-            "h1_np_pf": 0.23,
-            "h1_np_cap": 168.0,
-            "h2_np_pf": 0.23,
-            "h2_np_cap": 170.0,
-            "h3_np_pf": 0.23,
-            "h3_np_cap": 169.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6512362",
             "Date": "2025-09-25 00:00:00",
@@ -34807,20 +32817,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-20"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6512363",
             "Date": "2025-09-25 00:00:00",
@@ -35045,20 +33042,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "95",
             "Result_Date": "2025-04-22"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "57011",
             "Date": "2025-09-24 00:00:00",
@@ -35411,18 +33395,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.46,
-            "h1_np_cap": 163.0,
-            "h2_np_pf": 0.46,
-            "h2_np_cap": 163.0,
-            "h3_np_pf": 0.46,
-            "h3_np_cap": 163.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "57012",
@@ -35776,18 +33754,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.56",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.49,
-            "h1_np_cap": 254.0,
-            "h2_np_pf": 0.48,
-            "h2_np_cap": 268.0,
-            "h3_np_pf": 0.36,
-            "h3_np_cap": 285.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0050B01",
@@ -36141,18 +34113,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PP0016B01",
@@ -36506,18 +34472,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "0.6",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "TRENCH",
-            "h1_np_pf": 0.35,
-            "h1_np_cap": 271.1,
-            "h2_np_pf": 0.37,
-            "h2_np_cap": 279.4,
-            "h3_np_pf": 0.37,
-            "h3_np_cap": 280.5,
-            "h0_np_pf": 0.41,
-            "h0_np_cap": 205.0
+            "maxbl1_tand": "-1.92",
+            "maxbcl1_change": "+0.74",
+            "maxbl2_tand": "-14.19",
+            "maxbcl2_change": "+0.64",
+            "maxbl3_tand": "-17.81",
+            "maxbcl3_change": "+0.60"
         },
         "mtOilRec": {
             "Serial_No": "20083122TIC003",
@@ -36871,18 +34831,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "2.09",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "TRENCH",
-            "h1_np_pf": 0.37,
-            "h1_np_cap": 278.53,
-            "h2_np_pf": 0.39,
-            "h2_np_cap": 279.66,
-            "h3_np_pf": 0.38,
-            "h3_np_cap": 274.66,
-            "h0_np_pf": 0.41,
-            "h0_np_cap": 205.0
+            "maxbl1_tand": "-4.84",
+            "maxbcl1_change": "+0.69",
+            "maxbl2_tand": "-4.00",
+            "maxbcl2_change": "+0.61",
+            "maxbl3_tand": "-2.33",
+            "maxbcl3_change": "+0.69"
         },
         "mtOilRec": {
             "Serial_No": "20083122TIC008",
@@ -37236,18 +35190,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.68",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.36,
-            "h1_np_cap": 656.0,
-            "h2_np_pf": 0.35,
-            "h2_np_cap": 655.0,
-            "h3_np_pf": 0.35,
-            "h3_np_cap": 653.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "+38.25",
+            "maxbcl1_change": "-1.34",
+            "maxbl2_tand": "+28.19",
+            "maxbcl2_change": "-1.16",
+            "maxbl3_tand": "+32.68",
+            "maxbcl3_change": "-1.15"
         },
         "mtOilRec": {
             "Serial_No": "510049",
@@ -37601,18 +35549,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "2.46",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "PASSONI VILLA",
-            "h2_mfg": "PASSONI VILLA",
-            "h3_mfg": "PASSONI VILLA",
-            "h0_mfg": "",
-            "h1_np_pf": 0.301,
-            "h1_np_cap": 589.2,
-            "h2_np_pf": 0.301,
-            "h2_np_cap": 588.3,
-            "h3_np_pf": 0.301,
-            "h3_np_cap": 593.1,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "+3.78",
+            "maxbcl1_change": "-0.28",
+            "maxbl2_tand": "+3.89",
+            "maxbcl2_change": "-0.52",
+            "maxbl3_tand": "-0.26",
+            "maxbcl3_change": "-0.57"
         },
         "mtOilRec": {
             "Serial_No": "PTE 1689/01",
@@ -37966,18 +35908,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "3.43",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "PASSONI VILLA",
-            "h2_mfg": "PASSONI VILLA",
-            "h3_mfg": "PASSONI VILLA",
-            "h0_mfg": "",
-            "h1_np_pf": 0.301,
-            "h1_np_cap": 590.1,
-            "h2_np_pf": 0.301,
-            "h2_np_cap": 591.4,
-            "h3_np_pf": 0.308,
-            "h3_np_cap": 591.8,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-7.62",
+            "maxbcl1_change": "-1.73",
+            "maxbl2_tand": "-9.52",
+            "maxbcl2_change": "-0.71",
+            "maxbl3_tand": "-12.33",
+            "maxbcl3_change": "-2.98"
         },
         "mtOilRec": {
             "Serial_No": "PTE 1689/02",
@@ -38331,18 +36267,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "2.27",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "PASSONI VILLA",
-            "h2_mfg": "PASSONI VILLA",
-            "h3_mfg": "PASSONI VILLA",
-            "h0_mfg": "",
-            "h1_np_pf": 0.29,
-            "h1_np_cap": 592.2,
-            "h2_np_pf": 0.321,
-            "h2_np_cap": 589.9,
-            "h3_np_pf": 0.302,
-            "h3_np_cap": 590.3,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "+3.57",
+            "maxbcl1_change": "+0.05",
+            "maxbl2_tand": "+13.79",
+            "maxbcl2_change": "+0.40",
+            "maxbl3_tand": "+10.47",
+            "maxbcl3_change": "+0.19"
         },
         "mtOilRec": {
             "Serial_No": "PTE 1689/03",
@@ -38696,18 +36626,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "2.86",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "Pani villa",
-            "h2_mfg": "Pani villa",
-            "h3_mfg": "Pani villa",
-            "h0_mfg": "",
-            "h1_np_pf": 0.295,
-            "h1_np_cap": 587.5,
-            "h2_np_pf": 0.312,
-            "h2_np_cap": 590.5,
-            "h3_np_pf": 0.32,
-            "h3_np_cap": 593.8,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "+32.92",
+            "maxbcl1_change": "-0.37",
+            "maxbl2_tand": "+37.39",
+            "maxbcl2_change": "-0.46",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "PTE 1689/04",
@@ -39061,18 +36985,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.05",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.36,
-            "h1_np_cap": 304.0,
-            "h2_np_pf": 0.36,
-            "h2_np_cap": 305.0,
-            "h3_np_pf": 0.36,
-            "h3_np_cap": 306.0,
-            "h0_np_pf": 0.246,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "EDP008001",
@@ -39426,18 +37344,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.01",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.36,
-            "h1_np_cap": 307.0,
-            "h2_np_pf": 0.36,
-            "h2_np_cap": 307.0,
-            "h3_np_pf": 0.36,
-            "h3_np_cap": 307.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "EDP011601",
@@ -39791,18 +37703,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.59",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "ABB",
-            "h1_np_pf": 0.42,
-            "h1_np_cap": 171.0,
-            "h2_np_pf": 0.43,
-            "h2_np_cap": 175.0,
-            "h3_np_pf": 0.42,
-            "h3_np_cap": 176.0,
-            "h0_np_pf": 0.43,
-            "h0_np_cap": 175.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "512033",
@@ -40028,20 +37934,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "73",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBE0580",
             "Date": "2018-03-22 00:00:00",
@@ -40203,20 +38096,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "73",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBE0579",
             "Date": "2018-03-23 00:00:00",
@@ -40378,20 +38258,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -40512,20 +38379,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "84",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -40646,20 +38500,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBJ1200",
             "Date": "2025-09-23 00:00:00",
@@ -40821,20 +38662,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBJ1198",
             "Date": "2025-09-23 00:00:00",
@@ -40996,20 +38824,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "40",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBK1325",
             "Date": "2025-09-25 00:00:00",
@@ -41171,20 +38986,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "73",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PBL1465",
             "Date": "2024-02-19 00:00:00",
@@ -41346,20 +39148,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2025-04-23"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3911888",
             "Date": "2025-09-18 00:00:00",
@@ -41521,20 +39310,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4010922",
             "Date": "2025-09-18 00:00:00",
@@ -41696,20 +39472,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-04-23"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4010291",
             "Date": "2025-09-16 00:00:00",
@@ -41871,20 +39634,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "90",
             "Result_Date": "2025-04-23"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4010290",
             "Date": "2025-09-16 00:00:00",
@@ -42046,20 +39796,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "85",
             "Result_Date": "2025-04-23"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "5513260",
             "Date": "2025-09-18 00:00:00",
@@ -42221,20 +39958,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "60",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "53105200EE",
             "Date": "2025-09-22 00:00:00",
@@ -42396,20 +40120,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "98",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "48310781",
             "Date": "2025-09-22 00:00:00",
@@ -42571,20 +40282,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "75",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "225309",
             "Date": "2025-09-25 00:00:00",
@@ -42746,20 +40444,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "83",
             "Result_Date": "2025-03-03"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "225310",
             "Date": "2025-09-25 00:00:00",
@@ -42863,20 +40548,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -42939,20 +40611,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -43073,20 +40732,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4104759",
             "Date": "2025-09-24 00:00:00",
@@ -43248,20 +40894,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "60",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4104758",
             "Date": "2025-12-24 00:00:00",
@@ -43423,20 +41056,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "60",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4104077",
             "Date": "2025-09-24 00:00:00",
@@ -43598,20 +41218,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "60",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4104453",
             "Date": "2025-09-24 00:00:00",
@@ -43715,20 +41322,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -43849,20 +41443,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "63",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PCL1429",
             "Date": "2025-09-24 00:00:00",
@@ -44024,20 +41605,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "PCD0277",
             "Date": "2017-06-21 00:00:00",
@@ -44199,20 +41767,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "36",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "K757927",
             "Date": "2020-05-20 00:00:00",
@@ -44374,20 +41929,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "36",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "K757926",
             "Date": "2020-05-20 00:00:00",
@@ -44549,20 +42091,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -44683,20 +42212,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "64",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -44817,20 +42333,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -44951,20 +42454,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45085,20 +42575,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45219,20 +42696,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45353,20 +42817,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45487,20 +42938,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "80",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45621,20 +43059,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45755,20 +43180,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -45889,20 +43301,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "88",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46023,20 +43422,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46157,20 +43543,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "63",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "FC203816",
             "Date": "2019-05-08 00:00:00",
@@ -46332,20 +43705,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "68",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46466,20 +43826,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "68",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46600,20 +43947,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "36",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46734,20 +44068,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46868,20 +44189,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "72",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -46944,20 +44252,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6210508",
             "Date": "2023-04-11 00:00:00",
@@ -47061,20 +44356,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6210509",
             "Date": "2023-04-11 00:00:00",
@@ -47236,20 +44518,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "56",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -47370,20 +44639,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "84",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -47504,20 +44760,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "96",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -47580,20 +44823,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -47714,20 +44944,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "100",
             "Result_Date": "2025-04-09"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4202021",
             "Date": "2019-03-04 00:00:00",
@@ -48017,18 +45234,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "1.24",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.33,
-            "h1_np_cap": 307.0,
-            "h2_np_pf": 0.34,
-            "h2_np_cap": 312.0,
-            "h3_np_pf": 0.33,
-            "h3_np_cap": 307.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "6012333",
@@ -48254,20 +45465,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2024-02-01"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "6110289",
             "Date": "2025-09-19 00:00:00",
@@ -48429,20 +45627,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "93",
             "Result_Date": "2021-05-17"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "4011560",
             "Date": "2025-09-24 00:00:00",
@@ -48667,20 +45852,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "0",
             "Result_Date": ""
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -48743,20 +45915,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -48819,20 +45978,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -48895,20 +46041,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -48971,20 +46104,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     },
@@ -49105,20 +46225,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "75",
             "Result_Date": "2022-11-30"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3710737",
             "Date": "2023-03-10 00:00:00",
@@ -49280,20 +46387,7 @@ const HEALTH_INDEX_DATA = [
             "HI": "53",
             "Result_Date": "2022-11-30"
         },
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": {
             "Serial_No": "3710738",
             "Date": "2023-03-10 00:00:00",
@@ -49583,18 +46677,12 @@ const HEALTH_INDEX_DATA = [
             "maxbch3_change": "",
             "maxbh0_tand": "",
             "maxbch0_change": "",
-            "h1_mfg": "ABB",
-            "h2_mfg": "ABB",
-            "h3_mfg": "ABB",
-            "h0_mfg": "",
-            "h1_np_pf": 0.35,
-            "h1_np_cap": 308.0,
-            "h2_np_pf": 0.34,
-            "h2_np_cap": 309.0,
-            "h3_np_pf": 0.36,
-            "h3_np_cap": 319.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
+            "maxbl1_tand": "-",
+            "maxbcl1_change": "-",
+            "maxbl2_tand": "-",
+            "maxbcl2_change": "-",
+            "maxbl3_tand": "-",
+            "maxbcl3_change": "-"
         },
         "mtOilRec": {
             "Serial_No": "4710346",
@@ -49699,20 +46787,7 @@ const HEALTH_INDEX_DATA = [
         "nextPM": "",
         "recommendation": "Routine Inspection & Maintenance.",
         "trInfo": null,
-        "bushRec": {
-            "h1_mfg": "",
-            "h2_mfg": "",
-            "h3_mfg": "",
-            "h0_mfg": "",
-            "h1_np_pf": 0.0,
-            "h1_np_cap": 0.0,
-            "h2_np_pf": 0.0,
-            "h2_np_cap": 0.0,
-            "h3_np_pf": 0.0,
-            "h3_np_cap": 0.0,
-            "h0_np_pf": 0.0,
-            "h0_np_cap": 0.0
-        },
+        "bushRec": null,
         "mtOilRec": null,
         "oltcRec": null
     }

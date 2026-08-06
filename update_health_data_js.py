@@ -110,72 +110,39 @@ def convert_csv_to_js():
             mt_oil_match = find_latest_record(mt_oil_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
             oltc_match = find_latest_record(oltc_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
 
-            # Look up bushing manufacturers for each phase from BushingInfo.csv
-            h1_mfg, h2_mfg, h3_mfg, h0_mfg = '', '', '', ''
-            h1_np_pf, h1_np_cap = 0.0, 0.0
-            h2_np_pf, h2_np_cap = 0.0, 0.0
-            h3_np_pf, h3_np_cap = 0.0, 0.0
-            h0_np_pf, h0_np_cap = 0.0, 0.0
-
-            bushing_info_rows = [r for r in bushing_info_recs if ''.join(c for c in str(r.get('Parent_Serial_No') or '') if c.isalnum()).lower() == ''.join(c for c in serial_str if c.isalnum()).lower()]
-            if bushing_info_rows:
-                h1_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H1'), '')
-                h2_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H2'), '')
-                h3_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H3'), '')
-                h0_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H0'), '')
-
-                def get_np(r, pf_keys, cap_keys):
-                    pf = 0.0
-                    for k in pf_keys:
-                        if r.get(k):
-                            try:
-                                pf = float(r[k])
-                                break
-                            except ValueError:
-                                pass
-                    cap = 0.0
-                    for k in cap_keys:
-                        if r.get(k):
-                            try:
-                                cap = float(r[k])
-                                break
-                            except ValueError:
-                                pass
-                    return pf, cap
-
-                h1_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H1'), None)
-                if h1_row: h1_np_pf, h1_np_cap = get_np(h1_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
-
-                h2_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H2'), None)
-                if h2_row: h2_np_pf, h2_np_cap = get_np(h2_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
-
-                h3_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H3'), None)
-                if h3_row: h3_np_pf, h3_np_cap = get_np(h3_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
-
-                h0_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H0'), None)
-                if h0_row: h0_np_pf, h0_np_cap = get_np(h0_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
-
             if bushing_match:
-                bushing_match['h1_mfg'] = h1_mfg
-                bushing_match['h2_mfg'] = h2_mfg
-                bushing_match['h3_mfg'] = h3_mfg
-                bushing_match['h0_mfg'] = h0_mfg
-                bushing_match['h1_np_pf'] = h1_np_pf
-                bushing_match['h1_np_cap'] = h1_np_cap
-                bushing_match['h2_np_pf'] = h2_np_pf
-                bushing_match['h2_np_cap'] = h2_np_cap
-                bushing_match['h3_np_pf'] = h3_np_pf
-                bushing_match['h3_np_cap'] = h3_np_cap
-                bushing_match['h0_np_pf'] = h0_np_pf
-                bushing_match['h0_np_cap'] = h0_np_cap
-            else:
-                bushing_match = {
-                    'h1_mfg': h1_mfg, 'h2_mfg': h2_mfg, 'h3_mfg': h3_mfg, 'h0_mfg': h0_mfg,
-                    'h1_np_pf': h1_np_pf, 'h1_np_cap': h1_np_cap,
-                    'h2_np_pf': h2_np_pf, 'h2_np_cap': h2_np_cap,
-                    'h3_np_pf': h3_np_pf, 'h3_np_cap': h3_np_cap,
-                    'h0_np_pf': h0_np_pf, 'h0_np_cap': h0_np_cap
-                }
+                np_rows = [r for r in bushing_info_recs if str(r.get('Parent_Serial_No') or '').strip().lower() == serial_str.strip().lower()]
+                phases = [
+                    ('X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', 'maxbl1_tand', 'maxbcl1_change'),
+                    ('X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', 'maxbl2_tand', 'maxbcl2_change'),
+                    ('X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', 'maxbl3_tand', 'maxbcl3_change'),
+                ]
+                for ph_label, pf20_key, pf_key, cap_key, out_pf_err, out_cap_err in phases:
+                    np_row = next((r for r in np_rows if str(r.get('Phase') or '').strip().upper() == ph_label), None)
+                    if np_row:
+                        try:
+                            pf20 = float(bushing_match.get(pf20_key) or bushing_match.get(pf_key) or 0)
+                            np_pf = float(np_row.get('Meas_PF_C1') or np_row.get('Corr_PF') or 0)
+                            if np_pf > 0 and pf20 > 0:
+                                pf_err_val = ((pf20 - np_pf) / np_pf) * 100
+                                bushing_match[out_pf_err] = f"{pf_err_val:+.2f}"
+                            else:
+                                bushing_match[out_pf_err] = '-'
+                        except Exception:
+                            bushing_match[out_pf_err] = '-'
+                        try:
+                            cap = float(bushing_match.get(cap_key) or 0)
+                            np_cap = float(np_row.get('Capacitance_C1') or 0)
+                            if np_cap > 0 and cap > 0:
+                                cap_err_val = ((cap - np_cap) / np_cap) * 100
+                                bushing_match[out_cap_err] = f"{cap_err_val:+.2f}"
+                            else:
+                                bushing_match[out_cap_err] = '-'
+                        except Exception:
+                            bushing_match[out_cap_err] = '-'
+                    else:
+                        bushing_match[out_pf_err] = '-'
+                        bushing_match[out_cap_err] = '-'
 
             item = {
                 "no": idx,

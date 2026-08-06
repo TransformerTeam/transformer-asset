@@ -4,6 +4,7 @@
 let assessmentData = [];
 let trInfoCsvData = [];
 let bushingPfCsvData = [];
+let bushingInfoCsvData = [];
 let mtOilCsvData = [];
 let mainTankDgaCsvData = [];
 let oltcOilCsvData = [];
@@ -364,6 +365,7 @@ function loadAllTestDataCSVs() {
     },
     { url: 'TestData/TRinfo2.csv', target: d => trInfoCsvData = d },
     { url: 'TestData/BushingPFData.csv', target: d => bushingPfCsvData = d },
+    { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
     { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
     { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
@@ -597,19 +599,46 @@ function openDetail(no) {
   };
 
   if (bushRec) {
-    const h1_pf_err = bushRec.maxbh1_tand || '-';
-    const h2_pf_err = bushRec.maxbh2_tand || '-';
-    const h3_pf_err = bushRec.maxbh3_tand || '-';
-    const l1_pf_err = '-';
-    const l2_pf_err = '-';
-    const l3_pf_err = '-';
+    let h1_pf_err = bushRec.maxbh1_tand || '-';
+    let h2_pf_err = bushRec.maxbh2_tand || '-';
+    let h3_pf_err = bushRec.maxbh3_tand || '-';
+    let l1_pf_err = bushRec.maxbl1_tand || '-';
+    let l2_pf_err = bushRec.maxbl2_tand || '-';
+    let l3_pf_err = bushRec.maxbl3_tand || '-';
 
-    const h1_cap_err = bushRec.maxbch1_change || '-';
-    const h2_cap_err = bushRec.maxbch2_change || '-';
-    const h3_cap_err = bushRec.maxbch3_change || '-';
-    const l1_cap_err = '-';
-    const l2_cap_err = '-';
-    const l3_cap_err = '-';
+    let h1_cap_err = bushRec.maxbch1_change || '-';
+    let h2_cap_err = bushRec.maxbch2_change || '-';
+    let h3_cap_err = bushRec.maxbch3_change || '-';
+    let l1_cap_err = bushRec.maxbcl1_change || '-';
+    let l2_cap_err = bushRec.maxbcl2_change || '-';
+    let l3_cap_err = bushRec.maxbcl3_change || '-';
+
+    if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData && bushingInfoCsvData.length > 0) {
+      const np_rows = bushingInfoCsvData.filter(r => String(r.Parent_Serial_No || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
+      const phases = [
+        ['H1', 'bushing_h1_pf_20c', 'bushing_h1_pf_tan', 'bushing_h1_c1', (val) => { h1_pf_err = val; }, (val) => { h1_cap_err = val; }],
+        ['H2', 'bushing_h2_pf_20c', 'bushing_h2_pf_tan', 'bushing_h2_c1', (val) => { h2_pf_err = val; }, (val) => { h2_cap_err = val; }],
+        ['H3', 'bushing_h3_pf_20c', 'bushing_h3_pf_tan', 'bushing_h3_c1', (val) => { h3_pf_err = val; }, (val) => { h3_cap_err = val; }],
+        ['X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', (val) => { l1_pf_err = val; }, (val) => { l1_cap_err = val; }],
+        ['X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', (val) => { l2_pf_err = val; }, (val) => { l2_cap_err = val; }],
+        ['X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', (val) => { l3_pf_err = val; }, (val) => { l3_cap_err = val; }]
+      ];
+      phases.forEach(([ph_label, pf20_key, pf_key, cap_key, set_pf, set_cap]) => {
+        const np_row = np_rows.find(r => String(r.Phase || '').trim().toUpperCase() === ph_label);
+        if (np_row) {
+          const pf20 = parseFloat(bushRec[pf20_key] || bushRec[pf_key] || 0);
+          const np_pf = parseFloat(np_row.Meas_PF_C1 || np_row.Corr_PF || 0);
+          if (np_pf > 0 && pf20 > 0) {
+            set_pf(((pf20 - np_pf) / np_pf) * 100);
+          }
+          const cap = parseFloat(bushRec[cap_key] || 0);
+          const np_cap = parseFloat(np_row.Capacitance_C1 || 0);
+          if (np_cap > 0 && cap > 0) {
+            set_cap(((cap - np_cap) / np_cap) * 100);
+          }
+        }
+      });
+    }
 
     bushBody.innerHTML = `
       <tr>
