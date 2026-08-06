@@ -1590,7 +1590,7 @@ header p {
 
 .excel-body {
   display: grid !important;
-  grid-template-columns: minmax(0, 20fr) minmax(0, 51fr) minmax(0, 29fr) !important;
+  grid-template-columns: minmax(0, 20fr) minmax(0, 47fr) minmax(0, 33fr) !important;
   gap: 10px !important;
   padding: 10px !important;
   overflow-y: auto !important;
@@ -1657,12 +1657,12 @@ header p {
 .excel-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .excel-table th, .excel-table td {
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 4px 6px;
+  padding: 3px 4px;
   text-align: left;
   vertical-align: middle;
   color: #ffffff;
@@ -1810,15 +1810,15 @@ header p {
 }
 
 /* Bushing & Surge Arrester Table Column Alignment */
-.test-table th:first-child,
-.test-table td:first-child {
+.test-table:not(.oil-table) th:first-child,
+.test-table:not(.oil-table) td:first-child {
   width: 145px !important;
   min-width: 135px !important;
   white-space: nowrap !important;
 }
 
-.test-table th:nth-child(2),
-.test-table td:nth-child(2) {
+.test-table:not(.oil-table) th:nth-child(2),
+.test-table:not(.oil-table) td:nth-child(2) {
   width: 100px !important;
   min-width: 100px !important;
   max-width: 100px !important;
