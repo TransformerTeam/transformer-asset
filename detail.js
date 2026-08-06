@@ -495,7 +495,7 @@ function openDetail(no) {
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
-        <td>Change < 50%</td>
+        <td>Change < 1.5 times</td>
         ${getErrCell(h1_pf_err, getBushingPfErrClass)}
         ${getErrCell(h2_pf_err, getBushingPfErrClass)}
         ${getErrCell(h3_pf_err, getBushingPfErrClass)}
@@ -523,7 +523,7 @@ function openDetail(no) {
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
-        <td>Change < 50%</td>
+        <td>Change < 1.5 times</td>
         <td class="ex-status-good">+3.50%</td>
         <td class="ex-status-good">+5.20%</td>
         <td class="ex-status-good">+4.10%</td>
