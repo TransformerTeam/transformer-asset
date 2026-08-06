@@ -190,6 +190,13 @@ function findLatestRecord(csvArray, targetSerial) {
 // Format DGA Date
 function formatDgaDate(dateStr) {
   if (!dateStr) return '-';
+  if (dateStr instanceof Date) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const day = String(dateStr.getDate()).padStart(2, '0');
+    const month = months[dateStr.getMonth()];
+    const year = String(dateStr.getFullYear()).slice(-2);
+    return `${day}-${month}-${year}`;
+  }
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -197,6 +204,80 @@ function formatDgaDate(dateStr) {
   const month = months[d.getMonth()];
   const year = String(d.getFullYear()).slice(-2);
   return `${day}-${month}-${year}`;
+}
+
+// Robust date-parsing function that returns a Date object
+function parseDateRobust(dateStr) {
+  if (!dateStr || dateStr === '-') return null;
+  const cleaned = String(dateStr).trim();
+  
+  if (cleaned.includes('/')) {
+    const parts = cleaned.split('/');
+    if (parts[0].length === 4) {
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+    if (parts[2] && parts[2].length === 4) {
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+  }
+  
+  if (cleaned.includes('-')) {
+    const parts = cleaned.split('-');
+    if (parts[0].length === 4) {
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+    const months = {
+      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+    };
+    if (parts[1]) {
+      const day = parseInt(parts[0]);
+      const month = months[parts[1].toLowerCase().substring(0, 3)];
+      let year = parseInt(parts[2]);
+      if (year < 100) {
+        year += year < 50 ? 2000 : 1900;
+      }
+      if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+        return new Date(year, month, day);
+      }
+    }
+  }
+  
+  const parsed = Date.parse(cleaned);
+  if (!isNaN(parsed)) return new Date(parsed);
+  return null;
+}
+
+// Utility to set test date element with color-coding
+function updateTestDate(elId, rawDateStr) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+
+  const dateObj = parseDateRobust(rawDateStr);
+  const formatted = dateObj ? formatDgaDate(dateObj) : (rawDateStr || '-');
+  
+  el.textContent = formatted;
+  el.style.padding = '2px 6px';
+  el.style.borderRadius = '4px';
+  el.style.fontWeight = 'bold';
+  el.style.display = 'inline-block';
+
+  if (dateObj) {
+    const today = new Date();
+    const diffTime = Math.abs(today - dateObj);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const threeYearsInDays = 3 * 365.25;
+
+    if (diffDays <= threeYearsInDays) {
+      el.style.setProperty('color', '#10b981', 'important');
+      el.style.setProperty('background-color', 'rgba(16, 185, 129, 0.15)', 'important');
+    } else {
+      el.style.setProperty('color', '#eab308', 'important');
+      el.style.setProperty('background-color', 'rgba(234, 179, 8, 0.15)', 'important');
+    }
+  } else {
+    el.style.removeProperty('color');
+    el.style.removeProperty('background-color');
+  }
 }
 
 // Duval 1 Evaluation
@@ -514,10 +595,7 @@ function openDetail(no) {
         ${getErrCell(l3_cap_err, getBushingCapErrClass)}
       </tr>
     `;
-    const dateEl = document.getElementById('ex-update-bushing');
-    if (dateEl) {
-      dateEl.textContent = `Updated tests: ${formatDgaDate(bushRec.date)}`;
-    }
+    updateTestDate('ex-update-bushing', bushRec.date);
   } else {
     // Standalone Mock Fallback
     bushBody.innerHTML = `
@@ -542,15 +620,13 @@ function openDetail(no) {
         <td>-</td>
       </tr>
     `;
-    const dateEl = document.getElementById('ex-update-bushing');
-    if (dateEl) {
-      dateEl.textContent = `Updated tests: ${item.dateToAssess}`;
-    }
+    updateTestDate('ex-update-bushing', item.dateToAssess);
   }
 
   // 4. Surge Arrester Mock Fallback
   const saBody = document.getElementById('ex-arrester-rows');
   if (saBody) {
+    updateTestDate('ex-update-arrester', item.dateToAssess);
     saBody.innerHTML = `
       <tr>
         <td>Insulation Resistance (MΩ)</td>
@@ -695,7 +771,7 @@ function openDetail(no) {
       </tr>
     `;
   }
-  setElTxt('ex-update-active', `Updated tests: ${item.dateToAssess}`);
+  updateTestDate('ex-update-active', item.dateToAssess);
 
   // 6. Main Tank DGA
   const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
@@ -717,25 +793,7 @@ function openDetail(no) {
 
   if (latestDGA) {
     const dgaDateStr = latestDGA.date || latestDGA.Date || '';
-    const formattedDate = formatDgaDate(dgaDateStr);
-    let isOverOneYear = true;
-    if (dgaDateStr) {
-      const testDate = new Date(dgaDateStr);
-      if (!isNaN(testDate.getTime())) {
-        const today = new Date();
-        const diffDays = Math.abs(today - testDate) / (1000 * 60 * 60 * 24);
-        isOverOneYear = diffDays > 365;
-      }
-    }
-    const dateEl = document.getElementById('ex-update-dga');
-    if (dateEl) {
-      dateEl.textContent = formattedDate;
-      dateEl.style.padding = '2px 6px';
-      dateEl.style.borderRadius = '4px';
-      dateEl.style.fontWeight = 'normal';
-      dateEl.style.setProperty('background-color', isOverOneYear ? 'rgba(249, 115, 22, 0.15)' : 'rgba(16, 185, 129, 0.15)', 'important');
-      dateEl.style.setProperty('color', isOverOneYear ? '#f97316' : '#10b981', 'important');
-    }
+    updateTestDate('ex-update-dga', dgaDateStr);
 
     const h2 = latestDGA.H2 || latestDGA.h2 || '-';
     const ch4 = latestDGA.CH4 || latestDGA.ch4 || '-';
@@ -902,15 +960,7 @@ function openDetail(no) {
     colorGasCell('ex-dga-co2', '1240', 5500);
     colorGasCell('ex-dga-tdcg', '163', 720);
 
-    const dateEl = document.getElementById('ex-update-dga');
-    if (dateEl) {
-      dateEl.textContent = formatDgaDate(item.dateToAssess);
-      dateEl.style.padding = '2px 6px';
-      dateEl.style.borderRadius = '4px';
-      dateEl.style.fontWeight = 'normal';
-      dateEl.style.setProperty('background-color', 'rgba(16, 185, 129, 0.15)', 'important');
-      dateEl.style.setProperty('color', '#10b981', 'important');
-    }
+    updateTestDate('ex-update-dga', item.dateToAssess);
 
     document.getElementById('ex-dga-duval1').textContent = 'Normal';
     document.getElementById('ex-dga-duval1').style.color = '#10b981';
@@ -1002,7 +1052,7 @@ function openDetail(no) {
       <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td><td>${passivatorVal}</td><td>ppm</td></tr>
     `;
 
-    document.getElementById('ex-update-oil').textContent = `Updated tests: ${formatDgaDate(mtOilRec.Date || mtOilRec.date)}`;
+    updateTestDate('ex-update-oil', mtOilRec.Date || mtOilRec.date);
   } else {
     // Standalone Mock Fallback
     physicalBody.innerHTML = `
@@ -1029,7 +1079,7 @@ function openDetail(no) {
       <tr><td>Corrosive Sulfur</td><td>DIN 51353</td><td>Non-Corrosive</td><td>-</td></tr>
       <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td><td>-</td><td>ppm</td></tr>
     `;
-    document.getElementById('ex-update-oil').textContent = `Updated tests: ${item.dateToAssess}`;
+    updateTestDate('ex-update-oil', item.dateToAssess);
   }
 
   // 8. OLTC Oil
@@ -1043,11 +1093,13 @@ function openDetail(no) {
       <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${getStatusClass(parseFloat(odbVal) >= 40 ? 'A' : 'Q')}">${odbVal}</td><td>kV</td></tr>
       <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(parseFloat(owcVal) <= 30 ? 'A' : 'Q')}">${owcVal}</td><td>ppm</td></tr>
     `;
+    updateTestDate('ex-update-oltc', oltcRec.date || oltcRec.Date);
   } else {
     oltcBody.innerHTML = `
       <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="ex-status-good">85.2</td><td>kV</td></tr>
       <tr><td>Water Content</td><td>ASTM D1533</td><td class="ex-status-good">12.5</td><td>ppm</td></tr>
     `;
+    updateTestDate('ex-update-oltc', item.dateToAssess);
   }
 }
 
