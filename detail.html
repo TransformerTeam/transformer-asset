@@ -703,9 +703,21 @@
       const item = data.find(x => String(x.serial) === String(serial) || String(x.serial).startsWith(String(serial)) || String(serial).startsWith(String(x.serial)));
       if (!item) return;
 
-      // Update Evaluation Report link
+      // Update Report Links
       const evalBtn = document.getElementById('btn-eval-report');
       if (evalBtn) evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const dgaLink = document.getElementById('ex-dga-link');
+      if (dgaLink) dgaLink.href = `dga_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const visualLink = document.getElementById('ex-visual-link');
+      if (visualLink) visualLink.href = `visual_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const evalGaugeLink = document.getElementById('ex-eval-gauge-link');
+      if (evalGaugeLink) evalGaugeLink.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const bushingLink = document.getElementById('ex-bushing-link');
+      if (bushingLink) bushingLink.href = `bushing_pf_report.html?serial=${encodeURIComponent(item.serial)}`;
 
       // Call assessment.js openDetail logic with item.no
       if (typeof openDetail === 'function') {
