@@ -448,47 +448,71 @@ function openDetail(no) {
   const bushBody = document.getElementById('ex-bushing-rows');
   const bushRec = findLatestRecord(bushingPfCsvData, item.serial) || item.bushRec;
 
+  const getBushingPfErrClass = (val) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '';
+    const v = Math.abs(parseFloat(val));
+    if (v <= 50) return 'ex-status-good';
+    if (v <= 100) return 'ex-status-fair';
+    return 'ex-status-poor';
+  };
+
+  const getBushingCapErrClass = (val) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '';
+    const v = Math.abs(parseFloat(val));
+    if (v <= 5) return 'ex-status-good';
+    if (v <= 10) return 'ex-status-fair';
+    return 'ex-status-poor';
+  };
+
+  const formatErrVal = (val) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '-';
+    const num = parseFloat(val);
+    if (isNaN(num)) return '-';
+    return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
+  };
+
+  const getErrCell = (val, checkFn) => {
+    const formatted = formatErrVal(val);
+    if (formatted === '-') return '<td>-</td>';
+    return `<td class="${checkFn(val)}">${formatted}</td>`;
+  };
+
   if (bushRec) {
-    const parsePf = (val) => {
-      const num = parseFloat(val);
-      return (!isNaN(num) && num > 0) ? num : null;
-    };
-    const parseCap = (val) => {
-      const num = parseFloat(val);
-      return (!isNaN(num) && num > 0) ? num : null;
-    };
+    const h1_pf_err = bushRec.maxbh1_tand || '-';
+    const h2_pf_err = bushRec.maxbh2_tand || '-';
+    const h3_pf_err = bushRec.maxbh3_tand || '-';
+    const l1_pf_err = '-';
+    const l2_pf_err = '-';
+    const l3_pf_err = '-';
 
-    const h1_tan = parsePf(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan);
-    const h2_tan = parsePf(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan);
-    const h3_tan = parsePf(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan);
-    const h0_tan = parsePf(bushRec.bushing_h0_pf_20c || bushRec.bushing_h0_pf_tan);
-    const l1_tan = parsePf(bushRec.bushing_l1_pf_20c || bushRec.bushing_l1_pf_tan);
-    const l2_tan = parsePf(bushRec.bushing_l2_pf_20c || bushRec.bushing_l2_pf_tan);
-    const l3_tan = parsePf(bushRec.bushing_l3_pf_20c || bushRec.bushing_l3_pf_tan);
-
-    const h1_c = parseCap(bushRec.bushing_h1_c1 || bushRec.bushing_h1_c2);
-    const h2_c = parseCap(bushRec.bushing_h2_c1 || bushRec.bushing_h2_c2);
-    const h3_c = parseCap(bushRec.bushing_h3_c1 || bushRec.bushing_h3_c2);
-    const h0_c = parseCap(bushRec.bushing_h0_cap);
-    const l1_c = parseCap(bushRec.bushing_l1_cap);
-    const l2_c = parseCap(bushRec.bushing_l2_cap);
-    const l3_c = parseCap(bushRec.bushing_l3_cap);
-
-    const checkPfClass = (val) => {
-      if (val === null) return '';
-      return val > 1.0 ? 'ex-status-poor' : (val > 0.5 ? 'ex-status-fair' : 'ex-status-good');
-    };
-    const getPfText = (val) => val === null ? '-' : `${val.toFixed(3)}%`;
-    const getCapText = (val) => val === null ? '-' : `${val.toFixed(1)} pF`;
+    const h1_cap_err = bushRec.maxbch1_change || '-';
+    const h2_cap_err = bushRec.maxbch2_change || '-';
+    const h3_cap_err = bushRec.maxbch3_change || '-';
+    const l1_cap_err = '-';
+    const l2_cap_err = '-';
+    const l3_cap_err = '-';
 
     bushBody.innerHTML = `
-      <tr><td>H1</td><td>${getPfText(h1_tan)}</td><td class="${checkPfClass(h1_tan)}">-</td><td>${getCapText(h1_c)}</td><td>-</td></tr>
-      <tr><td>H2</td><td>${getPfText(h2_tan)}</td><td class="${checkPfClass(h2_tan)}">-</td><td>${getCapText(h2_c)}</td><td>-</td></tr>
-      <tr><td>H3</td><td>${getPfText(h3_tan)}</td><td class="${checkPfClass(h3_tan)}">-</td><td>${getCapText(h3_c)}</td><td>-</td></tr>
-      <tr><td>H0</td><td>${getPfText(h0_tan)}</td><td class="${checkPfClass(h0_tan)}">-</td><td>${getCapText(h0_c)}</td><td>-</td></tr>
-      <tr><td>L1</td><td>${getPfText(l1_tan)}</td><td class="${checkPfClass(l1_tan)}">-</td><td>${getCapText(l1_c)}</td><td>-</td></tr>
-      <tr><td>L2</td><td>${getPfText(l2_tan)}</td><td class="${checkPfClass(l2_tan)}">-</td><td>${getCapText(l2_c)}</td><td>-</td></tr>
-      <tr><td>L3</td><td>${getPfText(l3_tan)}</td><td class="${checkPfClass(l3_tan)}">-</td><td>${getCapText(l3_c)}</td><td>-</td></tr>
+      <tr>
+        <td>%Error PF (C1)</td>
+        <td>Change < 50%</td>
+        ${getErrCell(h1_pf_err, getBushingPfErrClass)}
+        ${getErrCell(h2_pf_err, getBushingPfErrClass)}
+        ${getErrCell(h3_pf_err, getBushingPfErrClass)}
+        ${getErrCell(l1_pf_err, getBushingPfErrClass)}
+        ${getErrCell(l2_pf_err, getBushingPfErrClass)}
+        ${getErrCell(l3_pf_err, getBushingPfErrClass)}
+      </tr>
+      <tr>
+        <td>%Error Capacitance (C1)</td>
+        <td>Change < 5%</td>
+        ${getErrCell(h1_cap_err, getBushingCapErrClass)}
+        ${getErrCell(h2_cap_err, getBushingCapErrClass)}
+        ${getErrCell(h3_cap_err, getBushingCapErrClass)}
+        ${getErrCell(l1_cap_err, getBushingCapErrClass)}
+        ${getErrCell(l2_cap_err, getBushingCapErrClass)}
+        ${getErrCell(l3_cap_err, getBushingCapErrClass)}
+      </tr>
     `;
     const dateEl = document.getElementById('ex-update-bushing');
     if (dateEl) {
@@ -497,13 +521,26 @@ function openDetail(no) {
   } else {
     // Standalone Mock Fallback
     bushBody.innerHTML = `
-      <tr><td>H1</td><td>0.312%</td><td class="ex-status-good">-</td><td>145.2 pF</td><td>-</td></tr>
-      <tr><td>H2</td><td>0.320%</td><td class="ex-status-good">-</td><td>146.1 pF</td><td>-</td></tr>
-      <tr><td>H3</td><td>0.315%</td><td class="ex-status-good">-</td><td>144.9 pF</td><td>-</td></tr>
-      <tr><td>H0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-      <tr><td>L1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-      <tr><td>L2</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-      <tr><td>L3</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr>
+        <td>%Error PF (C1)</td>
+        <td>Change < 50%</td>
+        <td class="ex-status-good">+3.50%</td>
+        <td class="ex-status-good">+5.20%</td>
+        <td class="ex-status-good">+4.10%</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>%Error Capacitance (C1)</td>
+        <td>Change < 5%</td>
+        <td class="ex-status-good">+1.88%</td>
+        <td class="ex-status-good">+1.07%</td>
+        <td class="ex-status-good">+0.63%</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
     `;
     const dateEl = document.getElementById('ex-update-bushing');
     if (dateEl) {
