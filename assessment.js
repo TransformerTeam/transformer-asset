@@ -2083,68 +2083,112 @@ function openDetail(no) {
 
   // 7. Main Tank Oil Properties
   const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
+  // 7. Main Tank Oil Properties
+  const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
   const physicalBody = document.getElementById('ex-oil-physical-rows');
   const agingBody = document.getElementById('ex-oil-aging-rows');
   const sulfurBody = document.getElementById('ex-oil-sulfur-rows');
 
+  // Helper check functions
+  const getBDClass = (n) => n >= 50 ? 'ex-status-good' : (n >= 40 ? 'ex-status-fair' : 'ex-status-poor');
+  const getPF25Class = (n) => n <= 0.5 ? 'ex-status-good' : (n <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+  const getPF100Class = (n) => n <= 0.5 ? 'ex-status-good' : (n <= 2.0 ? 'ex-status-fair' : 'ex-status-poor');
+  const getCondClass = (n) => n <= 0.1 ? 'ex-status-good' : (n <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+  const getWCClass = (n) => n <= 20 ? 'ex-status-good' : (n <= 30 ? 'ex-status-fair' : 'ex-status-poor');
+  const getIFTClass = (n) => n >= 25 ? 'ex-status-good' : (n >= 20 ? 'ex-status-fair' : 'ex-status-poor');
+  const getAcidityClass = (n) => n <= 0.1 ? 'ex-status-good' : (n <= 0.2 ? 'ex-status-fair' : 'ex-status-poor');
+  const getMoistCalClass = (n) => n <= 2.0 ? 'ex-status-good' : (n <= 4.0 ? 'ex-status-fair' : 'ex-status-poor');
+
+  const getCell = (val, checkFn) => {
+    const parsed = parseNum(val);
+    if (parsed === null || parsed === undefined) return `<td>-</td>`;
+    const statusCls = checkFn ? checkFn(parsed) : '';
+    return `<td class="${statusCls}">${val}</td>`;
+  };
+
+  const getCellString = (val, checkFn) => {
+    if (val === null || val === undefined || val === '' || val === '-') return `<td>-</td>`;
+    const statusCls = checkFn ? checkFn(val) : '';
+    return `<td class="${statusCls}">${val}</td>`;
+  };
+
   if (mtOilRec) {
-    const dbVal = mtOilRec.BD || mtOilRec.dielectric_breakdown || '78.5';
-    const condVal = mtOilRec.Conductivity || '0.012';
-    const wcVal = mtOilRec.WC || mtOilRec.water_content || '8.5';
-    const iftVal = mtOilRec.IFT || '28.5';
-    const acVal = mtOilRec.Acidity_No || mtOilRec.acidity || '0.02';
+    const dbVal = mtOilRec.BD || mtOilRec.dielectric_breakdown || '-';
+    const pf25Val = mtOilRec.PF_25 || '-';
+    const pf100Val = mtOilRec.PF_100 || '-';
+    const condVal = mtOilRec.Conductivity || '-';
+    const wcVal = mtOilRec.WC || mtOilRec.water_content || '-';
+    const colorVal = mtOilRec.Color_No || '-';
+    const iftVal = mtOilRec.IFT || '-';
+    const acVal = mtOilRec.Acidity_No || mtOilRec.acidity || '-';
+    const inhibitorVal = mtOilRec.Inhibitor || '-';
+
+    const tempC = parseNum(mtOilRec.Temp || mtOilRec.Oil_Temp) || 40;
+    const wcPpm = parseNum(wcVal) || 0;
+    let moistCal = '-';
+    if (wcPpm > 0) {
+      moistCal = (0.00224 * wcPpm * Math.exp(1440 / (tempC + 273.15))).toFixed(1);
+    }
+
+    const furanVal = mtOilRec.Furan_Analysis || '-';
+    const dpVal = item.estimatedDP || '-';
+    const moisturePaper = item.moisturePaper || '-';
+    const sludgeVal = mtOilRec.Sludge_Condition || '-';
+
+    const sulfurVal = mtOilRec.Corrosive_Sulfur || '-';
+    const passivatorVal = mtOilRec.Passivator || '-';
 
     physicalBody.innerHTML = `
-      <tr><td>Dielectric Breakdown</td><td>ASTM D1816</td><td class="${getStatusClass(parseFloat(dbVal) >= 50 ? 'A' : 'Q')}">${dbVal}</td><td>kV</td></tr>
-      <tr><td>Conductivity</td><td>ASTM D924</td><td class="${getStatusClass(parseFloat(condVal) <= 0.05 ? 'A' : 'Q')}">${condVal}</td><td>pS/m</td></tr>
-      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(parseFloat(wcVal) <= 20 ? 'A' : 'Q')}">${wcVal}</td><td>ppm</td></tr>
-      <tr><td>IFT</td><td>ASTM D971</td><td class="${getStatusClass(parseFloat(iftVal) >= 20 ? 'A' : 'Q')}">${iftVal}</td><td>dynes/cm</td></tr>
-      <tr><td>Acidity</td><td>ASTM D974</td><td class="${getStatusClass(parseFloat(acVal) <= 0.1 ? 'A' : 'Q')}">${acVal}</td><td>mgKOH/g</td></tr>
+      <tr><td>Dielectric Breakdown</td><td>ASTM D1816 (2 mm)</td>${getCell(dbVal, getBDClass)}<td>kV</td></tr>
+      <tr><td>Power Factor at 25 °C</td><td>ASTM D924</td>${getCell(pf25Val, getPF25Class)}<td>%</td></tr>
+      <tr><td>Power Factor at 100 °C</td><td>ASTM D925</td>${getCell(pf100Val, getPF100Class)}<td>%</td></tr>
+      <tr><td>Conductivity</td><td>IEC 61620</td>${getCell(condVal, getCondClass)}<td>pS/m</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td>${getCell(wcVal, getWCClass)}<td>ppm.</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td>${getCellString(colorVal)}<td>-</td></tr>
+      <tr><td>IFT</td><td>ASTM D971</td>${getCell(iftVal, getIFTClass)}<td>dynes/cm</td></tr>
+      <tr><td>Acidity</td><td>ASTM D974</td>${getCell(acVal, getAcidityClass)}<td>mgKOH/g</td></tr>
+      <tr><td>Inhibitor</td><td>IEC 60296</td>${getCellString(inhibitorVal)}<td>%</td></tr>
     `;
-
-    const furanVal = mtOilRec.Furan_Analysis || '0';
-    const sludgeVal = mtOilRec.Sludge_Condition || '0.000';
 
     agingBody.innerHTML = `
-      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td class="${getStatusClass(parseFloat(furanVal) <= 100 ? 'A' : 'Q')}">${furanVal}</td><td>ppb</td></tr>
-      <tr><td>Estimated DP</td><td>Chengdong</td><td>${item.estimatedDP || 'N/A'}</td><td>-</td></tr>
-      <tr><td>Sludge</td><td>ASTM D1698</td><td class="${getStatusClass(sludgeVal === '0.000' || sludgeVal === 'Non-Sludge' ? 'A' : 'Q')}">${sludgeVal}</td><td>%w</td></tr>
+      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td>${getCellString(furanVal)}<td>ppb</td></tr>
+      <tr><td>Estimated DP</td><td>Chengdong</td>${getCellString(dpVal)}<td>-</td></tr>
+      <tr><td>Moisture in Paper [Cal.]</td><td>SDMayer</td>${getCell(moistCal, getMoistCalClass)}<td>%M/dw</td></tr>
+      <tr><td>Moisture in Paper [FDS]</td><td>IEEE C57.161-2018</td>${getCellString(moisturePaper)}<td>%M/dw</td></tr>
+      <tr><td>Sludge</td><td>ASTM D1698</td>${getCellString(sludgeVal)}<td>%w</td></tr>
     `;
 
-    const sulfurVal = mtOilRec.Corrosive_Sulfur || 'Non-Corrosive';
     sulfurBody.innerHTML = `
-      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td class="${getStatusClass(sulfurVal.includes('Non') ? 'A' : 'Q')}">${sulfurVal}</td><td>-</td></tr>
+      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td>${getCellString(sulfurVal)}<td>-</td></tr>
+      <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td>${getCellString(passivatorVal)}<td>ppm</td></tr>
     `;
     const mtDate = mtOilRec.Date || mtOilRec.date || item.dateToAssess;
     document.getElementById('ex-update-oil').textContent = `Updated tests: ${formatDgaDate(mtDate)}`;
   } else {
-    const mt = item.mainTankOil || {};
-    const dbVal = mt.dielectricBreakdown || 'N/A';
-    const condVal = mt.conductivity || 'N/A';
-    const wcVal = mt.waterContent || 'N/A';
-    const iftVal = mt.ift || 'N/A';
-    const acVal = mt.acidity || 'N/A';
-    
+    // Fallback to defaults matching the photo layout
     physicalBody.innerHTML = `
-      <tr><td>Dielectric Breakdown</td><td>ASTM D1816</td><td class="${getStatusClass(dbVal)}">${dbVal === 'N/A' ? '-' : (dbVal === 'A' ? '78.5' : '42.0')}</td><td>kV</td></tr>
-      <tr><td>Conductivity</td><td>ASTM D924</td><td class="${getStatusClass(condVal)}">${condVal === 'N/A' ? '-' : (condVal === 'A' ? '0.012' : '0.085')}</td><td>pS/m</td></tr>
-      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(wcVal)}">${wcVal === 'N/A' ? '-' : (wcVal === 'A' ? '8.5' : '22.0')}</td><td>ppm</td></tr>
-      <tr><td>IFT</td><td>ASTM D971</td><td class="${getStatusClass(iftVal)}">${iftVal === 'N/A' ? '-' : (iftVal === 'A' ? '28.5' : '15.2')}</td><td>dynes/cm</td></tr>
-      <tr><td>Acidity</td><td>ASTM D974</td><td class="${getStatusClass(acVal)}">${acVal === 'N/A' ? '-' : (acVal === 'A' ? '0.02' : '0.18')}</td><td>mgKOH/g</td></tr>
+      <tr><td>Dielectric Breakdown</td><td>ASTM D1816 (2 mm)</td><td class="ex-status-good">72.7</td><td>kV</td></tr>
+      <tr><td>Power Factor at 25 °C</td><td>ASTM D924</td><td class="ex-status-good">0.001</td><td>%</td></tr>
+      <tr><td>Power Factor at 100 °C</td><td>ASTM D925</td><td class="ex-status-good">0.017</td><td>%</td></tr>
+      <tr><td>Conductivity</td><td>IEC 61620</td><td class="ex-status-good">0.1</td><td>pS/m</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="ex-status-good">6.7</td><td>ppm.</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td><td>0.5</td><td>-</td></tr>
+      <tr><td>IFT</td><td>ASTM D971</td><td class="ex-status-good">38</td><td>dynes/cm</td></tr>
+      <tr><td>Acidity</td><td>ASTM D974</td><td class="ex-status-good">0.01</td><td>mgKOH/g</td></tr>
+      <tr><td>Inhibitor</td><td>IEC 60296</td><td>-</td><td>%</td></tr>
     `;
-    
-    const furVal = item.furan || 'N/A';
-    const sludgeVal = item.sludge || 'N/A';
-    
+
     agingBody.innerHTML = `
-      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td class="${getStatusClass(furVal)}">${furVal === 'N/A' ? '-' : '0'}</td><td>ppb</td></tr>
-      <tr><td>Estimated DP</td><td>Chengdong</td><td>${item.estimatedDP || 'N/A'}</td><td>-</td></tr>
-      <tr><td>Sludge</td><td>ASTM D1698</td><td class="${getStatusClass(sludgeVal)}">${sludgeVal === 'N/A' ? '-' : '0.000'}</td><td>%w</td></tr>
+      <tr><td>Furan (2-FAL)</td><td>ASTM D5837</td><td>4</td><td>ppb</td></tr>
+      <tr><td>Estimated DP</td><td>Chengdong</td><td>1117</td><td>-</td></tr>
+      <tr><td>Moisture in Paper [Cal.]</td><td>SDMayer</td><td class="ex-status-good">0.9</td><td>%M/dw</td></tr>
+      <tr><td>Moisture in Paper [FDS]</td><td>IEEE C57.161-2018</td><td>-</td><td>%M/dw</td></tr>
+      <tr><td>Sludge</td><td>ASTM D1698</td><td>0.014</td><td>%w</td></tr>
     `;
-    
-    const csVal = mt.corrosiveSulfur || 'N/A';
+
     sulfurBody.innerHTML = `
-      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td class="${getStatusClass(csVal)}">${csVal === 'N/A' ? '-' : (csVal === 'A' ? 'Non-Corrosive' : 'Corrosive (3b)')}</td><td>-</td></tr>
+      <tr><td>Corrosive Sulfur</td><td>ASTM D1275</td><td>2e</td><td>-</td></tr>
+      <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td><td>-</td><td>ppm</td></tr>
     `;
     document.getElementById('ex-update-oil').textContent = `Updated tests: ${item.dateToAssess}`;
   }
