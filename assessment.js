@@ -67,6 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 window.allCSVsPromise = loadAllTestDataCSVs();
 
 function loadAllTestDataCSVs() {
+  const isDetail = window.isDetailStandalonePage || 
+                   window.location.pathname.toLowerCase().includes('detail') || 
+                   document.getElementById('detail-paper') !== null;
+
   const csvFiles = [
     { url: 'HealthIndexSum.csv', target: d => {
         if (d && d.length > 0) {
@@ -79,27 +83,32 @@ function loadAllTestDataCSVs() {
       }
     },
     { url: 'TestData/TRinfo2.csv', target: d => trInfoCsvData = d },
-    { url: 'TestData/VisualData.csv', target: d => visualCsvData = d },
-    { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
     { url: 'TestData/BushingPFData.csv', target: d => bushingPfCsvData = d },
-    { url: 'TestData/SurgeInfo.csv', target: d => surgeInfoCsvData = d },
-    { url: 'TestData/SurgePFData.csv', target: d => surgePfCsvData = d },
-    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; } },
-    { url: 'TestData/WindingPFData.csv', target: d => windingPfCsvData = d },
-    { url: 'TestData/RatioData.csv', target: d => ratioCsvData = d },
-    { url: 'TestData/ExcitingData.csv', target: d => excitingCsvData = d },
-    { url: 'TestData/WindingData.csv', target: d => windingCsvData = d },
-    { url: 'TestData/SingleShortData.csv', target: d => singleShortCsvData = d },
-    { url: 'TestData/ThreeShortData.csv', target: d => threeShortCsvData = d },
-    { url: 'TestData/FRAData.csv', target: d => fraCsvData = d },
-    { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
-    { url: 'TestData/DRMData.csv', target: d => drmCsvData = d },
-    { url: 'TestData/PDonlineData.csv', target: d => pdOnlineCsvData = d },
-    { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d },
     { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
     { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
   ];
+
+  if (!isDetail) {
+    csvFiles.push(
+      { url: 'TestData/VisualData.csv', target: d => visualCsvData = d },
+      { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
+      { url: 'TestData/SurgeInfo.csv', target: d => surgeInfoCsvData = d },
+      { url: 'TestData/SurgePFData.csv', target: d => surgePfCsvData = d },
+      { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; } },
+      { url: 'TestData/WindingPFData.csv', target: d => windingPfCsvData = d },
+      { url: 'TestData/RatioData.csv', target: d => ratioCsvData = d },
+      { url: 'TestData/ExcitingData.csv', target: d => excitingCsvData = d },
+      { url: 'TestData/WindingData.csv', target: d => windingCsvData = d },
+      { url: 'TestData/SingleShortData.csv', target: d => singleShortCsvData = d },
+      { url: 'TestData/ThreeShortData.csv', target: d => threeShortCsvData = d },
+      { url: 'TestData/FRAData.csv', target: d => fraCsvData = d },
+      { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
+      { url: 'TestData/DRMData.csv', target: d => drmCsvData = d },
+      { url: 'TestData/PDonlineData.csv', target: d => pdOnlineCsvData = d },
+      { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d }
+    );
+  }
 
   return Promise.allSettled(
     csvFiles.map(item =>
