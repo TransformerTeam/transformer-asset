@@ -643,7 +643,7 @@ function openDetail(no) {
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
-        <td>Change < 1.5 times</td>
+        <td>OEM Criteria</td>
         ${getErrCell(h1_pf_err, getBushingPfErrClass)}
         ${getErrCell(h2_pf_err, getBushingPfErrClass)}
         ${getErrCell(h3_pf_err, getBushingPfErrClass)}
@@ -653,7 +653,7 @@ function openDetail(no) {
       </tr>
       <tr>
         <td>%Error Capacitance (C1)</td>
-        <td>Change < 5%</td>
+        <td>OEM Criteria</td>
         ${getErrCell(h1_cap_err, getBushingCapErrClass)}
         ${getErrCell(h2_cap_err, getBushingCapErrClass)}
         ${getErrCell(h3_cap_err, getBushingCapErrClass)}
@@ -668,7 +668,7 @@ function openDetail(no) {
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
-        <td>Change < 1.5 times</td>
+        <td>OEM Criteria</td>
         <td class="ex-status-good">+3.50%</td>
         <td class="ex-status-good">+5.20%</td>
         <td class="ex-status-good">+4.10%</td>
@@ -678,7 +678,7 @@ function openDetail(no) {
       </tr>
       <tr>
         <td>%Error Capacitance (C1)</td>
-        <td>Change < 5%</td>
+        <td>OEM Criteria</td>
         <td class="ex-status-good">+1.88%</td>
         <td class="ex-status-good">+1.07%</td>
         <td class="ex-status-good">+0.63%</td>
