@@ -2083,8 +2083,6 @@ function openDetail(no) {
 
   // 7. Main Tank Oil Properties
   const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
-  // 7. Main Tank Oil Properties
-  const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
   const physicalBody = document.getElementById('ex-oil-physical-rows');
   const agingBody = document.getElementById('ex-oil-aging-rows');
   const sulfurBody = document.getElementById('ex-oil-sulfur-rows');
