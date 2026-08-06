@@ -44,6 +44,18 @@ let mtOilCsvData = [];
 let oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+  const isDetail = window.isDetailStandalonePage || 
+                   window.location.pathname.toLowerCase().includes('detail') || 
+                   document.getElementById('detail-paper') !== null;
+  if (isDetail) {
+    if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
+      assessmentData = HEALTH_INDEX_DATA;
+    }
+    const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+    setTheme(savedTheme);
+    return;
+  }
+
   if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
     assessmentData = HEALTH_INDEX_DATA;
     initAssessment();
@@ -210,6 +222,14 @@ function findLatestRecord(csvArray, targetSerial) {
 }
 
 function initAssessment() {
+  const isDetail = window.isDetailStandalonePage || 
+                   window.location.pathname.toLowerCase().includes('detail') || 
+                   document.getElementById('detail-paper') !== null;
+  if (isDetail) {
+    const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+    setTheme(savedTheme);
+    return;
+  }
   populateFilterDropdowns();
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
   setTheme(savedTheme);
@@ -2280,12 +2300,14 @@ function setTheme(theme) {
   const darkIcon = document.getElementById('theme-icon-dark');
   const lightIcon = document.getElementById('theme-icon-light');
   
-  if (theme === 'dark') {
-    darkIcon.style.display = 'inline-block';
-    lightIcon.style.display = 'none';
-  } else {
-    darkIcon.style.display = 'none';
-    lightIcon.style.display = 'inline-block';
+  if (darkIcon && lightIcon) {
+    if (theme === 'dark') {
+      darkIcon.style.display = 'inline-block';
+      lightIcon.style.display = 'none';
+    } else {
+      darkIcon.style.display = 'none';
+      lightIcon.style.display = 'inline-block';
+    }
   }
   
   if (mapInstance) {
