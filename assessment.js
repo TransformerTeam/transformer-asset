@@ -179,6 +179,12 @@ function parseHealthIndexSumCSV(rows) {
   return results;
 }
 
+function parseNum(val) {
+  if (val === null || val === undefined || val === '' || val === '-' || val === 'N/A') return null;
+  const num = parseFloat(val);
+  return (!isNaN(num)) ? num : null;
+}
+
 function findLatestRecord(csvArray, targetSerial) {
   if (!csvArray || !csvArray.length || !targetSerial) return null;
   const matches = csvArray.filter(d => {
@@ -1388,11 +1394,7 @@ function openDetail(no) {
       const num = parseFloat(val);
       return (!isNaN(num) && num > 0) ? num : null;
     };
-    const parseNum = (val) => {
-      if (val === null || val === undefined || val === '' || val === '-' || val === 'N/A') return null;
-      const num = parseFloat(val);
-      return (!isNaN(num)) ? num : null;
-    };
+
 
     const h1_pf = parsePf(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan);
     const h2_pf = parsePf(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan);
