@@ -665,7 +665,7 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function initDetailPageWrapper() {
       // Initialize theme
       const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -683,7 +683,13 @@
         // กรณีไม่มีการโหลด CSV ให้ทำงานตามปกติ
         initDetailPage();
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initDetailPageWrapper);
+    } else {
+      initDetailPageWrapper();
+    }
 
     function switchTransformer(serial) {
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;

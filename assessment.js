@@ -1265,7 +1265,7 @@ function openDetail(no) {
   }
 
   // Look up dynamic TRInfo record from TRinfo2.csv
-  const trInfo = findLatestRecord(trInfoCsvData, item.serial);
+  const trInfo = findLatestRecord(trInfoCsvData, item.serial) || item.trInfo;
 
   const setElTxt = (id, txt) => {
     const el = document.getElementById(id);
@@ -1412,7 +1412,7 @@ function openDetail(no) {
     exBushingLink.href = `bushing_pf_report.html?serial=${item.serial}`;
   }
   const bushBody = document.getElementById('ex-bushing-rows');
-  const bushRec = findLatestRecord(bushingPfCsvData, item.serial);
+  const bushRec = findLatestRecord(bushingPfCsvData, item.serial) || item.bushRec;
 
   if (bushRec) {
     const parsePf = (val) => {
@@ -1869,7 +1869,7 @@ function openDetail(no) {
     return `${day}-${month}-${year}`;
   }
 
-  const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial);
+  const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
   
   function colorGasCell(elId, val, limit) {
     const el = document.getElementById(elId);
@@ -2113,7 +2113,7 @@ function openDetail(no) {
   }
 
   // 7. Main Tank Oil Properties
-  const mtOilRec = findLatestRecord(mtOilCsvData, item.serial);
+  const mtOilRec = findLatestRecord(mtOilCsvData, item.serial) || item.mtOilRec;
   const physicalBody = document.getElementById('ex-oil-physical-rows');
   const agingBody = document.getElementById('ex-oil-aging-rows');
   const sulfurBody = document.getElementById('ex-oil-sulfur-rows');
@@ -2223,7 +2223,7 @@ function openDetail(no) {
   }
 
   // 8. OLTC Oil
-  const oltcRec = findLatestRecord(oltcOilCsvData, item.serial);
+  const oltcRec = findLatestRecord(oltcOilCsvData, item.serial) || item.oltcRec;
   const oltcBody = document.getElementById('ex-oltc-rows');
 
   if (oltcRec) {
