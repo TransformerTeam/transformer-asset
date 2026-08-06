@@ -477,7 +477,98 @@ function openDetail(no) {
     return `<td class="${checkFn(val)}">${formatted}</td>`;
   };
 
+  const getBushingPfErrClass = (val, mfg) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '';
+    const v = parseFloat(val);
+    const absVal = Math.abs(v);
+    const manufacturer = (mfg || '').toUpperCase().trim();
+
+    if (manufacturer.includes('ABB')) {
+      if (absVal <= 40.0) return 'ex-status-good';
+      if (absVal < 75.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('TRENCH')) {
+      if (absVal <= 50.0) return 'ex-status-good';
+      if (absVal <= 100.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+      if (v <= 0) return 'ex-status-good';
+      if (v < 30.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('MGC')) {
+      if (absVal <= 5.0) return 'ex-status-good';
+      if (absVal < 10.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else {
+      if (absVal <= 50.0) return 'ex-status-good';
+      if (absVal <= 100.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    }
+  };
+
+  const getBushingCapErrClass = (val, mfg) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '';
+    const v = parseFloat(val);
+    const absVal = Math.abs(v);
+    const manufacturer = (mfg || '').toUpperCase().trim();
+
+    if (manufacturer.includes('ABB')) {
+      if (absVal <= 3.0) return 'ex-status-good';
+      if (absVal <= 5.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+      if (absVal <= 1.0) return 'ex-status-good';
+      if (absVal <= 3.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('MGC')) {
+      if (absVal <= 0.7) return 'ex-status-good';
+      if (absVal <= 3.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    } else if (manufacturer.includes('TRENCH')) {
+      if (absVal <= 110.0) return 'ex-status-good';
+      return 'ex-status-poor';
+    } else {
+      if (absVal <= 5.0) return 'ex-status-good';
+      if (absVal <= 10.0) return 'ex-status-fair';
+      return 'ex-status-poor';
+    }
+  };
+
+  const formatErrVal = (val) => {
+    if (val === null || val === undefined || val === '' || val === '-') return '-';
+    const num = parseFloat(val);
+    if (isNaN(num)) return '-';
+    return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
+  };
+
   if (bushRec) {
+    if (item.bushRec) {
+      bushRec.h1_mfg = bushRec.h1_mfg || item.bushRec.h1_mfg;
+      bushRec.h2_mfg = bushRec.h2_mfg || item.bushRec.h2_mfg;
+      bushRec.h3_mfg = bushRec.h3_mfg || item.bushRec.h3_mfg;
+      bushRec.h0_mfg = bushRec.h0_mfg || item.bushRec.h0_mfg;
+    }
+
+    const mfg = bushRec.h1_mfg || bushRec.h2_mfg || bushRec.h3_mfg || bushRec.h0_mfg || '';
+    const mfgUpper = mfg.toUpperCase().trim();
+    
+    let pfStd = 'Change < 50%';
+    let capStd = 'Change < 5%';
+    
+    if (mfgUpper.includes('ABB')) {
+      pfStd = 'Change < 40%';
+      capStd = 'Change < 3%';
+    } else if (mfgUpper.includes('PASSONI') || mfgUpper.includes('VILLA')) {
+      pfStd = 'Change <= 0%';
+      capStd = 'Change < 1%';
+    } else if (mfgUpper.includes('MGC')) {
+      pfStd = 'Change < 5%';
+      capStd = 'Change < 0.7%';
+    } else if (mfgUpper.includes('TRENCH')) {
+      pfStd = 'Change < 50%';
+      capStd = 'Change < 110%';
+    }
+
     const h1_pf_err = bushRec.maxbh1_tand || '-';
     const h2_pf_err = bushRec.maxbh2_tand || '-';
     const h3_pf_err = bushRec.maxbh3_tand || '-';
@@ -495,23 +586,23 @@ function openDetail(no) {
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
-        <td>Change < 50%</td>
-        ${getErrCell(h1_pf_err, getBushingPfErrClass)}
-        ${getErrCell(h2_pf_err, getBushingPfErrClass)}
-        ${getErrCell(h3_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l1_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l2_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l3_pf_err, getBushingPfErrClass)}
+        <td>${pfStd}</td>
+        ${h1_pf_err !== '-' ? `<td class="${getBushingPfErrClass(h1_pf_err, bushRec.h1_mfg)}">${formatErrVal(h1_pf_err)}</td>` : '<td>-</td>'}
+        ${h2_pf_err !== '-' ? `<td class="${getBushingPfErrClass(h2_pf_err, bushRec.h2_mfg)}">${formatErrVal(h2_pf_err)}</td>` : '<td>-</td>'}
+        ${h3_pf_err !== '-' ? `<td class="${getBushingPfErrClass(h3_pf_err, bushRec.h3_mfg)}">${formatErrVal(h3_pf_err)}</td>` : '<td>-</td>'}
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
       </tr>
       <tr>
         <td>%Error Capacitance (C1)</td>
-        <td>Change < 5%</td>
-        ${getErrCell(h1_cap_err, getBushingCapErrClass)}
-        ${getErrCell(h2_cap_err, getBushingCapErrClass)}
-        ${getErrCell(h3_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l1_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l2_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l3_cap_err, getBushingCapErrClass)}
+        <td>${capStd}</td>
+        ${h1_cap_err !== '-' ? `<td class="${getBushingCapErrClass(h1_cap_err, bushRec.h1_mfg)}">${formatErrVal(h1_cap_err)}</td>` : '<td>-</td>'}
+        ${h2_cap_err !== '-' ? `<td class="${getBushingCapErrClass(h2_cap_err, bushRec.h2_mfg)}">${formatErrVal(h2_cap_err)}</td>` : '<td>-</td>'}
+        ${h3_cap_err !== '-' ? `<td class="${getBushingCapErrClass(h3_cap_err, bushRec.h3_mfg)}">${formatErrVal(h3_cap_err)}</td>` : '<td>-</td>'}
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
       </tr>
     `;
     const dateEl = document.getElementById('ex-update-bushing');

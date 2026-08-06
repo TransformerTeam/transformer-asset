@@ -78,6 +78,7 @@ def convert_csv_to_js():
     # Load raw sub-CSV files to embed latest measurements in JS
     tr_info_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\TRinfo2.csv")
     bushing_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\BushingPFData.csv")
+    bushing_info_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\BushingInfo.csv")
     mt_oil_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\MTOilData.csv")
     oltc_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\OLTCOilData.csv")
 
@@ -108,6 +109,28 @@ def convert_csv_to_js():
             bushing_match = find_latest_record(bushing_recs, serial_str, ['serial', 'Serial_No', 'SERIAL_NUMBER'], ['date', 'Date'])
             mt_oil_match = find_latest_record(mt_oil_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
             oltc_match = find_latest_record(oltc_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
+
+            # Look up bushing manufacturers for each phase from BushingInfo.csv
+            h1_mfg, h2_mfg, h3_mfg, h0_mfg = '', '', '', ''
+            bushing_info_rows = [r for r in bushing_info_recs if ''.join(c for c in str(r.get('Parent_Serial_No') or '') if c.isalnum()).lower() == ''.join(c for c in serial_str if c.isalnum()).lower()]
+            if bushing_info_rows:
+                h1_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H1'), '')
+                h2_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H2'), '')
+                h3_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H3'), '')
+                h0_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H0'), '')
+
+            if bushing_match:
+                bushing_match['h1_mfg'] = h1_mfg
+                bushing_match['h2_mfg'] = h2_mfg
+                bushing_match['h3_mfg'] = h3_mfg
+                bushing_match['h0_mfg'] = h0_mfg
+            else:
+                bushing_match = {
+                    'h1_mfg': h1_mfg,
+                    'h2_mfg': h2_mfg,
+                    'h3_mfg': h3_mfg,
+                    'h0_mfg': h0_mfg
+                }
 
             item = {
                 "no": idx,
