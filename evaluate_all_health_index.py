@@ -4,7 +4,7 @@ import os
 import sys
 import io
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 HEALTH_SUM_PATH = r"C:\Users\NB\Downloads\TR Asset\HealthIndexSum.csv"
 TESTDATA_DIR = r"C:\Users\NB\Downloads\TR Asset\TestData"

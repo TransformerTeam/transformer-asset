@@ -4,7 +4,7 @@ import os
 import sys
 import io
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 EXCEL_PATH = r'C:\Users\NB\OneDrive - GPSC\GPSC Group Transformer Assessment\Transformer Asset Managment GPSC GROUP Rev.25.xlsm'
 OUT_JSON = r'C:\Users\NB\Downloads\TR Asset\evaluation_criteria.json'

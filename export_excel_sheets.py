@@ -6,7 +6,7 @@ from datetime import datetime
 import openpyxl
 
 # Set output encoding to UTF-8
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 EXCEL_PATH = r"C:\Users\NB\OneDrive - GPSC\GPSC Group Transformer Assessment\Transformer Asset Managment GPSC GROUP Rev.25.xlsm"
 OUTPUT_DIR = r"C:\Users\NB\Downloads\TR Asset\TestData"
@@ -108,7 +108,21 @@ def main():
         print(f"ERROR: Excel file does not exist at {EXCEL_PATH}")
         sys.exit(1)
 
-    wb = openpyxl.load_workbook(EXCEL_PATH, read_only=True, keep_vba=False, data_only=True)
+    import shutil
+    temp_path = "temp_export.xlsm"
+    try:
+        shutil.copy2(EXCEL_PATH, temp_path)
+    except Exception as e:
+        print(f"Failed to copy file to bypass lock: {e}")
+        temp_path = EXCEL_PATH
+
+    try:
+        wb = openpyxl.load_workbook(temp_path, read_only=True, keep_vba=False, data_only=True)
+    except Exception as e:
+        print(f"Failed to load workbook: {e}")
+        if os.path.exists(temp_path) and temp_path != EXCEL_PATH:
+            os.remove(temp_path)
+        sys.exit(1)
     all_sheets = wb.sheetnames
 
     # Export HealthIndexSum
@@ -129,6 +143,17 @@ def main():
         eval_main()
     except Exception as e:
         print(f"Error evaluating Health Index: {e}")
+
+    # Close workbook and clean up temp copy
+    try:
+        wb.close()
+    except Exception:
+        pass
+    if os.path.exists(temp_path) and temp_path != EXCEL_PATH:
+        try:
+            os.remove(temp_path)
+        except Exception:
+            pass
 
     print(f"All exports and evaluations completed successfully at {datetime.now()}.")
 
