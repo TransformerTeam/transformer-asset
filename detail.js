@@ -592,10 +592,115 @@ function openDetail(no) {
     return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
   };
 
-  const getErrCell = (val, checkFn) => {
+  const getBushingEvaluation = (pf20, npPf, cap, npCap, mfg, ins) => {
+    let pfStatusCls = '';
+    let capStatusCls = '';
+
+    const manufacturer = (mfg || '').toUpperCase().trim();
+    const insulation = (ins || '').toUpperCase().trim();
+
+    // --- PF Status Evaluation ---
+    if (npPf > 0 && pf20 > 0) {
+      const pfRatio = pf20 / npPf;
+      const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
+
+      if (manufacturer.includes('ABB')) {
+        if (pfErrPercent <= 40.0) {
+          pfStatusCls = 'ex-status-good';
+        } else if (pfErrPercent < 75.0) {
+          pfStatusCls = 'ex-status-fair';
+        } else {
+          pfStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('TRENCH')) {
+        if (pfRatio <= 1.5) {
+          pfStatusCls = 'ex-status-good';
+        } else if (pfRatio <= 2.0) {
+          pfStatusCls = 'ex-status-fair';
+        } else {
+          pfStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+        if (pfErrPercent <= 0) {
+          pfStatusCls = 'ex-status-good';
+        } else if (pfErrPercent < 30.0) {
+          pfStatusCls = 'ex-status-fair';
+        } else {
+          pfStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('MGC')) {
+        if (pfErrPercent <= 5.0) {
+          pfStatusCls = 'ex-status-good';
+        } else if (pfErrPercent < 10.0) {
+          pfStatusCls = 'ex-status-fair';
+        } else {
+          pfStatusCls = 'ex-status-poor';
+        }
+      } else {
+        if (pfRatio <= 1.5) {
+          pfStatusCls = 'ex-status-good';
+        } else if (pfRatio <= 2.0) {
+          pfStatusCls = 'ex-status-fair';
+        } else {
+          pfStatusCls = 'ex-status-poor';
+        }
+      }
+    }
+
+    // --- Cap Status Evaluation ---
+    if (npCap > 0 && cap > 0) {
+      const devVal = ((cap - npCap) / npCap) * 100;
+      const absDev = Math.abs(devVal);
+
+      if (manufacturer.includes('ABB')) {
+        if (absDev <= 3.0) {
+          capStatusCls = 'ex-status-good';
+        } else if (absDev <= 5.0) {
+          capStatusCls = 'ex-status-fair';
+        } else {
+          capStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('PASSONI') || manufacturer.includes('VILLA')) {
+        if (absDev <= 1.0) {
+          capStatusCls = 'ex-status-good';
+        } else if (absDev <= 3.0) {
+          capStatusCls = 'ex-status-fair';
+        } else {
+          capStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('MGC')) {
+        if (absDev <= 0.7) {
+          capStatusCls = 'ex-status-good';
+        } else if (absDev <= 3.0) {
+          capStatusCls = 'ex-status-fair';
+        } else {
+          capStatusCls = 'ex-status-poor';
+        }
+      } else if (manufacturer.includes('TRENCH')) {
+        if (absDev <= 110.0) {
+          capStatusCls = 'ex-status-good';
+        } else {
+          capStatusCls = 'ex-status-poor';
+        }
+      } else {
+        if (absDev <= 5.0) {
+          capStatusCls = 'ex-status-good';
+        } else if (absDev <= 10.0) {
+          capStatusCls = 'ex-status-fair';
+        } else {
+          capStatusCls = 'ex-status-poor';
+        }
+      }
+    }
+
+    return { pfStatusCls, capStatusCls };
+  };
+
+  const getErrCell = (val, checkFn, customClass) => {
     const formatted = formatErrVal(val);
     if (formatted === '-') return '<td>-</td>';
-    return `<td class="${checkFn(val)}">${formatted}</td>`;
+    const cls = customClass || (checkFn ? checkFn(val) : '');
+    return `<td class="${cls}">${formatted}</td>`;
   };
 
   if (bushRec) {
@@ -613,28 +718,61 @@ function openDetail(no) {
     let l2_cap_err = bushRec.maxbcl2_change || '-';
     let l3_cap_err = bushRec.maxbcl3_change || '-';
 
+    let h1_pf_cls = bushRec.maxbh1_tand_cls || '';
+    let h2_pf_cls = bushRec.maxbh2_tand_cls || '';
+    let h3_pf_cls = bushRec.maxbh3_tand_cls || '';
+    let l1_pf_cls = bushRec.maxbl1_tand_cls || '';
+    let l2_pf_cls = bushRec.maxbl2_tand_cls || '';
+    let l3_pf_cls = bushRec.maxbl3_tand_cls || '';
+
+    let h1_cap_cls = bushRec.maxbch1_change_cls || '';
+    let h2_cap_cls = bushRec.maxbch2_change_cls || '';
+    let h3_cap_cls = bushRec.maxbch3_change_cls || '';
+    let l1_cap_cls = bushRec.maxbcl1_change_cls || '';
+    let l2_cap_cls = bushRec.maxbcl2_change_cls || '';
+    let l3_cap_cls = bushRec.maxbcl3_change_cls || '';
+
     if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData && bushingInfoCsvData.length > 0) {
       const np_rows = bushingInfoCsvData.filter(r => String(r.Parent_Serial_No || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
       const phases = [
-        ['H1', 'bushing_h1_pf_20c', 'bushing_h1_pf_tan', 'bushing_h1_c1', (val) => { h1_pf_err = val; }, (val) => { h1_cap_err = val; }],
-        ['H2', 'bushing_h2_pf_20c', 'bushing_h2_pf_tan', 'bushing_h2_c1', (val) => { h2_pf_err = val; }, (val) => { h2_cap_err = val; }],
-        ['H3', 'bushing_h3_pf_20c', 'bushing_h3_pf_tan', 'bushing_h3_c1', (val) => { h3_pf_err = val; }, (val) => { h3_cap_err = val; }],
-        ['X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', (val) => { l1_pf_err = val; }, (val) => { l1_cap_err = val; }],
-        ['X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', (val) => { l2_pf_err = val; }, (val) => { l2_cap_err = val; }],
-        ['X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', (val) => { l3_pf_err = val; }, (val) => { l3_cap_err = val; }]
+        ['H1', 'bushing_h1_pf_20c', 'bushing_h1_pf_tan', 'bushing_h1_c1', 
+          (val, cls) => { h1_pf_err = val; if (cls) h1_pf_cls = cls; }, 
+          (val, cls) => { h1_cap_err = val; if (cls) h1_cap_cls = cls; }],
+        ['H2', 'bushing_h2_pf_20c', 'bushing_h2_pf_tan', 'bushing_h2_c1', 
+          (val, cls) => { h2_pf_err = val; if (cls) h2_pf_cls = cls; }, 
+          (val, cls) => { h2_cap_err = val; if (cls) h2_cap_cls = cls; }],
+        ['H3', 'bushing_h3_pf_20c', 'bushing_h3_pf_tan', 'bushing_h3_c1', 
+          (val, cls) => { h3_pf_err = val; if (cls) h3_pf_cls = cls; }, 
+          (val, cls) => { h3_cap_err = val; if (cls) h3_cap_cls = cls; }],
+        ['X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', 
+          (val, cls) => { l1_pf_err = val; if (cls) l1_pf_cls = cls; }, 
+          (val, cls) => { l1_cap_err = val; if (cls) l1_cap_cls = cls; }],
+        ['X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', 
+          (val, cls) => { l2_pf_err = val; if (cls) l2_pf_cls = cls; }, 
+          (val, cls) => { l2_cap_err = val; if (cls) l2_cap_cls = cls; }],
+        ['X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', 
+          (val, cls) => { l3_pf_err = val; if (cls) l3_pf_cls = cls; }, 
+          (val, cls) => { l3_cap_err = val; if (cls) l3_cap_cls = cls; }]
       ];
       phases.forEach(([ph_label, pf20_key, pf_key, cap_key, set_pf, set_cap]) => {
         const np_row = np_rows.find(r => String(r.Phase || '').trim().toUpperCase() === ph_label);
         if (np_row) {
           const pf20 = parseFloat(bushRec[pf20_key] || bushRec[pf_key] || 0);
           const np_pf = parseFloat(np_row.Meas_PF_C1 || np_row.Corr_PF || 0);
+          const mfg = np_row.Manufacturer || '';
+          const ins = np_row.Type || np_row.Insulation || '';
+          
           if (np_pf > 0 && pf20 > 0) {
-            set_pf(((pf20 - np_pf) / np_pf) * 100);
+            const pf_err_val = ((pf20 - np_pf) / np_pf) * 100;
+            const evalRes = getBushingEvaluation(pf20, np_pf, 0, 0, mfg, ins);
+            set_pf(pf_err_val, evalRes.pfStatusCls);
           }
           const cap = parseFloat(bushRec[cap_key] || 0);
           const np_cap = parseFloat(np_row.Capacitance_C1 || 0);
           if (np_cap > 0 && cap > 0) {
-            set_cap(((cap - np_cap) / np_cap) * 100);
+            const cap_err_val = ((cap - np_cap) / np_cap) * 100;
+            const evalRes = getBushingEvaluation(0, 0, cap, np_cap, mfg, ins);
+            set_cap(cap_err_val, evalRes.capStatusCls);
           }
         }
       });
@@ -644,22 +782,22 @@ function openDetail(no) {
       <tr>
         <td>%Error PF (C1)</td>
         <td>OEM Criteria</td>
-        ${getErrCell(h1_pf_err, getBushingPfErrClass)}
-        ${getErrCell(h2_pf_err, getBushingPfErrClass)}
-        ${getErrCell(h3_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l1_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l2_pf_err, getBushingPfErrClass)}
-        ${getErrCell(l3_pf_err, getBushingPfErrClass)}
+        ${getErrCell(h1_pf_err, getBushingPfErrClass, h1_pf_cls)}
+        ${getErrCell(h2_pf_err, getBushingPfErrClass, h2_pf_cls)}
+        ${getErrCell(h3_pf_err, getBushingPfErrClass, h3_pf_cls)}
+        ${getErrCell(l1_pf_err, getBushingPfErrClass, l1_pf_cls)}
+        ${getErrCell(l2_pf_err, getBushingPfErrClass, l2_pf_cls)}
+        ${getErrCell(l3_pf_err, getBushingPfErrClass, l3_pf_cls)}
       </tr>
       <tr>
         <td>%Error Capacitance (C1)</td>
         <td>OEM Criteria</td>
-        ${getErrCell(h1_cap_err, getBushingCapErrClass)}
-        ${getErrCell(h2_cap_err, getBushingCapErrClass)}
-        ${getErrCell(h3_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l1_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l2_cap_err, getBushingCapErrClass)}
-        ${getErrCell(l3_cap_err, getBushingCapErrClass)}
+        ${getErrCell(h1_cap_err, getBushingCapErrClass, h1_cap_cls)}
+        ${getErrCell(h2_cap_err, getBushingCapErrClass, h2_cap_cls)}
+        ${getErrCell(h3_cap_err, getBushingCapErrClass, h3_cap_cls)}
+        ${getErrCell(l1_cap_err, getBushingCapErrClass, l1_cap_cls)}
+        ${getErrCell(l2_cap_err, getBushingCapErrClass, l2_cap_cls)}
+        ${getErrCell(l3_cap_err, getBushingCapErrClass, l3_cap_cls)}
       </tr>
     `;
     updateTestDate('ex-update-bushing', bushRec.date);

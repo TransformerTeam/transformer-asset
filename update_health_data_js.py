@@ -113,36 +113,98 @@ def convert_csv_to_js():
             if bushing_match:
                 np_rows = [r for r in bushing_info_recs if str(r.get('Parent_Serial_No') or '').strip().lower() == serial_str.strip().lower()]
                 phases = [
-                    ('X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', 'maxbl1_tand', 'maxbcl1_change'),
-                    ('X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', 'maxbl2_tand', 'maxbcl2_change'),
-                    ('X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', 'maxbl3_tand', 'maxbcl3_change'),
+                    ('H1', 'bushing_h1_pf_20c', 'bushing_h1_pf_tan', 'bushing_h1_c1', 'maxbh1_tand', 'maxbch1_change', 'maxbh1_tand_cls', 'maxbch1_change_cls'),
+                    ('H2', 'bushing_h2_pf_20c', 'bushing_h2_pf_tan', 'bushing_h2_c1', 'maxbh2_tand', 'maxbch2_change', 'maxbh2_tand_cls', 'maxbch2_change_cls'),
+                    ('H3', 'bushing_h3_pf_20c', 'bushing_h3_pf_tan', 'bushing_h3_c1', 'maxbh3_tand', 'maxbch3_change', 'maxbh3_tand_cls', 'maxbch3_change_cls'),
+                    ('X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1', 'maxbl1_tand', 'maxbcl1_change', 'maxbl1_tand_cls', 'maxbcl1_change_cls'),
+                    ('X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1', 'maxbl2_tand', 'maxbcl2_change', 'maxbl2_tand_cls', 'maxbcl2_change_cls'),
+                    ('X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1', 'maxbl3_tand', 'maxbcl3_change', 'maxbl3_tand_cls', 'maxbcl3_change_cls'),
                 ]
-                for ph_label, pf20_key, pf_key, cap_key, out_pf_err, out_cap_err in phases:
+                for ph_label, pf20_key, pf_key, cap_key, out_pf_err, out_cap_err, out_pf_cls, out_cap_cls in phases:
                     np_row = next((r for r in np_rows if str(r.get('Phase') or '').strip().upper() == ph_label), None)
+                    
+                    pf20 = 0.0
+                    cap = 0.0
+                    try:
+                        pf20 = float(bushing_match.get(pf20_key) or bushing_match.get(pf_key) or 0)
+                    except Exception:
+                        pass
+                    try:
+                        cap = float(bushing_match.get(cap_key) or 0)
+                    except Exception:
+                        pass
+
                     if np_row:
+                        np_pf = 0.0
+                        np_cap = 0.0
                         try:
-                            pf20 = float(bushing_match.get(pf20_key) or bushing_match.get(pf_key) or 0)
                             np_pf = float(np_row.get('Meas_PF_C1') or np_row.get('Corr_PF') or 0)
-                            if np_pf > 0 and pf20 > 0:
-                                pf_err_val = ((pf20 - np_pf) / np_pf) * 100
-                                bushing_match[out_pf_err] = f"{pf_err_val:+.2f}"
-                            else:
-                                bushing_match[out_pf_err] = '-'
                         except Exception:
-                            bushing_match[out_pf_err] = '-'
+                            pass
                         try:
-                            cap = float(bushing_match.get(cap_key) or 0)
                             np_cap = float(np_row.get('Capacitance_C1') or 0)
-                            if np_cap > 0 and cap > 0:
-                                cap_err_val = ((cap - np_cap) / np_cap) * 100
-                                bushing_match[out_cap_err] = f"{cap_err_val:+.2f}"
-                            else:
-                                bushing_match[out_cap_err] = '-'
                         except Exception:
-                            bushing_match[out_cap_err] = '-'
-                    else:
+                            pass
+                            
+                        if np_pf > 0 and pf20 > 0:
+                            pf_err_val = ((pf20 - np_pf) / np_pf) * 100
+                            bushing_match[out_pf_err] = f"{pf_err_val:+.2f}"
+                        if np_cap > 0 and cap > 0:
+                            cap_err_val = ((cap - np_cap) / np_cap) * 100
+                            bushing_match[out_cap_err] = f"{cap_err_val:+.2f}"
+                            
+                        mfg_upper = str(np_row.get('Manufacturer') or '').upper().strip()
+                        
+                        if np_pf > 0 and pf20 > 0:
+                            pf_ratio = pf20 / np_pf
+                            pf_err = ((pf20 - np_pf) / np_pf) * 100
+                            if 'ABB' in mfg_upper:
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 40.0 else 'ex-status-fair' if pf_err < 75.0 else 'ex-status-poor'
+                            elif 'TRENCH' in mfg_upper:
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_ratio <= 1.5 else 'ex-status-fair' if pf_ratio <= 2.0 else 'ex-status-poor'
+                            elif 'PASSONI' in mfg_upper or 'VILLA' in mfg_upper:
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 0 else 'ex-status-fair' if pf_err < 30.0 else 'ex-status-poor'
+                            elif 'MGC' in mfg_upper:
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 5.0 else 'ex-status-fair' if pf_err < 10.0 else 'ex-status-poor'
+                            else:
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_ratio <= 1.5 else 'ex-status-fair' if pf_ratio <= 2.0 else 'ex-status-poor'
+                        
+                        if np_cap > 0 and cap > 0:
+                            dev_val = ((cap - np_cap) / np_cap) * 100
+                            abs_dev = abs(dev_val)
+                            if 'ABB' in mfg_upper:
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 3.0 else 'ex-status-fair' if abs_dev <= 5.0 else 'ex-status-poor'
+                            elif 'PASSONI' in mfg_upper or 'VILLA' in mfg_upper:
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 1.0 else 'ex-status-fair' if abs_dev <= 3.0 else 'ex-status-poor'
+                            elif 'MGC' in mfg_upper:
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 0.7 else 'ex-status-fair' if abs_dev <= 3.0 else 'ex-status-poor'
+                            elif 'TRENCH' in mfg_upper:
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 110.0 else 'ex-status-poor'
+                            else:
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 5.0 else 'ex-status-fair' if abs_dev <= 10.0 else 'ex-status-poor'
+                                
+                    if out_pf_err not in bushing_match:
                         bushing_match[out_pf_err] = '-'
+                    if out_cap_err not in bushing_match:
                         bushing_match[out_cap_err] = '-'
+                        
+                    if out_pf_cls not in bushing_match or not bushing_match[out_pf_cls]:
+                        val = bushing_match.get(out_pf_err, '-')
+                        if val != '-':
+                            try:
+                                v = abs(float(val))
+                                bushing_match[out_pf_cls] = 'ex-status-good' if v <= 50 else 'ex-status-fair' if v <= 100 else 'ex-status-poor'
+                            except Exception:
+                                bushing_match[out_pf_cls] = ''
+                                
+                    if out_cap_cls not in bushing_match or not bushing_match[out_cap_cls]:
+                        val = bushing_match.get(out_cap_err, '-')
+                        if val != '-':
+                            try:
+                                v = abs(float(val))
+                                bushing_match[out_cap_cls] = 'ex-status-good' if v <= 5 else 'ex-status-fair' if v <= 10 else 'ex-status-poor'
+                            except Exception:
+                                bushing_match[out_cap_cls] = ''
 
             item = {
                 "no": idx,
