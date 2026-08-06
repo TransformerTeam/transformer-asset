@@ -1832,6 +1832,38 @@ header p {
   text-align: center !important;
 }
 
+/* Specific column widths for 4-column Oil Tables (Item Test, Standards, Result, Unit) to prevent Unit column overflow */
+.oil-table th:first-child,
+.oil-table td:first-child {
+  width: 40% !important;
+  min-width: unset !important;
+  white-space: normal !important;
+}
+.oil-table th:nth-child(2),
+.oil-table td:nth-child(2) {
+  width: 30% !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  text-align: left !important;
+  white-space: normal !important;
+}
+.oil-table th:nth-child(3),
+.oil-table td:nth-child(3) {
+  width: 15% !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+.oil-table th:nth-child(4),
+.oil-table td:nth-child(4) {
+  width: 15% !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
 /* Gauge styling */
 .excel-gauge-container {
   display: flex;
