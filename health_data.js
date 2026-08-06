@@ -3,12 +3,12 @@ const HEALTH_INDEX_DATA = [
         "no": 0,
         "name": "16120-TR-001",
         "serial": "4803321",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 21,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -38,7 +38,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "Q",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -53,21 +53,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Repair oil leak and hot oil purify, Add passivator. Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b),"
+        "recommendation": "Repair oil leak and hot oil pQrify, Add passivator. Plan for oil regeneration/Change Oil: Concern oil condQctivity is Qnacceptable limit, SQspect corrosive (3b),"
     },
     {
         "no": 1,
         "name": "16120-TR-003",
         "serial": "4902687",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 20,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -97,7 +97,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -112,21 +112,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Add passivator, Plan for oil regeneration/Change Oil: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b)."
+        "recommendation": "Add passivator, Plan for oil regeneration/Change Oil: Concern oil condQctivity is Qnacceptable limit, SQspect corrosive (3b)."
     },
     {
         "no": 2,
         "name": "16120-TR-004",
         "serial": "5001769",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 19,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -157,7 +157,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "Q",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "A",
@@ -171,21 +171,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "Plan for oil regeneration/Change Oil: Concern IFT is unacceptable limit and conductivity is questionable limit, Suspect corrosive (3b), Add passivator. Plan for drying transformer (insulation paper degradation)."
+        "recommendation": "Plan for oil regeneration/Change Oil: Concern IFT is Qnacceptable limit and condQctivity is qQestionable limit, SQspect corrosive (3b), Add passivator. Plan for drying transformer (insQlation paper degradation)."
     },
     {
         "no": 3,
         "name": "16120-TR-006",
         "serial": "5101711",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 21,
         "healthIndex": 72,
         "healthStatus": "Monitor",
@@ -215,7 +215,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "Q",
             "acidity": "A",
             "color": "A",
@@ -230,21 +230,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration/Change Oil: Concern conductivity is unacceptable limit and IFT is questionable limit. Plan for drying transformer (insulation paper degradation)."
+        "recommendation": "Plan for oil regeneration/Change Oil: Concern condQctivity is Qnacceptable limit and IFT is qQestionable limit. Plan for drying transformer (insQlation paper degradation)."
     },
     {
         "no": 4,
         "name": "10060-TR-101",
         "serial": "5201090",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 17,
         "healthIndex": 80,
         "healthStatus": "Monitor",
@@ -254,7 +254,7 @@ const HEALTH_INDEX_DATA = [
         "activePart": {
             "overall": "Q",
             "insulationResistance": "A",
-            "insulationPowerFactor": "U",
+            "insulationPowerFactor": "Q",
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
@@ -289,21 +289,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/20/2026",
+        "dateToAssess": "1/20/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Follow power factor test period shutdown and DFR test."
+        "recommendation": "Follow power factor test period shQtdown and DFR test."
     },
     {
         "no": 5,
         "name": "10060-TR-102",
         "serial": "5201091",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 6,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 17,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -348,7 +348,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/20/2026",
+        "dateToAssess": "1/20/2026",
         "lastPM": "2023",
         "nextPM": "2026",
         "recommendation": ""
@@ -357,12 +357,12 @@ const HEALTH_INDEX_DATA = [
         "no": 6,
         "name": "14100-TR-001 (GTG11)",
         "serial": "4810106",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 115,
         "lvRate": 10.5,
         "ratedVoltage": "115/10.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 21,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -407,21 +407,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity and IFT are qQestionable limit."
     },
     {
         "no": 7,
         "name": "14100-TR-002 (GTG12)",
         "serial": "4811735",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 115,
         "lvRate": 10.5,
         "ratedVoltage": "115/10.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 20,
         "healthIndex": 96,
         "healthStatus": "Monitor",
@@ -452,7 +452,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "A",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "A",
@@ -466,21 +466,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Repair hot spot: HV cable terminator phase A and B (Max. 52 °C), Plan for oil regeneration: Concern IFT are questionable limit, Add passivator."
+        "recommendation": "Repair hot spot: HV cable terminator phase A and B (Max. 52 °C), Plan for oil regeneration: Concern IFT are qQestionable limit, Add passivator."
     },
     {
         "no": 8,
         "name": "14100-TR-005 (GTG13)",
         "serial": "PP0174B01",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 115,
         "lvRate": 10.5,
         "ratedVoltage": "115/10.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 18,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -510,7 +510,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -525,21 +525,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity is unacceptable limit."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit."
     },
     {
         "no": 9,
         "name": "14100-TR-006 (GTG14)",
         "serial": "PP0225B01",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 115,
         "lvRate": 10.5,
         "ratedVoltage": "115/10.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 17,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -584,21 +584,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit."
+        "recommendation": "Plan for oil regeneration: Concern IFT is Qnacceptable limit and condQctivity is qQestionable limit."
     },
     {
         "no": 10,
         "name": "10060-TR-001 (GTG15)",
         "serial": "5110021",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 118,
         "lvRate": 11,
         "ratedVoltage": "118/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 18,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -629,7 +629,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "A",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "A",
@@ -643,21 +643,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration: Concern IFT is unacceptable limit."
+        "recommendation": "Plan for oil regeneration: Concern IFT is Qnacceptable limit."
     },
     {
         "no": 11,
         "name": "10060-TR-002 (GTG16)",
         "serial": "5110022",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 55,
         "hvRate": 118,
         "lvRate": 11,
         "ratedVoltage": "118/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 18,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -688,7 +688,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "A",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "A",
@@ -702,21 +702,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2026",
         "nextPM": "2029",
-        "recommendation": "Plan for oil regeneration: Concern IFT is unacceptable limit."
+        "recommendation": "Plan for oil regeneration: Concern IFT is Qnacceptable limit."
     },
     {
         "no": 12,
         "name": "14100-TR-003",
         "serial": "PP0084B01",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 40,
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 20,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -746,7 +746,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -761,21 +761,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit, SQspect corrosive (3b), Add passivator."
     },
     {
         "no": 13,
         "name": "14100-TR-004",
         "serial": "PP0102B01",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 40,
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 20,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -820,21 +820,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Routine 3Y PM Program."
+        "recommendation": "RoQtine 3Y PM Program."
     },
     {
         "no": 14,
         "name": "16120-TR-002A",
         "serial": "4803168",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 2.66,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 21,
         "healthIndex": 87,
         "healthStatus": "Monitor",
@@ -879,21 +879,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/19/2026",
+        "dateToAssess": "1/19/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil top-up and N2 fill up for Positive Pressure, Follow to confirm test: Insulation resistance."
+        "recommendation": "Plan for oil top-Qp and N2 fill Qp for Positive PressQre, Follow to confirm test: InsQlation resistance."
     },
     {
         "no": 15,
         "name": "16120-TR-002B",
         "serial": "4803167",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 2.66,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 21,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -907,7 +907,7 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "A",
             "coreToGround": "N/A"
         },
@@ -938,21 +938,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/20/2026",
+        "dateToAssess": "1/20/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Plan for oil top-up and N2 fill up for Positive Pressure, Plan for oil regeneration: Concern oil conductivity is questionable limit, Re-test Insulation resistance and short circuit test."
+        "recommendation": "Plan for oil top-Qp and N2 fill Qp for Positive PressQre, Plan for oil regeneration: Concern oil condQctivity is qQestionable limit, Re-test InsQlation resistance and short circQit test."
     },
     {
         "no": 16,
         "name": "16120-TR-005A",
         "serial": "5001766",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 1.6,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 82,
         "healthStatus": "Monitor",
@@ -983,7 +983,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "Q",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "N/A",
@@ -997,21 +997,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "01/20/2026",
+        "dateToAssess": "1/20/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "Plan for oil regeneration: Concern IFT is unacceptable limit and conductivity is questionable limit., Re-test 1 and 3 Phase Short Circuit."
+        "recommendation": "Plan for oil regeneration: Concern IFT is Qnacceptable limit and condQctivity is qQestionable limit., Re-test 1 and 3 Phase Short CircQit."
     },
     {
         "no": 17,
         "name": "16120-TR-005B",
         "serial": "5001700",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 1.6,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 87,
         "healthStatus": "Monitor",
@@ -1038,11 +1038,11 @@ const HEALTH_INDEX_DATA = [
             "overall": "Q",
             "dga": "A",
             "waterContent": "A",
-            "dielectricBreakdown": "U",
+            "dielectricBreakdown": "Q",
             "pf25": "A",
             "pf100": "A",
             "conductivity": "Q",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "N/A",
@@ -1056,21 +1056,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Replacement new oil and hot oil purify in the next shutdown."
+        "recommendation": "Replacement new oil and hot oil pQrify in the next shQtdown."
     },
     {
         "no": 18,
         "name": "10060-TR-201",
         "serial": "5200523",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 1.6,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 80,
         "healthStatus": "Monitor",
@@ -1080,7 +1080,7 @@ const HEALTH_INDEX_DATA = [
         "activePart": {
             "overall": "Q",
             "insulationResistance": "Q",
-            "insulationPowerFactor": "U",
+            "insulationPowerFactor": "Q",
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
@@ -1115,21 +1115,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil top up, Re-test the Insulaion resistance and power factor (If not pass, require to change new oil.)"
+        "recommendation": "Plan for oil top Qp, Re-test the InsQlaion resistance and power factor (If not pass, reqQire to change new oil.)"
     },
     {
         "no": 19,
         "name": "10060-TR-202",
         "serial": "5200524",
-        "site": "CUP-1",
+        "site": "CQP-1",
         "ratedPower": 1.6,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 80,
         "healthStatus": "Monitor",
@@ -1143,8 +1143,8 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
-            "shortCircuit3P": "U",
+            "shortCircuit1P": "Q",
+            "shortCircuit3P": "Q",
             "coreToGround": "N/A"
         },
         "bushing": "N/A",
@@ -1174,21 +1174,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "Plan for oil top up, Re-test 1 and 3 Phase short circuit impedance."
+        "recommendation": "Plan for oil top Qp, Re-test 1 and 3 Phase short circQit impedance."
     },
     {
         "no": 20,
         "name": "24201-TR-011",
         "serial": "4912022",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 8.8,
         "hvRate": 11,
         "lvRate": 7,
-        "ratedVoltage": "11/7",
-        "serviceType": "UAT",
+        "ratedVoltage": "7-Nov",
+        "serviceType": "QAT",
         "serviceAge": 19,
         "healthIndex": 82,
         "healthStatus": "Monitor",
@@ -1217,8 +1217,8 @@ const HEALTH_INDEX_DATA = [
             "waterContent": "A",
             "dielectricBreakdown": "A",
             "pf25": "A",
-            "pf100": "U",
-            "conductivity": "U",
+            "pf100": "Q",
+            "conductivity": "Q",
             "ift": "Q",
             "acidity": "A",
             "color": "A",
@@ -1233,21 +1233,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
+        "recommendation": "Hot oil pQrify, Concern PF 100 °C, CondQtivity are Qnacceaptable limit, IFT is qQestionable limit."
     },
     {
         "no": 21,
         "name": "24201-TR-012",
         "serial": "4912023",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 8.8,
         "hvRate": 11,
         "lvRate": 7,
-        "ratedVoltage": "11/7",
-        "serviceType": "UAT",
+        "ratedVoltage": "7-Nov",
+        "serviceType": "QAT",
         "serviceAge": 19,
         "healthIndex": 84,
         "healthStatus": "Monitor",
@@ -1276,8 +1276,8 @@ const HEALTH_INDEX_DATA = [
             "waterContent": "A",
             "dielectricBreakdown": "A",
             "pf25": "A",
-            "pf100": "U",
-            "conductivity": "U",
+            "pf100": "Q",
+            "conductivity": "Q",
             "ift": "Q",
             "acidity": "A",
             "color": "A",
@@ -1292,21 +1292,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Hot oil purify, Concern PF 100 °C, Condutivity are unacceaptable limit, IFT is questionable limit."
+        "recommendation": "Hot oil pQrify, Concern PF 100 °C, CondQtivity are Qnacceaptable limit, IFT is qQestionable limit."
     },
     {
         "no": 22,
         "name": "23901-TR-011 (GTG21)",
         "serial": "4912019",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 55,
         "hvRate": 117,
         "lvRate": 11,
         "ratedVoltage": "117/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 19,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -1336,8 +1336,8 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
-            "ift": "U",
+            "conductivity": "Q",
+            "ift": "Q",
             "acidity": "A",
             "color": "Q",
             "inhibitor": "N/A",
@@ -1351,21 +1351,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Plan for oil regeneration, Concern IFT, Condutivity are unacceaptable limit, Color is questionable limit."
+        "recommendation": "Plan for oil regeneration, Concern IFT, CondQtivity are Qnacceaptable limit, Color is qQestionable limit."
     },
     {
         "no": 23,
         "name": "23902-TR-012 (GTG22)",
         "serial": "4912020",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 55,
         "hvRate": 117,
         "lvRate": 11,
         "ratedVoltage": "117/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 19,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -1396,7 +1396,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "A",
             "conductivity": "A",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "N/A",
@@ -1410,7 +1410,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
         "recommendation": "Plan for oil regeneration; there is a concern that the IFT is below the acceptable limit."
@@ -1419,12 +1419,12 @@ const HEALTH_INDEX_DATA = [
         "no": 24,
         "name": "23911-TR-010 (STG21)",
         "serial": "4912021",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 54,
         "hvRate": 117,
         "lvRate": 11,
         "ratedVoltage": "117/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 19,
         "healthIndex": 96,
         "healthStatus": "Monitor",
@@ -1469,7 +1469,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
         "recommendation": "Plan for oil regeneration; there is a concern that the IFT is decrease closely the acceptable limit."
@@ -1478,12 +1478,12 @@ const HEALTH_INDEX_DATA = [
         "no": 25,
         "name": "24201-TR-111",
         "serial": "5000574",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -1497,7 +1497,7 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "Q",
             "coreToGround": "N/A"
         },
@@ -1528,21 +1528,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration; there is a concern that the IFT Conductivity are qeustionable limit. Re-test Insulation resistance and short circuit test."
+        "recommendation": "Plan for oil regeneration; there is a concern that the IFT CondQctivity are qeQstionable limit. Re-test InsQlation resistance and short circQit test."
     },
     {
         "no": 26,
         "name": "24201-TR-112",
         "serial": "5000575",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -1556,7 +1556,7 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "Q",
             "coreToGround": "N/A"
         },
@@ -1587,21 +1587,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test."
+        "recommendation": "Plan for oil regeneration; there is a concern that the CondQctivity and Color are qeQstionable limit. Re-test short circQit test."
     },
     {
         "no": 27,
         "name": "24201-TR-121",
         "serial": "5000576",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 81,
         "healthStatus": "Monitor",
@@ -1646,21 +1646,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration; there is a concern that the Conductivity and Color are qeustionable limit. Re-test short circuit test."
+        "recommendation": "Plan for oil regeneration; there is a concern that the CondQctivity and Color are qeQstionable limit. Re-test short circQit test."
     },
     {
         "no": 28,
         "name": "24201-TR-122",
         "serial": "5000577",
-        "site": "CUP-2",
+        "site": "CQP-2",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -1674,8 +1674,8 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
-            "shortCircuit3P": "U",
+            "shortCircuit1P": "Q",
+            "shortCircuit3P": "Q",
             "coreToGround": "N/A"
         },
         "bushing": "N/A",
@@ -1705,21 +1705,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Plan for oil regeneration; there is a concern that the Conductivity is qeustionable limit. Re-test short circuit test."
+        "recommendation": "Plan for oil regeneration; there is a concern that the CondQctivity is qeQstionable limit. Re-test short circQit test."
     },
     {
         "no": 29,
         "name": "36120-TR-103 (STG31)",
         "serial": "5110023",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 21,
         "hvRate": 118,
         "lvRate": 11,
         "ratedVoltage": "118/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 18,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -1764,21 +1764,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2025",
         "nextPM": "2028",
-        "recommendation": "Routine 3Y PM Program."
+        "recommendation": "RoQtine 3Y PM Program."
     },
     {
         "no": 30,
         "name": "34101-TR-001",
         "serial": "PP0158B01",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 40,
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 18,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -1823,21 +1823,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Routine 3Y PM Program."
+        "recommendation": "RoQtine 3Y PM Program."
     },
     {
         "no": 31,
         "name": "34101-TR-002",
         "serial": "PP0181B01",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 40,
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 18,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -1882,21 +1882,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Routine 3Y PM Program."
+        "recommendation": "RoQtine 3Y PM Program."
     },
     {
         "no": 32,
         "name": "36120-TR-201",
         "serial": "5102852",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 10,
         "hvRate": 22,
         "lvRate": 6.9,
         "ratedVoltage": "22/6.9",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 91,
         "healthStatus": "Monitor",
@@ -1941,21 +1941,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue, Plan for oil reganeration; there is a concern that the Conductivity is qeustionable limit."
+        "recommendation": "3Y PM program overdQe, Plan for oil reganeration; there is a concern that the CondQctivity is qeQstionable limit."
     },
     {
         "no": 33,
         "name": "36120-TR-202",
         "serial": "5103176",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 10,
         "hvRate": 22,
         "lvRate": 6.9,
         "ratedVoltage": "22/6.9",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 86,
         "healthStatus": "Monitor",
@@ -2000,21 +2000,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue. Re-test 1 phase short circuit."
+        "recommendation": "3Y PM program overdQe. Re-test 1 phase short circQit."
     },
     {
         "no": 34,
         "name": "36120-TR-301",
         "serial": "5103168",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 2,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 86,
         "healthStatus": "Monitor",
@@ -2044,7 +2044,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "Q",
             "acidity": "A",
             "color": "A",
@@ -2059,21 +2059,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue, Re-test 1 phase short circuit."
+        "recommendation": "3Y PM program overdQe, Re-test 1 phase short circQit."
     },
     {
         "no": 35,
         "name": "36120-TR-302",
         "serial": "5103169",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 2,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 72,
         "healthStatus": "Monitor",
@@ -2087,7 +2087,7 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "A",
             "coreToGround": "N/A"
         },
@@ -2104,7 +2104,7 @@ const HEALTH_INDEX_DATA = [
             "pf25": "A",
             "pf100": "Q",
             "conductivity": "Q",
-            "ift": "U",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "N/A",
@@ -2118,21 +2118,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue, Re-test 1 phase short circuit, Plan for oil regeneration (PF 100C, Conductivity, IFT)."
+        "recommendation": "3Y PM program overdQe, Re-test 1 phase short circQit, Plan for oil regeneration (PF 100C, CondQctivity, IFT)."
     },
     {
         "no": 36,
         "name": "36120-TR-303",
         "serial": "5103170",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 2,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -2145,8 +2145,8 @@ const HEALTH_INDEX_DATA = [
             "insulationPowerFactor": "Q",
             "excitingCurrent": "A",
             "ratioPolarity": "A",
-            "windingResistance": "U",
-            "shortCircuit1P": "U",
+            "windingResistance": "Q",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "A",
             "coreToGround": "N/A"
         },
@@ -2177,21 +2177,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue, Re-test short circuit, Power factor, Plan for oil regeneration (Conductivity, Sludge)."
+        "recommendation": "3Y PM program overdQe, Re-test short circQit, Power factor, Plan for oil regeneration (CondQctivity, SlQdge)."
     },
     {
         "no": 37,
         "name": "36120-TR-304",
         "serial": "5103171",
-        "site": "CUP-3",
+        "site": "CQP-3",
         "ratedPower": 2,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 76,
         "healthStatus": "Monitor",
@@ -2205,7 +2205,7 @@ const HEALTH_INDEX_DATA = [
             "excitingCurrent": "A",
             "ratioPolarity": "A",
             "windingResistance": "A",
-            "shortCircuit1P": "U",
+            "shortCircuit1P": "Q",
             "shortCircuit3P": "A",
             "coreToGround": "N/A"
         },
@@ -2236,21 +2236,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2022",
         "nextPM": "2025",
-        "recommendation": "3Y PM program overdue, Re-test short circuit, Power factor, Plan for hot oil purify (Sludge)."
+        "recommendation": "3Y PM program overdQe, Re-test short circQit, Power factor, Plan for hot oil pQrify (SlQdge)."
     },
     {
         "no": 38,
         "name": "41BAT01 (GTG41)",
         "serial": "6110201",
-        "site": "CUP-4",
+        "site": "CQP-4",
         "ratedPower": 91,
         "hvRate": 115,
         "lvRate": 11,
         "ratedVoltage": "115/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 8,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -2295,21 +2295,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Routine 6Y PM Program (Overhaul OLTC)."
+        "recommendation": "RoQtine 6Y PM Program (OverhaQl OLTC)."
     },
     {
         "no": 39,
         "name": "41BAT02",
         "serial": "6110202",
-        "site": "CUP-4",
+        "site": "CQP-4",
         "ratedPower": 52,
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 7,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -2354,21 +2354,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "03/01/2026",
+        "dateToAssess": "3/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Routine 6Y PM Program (Overhaul OLTC)."
+        "recommendation": "RoQtine 6Y PM Program (OverhaQl OLTC)."
     },
     {
         "no": 40,
         "name": "41BBT20GT001",
         "serial": "6110203",
-        "site": "CUP-4",
+        "site": "CQP-4",
         "ratedPower": 10,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 7,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -2398,7 +2398,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -2413,21 +2413,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity is unacceptable limit."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit."
     },
     {
         "no": 41,
         "name": "41BFT20GT001",
         "serial": "6110204",
-        "site": "CUP-4",
+        "site": "CQP-4",
         "ratedPower": 2.8,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 7,
         "healthIndex": 87,
         "healthStatus": "Monitor",
@@ -2457,8 +2457,8 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
-            "ift": "U",
+            "conductivity": "Q",
+            "ift": "Q",
             "acidity": "A",
             "color": "A",
             "inhibitor": "A",
@@ -2472,21 +2472,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "waterContent": "A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity and IFT are questionable limit."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity and IFT are qQestionable limit."
     },
     {
         "no": 42,
         "name": "41BFT80GT001",
         "serial": "6110245",
-        "site": "CUP-4",
+        "site": "CQP-4",
         "ratedPower": 1,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 7,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -2516,7 +2516,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -2531,10 +2531,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Update PM data. Plan for oil regeneration: Concern oil conductivity is unacceptable limit."
+        "recommendation": "Qpdate PM data. Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit."
     },
     {
         "no": 43,
@@ -2545,7 +2545,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.6,
         "ratedVoltage": "11/6.6",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 5,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -2590,10 +2590,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "3Y PM Program overdue."
+        "recommendation": "3Y PM Program overdQe."
     },
     {
         "no": 44,
@@ -2604,7 +2604,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.6,
         "ratedVoltage": "11/6.6",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 5,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -2649,10 +2649,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "3Y PM Program overdue."
+        "recommendation": "3Y PM Program overdQe."
     },
     {
         "no": 45,
@@ -2663,7 +2663,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.6,
         "ratedVoltage": "11/6.6",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 5,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -2708,10 +2708,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "3Y PM Program overdue."
+        "recommendation": "3Y PM Program overdQe."
     },
     {
         "no": 46,
@@ -2722,7 +2722,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.6,
         "ratedVoltage": "11/6.6",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -2770,18 +2770,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 47,
-        "name": "GT2B GSUT",
+        "name": "GT2B GSQT",
         "serial": "4710348",
         "site": "GEN",
         "ratedPower": 50,
         "hvRate": 123,
         "lvRate": 11,
         "ratedVoltage": "123/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 21,
         "healthIndex": 96,
         "healthStatus": "Monitor",
@@ -2826,21 +2826,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Replacement buchholz relay (oil leak), Add passivator and budget plan for oil regeneration (IFT questinable limit)."
+        "recommendation": "Replacement bQchholz relay (oil leak), Add passivator and bQdget plan for oil regeneration (IFT qQestinable limit)."
     },
     {
         "no": 48,
-        "name": "GT2C GSUT",
+        "name": "GT2C GSQT",
         "serial": "4710349",
         "site": "GEN",
         "ratedPower": 50,
         "hvRate": 123,
         "lvRate": 11,
         "ratedVoltage": "123/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 21,
         "healthIndex": 96,
         "healthStatus": "Monitor",
@@ -2885,10 +2885,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2023",
         "nextPM": "2026",
-        "recommendation": "Add passivator and budget plan for oil regeneration (IFT questinable limit)."
+        "recommendation": "Add passivator and bQdget plan for oil regeneration (IFT qQestinable limit)."
     },
     {
         "no": 49,
@@ -2899,7 +2899,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 120,
         "lvRate": 11,
         "ratedVoltage": "120/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 5,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -2947,7 +2947,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 50,
@@ -2958,7 +2958,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 120,
         "lvRate": 11,
         "ratedVoltage": "120/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -3006,7 +3006,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 51,
@@ -3017,7 +3017,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 120,
         "lvRate": 11,
         "ratedVoltage": "120/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -3065,7 +3065,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 52,
@@ -3076,7 +3076,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 120,
         "lvRate": 11,
         "ratedVoltage": "120/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 5,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -3124,7 +3124,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 53,
@@ -3135,7 +3135,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 23,
         "ratedVoltage": "115/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 32,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -3183,7 +3183,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 54,
@@ -3194,7 +3194,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 23,
         "ratedVoltage": "115/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 32,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -3242,7 +3242,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 55,
@@ -3253,7 +3253,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 23,
         "ratedVoltage": "115/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 32,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -3301,7 +3301,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 56,
@@ -3312,7 +3312,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 31,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -3342,7 +3342,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "Q",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "Q",
             "acidity": "A",
             "color": "A",
@@ -3357,10 +3357,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2024",
         "nextPM": "2027",
-        "recommendation": "Plan for oil regeneration: Concern oil conductivity is unacceptable limit, PF 100C and IFT are questionable limit."
+        "recommendation": "Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit, PF 100C and IFT are qQestionable limit."
     },
     {
         "no": 57,
@@ -3371,7 +3371,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 31,
         "healthIndex": 92,
         "healthStatus": "Monitor",
@@ -3401,7 +3401,7 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "A",
             "pf25": "A",
             "pf100": "A",
-            "conductivity": "U",
+            "conductivity": "Q",
             "ift": "A",
             "acidity": "A",
             "color": "A",
@@ -3416,10 +3416,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2021",
         "nextPM": "2024",
-        "recommendation": "3Y PM program overdue, Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Corrosive sulfur is suspect corrosive (3b)."
+        "recommendation": "3Y PM program overdQe, Plan for oil regeneration: Concern oil condQctivity is Qnacceptable limit, Corrosive sQlfQr is sQspect corrosive (3b)."
     },
     {
         "no": 58,
@@ -3430,7 +3430,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -3478,7 +3478,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 59,
@@ -3489,7 +3489,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 3,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -3537,7 +3537,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 60,
@@ -3548,7 +3548,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -3596,7 +3596,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 61,
@@ -3607,7 +3607,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 6.6,
         "ratedVoltage": "22/6.6",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 88,
         "healthStatus": "Healthy",
@@ -3655,7 +3655,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 62,
@@ -3666,7 +3666,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 13,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -3714,7 +3714,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 63,
@@ -3725,7 +3725,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 19,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -3773,7 +3773,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 64,
@@ -3784,7 +3784,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.69,
         "ratedVoltage": "11/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -3832,7 +3832,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 65,
@@ -3843,7 +3843,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.69,
         "ratedVoltage": "11/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -3891,7 +3891,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 66,
@@ -3902,7 +3902,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.69,
         "ratedVoltage": "11/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -3950,7 +3950,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 67,
@@ -3961,7 +3961,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.69,
         "ratedVoltage": "11/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -4009,7 +4009,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 68,
@@ -4020,7 +4020,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -4068,7 +4068,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 69,
@@ -4079,7 +4079,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -4127,7 +4127,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 70,
@@ -4138,7 +4138,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -4186,7 +4186,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 71,
@@ -4197,7 +4197,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 5,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -4245,7 +4245,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 72,
@@ -4256,7 +4256,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -4304,7 +4304,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 73,
@@ -4315,7 +4315,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -4363,7 +4363,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 74,
@@ -4374,7 +4374,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 33,
         "healthIndex": 90,
         "healthStatus": "Healthy",
@@ -4419,10 +4419,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2019",
         "nextPM": "2022",
-        "recommendation": "3Y PM program overdue."
+        "recommendation": "3Y PM program overdQe."
     },
     {
         "no": 75,
@@ -4433,7 +4433,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 33,
         "healthIndex": 90,
         "healthStatus": "Healthy",
@@ -4478,10 +4478,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2019",
         "nextPM": "2022",
-        "recommendation": "3Y PM program overdue."
+        "recommendation": "3Y PM program overdQe."
     },
     {
         "no": 76,
@@ -4492,7 +4492,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 33,
         "healthIndex": 95,
         "healthStatus": "Healthy",
@@ -4537,10 +4537,10 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2019",
         "nextPM": "2022",
-        "recommendation": "3Y PM program overdue."
+        "recommendation": "3Y PM program overdQe."
     },
     {
         "no": 77,
@@ -4551,7 +4551,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 33,
         "healthIndex": 90,
         "healthStatus": "Healthy",
@@ -4596,21 +4596,21 @@ const HEALTH_INDEX_DATA = [
             "dielectricBreakdown": "N/A",
             "waterContent": "N/A"
         },
-        "dateToAssess": "04/01/2026",
+        "dateToAssess": "4/1/2026",
         "lastPM": "2019",
         "nextPM": "2022",
-        "recommendation": "3Y PM program overdue."
+        "recommendation": "3Y PM program overdQe."
     },
     {
         "no": 78,
-        "name": "61BBT01 (GH1 UAT1)",
+        "name": "61BBT01 (GH1 QAT1)",
         "serial": "3011080055",
         "site": "GHECO-ONE",
         "ratedPower": 60,
         "hvRate": 23,
         "lvRate": 11,
         "ratedVoltage": "23/11",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 16,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -4658,18 +4658,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 79,
-        "name": "61BBT02 (GH1 UAT2)",
+        "name": "61BBT02 (GH1 QAT2)",
         "serial": "3011080056",
         "site": "GHECO-ONE",
         "ratedPower": 60,
         "hvRate": 23,
         "lvRate": 11,
         "ratedVoltage": "23/11",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 16,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -4717,7 +4717,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 80,
@@ -4728,7 +4728,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 23,
         "lvRate": 0.92,
         "ratedVoltage": "23/0.92",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 16,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -4776,18 +4776,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 81,
-        "name": "61BAT01 (GH1 GSUT)",
+        "name": "61BAT01 (GH1 GSQT)",
         "serial": "TP70279703",
         "site": "GHECO-ONE",
         "ratedPower": 875,
         "hvRate": 245,
         "lvRate": 23,
         "ratedVoltage": "245/23",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 16,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -4835,18 +4835,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 82,
-        "name": "61BMT03 (Back Up)",
+        "name": "61BMT03 (Back Qp)",
         "serial": "5513053",
         "site": "GHECO-ONE",
         "ratedPower": 10,
         "hvRate": 22,
         "lvRate": 11,
         "ratedVoltage": "22/11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 14,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -4894,7 +4894,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 83,
@@ -4905,7 +4905,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -4953,7 +4953,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 84,
@@ -4964,7 +4964,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5012,7 +5012,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 85,
@@ -5023,7 +5023,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5071,7 +5071,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 86,
@@ -5082,7 +5082,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5130,7 +5130,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 87,
@@ -5141,7 +5141,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5189,7 +5189,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 88,
@@ -5200,7 +5200,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5248,7 +5248,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 89,
@@ -5259,7 +5259,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5307,7 +5307,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 90,
@@ -5318,7 +5318,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5366,7 +5366,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 91,
@@ -5377,7 +5377,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5425,7 +5425,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 92,
@@ -5436,7 +5436,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5484,7 +5484,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 93,
@@ -5495,7 +5495,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5543,7 +5543,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 94,
@@ -5554,7 +5554,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5602,7 +5602,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 95,
@@ -5613,7 +5613,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5661,7 +5661,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 96,
@@ -5672,7 +5672,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5720,7 +5720,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 97,
@@ -5731,7 +5731,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5779,7 +5779,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 98,
@@ -5790,7 +5790,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.4,
         "ratedVoltage": "10.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5838,7 +5838,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 99,
@@ -5849,7 +5849,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.15,
         "ratedVoltage": "10.5/0.15",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5897,7 +5897,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 100,
@@ -5908,7 +5908,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 10.5,
         "lvRate": 0.15,
         "ratedVoltage": "10.5/0.15",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -5956,7 +5956,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 101,
@@ -5967,7 +5967,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6015,7 +6015,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 102,
@@ -6026,7 +6026,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6074,7 +6074,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 103,
@@ -6085,7 +6085,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6133,7 +6133,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 104,
@@ -6144,7 +6144,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6192,7 +6192,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 105,
@@ -6203,7 +6203,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6251,7 +6251,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 106,
@@ -6262,7 +6262,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6310,7 +6310,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 107,
@@ -6321,7 +6321,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6369,7 +6369,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 108,
@@ -6380,7 +6380,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6428,7 +6428,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 109,
@@ -6439,7 +6439,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6487,7 +6487,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 110,
@@ -6498,7 +6498,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6546,7 +6546,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 111,
@@ -6557,7 +6557,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6605,7 +6605,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 112,
@@ -6616,7 +6616,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6664,7 +6664,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 113,
@@ -6675,7 +6675,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6723,7 +6723,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 114,
@@ -6734,7 +6734,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6782,7 +6782,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 115,
@@ -6793,7 +6793,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6841,7 +6841,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 116,
@@ -6852,7 +6852,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6900,7 +6900,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 117,
@@ -6911,7 +6911,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -6959,7 +6959,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 118,
@@ -6970,7 +6970,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7018,7 +7018,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 119,
@@ -7029,7 +7029,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7077,7 +7077,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 120,
@@ -7088,7 +7088,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7136,7 +7136,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 121,
@@ -7147,7 +7147,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7195,7 +7195,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 122,
@@ -7206,7 +7206,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7254,7 +7254,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 123,
@@ -7265,7 +7265,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7313,7 +7313,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 124,
@@ -7324,7 +7324,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 0.4,
         "lvRate": 0.11,
         "ratedVoltage": "0.4/0.11",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7372,7 +7372,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 125,
@@ -7383,7 +7383,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 21,
         "lvRate": 6.75,
         "ratedVoltage": "21/6.75",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 25,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -7431,7 +7431,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 126,
@@ -7442,7 +7442,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 21,
         "lvRate": 6.75,
         "ratedVoltage": "21/6.75",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 25,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -7490,7 +7490,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 127,
@@ -7501,7 +7501,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 235,
         "lvRate": 121,
         "ratedVoltage": "235/121",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 25,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -7549,7 +7549,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 128,
@@ -7560,7 +7560,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 235,
         "lvRate": 121,
         "ratedVoltage": "235/121",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 25,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -7608,7 +7608,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 129,
@@ -7619,7 +7619,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 21,
         "lvRate": 0.52,
         "ratedVoltage": "21/0.52",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 90,
         "healthStatus": "Healthy",
@@ -7667,7 +7667,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 130,
@@ -7678,7 +7678,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 21,
         "lvRate": 0.52,
         "ratedVoltage": "21/0.52",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 90,
         "healthStatus": "Healthy",
@@ -7726,7 +7726,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 131,
@@ -7737,7 +7737,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7785,7 +7785,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 132,
@@ -7796,7 +7796,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7844,7 +7844,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 133,
@@ -7855,7 +7855,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7903,7 +7903,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 134,
@@ -7914,7 +7914,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -7962,7 +7962,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 135,
@@ -7973,7 +7973,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -8021,7 +8021,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 136,
@@ -8032,7 +8032,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -8080,7 +8080,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 137,
@@ -8091,7 +8091,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 26,
         "healthIndex": 86,
         "healthStatus": "Healthy",
@@ -8139,7 +8139,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 138,
@@ -8150,7 +8150,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 26,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -8198,7 +8198,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 139,
@@ -8209,7 +8209,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 123,
         "lvRate": 11,
         "ratedVoltage": "123/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 27,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8257,7 +8257,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 140,
@@ -8268,7 +8268,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 123,
         "lvRate": 11,
         "ratedVoltage": "123/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 33,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -8316,7 +8316,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 141,
@@ -8327,7 +8327,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 123,
         "lvRate": 10.5,
         "ratedVoltage": "123/10.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 27,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8375,7 +8375,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 142,
@@ -8386,7 +8386,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 11,
         "ratedVoltage": "22/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 20,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -8434,7 +8434,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 143,
@@ -8445,7 +8445,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 11,
         "ratedVoltage": "22/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 12,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8493,7 +8493,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 144,
@@ -8504,7 +8504,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 31,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8552,7 +8552,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 145,
@@ -8563,7 +8563,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 25,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -8611,7 +8611,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 146,
@@ -8622,7 +8622,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 22,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8670,7 +8670,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 147,
@@ -8681,7 +8681,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 22,
         "healthIndex": 82,
         "healthStatus": "Healthy",
@@ -8729,7 +8729,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 148,
@@ -8740,7 +8740,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 22,
         "healthIndex": 84,
         "healthStatus": "Healthy",
@@ -8788,18 +8788,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 149,
-        "name": "GE-TR1 Aux.",
+        "name": "GE-TR1 AQx.",
         "serial": "O61539",
         "site": "GSPP11 PLT1",
         "ratedPower": 1.25,
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 20,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -8847,18 +8847,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 150,
-        "name": "GE-TR2 Aux.",
+        "name": "GE-TR2 AQx.",
         "serial": "5710876",
         "site": "GSPP11 PLT1",
         "ratedPower": 0.63,
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 12,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -8906,18 +8906,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 151,
-        "name": "GSUT-1",
+        "name": "GSQT-1",
         "serial": "PP0284B01",
         "site": "GSPP11 PLT2",
         "ratedPower": 90,
         "hvRate": 115,
         "lvRate": 11,
         "ratedVoltage": "115/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 15,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -8965,18 +8965,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 152,
-        "name": "GSUT-2",
+        "name": "GSQT-2",
         "serial": "PP0285B01",
         "site": "GSPP11 PLT2",
         "ratedPower": 55,
         "hvRate": 115,
         "lvRate": 11,
         "ratedVoltage": "115/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 15,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -9024,7 +9024,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 153,
@@ -9035,7 +9035,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 30,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -9083,7 +9083,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 154,
@@ -9094,7 +9094,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 3.3,
         "ratedVoltage": "11/3.3",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 15,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9142,7 +9142,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 155,
@@ -9153,7 +9153,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 3.3,
         "ratedVoltage": "11/3.3",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 15,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9201,7 +9201,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 156,
@@ -9212,7 +9212,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 15,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9260,7 +9260,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 157,
@@ -9271,7 +9271,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 11,
         "lvRate": 0.4,
         "ratedVoltage": "11/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 15,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -9319,18 +9319,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 158,
-        "name": "COGEN UAT",
+        "name": "COGEN QAT",
         "serial": "9624007",
         "site": "GSPP2&3",
         "ratedPower": 13.4,
         "hvRate": 11.5,
         "lvRate": 7.2,
         "ratedVoltage": "11.5/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 30,
         "healthIndex": 77,
         "healthStatus": "Monitor",
@@ -9378,18 +9378,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 159,
-        "name": "STG3C UAT",
+        "name": "STG3C QAT",
         "serial": "5011858",
         "site": "GSPP2&3",
         "ratedPower": 20,
         "hvRate": 15.75,
         "lvRate": 7.2,
         "ratedVoltage": "15.75/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 18,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9437,18 +9437,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 160,
-        "name": "71BBT10 (CTG7A UAT)",
+        "name": "71BBT10 (CTG7A QAT)",
         "serial": "225307",
         "site": "GSPP2&3",
         "ratedPower": 8,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9496,18 +9496,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 161,
-        "name": "72BBT10 (CTG7B UAT)",
+        "name": "72BBT10 (CTG7B QAT)",
         "serial": "225308",
         "site": "GSPP2&3",
         "ratedPower": 8,
         "hvRate": 11,
         "lvRate": 6.9,
         "ratedVoltage": "11/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9555,18 +9555,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 162,
-        "name": "STG1C UAT",
+        "name": "STG1C QAT",
         "serial": "9724074",
         "site": "GSPP2&3",
         "ratedPower": 22.4,
         "hvRate": 15.75,
         "lvRate": 7.2,
         "ratedVoltage": "15.75/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9614,18 +9614,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 163,
-        "name": "STG2C UAT1",
+        "name": "STG2C QAT1",
         "serial": "9724076",
         "site": "GSPP2&3",
         "ratedPower": 22.4,
         "hvRate": 11.5,
         "lvRate": 7.2,
         "ratedVoltage": "11.5/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9673,18 +9673,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 164,
-        "name": "STG2C UAT2",
+        "name": "STG2C QAT2",
         "serial": "9724075",
         "site": "GSPP2&3",
         "ratedPower": 22.4,
         "hvRate": 15.75,
         "lvRate": 7.2,
         "ratedVoltage": "15.75/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9732,18 +9732,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 165,
-        "name": "31BBT10 (CTG3A UAT)",
+        "name": "31BBT10 (CTG3A QAT)",
         "serial": "4711343",
         "site": "GSPP2&3",
         "ratedPower": 2,
         "hvRate": 11.5,
         "lvRate": 7.2,
         "ratedVoltage": "11.5/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 21,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9791,18 +9791,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 166,
-        "name": "32BBT10 (CTG3B UAT)",
+        "name": "32BBT10 (CTG3B QAT)",
         "serial": "4612314",
         "site": "GSPP2&3",
         "ratedPower": 2,
         "hvRate": 11.5,
         "lvRate": 7.2,
         "ratedVoltage": "11.5/7.2",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 22,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -9850,18 +9850,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 167,
-        "name": "51BBT01 (CTG5 GSUT)",
+        "name": "51BBT01 (CTG5 GSQT)",
         "serial": "VN00408",
         "site": "GSPP2&3",
         "ratedPower": 20,
         "hvRate": 20,
         "lvRate": 6.9,
         "ratedVoltage": "20/6.9",
-        "serviceType": "UAT",
+        "serviceType": "QAT",
         "serviceAge": 17,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -9909,18 +9909,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 168,
-        "name": "COGEN GSUT (CTG1&2)",
+        "name": "COGEN GSQT (CTG1&2)",
         "serial": "9640548",
         "site": "GSPP2&3",
         "ratedPower": 90,
         "hvRate": 118,
         "lvRate": "11.5/11.5",
         "ratedVoltage": "118/11.5/11.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 30,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -9968,18 +9968,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 169,
-        "name": "CTG1A&1B GSUT",
+        "name": "CTG1A&1B GSQT",
         "serial": "9640549",
         "site": "GSPP2&3",
         "ratedPower": 90,
         "hvRate": 118,
         "lvRate": "11.5/11.5",
         "ratedVoltage": "118/11.5/11.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 30,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -10027,18 +10027,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 170,
-        "name": "CTG2A&2B GSUT",
+        "name": "CTG2A&2B GSQT",
         "serial": "57005",
         "site": "GSPP2&3",
         "ratedPower": 90,
         "hvRate": 118,
         "lvRate": "11.5/11.5",
         "ratedVoltage": "118/11.5/11.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 29,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -10086,18 +10086,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 171,
-        "name": "STG3C GSUT",
+        "name": "STG3C GSQT",
         "serial": "5011857",
         "site": "GSPP2&3",
         "ratedPower": 155,
         "hvRate": 118,
         "lvRate": 15.75,
         "ratedVoltage": "118/15.75",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 18,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10145,18 +10145,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 172,
-        "name": "71BAT10 (CTG7A GSUT)",
+        "name": "71BAT10 (CTG7A GSQT)",
         "serial": "6512362",
         "site": "GSPP2&3",
         "ratedPower": 72,
         "hvRate": 118,
         "lvRate": 11,
         "ratedVoltage": "118/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10204,18 +10204,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 173,
-        "name": "72BAT10 (CTG7B GSUT)",
+        "name": "72BAT10 (CTG7B GSQT)",
         "serial": "6512363",
         "site": "GSPP2&3",
         "ratedPower": 72,
         "hvRate": 118,
         "lvRate": 11,
         "ratedVoltage": "118/11",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10263,18 +10263,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 174,
-        "name": "STG1C GSUT",
+        "name": "STG1C GSQT",
         "serial": "57011",
         "site": "GSPP2&3",
         "ratedPower": 215,
         "hvRate": 118,
         "lvRate": 15.75,
         "ratedVoltage": "118/15.75",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 29,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10322,18 +10322,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 175,
-        "name": "STG2C GSUT",
+        "name": "STG2C GSQT",
         "serial": "57012",
         "site": "GSPP2&3",
         "ratedPower": 215,
         "hvRate": 118,
         "lvRate": 15.75,
         "ratedVoltage": "118/15.75",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 29,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10381,18 +10381,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 176,
-        "name": "31BAT10 (CTG3A GSUT)",
+        "name": "31BAT10 (CTG3A GSQT)",
         "serial": "PP0050B01",
         "site": "GSPP2&3",
         "ratedPower": 51.5,
         "hvRate": 118,
         "lvRate": 11.5,
         "ratedVoltage": "118/11.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 21,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10440,18 +10440,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 177,
-        "name": "32BAT10 (CTG3B GSUT)",
+        "name": "32BAT10 (CTG3B GSQT)",
         "serial": "PP0016B01",
         "site": "GSPP2&3",
         "ratedPower": 51.5,
         "hvRate": 118,
         "lvRate": 11.5,
         "ratedVoltage": "118/11.5",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 22,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10499,18 +10499,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 178,
-        "name": "50BAT10 (CTG5 GSUT)",
+        "name": "50BAT10 (CTG5 GSQT)",
         "serial": "20083122TIC003",
         "site": "GSPP2&3",
         "ratedPower": 325,
         "hvRate": 115,
         "lvRate": 20,
         "ratedVoltage": "115/20",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 16,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10558,18 +10558,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 179,
-        "name": "52BAT01 (STG5 GSUT)",
+        "name": "52BAT01 (STG5 GSQT)",
         "serial": "20083122TIC008",
         "site": "GSPP2&3",
         "ratedPower": 175,
         "hvRate": 115,
         "lvRate": 15.75,
         "ratedVoltage": "115/15.75",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 16,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -10617,7 +10617,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 180,
@@ -10628,7 +10628,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 230,
         "lvRate": 121,
         "ratedVoltage": "230/121",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 15,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -10676,7 +10676,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 181,
@@ -10687,7 +10687,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 230,
         "lvRate": 121,
         "ratedVoltage": "230/121",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -10735,7 +10735,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 182,
@@ -10746,7 +10746,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 230,
         "lvRate": 121,
         "ratedVoltage": "230/121",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -10794,7 +10794,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 183,
@@ -10805,7 +10805,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 230,
         "lvRate": 121,
         "ratedVoltage": "230/121",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -10853,7 +10853,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 184,
@@ -10864,7 +10864,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 230,
         "lvRate": 121,
         "ratedVoltage": "230/121",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -10912,7 +10912,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 185,
@@ -10923,7 +10923,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 112.5,
         "lvRate": 23,
         "ratedVoltage": "112.5/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 30,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -10971,7 +10971,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 186,
@@ -10982,7 +10982,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 112.5,
         "lvRate": 23,
         "ratedVoltage": "112.5/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11030,7 +11030,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 187,
@@ -11041,7 +11041,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 112.5,
         "lvRate": 23,
         "ratedVoltage": "112.5/23",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 14,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11089,18 +11089,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 188,
-        "name": "CTG1 Aux.",
+        "name": "CTG1 AQx.",
         "serial": "PBE0580",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11148,18 +11148,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 189,
-        "name": "CTG2 Aux.",
+        "name": "CTG2 AQx.",
         "serial": "PBE0579",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11207,18 +11207,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 190,
-        "name": "COGEN SUS11",
+        "name": "COGEN SQS11",
         "serial": "243597801",
         "site": "GSPP2&3",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -11266,18 +11266,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 191,
-        "name": "COGEN SUS12",
+        "name": "COGEN SQS12",
         "serial": "243597802",
         "site": "GSPP2&3",
         "ratedPower": 2,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -11325,18 +11325,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 192,
-        "name": "CTG1A Aux.",
+        "name": "CTG1A AQx.",
         "serial": "PBJ1200",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11384,18 +11384,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 193,
-        "name": "CTG1B Aux.",
+        "name": "CTG1B AQx.",
         "serial": "PBJ1198",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -11443,18 +11443,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 194,
-        "name": "CTG2A Aux.",
+        "name": "CTG2A AQx.",
         "serial": "PBK1325",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -11502,18 +11502,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 195,
-        "name": "CTG2B Aux.",
+        "name": "CTG2B AQx.",
         "serial": "PBL1465",
         "site": "GSPP2&3",
         "ratedPower": 1.15,
         "hvRate": 11.5,
         "lvRate": 0.4,
         "ratedVoltage": "11.5/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -11561,7 +11561,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 196,
@@ -11572,7 +11572,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 30,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -11620,7 +11620,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 197,
@@ -11631,7 +11631,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11679,7 +11679,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 198,
@@ -11690,7 +11690,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -11738,7 +11738,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 199,
@@ -11749,7 +11749,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -11797,7 +11797,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 200,
@@ -11808,7 +11808,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 13,
         "healthIndex": 84,
         "healthStatus": "Healthy",
@@ -11856,7 +11856,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 201,
@@ -11867,7 +11867,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -11915,18 +11915,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 202,
-        "name": "Admin Building SST",
+        "name": "Admin BQilding SST",
         "serial": "48310781",
         "site": "GSPP2&3",
         "ratedPower": 0.5,
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 21,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -11974,18 +11974,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 203,
-        "name": "70BFT10 (CTG7A Aux.)",
+        "name": "70BFT10 (CTG7A AQx.)",
         "serial": "225309",
         "site": "GSPP2&3",
         "ratedPower": 1.5,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -12033,18 +12033,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 204,
-        "name": "70BFT20 (CTG7B Aux.)",
+        "name": "70BFT20 (CTG7B AQx.)",
         "serial": "225310",
         "site": "GSPP2&3",
         "ratedPower": 1.5,
         "hvRate": 6.6,
         "lvRate": 0.4,
         "ratedVoltage": "6.6/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 3,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -12092,7 +12092,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 205,
@@ -12103,7 +12103,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.69,
         "ratedVoltage": "6.6/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12151,7 +12151,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 206,
@@ -12162,7 +12162,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.6,
         "lvRate": 0.69,
         "ratedVoltage": "6.6/0.69",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12210,7 +12210,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 207,
@@ -12221,7 +12221,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 7.2,
         "ratedVoltage": "22/7.2",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -12269,7 +12269,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 208,
@@ -12280,7 +12280,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 7.2,
         "ratedVoltage": "22/7.2",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -12328,7 +12328,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 209,
@@ -12339,7 +12339,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -12387,7 +12387,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 210,
@@ -12398,7 +12398,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 28,
         "healthIndex": 88,
         "healthStatus": "Healthy",
@@ -12446,7 +12446,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 211,
@@ -12457,7 +12457,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12505,18 +12505,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 212,
-        "name": "1APC-XF-24 (Block1 SUS24)",
+        "name": "1APC-XF-24 (Block1 SQS24)",
         "serial": "PCL1429",
         "site": "GSPP2&3",
         "ratedPower": 0.862,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 27,
         "healthIndex": 81,
         "healthStatus": "Healthy",
@@ -12564,18 +12564,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 213,
-        "name": "2APC-XF-24 (Block2 SUS24)",
+        "name": "2APC-XF-24 (Block2 SQS24)",
         "serial": "PCD0277",
         "site": "GSPP2&3",
         "ratedPower": 0.862,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 77,
         "healthStatus": "Monitor",
@@ -12623,7 +12623,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 214,
@@ -12634,7 +12634,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -12682,7 +12682,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 215,
@@ -12693,7 +12693,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 25,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -12741,18 +12741,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 216,
-        "name": "1APC-XF-11 (Block1 SUS11)",
+        "name": "1APC-XF-11 (Block1 SQS11)",
         "serial": "332162H5018727A",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12800,18 +12800,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 217,
-        "name": "1APC-XF-12 (Block1 SUS12)",
+        "name": "1APC-XF-12 (Block1 SQS12)",
         "serial": "332162H501_8727B",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12859,18 +12859,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 218,
-        "name": "1APC-XF-21 (Block1 SUS21)",
+        "name": "1APC-XF-21 (Block1 SQS21)",
         "serial": "332162H501_8727E",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12918,18 +12918,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 219,
-        "name": "1APC-XF-22 (Block1 SUS22)",
+        "name": "1APC-XF-22 (Block1 SQS22)",
         "serial": "332162H502_8727F",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -12977,18 +12977,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 220,
-        "name": "1APC-XF-23 (Block1 SUS23)",
+        "name": "1APC-XF-23 (Block1 SQS23)",
         "serial": "331000H509_8727J",
         "site": "GSPP2&3",
         "ratedPower": 1.333,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13036,18 +13036,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 221,
-        "name": "2APC-XF-11 (Block2 SUS11)",
+        "name": "2APC-XF-11 (Block2 SQS11)",
         "serial": "332152H501_8727C",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13095,18 +13095,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 222,
-        "name": "2APC-XF-12 (Block2 SUS12)",
+        "name": "2APC-XF-12 (Block2 SQS12)",
         "serial": "331000H508_8727I",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13154,18 +13154,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 223,
-        "name": "2APC-XF-21 (Block2 SUS21)",
+        "name": "2APC-XF-21 (Block2 SQS21)",
         "serial": "332162H501_8727D",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13213,18 +13213,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 224,
-        "name": "2APC-XF-22 (Block2 SUS22)",
+        "name": "2APC-XF-22 (Block2 SQS22)",
         "serial": "332162H502_8727G",
         "site": "GSPP2&3",
         "ratedPower": 2.882,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13272,18 +13272,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 225,
-        "name": "2APC-XF-23  (Block2 SUS23)",
+        "name": "2APC-XF-23  (Block2 SQS23)",
         "serial": "332162H502_8727H",
         "site": "GSPP2&3",
         "ratedPower": 1.333,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13331,18 +13331,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 226,
-        "name": "CFB3 SUS11",
+        "name": "CFB3 SQS11",
         "serial": "VN85030801_1",
         "site": "GSPP2&3",
         "ratedPower": 2.5,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 88,
         "healthStatus": "Healthy",
@@ -13390,18 +13390,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 227,
-        "name": "CFB3 SUS12",
+        "name": "CFB3 SQS12",
         "serial": "VN85030801_2",
         "site": "GSPP2&3",
         "ratedPower": 2.5,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 18,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13449,18 +13449,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 228,
-        "name": "Wharehouse SST",
+        "name": "WharehoQse SST",
         "serial": "FC203816",
         "site": "GSPP2&3",
         "ratedPower": 1.6,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 81,
         "healthStatus": "Healthy",
@@ -13508,18 +13508,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 229,
-        "name": "51BFT11 (CTG5 SUS11)",
+        "name": "51BFT11 (CTG5 SQS11)",
         "serial": "1LKR091730",
         "site": "GSPP2&3",
         "ratedPower": 3.325,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13567,18 +13567,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 230,
-        "name": "51BFT12 (CTG5 SUS12)",
+        "name": "51BFT12 (CTG5 SQS12)",
         "serial": "1LKR091729",
         "site": "GSPP2&3",
         "ratedPower": 3.325,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13626,7 +13626,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 231,
@@ -13637,7 +13637,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 17,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13685,18 +13685,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 232,
-        "name": "31BFT10 (CTG3A SUS)",
+        "name": "31BFT10 (CTG3A SQS)",
         "serial": "1LKR050450TER",
         "site": "GSPP2&3",
         "ratedPower": 1,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 21,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13744,18 +13744,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 233,
-        "name": "32BFT10 (CTG3B SUS)",
+        "name": "32BFT10 (CTG3B SQS)",
         "serial": "1LKR040038TER",
         "site": "GSPP2&3",
         "ratedPower": 1,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 22,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13803,7 +13803,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 234,
@@ -13814,7 +13814,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.077,
         "ratedVoltage": "6.9/0.077",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -13862,7 +13862,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 235,
@@ -13873,7 +13873,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.077,
         "ratedVoltage": "6.9/0.077",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 72,
         "healthStatus": "Monitor",
@@ -13921,7 +13921,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 236,
@@ -13932,7 +13932,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 1.8,
         "ratedVoltage": "6.9/1.8",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -13980,7 +13980,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 237,
@@ -13991,7 +13991,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.5,
         "ratedVoltage": "6.9/0.5",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14039,7 +14039,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 238,
@@ -14050,7 +14050,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.54,
         "ratedVoltage": "6.9/0.54",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 16,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14098,7 +14098,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 239,
@@ -14109,7 +14109,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": null,
         "lvRate": null,
         "ratedVoltage": "/",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14157,18 +14157,18 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 240,
-        "name": "CFB3 Back Up",
+        "name": "CFB3 Back Qp",
         "serial": "4202021",
         "site": "GSPP2&3",
         "ratedPower": 0.5,
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 27,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -14216,7 +14216,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 241,
@@ -14227,7 +14227,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 115,
         "lvRate": 22,
         "ratedVoltage": "115/22",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": 8,
         "healthIndex": 85,
         "healthStatus": "Healthy",
@@ -14275,7 +14275,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 242,
@@ -14286,7 +14286,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 8,
         "healthIndex": 92,
         "healthStatus": "Healthy",
@@ -14334,7 +14334,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 243,
@@ -14345,7 +14345,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": 29,
         "healthIndex": 100,
         "healthStatus": "Healthy",
@@ -14393,7 +14393,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 244,
@@ -14404,7 +14404,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 6.9,
         "ratedVoltage": "22/6.9",
-        "serviceType": "GSUT",
+        "serviceType": "GSQT",
         "serviceAge": 6,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14452,7 +14452,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 245,
@@ -14463,7 +14463,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 22,
         "lvRate": 0.4,
         "ratedVoltage": "22/0.4",
-        "serviceType": "Distribution",
+        "serviceType": "DistribQtion",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14511,7 +14511,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 246,
@@ -14522,7 +14522,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14570,7 +14570,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 247,
@@ -14581,7 +14581,7 @@ const HEALTH_INDEX_DATA = [
         "hvRate": 6.9,
         "lvRate": 0.4,
         "ratedVoltage": "6.9/0.4",
-        "serviceType": "Auxiliary",
+        "serviceType": "AQxiliary",
         "serviceAge": null,
         "healthIndex": 96,
         "healthStatus": "Healthy",
@@ -14629,7 +14629,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 248,
@@ -14688,7 +14688,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 249,
@@ -14747,7 +14747,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 250,
@@ -14806,7 +14806,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 251,
@@ -14865,7 +14865,7 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     },
     {
         "no": 252,
@@ -14924,6 +14924,6 @@ const HEALTH_INDEX_DATA = [
         "dateToAssess": "",
         "lastPM": "",
         "nextPM": "",
-        "recommendation": "Routine Inspection & Maintenance."
+        "recommendation": "RoQtine Inspection & Maintenance."
     }
 ];

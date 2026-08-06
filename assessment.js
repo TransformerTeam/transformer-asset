@@ -97,7 +97,9 @@ function loadAllTestDataCSVs() {
           if (txt) item.target(parseDgaCSV(txt));
         })
     )
-  );
+  ).then(() => {
+    document.dispatchEvent(new CustomEvent('allTestDataLoaded'));
+  });
 }
 
 function parseHealthIndexSumCSV(rows) {

@@ -1180,13 +1180,13 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      // Fetch MainTankOilData.csv
+      // Fetch MTOilData.csv
       try {
-        const resp = await fetch('TestData/MainTankOilData.csv');
+        const resp = await fetch('TestData/MTOilData.csv');
         const csvTxt = await resp.text();
         dgaDataList = parseCSV(csvTxt);
       } catch(e) {
-        console.error("Failed to load MainTankOilData.csv", e);
+        console.error("Failed to load MTOilData.csv", e);
       }
 
       // Fetch FactoryData.csv
@@ -1225,13 +1225,13 @@
       for (let i = 1; i < lines.length; i++) {
         if (!lines[i].trim()) continue;
         const row = parseCSVRow(lines[i]);
-        if (row.length === headers.length) {
+        if (row.length >= 2) {
           const obj = {};
           headers.forEach((h, idx) => {
-            obj[h] = row[idx].trim();
+            obj[h] = row[idx] ? row[idx].trim() : '';
           });
-          obj.serial = obj.Serial_No || obj.serial;
-          obj.date = obj.Date || obj.date;
+          obj.serial = obj.Serial_No || obj.serial || obj.Serial || obj.SERIAL_NUMBER || '';
+          obj.date = obj.Date || obj.date || obj.DATE || '';
           results.push(obj);
         }
       }
