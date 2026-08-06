@@ -112,6 +112,11 @@ def convert_csv_to_js():
 
             # Look up bushing manufacturers for each phase from BushingInfo.csv
             h1_mfg, h2_mfg, h3_mfg, h0_mfg = '', '', '', ''
+            h1_np_pf, h1_np_cap = 0.0, 0.0
+            h2_np_pf, h2_np_cap = 0.0, 0.0
+            h3_np_pf, h3_np_cap = 0.0, 0.0
+            h0_np_pf, h0_np_cap = 0.0, 0.0
+
             bushing_info_rows = [r for r in bushing_info_recs if ''.join(c for c in str(r.get('Parent_Serial_No') or '') if c.isalnum()).lower() == ''.join(c for c in serial_str if c.isalnum()).lower()]
             if bushing_info_rows:
                 h1_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H1'), '')
@@ -119,17 +124,57 @@ def convert_csv_to_js():
                 h3_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H3'), '')
                 h0_mfg = next((r.get('Manufacturer', '') for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H0'), '')
 
+                def get_np(r, pf_keys, cap_keys):
+                    pf = 0.0
+                    for k in pf_keys:
+                        if r.get(k):
+                            try:
+                                pf = float(r[k])
+                                break
+                            except ValueError:
+                                pass
+                    cap = 0.0
+                    for k in cap_keys:
+                        if r.get(k):
+                            try:
+                                cap = float(r[k])
+                                break
+                            except ValueError:
+                                pass
+                    return pf, cap
+
+                h1_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H1'), None)
+                if h1_row: h1_np_pf, h1_np_cap = get_np(h1_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
+
+                h2_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H2'), None)
+                if h2_row: h2_np_pf, h2_np_cap = get_np(h2_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
+
+                h3_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H3'), None)
+                if h3_row: h3_np_pf, h3_np_cap = get_np(h3_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
+
+                h0_row = next((r for r in bushing_info_rows if str(r.get('Phase') or '').upper() == 'H0'), None)
+                if h0_row: h0_np_pf, h0_np_cap = get_np(h0_row, ['Meas_PF_C1', 'Corr_PF'], ['Capacitance_C1'])
+
             if bushing_match:
                 bushing_match['h1_mfg'] = h1_mfg
                 bushing_match['h2_mfg'] = h2_mfg
                 bushing_match['h3_mfg'] = h3_mfg
                 bushing_match['h0_mfg'] = h0_mfg
+                bushing_match['h1_np_pf'] = h1_np_pf
+                bushing_match['h1_np_cap'] = h1_np_cap
+                bushing_match['h2_np_pf'] = h2_np_pf
+                bushing_match['h2_np_cap'] = h2_np_cap
+                bushing_match['h3_np_pf'] = h3_np_pf
+                bushing_match['h3_np_cap'] = h3_np_cap
+                bushing_match['h0_np_pf'] = h0_np_pf
+                bushing_match['h0_np_cap'] = h0_np_cap
             else:
                 bushing_match = {
-                    'h1_mfg': h1_mfg,
-                    'h2_mfg': h2_mfg,
-                    'h3_mfg': h3_mfg,
-                    'h0_mfg': h0_mfg
+                    'h1_mfg': h1_mfg, 'h2_mfg': h2_mfg, 'h3_mfg': h3_mfg, 'h0_mfg': h0_mfg,
+                    'h1_np_pf': h1_np_pf, 'h1_np_cap': h1_np_cap,
+                    'h2_np_pf': h2_np_pf, 'h2_np_cap': h2_np_cap,
+                    'h3_np_pf': h3_np_pf, 'h3_np_cap': h3_np_cap,
+                    'h0_np_pf': h0_np_pf, 'h0_np_cap': h0_np_cap
                 }
 
             item = {

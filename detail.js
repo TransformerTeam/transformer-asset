@@ -569,19 +569,48 @@ function openDetail(no) {
       capStd = 'Change < 110%';
     }
 
-    const h1_pf_err = bushRec.maxbh1_tand || '-';
-    const h2_pf_err = bushRec.maxbh2_tand || '-';
-    const h3_pf_err = bushRec.maxbh3_tand || '-';
-    const l1_pf_err = '-';
-    const l2_pf_err = '-';
-    const l3_pf_err = '-';
+    const calcErr = (testVal, npVal) => {
+      const t = parseFloat(testVal);
+      const n = parseFloat(npVal);
+      if (isNaN(t) || isNaN(n) || t <= 0 || n <= 0) return null;
+      return ((t - n) / n) * 100;
+    };
 
-    const h1_cap_err = bushRec.maxbch1_change || '-';
-    const h2_cap_err = bushRec.maxbch2_change || '-';
-    const h3_cap_err = bushRec.maxbch3_change || '-';
-    const l1_cap_err = '-';
-    const l2_cap_err = '-';
-    const l3_cap_err = '-';
+    const getFinalErr = (calc, csvVal) => {
+      if (calc !== null && !isNaN(calc)) return calc;
+      if (csvVal !== undefined && csvVal !== null && csvVal !== '' && csvVal !== '-') {
+        const v = parseFloat(csvVal);
+        if (!isNaN(v)) return v;
+      }
+      return '-';
+    };
+
+    // H1
+    const h1_pf20 = parseFloat(bushRec.bushing_h1_pf_20c || bushRec.bushing_h1_pf_tan || 0);
+    const h1_np_pf = parseFloat(bushRec.h1_np_pf || item.bushRec.h1_np_pf || 0);
+    const h1_pf_err = getFinalErr(calcErr(h1_pf20, h1_np_pf), bushRec.maxbh1_tand);
+
+    const h1_cap = parseFloat(bushRec.bushing_h1_c1 || bushRec.bushing_h1_c2 || 0);
+    const h1_np_cap = parseFloat(bushRec.h1_np_cap || item.bushRec.h1_np_cap || 0);
+    const h1_cap_err = getFinalErr(calcErr(h1_cap, h1_np_cap), bushRec.maxbch1_change);
+
+    // H2
+    const h2_pf20 = parseFloat(bushRec.bushing_h2_pf_20c || bushRec.bushing_h2_pf_tan || 0);
+    const h2_np_pf = parseFloat(bushRec.h2_np_pf || item.bushRec.h2_np_pf || 0);
+    const h2_pf_err = getFinalErr(calcErr(h2_pf20, h2_np_pf), bushRec.maxbh2_tand);
+
+    const h2_cap = parseFloat(bushRec.bushing_h2_c1 || bushRec.bushing_h2_c2 || 0);
+    const h2_np_cap = parseFloat(bushRec.h2_np_cap || item.bushRec.h2_np_cap || 0);
+    const h2_cap_err = getFinalErr(calcErr(h2_cap, h2_np_cap), bushRec.maxbch2_change);
+
+    // H3
+    const h3_pf20 = parseFloat(bushRec.bushing_h3_pf_20c || bushRec.bushing_h3_pf_tan || 0);
+    const h3_np_pf = parseFloat(bushRec.h3_np_pf || item.bushRec.h3_np_pf || 0);
+    const h3_pf_err = getFinalErr(calcErr(h3_pf20, h3_np_pf), bushRec.maxbh3_tand);
+
+    const h3_cap = parseFloat(bushRec.bushing_h3_c1 || bushRec.bushing_h3_c2 || 0);
+    const h3_np_cap = parseFloat(bushRec.h3_np_cap || item.bushRec.h3_np_cap || 0);
+    const h3_cap_err = getFinalErr(calcErr(h3_cap, h3_np_cap), bushRec.maxbch3_change);
 
     bushBody.innerHTML = `
       <tr>
