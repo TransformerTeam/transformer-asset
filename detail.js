@@ -629,9 +629,9 @@ function openDetail(no) {
           pfStatusCls = 'ex-status-poor';
         }
       } else if (manufacturer.includes('MGC')) {
-        if (pfErrPercent <= 5.0) {
+        if (pfErrPercent <= 0.7) {
           pfStatusCls = 'ex-status-good';
-        } else if (pfErrPercent < 10.0) {
+        } else if (pfErrPercent <= 3.0) {
           pfStatusCls = 'ex-status-fair';
         } else {
           pfStatusCls = 'ex-status-poor';
@@ -669,9 +669,9 @@ function openDetail(no) {
           capStatusCls = 'ex-status-poor';
         }
       } else if (manufacturer.includes('MGC')) {
-        if (absDev <= 0.7) {
+        if (absDev <= 10.0) {
           capStatusCls = 'ex-status-good';
-        } else if (absDev <= 3.0) {
+        } else if (absDev <= 20.0) {
           capStatusCls = 'ex-status-fair';
         } else {
           capStatusCls = 'ex-status-poor';

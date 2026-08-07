@@ -1495,7 +1495,7 @@ function openDetail(no) {
       } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
         statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('MGC')) {
-        statusCls = pfDevVal >= 10.0 ? 'status-critical' : (pfDevVal > 5.0 ? 'status-monitor' : 'status-normal');
+        statusCls = pfDevVal > 3.0 ? 'status-critical' : (pfDevVal > 0.7 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('TRENCH')) {
         statusCls = pfDevVal > 100.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
       } else {
@@ -1517,7 +1517,7 @@ function openDetail(no) {
       } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
         statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 1.0 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('MGC')) {
-        statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 0.7 ? 'status-monitor' : 'status-normal');
+        statusCls = absDev > 20.0 ? 'status-critical' : (absDev > 10.0 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('TRENCH')) {
         statusCls = absDev > 110.0 ? 'status-critical' : 'status-normal';
       } else {

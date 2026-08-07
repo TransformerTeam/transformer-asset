@@ -165,7 +165,7 @@ def convert_csv_to_js():
                             elif 'PASSONI' in mfg_upper or 'VILLA' in mfg_upper:
                                 bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 0 else 'ex-status-fair' if pf_err < 30.0 else 'ex-status-poor'
                             elif 'MGC' in mfg_upper:
-                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 5.0 else 'ex-status-fair' if pf_err < 10.0 else 'ex-status-poor'
+                                bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 0.7 else 'ex-status-fair' if pf_err <= 3.0 else 'ex-status-poor'
                             else:
                                 bushing_match[out_pf_cls] = 'ex-status-good' if pf_ratio <= 1.5 else 'ex-status-fair' if pf_ratio <= 2.0 else 'ex-status-poor'
                         
@@ -177,7 +177,7 @@ def convert_csv_to_js():
                             elif 'PASSONI' in mfg_upper or 'VILLA' in mfg_upper:
                                 bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 1.0 else 'ex-status-fair' if abs_dev <= 3.0 else 'ex-status-poor'
                             elif 'MGC' in mfg_upper:
-                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 0.7 else 'ex-status-fair' if abs_dev <= 3.0 else 'ex-status-poor'
+                                bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 10.0 else 'ex-status-fair' if abs_dev <= 20.0 else 'ex-status-poor'
                             elif 'TRENCH' in mfg_upper:
                                 bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 110.0 else 'ex-status-poor'
                             else:
