@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,8 +30,10 @@
       --report-bg: #ffffff;
       --report-text: #000000;
       --report-border: #000000;
-      --report-primary: #1e3a8a; /* Navy blue */
-      --report-accent: #b91c1c; /* Crimson */
+      --report-primary: #1e3a8a;
+      /* Navy blue */
+      --report-accent: #b91c1c;
+      /* Crimson */
     }
 
     [data-theme="light"] {
@@ -384,9 +387,28 @@
     }
 
     /* Status Dynamic Colors */
-    .status-good, .status-normal          { background-color: #c6e0b4 !important; color: #375623 !important; font-weight: bold; }
-    .status-acceptable, .status-questionable, .status-monitor { background-color: #ffffcc !important; color: #b79500 !important; font-weight: bold; }
-    .status-investigate, .status-danger, .status-critical     { background-color: #ffcccc !important; color: #cc0000 !important; font-weight: bold; }
+    .status-good,
+    .status-normal {
+      background-color: #c6e0b4 !important;
+      color: #375623 !important;
+      font-weight: bold;
+    }
+
+    .status-acceptable,
+    .status-questionable,
+    .status-monitor {
+      background-color: #ffffcc !important;
+      color: #b79500 !important;
+      font-weight: bold;
+    }
+
+    .status-investigate,
+    .status-danger,
+    .status-critical {
+      background-color: #ffcccc !important;
+      color: #cc0000 !important;
+      font-weight: bold;
+    }
 
     .trending-panel {
       background: #353839;
@@ -396,6 +418,7 @@
       margin-bottom: 12px;
       transition: all 0.3s ease;
     }
+
     [data-theme="light"] .trending-panel {
       background: #f8fafc;
       border-color: #e2e8f0;
@@ -414,21 +437,25 @@
       transition: all 0.2s ease;
       outline: none;
     }
+
     .pill-btn:hover {
       background: rgba(255, 255, 255, 0.18);
       color: #f1f5f9;
     }
+
     .pill-btn.active {
       background: #4f46e5;
       color: #ffffff;
       border-color: #6366f1;
       box-shadow: 0 0 6px rgba(79, 70, 229, 0.3);
     }
+
     [data-theme="light"] .pill-btn {
       background: #f1f5f9;
       color: #475569;
       border-color: #cbd5e1;
     }
+
     [data-theme="light"] .pill-btn:hover {
       background: #e2e8f0;
       color: #0f172a;
@@ -440,6 +467,7 @@
         size: A4 portrait;
         margin: 4mm 5mm;
       }
+
       body {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -447,9 +475,12 @@
         margin: 0 !important;
         min-height: auto !important;
       }
-      .control-panel, .no-print {
+
+      .control-panel,
+      .no-print {
         display: none !important;
       }
+
       .report-wrapper {
         box-shadow: none !important;
         padding: 0 !important;
@@ -458,70 +489,87 @@
         max-width: none !important;
         margin: 0 !important;
       }
+
       .report-sheet {
         font-size: 9.2px !important;
         line-height: 1.25 !important;
         width: 100% !important;
       }
+
       .report-header {
         padding-bottom: 3px !important;
         margin-bottom: 6px !important;
       }
+
       .report-title {
         font-size: 16px !important;
       }
+
       .report-subtitle {
         font-size: 10px !important;
       }
+
       .logo-container img {
         height: 36px !important;
       }
+
       .section-title {
         font-size: 8.8px !important;
         padding: 2px 5px !important;
         margin-top: 5px !important;
         margin-bottom: 3px !important;
       }
+
       table.report-table {
         margin-bottom: 4px !important;
       }
+
       table.report-table th,
       table.report-table td {
         padding: 2px 3.5px !important;
         font-size: 8.0px !important;
       }
+
       .row-split {
         gap: 8px !important;
       }
+
       .bushing-section {
         margin-bottom: 4px !important;
       }
+
       .bushing-header {
         font-size: 8.5px !important;
         margin-bottom: 1px !important;
         padding-left: 2px !important;
       }
+
       .criteria-container {
         margin-top: 4px !important;
         gap: 8px !important;
       }
+
       .criteria-box {
         padding: 4px !important;
       }
+
       .criteria-title {
         font-size: 8.2px !important;
         margin-bottom: 2px !important;
         padding-bottom: 1px !important;
       }
+
       table.response-table td.sig-cell {
         height: 40px !important;
       }
+
       table.response-table td.val {
         height: 14px !important;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Control Bar -->
@@ -724,7 +772,8 @@
       </div>
 
       <!-- Criteria & Legend -->
-      <div class="criteria-title" style="border-bottom:1px solid #bdc3c7; padding-bottom:4px; margin-top:14px; margin-bottom:6px;">Criteria:</div>
+      <div class="criteria-title"
+        style="border-bottom:1px solid #bdc3c7; padding-bottom:4px; margin-top:14px; margin-bottom:6px;">Criteria:</div>
       <div class="criteria-box" style="border:1px solid #bdc3c7; border-radius:4px; padding:6px; margin-top:0;">
         <table style="width:100%; font-size:8.5px; border-collapse: collapse; text-align: center;">
           <thead>
@@ -794,10 +843,13 @@
       </div>
 
       <!-- Trending Section (screen only) -->
-      <div class="section-title no-print" style="margin-top:12px;">Historical Trending (Bushing Diagnostic Parameters)</div>
+      <div class="section-title no-print" style="margin-top:12px;">Historical Trending (Bushing Diagnostic Parameters)
+      </div>
       <div class="trending-panel no-print">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-          <span style="font-weight: 700; font-size: 11px; color: var(--text-main);">Select Bushing Phases for Trend Analysis:</span>
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--text-main);">Select Bushing Phases for Trend
+            Analysis:</span>
           <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;" id="trend-phase-pills">
             <!-- Dynamic multi-select pill buttons populated by JS -->
           </div>
@@ -805,11 +857,13 @@
 
         <div style="display: flex; flex-direction: column; gap: 20px;">
           <div>
-            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">1. Power Factor Trend (%PF @ 20°C)</div>
+            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">1. Power
+              Factor Trend (%PF @ 20°C)</div>
             <div id="trend-chart" style="min-height: 250px;"></div>
           </div>
           <div>
-            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">2. Capacitance C1 Trend (pF)</div>
+            <div style="font-weight: 600; font-size: 10.5px; color: var(--report-accent); margin-bottom: 6px;">2.
+              Capacitance C1 Trend (pF)</div>
             <div id="trend-cap-chart" style="min-height: 250px;"></div>
           </div>
         </div>
@@ -882,9 +936,9 @@
           fetch('TestData/BushingPFData.csv'),
           fetch('TRInfo.csv')
         ]);
-        if (infoResp.ok)   bushingInfoList  = parseCSV(await infoResp.text());
-        if (pfResp.ok)     bushingPfDataList = parseCSV(await pfResp.text());
-        if (trInfoResp.ok) trInfoList        = parseCSV(await trInfoResp.text());
+        if (infoResp.ok) bushingInfoList = parseCSV(await infoResp.text());
+        if (pfResp.ok) bushingPfDataList = parseCSV(await pfResp.text());
+        if (trInfoResp.ok) trInfoList = parseCSV(await trInfoResp.text());
       } catch (e) {
         console.error('Failed to load Bushing CSV databases', e);
       }
@@ -981,7 +1035,7 @@
 
       // Power Rating: Display in MVA
       const trPower = trInfo ? trInfo.POWER_RATING : null;
-      const hPower  = item   ? item.ratedPower     : null;
+      const hPower = item ? item.ratedPower : null;
       let powerMvaStr = '-';
       if (trPower !== null && trPower !== undefined && trPower !== '') {
         const numP = Number(trPower);
@@ -997,8 +1051,8 @@
         trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || '-') : (item ? (item.manufacture || '-') : '-');
 
       // Voltage Rating
-      const hvRated = trInfo ? trInfo.HV_RATED  : (item ? item.hvRate  : null);
-      const lvRated = trInfo ? trInfo.LV_RATED  : (item ? item.lvRate  : null);
+      const hvRated = trInfo ? trInfo.HV_RATED : (item ? item.hvRate : null);
+      const lvRated = trInfo ? trInfo.LV_RATED : (item ? item.lvRate : null);
       const lv2Rated = trInfo ? trInfo.LV2_RATED : null;
       let voltStr = '-';
       if (hvRated) {
@@ -1029,25 +1083,25 @@
       const latest = pfRecords.length > 0 ? pfRecords[0] : null;
 
       if (latest) {
-        document.getElementById('info-test-date').textContent          = formatReportDate(latest.date);
-        document.getElementById('info-instrument').textContent          = latest.test_instrument  || '-';
-        document.getElementById('info-instrument-serial').textContent   = latest.serial_instrument || '-';
-        document.getElementById('info-instrument-calib').textContent    = formatReportDate(latest.date_calibation);
-        document.getElementById('info-wo').textContent                  = latest.test_NO           || '-';
-        document.getElementById('env-ambient').textContent           = latest.ambient_temp      || '-';
-        document.getElementById('env-oil').textContent               = latest.oil_temp          || '-';
-        document.getElementById('env-winding').textContent           = latest.winding_temp      || '-';
-        document.getElementById('env-humidity').textContent          = latest.humidity          || '-';
+        document.getElementById('info-test-date').textContent = formatReportDate(latest.date);
+        document.getElementById('info-instrument').textContent = latest.test_instrument || '-';
+        document.getElementById('info-instrument-serial').textContent = latest.serial_instrument || '-';
+        document.getElementById('info-instrument-calib').textContent = formatReportDate(latest.date_calibation);
+        document.getElementById('info-wo').textContent = latest.test_NO || '-';
+        document.getElementById('env-ambient').textContent = latest.ambient_temp || '-';
+        document.getElementById('env-oil').textContent = latest.oil_temp || '-';
+        document.getElementById('env-winding').textContent = latest.winding_temp || '-';
+        document.getElementById('env-humidity').textContent = latest.humidity || '-';
 
-        document.getElementById('c1-volt').textContent = latest.bushing_c1kv  || '10';
-        document.getElementById('c2-volt').textContent = latest.bushing_c2kv  || '0.5';
+        document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
+        document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
 
-        document.getElementById('resp-name-tested').textContent    = latest.test_name    || '-';
-        document.getElementById('resp-name-reviewed').textContent  = latest.witness_name || '-';
+        document.getElementById('resp-name-tested').textContent = latest.test_name || '-';
+        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || '-';
         document.getElementById('resp-company-tested').textContent = `${latest.COMP2 || ''} / ${latest.COMP1 || ''}`.replace(/^\s*\/\s*/, '');
-        document.getElementById('resp-date-tested').textContent    = formatReportDate(latest.date);
-        document.getElementById('resp-date-reviewed').textContent  = formatReportDate(latest.date);
-        document.getElementById('resp-date-approved').textContent  = formatReportDate(latest.date);
+        document.getElementById('resp-date-tested').textContent = formatReportDate(latest.date);
+        document.getElementById('resp-date-reviewed').textContent = formatReportDate(latest.date);
+        document.getElementById('resp-date-approved').textContent = formatReportDate(latest.date);
 
         renderC1Table(latest, infoRecords);
         renderC2Table(latest, infoRecords);
@@ -1094,21 +1148,21 @@
 
     // ─── C1 Results Table ───────────────────────────────────────────────────────
     const C1_PHASES = [
-      { label: 'H1', capKey: 'bushing_h1_c1',  maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt',  pfKey: 'bushing_h1_pf_tan',  pf20Key: 'bushing_h1_pf_20c',  npPhase: 'H1' },
-      { label: 'H2', capKey: 'bushing_h2_c1',  maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt',  pfKey: 'bushing_h2_pf_tan',  pf20Key: 'bushing_h2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3', capKey: 'bushing_h3_c1',  maKey: 'bushing_h3_ma',    wKey: 'bushing_h3_watt',  pfKey: 'bushing_h3_pf_tan',  pf20Key: 'bushing_h3_pf_20c',  npPhase: 'H3' },
-      { label: 'X1', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma',wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', npPhase: 'X1' },
-      { label: 'X2', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma',wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', npPhase: 'X2' },
-      { label: 'X3', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma',wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', npPhase: 'X3' },
+      { label: 'H1', capKey: 'bushing_h1_c1', maKey: 'bushing_h1_c1_ma', wKey: 'bushing_h1_watt', pfKey: 'bushing_h1_pf_tan', pf20Key: 'bushing_h1_pf_20c', npPhase: 'H1' },
+      { label: 'H2', capKey: 'bushing_h2_c1', maKey: 'bushing_h2_c1_ma', wKey: 'bushing_h2_watt', pfKey: 'bushing_h2_pf_tan', pf20Key: 'bushing_h2_pf_20c', npPhase: 'H2' },
+      { label: 'H3', capKey: 'bushing_h3_c1', maKey: 'bushing_h3_ma', wKey: 'bushing_h3_watt', pfKey: 'bushing_h3_pf_tan', pf20Key: 'bushing_h3_pf_20c', npPhase: 'H3' },
+      { label: 'X1', capKey: 'xbushing_h1_c1', maKey: 'xbushing_h1_c1_ma', wKey: 'xbushing_h1_watt', pfKey: 'xbushing_h1_pf_tan', pf20Key: 'xbushing_h1_pf_20c', npPhase: 'X1' },
+      { label: 'X2', capKey: 'xbushing_h2_c1', maKey: 'xbushing_h2_c1_ma', wKey: 'xbushing_h2_watt', pfKey: 'xbushing_h2_pf_tan', pf20Key: 'xbushing_h2_pf_20c', npPhase: 'X2' },
+      { label: 'X3', capKey: 'xbushing_h3_c1', maKey: 'xbushing_h3_c1_ma', wKey: 'xbushing_h3_watt', pfKey: 'xbushing_h3_pf_tan', pf20Key: 'xbushing_h3_pf_20c', npPhase: 'X3' },
     ];
 
     const C2_PHASES = [
-      { label: 'H1', capKey: 'bushing_h1_c2',  maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt',  pfKey: 'bushing_h1_c2_pf_tan',  pf20Key: 'bushing_h1_c2_pf_20c',  npPhase: 'H1' },
-      { label: 'H2', capKey: 'bushing_h2_c2',  maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt',  pfKey: 'bushing_h2_c2_pf_tan',  pf20Key: 'bushing_h2_c2_pf_20c',  npPhase: 'H2' },
-      { label: 'H3', capKey: 'bushing_h3_c2',  maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt',  pfKey: 'bushing_h3_c2_pf_tan',  pf20Key: 'bushing_h3_c2_pf_20c',  npPhase: 'H3' },
-      { label: 'X1', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma',wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c', npPhase: 'X1' },
-      { label: 'X2', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma',wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c', npPhase: 'X2' },
-      { label: 'X3', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma',wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c', npPhase: 'X3' },
+      { label: 'H1', capKey: 'bushing_h1_c2', maKey: 'bushing_h1_c2_ma', wKey: 'bushing_h1_c2_watt', pfKey: 'bushing_h1_c2_pf_tan', pf20Key: 'bushing_h1_c2_pf_20c', npPhase: 'H1' },
+      { label: 'H2', capKey: 'bushing_h2_c2', maKey: 'bushing_h2_c2_ma', wKey: 'bushing_h2_c2_watt', pfKey: 'bushing_h2_c2_pf_tan', pf20Key: 'bushing_h2_c2_pf_20c', npPhase: 'H2' },
+      { label: 'H3', capKey: 'bushing_h3_c2', maKey: 'bushing_h3_c2_ma', wKey: 'bushing_h3_c2_watt', pfKey: 'bushing_h3_c2_pf_tan', pf20Key: 'bushing_h3_c2_pf_20c', npPhase: 'H3' },
+      { label: 'X1', capKey: 'xbushing_h1_c2', maKey: 'xbushing_h1_c2_ma', wKey: 'xbushing_h1_c2_watt', pfKey: 'xbushing_h1_c2_pf_tan', pf20Key: 'xbushing_h1_c2_pf_20c', npPhase: 'X1' },
+      { label: 'X2', capKey: 'xbushing_h2_c2', maKey: 'xbushing_h2_c2_ma', wKey: 'xbushing_h2_c2_watt', pfKey: 'xbushing_h2_c2_pf_tan', pf20Key: 'xbushing_h2_c2_pf_20c', npPhase: 'X2' },
+      { label: 'X3', capKey: 'xbushing_h3_c2', maKey: 'xbushing_h3_c2_ma', wKey: 'xbushing_h3_c2_watt', pfKey: 'xbushing_h3_c2_pf_tan', pf20Key: 'xbushing_h3_c2_pf_20c', npPhase: 'X3' },
     ];
 
     function renderC1Table(test, infoRecords) {
@@ -1125,11 +1179,11 @@
       let hasData = false;
 
       phases.forEach(p => {
-        const cap  = parseFloat(test[p.capKey] || 0);
-        const ma   = parseFloat(test[p.maKey]  || 0);
-        const watt = parseFloat(test[p.wKey]   || 0);
-        const pf   = parseFloat(test[p.pfKey]  || 0);
-        const pf20 = parseFloat(test[p.pf20Key]|| pf || 0);
+        const cap = parseFloat(test[p.capKey] || 0);
+        const ma = parseFloat(test[p.maKey] || 0);
+        const watt = parseFloat(test[p.wKey] || 0);
+        const pf = parseFloat(test[p.pfKey] || 0);
+        const pf20 = parseFloat(test[p.pf20Key] || pf || 0);
 
         if (!(cap > 0 || ma > 0 || pf > 0)) return;
         hasData = true;
@@ -1305,9 +1359,9 @@
     }
 
     function getStatus(pf20) {
-      if (pf20 > 1.0)  return { text: 'Critical',    cls: 'status-critical' };
-      if (pf20 > 0.5)  return { text: 'Monitoring',  cls: 'status-monitor'  };
-      if (pf20 > 0)    return { text: 'Normal',      cls: 'status-normal'   };
+      if (pf20 > 1.0) return { text: 'Critical', cls: 'status-critical' };
+      if (pf20 > 0.5) return { text: 'Monitoring', cls: 'status-monitor' };
+      if (pf20 > 0) return { text: 'Normal', cls: 'status-normal' };
       return { text: '-', cls: '' };
     }
 
@@ -1346,10 +1400,10 @@
         const matchInfo = findBushingInfoForPhase(infoRecords, opt.npPhase);
         if (matchInfo) {
           opt.npCap = parseFloat(matchInfo.Capacitance_C1 || 0);
-          opt.npPf  = parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0);
+          opt.npPf = parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0);
         } else {
           opt.npCap = 0;
-          opt.npPf  = 0;
+          opt.npPf = 0;
         }
       });
 
@@ -1382,7 +1436,7 @@
 
       const activePhases = new Set(phaseOptions.map(p => p.value));
       window._selectedTrendPhases = activePhases;
-      window._trendPhaseOptions   = phaseOptions;
+      window._trendPhaseOptions = phaseOptions;
 
       renderPhasePills();
       updateTrendChart();
@@ -1702,4 +1756,5 @@
     }
   </script>
 </body>
+
 </html>
