@@ -1954,29 +1954,47 @@ function openDetail(no) {
     colorGasCell('ex-dga-co2', latestDGA.CO2, limits.CO2);
     colorGasCell('ex-dga-tdcg', latestDGA.TDCG, 720);
 
-    if (dgaVal === 'A') {
-      document.getElementById('ex-dga-duval1').textContent = 'Normal';
-      document.getElementById('ex-dga-duval1').style.color = '#10b981';
-      document.getElementById('ex-dga-fault').textContent = 'Normal / No Fault Detected';
-      document.getElementById('ex-dga-fault').style.color = '#10b981';
-    } else {
-      const ch4Val = parseFloat(latestDGA.CH4 || 0);
-      const c2h4Val = parseFloat(latestDGA.C2H4 || 0);
-      const c2h2Val = parseFloat(latestDGA.C2H2 || 0);
-
-      const duvalRes = evaluateDuval1(ch4Val, c2h4Val, c2h2Val);
-      document.getElementById('ex-dga-duval1').textContent = duvalRes.code;
-      document.getElementById('ex-dga-fault').textContent = duvalRes.name;
-      
-      if (duvalRes.code === 'Normal') {
-        document.getElementById('ex-dga-duval1').style.color = '#10b981';
-        document.getElementById('ex-dga-fault').style.color = '#10b981';
-      } else {
-        const faultColor = duvalRes.code === 'PD' ? '#eab308' : '#ef4444';
-        document.getElementById('ex-dga-duval1').style.color = faultColor;
-        document.getElementById('ex-dga-fault').style.color = faultColor;
+    // Check if Status 1 (all gases within Table 1 limits)
+    const isStatus1 = (() => {
+      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      for (let key of gasesKeys) {
+        const num = parseFloat(latestDGA[key] || 0);
+        if (num > limits[key]) {
+          return false;
+        }
       }
+      return true;
+    })();
+
+    const ch4Val = parseFloat(latestDGA.CH4 || 0);
+    const c2h4Val = parseFloat(latestDGA.C2H4 || 0);
+    const c2h2Val = parseFloat(latestDGA.C2H2 || 0);
+    const duvalRes = evaluateDuval1(ch4Val, c2h4Val, c2h2Val);
+
+    let duvalText = duvalRes.name;
+    let duvalColor = '#eab308';
+    let faultText = 'Warning / Monitor';
+    let faultColor = '#eab308';
+
+    if (dgaVal === 'A' || isStatus1) {
+      duvalText = 'The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.';
+      duvalColor = '#10b981';
+      faultText = 'Normal / No Fault Detected';
+      faultColor = '#10b981';
+    } else if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
+      duvalColor = '#ef4444';
+      faultText = 'Thermal/High Energy fault suspected';
+      faultColor = '#ef4444';
+    } else if (duvalRes.code === 'PD') {
+      duvalColor = '#10b981';
+      faultText = 'Normal / Low Energy';
+      faultColor = '#10b981';
     }
+
+    document.getElementById('ex-dga-duval1').textContent = duvalText;
+    document.getElementById('ex-dga-duval1').style.color = duvalColor;
+    document.getElementById('ex-dga-fault').textContent = faultText;
+    document.getElementById('ex-dga-fault').style.color = faultColor;
 
     const T2_NORMS = {
       'low': {
