@@ -1129,7 +1129,7 @@ function openDetail(no) {
   // 6. Main Tank DGA
   const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
 
-  function colorGasCell(elId, val, limit) {
+  function colorGasCell(elId, val, t1Norm, t2Norm) {
     const el = document.getElementById(elId);
     if (!el) return;
     el.textContent = (val === undefined || val === null || val === 'N/A' || val === '-') ? '-' : val;
@@ -1137,69 +1137,46 @@ function openDetail(no) {
     if (val === undefined || val === null || val === 'N/A' || val === '-') return;
     const fVal = parseFloat(val);
     if (isNaN(fVal)) return;
-    if (fVal > limit) {
+    if (t2Norm !== undefined && fVal > t2Norm) {
       el.className = 'ex-status-poor';
+    } else if (fVal > t1Norm) {
+      el.className = 'ex-status-fair';
     } else {
       el.className = 'ex-status-good';
     }
   }
 
-  if (latestDGA) {
-    const dgaDateStr = latestDGA.date || latestDGA.Date || '';
-    updateTestDate('ex-update-dga', dgaDateStr);
-
-    const h2 = latestDGA.H2 || latestDGA.h2 || '-';
-    const ch4 = latestDGA.CH4 || latestDGA.ch4 || '-';
-    const c2h6 = latestDGA.C2H6 || latestDGA.c2h6 || '-';
-    const c2h4 = latestDGA.C2H4 || latestDGA.c2h4 || '-';
-    const c2h2 = latestDGA.C2H2 || latestDGA.c2h2 || '-';
-    const co = latestDGA.CO || latestDGA.co || '-';
-    const co2 = latestDGA.CO2 || latestDGA.co2 || '-';
-    const tdcg = latestDGA.TDCG || latestDGA.tdcg || '-';
-
-    colorGasCell('ex-dga-h2', h2, 100);
-    colorGasCell('ex-dga-ch4', ch4, 120);
-    colorGasCell('ex-dga-c2h6', c2h6, 65);
-    colorGasCell('ex-dga-c2h4', c2h4, 50);
-    colorGasCell('ex-dga-c2h2', c2h2, 1);
-    colorGasCell('ex-dga-co', co, 350);
-    colorGasCell('ex-dga-co2', co2, 2500);
-    colorGasCell('ex-dga-tdcg', tdcg, 720);
-
-    const fCh4 = parseFloat(ch4) || 0;
-    const fC2h4 = parseFloat(c2h4) || 0;
-    const fC2h2 = parseFloat(c2h2) || 0;
-    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
-
-    document.getElementById('ex-dga-duval1').textContent = duvalRes.name;
-    if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
-      document.getElementById('ex-dga-duval1').style.color = '#ef4444';
-      document.getElementById('ex-dga-fault').textContent = 'Thermal/High Energy fault suspected';
-      document.getElementById('ex-dga-fault').style.color = '#ef4444';
-    } else if (duvalRes.code === 'PD') {
-      document.getElementById('ex-dga-duval1').style.color = '#10b981';
-      document.getElementById('ex-dga-fault').textContent = 'Normal / Low Energy';
-      document.getElementById('ex-dga-fault').style.color = '#10b981';
-    } else {
-      document.getElementById('ex-dga-duval1').style.color = '#eab308';
-      document.getElementById('ex-dga-fault').textContent = 'Warning / Monitor';
-      document.getElementById('ex-dga-fault').style.color = '#eab308';
-    }
-
-    const limits = { H2: 100, CH4: 120, C2H6: 65, C2H4: 50, C2H2: 1, CO: 350, CO2: 2500 };
-    const age = parseInt(serviceAgeYears) || 0;
+  // IEEE Std C57.104-2019 Clause 6.1.3 Norm Tables
+  function getIEEENorms(o2n2Ratio, ageYears) {
+    const isLowRatio = (o2n2Ratio !== null && o2n2Ratio !== undefined && o2n2Ratio <= 0.2);
+    
     let ageCat = 'Unknown';
-    if (age > 0) {
-      if (age <= 9) ageCat = '1-9';
-      else if (age <= 30) ageCat = '10-30';
+    if (ageYears !== null && ageYears !== undefined && !isNaN(ageYears) && ageYears >= 1) {
+      if (ageYears <= 9) ageCat = '1-9';
+      else if (ageYears <= 30) ageCat = '10-30';
       else ageCat = '>30';
     }
-    const fluidType = String(trInfo ? (trInfo.TYPE_OF_INSULATION || trInfo.type_of_insulation) : '').toLowerCase();
-    const catKey = fluidType.includes('silicone') || fluidType.includes('ester') || fluidType.includes('natural') ? 'high' : 'mineral';
 
-    const T2_NORMS = {
-      'mineral': {
-        'Unknown': { H2: 200, CH4: 150, C2H6: 150, C2H4: 95, C2H2: 2, CO: 1100, CO2: 14000 },
+    // Table 1: 90th percentile gas concentrations (ppm)
+    const T1 = {
+      'low': {
+        'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
+        '1-9':     { H2: 75, CH4: 45, C2H6: 30, C2H4: 20, C2H2: 1, CO: 900, CO2: 5000 },
+        '10-30':   { H2: 100, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 10000 },
+        '>30':     { H2: 110, CH4: 110, C2H6: 150, C2H4: 90, C2H2: 2, CO: 900, CO2: 10000 }
+      },
+      'high': {
+        'Unknown': { H2: 40, CH4: 20, C2H6: 15, C2H4: 50, C2H2: 2, CO: 500, CO2: 5000 },
+        '1-9':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 25, C2H2: 1, CO: 500, CO2: 3500 },
+        '10-30':   { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 },
+        '>30':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 }
+      }
+    };
+
+    // Table 2: 95th percentile gas concentrations (ppm)
+    const T2 = {
+      'low': {
+        'Unknown': { H2: 200, CH4: 150, C2H6: 175, C2H4: 100, C2H2: 2, CO: 1100, CO2: 12500 },
         '1-9':     { H2: 200, CH4: 100, C2H6: 70, C2H4: 40, C2H2: 2, CO: 1100, CO2: 7000 },
         '10-30':   { H2: 200, CH4: 150, C2H6: 175, C2H4: 95, C2H2: 2, CO: 1100, CO2: 14000 },
         '>30':     { H2: 200, CH4: 200, C2H6: 250, C2H4: 175, C2H2: 4, CO: 1100, CO2: 14000 }
@@ -1211,20 +1188,105 @@ function openDetail(no) {
         '>30':     { H2: 90, CH4: 30, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 }
       }
     };
+
+    const catKey = isLowRatio ? 'low' : 'high';
+    return {
+      table1: T1[catKey][ageCat],
+      table2: T2[catKey][ageCat]
+     if (latestDGA) {
+    const dgaDateStr = latestDGA.date || latestDGA.Date || '';
+    updateTestDate('ex-update-dga', dgaDateStr);
+
+    const h2 = latestDGA.H2 || latestDGA.h2 || '-';
+    const ch4 = latestDGA.CH4 || latestDGA.ch4 || '-';
+    const c2h6 = latestDGA.C2H6 || latestDGA.c2h6 || '-';
+    const c2h4 = latestDGA.C2H4 || latestDGA.c2h4 || '-';
+    const c2h2 = latestDGA.C2H2 || latestDGA.c2h2 || '-';
+    const co = latestDGA.CO || latestDGA.co || '-';
+    const co2 = latestDGA.CO2 || latestDGA.co2 || '-';
+    const tdcg = latestDGA.TDCG || latestDGA.tdcg || '-';
+    const o2 = latestDGA.O2 || latestDGA.o2 || 0;
+    const n2 = latestDGA.N2 || latestDGA.n2 || 0;
+
+    const o2n2Ratio = parseFloat(n2) > 0 ? (parseFloat(o2) / parseFloat(n2)) : 0.25;
     
-    const limitsT2 = T2_NORMS[catKey][ageCat];
+    // Age calculation
+    const mfgDateStr = trInfo ? (trInfo.MANUFACTURING_DATE || trInfo.manufacturing_date) : '';
+    const mfgYear = parseMfgYear(mfgDateStr);
+    const dgaDateObj = parseDateRobust(dgaDateStr);
+    const sampleYear = dgaDateObj ? dgaDateObj.getFullYear() : 2026;
+    let ageYears = null;
+    if (mfgYear) {
+      ageYears = sampleYear - mfgYear;
+    }
+    if (ageYears === null || isNaN(ageYears)) {
+      ageYears = parseInt(serviceAgeYears) || null;
+    }
+
+    const norms = getIEEENorms(o2n2Ratio, ageYears);
+
+    colorGasCell('ex-dga-h2', h2, norms.table1.H2, norms.table2.H2);
+    colorGasCell('ex-dga-ch4', ch4, norms.table1.CH4, norms.table2.CH4);
+    colorGasCell('ex-dga-c2h6', c2h6, norms.table1.C2H6, norms.table2.C2H6);
+    colorGasCell('ex-dga-c2h4', c2h4, norms.table1.C2H4, norms.table2.C2H4);
+    colorGasCell('ex-dga-c2h2', c2h2, norms.table1.C2H2, norms.table2.C2H2);
+    colorGasCell('ex-dga-co', co, norms.table1.CO, norms.table2.CO);
+    colorGasCell('ex-dga-co2', co2, norms.table1.CO2, norms.table2.CO2);
+    colorGasCell('ex-dga-tdcg', tdcg, 720, 1440);
+
+    // Check if Status 1 (all gases within Table 1 limits)
+    const isStatus1 = (() => {
+      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      for (let key of gasesKeys) {
+        const num = parseFloat(latestDGA[key] || 0);
+        if (num > norms.table1[key]) {
+          return false;
+        }
+      }
+      return true;
+    })();
+
+    const fCh4 = parseFloat(ch4) || 0;
+    const fC2h4 = parseFloat(c2h4) || 0;
+    const fC2h2 = parseFloat(c2h2) || 0;
+    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
+
+    let duvalText = duvalRes.name;
+    let duvalColor = '#eab308';
+    let faultText = 'Warning / Monitor';
+    let faultColor = '#eab308';
+
+    if (isStatus1) {
+      duvalText = 'The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.';
+      duvalColor = '#10b981';
+      faultText = 'Normal / No Fault Detected';
+      faultColor = '#10b981';
+    } else if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
+      duvalColor = '#ef4444';
+      faultText = 'Thermal/High Energy fault suspected';
+      faultColor = '#ef4444';
+    } else if (duvalRes.code === 'PD') {
+      duvalColor = '#10b981';
+      faultText = 'Normal / Low Energy';
+      faultColor = '#10b981';
+    }
+
+    document.getElementById('ex-dga-duval1').textContent = duvalText;
+    document.getElementById('ex-dga-duval1').style.color = duvalColor;
+    document.getElementById('ex-dga-fault').textContent = faultText;
+    document.getElementById('ex-dga-fault').style.color = faultColor;
+
     let maxIEEEStatus = 'DGA Status 1 (Normal)';
     let ieeeColor = '#10b981';
-    
-    const gasKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
     let hasExceededT2 = false;
     let hasExceededT1 = false;
     
-    for (let key of gasKeys) {
+    const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+    for (let key of gasesKeys) {
       const val = parseFloat(latestDGA[key] || 0);
-      if (val > limitsT2[key]) {
+      if (val > norms.table2[key]) {
         hasExceededT2 = true;
-      } else if (val > limits[key]) {
+      } else if (val > norms.table1[key]) {
         hasExceededT1 = true;
       }
     }
@@ -1302,7 +1364,6 @@ function openDetail(no) {
     
     document.getElementById('ex-dga-paper-status').textContent = paperDesc;
     document.getElementById('ex-dga-paper-status').style.color = paperColor;
-
   } else {
     colorGasCell('ex-dga-h2', '12', 40);
     colorGasCell('ex-dga-ch4', '5', 20);
