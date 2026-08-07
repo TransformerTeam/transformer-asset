@@ -2031,7 +2031,10 @@ function openDetail(no) {
     let iecStatusText = 'Normal';
     let iecColor = '#10b981';
 
-    if (isIecSignificant) {
+    if (!isIecSignificant && c2h2Val < 1) {
+      iecStatusText = 'Normal';
+      iecColor = '#10b981';
+    } else {
       const r1 = c2h4Val > 0 ? (c2h2Val / c2h4Val) : 0;
       const r2 = h2Val > 0 ? (ch4Val / h2Val) : 0;
       const r3 = c2h6Val > 0 ? (c2h4Val / c2h6Val) : 0;
@@ -2054,6 +2057,12 @@ function openDetail(no) {
       } else if (r1 < 0.1 && r2 > 1 && r3 > 4) {
         iecStatusText = 'T3 - Thermal Fault > 700°C';
         iecColor = '#ef4444';
+      } else if (c2h2Val >= 2) {
+        iecStatusText = 'D - Electrical Discharge Suspected';
+        iecColor = '#ef4444';
+      } else if (c2h4Val > 100 || r3 > 3) {
+        iecStatusText = 'T - Thermal Overheating Suspected';
+        iecColor = '#eab308';
       } else {
         iecStatusText = 'Mixed / Non-typical Pattern';
         iecColor = '#eab308';

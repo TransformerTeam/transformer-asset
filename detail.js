@@ -1129,7 +1129,7 @@ function openDetail(no) {
   // 6. Main Tank DGA
   const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
 
-  function colorGasCell(elId, val, t1Norm, t2Norm) {
+  function colorGasCell(elId, val, limit) {
     const el = document.getElementById(elId);
     if (!el) return;
     el.textContent = (val === undefined || val === null || val === 'N/A' || val === '-') ? '-' : val;
@@ -1137,28 +1137,99 @@ function openDetail(no) {
     if (val === undefined || val === null || val === 'N/A' || val === '-') return;
     const fVal = parseFloat(val);
     if (isNaN(fVal)) return;
-    if (t2Norm !== undefined && fVal > t2Norm) {
+    if (fVal > limit) {
       el.className = 'ex-status-poor';
-    } else if (fVal > t1Norm) {
-      el.className = 'ex-status-fair';
     } else {
       el.className = 'ex-status-good';
     }
   }
 
-  // IEEE Std C57.104-2019 Clause 6.1.3 Norm Tables
-  function getIEEENorms(o2n2Ratio, ageYears) {
-    const isLowRatio = (o2n2Ratio !== null && o2n2Ratio !== undefined && o2n2Ratio <= 0.2);
-    
+  if (latestDGA) {
+    const dgaDateStr = latestDGA.date || latestDGA.Date || '';
+    updateTestDate('ex-update-dga', dgaDateStr);
+
+    const h2 = latestDGA.H2 || latestDGA.h2 || '-';
+    const ch4 = latestDGA.CH4 || latestDGA.ch4 || '-';
+    const c2h6 = latestDGA.C2H6 || latestDGA.c2h6 || '-';
+    const c2h4 = latestDGA.C2H4 || latestDGA.c2h4 || '-';
+    const c2h2 = latestDGA.C2H2 || latestDGA.c2h2 || '-';
+    const co = latestDGA.CO || latestDGA.co || '-';
+    const co2 = latestDGA.CO2 || latestDGA.co2 || '-';
+    const tdcg = latestDGA.TDCG || latestDGA.tdcg || '-';
+
+    colorGasCell('ex-dga-h2', h2, 100);
+    colorGasCell('ex-dga-ch4', ch4, 120);
+    colorGasCell('ex-dga-c2h6', c2h6, 65);
+    colorGasCell('ex-dga-c2h4', c2h4, 50);
+    colorGasCell('ex-dga-c2h2', c2h2, 1);
+    colorGasCell('ex-dga-co', co, 350);
+    colorGasCell('ex-dga-co2', co2, 2500);
+    colorGasCell('ex-dga-tdcg', tdcg, 720);
+
+    const fCh4 = parseFloat(ch4) || 0;
+    const fC2h4 = parseFloat(c2h4) || 0;
+    const fC2h2 = parseFloat(c2h2) || 0;
+    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
+
+    document.getElementById('ex-dga-duval1').textContent = duvalRes.name;
+    if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
+      document.getElementById('ex-dga-duval1').style.color = '#ef4444';
+      document.getElementById('ex-dga-fault').textContent = 'Thermal/High Energy fault suspected';
+      document.getElementById('ex-dga-fault').style.color = '#ef4444';
+    } else if (duvalRes.code === 'PD') {
+      document.getElementById('ex-dga-duval1').style.color = '#10b981';
+      document.getElementById('ex-dga-fault').textContent = 'Normal / Low Energy';
+      document.getElementById('ex-dga-fault').style.color = '#10b981';
+    } else {
+      document.getElementById('ex-dga-duval1').style.color = '#eab308';
+      document.getElementById('ex-dga-fault').textContent = 'Warning / Monitor';
+      document.getElementById('ex-dga-fault').style.color = '#eab308';
+    }
+
+    // Aligned IEEE C57.104-2019 dynamic status logic
+    const o2Val = parseFloat(latestDGA.O2 || 0);
+    const n2Val = parseFloat(latestDGA.N2 || 0);
+    const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+    const isLowRatio = o2n2Ratio <= 0.2;
+
     let ageCat = 'Unknown';
+    const ageVal = parseInt(serviceAgeYears) || 0;
+    
+    // Parse age category exactly like in assessment.js / dga_report.html
+    let mfgYear = null;
+    const mfgYearStr = trInfo ? (trInfo.MANUFACTURING_DATE || trInfo.manufacturing_date || '') : '';
+    if (mfgYearStr) {
+      const str = mfgYearStr.toString().trim();
+      if (/^\d{4}$/.test(str)) {
+        mfgYear = parseInt(str, 10);
+      } else {
+        const y4 = str.match(/\b(19\d\d|20\d\d)\b/);
+        if (y4) mfgYear = parseInt(y4[1], 10);
+        else {
+          const y2 = str.match(/-(\d{2})$/);
+          if (y2) {
+            const yr = parseInt(y2[1], 10);
+            mfgYear = yr < 50 ? (2000 + yr) : (1900 + yr);
+          }
+        }
+      }
+    }
+    let ageYears = null;
+    if (mfgYear) {
+      const sampleYear = dgaDateStr ? (new Date(dgaDateStr).getFullYear() || 2026) : 2026;
+      ageYears = sampleYear - mfgYear;
+    }
     if (ageYears !== null && ageYears !== undefined && !isNaN(ageYears) && ageYears >= 1) {
       if (ageYears <= 9) ageCat = '1-9';
       else if (ageYears <= 30) ageCat = '10-30';
       else ageCat = '>30';
+    } else if (ageVal >= 1) {
+      if (ageVal <= 9) ageCat = '1-9';
+      else if (ageVal <= 30) ageCat = '10-30';
+      else ageCat = '>30';
     }
 
-    // Table 1: 90th percentile gas concentrations (ppm)
-    const T1 = {
+    const T1_NORMS = {
       'low': {
         'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
         '1-9':     { H2: 75, CH4: 45, C2H6: 30, C2H4: 20, C2H2: 1, CO: 900, CO2: 5000 },
@@ -1173,8 +1244,7 @@ function openDetail(no) {
       }
     };
 
-    // Table 2: 95th percentile gas concentrations (ppm)
-    const T2 = {
+    const T2_NORMS = {
       'low': {
         'Unknown': { H2: 200, CH4: 150, C2H6: 175, C2H4: 100, C2H2: 2, CO: 1100, CO2: 12500 },
         '1-9':     { H2: 200, CH4: 100, C2H6: 70, C2H4: 40, C2H2: 2, CO: 1100, CO2: 7000 },
@@ -1190,103 +1260,31 @@ function openDetail(no) {
     };
 
     const catKey = isLowRatio ? 'low' : 'high';
-    return {
-      table1: T1[catKey][ageCat],
-      table2: T2[catKey][ageCat]
-     if (latestDGA) {
-    const dgaDateStr = latestDGA.date || latestDGA.Date || '';
-    updateTestDate('ex-update-dga', dgaDateStr);
+    const limitsT1 = T1_NORMS[catKey][ageCat];
+    const limitsT2 = T2_NORMS[catKey][ageCat];
 
-    const h2 = latestDGA.H2 || latestDGA.h2 || '-';
-    const ch4 = latestDGA.CH4 || latestDGA.ch4 || '-';
-    const c2h6 = latestDGA.C2H6 || latestDGA.c2h6 || '-';
-    const c2h4 = latestDGA.C2H4 || latestDGA.c2h4 || '-';
-    const c2h2 = latestDGA.C2H2 || latestDGA.c2h2 || '-';
-    const co = latestDGA.CO || latestDGA.co || '-';
-    const co2 = latestDGA.CO2 || latestDGA.co2 || '-';
-    const tdcg = latestDGA.TDCG || latestDGA.tdcg || '-';
-    const o2 = latestDGA.O2 || latestDGA.o2 || 0;
-    const n2 = latestDGA.N2 || latestDGA.n2 || 0;
-
-    const o2n2Ratio = parseFloat(n2) > 0 ? (parseFloat(o2) / parseFloat(n2)) : 0.25;
-    
-    // Age calculation
-    const mfgDateStr = trInfo ? (trInfo.MANUFACTURING_DATE || trInfo.manufacturing_date) : '';
-    const mfgYear = parseMfgYear(mfgDateStr);
-    const dgaDateObj = parseDateRobust(dgaDateStr);
-    const sampleYear = dgaDateObj ? dgaDateObj.getFullYear() : 2026;
-    let ageYears = null;
-    if (mfgYear) {
-      ageYears = sampleYear - mfgYear;
-    }
-    if (ageYears === null || isNaN(ageYears)) {
-      ageYears = parseInt(serviceAgeYears) || null;
-    }
-
-    const norms = getIEEENorms(o2n2Ratio, ageYears);
-
-    colorGasCell('ex-dga-h2', h2, norms.table1.H2, norms.table2.H2);
-    colorGasCell('ex-dga-ch4', ch4, norms.table1.CH4, norms.table2.CH4);
-    colorGasCell('ex-dga-c2h6', c2h6, norms.table1.C2H6, norms.table2.C2H6);
-    colorGasCell('ex-dga-c2h4', c2h4, norms.table1.C2H4, norms.table2.C2H4);
-    colorGasCell('ex-dga-c2h2', c2h2, norms.table1.C2H2, norms.table2.C2H2);
-    colorGasCell('ex-dga-co', co, norms.table1.CO, norms.table2.CO);
-    colorGasCell('ex-dga-co2', co2, norms.table1.CO2, norms.table2.CO2);
-    colorGasCell('ex-dga-tdcg', tdcg, 720, 1440);
-
-    // Check if Status 1 (all gases within Table 1 limits)
-    const isStatus1 = (() => {
-      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
-      for (let key of gasesKeys) {
-        const num = parseFloat(latestDGA[key] || 0);
-        if (num > norms.table1[key]) {
-          return false;
-        }
-      }
-      return true;
-    })();
-
-    const fCh4 = parseFloat(ch4) || 0;
-    const fC2h4 = parseFloat(c2h4) || 0;
-    const fC2h2 = parseFloat(c2h2) || 0;
-    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
-
-    let duvalText = duvalRes.name;
-    let duvalColor = '#eab308';
-    let faultText = 'Warning / Monitor';
-    let faultColor = '#eab308';
-
-    if (isStatus1) {
-      duvalText = 'The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.';
-      duvalColor = '#10b981';
-      faultText = 'Normal / No Fault Detected';
-      faultColor = '#10b981';
-    } else if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
-      duvalColor = '#ef4444';
-      faultText = 'Thermal/High Energy fault suspected';
-      faultColor = '#ef4444';
-    } else if (duvalRes.code === 'PD') {
-      duvalColor = '#10b981';
-      faultText = 'Normal / Low Energy';
-      faultColor = '#10b981';
-    }
-
-    document.getElementById('ex-dga-duval1').textContent = duvalText;
-    document.getElementById('ex-dga-duval1').style.color = duvalColor;
-    document.getElementById('ex-dga-fault').textContent = faultText;
-    document.getElementById('ex-dga-fault').style.color = faultColor;
+    // Re-color gas cells dynamically using the calculated T1 limit
+    colorGasCell('ex-dga-h2', h2, limitsT1.H2);
+    colorGasCell('ex-dga-ch4', ch4, limitsT1.CH4);
+    colorGasCell('ex-dga-c2h6', c2h6, limitsT1.C2H6);
+    colorGasCell('ex-dga-c2h4', c2h4, limitsT1.C2H4);
+    colorGasCell('ex-dga-c2h2', c2h2, limitsT1.C2H2);
+    colorGasCell('ex-dga-co', co, limitsT1.CO);
+    colorGasCell('ex-dga-co2', co2, limitsT1.CO2);
+    colorGasCell('ex-dga-tdcg', tdcg, 720);
 
     let maxIEEEStatus = 'DGA Status 1 (Normal)';
     let ieeeColor = '#10b981';
+    
+    const gasKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
     let hasExceededT2 = false;
     let hasExceededT1 = false;
     
-    const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
-    for (let key of gasesKeys) {
+    for (let key of gasKeys) {
       const val = parseFloat(latestDGA[key] || 0);
-      if (val > norms.table2[key]) {
+      if (val > limitsT2[key]) {
         hasExceededT2 = true;
-      } else if (val > norms.table1[key]) {
+      } else if (val > limitsT1[key]) {
         hasExceededT1 = true;
       }
     }
@@ -1302,6 +1300,7 @@ function openDetail(no) {
     document.getElementById('ex-dga-ieee-status').textContent = maxIEEEStatus;
     document.getElementById('ex-dga-ieee-status').style.color = ieeeColor;
 
+    // Aligned IEC 60599 Diagnosis logic
     const h2Val = parseFloat(latestDGA.H2 || 0);
     const ch4Val = parseFloat(latestDGA.CH4 || 0);
     const c2h6Val = parseFloat(latestDGA.C2H6 || 0);
@@ -1312,7 +1311,10 @@ function openDetail(no) {
     let iecStatusText = 'Normal';
     let iecColor = '#10b981';
 
-    if (isIecSignificant) {
+    if (!isIecSignificant && c2h2Val < 1) {
+      iecStatusText = 'Normal';
+      iecColor = '#10b981';
+    } else {
       const r1 = c2h4Val > 0 ? (c2h2Val / c2h4Val) : 0;
       const r2 = h2Val > 0 ? (ch4Val / h2Val) : 0;
       const r3 = c2h6Val > 0 ? (c2h4Val / c2h6Val) : 0;
@@ -1335,6 +1337,12 @@ function openDetail(no) {
       } else if (r1 < 0.1 && r2 > 1 && r3 > 4) {
         iecStatusText = 'T3 - Thermal Fault > 700°C';
         iecColor = '#ef4444';
+      } else if (c2h2Val >= 2) {
+        iecStatusText = 'D - Electrical Discharge Suspected';
+        iecColor = '#ef4444';
+      } else if (c2h4Val > 100 || r3 > 3) {
+        iecStatusText = 'T - Thermal Overheating Suspected';
+        iecColor = '#eab308';
       } else {
         iecStatusText = 'Mixed / Non-typical Pattern';
         iecColor = '#eab308';
@@ -1344,6 +1352,7 @@ function openDetail(no) {
     document.getElementById('ex-dga-iec-status').textContent = iecStatusText;
     document.getElementById('ex-dga-iec-status').style.color = iecColor;
 
+    // Aligned Paper Insulation condition
     const coVal = parseFloat(latestDGA.CO || 0);
     const co2Val = parseFloat(latestDGA.CO2 || 0);
     const rCo2Co = coVal > 0 ? (co2Val / coVal) : 0;
@@ -1364,6 +1373,7 @@ function openDetail(no) {
     
     document.getElementById('ex-dga-paper-status').textContent = paperDesc;
     document.getElementById('ex-dga-paper-status').style.color = paperColor;
+
   } else {
     colorGasCell('ex-dga-h2', '12', 40);
     colorGasCell('ex-dga-ch4', '5', 20);
