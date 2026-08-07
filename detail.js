@@ -585,10 +585,11 @@ function openDetail(no) {
     return 'ex-status-poor';
   };
 
-  const formatErrVal = (val) => {
+  const formatErrVal = (val, isRaw) => {
     if (val === null || val === undefined || val === '' || val === '-') return '-';
     const num = parseFloat(val);
     if (isNaN(num)) return '-';
+    if (isRaw) return num.toFixed(2) + '%';
     return (num >= 0 ? '+' : '') + num.toFixed(2) + '%';
   };
 
@@ -629,9 +630,9 @@ function openDetail(no) {
           pfStatusCls = 'ex-status-poor';
         }
       } else if (manufacturer.includes('MGC')) {
-        if (pfErrPercent <= 0.7) {
+        if (pf20 <= 0.5) {
           pfStatusCls = 'ex-status-good';
-        } else if (pfErrPercent <= 3.0) {
+        } else if (pf20 <= 0.7) {
           pfStatusCls = 'ex-status-fair';
         } else {
           pfStatusCls = 'ex-status-poor';
@@ -669,9 +670,9 @@ function openDetail(no) {
           capStatusCls = 'ex-status-poor';
         }
       } else if (manufacturer.includes('MGC')) {
-        if (absDev <= 10.0) {
+        if (absDev <= 5.0) {
           capStatusCls = 'ex-status-good';
-        } else if (absDev <= 20.0) {
+        } else if (absDev <= 10.0) {
           capStatusCls = 'ex-status-fair';
         } else {
           capStatusCls = 'ex-status-poor';
@@ -696,8 +697,8 @@ function openDetail(no) {
     return { pfStatusCls, capStatusCls };
   };
 
-  const getErrCell = (val, checkFn, customClass) => {
-    const formatted = formatErrVal(val);
+  const getErrCell = (val, checkFn, customClass, isRaw) => {
+    const formatted = formatErrVal(val, isRaw);
     if (formatted === '-') return '<td>-</td>';
     const cls = customClass || (checkFn ? checkFn(val) : '');
     return `<td class="${cls}">${formatted}</td>`;
@@ -762,10 +763,18 @@ function openDetail(no) {
           const mfg = np_row.Manufacturer || '';
           const ins = np_row.Type || np_row.Insulation || '';
           
-          if (np_pf > 0 && pf20 > 0) {
-            const pf_err_val = ((pf20 - np_pf) / np_pf) * 100;
-            const evalRes = getBushingEvaluation(pf20, np_pf, 0, 0, mfg, ins);
-            set_pf(pf_err_val, evalRes.pfStatusCls);
+          if (pf20 > 0) {
+            const isMgc = mfg.toUpperCase().includes('MGC');
+            if (isMgc) {
+              const evalRes = getBushingEvaluation(pf20, 0, 0, 0, mfg, ins);
+              set_pf(pf20, evalRes.pfStatusCls);
+            } else {
+              if (np_pf > 0) {
+                const pf_err_val = ((pf20 - np_pf) / np_pf) * 100;
+                const evalRes = getBushingEvaluation(pf20, np_pf, 0, 0, mfg, ins);
+                set_pf(pf_err_val, evalRes.pfStatusCls);
+              }
+            }
           }
           const cap = parseFloat(bushRec[cap_key] || 0);
           const np_cap = parseFloat(np_row.Capacitance_C1 || 0);
@@ -778,26 +787,42 @@ function openDetail(no) {
       });
     }
 
+    const getMfgForPhase = (ph) => {
+      if (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData && bushingInfoCsvData.length > 0) {
+        const np_rows = bushingInfoCsvData.filter(r => String(r.Parent_Serial_No || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
+        const np_row = np_rows.find(r => String(r.Phase || '').trim().toUpperCase() === ph.toUpperCase());
+        return np_row ? (np_row.Manufacturer || '') : '';
+      }
+      return '';
+    };
+
+    const h1_mfg = getMfgForPhase('H1').toUpperCase();
+    const h2_mfg = getMfgForPhase('H2').toUpperCase();
+    const h3_mfg = getMfgForPhase('H3').toUpperCase();
+    const l1_mfg = getMfgForPhase('X1').toUpperCase();
+    const l2_mfg = getMfgForPhase('X2').toUpperCase();
+    const l3_mfg = getMfgForPhase('X3').toUpperCase();
+
     bushBody.innerHTML = `
       <tr>
         <td>%Error PF (C1)</td>
         <td>OEM Criteria</td>
-        ${getErrCell(h1_pf_err, getBushingPfErrClass, h1_pf_cls)}
-        ${getErrCell(h2_pf_err, getBushingPfErrClass, h2_pf_cls)}
-        ${getErrCell(h3_pf_err, getBushingPfErrClass, h3_pf_cls)}
-        ${getErrCell(l1_pf_err, getBushingPfErrClass, l1_pf_cls)}
-        ${getErrCell(l2_pf_err, getBushingPfErrClass, l2_pf_cls)}
-        ${getErrCell(l3_pf_err, getBushingPfErrClass, l3_pf_cls)}
+        ${getErrCell(h1_pf_err, getBushingPfErrClass, h1_pf_cls, h1_mfg.includes('MGC'))}
+        ${getErrCell(h2_pf_err, getBushingPfErrClass, h2_pf_cls, h2_mfg.includes('MGC'))}
+        ${getErrCell(h3_pf_err, getBushingPfErrClass, h3_pf_cls, h3_mfg.includes('MGC'))}
+        ${getErrCell(l1_pf_err, getBushingPfErrClass, l1_pf_cls, l1_mfg.includes('MGC'))}
+        ${getErrCell(l2_pf_err, getBushingPfErrClass, l2_pf_cls, l2_mfg.includes('MGC'))}
+        ${getErrCell(l3_pf_err, getBushingPfErrClass, l3_pf_cls, l3_mfg.includes('MGC'))}
       </tr>
       <tr>
         <td>%Error Capacitance (C1)</td>
         <td>OEM Criteria</td>
-        ${getErrCell(h1_cap_err, getBushingCapErrClass, h1_cap_cls)}
-        ${getErrCell(h2_cap_err, getBushingCapErrClass, h2_cap_cls)}
-        ${getErrCell(h3_cap_err, getBushingCapErrClass, h3_cap_cls)}
-        ${getErrCell(l1_cap_err, getBushingCapErrClass, l1_cap_cls)}
-        ${getErrCell(l2_cap_err, getBushingCapErrClass, l2_cap_cls)}
-        ${getErrCell(l3_cap_err, getBushingCapErrClass, l3_cap_cls)}
+        ${getErrCell(h1_cap_err, getBushingCapErrClass, h1_cap_cls, false)}
+        ${getErrCell(h2_cap_err, getBushingCapErrClass, h2_cap_cls, false)}
+        ${getErrCell(h3_cap_err, getBushingCapErrClass, h3_cap_cls, false)}
+        ${getErrCell(l1_cap_err, getBushingCapErrClass, l1_cap_cls, false)}
+        ${getErrCell(l2_cap_err, getBushingCapErrClass, l2_cap_cls, false)}
+        ${getErrCell(l3_cap_err, getBushingCapErrClass, l3_cap_cls, false)}
       </tr>
     `;
     updateTestDate('ex-update-bushing', bushRec.date);

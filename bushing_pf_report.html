@@ -822,8 +822,8 @@
               <td style="padding:3px; color:#9ca3af;">-</td>
               <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt;30%</td>
               <td style="padding:3px;">&lt;1%</td>
-              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt; 0.7%</td>
-              <td style="padding:3px;">&lt;10%</td>
+              <td style="padding:3px; border-left:1px solid #e5e7eb;">&lt; 0.5%</td>
+              <td style="padding:3px;">&lt; 5%</td>
             </tr>
             <tr>
               <td style="text-align:left; font-weight:700; padding:3px 6px; background:#f9fafb;">RIS</td>
@@ -1289,9 +1289,9 @@
             pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('MGC')) {
-          if (pfErrPercent <= 0.7) {
+          if (pf20 <= 0.5) {
             pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
-          } else if (pfErrPercent <= 3.0) {
+          } else if (pf20 <= 0.7) {
             pfStatusText = 'Monitoring'; pfStatusCls = 'status-monitor';
           } else {
             pfStatusText = 'Critical'; pfStatusCls = 'status-critical';
@@ -1330,9 +1330,9 @@
             capStatusText = 'Critical'; capStatusCls = 'status-critical';
           }
         } else if (manufacturer.includes('MGC')) {
-          if (absDev <= 10.0) {
+          if (absDev <= 5.0) {
             capStatusText = 'Normal'; capStatusCls = 'status-normal';
-          } else if (absDev <= 20.0) {
+          } else if (absDev <= 10.0) {
             capStatusText = 'Monitoring'; capStatusCls = 'status-monitor';
           } else {
             capStatusText = 'Critical'; capStatusCls = 'status-critical';
