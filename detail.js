@@ -1169,22 +1169,6 @@ function openDetail(no) {
     const fCh4 = parseFloat(ch4) || 0;
     const fC2h4 = parseFloat(c2h4) || 0;
     const fC2h2 = parseFloat(c2h2) || 0;
-    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
-
-    document.getElementById('ex-dga-duval1').textContent = duvalRes.name;
-    if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
-      document.getElementById('ex-dga-duval1').style.color = '#ef4444';
-      document.getElementById('ex-dga-fault').textContent = 'Thermal/High Energy fault suspected';
-      document.getElementById('ex-dga-fault').style.color = '#ef4444';
-    } else if (duvalRes.code === 'PD') {
-      document.getElementById('ex-dga-duval1').style.color = '#10b981';
-      document.getElementById('ex-dga-fault').textContent = 'Normal / Low Energy';
-      document.getElementById('ex-dga-fault').style.color = '#10b981';
-    } else {
-      document.getElementById('ex-dga-duval1').style.color = '#eab308';
-      document.getElementById('ex-dga-fault').textContent = 'Warning / Monitor';
-      document.getElementById('ex-dga-fault').style.color = '#eab308';
-    }
 
     // Aligned IEEE C57.104-2019 dynamic status logic
     const o2Val = parseFloat(latestDGA.O2 || 0);
@@ -1299,6 +1283,45 @@ function openDetail(no) {
     
     document.getElementById('ex-dga-ieee-status').textContent = maxIEEEStatus;
     document.getElementById('ex-dga-ieee-status').style.color = ieeeColor;
+
+    // Check if Status 1 (all gases within Table 1 limits)
+    const isStatus1 = (() => {
+      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      for (let key of gasesKeys) {
+        const num = parseFloat(latestDGA[key] || 0);
+        if (num > limitsT1[key]) {
+          return false;
+        }
+      }
+      return true;
+    })();
+
+    const duvalRes = evaluateDuval1(fCh4, fC2h4, fC2h2);
+
+    let duvalText = duvalRes.name;
+    let duvalColor = '#eab308';
+    let faultText = 'Warning / Monitor';
+    let faultColor = '#eab308';
+
+    if (isStatus1) {
+      duvalText = 'The concentration of hydrocarbon gases and hydrogen is too low for a reliable assessment.';
+      duvalColor = '#10b981';
+      faultText = 'Normal / No Fault Detected';
+      faultColor = '#10b981';
+    } else if (duvalRes.code === 'D2' || duvalRes.code === 'T3') {
+      duvalColor = '#ef4444';
+      faultText = 'Thermal/High Energy fault suspected';
+      faultColor = '#ef4444';
+    } else if (duvalRes.code === 'PD') {
+      duvalColor = '#10b981';
+      faultText = 'Normal / Low Energy';
+      faultColor = '#10b981';
+    }
+
+    document.getElementById('ex-dga-duval1').textContent = duvalText;
+    document.getElementById('ex-dga-duval1').style.color = duvalColor;
+    document.getElementById('ex-dga-fault').textContent = faultText;
+    document.getElementById('ex-dga-fault').style.color = faultColor;
 
     // Aligned IEC 60599 Diagnosis logic
     const h2Val = parseFloat(latestDGA.H2 || 0);
