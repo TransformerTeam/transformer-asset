@@ -8,6 +8,7 @@ let bushingInfoCsvData = [];
 let mtOilCsvData = [];
 let mainTankDgaCsvData = [];
 let oltcOilCsvData = [];
+let piCsvData = [];
 
 // Helper to set element text content safely
 const setElTxt = (id, txt) => {
@@ -369,6 +370,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
     { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
+    { url: 'TestData/PIData.csv', target: d => piCsvData = d },
   ];
 
   return Promise.allSettled(
@@ -915,7 +917,117 @@ function openDetail(no) {
   const ap = item.activePart || {};
   const basicBody = document.getElementById('ex-active-basic-rows');
   if (basicBody) {
-    const getIndicatorCell = (status) => `<td class="${getStatusClass(status)}">${status === 'A' ? 'Good' : (status === 'Q' ? 'Warning' : 'Critical')}</td>`;
+    // Lookup NO_WINDING
+    let noWinding = 2; // default fallback
+    if (item.NO_WINDING) {
+      noWinding = parseInt(item.NO_WINDING, 10);
+    } else if (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length > 0) {
+      const infoMatch = trInfoCsvData.find(x => String(x.SERIAL_NUMBER || x.Serial_No || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
+      if (infoMatch && infoMatch.NO_WINDING) {
+        noWinding = parseInt(infoMatch.NO_WINDING, 10);
+      }
+    } else if (typeof TR_DATA !== 'undefined' && TR_DATA) {
+      const rawMatch = TR_DATA.find(x => String(x.SERIAL_NUMBER || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
+      if (rawMatch && rawMatch.NO_WINDING) {
+        noWinding = parseInt(rawMatch.NO_WINDING, 10);
+      }
+    }
+
+    // Lookup PI Record from piCsvData
+    let piRec = null;
+    if (typeof piCsvData !== 'undefined' && piCsvData && piCsvData.length > 0) {
+      const matches = piCsvData.filter(x => String(x.serial || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
+      if (matches.length > 0) {
+        piRec = matches[0];
+      }
+    }
+    if (!piRec && item.pi) {
+      piRec = {
+        H_PI: item.pi.H_PI,
+        L_PI: item.pi.L_PI,
+        T_PI: item.pi.T_PI,
+        date: item.pi.date
+      };
+    }
+
+    // Format PI Results
+    let piResultHtml = '';
+    let piDate = item.dateToAssess || '-';
+
+    const getPiSpan = (valStr) => {
+      if (valStr === undefined || valStr === null || valStr === '' || valStr === '-' || valStr === 'N/A') {
+        return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
+      }
+      const val = parseFloat(String(valStr).replace(/,/g, ''));
+      if (isNaN(val)) {
+        return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
+      }
+      
+      let cls = 'ex-status-good';
+      if (val <= 1.0) cls = 'ex-status-poor';
+      else if (val <= 1.25) cls = 'ex-status-fair';
+      
+      return `<span class="${cls}" style="font-weight: bold; padding: 2px 6px; border-radius: 4px; margin: 0 4px; display: inline-block;">${val.toFixed(2)}</span>`;
+    };
+
+    if (piRec) {
+      const h_pi_span = getPiSpan(piRec.H_PI);
+      const l_pi_span = getPiSpan(piRec.L_PI);
+      const t_pi_span = getPiSpan(piRec.T_PI);
+
+      if (noWinding === 3) {
+        piResultHtml = `HV = ${h_pi_span}, LV = ${l_pi_span}, TV = ${t_pi_span}`;
+      } else {
+        piResultHtml = `HV = ${h_pi_span}, LV = ${l_pi_span}, HV-LV = ${t_pi_span}`;
+      }
+
+      if (piRec.date) {
+        const parsedDate = parseDateRobust(piRec.date);
+        if (parsedDate) {
+          piDate = formatDgaDate(parsedDate);
+        }
+      }
+    } else {
+      const emptySpan = `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
+      if (noWinding === 3) {
+        piResultHtml = `HV = ${emptySpan}, LV = ${emptySpan}, TV = ${emptySpan}`;
+      } else {
+        piResultHtml = `HV = ${emptySpan}, LV = ${emptySpan}, HV-LV = ${emptySpan}`;
+      }
+    }
+
+    const getWindingDateSpan = (rawDateStr) => {
+      const dateObj = parseDateRobust(rawDateStr);
+      let cleanStr = String(rawDateStr || '-').trim();
+      if (cleanStr.includes(' ')) {
+        cleanStr = cleanStr.split(' ')[0];
+      }
+      const formatted = dateObj ? formatDgaDate(dateObj) : cleanStr;
+      if (!dateObj || formatted === '-') return `<span>${formatted}</span>`;
+      
+      const today = new Date();
+      const diffTime = Math.abs(today - dateObj);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const threeYearsInDays = 3 * 365.25;
+      
+      let color = '#eab308';
+      let bg = 'rgba(234, 179, 8, 0.15)';
+      if (diffDays <= threeYearsInDays) {
+        color = '#10b981';
+        bg = 'rgba(16, 185, 129, 0.15)';
+      }
+      
+      return `<span style="color: ${color} !important; background-color: ${bg} !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block;">${formatted}</span>`;
+    };
+
+    const getIndicatorCell = (status) => {
+      const cls = getStatusClass(status);
+      if (status === 'N/A' || status === '-' || !status) {
+        return `<td>-</td>`;
+      }
+      return `<td class="${cls}">${status === 'A' || status === 'Good' ? 'Good' : (status === 'Q' || status === 'Warning' ? 'Warning' : 'Critical')}</td>`;
+    };
+
     basicBody.innerHTML = `
       <tr>
         <td>
@@ -924,10 +1036,10 @@ function openDetail(no) {
             <i class="fa-solid fa-file-invoice"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(piDate)}</td>
         <td>IEEE C57.152: PI > 1.25</td>
         ${getIndicatorCell(ap.insulationResistance)}
-        <td class="ex-status-good">1.73 (Good)</td>
+        <td>${piResultHtml}</td>
       </tr>
       <tr>
         <td>

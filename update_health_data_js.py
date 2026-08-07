@@ -81,6 +81,7 @@ def convert_csv_to_js():
     bushing_info_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\BushingInfo.csv")
     mt_oil_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\MTOilData.csv")
     oltc_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\OLTCOilData.csv")
+    pi_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\PIData.csv")
 
     data = []
     with open(CSV_PATH, 'r', encoding='utf-8-sig') as f:
@@ -109,6 +110,7 @@ def convert_csv_to_js():
             bushing_match = find_latest_record(bushing_recs, serial_str, ['serial', 'Serial_No', 'SERIAL_NUMBER'], ['date', 'Date'])
             mt_oil_match = find_latest_record(mt_oil_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
             oltc_match = find_latest_record(oltc_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
+            pi_match = find_latest_record(pi_recs, serial_str, ['serial', 'Serial_No', 'SERIAL_NUMBER'], ['date', 'Date'])
 
             if bushing_match:
                 np_rows = [r for r in bushing_info_recs if str(r.get('Parent_Serial_No') or '').strip().lower() == serial_str.strip().lower()]
@@ -218,6 +220,13 @@ def convert_csv_to_js():
                 "no": idx,
                 "name": str(name) if name is not None else "",
                 "serial": serial_str,
+                "NO_WINDING": str(tr_info_match.get("NO_WINDING") or "2") if tr_info_match else "2",
+                "pi": {
+                    "H_PI": str(pi_match.get("H_PI") or "-"),
+                    "L_PI": str(pi_match.get("L_PI") or "-"),
+                    "T_PI": str(pi_match.get("T_PI") or "-"),
+                    "date": str(pi_match.get("date") or "")
+                } if pi_match else None,
                 "site": str(parse_val(row[3]) or ""),
                 "ratedPower": parse_val(row[4]),
                 "hvRate": parse_val(row[5]),
