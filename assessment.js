@@ -2040,10 +2040,7 @@ function openDetail(no) {
     document.getElementById('ex-dga-ieee-status').style.color = ieeeColor;
 
     const h2Val = parseFloat(latestDGA.H2 || 0);
-    const ch4Val = parseFloat(latestDGA.CH4 || 0);
     const c2h6Val = parseFloat(latestDGA.C2H6 || 0);
-    const c2h4Val = parseFloat(latestDGA.C2H4 || 0);
-    const c2h2Val = parseFloat(latestDGA.C2H2 || 0);
 
     const isIecSignificant = (h2Val > 60 || ch4Val > 50 || c2h6Val > 60 || c2h4Val > 100 || c2h2Val > 2);
     let iecStatusText = 'Normal';
