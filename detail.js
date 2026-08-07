@@ -1287,9 +1287,12 @@ function openDetail(no) {
     // Check if Status 1 (all gases within Table 1 limits)
     const isStatus1 = (() => {
       const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      console.log('--- isStatus1 check for serial:', item.serial, '---');
+      console.log('limitsT1:', limitsT1);
       for (let key of gasesKeys) {
         const num = parseFloat(latestDGA[key] || 0);
-        if (num > limitsT1[key]) {
+        console.log(key, 'value:', num, 'limit:', limitsT1 ? limitsT1[key] : 'undefined', 'exceeded?', limitsT1 ? (num > limitsT1[key]) : 'n/a');
+        if (limitsT1 && num > limitsT1[key]) {
           return false;
         }
       }
