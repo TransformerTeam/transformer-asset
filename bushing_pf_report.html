@@ -1264,7 +1264,9 @@
         const pfRatio = pf20 / npPf;
         const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
 
-        if (manufacturer.includes('ABB')) {
+        if (pfErrPercent < 0 && !manufacturer.includes('MGC')) {
+          pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
+        } else if (manufacturer.includes('ABB')) {
           if (pfErrPercent <= 40.0) {
             pfStatusText = 'Normal'; pfStatusCls = 'status-normal';
           } else if (pfErrPercent < 75.0) {
@@ -1313,7 +1315,9 @@
         const devVal = ((cap - npCap) / npCap) * 100;
         const absDev = Math.abs(devVal);
 
-        if (manufacturer.includes('ABB')) {
+        if (devVal < 0) {
+          capStatusText = 'Normal'; capStatusCls = 'status-normal';
+        } else if (manufacturer.includes('ABB')) {
           if (absDev <= 3.0) {
             capStatusText = 'Normal'; capStatusCls = 'status-normal';
           } else if (absDev <= 5.0) {

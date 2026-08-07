@@ -1490,7 +1490,9 @@ function openDetail(no) {
       const mfg = getMfgForPhase(phaseStr).toUpperCase();
       let statusCls = 'status-normal';
 
-      if (mfg.includes('ABB')) {
+      if (pfDevVal < 0 && !mfg.includes('MGC')) {
+        statusCls = 'status-normal';
+      } else if (mfg.includes('ABB')) {
         statusCls = pfDevVal >= 75.0 ? 'status-critical' : (pfDevVal > 40.0 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
         statusCls = pfDevVal >= 30.0 ? 'status-critical' : (pfDevVal > 0 ? 'status-monitor' : 'status-normal');
@@ -1512,7 +1514,9 @@ function openDetail(no) {
       const mfg = getMfgForPhase(phaseStr).toUpperCase();
       let statusCls = 'status-normal';
 
-      if (mfg.includes('ABB')) {
+      if (devVal < 0) {
+        statusCls = 'status-normal';
+      } else if (mfg.includes('ABB')) {
         statusCls = absDev > 5.0 ? 'status-critical' : (absDev > 3.0 ? 'status-monitor' : 'status-normal');
       } else if (mfg.includes('PASSONI') || mfg.includes('VILLA')) {
         statusCls = absDev > 3.0 ? 'status-critical' : (absDev > 1.0 ? 'status-monitor' : 'status-normal');

@@ -605,7 +605,9 @@ function openDetail(no) {
       const pfRatio = pf20 / npPf;
       const pfErrPercent = ((pf20 - npPf) / npPf) * 100;
 
-      if (manufacturer.includes('ABB')) {
+      if (pfErrPercent < 0 && !manufacturer.includes('MGC')) {
+        pfStatusCls = 'ex-status-good';
+      } else if (manufacturer.includes('ABB')) {
         if (pfErrPercent <= 40.0) {
           pfStatusCls = 'ex-status-good';
         } else if (pfErrPercent < 75.0) {
@@ -653,7 +655,9 @@ function openDetail(no) {
       const devVal = ((cap - npCap) / npCap) * 100;
       const absDev = Math.abs(devVal);
 
-      if (manufacturer.includes('ABB')) {
+      if (devVal < 0) {
+        capStatusCls = 'ex-status-good';
+      } else if (manufacturer.includes('ABB')) {
         if (absDev <= 3.0) {
           capStatusCls = 'ex-status-good';
         } else if (absDev <= 5.0) {

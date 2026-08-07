@@ -162,7 +162,9 @@ def convert_csv_to_js():
                         if np_pf > 0 and pf20 > 0:
                             pf_ratio = pf20 / np_pf
                             pf_err = ((pf20 - np_pf) / np_pf) * 100
-                            if 'ABB' in mfg_upper:
+                            if pf_err < 0 and 'MGC' not in mfg_upper:
+                                bushing_match[out_pf_cls] = 'ex-status-good'
+                            elif 'ABB' in mfg_upper:
                                 bushing_match[out_pf_cls] = 'ex-status-good' if pf_err <= 40.0 else 'ex-status-fair' if pf_err < 75.0 else 'ex-status-poor'
                             elif 'TRENCH' in mfg_upper:
                                 bushing_match[out_pf_cls] = 'ex-status-good' if pf_ratio <= 1.5 else 'ex-status-fair' if pf_ratio <= 2.0 else 'ex-status-poor'
@@ -176,7 +178,9 @@ def convert_csv_to_js():
                         if np_cap > 0 and cap > 0:
                             dev_val = ((cap - np_cap) / np_cap) * 100
                             abs_dev = abs(dev_val)
-                            if 'ABB' in mfg_upper:
+                            if dev_val < 0:
+                                bushing_match[out_cap_cls] = 'ex-status-good'
+                            elif 'ABB' in mfg_upper:
                                 bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 3.0 else 'ex-status-fair' if abs_dev <= 5.0 else 'ex-status-poor'
                             elif 'PASSONI' in mfg_upper or 'VILLA' in mfg_upper:
                                 bushing_match[out_cap_cls] = 'ex-status-good' if abs_dev <= 1.0 else 'ex-status-fair' if abs_dev <= 3.0 else 'ex-status-poor'
