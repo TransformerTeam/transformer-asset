@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2canvas Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- Chart.js Library -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ApexCharts JS -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <style>
     /* Global Variables matching main dashboard theme */
@@ -1113,136 +1113,98 @@
         return isNaN(val) ? null : val;
       });
 
-      const canvas = document.getElementById('oil-trend-chart');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+      const container = document.getElementById('oil-trend-chart');
+      if (!container) return;
+      container.innerHTML = '';
       
       if (trendChart) {
         trendChart.destroy();
+        trendChart = null;
       }
 
       const textColor = '#1e293b'; // Keep it dark as the report sheet is always white (#ffffff)
       const gridColor = 'rgba(0, 0, 0, 0.08)';
 
-      trendChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Dielectric Breakdown Voltage (BDV)',
-              data: bdValues,
-              borderColor: '#10b981', // green
-              backgroundColor: '#10b981',
-              borderWidth: 2.5,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              tension: 0.25,
-              yAxisID: 'y-bd',
-              spanGaps: true
-            },
-            {
-              label: 'Water Content (Moisture in Oil)',
-              data: wcValues,
-              borderColor: '#3b82f6', // blue
-              backgroundColor: '#3b82f6',
-              borderWidth: 2.5,
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              tension: 0.25,
-              yAxisID: 'y-wc',
-              spanGaps: true
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: {
-                color: textColor,
-                font: {
-                  family: 'Inter',
-                  size: 10,
-                  weight: '600'
-                }
-              }
-            },
-            tooltip: {
-              mode: 'index',
-              intersect: false
-            }
+      const options = {
+        series: [
+          {
+            name: 'Dielectric Breakdown Voltage (BDV)',
+            data: bdValues
           },
-          scales: {
-            x: {
-              grid: {
-                color: gridColor
-              },
-              ticks: {
-                color: textColor,
-                font: {
-                  family: 'Inter',
-                  size: 9
-                }
-              }
-            },
-            'y-bd': {
-              type: 'linear',
-              position: 'left',
-              title: {
-                display: true,
-                text: 'BDV (kV)',
-                color: '#10b981',
-                font: {
-                  family: 'Inter',
-                  size: 10,
-                  weight: '700'
-                }
-              },
-              grid: {
-                color: gridColor
-              },
-              ticks: {
-                color: textColor,
-                font: {
-                  family: 'Inter',
-                  size: 9
-                }
-              },
-              min: 0,
-              max: 100
-            },
-            'y-wc': {
-              type: 'linear',
-              position: 'right',
-              title: {
-                display: true,
-                text: 'Water Content (ppm)',
-                color: '#3b82f6',
-                font: {
-                  family: 'Inter',
-                  size: 10,
-                  weight: '700'
-                }
-              },
-              grid: {
-                drawOnChartArea: false
-              },
-              ticks: {
-                color: textColor,
-                font: {
-                  family: 'Inter',
-                  size: 9
-                }
-              },
-              min: 0,
-              max: 50
-            }
+          {
+            name: 'Water Content (Moisture in Oil)',
+            data: wcValues
           }
+        ],
+        chart: {
+          height: '100%',
+          type: 'line',
+          toolbar: { show: false },
+          zoom: { enabled: false },
+          background: 'transparent',
+          fontFamily: 'Inter, sans-serif'
+        },
+        colors: ['#10b981', '#3b82f6'],
+        stroke: {
+          width: 3,
+          curve: 'straight'
+        },
+        markers: {
+          size: 5,
+          hover: { size: 7 }
+        },
+        xaxis: {
+          categories: labels,
+          labels: {
+            style: { colors: textColor }
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          tooltip: { enabled: false }
+        },
+        yaxis: [
+          {
+            seriesName: 'Dielectric Breakdown Voltage (BDV)',
+            title: {
+              text: 'BDV (kV)',
+              style: { color: '#10b981', fontWeight: 700 }
+            },
+            labels: {
+              style: { colors: textColor }
+            },
+            min: 0,
+            max: 100
+          },
+          {
+            opposite: true,
+            seriesName: 'Water Content (Moisture in Oil)',
+            title: {
+              text: 'Water Content (ppm)',
+              style: { color: '#3b82f6', fontWeight: 700 }
+            },
+            labels: {
+              style: { colors: textColor }
+            },
+            min: 0,
+            max: 50
+          }
+        ],
+        grid: {
+          borderColor: gridColor,
+          strokeDashArray: 3
+        },
+        legend: {
+          position: 'top',
+          labels: { colors: textColor }
+        },
+        tooltip: {
+          shared: true,
+          intersect: false
         }
-      });
+      };
+
+      trendChart = new ApexCharts(container, options);
+      trendChart.render();
     }
   </script>
 </body>
