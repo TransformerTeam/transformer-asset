@@ -557,8 +557,9 @@
       <table class="report-table tbl-results">
         <thead>
           <tr>
-            <th style="width: 32%; text-align: left;">Item Test</th>
-            <th style="width: 14%;">Standards</th>
+            <th style="width: 25%; text-align: left;">Item Test</th>
+            <th style="width: 11%;">Standards</th>
+            <th style="width: 10%;">Criteria</th>
             <th style="width: 10%;">Unit</th>
             <th style="width: 11%;">Current Sampling<br><span id="date-sample-curr" style="font-weight:400; font-size:9px;">-</span></th>
             <th style="width: 11%;">Previous Sampling<br><span id="date-sample-prev1" style="font-weight:400; font-size:9px;">-</span></th>
@@ -568,10 +569,11 @@
         </thead>
         <tbody>
           <!-- Physical & Chemical properties -->
-          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="7" style="font-weight:700;">Electrical & Physical Properties</td></tr>
+          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="8" style="font-weight:700;">Electrical & Physical Properties</td></tr>
           <tr>
             <td class="lbl">Dielectric Breakdown Voltage (BDV)</td>
             <td class="std-col">ASTM D1816</td>
+            <td class="crit-col" id="crit-bd">-</td>
             <td class="unit-col">kV</td>
             <td class="val-col" id="res-bd-curr">-</td>
             <td class="val-col" id="res-bd-p1">-</td>
@@ -581,6 +583,7 @@
           <tr>
             <td class="lbl">Water Content (Moisture in Oil)</td>
             <td class="std-col">ASTM D1533</td>
+            <td class="crit-col" id="crit-wc">-</td>
             <td class="unit-col">ppm</td>
             <td class="val-col" id="res-wc-curr">-</td>
             <td class="val-col" id="res-wc-p1">-</td>
@@ -590,6 +593,7 @@
           <tr>
             <td class="lbl">Power Factor at 25 °C</td>
             <td class="std-col">ASTM D924</td>
+            <td class="crit-col" id="crit-pf25">-</td>
             <td class="unit-col">%</td>
             <td class="val-col" id="res-pf25-curr">-</td>
             <td class="val-col" id="res-pf25-p1">-</td>
@@ -599,6 +603,7 @@
           <tr>
             <td class="lbl">Power Factor at 100 °C</td>
             <td class="std-col">ASTM D925</td>
+            <td class="crit-col" id="crit-pf100">-</td>
             <td class="unit-col">%</td>
             <td class="val-col" id="res-pf100-curr">-</td>
             <td class="val-col" id="res-pf100-p1">-</td>
@@ -608,6 +613,7 @@
           <tr>
             <td class="lbl">Interfacial Tension (IFT)</td>
             <td class="std-col">ASTM D971</td>
+            <td class="crit-col" id="crit-ift">-</td>
             <td class="unit-col">dynes/cm</td>
             <td class="val-col" id="res-ift-curr">-</td>
             <td class="val-col" id="res-ift-p1">-</td>
@@ -617,6 +623,7 @@
           <tr>
             <td class="lbl">Acidity (Neutralization Number)</td>
             <td class="std-col">ASTM D974</td>
+            <td class="crit-col" id="crit-ac">-</td>
             <td class="unit-col">mgKOH/g</td>
             <td class="val-col" id="res-ac-curr">-</td>
             <td class="val-col" id="res-ac-p1">-</td>
@@ -626,6 +633,7 @@
           <tr>
             <td class="lbl">Oil Conductivity</td>
             <td class="std-col">IEC 61620</td>
+            <td class="crit-col" id="crit-cond">-</td>
             <td class="unit-col">pS/m</td>
             <td class="val-col" id="res-cond-curr">-</td>
             <td class="val-col" id="res-cond-p1">-</td>
@@ -635,6 +643,7 @@
           <tr>
             <td class="lbl">Color Number</td>
             <td class="std-col">ASTM D1500</td>
+            <td class="crit-col" id="crit-color">-</td>
             <td class="unit-col">-</td>
             <td class="val-col" id="res-color-curr">-</td>
             <td class="val-col" id="res-color-p1">-</td>
@@ -644,6 +653,7 @@
           <tr>
             <td class="lbl">Inhibitor Content</td>
             <td class="std-col">IEC 60296</td>
+            <td class="crit-col" id="crit-inhib">-</td>
             <td class="unit-col">%</td>
             <td class="val-col" id="res-inhib-curr">-</td>
             <td class="val-col" id="res-inhib-p1">-</td>
@@ -652,10 +662,11 @@
           </tr>
 
           <!-- Paper Aging properties -->
-          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="7" style="font-weight:700;">Paper Aging</td></tr>
+          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="8" style="font-weight:700;">Paper Aging</td></tr>
           <tr>
             <td class="lbl">Furan [2-FAL]</td>
             <td class="std-col">ASTM D5837</td>
+            <td class="crit-col" id="crit-furan">-</td>
             <td class="unit-col">ppb</td>
             <td class="val-col" id="res-furan-curr">-</td>
             <td class="val-col" id="res-furan-p1">-</td>
@@ -665,6 +676,7 @@
           <tr>
             <td class="lbl">Estimated DP [Furan]</td>
             <td class="std-col">IEEE Guide</td>
+            <td class="crit-col" id="crit-dp">-</td>
             <td class="unit-col">-</td>
             <td class="val-col" id="res-dp-curr">-</td>
             <td class="val-col" id="res-dp-p1">-</td>
@@ -674,6 +686,7 @@
           <tr>
             <td class="lbl">Sludge condition</td>
             <td class="std-col">Visual</td>
+            <td class="crit-col" id="crit-sludge">-</td>
             <td class="unit-col">-</td>
             <td class="val-col" id="res-sludge-curr">-</td>
             <td class="val-col" id="res-sludge-p1">-</td>
@@ -682,10 +695,11 @@
           </tr>
 
           <!-- Corrosive Sulfur properties -->
-          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="7" style="font-weight:700;">Corrosive Sulfur</td></tr>
+          <tr style="background:#f1f5f9; color:#1e293b;"><td colspan="8" style="font-weight:700;">Corrosive Sulfur</td></tr>
           <tr>
             <td class="lbl">Corrosive Sulfur</td>
             <td class="std-col">DIN 51353</td>
+            <td class="crit-col" id="crit-sulfur">-</td>
             <td class="unit-col">-</td>
             <td class="val-col" id="res-sulfur-curr">-</td>
             <td class="val-col" id="res-sulfur-p1">-</td>
@@ -695,6 +709,7 @@
           <tr>
             <td class="lbl">Passivator [Irgamet 39]</td>
             <td class="std-col">IEC 60666</td>
+            <td class="crit-col" id="crit-passivator">-</td>
             <td class="unit-col">ppm</td>
             <td class="val-col" id="res-passivator-curr">-</td>
             <td class="val-col" id="res-passivator-p1">-</td>
@@ -1051,7 +1066,13 @@
       const checkParam = (paramName) => (val) => evaluateOilParameter(paramName, val, fluidType, hvVoltage);
 
       // Populate results helper
-      const populateRow = (rowIdPrefix, valCurr, valPrev1, valPrev2, valPrev3, checkFn, decimals = 2, isPct = false, customFormatter = null) => {
+      const populateRow = (rowIdPrefix, paramName, valCurr, valPrev1, valPrev2, valPrev3, decimals = 2, isPct = false, customFormatter = null) => {
+        const critCol = document.getElementById(`crit-${rowIdPrefix}`);
+        if (critCol && paramName) {
+          critCol.textContent = getCriteriaString(paramName, fluidType, hvVoltage);
+        }
+        const checkFn = paramName ? checkParam(paramName) : null;
+
         const valColCurr = document.getElementById(`res-${rowIdPrefix}-curr`);
         const valColPrev1 = document.getElementById(`res-${rowIdPrefix}-p1`);
         const valColPrev2 = document.getElementById(`res-${rowIdPrefix}-p2`);
@@ -1091,41 +1112,43 @@
       };
 
       // Populate Physical & Chemical Rows
-      populateRow('bd', curr.BD, prev1.BD, prev2.BD, prev3.BD, checkParam('BDV_2mm'), 1);
-      populateRow('wc', curr.WC, prev1.WC, prev2.WC, prev3.WC, checkParam('WaterContent'), 1);
-      populateRow('pf25', curr.PF_25, prev1.PF_25, prev2.PF_25, prev3.PF_25, checkParam('PF25'), 3, true);
-      populateRow('pf100', curr.PF_100, prev1.PF_100, prev2.PF_100, prev3.PF_100, checkParam('PF100'), 3, true);
-      populateRow('ift', curr.IFT, prev1.IFT, prev2.IFT, prev3.IFT, checkParam('IFT'), 1);
-      populateRow('ac', curr.Acidity_No, prev1.Acidity_No, prev2.Acidity_No, prev3.Acidity_No, checkParam('Acidity'), 3);
-      populateRow('cond', curr.Conductivity, prev1.Conductivity, prev2.Conductivity, prev3.Conductivity, checkParam('Conductivity'), 2);
+      populateRow('bd', 'BDV_2mm', curr.BD, prev1.BD, prev2.BD, prev3.BD, 1);
+      populateRow('wc', 'WaterContent', curr.WC, prev1.WC, prev2.WC, prev3.WC, 1);
+      populateRow('pf25', 'PF25', curr.PF_25, prev1.PF_25, prev2.PF_25, prev3.PF_25, 3, true);
+      populateRow('pf100', 'PF100', curr.PF_100, prev1.PF_100, prev2.PF_100, prev3.PF_100, 3, true);
+      populateRow('ift', 'IFT', curr.IFT, prev1.IFT, prev2.IFT, prev3.IFT, 1);
+      populateRow('ac', 'Acidity', curr.Acidity_No, prev1.Acidity_No, prev2.Acidity_No, prev3.Acidity_No, 3);
+      populateRow('cond', 'Conductivity', curr.Conductivity, prev1.Conductivity, prev2.Conductivity, prev3.Conductivity, 2);
       
       // Color, Inhibitor (Status check is not applicable, just display)
-      populateRow('color', curr.Color_No, prev1.Color_No, prev2.Color_No, prev3.Color_No, checkParam('Color'), 1);
-      populateRow('inhib', curr.Temp ? curr.Inhibitor : curr.Passivator, prev1.Temp ? prev1.Inhibitor : prev1.Passivator, prev2.Temp ? prev2.Inhibitor : prev2.Passivator, prev3.Temp ? prev3.Inhibitor : prev3.Passivator, checkParam('Inhibitor'), 2);
+      populateRow('color', 'Color', curr.Color_No, prev1.Color_No, prev2.Color_No, prev3.Color_No, 1);
+      populateRow('inhib', 'Inhibitor', curr.Temp ? curr.Inhibitor : curr.Passivator, prev1.Temp ? prev1.Inhibitor : prev1.Passivator, prev2.Temp ? prev2.Inhibitor : prev2.Passivator, prev3.Temp ? prev3.Inhibitor : prev3.Passivator, 2);
 
       // Populate Aging Indicators Rows
-      populateRow('furan', curr.Furan_Analysis, prev1.Furan_Analysis, prev2.Furan_Analysis, prev3.Furan_Analysis, checkParam('Furan'), 1);
+      populateRow('furan', 'Furan', curr.Furan_Analysis, prev1.Furan_Analysis, prev2.Furan_Analysis, prev3.Furan_Analysis, 1);
       
       // Estimated DP
       document.getElementById('res-dp-curr').textContent = estDP;
       document.getElementById('res-dp-p1').textContent = '-';
       document.getElementById('res-dp-p2').textContent = '-';
       document.getElementById('res-dp-p3').textContent = '-';
+      const critDpCol = document.getElementById('crit-dp');
+      if (critDpCol) critDpCol.textContent = getCriteriaString('DP', fluidType, hvVoltage);
       const dpRating = checkParam('DP')(estDP);
       if (dpRating) document.getElementById('res-dp-curr').className = `val-col status-${dpRating}`;
 
       // Sludge Condition
-      populateRow('sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition, checkParam('Sludge'));
+      populateRow('sludge', 'Sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition);
 
       // Corrosive Sulfur
       const reverseSulfurMapForTable = { 1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e', 8: '3a', 9: '3b', 10: '4a', 11: '4b', 12: '4c' };
       function formatSulfur(v) {
         return reverseSulfurMapForTable[Math.round(v)] || v;
       }
-      populateRow('sulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, checkParam('CorrosiveSulfur'), 2, false, formatSulfur);
+      populateRow('sulfur', 'CorrosiveSulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, 2, false, formatSulfur);
 
       // Passivator
-      populateRow('passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, checkParam('Passivator'), 1);
+      populateRow('passivator', 'Passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, 1);
 
       // Signatures
       document.getElementById('resp-company-tested').textContent = curr.COMP1 || 'GPSC';

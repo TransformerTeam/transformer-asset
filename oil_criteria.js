@@ -105,3 +105,40 @@ function evaluateOilParameter(parameter, value, fluidType, voltage) {
   }
   return null; // Return null if criteria not defined
 }
+
+function getCriteriaString(parameter, fluidType, voltage) {
+  const isEster = fluidType && fluidType.toLowerCase().includes('ester');
+  const vClass = voltage <= 69 ? 1 : (voltage < 230 ? 2 : 3);
+  
+  if (!isEster) {
+    switch(parameter) {
+      case 'BDV_1mm': return vClass === 1 ? '≥ 28' : (vClass === 2 ? '≥ 33' : '≥ 35');
+      case 'BDV_2mm': return vClass === 1 ? '≥ 45' : (vClass === 2 ? '≥ 52' : '≥ 55');
+      case 'PF25': return '≤ 0.4';
+      case 'PF100': return '≤ 4.0';
+      case 'Conductivity': return '≤ 4.0';
+      case 'WaterContent': return vClass === 1 ? '≤ 30' : (vClass === 2 ? '≤ 20' : '≤ 15');
+      case 'Color': return '≤ 2.0';
+      case 'IFT': return vClass === 1 ? '≥ 28' : (vClass === 2 ? '≥ 33' : '≥ 35');
+      case 'Acidity': return vClass === 1 ? '≤ 0.17' : (vClass === 2 ? '≤ 0.12' : '≤ 0.07');
+      case 'CorrosiveSulfur': return '≤ 3a';
+      case 'Passivator': return '≥ 70';
+      case 'Sludge': return '≤ 0.018';
+      case 'Furan': return '≤ 700';
+      case 'DP': return '≥ 700';
+      case 'Inhibitor': return '≥ 0.10';
+    }
+  } else {
+    switch(parameter) {
+      case 'BDV_1mm': return vClass === 1 ? '≥ 28' : (vClass === 2 ? '≥ 33' : '≥ 35');
+      case 'BDV_2mm': return vClass === 1 ? '≥ 45' : (vClass === 2 ? '≥ 52' : '≥ 55');
+      case 'PF25': return '≤ 2.0';
+      case 'WaterContent': return vClass === 1 ? '≤ 300' : (vClass === 2 ? '≤ 150' : '≤ 100');
+      case 'Color': return '≤ 2.0';
+      case 'Acidity': return '≤ 0.2';
+      case 'CorrosiveSulfur': return 'Non-corrosive';
+      case 'Sludge': return 'No sludge';
+    }
+  }
+  return '-';
+}
