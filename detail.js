@@ -1476,22 +1476,20 @@ function openDetail(no) {
 
     physicalBody.innerHTML = `
       <tr><td>Dielectric Breakdown</td><td>ASTM D1816 (2 mm)</td>${getCell(dbVal, getBDClass)}<td>kV</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td>${getCell(wcVal, getWcClass)}<td>ppm</td></tr>
       <tr><td>Power Factor at 25 °C</td><td>ASTM D924</td>${getCell(pf25Val, getPF25Class, '%')}<td>%</td></tr>
       <tr><td>Power Factor at 100 °C</td><td>ASTM D925</td>${getCell(pf100Val, getPF100Class, '%')}<td>%</td></tr>
-      <tr><td>Conductivity</td><td>IEC 61620</td>${getCell(condVal, getCondClass)}<td>pS/m</td></tr>
-      <tr><td>Water Content</td><td>ASTM D1533</td>${getCell(wcVal, getWcClass)}<td>ppm</td></tr>
-      <tr><td>Color Number</td><td>ASTM D1500</td><td>${colorVal}</td><td>-</td></tr>
       <tr><td>IFT</td><td>ASTM D971</td>${getCell(iftVal, getIftClass)}<td>dynes/cm</td></tr>
       <tr><td>Acidity</td><td>ASTM D974</td>${getCell(acVal, getAcClass)}<td>mgKOH/g</td></tr>
+      <tr><td>Oil Conductivity</td><td>IEC 61620</td>${getCell(condVal, getCondClass)}<td>pS/m</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td><td>${colorVal}</td><td>-</td></tr>
       <tr><td>Inhibitor</td><td>IEC 60296</td><td>${inhibitorVal === '-' ? '-' : parseFloat(inhibitorVal).toFixed(2)}</td><td>%</td></tr>
     `;
 
     agingBody.innerHTML = `
       <tr><td>Furan [2-FAL]</td><td>ASTM D5837</td><td>${furanVal}</td><td>ppb</td></tr>
       <tr><td>Estimated DP [Furan]</td><td>IEEE Guide</td><td>${dpVal}</td><td>-</td></tr>
-      <tr><td>Moisture in Paper [FDS]</td><td>IEEE C57.161-2018</td>${getCellString(moisturePaper)}<td>%M/dw</td></tr>
-      <tr><td>Est. Moisture in Paper [D1533]</td><td>Calculated</td><td>${moistCal}</td><td>%M/dw</td></tr>
-      <tr><td>Sludge Condition</td><td>Visual</td><td class="${sludgeVal.toLowerCase().includes('non') ? 'ex-status-good' : 'ex-status-fair'}">${sludgeVal}</td><td>-</td></tr>
+      <tr><td>Sludge condition</td><td>Visual</td><td class="${sludgeVal.toLowerCase().includes('non') ? 'ex-status-good' : 'ex-status-fair'}">${sludgeVal}</td><td>-</td></tr>
     `;
 
     sulfurBody.innerHTML = `
@@ -1504,22 +1502,20 @@ function openDetail(no) {
     // Standalone Mock Fallback
     physicalBody.innerHTML = `
       <tr><td>Dielectric Breakdown</td><td>ASTM D1816 (2 mm)</td><td class="ex-status-good">72.7</td><td>kV</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="ex-status-good">6.7</td><td>ppm</td></tr>
       <tr><td>Power Factor at 25 °C</td><td>ASTM D924</td><td class="ex-status-good">0.001%</td><td>%</td></tr>
       <tr><td>Power Factor at 100 °C</td><td>ASTM D925</td><td class="ex-status-good">0.017%</td><td>%</td></tr>
-      <tr><td>Conductivity</td><td>IEC 61620</td><td class="ex-status-good">0.1</td><td>pS/m</td></tr>
-      <tr><td>Water Content</td><td>ASTM D1533</td><td class="ex-status-good">6.7</td><td>ppm</td></tr>
-      <tr><td>Color Number</td><td>ASTM D1500</td><td>0.5</td><td>-</td></tr>
       <tr><td>IFT</td><td>ASTM D971</td><td class="ex-status-good">38</td><td>dynes/cm</td></tr>
       <tr><td>Acidity</td><td>ASTM D974</td><td class="ex-status-good">0.01</td><td>mgKOH/g</td></tr>
+      <tr><td>Oil Conductivity</td><td>IEC 61620</td><td class="ex-status-good">0.1</td><td>pS/m</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td><td>0.5</td><td>-</td></tr>
       <tr><td>Inhibitor</td><td>IEC 60296</td><td>0.30</td><td>%</td></tr>
     `;
 
     agingBody.innerHTML = `
       <tr><td>Furan [2-FAL]</td><td>ASTM D5837</td><td>-</td><td>ppb</td></tr>
       <tr><td>Estimated DP [Furan]</td><td>IEEE Guide</td><td>-</td><td>-</td></tr>
-      <tr><td>Moisture in Paper [FDS]</td><td>IEEE C57.161-2018</td><td>-</td><td>%M/dw</td></tr>
-      <tr><td>Est. Moisture in Paper [D1533]</td><td>Calculated</td><td>-</td><td>%M/dw</td></tr>
-      <tr><td>Sludge Condition</td><td>Visual</td><td>-</td><td>-</td></tr>
+      <tr><td>Sludge condition</td><td>Visual</td><td>-</td><td>-</td></tr>
     `;
 
     sulfurBody.innerHTML = `
