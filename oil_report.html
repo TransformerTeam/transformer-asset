@@ -12,6 +12,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <!-- ApexCharts JS -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <!-- Oil Evaluation Criteria -->
+  <script src="oil_criteria.js"></script>
 
   <style>
     /* Global Variables matching main dashboard theme */
@@ -1040,14 +1042,12 @@
       document.getElementById('env-humidity').textContent = curr.Humidity || '-';
       document.getElementById('env-oil').textContent = curr.Oil_Temp || '-';
 
-      // Define classification checkers
-      const checkBD = (n) => n >= 50 ? 'good' : (n >= 40 ? 'fair' : 'poor');
-      const checkPF25 = (n) => n <= 0.5 ? 'good' : (n <= 1.0 ? 'fair' : 'poor');
-      const checkPF100 = (n) => n <= 0.5 ? 'good' : (n <= 2.0 ? 'fair' : 'poor');
-      const checkCond = (n) => n <= 0.1 ? 'good' : (n <= 1.0 ? 'fair' : 'poor');
-      const checkWc = (n) => n <= 20 ? 'good' : (n <= 30 ? 'fair' : 'poor');
-      const checkIft = (n) => n >= 28 ? 'good' : (n >= 22 ? 'fair' : 'poor');
-      const checkAc = (n) => n <= 0.1 ? 'good' : (n <= 0.2 ? 'fair' : 'poor');
+      // Extract transformer details for evaluation criteria
+      const fluidType = trInfo ? trInfo.TYPE_OF_INSULATION : 'Mineral oil';
+      const hvVoltage = trInfo ? parseFloat(trInfo.HV_RATED) : 115; // default if not specified
+
+      // Helper function wrapping the criteria logic
+      const checkParam = (paramName) => (val) => evaluateOilParameter(paramName, val, fluidType, hvVoltage);
 
       // Populate results helper
       const populateRow = (rowIdPrefix, valCurr, valPrev1, valPrev2, valPrev3, checkFn, decimals = 2, isPct = false, customFormatter = null) => {
@@ -1090,47 +1090,41 @@
       };
 
       // Populate Physical & Chemical Rows
-      populateRow('bd', curr.BD, prev1.BD, prev2.BD, prev3.BD, checkBD, 1);
-      populateRow('wc', curr.WC, prev1.WC, prev2.WC, prev3.WC, checkWc, 1);
-      populateRow('pf25', curr.PF_25, prev1.PF_25, prev2.PF_25, prev3.PF_25, checkPF25, 3, true);
-      populateRow('pf100', curr.PF_100, prev1.PF_100, prev2.PF_100, prev3.PF_100, checkPF100, 3, true);
-      populateRow('ift', curr.IFT, prev1.IFT, prev2.IFT, prev3.IFT, checkIft, 1);
-      populateRow('ac', curr.Acidity_No, prev1.Acidity_No, prev2.Acidity_No, prev3.Acidity_No, checkAc, 3);
-      populateRow('cond', curr.Conductivity, prev1.Conductivity, prev2.Conductivity, prev3.Conductivity, checkCond, 2);
+      populateRow('bd', curr.BD, prev1.BD, prev2.BD, prev3.BD, checkParam('BDV_2mm'), 1);
+      populateRow('wc', curr.WC, prev1.WC, prev2.WC, prev3.WC, checkParam('WaterContent'), 1);
+      populateRow('pf25', curr.PF_25, prev1.PF_25, prev2.PF_25, prev3.PF_25, checkParam('PF25'), 3, true);
+      populateRow('pf100', curr.PF_100, prev1.PF_100, prev2.PF_100, prev3.PF_100, checkParam('PF100'), 3, true);
+      populateRow('ift', curr.IFT, prev1.IFT, prev2.IFT, prev3.IFT, checkParam('IFT'), 1);
+      populateRow('ac', curr.Acidity_No, prev1.Acidity_No, prev2.Acidity_No, prev3.Acidity_No, checkParam('Acidity'), 3);
+      populateRow('cond', curr.Conductivity, prev1.Conductivity, prev2.Conductivity, prev3.Conductivity, checkParam('Conductivity'), 2);
       
       // Color, Inhibitor (Status check is not applicable, just display)
-      populateRow('color', curr.Color_No, prev1.Color_No, prev2.Color_No, prev3.Color_No, null, 1);
-      populateRow('inhib', curr.Temp ? curr.Inhibitor : curr.Passivator, prev1.Temp ? prev1.Inhibitor : prev1.Passivator, prev2.Temp ? prev2.Inhibitor : prev2.Passivator, prev3.Temp ? prev3.Inhibitor : prev3.Passivator, null, 2);
+      populateRow('color', curr.Color_No, prev1.Color_No, prev2.Color_No, prev3.Color_No, checkParam('Color'), 1);
+      populateRow('inhib', curr.Temp ? curr.Inhibitor : curr.Passivator, prev1.Temp ? prev1.Inhibitor : prev1.Passivator, prev2.Temp ? prev2.Inhibitor : prev2.Passivator, prev3.Temp ? prev3.Inhibitor : prev3.Passivator, checkParam('Inhibitor'), 2);
 
       // Populate Aging Indicators Rows
-      populateRow('furan', curr.Furan_Analysis, prev1.Furan_Analysis, prev2.Furan_Analysis, prev3.Furan_Analysis, null, 1);
+      populateRow('furan', curr.Furan_Analysis, prev1.Furan_Analysis, prev2.Furan_Analysis, prev3.Furan_Analysis, checkParam('Furan'), 1);
       
       // Estimated DP
       document.getElementById('res-dp-curr').textContent = estDP;
       document.getElementById('res-dp-p1').textContent = '-';
       document.getElementById('res-dp-p2').textContent = '-';
       document.getElementById('res-dp-p3').textContent = '-';
+      const dpRating = checkParam('DP')(estDP);
+      if (dpRating) document.getElementById('res-dp-curr').className = `val-col status-${dpRating}`;
 
       // Sludge Condition
-      function evaluateSludge(s) {
-        if (!s || s === '-') return null;
-        return String(s).toLowerCase().includes('non') ? 'good' : 'fair';
-      }
-      populateRow('sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition, evaluateSludge);
+      populateRow('sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition, checkParam('Sludge'));
 
       // Corrosive Sulfur
-      function evaluateCorrosiveSulfur(s) {
-        if (!s || s === '-') return null;
-        return String(s).toLowerCase().includes('non') ? 'good' : 'poor';
-      }
       const reverseSulfurMapForTable = { 1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e', 8: '3a', 9: '3b', 10: '4a', 11: '4b', 12: '4c' };
       function formatSulfur(v) {
         return reverseSulfurMapForTable[Math.round(v)] || v;
       }
-      populateRow('sulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, evaluateCorrosiveSulfur, 2, false, formatSulfur);
+      populateRow('sulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, checkParam('CorrosiveSulfur'), 2, false, formatSulfur);
 
       // Passivator
-      populateRow('passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, null, 1);
+      populateRow('passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, checkParam('Passivator'), 1);
 
       // Signatures
       document.getElementById('resp-company-tested').textContent = curr.COMP1 || 'GPSC';
