@@ -1073,18 +1073,18 @@
       document.getElementById('res-dp-p3').textContent = '-';
 
       // Sludge Condition
-      const checkSludge = (s) => {
+      function evaluateSludge(s) {
         if (!s || s === '-') return null;
-        return s.toLowerCase().includes('non') ? 'good' : 'fair';
-      };
-      populateRow('sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition, checkSludge);
+        return String(s).toLowerCase().includes('non') ? 'good' : 'fair';
+      }
+      populateRow('sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition, evaluateSludge);
 
       // Corrosive Sulfur
-      const checkSulfur = (s) => {
+      function evaluateCorrosiveSulfur(s) {
         if (!s || s === '-') return null;
-        return s.toLowerCase().includes('non') ? 'good' : 'poor';
-      };
-      populateRow('sulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, checkSulfur);
+        return String(s).toLowerCase().includes('non') ? 'good' : 'poor';
+      }
+      populateRow('sulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, evaluateCorrosiveSulfur);
 
       // Passivator
       populateRow('passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, null, 1);
