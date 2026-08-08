@@ -1954,9 +1954,9 @@ function openDetail(no) {
     colorGasCell('ex-dga-co2', latestDGA.CO2, limits.CO2);
     colorGasCell('ex-dga-tdcg', latestDGA.TDCG, 720);
 
-    // Check if Status 1 (all gases within Table 1 limits)
+    // Check if Status 1 (only check H2, CH4, C2H6, C2H4, C2H2 for Duval applicability)
     const isStatus1 = (() => {
-      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
       for (let key of gasesKeys) {
         const num = parseFloat(latestDGA[key] || 0);
         if (num > limits[key]) {

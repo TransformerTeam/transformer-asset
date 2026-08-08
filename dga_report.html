@@ -2216,7 +2216,7 @@
         }
 
         const norms = getIEEENorms(o2n2Ratio, ageYears);
-        const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+        const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
 
         for (let key of gases) {
           const num = parseFloat(curr[key] || 0);
@@ -2225,7 +2225,7 @@
             return false; // exceeds Table 1 limit (Caution/Critical)
           }
         }
-        return true; // all gases within normal baseline
+        return true; // all combustible gases within normal baseline
       })();
 
       const isLowGases = isStatus1;

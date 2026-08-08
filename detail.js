@@ -1284,14 +1284,11 @@ function openDetail(no) {
     document.getElementById('ex-dga-ieee-status').textContent = maxIEEEStatus;
     document.getElementById('ex-dga-ieee-status').style.color = ieeeColor;
 
-    // Check if Status 1 (all gases within Table 1 limits)
+    // Check if Status 1 (only check H2, CH4, C2H6, C2H4, C2H2 for Duval applicability)
     const isStatus1 = (() => {
-      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
-      console.log('--- isStatus1 check for serial:', item.serial, '---');
-      console.log('limitsT1:', limitsT1);
+      const gasesKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
       for (let key of gasesKeys) {
         const num = parseFloat(latestDGA[key] || 0);
-        console.log(key, 'value:', num, 'limit:', limitsT1 ? limitsT1[key] : 'undefined', 'exceeded?', limitsT1 ? (num > limitsT1[key]) : 'n/a');
         if (limitsT1 && num > limitsT1[key]) {
           return false;
         }
