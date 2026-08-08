@@ -527,8 +527,16 @@
 
           <!-- Main Tank Oil Properties -->
           <div class="excel-card">
-            <div class="excel-card-header">Main Tank Oil Properties <span class="card-update-time"
-                id="ex-update-oil">-</span></div>
+            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: inline-flex; align-items: center; gap: 6px;">
+                <span>Main Tank Oil Properties</span>
+                <a href="#" id="ex-oil-link" target="_blank" class="btn-report-link" title="Open Main Tank Oil Properties Report"
+                  style="color: #38bdf8; font-size: 0.85rem;">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </a>
+              </div>
+              <span class="card-update-time" id="ex-update-oil">-</span>
+            </div>
 
             <div class="active-part-sub-title">Electrical Chemical and Physical</div>
             <table class="excel-table test-table oil-table">
@@ -716,6 +724,9 @@
 
       const bushingLink = document.getElementById('ex-bushing-link');
       if (bushingLink) bushingLink.href = `bushing_pf_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const oilLink = document.getElementById('ex-oil-link');
+      if (oilLink) oilLink.href = `oil_report.html?serial=${encodeURIComponent(item.serial)}`;
 
       // Call assessment.js openDetail logic with item.no
       if (typeof openDetail === 'function') {
