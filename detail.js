@@ -1427,13 +1427,42 @@ function openDetail(no) {
   const agingBody = document.getElementById('ex-oil-aging-rows');
   const sulfurBody = document.getElementById('ex-oil-sulfur-rows');
 
-  const getBDClass = (n) => n >= 50 ? 'ex-status-good' : (n >= 40 ? 'ex-status-fair' : 'ex-status-poor');
-  const getPF25Class = (n) => n <= 0.5 ? 'ex-status-good' : (n <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
-  const getPF100Class = (n) => n <= 0.5 ? 'ex-status-good' : (n <= 2.0 ? 'ex-status-fair' : 'ex-status-poor');
-  const getCondClass = (n) => n <= 0.1 ? 'ex-status-good' : (n <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
-  const getWcClass = (n) => n <= 20 ? 'ex-status-good' : (n <= 30 ? 'ex-status-fair' : 'ex-status-poor');
-  const getIftClass = (n) => n >= 28 ? 'ex-status-good' : (n >= 22 ? 'ex-status-fair' : 'ex-status-poor');
-  const getAcClass = (n) => n <= 0.1 ? 'ex-status-good' : (n <= 0.2 ? 'ex-status-fair' : 'ex-status-poor');
+  let fluidType = 'Mineral oil';
+  let hvVoltage = 115;
+  if (typeof TR_DATA !== 'undefined') {
+    const rawMeta = TR_DATA.find(x => String(x.SERIAL_NUMBER) === String(item.serial));
+    if (rawMeta) {
+      if (rawMeta.TYPE_OF_INSULATION) fluidType = rawMeta.TYPE_OF_INSULATION;
+      if (rawMeta.HV_RATED) {
+         hvVoltage = parseFloat(rawMeta.HV_RATED);
+         if (isNaN(hvVoltage)) hvVoltage = 115;
+      }
+    }
+  }
+
+  const getRatingClass = (paramName) => (val) => {
+    if (typeof evaluateOilParameter === 'function') {
+      const rating = evaluateOilParameter(paramName, val, fluidType, hvVoltage);
+      if (!rating) return '';
+      return `ex-status-${rating}`;
+    }
+    return '';
+  };
+
+  const getBDClass = getRatingClass('BDV_2mm');
+  const getPF25Class = getRatingClass('PF25');
+  const getPF100Class = getRatingClass('PF100');
+  const getCondClass = getRatingClass('Conductivity');
+  const getWcClass = getRatingClass('WaterContent');
+  const getIftClass = getRatingClass('IFT');
+  const getAcClass = getRatingClass('Acidity');
+  const getSludgeClass = getRatingClass('Sludge');
+  const getCorrosiveSulfurClass = getRatingClass('CorrosiveSulfur');
+  const getFuranClass = getRatingClass('Furan');
+  const getDpClass = getRatingClass('DP');
+  const getColorClass = getRatingClass('Color');
+  const getInhibitorClass = getRatingClass('Inhibitor');
+  const getPassivatorClass = getRatingClass('Passivator');
 
   const getCell = (val, checkFn, suffix = '') => {
     if (val === '-' || val === undefined || val === null) return `<td>-</td>`;
@@ -1482,19 +1511,26 @@ function openDetail(no) {
       <tr><td>IFT</td><td>ASTM D971</td>${getCell(iftVal, getIftClass)}<td>dynes/cm</td></tr>
       <tr><td>Acidity</td><td>ASTM D974</td>${getCell(acVal, getAcClass)}<td>mgKOH/g</td></tr>
       <tr><td>Oil Conductivity</td><td>IEC 61620</td>${getCell(condVal, getCondClass)}<td>pS/m</td></tr>
-      <tr><td>Color Number</td><td>ASTM D1500</td><td>${colorVal}</td><td>-</td></tr>
-      <tr><td>Inhibitor</td><td>IEC 60296</td><td>${inhibitorVal === '-' ? '-' : parseFloat(inhibitorVal).toFixed(2)}</td><td>%</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td>${getCell(colorVal, getColorClass)}<td>-</td></tr>
+      <tr><td>Inhibitor</td><td>IEC 60296</td>${getCell(inhibitorVal, getInhibitorClass)}<td>%</td></tr>
     `;
 
     agingBody.innerHTML = `
-      <tr><td>Furan [2-FAL]</td><td>ASTM D5837</td><td>${furanVal}</td><td>ppb</td></tr>
-      <tr><td>Estimated DP [Furan]</td><td>IEEE Guide</td><td>${dpVal}</td><td>-</td></tr>
-      <tr><td>Sludge condition</td><td>Visual</td><td class="${sludgeVal.toLowerCase().includes('non') ? 'ex-status-good' : 'ex-status-fair'}">${sludgeVal}</td><td>-</td></tr>
+      <tr><td>Furan [2-FAL]</td><td>ASTM D5837</td>${getCell(furanVal, getFuranClass)}<td>ppb</td></tr>
+      <tr><td>Estimated DP [Furan]</td><td>IEEE Guide</td>${getCell(dpVal, getDpClass)}<td>-</td></tr>
+      <tr><td>Sludge condition</td><td>Visual</td>${getCellString(sludgeVal, getSludgeClass)}<td>-</td></tr>
     `;
 
+    const reverseSulfurMapForTable = { 1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e', 8: '3a', 9: '3b', 10: '4a', 11: '4b', 12: '4c' };
+    let formattedSulfur = sulfurVal;
+    const sNum = parseFloat(sulfurVal);
+    if (!isNaN(sNum) && reverseSulfurMapForTable[Math.round(sNum)]) {
+      formattedSulfur = reverseSulfurMapForTable[Math.round(sNum)];
+    }
+
     sulfurBody.innerHTML = `
-      <tr><td>Corrosive Sulfur</td><td>DIN 51353</td><td class="${sulfurVal.toLowerCase().includes('non') ? 'ex-status-good' : 'ex-status-poor'}">${sulfurVal}</td><td>-</td></tr>
-      <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td><td>${passivatorVal}</td><td>ppm</td></tr>
+      <tr><td>Corrosive Sulfur</td><td>DIN 51353</td>${getCellString(formattedSulfur, getCorrosiveSulfurClass)}<td>-</td></tr>
+      <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td>${getCell(passivatorVal, getPassivatorClass)}<td>ppm</td></tr>
     `;
 
     updateTestDate('ex-update-oil', mtOilRec.Date || mtOilRec.date);
