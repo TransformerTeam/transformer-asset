@@ -311,6 +311,35 @@
       color: #dc2626 !important;
     }
 
+    /* Trending Grid */
+    .trending-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+      margin-top: 24px;
+    }
+
+    .trend-box {
+      border: 1px solid var(--report-border);
+      border-radius: 4px;
+      padding: 8px;
+      background: #ffffff;
+      height: 180px;
+    }
+
+    .trend-box-full {
+      grid-column: span 2;
+      height: 260px;
+    }
+
+    .trend-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--report-primary);
+      margin-bottom: 4px;
+    }
+
     /* Signature Section */
     table.response-table {
       margin-top: 30px;
@@ -645,10 +674,68 @@
         </tbody>
       </table>
 
-      <!-- Trending Chart Section -->
-      <div class="section-title">BDV & Water Content Trend</div>
-      <div style="width: 100%; height: 260px; margin-bottom: 24px; background-color: #ffffff; border: 1px solid var(--report-border); padding: 12px; border-radius: 4px;">
-        <canvas id="oil-trend-chart"></canvas>
+      <!-- Trending Charts Section -->
+      <div class="section-title" style="margin-top: 30px;">Historical Trends</div>
+      
+      <div class="trending-grid">
+        <div class="trend-box trend-box-full">
+          <div class="trend-title" style="text-align:center;">Dielectric Breakdown Voltage & Water Content</div>
+          <div id="chart-trend-bdv-wc" style="height: 220px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">Power Factor at 25 °C (%)</div>
+          <div id="chart-trend-pf25" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Power Factor at 100 °C (%)</div>
+          <div id="chart-trend-pf100" style="height: 140px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">IFT (mN/m)</div>
+          <div id="chart-trend-ift" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Acidity (mg KOH/g)</div>
+          <div id="chart-trend-acidity" style="height: 140px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">Oil Conductivity (pS/m)</div>
+          <div id="chart-trend-cond" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Color Number</div>
+          <div id="chart-trend-color" style="height: 140px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">Inhibitor (wt%)</div>
+          <div id="chart-trend-inhibitor" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Passivator [Irgamet 39] (ppm)</div>
+          <div id="chart-trend-passivator" style="height: 140px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">Furan [2-FAL] (ppm)</div>
+          <div id="chart-trend-furan" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Estimated DP [Furan]</div>
+          <div id="chart-trend-dp" style="height: 140px;"></div>
+        </div>
+        
+        <div class="trend-box">
+          <div class="trend-title">Sludge Condition</div>
+          <div id="chart-trend-sludge" style="height: 140px;"></div>
+        </div>
+        <div class="trend-box">
+          <div class="trend-title">Corrosive Sulfur</div>
+          <div id="chart-trend-sulfur" style="height: 140px;"></div>
+        </div>
       </div>
 
       <!-- Approvals and Signatures -->
@@ -700,7 +787,7 @@
     // In-memory data store for MTOilData.csv
     let oilDataList = [];
     let currentValidItems = [];
-    let trendChart = null;
+    let trendCharts = {};
 
     document.addEventListener('DOMContentLoaded', async () => {
       // Setup UI themes
@@ -1102,109 +1189,166 @@
     function renderTrendChart(validItems) {
       // Sort chronologically (earliest to latest)
       const sortedPts = [...validItems].sort((a, b) => parseDate(a.Date) - parseDate(b.Date));
-
       const labels = sortedPts.map(x => formatDate(x.Date));
-      const bdValues = sortedPts.map(x => {
-        const val = parseFloat(x.BD);
-        return isNaN(val) ? null : val;
-      });
-      const wcValues = sortedPts.map(x => {
-        const val = parseFloat(x.WC);
-        return isNaN(val) ? null : val;
-      });
-
-      const container = document.getElementById('oil-trend-chart');
-      if (!container) return;
-      container.innerHTML = '';
       
-      if (trendChart) {
-        trendChart.destroy();
-        trendChart = null;
-      }
-
-      const textColor = '#1e293b'; // Keep it dark as the report sheet is always white (#ffffff)
+      const textColor = '#1e293b'; 
       const gridColor = 'rgba(0, 0, 0, 0.08)';
 
-      const options = {
-        series: [
-          {
-            name: 'Dielectric Breakdown Voltage (BDV)',
-            data: bdValues
-          },
-          {
-            name: 'Water Content (Moisture in Oil)',
-            data: wcValues
-          }
-        ],
-        chart: {
-          height: '100%',
-          type: 'line',
-          toolbar: { show: false },
-          zoom: { enabled: false },
-          background: 'transparent',
-          fontFamily: 'Inter, sans-serif'
-        },
-        colors: ['#10b981', '#3b82f6'],
-        stroke: {
-          width: 3,
-          curve: 'straight'
-        },
-        markers: {
-          size: 5,
-          hover: { size: 7 }
-        },
-        xaxis: {
-          categories: labels,
-          labels: {
-            style: { colors: textColor }
-          },
-          axisBorder: { show: false },
-          axisTicks: { show: false },
-          tooltip: { enabled: false }
-        },
-        yaxis: [
-          {
-            seriesName: 'Dielectric Breakdown Voltage (BDV)',
-            title: {
-              text: 'BDV (kV)',
-              style: { color: '#10b981', fontWeight: 700 }
-            },
-            labels: {
-              style: { colors: textColor }
-            },
-            min: 0,
-            max: 100
-          },
-          {
-            opposite: true,
-            seriesName: 'Water Content (Moisture in Oil)',
-            title: {
-              text: 'Water Content (ppm)',
-              style: { color: '#3b82f6', fontWeight: 700 }
-            },
-            labels: {
-              style: { colors: textColor }
-            },
-            min: 0,
-            max: 50
-          }
-        ],
-        grid: {
-          borderColor: gridColor,
-          strokeDashArray: 3
-        },
-        legend: {
-          position: 'top',
-          labels: { colors: textColor }
-        },
-        tooltip: {
-          shared: true,
-          intersect: false
-        }
+      const parseNum = (val) => {
+        const num = parseFloat(val);
+        return isNaN(num) ? null : num;
       };
 
-      trendChart = new ApexCharts(container, options);
-      trendChart.render();
+      // Extract all series
+      const bdValues = sortedPts.map(x => parseNum(x.BD));
+      const wcValues = sortedPts.map(x => parseNum(x.WC));
+      const pf25Values = sortedPts.map(x => parseNum(x.PF_25));
+      const pf100Values = sortedPts.map(x => parseNum(x.PF_100));
+      const iftValues = sortedPts.map(x => parseNum(x.IFT));
+      const acidValues = sortedPts.map(x => parseNum(x.Acidity_No));
+      const condValues = sortedPts.map(x => parseNum(x.Conductivity));
+      const colorValues = sortedPts.map(x => parseNum(x.Color_No));
+      const inhibValues = sortedPts.map(x => parseNum(x.Inhibitor));
+      const passivatorValues = sortedPts.map(x => parseNum(x.Passivator));
+      const furanValues = sortedPts.map(x => parseNum(x.Furan_Analysis));
+      
+      // Estimated DP
+      const dpValues = sortedPts.map(x => {
+        const furan = parseFloat(x.Furan_Analysis);
+        if (isNaN(furan) || furan <= 0) return null;
+        return parseFloat(((Math.log10(furan) - 1.51) / -0.0035).toFixed(0));
+      });
+
+      // "Non-sludge" เป็น 0, อื่นๆ ให้เป็น 1
+      const sludgeValues = sortedPts.map(x => {
+        const s = x.Sludge_Condition;
+        if (!s || s === '-') return null;
+        return s.toLowerCase().includes('non') ? 0 : 1;
+      });
+
+      // "Non-corrosive" เป็น 1a (1), 1b (2), 2a (3)...
+      const sulfurMap = {
+        '1a': 1, '1b': 2, '2a': 3, '2b': 4, '2c': 5, '2d': 6, '2e': 7,
+        '3a': 8, '3b': 9, '4a': 10, '4b': 11, '4c': 12
+      };
+      const reverseSulfurMap = {
+        1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e',
+        8: '3a', 9: '3b', 10: '4a', 11: '4b', 12: '4c'
+      };
+
+      const sulfurValues = sortedPts.map(x => {
+        const s = x.Corrosive_Sulfur;
+        if (!s || s === '-') return null;
+        let v = s.toLowerCase().trim();
+        if (v.includes('non')) return 1; // 1a
+        if (sulfurMap[v]) return sulfurMap[v];
+        return null; 
+      });
+
+      // Helper to render single chart
+      const renderSingleChart = (chartId, seriesName, dataArray, color, yLabel, isSulfur = false, isSludge = false) => {
+        const container = document.getElementById(chartId);
+        if (!container) return;
+        container.innerHTML = '';
+        if (trendCharts[chartId]) {
+          trendCharts[chartId].destroy();
+        }
+
+        const options = {
+          series: [{ name: seriesName, data: dataArray }],
+          chart: {
+            height: '100%',
+            type: 'line',
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            background: 'transparent',
+            fontFamily: 'Inter, sans-serif'
+          },
+          colors: [color],
+          stroke: { width: 3, curve: 'straight' },
+          markers: { size: 4, hover: { size: 6 } },
+          xaxis: {
+            categories: labels,
+            labels: { style: { colors: textColor } },
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            tooltip: { enabled: false }
+          },
+          yaxis: {
+            title: { text: yLabel, style: { color: color, fontWeight: 700 } },
+            labels: {
+              style: { colors: textColor },
+              formatter: (value) => {
+                if (isSulfur) {
+                  return reverseSulfurMap[Math.round(value)] || value;
+                }
+                if (isSludge) {
+                  return value === 0 ? 'Non-sludge' : (value === 1 ? 'Sludge' : value);
+                }
+                return typeof value === 'number' ? value.toFixed(2) : value;
+              }
+            },
+            tickAmount: isSludge ? 1 : undefined,
+            min: isSludge ? 0 : undefined,
+            max: isSludge ? 1 : undefined
+          },
+          grid: { borderColor: gridColor, strokeDashArray: 3 },
+          tooltip: {
+            y: {
+              formatter: (value) => {
+                if (isSulfur) return reverseSulfurMap[Math.round(value)] || value;
+                if (isSludge) return value === 0 ? 'Non-sludge' : 'Sludge';
+                return value;
+              }
+            }
+          }
+        };
+
+        trendCharts[chartId] = new ApexCharts(container, options);
+        trendCharts[chartId].render();
+      };
+
+      // 1. Dual Chart for BDV and WC
+      const containerBdvWc = document.getElementById('chart-trend-bdv-wc');
+      if (containerBdvWc) {
+        containerBdvWc.innerHTML = '';
+        if (trendCharts['chart-trend-bdv-wc']) trendCharts['chart-trend-bdv-wc'].destroy();
+        
+        const bdvWcOptions = {
+          series: [
+            { name: 'BDV', data: bdValues },
+            { name: 'Water Content', data: wcValues }
+          ],
+          chart: { height: '100%', type: 'line', toolbar: { show: false }, zoom: { enabled: false }, fontFamily: 'Inter, sans-serif', background: 'transparent' },
+          colors: ['#10b981', '#3b82f6'],
+          stroke: { width: 3, curve: 'straight' },
+          markers: { size: 4, hover: { size: 6 } },
+          xaxis: { categories: labels, labels: { style: { colors: textColor } }, axisBorder: { show: false }, axisTicks: { show: false }, tooltip: { enabled: false } },
+          yaxis: [
+            { title: { text: 'BDV (kV)', style: { color: '#10b981', fontWeight: 700 } }, labels: { style: { colors: textColor } } },
+            { opposite: true, title: { text: 'WC (ppm)', style: { color: '#3b82f6', fontWeight: 700 } }, labels: { style: { colors: textColor } } }
+          ],
+          grid: { borderColor: gridColor, strokeDashArray: 3 },
+          legend: { position: 'top', labels: { colors: textColor } },
+          tooltip: { shared: true, intersect: false }
+        };
+        trendCharts['chart-trend-bdv-wc'] = new ApexCharts(containerBdvWc, bdvWcOptions);
+        trendCharts['chart-trend-bdv-wc'].render();
+      }
+
+      // Render all individual charts
+      renderSingleChart('chart-trend-pf25', 'PF 25°C', pf25Values, '#8b5cf6', '%');
+      renderSingleChart('chart-trend-pf100', 'PF 100°C', pf100Values, '#ec4899', '%');
+      renderSingleChart('chart-trend-ift', 'IFT', iftValues, '#f59e0b', 'mN/m');
+      renderSingleChart('chart-trend-acidity', 'Acidity', acidValues, '#ef4444', 'mg KOH/g');
+      renderSingleChart('chart-trend-cond', 'Oil Conductivity', condValues, '#06b6d4', 'pS/m');
+      renderSingleChart('chart-trend-color', 'Color Number', colorValues, '#f97316', '-');
+      renderSingleChart('chart-trend-inhibitor', 'Inhibitor', inhibValues, '#6366f1', 'wt%');
+      renderSingleChart('chart-trend-passivator', 'Passivator', passivatorValues, '#14b8a6', 'ppm');
+      renderSingleChart('chart-trend-furan', 'Furan [2-FAL]', furanValues, '#84cc16', 'ppm');
+      renderSingleChart('chart-trend-dp', 'Estimated DP', dpValues, '#a855f7', '-');
+      renderSingleChart('chart-trend-sludge', 'Sludge Condition', sludgeValues, '#eab308', 'Condition', false, true);
+      renderSingleChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurValues, '#dc2626', 'Rating', true, false);
     }
   </script>
 </body>
