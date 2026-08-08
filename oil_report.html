@@ -706,61 +706,61 @@
       <div class="section-title" style="margin-top: 30px;">Historical Trends</div>
       
       <div class="trending-grid">
-        <div class="trend-box trend-box-full" id="trend-box-bdv-wc" onclick="openExpandedChart('Dielectric Breakdown Voltage & Water Content', 'chart-trend-bdv-wc')">
+        <div class="trend-box trend-box-full" id="trend-box-bdv-wc">
           <div class="trend-title" style="text-align:center;">Dielectric Breakdown Voltage & Water Content</div>
           <div id="chart-trend-bdv-wc" style="height: 220px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-pf25" onclick="openExpandedChart('Power Factor at 25 °C (%)', 'chart-trend-pf25')">
+        <div class="trend-box" id="trend-box-pf25">
           <div class="trend-title">Power Factor at 25 °C (%)</div>
           <div id="chart-trend-pf25" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-pf100" onclick="openExpandedChart('Power Factor at 100 °C (%)', 'chart-trend-pf100')">
+        <div class="trend-box" id="trend-box-pf100">
           <div class="trend-title">Power Factor at 100 °C (%)</div>
           <div id="chart-trend-pf100" style="height: 140px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-ift" onclick="openExpandedChart('IFT (mN/m)', 'chart-trend-ift')">
+        <div class="trend-box" id="trend-box-ift">
           <div class="trend-title">IFT (mN/m)</div>
           <div id="chart-trend-ift" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-acidity" onclick="openExpandedChart('Acidity (mg KOH/g)', 'chart-trend-acidity')">
+        <div class="trend-box" id="trend-box-acidity">
           <div class="trend-title">Acidity (mg KOH/g)</div>
           <div id="chart-trend-acidity" style="height: 140px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-cond" onclick="openExpandedChart('Oil Conductivity (pS/m)', 'chart-trend-cond')">
+        <div class="trend-box" id="trend-box-cond">
           <div class="trend-title">Oil Conductivity (pS/m)</div>
           <div id="chart-trend-cond" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-color" onclick="openExpandedChart('Color Number', 'chart-trend-color')">
+        <div class="trend-box" id="trend-box-color">
           <div class="trend-title">Color Number</div>
           <div id="chart-trend-color" style="height: 140px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-inhibitor" onclick="openExpandedChart('Inhibitor (wt%)', 'chart-trend-inhibitor')">
+        <div class="trend-box" id="trend-box-inhibitor">
           <div class="trend-title">Inhibitor (wt%)</div>
           <div id="chart-trend-inhibitor" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-passivator" onclick="openExpandedChart('Passivator [Irgamet 39] (ppm)', 'chart-trend-passivator')">
+        <div class="trend-box" id="trend-box-passivator">
           <div class="trend-title">Passivator [Irgamet 39] (ppm)</div>
           <div id="chart-trend-passivator" style="height: 140px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-furan" onclick="openExpandedChart('Furan [2-FAL] (ppm)', 'chart-trend-furan')">
+        <div class="trend-box" id="trend-box-furan">
           <div class="trend-title">Furan [2-FAL] (ppm)</div>
           <div id="chart-trend-furan" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-dp" onclick="openExpandedChart('Estimated DP [Furan]', 'chart-trend-dp')">
+        <div class="trend-box" id="trend-box-dp">
           <div class="trend-title">Estimated DP [Furan]</div>
           <div id="chart-trend-dp" style="height: 140px;"></div>
         </div>
         
-        <div class="trend-box" id="trend-box-sludge" onclick="openExpandedChart('Sludge Condition', 'chart-trend-sludge')">
+        <div class="trend-box" id="trend-box-sludge">
           <div class="trend-title">Sludge Condition</div>
           <div id="chart-trend-sludge" style="height: 140px;"></div>
         </div>
-        <div class="trend-box" id="trend-box-sulfur" onclick="openExpandedChart('Corrosive Sulfur', 'chart-trend-sulfur')">
+        <div class="trend-box" id="trend-box-sulfur">
           <div class="trend-title">Corrosive Sulfur</div>
           <div id="chart-trend-sulfur" style="height: 140px;"></div>
         </div>
@@ -1234,6 +1234,10 @@
       
       title.textContent = titleText;
       body.innerHTML = '';
+      if (activeExpandedChart) {
+        activeExpandedChart.destroy();
+        activeExpandedChart = null;
+      }
       
       modal.style.display = 'flex';
       modal.offsetHeight; // reflow
@@ -1251,17 +1255,17 @@
         options = {
           series: dualSeries,
           chart: {
-            height: '100%', type: 'line',
+            height: 380, type: 'line',
             toolbar: { show: true, tools: { download: true, selection: true, zoom: true, zoomin: true, zoomout: true, pan: true, reset: true } },
             background: 'transparent', fontFamily: 'Inter, sans-serif'
           },
           colors: ['#10b981', '#3b82f6'],
           stroke: { width: 3, curve: 'straight' },
           markers: { size: 5, hover: { size: 7 } },
-          xaxis: { categories: labels, labels: { style: { colors: textColor } } },
+          xaxis: { categories: labels, labels: { style: { colors: [textColor] } } },
           yaxis: [
-            { title: { text: 'BDV (kV)', style: { color: '#10b981', fontWeight: 700 } }, labels: { style: { colors: textColor } } },
-            { opposite: true, title: { text: 'WC (ppm)', style: { color: '#3b82f6', fontWeight: 700 } }, labels: { style: { colors: textColor } } }
+            { title: { text: 'BDV (kV)', style: { color: '#10b981', fontWeight: 700 } }, labels: { style: { colors: [textColor] } } },
+            { opposite: true, title: { text: 'WC (ppm)', style: { color: '#3b82f6', fontWeight: 700 } }, labels: { style: { colors: [textColor] } } }
           ],
           grid: { borderColor: gridColor, strokeDashArray: 3 },
           legend: { position: 'top', labels: { colors: textColor } },
@@ -1272,18 +1276,18 @@
         options = {
           series: [{ name: titleText, data: seriesData.data }],
           chart: {
-            height: '100%', type: 'line',
+            height: 380, type: 'line',
             toolbar: { show: true, tools: { download: true, selection: true, zoom: true, zoomin: true, zoomout: true, pan: true, reset: true } },
             background: 'transparent', fontFamily: 'Inter, sans-serif'
           },
           colors: [color],
           stroke: { width: 3, curve: 'straight' },
           markers: { size: 5, hover: { size: 7 } },
-          xaxis: { categories: labels, labels: { style: { colors: textColor } } },
+          xaxis: { categories: labels, labels: { style: { colors: [textColor] } } },
           yaxis: {
             title: { text: yLabel, style: { color: color, fontWeight: 700 } },
             labels: {
-              style: { colors: textColor },
+              style: { colors: [textColor] },
               formatter: (value) => {
                 if (value == null) return value;
                 if (isSulfur) return reverseSulfurMap[Math.round(value)] || value;
@@ -1307,8 +1311,10 @@
         };
       }
 
-      activeExpandedChart = new ApexCharts(body, options);
-      activeExpandedChart.render();
+      setTimeout(() => {
+        activeExpandedChart = new ApexCharts(body, options);
+        activeExpandedChart.render();
+      }, 50);
     }
 
     function closeChartModal(event) {
