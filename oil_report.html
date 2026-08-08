@@ -820,10 +820,7 @@
         return;
       }
 
-      const parseDate = (dStr) => {
-        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
-        return new Date(dStr);
-      };
+
 
       const hasValidOilData = (item) => {
         if (!item) return false;
@@ -1020,6 +1017,11 @@
     }
 
     // Helper formatter functions
+    function parseDate(dStr) {
+      if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+      return new Date(dStr);
+    }
+
     function formatDate(dateStr) {
       if (!dateStr || dateStr === '0000-00-00') return '-';
       const d = new Date(dateStr);
