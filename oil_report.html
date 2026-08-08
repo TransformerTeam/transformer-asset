@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2canvas Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     /* Global Variables matching main dashboard theme */
@@ -643,6 +645,12 @@
         </tbody>
       </table>
 
+      <!-- Trending Chart Section -->
+      <div class="section-title">BDV & Water Content Trend</div>
+      <div style="width: 100%; height: 260px; margin-bottom: 24px; background-color: #ffffff; border: 1px solid var(--report-border); padding: 12px; border-radius: 4px;">
+        <canvas id="oil-trend-chart"></canvas>
+      </div>
+
       <!-- Approvals and Signatures -->
       <table class="report-table response-table">
         <thead>
@@ -691,6 +699,8 @@
   <script>
     // In-memory data store for MTOilData.csv
     let oilDataList = [];
+    let currentValidItems = [];
+    let trendChart = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
       // Setup UI themes
@@ -1003,6 +1013,10 @@
       document.getElementById('resp-date-tested').textContent = formatDate(curr.Date);
       document.getElementById('resp-date-reviewed').textContent = formatDate(curr.Date);
       document.getElementById('resp-date-approved').textContent = formatDate(curr.Date);
+
+      // Render Trending Chart
+      currentValidItems = validItems;
+      renderTrendChart(validItems);
     }
 
     // Helper formatter functions
@@ -1035,6 +1049,9 @@
       document.documentElement.setAttribute('data-theme', target);
       localStorage.setItem('tr-dashboard-theme', target);
       updateThemeIcon(target);
+      if (currentValidItems && currentValidItems.length > 0) {
+        renderTrendChart(currentValidItems);
+      }
     }
 
     function updateThemeIcon(theme) {
@@ -1077,6 +1094,152 @@
       }).catch(err => {
         console.error("Export failed:", err);
         alert("Failed to capture report. Try printing to PDF instead.");
+      });
+    }
+
+    function renderTrendChart(validItems) {
+      // Sort chronologically (earliest to latest)
+      const sortedPts = [...validItems].sort((a, b) => parseDate(a.Date) - parseDate(b.Date));
+
+      const labels = sortedPts.map(x => formatDate(x.Date));
+      const bdValues = sortedPts.map(x => {
+        const val = parseFloat(x.BD);
+        return isNaN(val) ? null : val;
+      });
+      const wcValues = sortedPts.map(x => {
+        const val = parseFloat(x.WC);
+        return isNaN(val) ? null : val;
+      });
+
+      const canvas = document.getElementById('oil-trend-chart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      
+      if (trendChart) {
+        trendChart.destroy();
+      }
+
+      const textColor = '#1e293b'; // Keep it dark as the report sheet is always white (#ffffff)
+      const gridColor = 'rgba(0, 0, 0, 0.08)';
+
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Dielectric Breakdown Voltage (BDV)',
+              data: bdValues,
+              borderColor: '#10b981', // green
+              backgroundColor: '#10b981',
+              borderWidth: 2.5,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.25,
+              yAxisID: 'y-bd',
+              spanGaps: true
+            },
+            {
+              label: 'Water Content (Moisture in Oil)',
+              data: wcValues,
+              borderColor: '#3b82f6', // blue
+              backgroundColor: '#3b82f6',
+              borderWidth: 2.5,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.25,
+              yAxisID: 'y-wc',
+              spanGaps: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: textColor,
+                font: {
+                  family: 'Inter',
+                  size: 10,
+                  weight: '600'
+                }
+              }
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: gridColor
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  family: 'Inter',
+                  size: 9
+                }
+              }
+            },
+            'y-bd': {
+              type: 'linear',
+              position: 'left',
+              title: {
+                display: true,
+                text: 'BDV (kV)',
+                color: '#10b981',
+                font: {
+                  family: 'Inter',
+                  size: 10,
+                  weight: '700'
+                }
+              },
+              grid: {
+                color: gridColor
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  family: 'Inter',
+                  size: 9
+                }
+              },
+              min: 0,
+              max: 100
+            },
+            'y-wc': {
+              type: 'linear',
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Water Content (ppm)',
+                color: '#3b82f6',
+                font: {
+                  family: 'Inter',
+                  size: 10,
+                  weight: '700'
+                }
+              },
+              grid: {
+                drawOnChartArea: false
+              },
+              ticks: {
+                color: textColor,
+                font: {
+                  family: 'Inter',
+                  size: 9
+                }
+              },
+              min: 0,
+              max: 50
+            }
+          }
+        }
       });
     }
   </script>
