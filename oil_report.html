@@ -1223,7 +1223,7 @@
       const sludgeValues = sortedPts.map(x => {
         const s = x.Sludge_Condition;
         if (!s || s === '-') return null;
-        return s.toLowerCase().includes('non') ? 0 : 1;
+        return String(s).toLowerCase().includes('non') ? 0 : 1;
       });
 
       // "Non-corrosive" เป็น 1a (1), 1b (2), 2a (3)...
@@ -1239,7 +1239,7 @@
       const sulfurValues = sortedPts.map(x => {
         const s = x.Corrosive_Sulfur;
         if (!s || s === '-') return null;
-        let v = s.toLowerCase().trim();
+        let v = String(s).toLowerCase().trim();
         if (v.includes('non')) return 1; // 1a
         if (sulfurMap[v]) return sulfurMap[v];
         return null; 
@@ -1279,6 +1279,7 @@
             labels: {
               style: { colors: textColor },
               formatter: (value) => {
+                if (value == null) return value;
                 if (isSulfur) {
                   return reverseSulfurMap[Math.round(value)] || value;
                 }
@@ -1288,14 +1289,13 @@
                 return typeof value === 'number' ? value.toFixed(2) : value;
               }
             },
-            tickAmount: isSludge ? 1 : undefined,
-            min: isSludge ? 0 : undefined,
-            max: isSludge ? 1 : undefined
+            ...(isSludge ? { tickAmount: 1, min: 0, max: 1 } : {})
           },
           grid: { borderColor: gridColor, strokeDashArray: 3 },
           tooltip: {
             y: {
               formatter: (value) => {
+                if (value == null) return value;
                 if (isSulfur) return reverseSulfurMap[Math.round(value)] || value;
                 if (isSludge) return value === 0 ? 'Non-sludge' : 'Sludge';
                 return value;
