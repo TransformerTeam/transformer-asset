@@ -1043,8 +1043,9 @@
       document.getElementById('env-oil').textContent = curr.Oil_Temp || '-';
 
       // Extract transformer details for evaluation criteria
-      const fluidType = trInfo ? trInfo.TYPE_OF_INSULATION : 'Mineral oil';
-      const hvVoltage = trInfo ? parseFloat(trInfo.HV_RATED) : 115; // default if not specified
+      const fluidType = fluid || 'Mineral oil';
+      let hvVoltage = parseFloat(voltage);
+      if (isNaN(hvVoltage)) hvVoltage = 115; // default if not specified
 
       // Helper function wrapping the criteria logic
       const checkParam = (paramName) => (val) => evaluateOilParameter(paramName, val, fluidType, hvVoltage);
