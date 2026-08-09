@@ -34049,7 +34049,7 @@ const HEALTH_INDEX_DATA = [
         "ratedVoltage": "118/15.75",
         "serviceType": "GSUT",
         "serviceAge": 29,
-        "healthIndex": 92,
+        "healthIndex": 86,
         "healthStatus": "Healthy",
         "estimatedDP": 950,
         "estimatedLife": 25,
@@ -34071,7 +34071,7 @@ const HEALTH_INDEX_DATA = [
         "fra": "N/A",
         "moisturePaper": "N/A",
         "mainTankOil": {
-            "overall": "A",
+            "overall": "Q",
             "dga": "A",
             "waterContent": "A",
             "dielectricBreakdown": "A",
