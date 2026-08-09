@@ -161,6 +161,17 @@ function setupEventListeners() {
 
 // Fetch and Parse CSV File
 function loadCSVData() {
+  if (typeof healthDataCsv !== 'undefined' && healthDataCsv) {
+    const records = parseHealthIndexSumCSV(healthDataCsv);
+    if (records && records.length > 0) {
+      rawTransformers = records;
+      initializeDashboard();
+    } else {
+      showEmptyState("Could not parse HealthIndexSum.csv data.");
+    }
+    return;
+  }
+
   fetch('HealthIndexSum.csv')
     .then(response => {
       if (!response.ok) {
