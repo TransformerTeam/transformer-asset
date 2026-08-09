@@ -168,8 +168,8 @@
 44,32BBT10 (CTG3B UAT),4612314,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,22,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 45,51BBT01 (CTG5 GSUT),VN00408,GSPP2&3,20,20,6.9,20/6.9,UAT,17,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 46,COGEN GSUT (CTG1&2),9640548,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
-47,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
-48,CTG2A&2B GSUT,57005,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,29,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
+47,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,89,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,Q,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
+48,CTG2A&2B GSUT,57005,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,29,89,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,Q,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 49,STG3C GSUT,5011857,GSPP2&3,155,118,15.75,118/15.75,GSUT,18,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 50,71BAT10 (CTG7A GSUT),6512362,GSPP2&3,72,118,11,118/11,GSUT,3,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 51,72BAT10 (CTG7B GSUT),6512363,GSPP2&3,72,118,11,118/11,GSUT,3,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
