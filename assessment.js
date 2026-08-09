@@ -71,7 +71,9 @@ window.allCSVsPromise = loadAllTestDataCSVs();
 function loadAllTestDataCSVs() {
   const isDetail = window.isDetailStandalonePage || 
                    window.location.pathname.toLowerCase().includes('detail') || 
-                   document.getElementById('detail-paper') !== null;
+                   window.location.pathname.toLowerCase().includes('evaluation') || 
+                   document.getElementById('detail-paper') !== null ||
+                   document.getElementById('eval-transformer-select') !== null;
 
   const csvFiles = [
     { url: 'HealthIndexSum.csv', target: d => {

@@ -730,10 +730,14 @@
         const curVal = selectEl.value;
         selectEl.innerHTML = '';
         assessmentData.forEach(item => {
-          const opt = document.createElement('option');
-          opt.value = item.serial;
-          opt.textContent = `${item.name} (${item.serial})`;
-          selectEl.appendChild(opt);
+          const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+          const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
+          if (s) {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = `${n || s} (${s})`;
+            selectEl.appendChild(opt);
+          }
         });
         if (curVal) selectEl.value = curVal;
       }
@@ -752,7 +756,8 @@
       let serialParam = urlParams.get('serial');
 
       if (!serialParam && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
-        serialParam = assessmentData[0].serial;
+        const first = assessmentData[0];
+        serialParam = first.serial || first.SERIAL_NUMBER || first['Serial No'];
       }
 
       if (serialParam) {
@@ -773,52 +778,71 @@
       if (!assessmentData || assessmentData.length === 0) return;
 
       if (!serial) {
-        serial = assessmentData[0].serial;
+        const first = assessmentData[0];
+        serial = first.serial || first.SERIAL_NUMBER || first['Serial No'];
       }
       currentSerial = serial;
 
       const item = assessmentData.find(x => {
-        if (!x || !x.serial) return false;
-        const s1 = String(x.serial).trim().toLowerCase();
+        if (!x) return false;
+        const s = x.serial || x.SERIAL_NUMBER || x['Serial No'];
+        if (!s) return false;
+        const s1 = String(s).trim().toLowerCase();
         const s2 = String(serial).trim().toLowerCase();
         return s1 === s2 || s1.includes(s2) || s2.includes(s1);
       }) || assessmentData[0];
 
       if (!item) return;
 
+      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || serial;
+      const nameVal = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || '-';
+      const siteVal = item.site || item.SITE || item.LOCATION || 'N/A';
+      const powerVal = item.ratedPower || item.POWER_RATING_DETAIL || (item.POWER_RATING ? `${item.POWER_RATING} MVA` : null);
+      const voltVal = item.ratedVoltage || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED} kV` : item.HV_RATED);
+      const serviceVal = item.serviceType || item.Service_Type || item.SERVICE_TYPE;
+      const ageVal = item.serviceAge || item.AGE || item.SERVICE_AGE;
+      const mfgVal = item.MANUFACTURER_COMPANY || item.BRAND || item.MANUFACTURER;
+      const vectorVal = item.VECTOR_GROUP || item.vectorGroup;
+      const tapVal = item.TAP_CHANGER_TYPE || item.tapChangerType;
+      const mfgDateVal = item.MANUFACTURING_DATE || item.MANUFACTURING_YEAR;
+
       // Update Report Links
-      document.getElementById('link-detail').href = `detail.html?serial=${encodeURIComponent(serial)}`;
-      document.getElementById('link-pf').href = `pf_report.html?serial=${encodeURIComponent(serial)}`;
-      document.getElementById('link-bushing').href = `bushing_pf_report.html?serial=${encodeURIComponent(serial)}`;
-      document.getElementById('link-dga').href = `dga_report.html?serial=${encodeURIComponent(serial)}`;
-      document.getElementById('link-visual').href = `visual_report.html?serial=${encodeURIComponent(serial)}`;
-      document.getElementById('link-pi').href = `pi_report.html?serial=${encodeURIComponent(serial)}`;
+      document.getElementById('link-detail').href = `detail.html?serial=${encodeURIComponent(serialVal)}`;
+      document.getElementById('link-pf').href = `pf_report.html?serial=${encodeURIComponent(serialVal)}`;
+      document.getElementById('link-bushing').href = `bushing_pf_report.html?serial=${encodeURIComponent(serialVal)}`;
+      document.getElementById('link-dga').href = `dga_report.html?serial=${encodeURIComponent(serialVal)}`;
+      document.getElementById('link-visual').href = `visual_report.html?serial=${encodeURIComponent(serialVal)}`;
+      document.getElementById('link-pi').href = `pi_report.html?serial=${encodeURIComponent(serialVal)}`;
 
       // 0. Header Information
-      document.getElementById('eval-report-id').textContent = `TR-EVAL-${item.serial}`;
-      document.getElementById('eval-site-badge').textContent = `Site: ${item.site || 'N/A'}`;
-      document.getElementById('info-name').textContent = item.name || '-';
-      document.getElementById('info-serial').textContent = item.serial || '-';
-      document.getElementById('info-code').textContent = item.name || '-';
-      document.getElementById('info-power').textContent = item.ratedPower ? `${item.ratedPower} MVA` : '-';
-      document.getElementById('info-voltage').textContent = item.ratedVoltage ? `${item.ratedVoltage} kV` : '-';
-      document.getElementById('info-fluid').textContent = 'Mineral Oil';
-      document.getElementById('info-service').textContent = item.serviceType || 'GSUT';
-      document.getElementById('info-age').textContent = item.serviceAge ? `${item.serviceAge} Years` : '-';
+      document.getElementById('eval-report-id').textContent = `TR-EVAL-${serialVal}`;
+      document.getElementById('eval-site-badge').textContent = `Site: ${siteVal}`;
+      document.getElementById('info-name').textContent = nameVal;
+      document.getElementById('info-serial').textContent = serialVal;
+      document.getElementById('info-code').textContent = nameVal;
+      document.getElementById('info-power').textContent = powerVal ? (String(powerVal).includes('MVA') ? powerVal : `${powerVal} MVA`) : '-';
+      document.getElementById('info-voltage').textContent = voltVal ? (String(voltVal).includes('kV') ? voltVal : `${voltVal} kV`) : '-';
+      document.getElementById('info-fluid').textContent = item.TYPE_OF_INSULATION || 'Mineral Oil';
+      document.getElementById('info-service').textContent = serviceVal || '-';
+      document.getElementById('info-age').textContent = ageVal ? `${ageVal} Years` : '-';
 
       // Look up dynamic TRInfo record
-      const trInfo = findLatestRecord(trInfoCsvData, item.serial);
+      const trInfo = findLatestRecord(trInfoCsvData, serialVal);
       if (trInfo) {
-        document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || 'TIRATHAI';
-        document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || 'Dyn1';
-        document.getElementById('info-tap').textContent = trInfo.TAP_CHANGER_TYPE || 'OLTC';
-        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : '-';
+        document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || mfgVal || 'TIRATHAI';
+        document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || vectorVal || 'Dyn1';
+        document.getElementById('info-tap').textContent = trInfo.TAP_CHANGER_TYPE || tapVal || 'OLTC';
+        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : (mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-');
       } else {
-        document.getElementById('info-manufacture').textContent = 'TIRATHAI';
-        document.getElementById('info-vector').textContent = 'Dyn1';
-        document.getElementById('info-tap').textContent = 'OLTC';
-        document.getElementById('info-mfg').textContent = '-';
+        document.getElementById('info-manufacture').textContent = mfgVal || 'TIRATHAI';
+        document.getElementById('info-vector').textContent = vectorVal || 'Dyn1';
+        document.getElementById('info-tap').textContent = tapVal || 'OLTC';
+        document.getElementById('info-mfg').textContent = mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-';
       }
+
+      // Sync select dropdown
+      const selectEl = document.getElementById('eval-transformer-select');
+      if (selectEl) selectEl.value = serialVal;
 
       // 1. Part 1: Condition Health Index Summary
       const hi = item.healthIndex || 90;
