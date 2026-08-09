@@ -498,17 +498,17 @@ function openDetail(no) {
     const isRoutine = /^routine/i.test(recText);
     if (!isRoutine) {
       if (recCardParent) {
-        recCardParent.style.border = '2px solid #f97316';
+        recCardParent.style.border = '2px solid #eab308';
         recCardParent.style.borderRadius = '6px';
-        recCardParent.style.boxShadow = '0 0 10px rgba(249, 115, 22, 0.4)';
+        recCardParent.style.boxShadow = '0 0 10px rgba(234, 179, 8, 0.4)';
       }
       if (recCardHeader) {
-        recCardHeader.style.setProperty('background', 'linear-gradient(135deg, #ea580c, #c2410c)', 'important');
+        recCardHeader.style.setProperty('background', 'linear-gradient(135deg, #ca8a04, #a16207)', 'important');
         recCardHeader.style.setProperty('color', '#ffffff', 'important');
       }
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      recEl.style.setProperty('background', isDark ? 'rgba(249, 115, 22, 0.22)' : '#fff7ed', 'important');
-      recEl.style.setProperty('color', isDark ? '#ffedd5' : '#0f172a', 'important');
+      recEl.style.setProperty('background', isDark ? 'rgba(234, 179, 8, 0.18)' : '#fefce8', 'important');
+      recEl.style.setProperty('color', isDark ? '#fef08a' : '#713f12', 'important');
       recEl.style.setProperty('font-weight', isDark ? '600' : '400', 'important');
     } else {
       if (recCardParent) {
