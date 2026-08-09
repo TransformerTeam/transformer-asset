@@ -1476,7 +1476,7 @@
 
         container.style.cursor = 'pointer';
         container.onclick = () => {
-          openExpandedChart(seriesName, labels, { data: dataArray, color: color }, yLabel, isSulfur, isSludge, paramName);
+          openExpandedChart(seriesName, labels, { data: dataArray, color: color }, yLabel, isSulfur, isSludge, false, [], paramName);
         };
         
         let annotations = undefined;
