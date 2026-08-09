@@ -142,3 +142,39 @@ function getCriteriaString(parameter, fluidType, voltage) {
   }
   return '-';
 }
+
+function getWarningLimit(parameter, fluidType, voltage) {
+  const isEster = fluidType && fluidType.toLowerCase().includes('ester');
+  const vClass = voltage <= 69 ? 1 : (voltage < 230 ? 2 : 3);
+
+  if (!isEster) {
+    switch(parameter) {
+      case 'BDV_1mm': return vClass === 1 ? 23 : (vClass === 2 ? 28 : 30);
+      case 'BDV_2mm': return vClass === 1 ? 40 : (vClass === 2 ? 47 : 50);
+      case 'PF25': return 0.5;
+      case 'PF100': return 5.0;
+      case 'Conductivity': return 5.0;
+      case 'WaterContent': return vClass === 1 ? 35 : (vClass === 2 ? 25 : 20);
+      case 'Color': return 2.5;
+      case 'IFT': return vClass === 1 ? 25 : (vClass === 2 ? 30 : 32);
+      case 'Acidity': return vClass === 1 ? 0.20 : (vClass === 2 ? 0.15 : 0.10);
+      case 'CorrosiveSulfur': return null;
+      case 'Passivator': return 50;
+      case 'Sludge': return 0.02;
+      case 'Furan': return 1000;
+      case 'DP': return 450;
+      case 'Inhibitor': return 0.08;
+    }
+  } else {
+    switch(parameter) {
+      case 'BDV_1mm': return vClass === 1 ? 23 : (vClass === 2 ? 28 : 30);
+      case 'BDV_2mm': return vClass === 1 ? 40 : (vClass === 2 ? 47 : 50);
+      case 'PF25': return 3.0;
+      case 'WaterContent': return vClass === 1 ? 400 : (vClass === 2 ? 200 : 150);
+      case 'Color': return 2.5;
+      case 'Acidity': return 0.3;
+      case 'Sludge': return 0.02;
+    }
+  }
+  return null;
+}
