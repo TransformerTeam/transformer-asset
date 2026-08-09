@@ -1250,7 +1250,7 @@
 
     let activeExpandedChart = null;
 
-    function openExpandedChart(titleText, labels, seriesData, yLabel, isSulfur = false, isSludge = false, isDual = false, dualSeries = []) {
+    function openExpandedChart(titleText, labels, seriesData, yLabel, isSulfur = false, isSludge = false, isDual = false, dualSeries = [], paramName = null) {
       const modal = document.getElementById('chart-modal');
       const title = document.getElementById('modal-chart-title');
       const body = document.getElementById('modal-chart-body');
@@ -1332,6 +1332,57 @@
             }
           }
         };
+      }
+      
+      let annotationsObj = undefined;
+      if (typeof getWarningLimit === 'function') {
+        const fluidType = document.getElementById('info-fluid').textContent || 'Mineral oil';
+        const hvVoltageText = document.getElementById('info-voltage').textContent || '115';
+        let hvVoltage = parseFloat(hvVoltageText);
+        if (isNaN(hvVoltage)) hvVoltage = 115;
+        
+        if (isDual) {
+           const bdvLimit = getWarningLimit('BDV_2mm', fluidType, hvVoltage);
+           const wcLimit = getWarningLimit('WaterContent', fluidType, hvVoltage);
+           let dualAnnos = [];
+           if (bdvLimit !== null) {
+              dualAnnos.push({
+                  y: bdvLimit,
+                  yAxisIndex: 0,
+                  borderColor: '#ef4444',
+                  strokeDashArray: 4,
+                  label: { text: 'Limit (BDV)', style: { color: '#fff', background: '#ef4444' } }
+              });
+           }
+           if (wcLimit !== null) {
+              dualAnnos.push({
+                  y: wcLimit,
+                  yAxisIndex: 1,
+                  borderColor: '#ef4444',
+                  strokeDashArray: 4,
+                  label: { text: 'Limit (WC)', style: { color: '#fff', background: '#ef4444' } }
+              });
+           }
+           if (dualAnnos.length > 0) {
+              annotationsObj = { yaxis: dualAnnos };
+           }
+        } else if (paramName) {
+           const limit = getWarningLimit(paramName, fluidType, hvVoltage);
+           if (limit !== null) {
+              annotationsObj = {
+                  yaxis: [{
+                      y: limit,
+                      borderColor: '#ef4444',
+                      strokeDashArray: 4,
+                      label: { text: 'Criteria', style: { color: '#fff', background: '#ef4444' } }
+                  }]
+              };
+           }
+        }
+      }
+      
+      if (annotationsObj) {
+        options.annotations = annotationsObj;
       }
 
       setTimeout(() => {
@@ -1415,7 +1466,7 @@
       });
 
       // Helper to render single chart
-      const renderSingleChart = (chartId, seriesName, dataArray, color, yLabel, isSulfur = false, isSludge = false) => {
+      const renderSingleChart = (chartId, seriesName, dataArray, color, yLabel, isSulfur = false, isSludge = false, paramName = null) => {
         const container = document.getElementById(chartId);
         if (!container) return;
         container.innerHTML = '';
@@ -1425,8 +1476,30 @@
 
         container.style.cursor = 'pointer';
         container.onclick = () => {
-          openExpandedChart(seriesName, labels, { data: dataArray, color: color }, yLabel, isSulfur, isSludge);
+          openExpandedChart(seriesName, labels, { data: dataArray, color: color }, yLabel, isSulfur, isSludge, paramName);
         };
+        
+        let annotations = undefined;
+        if (typeof getWarningLimit === 'function' && paramName) {
+           const fluidType = document.getElementById('info-fluid').textContent || 'Mineral oil';
+           const hvVoltageText = document.getElementById('info-voltage').textContent || '115';
+           let hvVoltage = parseFloat(hvVoltageText);
+           if (isNaN(hvVoltage)) hvVoltage = 115;
+           const limit = getWarningLimit(paramName, fluidType, hvVoltage);
+           if (limit !== null) {
+              annotations = {
+                  yaxis: [{
+                      y: limit,
+                      borderColor: '#ef4444',
+                      strokeDashArray: 4,
+                      label: {
+                          text: 'Criteria',
+                          style: { color: '#fff', background: '#ef4444' }
+                      }
+                  }]
+              };
+           }
+        }
 
         const options = {
           series: [{ name: seriesName, data: dataArray }],
@@ -1478,6 +1551,10 @@
           }
         };
 
+        if (annotations) {
+           options.annotations = annotations;
+        }
+
         trendCharts[chartId] = new ApexCharts(container, options);
         trendCharts[chartId].render();
       };
@@ -1496,6 +1573,35 @@
           ]);
         };
 
+        let dualAnnos = [];
+        if (typeof getWarningLimit === 'function') {
+           const fluidType = document.getElementById('info-fluid').textContent || 'Mineral oil';
+           const hvVoltageText = document.getElementById('info-voltage').textContent || '115';
+           let hvVoltage = parseFloat(hvVoltageText);
+           if (isNaN(hvVoltage)) hvVoltage = 115;
+           const bdvLimit = getWarningLimit('BDV_2mm', fluidType, hvVoltage);
+           const wcLimit = getWarningLimit('WaterContent', fluidType, hvVoltage);
+           
+           if (bdvLimit !== null) {
+              dualAnnos.push({
+                  y: bdvLimit,
+                  yAxisIndex: 0,
+                  borderColor: '#ef4444',
+                  strokeDashArray: 4,
+                  label: { text: 'Limit (BDV)', style: { color: '#fff', background: '#ef4444' } }
+              });
+           }
+           if (wcLimit !== null) {
+              dualAnnos.push({
+                  y: wcLimit,
+                  yAxisIndex: 1,
+                  borderColor: '#ef4444',
+                  strokeDashArray: 4,
+                  label: { text: 'Limit (WC)', style: { color: '#fff', background: '#ef4444' } }
+              });
+           }
+        }
+
         const bdvWcOptions = {
           series: [
             { name: 'BDV', data: bdValues },
@@ -1512,25 +1618,26 @@
           ],
           grid: { borderColor: gridColor, strokeDashArray: 3 },
           legend: { position: 'top', labels: { colors: textColor } },
-          tooltip: { shared: true, intersect: false }
+          tooltip: { shared: true, intersect: false },
+          annotations: { yaxis: dualAnnos }
         };
         trendCharts['chart-trend-bdv-wc'] = new ApexCharts(containerBdvWc, bdvWcOptions);
         trendCharts['chart-trend-bdv-wc'].render();
       }
 
       // Render all individual charts
-      renderSingleChart('chart-trend-pf25', 'PF 25°C', pf25Values, '#8b5cf6', '%');
-      renderSingleChart('chart-trend-pf100', 'PF 100°C', pf100Values, '#ec4899', '%');
-      renderSingleChart('chart-trend-ift', 'IFT', iftValues, '#f59e0b', 'mN/m');
-      renderSingleChart('chart-trend-acidity', 'Acidity', acidValues, '#ef4444', 'mg KOH/g');
-      renderSingleChart('chart-trend-cond', 'Oil Conductivity', condValues, '#06b6d4', 'pS/m');
-      renderSingleChart('chart-trend-color', 'Color Number', colorValues, '#f97316', '-');
-      renderSingleChart('chart-trend-inhibitor', 'Inhibitor', inhibValues, '#6366f1', 'wt%');
-      renderSingleChart('chart-trend-passivator', 'Passivator', passivatorValues, '#14b8a6', 'ppm');
-      renderSingleChart('chart-trend-furan', 'Furan [2-FAL]', furanValues, '#84cc16', 'ppm');
-      renderSingleChart('chart-trend-dp', 'Estimated DP', dpValues, '#a855f7', '-');
-      renderSingleChart('chart-trend-sludge', 'Sludge Condition', sludgeValues, '#eab308', 'Condition', false, true);
-      renderSingleChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurValues, '#dc2626', 'Rating', true, false);
+      renderSingleChart('chart-trend-pf25', 'PF 25°C', pf25Values, '#8b5cf6', '%', false, false, 'PF25');
+      renderSingleChart('chart-trend-pf100', 'PF 100°C', pf100Values, '#ec4899', '%', false, false, 'PF100');
+      renderSingleChart('chart-trend-ift', 'IFT', iftValues, '#f59e0b', 'mN/m', false, false, 'IFT');
+      renderSingleChart('chart-trend-acidity', 'Acidity', acidValues, '#ef4444', 'mg KOH/g', false, false, 'Acidity');
+      renderSingleChart('chart-trend-cond', 'Oil Conductivity', condValues, '#06b6d4', 'pS/m', false, false, 'Conductivity');
+      renderSingleChart('chart-trend-color', 'Color Number', colorValues, '#f97316', '-', false, false, 'Color');
+      renderSingleChart('chart-trend-inhibitor', 'Inhibitor', inhibValues, '#6366f1', 'wt%', false, false, 'Inhibitor');
+      renderSingleChart('chart-trend-passivator', 'Passivator', passivatorValues, '#14b8a6', 'ppm', false, false, 'Passivator');
+      renderSingleChart('chart-trend-furan', 'Furan [2-FAL]', furanValues, '#84cc16', 'ppm', false, false, 'Furan');
+      renderSingleChart('chart-trend-dp', 'Estimated DP', dpValues, '#a855f7', '-', false, false, 'DP');
+      renderSingleChart('chart-trend-sludge', 'Sludge Condition', sludgeValues, '#eab308', 'Condition', false, true, 'Sludge');
+      renderSingleChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurValues, '#dc2626', 'Rating', true, false, 'CorrosiveSulfur');
     }
   </script>
 </body>
