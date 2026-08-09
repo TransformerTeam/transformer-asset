@@ -276,11 +276,7 @@
 
       <!-- Tab Items -->
       <div class="tab-bar" id="tab-bar">
-        <div class="browser-tab active" data-url="dashboard.html" onclick="switchTab(this)">
-          <i class="fa-solid fa-chart-pie tab-icon" style="color:#38bdf8;"></i>
-          <span>Dashboard</span>
-        </div>
-        <div class="browser-tab" data-url="assessment.html" onclick="switchTab(this)">
+        <div class="browser-tab active" data-url="assessment.html" onclick="switchTab(this)">
           <i class="fa-solid fa-stethoscope tab-icon" style="color:#34d399;"></i>
           <span>Assessment</span>
         </div>
@@ -326,7 +322,7 @@
         <div class="spinner"></div>
         <span style="font-size:12px; color:#94a3b8; font-weight:500;">Loading page...</span>
       </div>
-      <iframe id="web-canvas" src="dashboard.html" onload="onFrameLoaded()"></iframe>
+      <iframe id="web-canvas" src="assessment.html" onload="onFrameLoaded()"></iframe>
     </div>
   </div>
 
@@ -428,7 +424,7 @@
     }
 
     // Initial setup
-    updateAddressBar('dashboard.html');
+    updateAddressBar('assessment.html');
   </script>
 </body>
 </html>
