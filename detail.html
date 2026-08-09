@@ -752,15 +752,27 @@
 
     function exportToJPG() {
       const paper = document.getElementById('detail-paper');
+      const originalHeight = paper.style.height;
+      const originalOverflow = paper.style.overflowY;
+      paper.style.height = 'auto';
+      paper.style.overflowY = 'visible';
+      
       html2canvas(paper, {
         scale: 2,
         useCORS: true,
+        windowHeight: paper.scrollHeight,
         backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
       }).then(canvas => {
+        paper.style.height = originalHeight;
+        paper.style.overflowY = originalOverflow;
         const link = document.createElement('a');
         link.download = `Transformer_Detail_${document.getElementById('ex-info-serial').textContent || 'Report'}.jpg`;
         link.href = canvas.toDataURL('image/jpeg', 0.95);
         link.click();
+      }).catch(err => {
+        paper.style.height = originalHeight;
+        paper.style.overflowY = originalOverflow;
+        console.error('Export failed', err);
       });
     }
   </script>
