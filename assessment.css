@@ -1809,6 +1809,30 @@ header p {
   font-weight: 400 !important;
 }
 
+/* Recommendation Alert Yellow Theme */
+.excel-card.rec-alert-yellow {
+  border: 2px solid #eab308 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.4) !important;
+}
+
+.excel-card.rec-alert-yellow .excel-card-header {
+  background: linear-gradient(135deg, #ca8a04, #a16207) !important;
+  color: #ffffff !important;
+}
+
+.excel-card.rec-alert-yellow #ex-recommendation-text {
+  background: rgba(234, 179, 8, 0.22) !important;
+  color: #fef08a !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .excel-card.rec-alert-yellow #ex-recommendation-text {
+  background: #fefce8 !important;
+  color: #854d0e !important;
+  font-weight: 700 !important;
+}
+
 /* Bushing & Surge Arrester Table Column Alignment */
 .test-table:not(.oil-table) th:first-child,
 .test-table:not(.oil-table) td:first-child {

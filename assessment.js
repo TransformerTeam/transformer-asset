@@ -1346,20 +1346,20 @@ function openDetail(no) {
     const isRoutine = /^routine/i.test(recText);
     if (!isRoutine) {
       if (recCardParent) {
-        recCardParent.style.border = '2px solid #eab308';
-        recCardParent.style.borderRadius = '6px';
-        recCardParent.style.boxShadow = '0 0 10px rgba(234, 179, 8, 0.4)';
+        recCardParent.classList.add('rec-alert-yellow');
+        recCardParent.style.border = '';
+        recCardParent.style.boxShadow = '';
       }
       if (recCardHeader) {
-        recCardHeader.style.setProperty('background', 'linear-gradient(135deg, #ca8a04, #a16207)', 'important');
-        recCardHeader.style.setProperty('color', '#ffffff', 'important');
+        recCardHeader.style.background = '';
+        recCardHeader.style.color = '';
       }
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      recEl.style.setProperty('background', isDark ? 'rgba(234, 179, 8, 0.18)' : '#fefce8', 'important');
-      recEl.style.setProperty('color', isDark ? '#fef08a' : '#713f12', 'important');
-      recEl.style.setProperty('font-weight', isDark ? '600' : '400', 'important');
+      recEl.style.background = '';
+      recEl.style.color = '';
+      recEl.style.fontWeight = '';
     } else {
       if (recCardParent) {
+        recCardParent.classList.remove('rec-alert-yellow');
         recCardParent.style.border = '';
         recCardParent.style.boxShadow = '';
       }
