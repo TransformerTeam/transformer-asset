@@ -44,10 +44,12 @@ let mtOilCsvData = [];
 let oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const isDetail = window.isDetailStandalonePage || 
-                   window.location.pathname.toLowerCase().includes('detail') || 
-                   document.getElementById('detail-paper') !== null;
-  if (isDetail) {
+  const isStandalone = window.isDetailStandalonePage || 
+                       window.location.pathname.toLowerCase().includes('detail') || 
+                       window.location.pathname.toLowerCase().includes('evaluation') || 
+                       document.getElementById('detail-paper') !== null ||
+                       document.getElementById('eval-transformer-select') !== null;
+  if (isStandalone) {
     if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
       assessmentData = HEALTH_INDEX_DATA;
     }
@@ -247,7 +249,8 @@ function initAssessment() {
 
 function setupListeners() {
   // Theme toggle
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
   
   // Sidebar Collapse Toggle
   const sidebar = document.getElementById('sidebar');
@@ -283,18 +286,24 @@ function setupListeners() {
   
   // Filters
   ['filter-site', 'filter-service', 'filter-health-status', 'filter-param'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => { 
-      currentPage = 1; 
-      activeParamAlertFilter = null; // Clear bar chart parameter filter when dropdown changes
-      applyFilters(); 
-    });
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', () => { 
+        currentPage = 1; 
+        activeParamAlertFilter = null; // Clear bar chart parameter filter when dropdown changes
+        applyFilters(); 
+      });
+    }
   });
   
   // Search
-  document.getElementById('search-box').addEventListener('input', debounce(() => {
-    currentPage = 1;
-    applyFilters();
-  }, 300));
+  const searchBox = document.getElementById('search-box');
+  if (searchBox) {
+    searchBox.addEventListener('input', debounce(() => {
+      currentPage = 1;
+      applyFilters();
+    }, 300));
+  }
   
   // Table sorting
   document.querySelectorAll('.assessment-table th[data-sort]').forEach(th => {
@@ -312,10 +321,15 @@ function setupListeners() {
   });
   
   // Modal
-  document.getElementById('modal-close').addEventListener('click', closeModal);
-  document.getElementById('detail-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'detail-modal') closeModal();
-  });
+  const modalClose = document.getElementById('modal-close');
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+
+  const detailModal = document.getElementById('detail-modal');
+  if (detailModal) {
+    detailModal.addEventListener('click', (e) => {
+      if (e.target.id === 'detail-modal') closeModal();
+    });
+  }
   document.addEventListener('keydown', (e) => { 
     if (e.key === 'Escape') {
       closeModal();
