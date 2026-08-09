@@ -53,9 +53,9 @@ function evaluateOilParameter(parameter, value, fluidType, voltage) {
         const sVal = String(value).toLowerCase();
         if (sVal.includes('non')) return 'good';
         // Map: 1a=1, 1b=2, 2a=3, 2b=4, 2c=5, 2d=6, 2e=7, 3a=8, 3b=9, 4a=10, 4b=11, 4c=12
-        if (val <= 8) return 'good'; // <= 3a
-        if (val <= 10) return 'fair'; // <= 4a
-        return 'poor'; // > 4a
+        if (val <= 7) return 'good'; // 1a to 2e
+        if (val <= 9) return 'fair'; // 3a to 3b
+        return 'poor'; // 4a to 4c
       case 'Passivator':
         return evalGreater(val, 70, 50);
       case 'Sludge':
@@ -95,9 +95,9 @@ function evaluateOilParameter(parameter, value, fluidType, voltage) {
       case 'CorrosiveSulfur':
         const sv = String(value).toLowerCase();
         if (sv.includes('non')) return 'good';
-        if (val <= 8) return 'good'; 
-        if (val <= 10) return 'fair';
-        return 'poor';
+        if (val <= 7) return 'good'; // 1a to 2e
+        if (val <= 9) return 'fair'; // 3a to 3b
+        return 'poor'; // 4a to 4c
       case 'Sludge':
         if (String(value).toLowerCase().includes('non')) return 'good';
         return evalLess(val, 0.018, 0.02);
