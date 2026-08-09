@@ -161,9 +161,9 @@
 37,STG3C UAT,5011858,GSPP2&3,20,15.75,7.2,15.75/7.2,UAT,18,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 38,71BBT10 (CTG7A UAT),225307,GSPP2&3,8,11,6.9,11/6.9,UAT,3,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 39,72BBT10 (CTG7B UAT),225308,GSPP2&3,8,11,6.9,11/6.9,UAT,3,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
-40,STG1C UAT,9724074,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
-41,STG2C UAT1,9724076,GSPP2&3,22.4,11.5,7.2,11.5/7.2,UAT,28,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
-42,STG2C UAT2,9724075,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
+40,STG1C UAT,9724074,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,77,Healthy,950,25,A,Q,A,A,A,A,A,,,,A,A,,,,Q,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
+41,STG2C UAT1,9724076,GSPP2&3,22.4,11.5,7.2,11.5/7.2,UAT,28,90,Healthy,950,25,A,Q,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
+42,STG2C UAT2,9724075,GSPP2&3,22.4,15.75,7.2,15.75/7.2,UAT,28,77,Healthy,950,25,A,Q,A,A,A,A,A,,,,A,A,,,,Q,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 43,31BBT10 (CTG3A UAT),4711343,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,21,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 44,32BBT10 (CTG3B UAT),4612314,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,22,92,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
 45,51BBT01 (CTG5 GSUT),VN00408,GSPP2&3,20,20,6.9,20/6.9,UAT,17,85,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,,-,Routine Inspection & Maintenance.
