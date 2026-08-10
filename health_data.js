@@ -1,4 +1,4 @@
-const HEALTH_INDEX_DATA = [
+var HEALTH_INDEX_DATA = [
     {
         "no": 0,
         "name": "16120-TR-001",
@@ -48471,3 +48471,4 @@ const HEALTH_INDEX_DATA = [
         "oltcRec": null
     }
 ];
+if (typeof window !== 'undefined') { window.HEALTH_INDEX_DATA = HEALTH_INDEX_DATA; }

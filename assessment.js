@@ -2,7 +2,13 @@
  * Transformer Health Index Assessment - Core Logic
  */
 
-let assessmentData = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) ? HEALTH_INDEX_DATA : [];
+function getInitialHealthData() {
+  if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) return window.HEALTH_INDEX_DATA;
+  if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) return HEALTH_INDEX_DATA;
+  return [];
+}
+
+let assessmentData = getInitialHealthData();
 let filteredAssessment = [];
 let currentPage = 1;
 let pageSize = 15;
@@ -44,22 +50,16 @@ let mtOilCsvData = [];
 let oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (!assessmentData || !assessmentData.length) {
+    assessmentData = getInitialHealthData();
+  }
+
   const isStandalone = window.isDetailStandalonePage || 
                        window.location.pathname.toLowerCase().includes('detail') || 
                        window.location.pathname.toLowerCase().includes('evaluation') || 
                        document.getElementById('detail-paper') !== null ||
                        document.getElementById('eval-transformer-select') !== null;
-  if (isStandalone) {
-    if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
-      assessmentData = HEALTH_INDEX_DATA;
-    }
-    const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-    setTheme(savedTheme);
-    return;
-  }
-
-  if (typeof HEALTH_INDEX_DATA !== 'undefined' && (!assessmentData || !assessmentData.length)) {
-    assessmentData = HEALTH_INDEX_DATA;
+  if (!isStandalone) {
     initAssessment();
   }
   setupListeners();

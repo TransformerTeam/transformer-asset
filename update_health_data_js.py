@@ -288,7 +288,7 @@ def convert_csv_to_js():
             }
             data.append(item)
 
-    js_content = f"const HEALTH_INDEX_DATA = {json.dumps(data, indent=4, ensure_ascii=False)};\n"
+    js_content = f"var HEALTH_INDEX_DATA = {json.dumps(data, indent=4, ensure_ascii=False)};\nif (typeof window !== 'undefined') {{ window.HEALTH_INDEX_DATA = HEALTH_INDEX_DATA; }}\n"
     with open(JS_PATH, 'w', encoding='utf-8') as f:
         f.write(js_content)
     print(f"Updated {JS_PATH} successfully with {len(data)} items and embedded sub-CSV records.")
