@@ -704,18 +704,24 @@
   <script>
     let currentSerial = '';
 
-    document.addEventListener('allTestDataLoaded', () => {
+    function refreshEvalView() {
       ensureAssessmentData();
       populateEvalDropdown();
       if (!currentSerial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
-        currentSerial = assessmentData[0].serial;
+        const first = assessmentData[0];
+        currentSerial = first.serial || first.SERIAL_NUMBER || first['Serial No'];
       }
       if (currentSerial) {
         const selectEl = document.getElementById('eval-transformer-select');
         if (selectEl) selectEl.value = currentSerial;
         loadEvaluationBySerial(currentSerial);
       }
-    });
+    }
+
+    document.addEventListener('allTestDataLoaded', refreshEvalView);
+    if (window.allCSVsPromise) {
+      window.allCSVsPromise.then(refreshEvalView);
+    }
 
     function ensureAssessmentData() {
       if ((typeof assessmentData === 'undefined' || !assessmentData || assessmentData.length === 0) && typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
