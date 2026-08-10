@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Evaluation Criteria | GPSC Standard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SheetJS for Export to Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    .criteria-container {
+      padding: 24px;
+      overflow-y: auto;
+      height: 100%;
+    }
+    
+    /* Header & KPI Section */
+    .page-title-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .title-area h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    
+    .title-area p {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .kpi-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-mini-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition-fast);
+    }
+
+    .kpi-mini-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-mini-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+    .icon-green { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .icon-amber { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .icon-red { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+    .kpi-mini-info h4 {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 0 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-mini-info .val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Controls Bar */
+    .filter-controls-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .search-box-wrapper {
+      position: relative;
+      min-width: 260px;
+      flex: 1;
+    }
+
+    .search-box-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .search-box-wrapper input {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+      transition: var(--transition-fast);
+    }
+
+    .search-box-wrapper input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    .filter-select {
+      padding: 9px 14px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-select option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .filter-select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    /* Quick Filter Pills */
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .pill-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .pill-btn:hover, .pill-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: var(--primary-glow);
+    }
+
+    /* Table Container */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .criteria-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .criteria-table th {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      text-align: left;
+    }
+
+    .criteria-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+
+    .criteria-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Category Header Rows */
+    .cat-header-row td {
+      background: rgba(30, 58, 138, 0.25);
+      color: #60a5fa;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 10px 16px;
+      border-top: 2px solid rgba(59, 130, 246, 0.3);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    [data-theme="light"] .cat-header-row td {
+      background: #eff6ff;
+      color: #1e40af;
+      border-top: 2px solid #bfdbfe;
+      border-bottom: 1px solid #bfdbfe;
+    }
+
+    /* Standard Badges */
+    .std-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .std-badge-ieee {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .std-badge-iec {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .std-badge-astm {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .std-badge-gpsc {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    [data-theme="light"] .std-badge-ieee { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    [data-theme="light"] .std-badge-iec { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
+    [data-theme="light"] .std-badge-astm { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+    [data-theme="light"] .std-badge-gpsc { background: #d1fae5; color: #047857; border-color: #6ee7b7; }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .score-5 { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .score-4 { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+    .score-3 { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .score-2 { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+    .score-1 { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+    .action-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-fast);
+    }
+
+    .action-btn:hover {
+      background: var(--primary-hover);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .action-btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .action-btn-secondary:hover {
+      background: var(--bg-secondary);
+    }
+
+    /* Print styling */
+    @media print {
+      body { background: #ffffff; color: #000000; }
+      header, .sidebar, .filter-controls-card, .filter-pills, .action-btn, .page-title-card button { display: none !important; }
+      .app-container { display: block; }
+      .main-workspace { display: block; }
+      .criteria-container { padding: 0; }
+      .table-card { border: none; box-shadow: none; }
+      .criteria-table th { background: #f1f5f9; color: #000000; border: 1px solid #cbd5e1; }
+      .criteria-table td { border: 1px solid #cbd5e1; color: #000000; }
+      .cat-header-row td { background: #e2e8f0; color: #0f172a; font-weight: bold; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>GPSC TRANSFORMER ASSET MANAGEMENT</h1>
+          <p>Standard Diagnostic Criteria & Assessment Thresholds Directory</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="action-btn action-btn-secondary" onclick="exportToExcel()" title="Export Criteria to Excel">
+          <i class="fa-solid fa-file-excel" style="color: #10b981;"></i> Export Excel
+        </button>
+        <button class="action-btn action-btn-secondary" onclick="window.print()" title="Print Criteria Document">
+          <i class="fa-solid fa-print"></i> Print / PDF
+        </button>
+        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
+          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="main-workspace">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
+        <a href="assessment.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">Health Assessment</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">Overall Transformer</span>
+        </a>
+        <a href="evaluation_report.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation & Report</span>
+        </a>
+        <a href="Criteria.html" class="sidebar-nav-btn active">
+          <i class="fa-solid fa-book-bookmark"></i> <span class="nav-label">Evaluation Criteria</span>
+        </a>
+        <a href="oil_criteria_table.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-oil-can"></i> <span class="nav-label">Oil Criteria Table</span>
+        </a>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="scada-content" style="padding: 0; overflow: hidden;">
+        <div class="criteria-container">
+          
+          <!-- Title Banner Card -->
+          <div class="page-title-card">
+            <div class="title-area">
+              <h2><i class="fa-solid fa-scale-balanced" style="color: #3b82f6;"></i> GPSC Transformer Evaluation Criteria (ตารางเกณฑ์ประเมินหม้อแปลงไฟฟ้า)</h2>
+              <p>ตารางสรุปรายการประเมิน เกณฑ์มาตรฐาน (Criteria & Limit) และมาตรฐานอ้างอิง (IEEE C57.152, IEC 60076-25, ASTM, GPSC Standard)</p>
+            </div>
+            <div>
+              <span class="std-badge std-badge-ieee">IEEE C57.152</span>
+              <span class="std-badge std-badge-iec">IEC 60076-25</span>
+              <span class="std-badge std-badge-astm">ASTM D877/D1816</span>
+              <span class="std-badge std-badge-gpsc">GPSC Standard</span>
+            </div>
+          </div>
+
+          <!-- KPI Summary Bar -->
+          <div class="kpi-mini-grid">
+            <div class="kpi-mini-card">
+              <div class="kpi-mini-icon icon-blue"><i class="fa-solid fa-list-ol"></i></div>
+              <div class="kpi-mini-info">
+                <h4>Total Items</h4>
+                <div class="val" id="kpi-total-items">77 Items</div>
+              </div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-mini-icon icon-green"><i class="fa-solid fa-heart-pulse"></i></div>
+              <div class="kpi-mini-info">
+                <h4>Part 1: CHI Items</h4>
+                <div class="val" id="kpi-chi-items">60 Parameters</div>
+              </div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-mini-icon icon-amber"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="kpi-mini-info">
+                <h4>Part 2: PoF Items</h4>
+                <div class="val" id="kpi-pof-items">5 Factors</div>
+              </div>
+            </div>
+            <div class="kpi-mini-card">
+              <div class="kpi-mini-icon icon-red"><i class="fa-solid fa-shield-cat"></i></div>
+              <div class="kpi-mini-info">
+                <h4>Part 3: CoF Items</h4>
+                <div class="val" id="kpi-cof-items">11 Factors</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Category Filters -->
+          <div class="filter-pills">
+            <button class="pill-btn active" onclick="filterByPill('all', this)">All Items (ทั้งหมด)</button>
+            <button class="pill-btn" onclick="filterByPill('chi', this)">Part 1: Condition Health Index (CHI)</button>
+            <button class="pill-btn" onclick="filterByPill('oil', this)">Oil & DGA Parameters</button>
+            <button class="pill-btn" onclick="filterByPill('pof', this)">Part 2: General Health Index (PoF)</button>
+            <button class="pill-btn" onclick="filterByPill('cof', this)">Part 3: Impact Index (CoF)</button>
+          </div>
+
+          <!-- Filter & Search Controls Bar -->
+          <div class="filter-controls-card">
+            <div class="filter-group">
+              <div class="search-box-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="criteria-search-input" placeholder="Search by parameter, criteria, standard..." oninput="applyCriteriaFilters()">
+              </div>
+              <select id="category-filter-select" class="filter-select" onchange="applyCriteriaFilters()">
+                <option value="all">All Categories (ทุกหมวดหมู่)</option>
+                <option value="General Parts (Weight Score 5%)">General Parts (ส่วนประกอบทั่วไป 5%)</option>
+                <option value="Magnetic Core">Magnetic Core (แกนเหล็ก)</option>
+                <option value="High Voltage Winding">High Voltage Winding (ขดลวดแรงสูง)</option>
+                <option value="Low Voltage Winding">Low Voltage Winding (ขดลวดแรงต่ำ)</option>
+                <option value="Tertiary Winding">Tertiary Winding (ขดลวดเทอร์เชียรี)</option>
+                <option value="Insulating Oil in Main Tank">Insulating Oil in Main Tank (น้ำมันในถังหลัก)</option>
+                <option value="Insulating Oil in OLTC">Insulating Oil in OLTC (น้ำมันใน OLTC)</option>
+                <option value="Surge Arrester">Surge Arrester (อุปกรณ์ป้องกันแรงดันเกิน)</option>
+                <option value="OLTC">OLTC (เครื่องเปลี่ยนแทปขณะมีโหลด)</option>
+                <option value="General Health Index">General Health Index (PoF - ดัชนีสุขภาพทั่วไป)</option>
+                <option value="Impact Index">Impact Index (CoF - ดัชนีผลกระทบการชำรุด)</option>
+              </select>
+              <select id="standard-filter-select" class="filter-select" onchange="applyCriteriaFilters()">
+                <option value="all">All Standards (ทุกมาตรฐาน)</option>
+                <option value="IEEE">IEEE Standards</option>
+                <option value="IEC">IEC Standards</option>
+                <option value="ASTM">ASTM Standards</option>
+                <option value="GPSC">GPSC Criteria</option>
+              </select>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="filter-result-count">
+              Showing 77 criteria items
+            </div>
+          </div>
+
+          <!-- Main Criteria Table -->
+          <div class="table-card">
+            <div style="overflow-x: auto; max-height: calc(100vh - 380px);">
+              <table class="criteria-table" id="main-criteria-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px; text-align: center;">#</th>
+                    <th style="width: 220px;">Category (ส่วนประเมิน)</th>
+                    <th style="width: 260px;">Item / Parameter (รายการทดสอบ)</th>
+                    <th style="min-width: 280px;">Criteria & Limit (เกณฑ์มาตรฐาน)</th>
+                    <th style="width: 170px;">Standard Reference</th>
+                    <th style="min-width: 220px;">Recommendation / Target</th>
+                  </tr>
+                </thead>
+                <tbody id="criteria-table-body">
+                  <!-- Rendered dynamically by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Include Data File -->
+  <script src="evaluation_criteria.js?v=20260810_v4"></script>
+  
+  <script>
+    let activePillCategory = 'all';
+
+    function initPage() {
+      // Setup Theme
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Render Table
+      renderCriteriaTable();
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('tr-dashboard-theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const lightIcon = document.getElementById('theme-icon-light');
+      const darkIcon = document.getElementById('theme-icon-dark');
+      if (theme === 'light') {
+        if (lightIcon) lightIcon.style.display = 'inline-block';
+        if (darkIcon) darkIcon.style.display = 'none';
+      } else {
+        if (lightIcon) lightIcon.style.display = 'none';
+        if (darkIcon) darkIcon.style.display = 'inline-block';
+      }
+    }
+
+    function getStandardBadgeHtml(standardStr) {
+      if (!standardStr || standardStr === '-') {
+        return `<span class="std-badge std-badge-gpsc">GPSC Criteria</span>`;
+      }
+      const s = String(standardStr).toUpperCase();
+      if (s.includes('IEEE')) {
+        return `<span class="std-badge std-badge-ieee"><i class="fa-solid fa-certificate" style="margin-right: 4px;"></i>${standardStr}</span>`;
+      }
+      if (s.includes('IEC')) {
+        return `<span class="std-badge std-badge-iec"><i class="fa-solid fa-award" style="margin-right: 4px;"></i>${standardStr}</span>`;
+      }
+      if (s.includes('ASTM')) {
+        return `<span class="std-badge std-badge-astm"><i class="fa-solid fa-microscope" style="margin-right: 4px;"></i>${standardStr}</span>`;
+      }
+      return `<span class="std-badge std-badge-gpsc"><i class="fa-solid fa-check-double" style="margin-right: 4px;"></i>${standardStr}</span>`;
+    }
+
+    function getCriteriaData() {
+      return (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
+    }
+
+    function filterByPill(pillType, btnEl) {
+      activePillCategory = pillType;
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      applyCriteriaFilters();
+    }
+
+    function applyCriteriaFilters() {
+      const searchVal = document.getElementById('criteria-search-input').value.trim().toLowerCase();
+      const catVal = document.getElementById('category-filter-select').value;
+      const stdVal = document.getElementById('standard-filter-select').value.toLowerCase();
+
+      const allData = getCriteriaData();
+      
+      const filtered = allData.filter(row => {
+        // Pill filter
+        if (activePillCategory === 'chi') {
+          if (row.category === 'General Health Index' || row.category === 'Impact Index' || row.category === 'Summary') return false;
+        } else if (activePillCategory === 'oil') {
+          if (!row.category.includes('Oil') && !row.item.includes('DGA') && !row.item.includes('Water') && !row.item.includes('Furan')) return false;
+        } else if (activePillCategory === 'pof') {
+          if (row.category !== 'General Health Index') return false;
+        } else if (activePillCategory === 'cof') {
+          if (row.category !== 'Impact Index') return false;
+        }
+
+        // Category dropdown
+        if (catVal !== 'all' && row.category !== catVal) return false;
+
+        // Standard dropdown
+        if (stdVal !== 'all') {
+          const rowStd = (row.standard || 'GPSC Criteria').toLowerCase();
+          if (!rowStd.includes(stdVal)) return false;
+        }
+
+        // Text Search
+        if (searchVal) {
+          const matchItem = (row.item || '').toLowerCase().includes(searchVal);
+          const matchCat = (row.category || '').toLowerCase().includes(searchVal);
+          const matchCrit = (row.criteria || '').toLowerCase().includes(searchVal);
+          const matchStd = (row.standard || '').toLowerCase().includes(searchVal);
+          const matchRec = (row.recommendation || '').toLowerCase().includes(searchVal);
+          if (!matchItem && !matchCat && !matchCrit && !matchStd && !matchRec) return false;
+        }
+
+        return true;
+      });
+
+      renderTableRows(filtered);
+      
+      const countEl = document.getElementById('filter-result-count');
+      if (countEl) countEl.textContent = `Showing ${filtered.length} of ${allData.length} criteria items`;
+    }
+
+    function renderCriteriaTable() {
+      const allData = getCriteriaData();
+      
+      // Update KPIs
+      const chiCount = allData.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index' && r.category !== 'Summary').length;
+      const pofCount = allData.filter(r => r.category === 'General Health Index').length;
+      const cofCount = allData.filter(r => r.category === 'Impact Index').length;
+      
+      const kpiTotal = document.getElementById('kpi-total-items');
+      const kpiChi = document.getElementById('kpi-chi-items');
+      const kpiPof = document.getElementById('kpi-pof-items');
+      const kpiCof = document.getElementById('kpi-cof-items');
+
+      if (kpiTotal) kpiTotal.textContent = `${allData.length} Items`;
+      if (kpiChi) kpiChi.textContent = `${chiCount} Parameters`;
+      if (kpiPof) kpiPof.textContent = `${pofCount} Factors`;
+      if (kpiCof) kpiCof.textContent = `${cofCount} Factors`;
+
+      renderTableRows(allData);
+    }
+
+    function renderTableRows(dataList) {
+      const tbody = document.getElementById('criteria-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (dataList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+              ไม่พบรายการเกณฑ์การประเมินที่ตรงกับเงื่อนไขการค้นหา
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let currentCategory = '';
+      let rowIdx = 1;
+
+      dataList.forEach(row => {
+        // Group by Category Header
+        if (row.category && row.category !== currentCategory) {
+          currentCategory = row.category;
+          const catTr = document.createElement('tr');
+          catTr.className = 'cat-header-row';
+          
+          let iconClass = 'fa-diagram-project';
+          if (currentCategory.includes('General Parts')) iconClass = 'fa-cubes';
+          else if (currentCategory.includes('Core')) iconClass = 'fa-magnet';
+          else if (currentCategory.includes('Winding')) iconClass = 'fa-bolt';
+          else if (currentCategory.includes('Oil')) iconClass = 'fa-flask';
+          else if (currentCategory.includes('Surge')) iconClass = 'fa-bolt-lightning';
+          else if (currentCategory.includes('OLTC')) iconClass = 'fa-sliders';
+          else if (currentCategory.includes('General Health')) iconClass = 'fa-chart-line';
+          else if (currentCategory.includes('Impact')) iconClass = 'fa-triangle-exclamation';
+
+          catTr.innerHTML = `
+            <td colspan="6">
+              <i class="fa-solid ${iconClass}" style="margin-right: 8px;"></i> ${currentCategory}
+            </td>
+          `;
+          tbody.appendChild(catTr);
+        }
+
+        const tr = document.createElement('tr');
+
+        const stdBadge = getStandardBadgeHtml(row.standard);
+        const criteriaText = row.criteria || '-';
+        const recText = row.recommendation || '-';
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 600; color: var(--text-muted);">${rowIdx++}</td>
+          <td style="font-weight: 600; color: var(--text-primary);">${row.category || '-'}</td>
+          <td style="font-weight: 700; color: var(--primary);">${row.item || '-'}</td>
+          <td style="color: var(--text-primary); font-size: 0.86rem; line-height: 1.4;">${criteriaText}</td>
+          <td>${stdBadge}</td>
+          <td style="font-size: 0.82rem; color: var(--text-secondary);">${recText}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function exportToExcel() {
+      const data = getCriteriaData();
+      if (!data || data.length === 0) return;
+
+      const excelRows = data.map((r, i) => ({
+        "No.": i + 1,
+        "Category (หมวดหมู่)": r.category || '',
+        "Item / Parameter (รายการทดสอบ)": r.item || '',
+        "Criteria & Limit (เกณฑ์ประเมิน)": r.criteria || '-',
+        "Standard Reference (มาตรฐานอ้างอิง)": r.standard || 'GPSC Criteria',
+        "Recommendation / Target (ข้อเสนอแนะ)": r.recommendation || '-'
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(excelRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Transformer Criteria");
+
+      XLSX.writeFile(workbook, "GPSC_Transformer_Evaluation_Criteria.xlsx");
+    }
+
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>
