@@ -697,9 +697,9 @@
   </div>
 
   <!-- Include Data Scripts -->
-  <script src="health_data.js?v=20260810_v3"></script>
-  <script src="evaluation_criteria.js?v=20260810_v3"></script>
-  <script src="assessment.js?v=20260810_v3"></script>
+  <script src="health_data.js?v=20260810_v4"></script>
+  <script src="evaluation_criteria.js?v=20260810_v4"></script>
+  <script src="assessment.js?v=20260810_v4"></script>
 
   <script>
     var currentSerial = '';
@@ -772,6 +772,16 @@
       loadEvaluationBySerial(serial);
     }
 
+    function setElText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function setElHref(id, href) {
+      const el = document.getElementById(id);
+      if (el) el.href = href;
+    }
+
     function loadEvaluationBySerial(serial) {
       ensureAssessmentData();
       if (!assessmentData || assessmentData.length === 0) return;
@@ -806,37 +816,37 @@
       const mfgDateVal = item.MANUFACTURING_DATE || item.MANUFACTURING_YEAR;
 
       // Update Report Links
-      document.getElementById('link-detail').href = `detail.html?serial=${encodeURIComponent(serialVal)}`;
-      document.getElementById('link-pf').href = `pf_report.html?serial=${encodeURIComponent(serialVal)}`;
-      document.getElementById('link-bushing').href = `bushing_pf_report.html?serial=${encodeURIComponent(serialVal)}`;
-      document.getElementById('link-dga').href = `dga_report.html?serial=${encodeURIComponent(serialVal)}`;
-      document.getElementById('link-visual').href = `visual_report.html?serial=${encodeURIComponent(serialVal)}`;
-      document.getElementById('link-pi').href = `pi_report.html?serial=${encodeURIComponent(serialVal)}`;
+      setElHref('link-detail', `detail.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-pf', `pf_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-bushing', `bushing_pf_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-dga', `dga_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-visual', `visual_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-pi', `pi_report.html?serial=${encodeURIComponent(serialVal)}`);
 
       // 0. Header Information
-      document.getElementById('eval-report-id').textContent = `TR-EVAL-${serialVal}`;
-      document.getElementById('eval-site-badge').textContent = `Site: ${siteVal}`;
-      document.getElementById('info-name').textContent = nameVal;
-      document.getElementById('info-serial').textContent = serialVal;
-      document.getElementById('info-code').textContent = nameVal;
-      document.getElementById('info-power').textContent = powerVal ? (String(powerVal).includes('MVA') ? powerVal : `${powerVal} MVA`) : '-';
-      document.getElementById('info-voltage').textContent = voltVal ? (String(voltVal).includes('kV') ? voltVal : `${voltVal} kV`) : '-';
-      document.getElementById('info-fluid').textContent = item.TYPE_OF_INSULATION || 'Mineral Oil';
-      document.getElementById('info-service').textContent = serviceVal || '-';
-      document.getElementById('info-age').textContent = ageVal ? `${ageVal} Years` : '-';
+      setElText('eval-report-id', `TR-EVAL-${serialVal}`);
+      setElText('eval-site-badge', `Site: ${siteVal}`);
+      setElText('info-name', nameVal);
+      setElText('info-serial', serialVal);
+      setElText('info-code', nameVal);
+      setElText('info-power', powerVal ? (String(powerVal).includes('MVA') ? powerVal : `${powerVal} MVA`) : '-');
+      setElText('info-voltage', voltVal ? (String(voltVal).includes('kV') ? voltVal : `${voltVal} kV`) : '-');
+      setElText('info-fluid', item.TYPE_OF_INSULATION || 'Mineral Oil');
+      setElText('info-service', serviceVal || '-');
+      setElText('info-age', ageVal ? `${ageVal} Years` : '-');
 
       // Look up dynamic TRInfo record
       const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
       if (trInfo) {
-        document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || mfgVal || 'TIRATHAI';
-        document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || vectorVal || 'Dyn1';
-        document.getElementById('info-tap').textContent = trInfo.TAP_CHANGER_TYPE || tapVal || 'OLTC';
-        document.getElementById('info-mfg').textContent = trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : (mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-');
+        setElText('info-manufacture', trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || mfgVal || 'TIRATHAI');
+        setElText('info-vector', trInfo.VECTOR_GROUP || vectorVal || 'Dyn1');
+        setElText('info-tap', trInfo.TAP_CHANGER_TYPE || tapVal || 'OLTC');
+        setElText('info-mfg', trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : (mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-'));
       } else {
-        document.getElementById('info-manufacture').textContent = mfgVal || 'TIRATHAI';
-        document.getElementById('info-vector').textContent = vectorVal || 'Dyn1';
-        document.getElementById('info-tap').textContent = tapVal || 'OLTC';
-        document.getElementById('info-mfg').textContent = mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-';
+        setElText('info-manufacture', mfgVal || 'TIRATHAI');
+        setElText('info-vector', vectorVal || 'Dyn1');
+        setElText('info-tap', tapVal || 'OLTC');
+        setElText('info-mfg', mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-');
       }
 
       // Sync select dropdown
@@ -846,16 +856,19 @@
       // 1. Part 1: Condition Health Index Summary
       const hi = item.healthIndex || 90;
       const hiStatus = item.healthStatus || (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Monitor' : 'Critical'));
-      document.getElementById('summary-hi-score').textContent = `${hi}%`;
-      document.getElementById('summary-hi-score').style.color = hi >= 80 ? '#16a34a' : (hi >= 51 ? '#d97706' : '#dc2626');
+      setElText('summary-hi-score', `${hi}%`);
+      const scoreEl = document.getElementById('summary-hi-score');
+      if (scoreEl) scoreEl.style.color = hi >= 80 ? '#16a34a' : (hi >= 51 ? '#d97706' : '#dc2626');
 
       const statusEl = document.getElementById('summary-hi-status');
-      statusEl.textContent = hiStatus;
-      statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 51 ? 'badge-warn' : 'badge-danger')}`;
+      if (statusEl) {
+        statusEl.textContent = hiStatus;
+        statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 51 ? 'badge-warn' : 'badge-danger')}`;
+      }
 
-      document.getElementById('summary-dp').textContent = item.estimatedDP || '950';
-      document.getElementById('summary-life').textContent = item.estimatedLife ? `${item.estimatedLife} yrs` : '25 yrs';
-      document.getElementById('eval-recommendation-text').textContent = item.recommendation || 'Routine Inspection & Maintenance.';
+      setElText('summary-dp', item.estimatedDP || '950');
+      setElText('summary-life', item.estimatedLife ? `${item.estimatedLife} yrs` : '25 yrs');
+      setElText('eval-recommendation-text', item.recommendation || 'Routine Inspection & Maintenance.');
 
       // Sub Scores
       setSubScoreBox('active-part', item.activePart?.overall);
