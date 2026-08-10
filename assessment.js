@@ -131,8 +131,8 @@ function parseHealthIndexSumCSV(rows) {
   if (!rows || rows.length === 0) return [];
   const results = [];
   rows.forEach((row, idx) => {
-    const name = row['Equipment Name'] || row.name || '';
-    const serial = row['Serial No'] || row.serial || '';
+    const name = row['Equipment Name'] || row.name || row.Equipment_Name || row.EQUIPMENT_NAME || row.Equipment || row['Name'] || '';
+    const serial = row['Serial No'] || row['Serial No.'] || row.serial || row.Serial_No || row.Serial || row.SERIAL_NUMBER || row.Serial_no || '';
     if (!name && !serial) return;
 
     function pVal(v) {
@@ -556,9 +556,8 @@ function applyFilters() {
       } else {
         if (hi === null || hi === undefined || hi === 0) return false;
         if (statusFilter === 'Healthy' && hi < 80) return false;
-        if (statusFilter === 'Monitoring' && (hi < 70 || hi >= 80)) return false;
-        if (statusFilter === 'Warning' && (hi < 50 || hi >= 70)) return false;
-        if (statusFilter === 'Critical' && hi >= 50) return false;
+        if ((statusFilter === 'Monitoring' || statusFilter === 'Warning') && (hi < 51 || hi >= 80)) return false;
+        if (statusFilter === 'Critical' && hi > 50) return false;
       }
     }
     
@@ -2724,7 +2723,7 @@ function parseDgaCSV(text) {
 
   if (rows.length < 2) return [];
 
-  const headers = rows[0].map(h => h.trim());
+  const headers = rows[0].map(h => h.replace(/^\ufeff/, '').trim());
   const results = [];
 
   for (let i = 1; i < rows.length; i++) {
