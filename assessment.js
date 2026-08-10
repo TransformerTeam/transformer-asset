@@ -491,6 +491,7 @@ function populateFilterDropdowns() {
 
 function fillDropdown(id, items) {
   const sel = document.getElementById(id);
+  if (!sel || !sel.options || !sel.options[0]) return;
   const first = sel.options[0].outerHTML;
   sel.innerHTML = first;
   items.forEach(item => {
@@ -507,12 +508,12 @@ function hasParamValue(item, value) {
   // Check all parameter fields for a specific value (Q or U)
   const checks = [
     item.visualInspection,
-    ...Object.values(item.activePart),
+    ...(item.activePart ? Object.values(item.activePart) : []),
     item.bushing, item.surgeArrester,
     item.dynamicResistance, item.fra, item.moisturePaper,
-    ...Object.values(item.mainTankOil),
+    ...(item.mainTankOil ? Object.values(item.mainTankOil) : []),
     item.passivator, item.furan, item.sludge,
-    ...Object.values(item.oltcOil)
+    ...(item.oltcOil ? Object.values(item.oltcOil) : [])
   ];
   return checks.some(v => v === value);
 }
@@ -520,22 +521,28 @@ function hasParamValue(item, value) {
 function allParamsAcceptable(item) {
   const checks = [
     item.visualInspection,
-    ...Object.values(item.activePart),
+    ...(item.activePart ? Object.values(item.activePart) : []),
     item.bushing, item.surgeArrester,
     item.dynamicResistance, item.fra, item.moisturePaper,
-    ...Object.values(item.mainTankOil),
+    ...(item.mainTankOil ? Object.values(item.mainTankOil) : []),
     item.passivator, item.furan, item.sludge,
-    ...Object.values(item.oltcOil)
+    ...(item.oltcOil ? Object.values(item.oltcOil) : [])
   ];
   return checks.every(v => v === 'A' || v === 'N/A' || !v);
 }
 
 function applyFilters() {
-  const siteFilter = document.getElementById('filter-site').value;
-  const serviceFilter = document.getElementById('filter-service').value;
-  const statusFilter = document.getElementById('filter-health-status').value;
-  const paramFilter = document.getElementById('filter-param').value;
-  const searchQuery = document.getElementById('search-box').value.toLowerCase().trim();
+  const elSite = document.getElementById('filter-site');
+  const elService = document.getElementById('filter-service');
+  const elStatus = document.getElementById('filter-health-status');
+  const elParam = document.getElementById('filter-param');
+  const elSearch = document.getElementById('search-box');
+
+  const siteFilter = elSite ? elSite.value : 'all';
+  const serviceFilter = elService ? elService.value : 'all';
+  const statusFilter = elStatus ? elStatus.value : 'all';
+  const paramFilter = elParam ? elParam.value : 'all';
+  const searchQuery = elSearch ? elSearch.value.toLowerCase().trim() : '';
   
   // Show parameter filter status span if active
   const elParamStatus = document.getElementById('param-filter-status');
@@ -614,6 +621,7 @@ function updateKPIs() {
   const healthy = filteredAssessment.filter(i => i.healthIndex >= 80).length;
   const monitoring = filteredAssessment.filter(i => i.healthIndex >= 51 && i.healthIndex < 80).length;
   const critical = filteredAssessment.filter(i => i.healthIndex <= 50 && i.healthIndex > 0).length;
+  const warning = monitoring;
   
   const kpiAssessed = document.getElementById('kpi-assessed');
   const kpiAssessedSub = document.getElementById('kpi-assessed-sub');
