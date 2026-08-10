@@ -26,28 +26,28 @@ let chartServiceType = null;
 
 // ============ INITIALIZATION & CSV DATA HOLDERS ============
 
-let mainTankDgaCsvData = [];
-let piCsvData = [];
-let trInfoCsvData = [];
-let visualCsvData = [];
-let bushingInfoCsvData = [];
-let bushingPfCsvData = [];
-let surgeInfoCsvData = [];
-let surgePfCsvData = [];
-let irPiCsvData = [];
-let windingPfCsvData = [];
-let ratioCsvData = [];
-let excitingCsvData = [];
-let windingCsvData = [];
-let singleShortCsvData = [];
-let threeShortCsvData = [];
-let fraCsvData = [];
-let dfrCsvData = [];
-let drmCsvData = [];
-let pdOnlineCsvData = [];
-let thermoScanCsvData = [];
-let mtOilCsvData = [];
-let oltcOilCsvData = [];
+var mainTankDgaCsvData = [];
+var piCsvData = [];
+var trInfoCsvData = [];
+var visualCsvData = [];
+var bushingInfoCsvData = [];
+var bushingPfCsvData = [];
+var surgeInfoCsvData = [];
+var surgePfCsvData = [];
+var irPiCsvData = [];
+var windingPfCsvData = [];
+var ratioCsvData = [];
+var excitingCsvData = [];
+var windingCsvData = [];
+var singleShortCsvData = [];
+var threeShortCsvData = [];
+var fraCsvData = [];
+var dfrCsvData = [];
+var drmCsvData = [];
+var pdOnlineCsvData = [];
+var thermoScanCsvData = [];
+var mtOilCsvData = [];
+var oltcOilCsvData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!assessmentData || !assessmentData.length) {

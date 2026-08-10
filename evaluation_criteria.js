@@ -1,4 +1,4 @@
-const EVALUATION_CRITERIA_DATA = [
+var EVALUATION_CRITERIA_DATA = [
   {
     "row": 701,
     "category": "General Parts (Weight Score 5%)",
@@ -616,3 +616,4 @@ const EVALUATION_CRITERIA_DATA = [
     "recommendation": "ไม่เกิดอันตรายต่อบุคคลและทรัพย์สิน (มีระบบป้องกันที่ดี อยู่ในพื้นที่ปิด มีระบบดับเพลิงครบ)"
   }
 ];
+if (typeof window !== 'undefined') { window.EVALUATION_CRITERIA_DATA = EVALUATION_CRITERIA_DATA; }

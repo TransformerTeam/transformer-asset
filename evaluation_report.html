@@ -702,7 +702,8 @@
   <script src="assessment.js?v=20260810_v3"></script>
 
   <script>
-    let currentSerial = '';
+    var currentSerial = '';
+    var assessmentData = (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA) ? window.HEALTH_INDEX_DATA : ((typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA : []);
 
     function refreshEvalView() {
       ensureAssessmentData();
@@ -724,12 +725,9 @@
     }
 
     function ensureAssessmentData() {
-      if (!assessmentData || assessmentData.length === 0) {
-        if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && window.HEALTH_INDEX_DATA.length > 0) {
-          assessmentData = window.HEALTH_INDEX_DATA;
-        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
-          assessmentData = HEALTH_INDEX_DATA;
-        }
+      const data = (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && window.HEALTH_INDEX_DATA.length > 0) ? window.HEALTH_INDEX_DATA : ((typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA : []);
+      if (typeof assessmentData === 'undefined' || !assessmentData || assessmentData.length === 0) {
+        assessmentData = data;
       }
     }
 
@@ -828,7 +826,7 @@
       document.getElementById('info-age').textContent = ageVal ? `${ageVal} Years` : '-';
 
       // Look up dynamic TRInfo record
-      const trInfo = findLatestRecord(trInfoCsvData, serialVal);
+      const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
       if (trInfo) {
         document.getElementById('info-manufacture').textContent = trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || mfgVal || 'TIRATHAI';
         document.getElementById('info-vector').textContent = trInfo.VECTOR_GROUP || vectorVal || 'Dyn1';
@@ -925,7 +923,10 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      const rawPart1 = EVALUATION_CRITERIA_DATA.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index');
+      const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
+      if (!criteriaData || criteriaData.length === 0) return;
+
+      const rawPart1 = criteriaData.filter(r => r.category !== 'General Health Index' && r.category !== 'Impact Index');
       const genPartsItems = rawPart1.filter(r => r.category === 'General Parts (Weight Score 5%)');
       const otherPart1Items = rawPart1.filter(r => r.category !== 'General Parts (Weight Score 5%)');
       const part1Items = [...genPartsItems, ...otherPart1Items];
@@ -988,9 +989,10 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      if (typeof EVALUATION_CRITERIA_DATA === 'undefined') return;
+      const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
+      if (!criteriaData || criteriaData.length === 0) return;
 
-      const part2Items = EVALUATION_CRITERIA_DATA.filter(r => r.category === 'General Health Index');
+      const part2Items = criteriaData.filter(r => r.category === 'General Health Index');
       let idx = 1;
 
       part2Items.forEach(row => {
@@ -1036,9 +1038,10 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      if (typeof EVALUATION_CRITERIA_DATA === 'undefined') return;
+      const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
+      if (!criteriaData || criteriaData.length === 0) return;
 
-      const part3Items = EVALUATION_CRITERIA_DATA.filter(r => r.category === 'Impact Index');
+      const part3Items = criteriaData.filter(r => r.category === 'Impact Index');
       let idx = 1;
 
       part3Items.forEach(row => {
@@ -1077,19 +1080,6 @@
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
         <td style="font-size: 0.72rem; color: #991b1b;">-</td>
       `;
-        tbody.appendChild(tr);
-      });
-
-      // Part 3 Summary Row
-      const sumTr = document.createElement('tr');
-      sumTr.style.background = '#fef2f2';
-      sumTr.style.fontWeight = '700';
-      sumTr.innerHTML = `
-        <td colspan="5" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
-        <td style="font-size: 0.9rem; color: #15803d;">Low Risk Category</td>
-        <td style="text-align: center;">-</td>
-        <td style="font-size: 0.72rem; color: #991b1b;">-</td>
-      `;
       tbody.appendChild(sumTr);
     }
 
@@ -1097,17 +1087,17 @@
       if (!itemName) return { value: 'Normal (Pass)', testDate: '19-Jan-2026', ratingScore: 5, recommendation: '-' };
       const nameLower = itemName.toLowerCase();
 
-      const latestMt = findLatestRecord(mtOilCsvData, item.serial);
-      const latestVis = findLatestRecord(visualCsvData, item.serial);
-      const latestBush = findLatestRecord(bushingPfCsvData, item.serial);
-      const latestSurge = findLatestRecord(surgePfCsvData, item.serial);
-      const latestPi = findLatestRecord(irPiCsvData, item.serial);
-      const latestExciting = findLatestRecord(excitingCsvData, item.serial);
-      const latestSingleShort = findLatestRecord(singleShortCsvData, item.serial);
-      const latestThreeShort = findLatestRecord(threeShortCsvData, item.serial);
-      const latestRatio = findLatestRecord(ratioCsvData, item.serial);
-      const latestWinding = findLatestRecord(windingCsvData, item.serial);
-      const latestWindingPf = findLatestRecord(windingPfCsvData, item.serial);
+      const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, item.serial) : null;
+      const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, item.serial) : null;
+      const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, item.serial) : null;
+      const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, item.serial) : null;
+      const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, item.serial) : null;
+      const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, item.serial) : null;
+      const latestSingleShort = (typeof singleShortCsvData !== 'undefined') ? findLatestRecord(singleShortCsvData, item.serial) : null;
+      const latestThreeShort = (typeof threeShortCsvData !== 'undefined') ? findLatestRecord(threeShortCsvData, item.serial) : null;
+      const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, item.serial) : null;
+      const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, item.serial) : null;
+      const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, item.serial) : null;
 
       const defaultDate = '19-Jan-2026';
 
