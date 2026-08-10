@@ -611,17 +611,19 @@
       <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection & Maintenance.</div>
     </div>
 
-    <!-- Part 1 Table with 7 Columns (# removed) -->
+    <!-- Part 1 Table with 9 Columns -->
     <table class="eval-table" id="part1-table">
       <thead>
         <tr>
-          <th class="th-part1" style="width: 24%;">Test Item</th>
-          <th class="th-part1" style="width: 20%;">Criteria & Limit</th>
-          <th class="th-part1" style="width: 11%;">Standards</th>
-          <th class="th-part1" style="width: 9%;">Test Date</th>
+          <th class="th-part1" style="width: 18%;">Test Item</th>
+          <th class="th-part1" style="width: 16%;">Criteria &amp; Limit</th>
+          <th class="th-part1" style="width: 9%;">Standards</th>
+          <th class="th-part1" style="width: 7%;">Test Date</th>
           <th class="th-part1" style="width: 13%;">Measurement Value</th>
-          <th class="th-part1" style="width: 12%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
-          <th class="th-part1" style="width: 11%;">Recommendation</th>
+          <th class="th-part1" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
+          <th class="th-part1" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+          <th class="th-part1" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
+          <th class="th-part1" style="width: 13%;">Recommendation</th>
         </tr>
       </thead>
       <tbody id="part1-table-body">
@@ -642,12 +644,14 @@
       <thead>
         <tr>
           <th class="th-part2" style="width: 3%;">#</th>
-          <th class="th-part2" style="width: 22%;">Test Item</th>
-          <th class="th-part2" style="width: 18%;">Criteria & Limit</th>
-          <th class="th-part2" style="width: 11%;">Standards</th>
-          <th class="th-part2" style="width: 9%;">Test Date</th>
-          <th class="th-part2" style="width: 13%;">Measurement Value</th>
-          <th class="th-part2" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part2" style="width: 19%;">Test Item</th>
+          <th class="th-part2" style="width: 16%;">Criteria &amp; Limit</th>
+          <th class="th-part2" style="width: 9%;">Standards</th>
+          <th class="th-part2" style="width: 7%;">Test Date</th>
+          <th class="th-part2" style="width: 11%;">Measurement Value</th>
+          <th class="th-part2" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
+          <th class="th-part2" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+          <th class="th-part2" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
           <th class="th-part2" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
@@ -669,12 +673,14 @@
       <thead>
         <tr>
           <th class="th-part3" style="width: 3%;">#</th>
-          <th class="th-part3" style="width: 22%;">Test Item</th>
-          <th class="th-part3" style="width: 18%;">Criteria & Limit</th>
-          <th class="th-part3" style="width: 11%;">Standards</th>
-          <th class="th-part3" style="width: 9%;">Test Date</th>
-          <th class="th-part3" style="width: 13%;">Measurement Value</th>
-          <th class="th-part3" style="width: 13%;">Standard Recommend<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical, 2 Warning, 3 Monitoring, 4 Good, 5 Excellent)</span></th>
+          <th class="th-part3" style="width: 19%;">Test Item</th>
+          <th class="th-part3" style="width: 16%;">Criteria &amp; Limit</th>
+          <th class="th-part3" style="width: 9%;">Standards</th>
+          <th class="th-part3" style="width: 7%;">Test Date</th>
+          <th class="th-part3" style="width: 11%;">Measurement Value</th>
+          <th class="th-part3" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
+          <th class="th-part3" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+          <th class="th-part3" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
           <th class="th-part3" style="width: 11%;">Recommendation</th>
         </tr>
       </thead>
@@ -952,6 +958,37 @@
     }
 
     // ==========================================
+    // WEIGHT TABLE: Category weights for Part 1
+    // ==========================================
+    var CATEGORY_WEIGHTS = {
+      'General Parts (Weight Score 5%)': 5,
+      'Magnetic Core': 5,
+      'High Voltage Winding': 20,
+      'Low Voltage Winding': 10,
+      'Tertiary Winding': 5,
+      'Insulating Oil in Main Tank': 25,
+      'Insulating Oil in OLTC': 5,
+      'Surge Arrester': 10,
+      'OLTC': 10,
+      'Summary': 5
+    };
+
+    // Get per-item weight = category weight / number of items in that category
+    function getItemWeight(category, allItems) {
+      const catWeight = CATEGORY_WEIGHTS[category] || 0;
+      const itemsInCat = allItems.filter(r => r.category === category && r.item && r.item !== 'Criteria').length;
+      if (itemsInCat === 0) return 0;
+      return catWeight / itemsInCat;
+    }
+
+    function getWeightedScoreColor(ws) {
+      if (ws >= 3.5) return '#15803d';
+      if (ws >= 2.5) return '#d97706';
+      if (ws >= 1.5) return '#ea580c';
+      return '#dc2626';
+    }
+
+    // ==========================================
     // RENDER PART 1: CONDITION HEALTH INDEX
     // ==========================================
     function renderPart1Table(item) {
@@ -966,35 +1003,39 @@
       const genPartsItems = rawPart1.filter(r => r.category === 'General Parts (Weight Score 5%)');
       const otherPart1Items = rawPart1.filter(r => r.category !== 'General Parts (Weight Score 5%)');
       const part1Items = [...genPartsItems, ...otherPart1Items];
+      const validItems = part1Items.filter(r => r.item && r.item !== 'Criteria');
 
       let currentCat = '';
-      let idx = 1;
+      let totalWeightedScore = 0;
+      let totalWeight = 0;
 
-      part1Items.forEach(row => {
+      validItems.forEach(row => {
         if (row.category && row.category !== currentCat) {
           currentCat = row.category;
           const catTr = document.createElement('tr');
           catTr.className = 'cat-row';
-          catTr.innerHTML = `<td colspan="7"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
+          catTr.innerHTML = `<td colspan="9"><i class="fa-solid fa-notes-medical" style="margin-right: 6px; color: #1e3a8a;"></i> ${currentCat}</td>`;
           tbody.appendChild(catTr);
         }
 
-        if (!row.item || row.item === 'Criteria') return;
-
-        let displayItem = row.item || '-';
-
-        const tr = document.createElement('tr');
         const matchVal = getMeasuredValueForItem(row.item, item);
         const evalBadge = getStandardRecommendBadge(matchVal.ratingScore);
-        const recText = (matchVal.ratingScore === 4 || matchVal.ratingScore === 5) ? '-' : (matchVal.recommendation || '-');
+        const recText = (matchVal.ratingScore >= 4) ? '-' : (matchVal.recommendation || '-');
+        const itemWeight = getItemWeight(row.category, validItems);
+        const weightedScore = itemWeight > 0 ? ((matchVal.ratingScore / 5) * itemWeight) : 0;
+        totalWeightedScore += weightedScore;
+        totalWeight += itemWeight;
 
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="font-weight: 600;">${displayItem}</td>
-          <td style="color: #334155;">${row.criteria || '-'}</td>
-          <td style="color: #475569; font-weight: 500;">${row.standard || 'IEEE / ASTM'}</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">${formatDateToDdMmmYyyy(matchVal.testDate)}</td>
+          <td style="font-weight: 600;">${row.item}</td>
+          <td style="color: #334155; font-size:0.72rem;">${row.criteria || '-'}</td>
+          <td style="color: #475569; font-weight: 500; font-size:0.71rem;">${row.standard || 'IEEE / ASTM'}</td>
+          <td style="text-align: center; font-weight: 500; color: #475569; font-size:0.71rem;">${formatDateToDdMmmYyyy(matchVal.testDate)}</td>
           <td style="font-weight: 700; color: #1e3a8a;">${matchVal.value}</td>
           <td style="text-align: center;">${evalBadge}</td>
+          <td style="text-align: center; font-weight: 600; color: #475569;">${itemWeight.toFixed(1)}%</td>
+          <td style="text-align: center; font-weight: 700; color: ${getWeightedScoreColor(matchVal.ratingScore)};">${weightedScore.toFixed(2)}</td>
           <td style="font-size: 0.72rem; color: #475569;">${recText}</td>
         `;
         tbody.appendChild(tr);
@@ -1003,15 +1044,19 @@
       // Part 1 Summary Row
       const chiScore = item.healthIndex || 90;
       const chiRating = chiScore >= 80 ? 4 : 3;
-      const chiRec = (chiRating === 4 || chiRating === 5) ? '-' : (item.recommendation || 'Plan detailed inspection');
+      const chiRec = (chiRating >= 4) ? '-' : (item.recommendation || 'Plan detailed inspection');
+      const totalWS = totalWeightedScore.toFixed(2);
+      const maxWS = totalWeight.toFixed(1);
 
       const sumTr = document.createElement('tr');
       sumTr.style.background = '#eff6ff';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="4" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE & RATING:</td>
+        <td colspan="4" style="text-align: right; color: #1e3a8a; font-size: 0.82rem;">CONDITION HEALTH INDEX (CHI) OVERALL SCORE &amp; RATING:</td>
         <td style="font-size: 0.9rem; color: #16a34a;">${chiScore}%</td>
         <td style="text-align: center;">${getStandardRecommendBadge(chiRating)}</td>
+        <td style="text-align: center; color: #1e3a8a;">${maxWS}%</td>
+        <td style="text-align: center; color: #16a34a; font-size:0.9rem;">${totalWS}</td>
         <td style="font-size: 0.72rem; color: #1e3a8a;">${chiRec}</td>
       `;
       tbody.appendChild(sumTr);
@@ -1028,12 +1073,17 @@
       const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
       if (!criteriaData || criteriaData.length === 0) return;
 
-      const part2Items = criteriaData.filter(r => r.category === 'General Health Index');
+      const part2Items = criteriaData.filter(r => r.category === 'General Health Index' && r.item && r.item !== 'Criteria');
+      // Each GHI item gets equal weight across 100%
+      const itemWeight = part2Items.length > 0 ? 100 / part2Items.length : 0;
       let idx = 1;
+      let totalWS = 0;
 
       part2Items.forEach(row => {
-        if (!row.item || row.item === 'Criteria') return;
         const tr = document.createElement('tr');
+        const rating = 4; // GHI default Good
+        const weightedScore = (rating / 5) * itemWeight;
+        totalWS += weightedScore;
         
         let recVal = `${item.serviceAge || 5} Years`;
         if (row.item.includes('Through Fault')) recVal = '0 Faults';
@@ -1043,11 +1093,13 @@
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
           <td style="font-weight: 600;">${row.item}</td>
-          <td style="color: #334155;">${row.criteria || '-'}</td>
-          <td style="color: #475569; font-weight: 500;">GPSC Standard</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">19-Jan-2026</td>
+          <td style="color: #334155; font-size:0.72rem;">${row.criteria || '-'}</td>
+          <td style="color: #475569; font-weight: 500; font-size:0.71rem;">GPSC Standard</td>
+          <td style="text-align: center; font-weight: 500; color: #475569; font-size:0.71rem;">19-Jan-2026</td>
           <td style="font-weight: 700; color: #047857;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+          <td style="text-align: center; font-weight: 600; color: #475569;">${itemWeight.toFixed(1)}%</td>
+          <td style="text-align: center; font-weight: 700; color: #15803d;">${weightedScore.toFixed(2)}</td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
@@ -1058,9 +1110,11 @@
       sumTr.style.background = '#ecfdf5';
       sumTr.style.fontWeight = '700';
       sumTr.innerHTML = `
-        <td colspan="5" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE & RATING:</td>
+        <td colspan="5" style="text-align: right; color: #047857; font-size: 0.82rem;">PROBABILITY OF FAILURE (PoF) SCORE &amp; RATING:</td>
         <td style="font-size: 0.9rem; color: #047857;">Low Risk (PoF 1)</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+        <td style="text-align: center; color: #047857;">100%</td>
+        <td style="text-align: center; color: #15803d; font-size:0.9rem;">${totalWS.toFixed(2)}</td>
         <td style="font-size: 0.72rem; color: #047857;">-</td>
       `;
       tbody.appendChild(sumTr);
@@ -1077,12 +1131,17 @@
       const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
       if (!criteriaData || criteriaData.length === 0) return;
 
-      const part3Items = criteriaData.filter(r => r.category === 'Impact Index');
+      const part3Items = criteriaData.filter(r => r.category === 'Impact Index' && r.item && r.item !== 'Criteria');
+      // Each Impact item gets equal weight across 100%
+      const itemWeight = part3Items.length > 0 ? 100 / part3Items.length : 0;
       let idx = 1;
+      let totalWS = 0;
 
       part3Items.forEach(row => {
-        if (!row.item || row.item === 'Criteria') return;
         const tr = document.createElement('tr');
+        const rating = 4; // Impact default Good
+        const weightedScore = (rating / 5) * itemWeight;
+        totalWS += weightedScore;
 
         let recVal = 'No Impact / Low Risk';
         if (row.item.includes('Financial')) recVal = 'Loss < 0.5 MTHB/Day';
@@ -1092,15 +1151,18 @@
         if (row.item.includes('Recovery')) recVal = '< 2 Weeks';
         if (row.item.includes('Network')) recVal = 'No Grid Impact';
         if (row.item.includes('Customer')) recVal = 'No Customer Impact';
+        if (row.item.includes('Safety')) recVal = 'No Safety Hazard';
 
         tr.innerHTML = `
           <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
           <td style="font-weight: 600;">${row.item}</td>
-          <td style="color: #334155;">${row.criteria || '-'}</td>
-          <td style="color: #475569; font-weight: 500;">GPSC Risk Criteria</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">19-Jan-2026</td>
+          <td style="color: #334155; font-size:0.72rem;">${row.criteria || '-'}</td>
+          <td style="color: #475569; font-weight: 500; font-size:0.71rem;">GPSC Risk Criteria</td>
+          <td style="text-align: center; font-weight: 500; color: #475569; font-size:0.71rem;">19-Jan-2026</td>
           <td style="font-weight: 700; color: #b91c1c;">${recVal}</td>
           <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+          <td style="text-align: center; font-weight: 600; color: #475569;">${itemWeight.toFixed(1)}%</td>
+          <td style="text-align: center; font-weight: 700; color: #15803d;">${weightedScore.toFixed(2)}</td>
           <td style="font-size: 0.72rem; color: #475569;">-</td>
         `;
         tbody.appendChild(tr);
@@ -1114,6 +1176,8 @@
         <td colspan="5" style="text-align: right; color: #991b1b; font-size: 0.82rem;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
         <td style="font-size: 0.9rem; color: #15803d;">Low Risk Category</td>
         <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
+        <td style="text-align: center; color: #991b1b;">100%</td>
+        <td style="text-align: center; color: #15803d; font-size:0.9rem;">${totalWS.toFixed(2)}</td>
         <td style="font-size: 0.72rem; color: #991b1b;">-</td>
       `;
       tbody.appendChild(sumTr);
