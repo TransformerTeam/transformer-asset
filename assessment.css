@@ -471,6 +471,12 @@ header p {
   border: 1px solid rgba(234, 179, 8, 0.3);
 }
 
+[data-theme="light"] .param-Q {
+  background: #fefce8 !important;
+  color: #854d0e !important;
+  border-color: #fde047 !important;
+}
+
 .param-U {
   background: rgba(239, 68, 68, 0.15);
   color: var(--color-critical);

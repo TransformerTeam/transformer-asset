@@ -615,9 +615,8 @@ function updateKPIs() {
   const total = filteredAssessment.length;
   const withHI = filteredAssessment.filter(i => i.healthIndex !== null && i.healthIndex !== undefined).length;
   const healthy = filteredAssessment.filter(i => i.healthIndex >= 80).length;
-  const monitoring = filteredAssessment.filter(i => i.healthIndex >= 70 && i.healthIndex < 80).length;
-  const warning = filteredAssessment.filter(i => i.healthIndex >= 50 && i.healthIndex < 70).length;
-  const critical = filteredAssessment.filter(i => i.healthIndex < 50 && i.healthIndex > 0).length;
+  const monitoring = filteredAssessment.filter(i => i.healthIndex >= 51 && i.healthIndex < 80).length;
+  const critical = filteredAssessment.filter(i => i.healthIndex <= 50 && i.healthIndex > 0).length;
   
   const kpiAssessed = document.getElementById('kpi-assessed');
   const kpiAssessedSub = document.getElementById('kpi-assessed-sub');
@@ -663,19 +662,18 @@ function getChartColors() {
 }
 
 function renderHealthDistChart() {
-  let counts = { healthy: 0, monitoring: 0, warning: 0, critical: 0, noData: 0 };
+  let counts = { healthy: 0, monitoring: 0, critical: 0, noData: 0 };
   filteredAssessment.forEach(item => {
     const hi = item.healthIndex;
     if (hi === null || hi === undefined || hi === 0) { counts.noData++; return; }
     if (hi >= 80) counts.healthy++;
-    else if (hi >= 70) counts.monitoring++;
-    else if (hi >= 50) counts.warning++;
+    else if (hi >= 51) counts.monitoring++;
     else counts.critical++;
   });
 
   // Calculate Assessed and Non-Assessed stats
-  const total = counts.healthy + counts.monitoring + counts.warning + counts.critical + counts.noData;
-  const assessed = counts.healthy + counts.monitoring + counts.warning + counts.critical;
+  const total = counts.healthy + counts.monitoring + counts.critical + counts.noData;
+  const assessed = counts.healthy + counts.monitoring + counts.critical;
   const nonAssessed = counts.noData;
   const assessedPct = total > 0 ? ((assessed / total) * 100).toFixed(1) : '0.0';
   const nonAssessedPct = total > 0 ? ((nonAssessed / total) * 100).toFixed(1) : '0.0';
@@ -687,8 +685,8 @@ function renderHealthDistChart() {
   
   const colors = getChartColors();
   const opts = {
-    series: [counts.healthy, counts.monitoring, counts.warning, counts.critical, counts.noData],
-    labels: ['Healthy (>= 80)', 'Monitoring (70-79)', 'Warning (50-69)', 'Critical (<50)', 'No Assess (=0)'],
+    series: [counts.healthy, counts.monitoring, counts.critical, counts.noData],
+    labels: ['Healthy (>= 80%)', 'Fair / Monitor (51-79%)', 'Critical (<= 50%)', 'No Assess (=0)'],
     chart: { 
       type: 'donut', 
       height: 280, 
@@ -701,7 +699,7 @@ function renderHealthDistChart() {
           const statusDropdown = document.getElementById('filter-health-status');
           if (!statusDropdown) return;
           
-          const statusValues = ['Healthy', 'Monitoring', 'Warning', 'Critical', 'No Assess'];
+          const statusValues = ['Healthy', 'Monitoring', 'Critical', 'No Assess'];
           const targetValue = statusValues[index];
           
           if (statusDropdown.value === targetValue) {
@@ -715,7 +713,7 @@ function renderHealthDistChart() {
         }
       }
     },
-    colors: ['#10b981', '#eab308', '#f97316', '#ef4444', '#6b7280'],
+    colors: ['#10b981', '#eab308', '#ef4444', '#6b7280'],
     legend: { position: 'bottom', fontSize: '11px' },
     dataLabels: {
       enabled: true,
@@ -1080,14 +1078,10 @@ function getStatusBadge(hi, status) {
     displayStatus = 'Healthy';
     badgeClass = 'badge-healthy';
     iconClass = 'fa-check-circle';
-  } else if (hi >= 70) {
+  } else if (hi >= 51) {
     displayStatus = 'Monitor';
     badgeClass = 'badge-monitoring';
     iconClass = 'fa-eye';
-  } else if (hi >= 50) {
-    displayStatus = 'Warning';
-    badgeClass = 'badge-warning';
-    iconClass = 'fa-exclamation-circle';
   } else {
     displayStatus = 'Critical';
     badgeClass = 'badge-critical';
@@ -1100,9 +1094,22 @@ function getStatusBadge(hi, status) {
 function getHIClass(hi) {
   if (hi === null || hi === undefined || hi === 0) return 'hi-noassess';
   if (hi >= 80) return 'hi-good';
-  if (hi >= 70) return 'hi-fair';
-  if (hi >= 50) return 'hi-poor';
+  if (hi >= 51) return 'hi-fair';
   return 'hi-critical';
+}
+
+function renderLastPM(lastPM) {
+  if (!lastPM || lastPM === '-' || lastPM === 'None') return '-';
+  const match = String(lastPM).match(/\b(20\d\d)\b/);
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const currentYear = new Date().getFullYear();
+    const isOver3Years = (currentYear - year) > 3;
+    if (isOver3Years) {
+      return `<span class="param-indicator param-Q" style="width:auto; padding: 2px 8px; border-radius: 4px; display: inline-block; text-align: center;" title="Ratio test date is over 3 years old (${lastPM})">${lastPM}</span>`;
+    }
+  }
+  return lastPM;
 }
 
 function renderParamIndicator(value) {
@@ -1172,7 +1179,7 @@ function renderTable() {
       <td><div class="param-summary">${renderParamIndicator(getOilSummary(item))}</div></td>
       <td>${renderParamIndicator(item.bushing)}</td>
       <td>${renderParamIndicator(getOltcSummary(item))}</td>
-      <td>${item.lastPM}</td>
+      <td>${renderLastPM(item.lastPM)}</td>
       <td><button class="btn-view" onclick="openDetail(${item.no})"><i class="fa-solid fa-expand"></i> Detail</button></td>
     `;
     tbody.appendChild(row);

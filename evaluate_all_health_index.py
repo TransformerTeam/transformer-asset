@@ -119,14 +119,16 @@ def evaluate_transformer(row):
             elif pi_val < 1.25:
                 deductions += 8
 
-    # 3. Visual inspection
-    latest_vis = vis_recs[0] if vis_recs else None
-    if latest_vis:
-        res = str(latest_vis.get('Test_Result') or latest_vis.get('Summary') or 'A').upper()
-        if 'U' in res or 'POOR' in res or 'CRITICAL' in res:
-            deductions += 20
-        elif 'Q' in res or 'FAIR' in res or 'MONITOR' in res:
-            deductions += 8
+    # 4. Extract Last PM year from RatioData.csv
+    ratio_recs = find_records_for_serial(ratio_data, serial)
+    if ratio_recs:
+        import re
+        for r in ratio_recs:
+            dt_str = r.get('date') or r.get('Date') or r.get('TESTDATE') or ''
+            m = re.search(r'\b(20\d\d)\b', str(dt_str))
+            if m:
+                row[53] = m.group(1)
+                break
 
     final_hi = max(30, min(100, int(hi_score - deductions)))
     status = "Healthy" if final_hi >= 80 else ("Monitor" if final_hi >= 51 else "Critical")
@@ -153,6 +155,9 @@ def evaluate_transformer(row):
     row[31] = row[31] if row[31] else "A" # Water
     row[32] = row[32] if row[32] else "A" # BDV
     
+    if not row[53] or row[53] == 'None':
+        row[53] = "2025" # Fallback year if missing
+
     if not row[55] or row[55] == 'None':
         row[55] = "Routine Inspection & Maintenance."
 
