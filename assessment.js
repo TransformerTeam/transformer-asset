@@ -2,7 +2,7 @@
  * Transformer Health Index Assessment - Core Logic
  */
 
-let assessmentData = [];
+let assessmentData = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) ? HEALTH_INDEX_DATA : [];
 let filteredAssessment = [];
 let currentPage = 1;
 let pageSize = 15;

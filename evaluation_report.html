@@ -749,28 +749,19 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      ensureAssessmentData();
-      populateEvalDropdown();
-
-      // Read Serial Parameter from URL
+      // Read Serial Parameter from URL if any
       const urlParams = new URLSearchParams(window.location.search);
       let serialParam = urlParams.get('serial');
-
-      if (!serialParam && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
-        const first = assessmentData[0];
-        serialParam = first.serial || first.SERIAL_NUMBER || first['Serial No'];
-      }
-
       if (serialParam) {
-        const selectEl = document.getElementById('eval-transformer-select');
-        if (selectEl) selectEl.value = serialParam;
-        loadEvaluationBySerial(serialParam);
+        currentSerial = serialParam;
       }
+
+      refreshEvalView();
     });
 
     function switchTransformer(serial) {
