@@ -8,7 +8,8 @@ function getInitialHealthData() {
   return [];
 }
 
-let assessmentData = getInitialHealthData();
+var assessmentData = getInitialHealthData();
+if (typeof window !== 'undefined') { window.assessmentData = assessmentData; }
 let filteredAssessment = [];
 let currentPage = 1;
 let pageSize = 15;
@@ -80,8 +81,12 @@ function loadAllTestDataCSVs() {
         if (d && d.length > 0) {
           const parsed = parseHealthIndexSumCSV(d);
           if (parsed && parsed.length > 0) {
-            assessmentData = parsed;
+            if (!assessmentData || assessmentData.length === 0) {
+              assessmentData = parsed;
+              if (typeof window !== 'undefined') window.assessmentData = parsed;
+            }
             if (typeof initAssessment === 'function') initAssessment();
+            if (typeof refreshEvalView === 'function') refreshEvalView();
           }
         }
       }

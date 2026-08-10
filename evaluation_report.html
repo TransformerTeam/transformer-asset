@@ -703,15 +703,51 @@
 
   <script>
     var currentSerial = '';
-    var assessmentData = (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA) ? window.HEALTH_INDEX_DATA : ((typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA : []);
+    var evalRetryCount = 0;
+
+    function ensureAssessmentData() {
+      let data = [];
+      if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
+        data = window.HEALTH_INDEX_DATA;
+      } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+        data = HEALTH_INDEX_DATA;
+      } else if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
+        data = window.assessmentData;
+      } else if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
+        data = assessmentData;
+      }
+
+      if (data && data.length > 0) {
+        assessmentData = data;
+        if (typeof window !== 'undefined') window.assessmentData = data;
+      }
+    }
 
     function refreshEvalView() {
       ensureAssessmentData();
+
+      // Read Serial Parameter from URL if any
+      if (!currentSerial) {
+        const urlParams = new URLSearchParams(window.location.search);
+        let serialParam = urlParams.get('serial');
+        if (serialParam) {
+          currentSerial = serialParam;
+        }
+      }
+
+      if ((!assessmentData || assessmentData.length === 0) && evalRetryCount < 30) {
+        evalRetryCount++;
+        setTimeout(refreshEvalView, 150);
+        return;
+      }
+
       populateEvalDropdown();
+
       if (!currentSerial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
         const first = assessmentData[0];
         currentSerial = first.serial || first.SERIAL_NUMBER || first['Serial No'];
       }
+
       if (currentSerial) {
         const selectEl = document.getElementById('eval-transformer-select');
         if (selectEl) selectEl.value = currentSerial;
@@ -723,13 +759,7 @@
     if (window.allCSVsPromise) {
       window.allCSVsPromise.then(refreshEvalView);
     }
-
-    function ensureAssessmentData() {
-      const data = (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && window.HEALTH_INDEX_DATA.length > 0) ? window.HEALTH_INDEX_DATA : ((typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA : []);
-      if (typeof assessmentData === 'undefined' || !assessmentData || assessmentData.length === 0) {
-        assessmentData = data;
-      }
-    }
+    window.addEventListener('load', refreshEvalView);
 
     function populateEvalDropdown() {
       ensureAssessmentData();
@@ -755,13 +785,6 @@
       const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
-
-      // Read Serial Parameter from URL if any
-      const urlParams = new URLSearchParams(window.location.search);
-      let serialParam = urlParams.get('serial');
-      if (serialParam) {
-        currentSerial = serialParam;
-      }
 
       refreshEvalView();
     });
