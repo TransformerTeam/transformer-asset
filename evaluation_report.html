@@ -1320,18 +1320,208 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      // 1. Calculate Component Index Scores
-      const generalIndex = 100.0;
-      const activePartIndex = 100.0;
-      const mainTankOilIndex = (item.mainTankOil?.overall === 'Q') ? 90.0 : 100.0;
-      const oltcIndex = 100.0;
-      const bushingIndex = 100.0;
-      const arresterIndex = (item.surgeArrester === 'N/A' || item.surgeArrester === 'A') ? 46.67 : 100.0;
+      // Structure of PT & Sub-PT components matching the PDF report
+      const ptStructure = [
+        {
+          pt: 'General Part', weight: 5,
+          subs: [
+            {
+              sub: 'Overall Inspection', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+              ]
+            }
+          ]
+        },
+        {
+          pt: 'Active Part', weight: 20,
+          subs: [
+            {
+              sub: 'Magnetic Core', full: 100, subWeight: 30,
+              methods: [
+                { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+              ]
+            },
+            {
+              sub: 'HV Winding', full: 100, subWeight: 40,
+              methods: [
+                { name: 'Exciting Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+                { name: 'Single Phase Impedance (%DEV from Nameplate)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+                { name: 'Short Circuit Impedance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+                { name: 'Turn Ratio (%Error from FAT/Oldest)', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+                { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+                { name: 'Polarization Index (R10 min / R1 min)', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'LV Winding', full: 100, subWeight: 20,
+              methods: [
+                { name: 'Winding Resistance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
+                { name: 'Polarization Index (R10 min / R1 min)', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'TV Winding', full: 100, subWeight: 10,
+              methods: [
+                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 40, mWorst: '-' },
+                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 30, mWorst: '-' },
+                { name: 'Polarization Index (R10 min / R1 min)', defaultDate: '2025-06-03', mWeight: 3, maxScore: 30, mWorst: '-' }
+              ]
+            }
+          ]
+        },
+        {
+          pt: 'Insulating Oil', weight: 15,
+          subs: [
+            {
+              sub: 'Main Tank Oil', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Breakdown Voltage (kV)', defaultDate: '2025-09-15', mWeight: 3, maxScore: 20, mWorst: '-' },
+                { name: 'Water Content (ppm)', defaultDate: '2025-09-15', mWeight: 4, maxScore: 26.6667, mWorst: '-' },
+                { name: 'Power Factor (%PF)', defaultDate: '2025-09-15', mWeight: 3, maxScore: 20, mWorst: '-' },
+                { name: 'DGA (Duval Triangle Method)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 33.3333, mWorst: '-' }
+              ]
+            }
+          ]
+        },
+        {
+          pt: 'OLTC', weight: 20,
+          subs: [
+            {
+              sub: 'OLTC Inspection', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+              ]
+            },
+            {
+              sub: 'OLTC Oil', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Breakdown Voltage (kV)', defaultDate: '2025-09-15', mWeight: 4, maxScore: 23.5294, mWorst: '-' },
+                { name: 'Water Content (ppm)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 29.4118, mWorst: '-' },
+                { name: 'Power Factor (%PF)', defaultDate: '2025-09-15', mWeight: 3, maxScore: 17.6471, mWorst: '-' },
+                { name: 'DGA (Duval Triangle Method)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 29.4118, mWorst: '-' }
+              ]
+            }
+          ]
+        },
+        {
+          pt: 'Bushing', weight: 20,
+          subs: [
+            {
+              sub: 'Bushing Inspection', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+              ]
+            },
+            {
+              sub: 'Phase A', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'Phase B', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'Phase C', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            }
+          ]
+        },
+        {
+          pt: 'Arrester', weight: 20,
+          subs: [
+            {
+              sub: 'Arrester Inspection', full: 100, subWeight: 100,
+              methods: [
+                { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+              ]
+            },
+            {
+              sub: 'Phase A', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'Phase B', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'Phase C', full: 100, subWeight: 33.3333,
+              methods: [
+                { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            }
+          ]
+        }
+      ];
 
-      const calculatedOverallHI = (0.05 * generalIndex + 0.20 * activePartIndex + 0.15 * mainTankOilIndex + 0.20 * oltcIndex + 0.20 * bushingIndex + 0.20 * arresterIndex);
-      const overallHIVal = (item.healthIndex && item.healthIndex !== 90) ? parseFloat(item.healthIndex) : calculatedOverallHI;
+      let overallSumHI = 0;
+      const ptResults = {};
 
-      // 2. Render 6 Component Gauges
+      // Calculate dynamic method scores, subcomponent scores, and PT component health index
+      ptStructure.forEach(ptObj => {
+        let subSum = 0;
+
+        ptObj.subs.forEach(subObj => {
+          let mScoreSum = 0;
+
+          subObj.methods.forEach(m => {
+            const match = getMeasuredValueForItem(m.name, item);
+            const evalScore = match.ratingScore || 5;
+            const mScore = evalScore === 5 ? m.maxScore : Math.round(m.maxScore * (evalScore / 5));
+            mScoreSum += mScore;
+
+            m.dynResult = match.value || 'Normal';
+            m.dynDate = match.testDate ? formatDateToDdMmmYyyy(match.testDate) : m.defaultDate;
+            m.dynEval = evalScore;
+            m.dynScore = mScore;
+            m.dynStatus = match.status || 'Uptodate!!';
+          });
+
+          subObj.dynSubScore = mScoreSum;
+          const subResPct = (mScoreSum / subObj.full) * subObj.subWeight;
+          subObj.dynSubRes = subResPct;
+          subSum += subResPct;
+        });
+
+        const ptPct = Math.min(100, subSum);
+        const ptHI = (ptPct / 100) * ptObj.weight;
+        ptObj.dynPct = ptPct;
+        ptObj.dynHI = ptHI;
+
+        ptResults[ptObj.pt] = { pct: ptPct, hi: ptHI };
+        overallSumHI += ptHI;
+      });
+
+      const overallHIVal = (item.healthIndex && item.healthIndex !== 90) ? parseFloat(item.healthIndex) : overallSumHI;
+
+      // Update Gauges
+      const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
+      const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
+      const mainTankOilIndex = ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
+      const oltcIndex = ptResults['OLTC'] ? ptResults['OLTC'].pct : 100.0;
+      const bushingIndex = ptResults['Bushing'] ? ptResults['Bushing'].pct : 100.0;
+      const arresterIndex = ptResults['Arrester'] ? ptResults['Arrester'].pct : 46.67;
+
       const sixGaugesGrid = document.getElementById('pdf-six-gauges-grid');
       if (sixGaugesGrid) {
         sixGaugesGrid.innerHTML = `
@@ -1344,7 +1534,7 @@
         `;
       }
 
-      // 3. Render Center Overall Health Gauge
+      // Update Center Overall Health Gauge
       const mainGaugeCard = document.getElementById('pdf-main-gauge-card');
       if (mainGaugeCard) {
         const p = Math.max(0, Math.min(100, overallHIVal));
@@ -1370,8 +1560,8 @@
         `;
       }
 
-      // 4. Update Analysis Cards
-      const furanVal = 0.006;
+      // Update Analysis Cards
+      const furanVal = (item.mainTankOil?.furan || 0.006);
       const dpVal = item.estimatedDP || 1066.2425;
       const ageVal = item.serviceAge || 29;
       const lifeVal = item.estimatedLife || 25;
@@ -1381,7 +1571,6 @@
       setElText('an-age', ageVal);
       setElText('an-life', lifeVal);
 
-      // DP Progress pointer %
       const dpPercent = Math.max(0, Math.min(100, (parseFloat(dpVal) / 1200) * 100));
       const pointerEl = document.getElementById('an-dp-pointer');
       if (pointerEl) pointerEl.style.left = `${dpPercent.toFixed(1)}%`;
@@ -1389,160 +1578,6 @@
       setElText('an-ift', 32.6);
       setElText('an-acidity', 0.01);
       setElText('an-color', 1.5);
-
-      // 5. Build PDF-Matching 11-Column Detailed Table
-      const ptStructure = [
-        {
-          pt: 'General Part', weight: 5, hiVal: 5.0,
-          subs: [
-            {
-              sub: 'Overall Inspection', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Visual Inspection', date: '2026-04-03', status: 'Uptodate!!', result: 'Normal', eval: 5, mWeight: 5, mScore: 100, mWorst: 100 }
-              ]
-            }
-          ]
-        },
-        {
-          pt: 'Active Part', weight: 20, hiVal: 20.0,
-          subs: [
-            {
-              sub: 'Magnetic Core', full: 100, subScore: 30, subRes: 30,
-              methods: [
-                { name: 'Insulation Resistance (MOhm)', date: '2025-06-03', status: 'Uptodate!!', result: '1000', eval: 5, mWeight: 5, mScore: 100, mWorst: 100 }
-              ]
-            },
-            {
-              sub: 'HV Winding', full: 100, subScore: 40, subRes: 40,
-              methods: [
-                { name: 'Exciting Current (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '2.26', eval: 5, mWeight: 3, mScore: 10, mWorst: '-' },
-                { name: 'Single Phase Impedance (%DEV from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '0.1499', eval: 5, mWeight: 3, mScore: 10, mWorst: '-' },
-                { name: 'Short Circuit Impedance (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '1.0682', eval: 5, mWeight: 5, mScore: 4, mWorst: '13.3333' },
-                { name: 'Turn Ratio (%Error from FAT/Oldest)', date: '2024-06-22', status: 'Uptodate!!', result: '0.13', eval: 5, mWeight: 5, mScore: 5, mWorst: '16.6667' },
-                { name: 'Winding Resistance (%DEV from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '0.9', eval: 5, mWeight: 5, mScore: 5, mWorst: '16.6667' },
-                { name: 'Power Factor (%PF)', date: '2024-06-20', status: 'Uptodate!!', result: '0.3426', eval: 5, mWeight: 4, mScore: 13.3333, mWorst: '-' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '4.69', eval: 5, mWeight: 3, mScore: 10, mWorst: '-' },
-                { name: 'Polarization Index (R10 min / R1 min)', date: '2025-06-03', status: 'Uptodate!!', result: '2.5209', eval: 5, mWeight: 3, mScore: 10, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'LV Winding', full: 100, subScore: 20, subRes: 20,
-              methods: [
-                { name: 'Winding Resistance (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '0.9', eval: 5, mWeight: 5, mScore: 5, mWorst: '33.3333' },
-                { name: 'Power Factor (%PF)', date: '2024-06-20', status: 'Uptodate!!', result: '-', eval: 5, mWeight: 5, mScore: 4, mWorst: '26.6667' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '-', eval: 5, mWeight: 5, mScore: 3, mWorst: '20' },
-                { name: 'Polarization Index (R10 min / R1 min)', date: '2025-06-03', status: 'Uptodate!!', result: '1.6101', eval: 5, mWeight: 3, mScore: 20, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'TV Winding', full: 100, subScore: 10, subRes: 10,
-              methods: [
-                { name: 'Power Factor (%PF)', date: '2024-06-20', status: 'Uptodate!!', result: '0.2448', eval: 5, mWeight: 4, mScore: 40, mWorst: '-' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '0.79', eval: 5, mWeight: 3, mScore: 30, mWorst: '-' },
-                { name: 'Polarization Index (R10 min / R1 min)', date: '2025-06-03', status: 'Uptodate!!', result: 'Unavailable', eval: 5, mWeight: 3, mScore: 30, mWorst: '-' }
-              ]
-            }
-          ]
-        },
-        {
-          pt: 'Insulating Oil', weight: 15, hiVal: 15.0,
-          subs: [
-            {
-              sub: 'Main Tank Oil', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Breakdown Voltage (kV)', date: '2025-09-15', status: 'Uptodate!!', result: '79.6', eval: 5, mWeight: 3, mScore: 20, mWorst: '-' },
-                { name: 'Water Content (ppm)', date: '2025-09-15', status: 'Uptodate!!', result: '6.4', eval: 5, mWeight: 4, mScore: 26.6667, mWorst: '-' },
-                { name: 'Power Factor (%PF)', date: '2025-09-15', status: 'Uptodate!!', result: '0.487', eval: 5, mWeight: 3, mScore: 20, mWorst: '-' },
-                { name: 'DGA (Duval Triangle Method)', date: '2025-09-15', status: 'Uptodate!!', result: 'NORMAL', eval: 5, mWeight: 5, mScore: 33.3333, mWorst: '-' }
-              ]
-            }
-          ]
-        },
-        {
-          pt: 'OLTC', weight: 20, hiVal: 20.0,
-          subs: [
-            {
-              sub: 'OLTC Inspection', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Visual Inspection', date: '2026-04-03', status: 'Uptodate!!', result: 'Normal', eval: 5, mWeight: 5, mScore: 100, mWorst: 100 }
-              ]
-            },
-            {
-              sub: 'OLTC Oil', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Breakdown Voltage (kV)', date: '2025-09-15', status: 'Uptodate!!', result: '66.7', eval: 5, mWeight: 4, mScore: 23.5294, mWorst: '-' },
-                { name: 'Water Content (ppm)', date: '2025-09-15', status: 'Uptodate!!', result: '23.3', eval: 5, mWeight: 5, mScore: 29.4118, mWorst: '-' },
-                { name: 'Power Factor (%PF)', date: '2025-09-15', status: 'Uptodate!!', result: '0.967', eval: 5, mWeight: 3, mScore: 17.6471, mWorst: '-' },
-                { name: 'DGA (Duval Triangle Method)', date: '2025-09-15', status: 'Uptodate!!', result: 'NORMAL', eval: 5, mWeight: 5, mScore: 29.4118, mWorst: '-' }
-              ]
-            }
-          ]
-        },
-        {
-          pt: 'Bushing', weight: 20, hiVal: 20.0,
-          subs: [
-            {
-              sub: 'Bushing Inspection', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Visual Inspection', date: '2026-04-03', status: 'Uptodate!!', result: 'Normal', eval: 5, mWeight: 5, mScore: 100, mWorst: 100 }
-              ]
-            },
-            {
-              sub: 'Phase A', full: 100, subScore: 33.3333, subRes: 33.3333,
-              methods: [
-                { name: 'Power Factor (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '11.26', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' },
-                { name: 'Capacitance (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '2.09', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Phase B', full: 100, subScore: 33.3333, subRes: 33.3333,
-              methods: [
-                { name: 'Power Factor (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '12.33', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' },
-                { name: 'Capacitance (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '2.21', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Phase C', full: 100, subScore: 33.3333, subRes: 33.3333,
-              methods: [
-                { name: 'Power Factor (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '6.78', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' },
-                { name: 'Capacitance (%Error from Nameplate)', date: '2024-06-20', status: 'Uptodate!!', result: '2.46', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' }
-              ]
-            }
-          ]
-        },
-        {
-          pt: 'Arrester', weight: 20, hiVal: 9.334,
-          subs: [
-            {
-              sub: 'Arrester Inspection', full: 100, subScore: 100, subRes: 100,
-              methods: [
-                { name: 'Visual Inspection', date: '2026-04-03', status: 'Uptodate!!', result: 'Normal', eval: 5, mWeight: 5, mScore: 100, mWorst: 100 }
-              ]
-            },
-            {
-              sub: 'Phase A', full: 20, subScore: 20, subRes: 6.66666,
-              methods: [
-                { name: 'Leakage Current (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '100', eval: 1, mWeight: 5, mScore: 10, mWorst: '-' },
-                { name: 'Watt Loss (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '436.14', eval: 1, mWeight: 5, mScore: 10, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Phase B', full: 100, subScore: 100, subRes: 33.3333,
-              methods: [
-                { name: 'Leakage Current (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '33.33', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' },
-                { name: 'Watt Loss (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '48.73', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Phase C', full: 60, subScore: 20, subRes: 6.66666,
-              methods: [
-                { name: 'Leakage Current (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '25', eval: 5, mWeight: 5, mScore: 50, mWorst: '-' },
-                { name: 'Watt Loss (%Error from FAT/Oldest)', date: '2024-06-20', status: 'Uptodate!!', result: '260.35', eval: 1, mWeight: 5, mScore: 10, mWorst: '-' }
-              ]
-            }
-          ]
-        }
-      ];
 
       // Build HTML for Part 1 Table
       ptStructure.forEach(ptObj => {
@@ -1557,12 +1592,12 @@
 
             let html = '';
 
-            // 1. PT Component (First row of PT Component)
+            // 1. PT Component
             if (subIdx === 0 && mIdx === 0) {
               html += `<td class="cell-pt" rowspan="${ptRowCount}">${ptObj.pt}</td>`;
             }
 
-            // 2. Sub-PT Component (First row of Sub-PT)
+            // 2. Sub-PT Component
             if (mIdx === 0) {
               html += `<td class="cell-sub-pt" rowspan="${subRowCount}">${subObj.sub}</td>`;
             }
@@ -1571,33 +1606,33 @@
             html += `<td>${m.name}</td>`;
 
             // 4. Testing Date
-            html += `<td style="text-align:center;">${m.date}</td>`;
+            html += `<td style="text-align:center;">${m.dynDate}</td>`;
 
             // 5. Test Result Status
-            html += `<td class="cell-uptodate">${m.status}</td>`;
+            html += `<td class="cell-uptodate">${m.dynStatus}</td>`;
 
             // 6. Test Result
-            html += `<td style="text-align:center; font-weight:600;">${m.result}</td>`;
+            html += `<td style="text-align:center; font-weight:600;">${m.dynResult}</td>`;
 
             // 7. Evaluation Result (Badge 1..5)
-            html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.eval}">${m.eval}</span></td>`;
+            html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
 
             // 8. Test Method Evaluation: Weight, Score, Worst
             html += `<td style="text-align:center;">${m.mWeight}</td>`;
-            html += `<td style="text-align:center;">${m.mScore}</td>`;
+            html += `<td style="text-align:center;">${m.dynScore}</td>`;
             html += `<td style="text-align:center;">${m.mWorst || '-'}</td>`;
 
-            // 9. Sub Component Health Index: Full, Score, Result (First row of Sub-PT)
+            // 9. Sub Component Health Index: Full, Score, Result
             if (mIdx === 0) {
               html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${subObj.full}</td>`;
-              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${subObj.subScore}</td>`;
-              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${typeof subObj.subRes === 'number' ? subObj.subRes.toFixed(subObj.subRes % 1 === 0 ? 0 : 4) : subObj.subRes}</td>`;
+              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${subObj.dynSubScore}</td>`;
+              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${typeof subObj.dynSubRes === 'number' ? subObj.dynSubRes.toFixed(subObj.dynSubRes % 1 === 0 ? 0 : 4) : subObj.dynSubRes}</td>`;
             }
 
-            // 10. Weight & 11. Health Index (First row of PT Component)
+            // 10. Weight & 11. Health Index
             if (subIdx === 0 && mIdx === 0) {
               html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
-              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.hiVal === 'number' ? ptObj.hiVal.toFixed(ptObj.hiVal % 1 === 0 ? 0 : 3) : ptObj.hiVal}</td>`;
+              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? ptObj.dynHI.toFixed(ptObj.dynHI % 1 === 0 ? 0 : 3) : ptObj.dynHI}</td>`;
             }
 
             tr.innerHTML = html;
