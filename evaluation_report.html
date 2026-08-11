@@ -1298,7 +1298,37 @@
     // ==========================================
     // RENDER PART 1: CONDITION HEALTH INDEX (PDF FORMAT)
     // ==========================================
-    function createHalfGaugeSVG(percent, label, valLabel) {
+    function createHalfGaugeSVG(percent, label, valLabel, isNA = false) {
+      if (isNA) {
+        const grayArcPath = `M 14 48 A 36 36 0 0 1 86 48`;
+        const cx = 50;
+        const cy = 48;
+        const nx = 50;
+        const ny = 17;
+
+        return `
+          <div class="pdf-gauge-card" style="background: #f8fafc; border-color: #e2e8f0; opacity: 0.88;">
+            <div class="g-title" style="color: #64748b;">${label}</div>
+            <svg viewBox="0 0 100 62" style="width: 100%; height: 62px;">
+              <!-- Grey Arc Track -->
+              <path d="${grayArcPath}" fill="none" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round" />
+
+              <text x="12" y="59" font-size="7.5" font-weight="700" fill="#94a3b8" text-anchor="middle">0</text>
+              <text x="88" y="59" font-size="7.5" font-weight="700" fill="#94a3b8" text-anchor="middle">100</text>
+
+              <!-- Grey Needle -->
+              <polygon points="${nx},${ny} 47.8,48 52.2,48" fill="#64748b" stroke="#cbd5e1" stroke-width="0.8" />
+              <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#64748b" stroke-width="2.2" stroke-linecap="round" />
+
+              <!-- Grey Pivot Ring -->
+              <circle cx="${cx}" cy="${cy}" r="5.5" fill="#64748b" stroke="#ffffff" stroke-width="1.8" />
+              <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
+            </svg>
+            <div class="g-val" style="color: #64748b; font-weight: 700;">${valLabel} : N/A</div>
+          </div>
+        `;
+      }
+
       const p = Math.max(0, Math.min(100, parseFloat(percent) || 0));
       const angleRad = Math.PI * (1 - p / 100);
 
@@ -1546,7 +1576,14 @@
 
       const overallHIVal = (item.healthIndex && item.healthIndex !== 90) ? parseFloat(item.healthIndex) : overallSumHI;
 
-      // Update Gauges
+      // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
+      const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
+      const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
+
+      const isBushingNA = isUatOrAux || item.bushing === 'N/A';
+      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
+
+      // Gauge Indices
       const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
       const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
       const mainTankOilIndex = ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
@@ -1557,12 +1594,12 @@
       const sixGaugesGrid = document.getElementById('pdf-six-gauges-grid');
       if (sixGaugesGrid) {
         sixGaugesGrid.innerHTML = `
-          ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index')}
-          ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index')}
-          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index')}
-          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index')}
-          ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index')}
-          ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index')}
+          ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index', false)}
+          ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index', false)}
+          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index', false)}
+          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', false)}
+          ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index', isBushingNA)}
+          ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index', isSurgeNA)}
         `;
       }
 
