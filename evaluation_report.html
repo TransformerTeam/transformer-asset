@@ -583,12 +583,14 @@
     }
     .pdf-dp-pointer {
       position: absolute;
-      top: -3px;
+      top: -4px;
       width: 3px;
-      height: 15px;
-      background: #0f172a;
+      height: 17px;
+      background: #000000;
       border: 1px solid #ffffff;
+      box-shadow: 0 0 3px rgba(0,0,0,0.6);
       transform: translateX(-50%);
+      z-index: 2;
     }
     .pdf-dp-ticks {
       display: flex;
@@ -851,30 +853,22 @@
         <div class="pdf-analysis-card-title"><i class="fa-solid fa-clock"></i> Transformer Remaining Life Analysis</div>
         <table class="pdf-analysis-table">
           <tr>
-            <td class="label-col">Maintank Furan Test Result (ppm)</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-furan">0.006</span></td>
-          </tr>
-          <tr>
             <td class="label-col">Degree of Polymerization (DP)</td>
             <td class="val-col"><span class="pdf-status-pill-green" id="an-dp">1066.24</span></td>
           </tr>
           <tr>
-            <td class="label-col">Transformer Age (Year)</td>
-            <td class="val-col" id="an-age">29</td>
-          </tr>
-          <tr>
             <td class="label-col">Transformer Remaining Life (Year)</td>
-            <td class="val-col" id="an-life">25</td>
+            <td class="val-col" id="an-life" style="font-weight: 700;">25</td>
           </tr>
         </table>
-        <!-- Result Percentage DP Progress Bar -->
-        <div class="pdf-dp-bar-wrapper">
-          <div class="pdf-dp-bar-title">Result Percentage DP</div>
+        <!-- Remaining Life (Year) Progress Bar -->
+        <div class="pdf-dp-bar-wrapper" style="margin-top: 10px;">
+          <div class="pdf-dp-bar-title">Remaining Life (Year)</div>
           <div class="pdf-dp-track">
-            <div class="pdf-dp-pointer" id="an-dp-pointer" style="left: 100%;"></div>
+            <div class="pdf-dp-pointer" id="an-dp-pointer" style="left: 62.5%;"></div>
           </div>
           <div class="pdf-dp-ticks">
-            <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span><span>90</span><span>100</span>
+            <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
           </div>
         </div>
       </div>
@@ -1655,20 +1649,18 @@
         `;
       }
 
-      // Update Analysis Cards
-      const furanVal = (item.mainTankOil?.furan || 0.006);
+      // Update Analysis Cards (DP & Remaining Life 0-40 Year Bar)
       const dpVal = item.estimatedDP || 1066.2425;
-      const ageVal = item.serviceAge || 29;
       const lifeVal = item.estimatedLife || 25;
 
-      setElText('an-furan', furanVal);
       setElText('an-dp', typeof dpVal === 'number' ? dpVal.toFixed(4) : dpVal);
-      setElText('an-age', ageVal);
       setElText('an-life', lifeVal);
 
-      const dpPercent = Math.max(0, Math.min(100, (parseFloat(dpVal) / 1200) * 100));
+      // Remaining Life Bar Pointer: Limit at 40 years (0 = Red, 40 = Green)
+      const lifeNum = parseFloat(lifeVal) || 0;
+      const lifePercent = Math.max(0, Math.min(100, (lifeNum / 40) * 100));
       const pointerEl = document.getElementById('an-dp-pointer');
-      if (pointerEl) pointerEl.style.left = `${dpPercent.toFixed(1)}%`;
+      if (pointerEl) pointerEl.style.left = `${lifePercent.toFixed(1)}%`;
 
       setElText('an-ift', 32.6);
       setElText('an-acidity', 0.01);
