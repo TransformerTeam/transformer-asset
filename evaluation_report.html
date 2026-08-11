@@ -561,6 +561,30 @@
       min-width: 55px;
       text-align: center;
     }
+    .pdf-status-pill-yellow {
+      display: inline-block;
+      background: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fef08a;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 0.65rem;
+      min-width: 55px;
+      text-align: center;
+    }
+    .pdf-status-pill-red {
+      display: inline-block;
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 0.65rem;
+      min-width: 55px;
+      text-align: center;
+    }
 
     /* DP Scale Bar */
     .pdf-dp-bar-wrapper {
@@ -576,7 +600,7 @@
     }
     .pdf-dp-track {
       height: 9px;
-      background: linear-gradient(to right, #ef4444 0%, #eab308 50%, #22c55e 100%);
+      background: linear-gradient(to right, #ef4444 0%, #ef4444 24.5%, #f59e0b 25%, #f59e0b 37%, #10b981 37.5%, #10b981 100%);
       border-radius: 4px;
       position: relative;
       border: 1px solid #cbd5e1;
@@ -1654,10 +1678,15 @@
       const lifeVal = item.estimatedLife || 25;
 
       setElText('an-dp', typeof dpVal === 'number' ? dpVal.toFixed(4) : dpVal);
-      setElText('an-life', lifeVal);
 
-      // Remaining Life Bar Pointer: Limit at 40 years (0 = Red, 40 = Green)
       const lifeNum = parseFloat(lifeVal) || 0;
+      const lifeEl = document.getElementById('an-life');
+      if (lifeEl) {
+        const pillClass = lifeNum > 15 ? 'pdf-status-pill-green' : (lifeNum >= 10 ? 'pdf-status-pill-yellow' : 'pdf-status-pill-red');
+        lifeEl.innerHTML = `<span class="${pillClass}">${lifeNum}</span>`;
+      }
+
+      // Remaining Life Bar Pointer: Limit at 40 years (Red <10, Yellow 10-15, Green >15)
       const lifePercent = Math.max(0, Math.min(100, (lifeNum / 40) * 100));
       const pointerEl = document.getElementById('an-dp-pointer');
       if (pointerEl) pointerEl.style.left = `${lifePercent.toFixed(1)}%`;
