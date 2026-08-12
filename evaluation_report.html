@@ -404,8 +404,8 @@
     /* ========================================================================= */
     .pdf-gauges-wrapper {
       display: grid;
-      grid-template-columns: 1.45fr 60px 2.35fr;
-      gap: 10px;
+      grid-template-columns: 1.55fr 2.45fr;
+      gap: 12px;
       margin-bottom: 14px;
       align-items: stretch;
     }
@@ -452,13 +452,35 @@
       border: 1.5px solid #cbd5e1;
       border-radius: 8px;
       padding: 10px 12px;
-      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex: 1;
+    }
+    .pdf-main-gauge-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+    }
+    .pdf-main-gauge-left {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      flex: 1;
+      text-align: center;
+    }
+    .pdf-main-accuracy-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 10px;
+      border-left: 1px dashed #cbd5e1;
+      margin-left: 8px;
+      height: 100%;
+      min-width: 46px;
     }
     .pdf-main-gauge-card .g-main-title {
       font-size: 0.88rem;
@@ -887,16 +909,7 @@
         </div>
       </div>
 
-      <!-- 2. Middle Column: Accuracy Bar -->
-      <div class="pdf-accuracy-card">
-        <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">100%</div>
-        <div class="pdf-accuracy-bar-track">
-          <div class="pdf-accuracy-bar-fill" style="height: 100%;"></div>
-        </div>
-        <div class="pdf-accuracy-label">Accuracy<br>100%</div>
-      </div>
-
-      <!-- 3. Right Column: 6 Component Gauges Grid (2x3) -->
+      <!-- 2. Right Column: 6 Component Gauges Grid (2x3) -->
       <div class="pdf-six-gauges-grid" id="pdf-six-gauges-grid">
         <!-- Rendered dynamically -->
       </div>
@@ -1634,25 +1647,38 @@
         const hiColor = hiVal >= 80 ? '#16a34a' : (hiVal >= 51 ? '#d97706' : '#dc2626');
 
         mainGaugeCard.innerHTML = `
-          <div class="g-main-title">Transformer</div>
-          <div class="g-main-sub">%Overall Health Index</div>
-          <svg viewBox="0 0 100 62" style="width: 100%; height: 95px; margin-top: 2px;">
-            <path d="${redPath}" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
-            <path d="${yellowPath}" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
-            <path d="${greenPath}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" />
+          <div class="pdf-main-gauge-content">
+            <div class="pdf-main-gauge-left">
+              <div class="g-main-title">Transformer</div>
+              <div class="g-main-sub">%Overall Health Index</div>
+              <svg viewBox="0 0 100 62" style="width: 100%; height: 95px; margin-top: 2px;">
+                <path d="${redPath}" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
+                <path d="${yellowPath}" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
+                <path d="${greenPath}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" />
 
-            <text x="12" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">0</text>
-            <text x="88" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">100</text>
+                <text x="12" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">0</text>
+                <text x="88" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">100</text>
 
-            <!-- Needle (Black / Dark Slate with Crisp White Outline) -->
-            <polygon points="${nx},${ny} ${p1x},${p1y} ${p2x},${p2y}" fill="#0f172a" stroke="#ffffff" stroke-width="0.8" />
-            <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" />
+                <!-- Needle (Black / Dark Slate with Crisp White Outline) -->
+                <polygon points="${nx},${ny} ${p1x},${p1y} ${p2x},${p2y}" fill="#0f172a" stroke="#ffffff" stroke-width="0.8" />
+                <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" />
 
-            <!-- Pivot Ring & Dot -->
-            <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
-            <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
-          </svg>
-          <div class="g-main-val-text" style="color: ${hiColor};">HI ${hiVal}%</div>
+                <!-- Pivot Ring & Dot -->
+                <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
+                <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
+              </svg>
+              <div class="g-main-val-text" style="color: ${hiColor};">HI ${hiVal}%</div>
+            </div>
+
+            <!-- Integrated Accuracy Bar (Right side of Overall Health Index Card) -->
+            <div class="pdf-main-accuracy-side">
+              <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">100%</div>
+              <div class="pdf-accuracy-bar-track">
+                <div class="pdf-accuracy-bar-fill" style="height: 100%;"></div>
+              </div>
+              <div class="pdf-accuracy-label">Accuracy<br>100%</div>
+            </div>
+          </div>
         `;
       }
 
