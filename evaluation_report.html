@@ -1193,8 +1193,9 @@
       if (selectEl) selectEl.value = serialVal;
 
       // 1. Part 1: Condition Health Index Summary
-      const hi = item.healthIndex || 90;
-      const hiStatus = item.healthStatus || (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Monitor' : 'Critical'));
+      // Compute HI from formula (same as table) — do NOT use item.healthIndex directly
+      const { percentHIVal: hi } = computeHI(item);
+      const hiStatus = hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Monitor' : 'Critical');
       setElText('summary-hi-score', `${hi}%`);
       const scoreEl = document.getElementById('summary-hi-score');
       if (scoreEl) scoreEl.style.color = hi >= 80 ? '#16a34a' : (hi >= 51 ? '#d97706' : '#dc2626');
@@ -1221,6 +1222,34 @@
       renderPart1Table(item);
       renderPart2Table(item);
       renderPart3Table(item);
+    }
+
+    // =============================================
+    // computeHI: Calculate Overall HI & Percent HI
+    // from the PT Structure formula (no CSV override)
+    // Returns: { overallHIVal, maxOverallHI, percentHIVal }
+    // =============================================
+    function computeHI(item) {
+      let overallSumHI = 0;
+      const ptStructure = buildPtStructure(item); // reuse same structure
+      ptStructure.forEach(ptObj => {
+        let ptNumerator = 0;
+        let ptDenominator = 0;
+        ptObj.subs.forEach(subObj => {
+          subObj.methods.forEach(m => {
+            const match = getMeasuredValueForItem(m.name, item);
+            const evalScore = match.ratingScore || 5;
+            ptNumerator   += evalScore * m.mWeight;
+            ptDenominator += 5 * m.mWeight;
+          });
+        });
+        const ptHI = ptDenominator > 0 ? Math.round((ptNumerator / ptDenominator) * 100) : 100;
+        overallSumHI += ptHI;
+      });
+      const overallHIVal = overallSumHI;
+      const maxOverallHI = ptStructure.length * 100;
+      const percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
+      return { overallHIVal, maxOverallHI, percentHIVal };
     }
 
     function setSubScoreBox(idKey, valStr) {
@@ -1383,13 +1412,12 @@
       `;
     }
 
-    function renderPart1Table(item) {
-      const tbody = document.getElementById('part1-table-body');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      // Structure of PT & Sub-PT components matching the PDF report
-      const ptStructure = [
+    // ==========================================
+    // buildPtStructure: Returns PT component data
+    // (shared by renderPart1Table and computeHI)
+    // ==========================================
+    function buildPtStructure(item) {
+      return [
         {
           pt: 'General Part', weight: 5,
           subs: [
@@ -1541,6 +1569,14 @@
           ]
         }
       ];
+    }
+
+    function renderPart1Table(item) {
+      const tbody = document.getElementById('part1-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const ptStructure = buildPtStructure(item);
 
       let overallSumHI = 0;
       const ptResults = {};
@@ -1590,22 +1626,16 @@
         overallSumHI += ptHI;
       });
 
-      // Overall HI = simple sum of Health Index column values
-      const calcOverallHI = overallSumHI;
-      const useItemHI = !!(item.healthIndex && parseFloat(item.healthIndex) !== 90);
-      const overallHIVal = useItemHI
-        ? Math.round(parseFloat(item.healthIndex))
-        : calcOverallHI;
+      // Overall HI = sum of all PT Component Health Index values
+      const overallHIVal = overallSumHI;
 
-      // Max Overall HI = sum if every PT scores 100 (i.e., ptStructure.length × 100)
+      // Max Overall HI = ptStructure.length × 100 (each PT can score max 100)
       const maxOverallHI = ptStructure.length * 100;
 
-      // Percent HI:
-      //   - If overallHIVal came from item.healthIndex (already a 0-100% value) → use directly
-      //   - If computed from PT sum → (calcOverallHI / maxOverallHI) * 100
-      const percentHIVal = useItemHI
-        ? overallHIVal
-        : (maxOverallHI > 0 ? Math.round((calcOverallHI / maxOverallHI) * 100) : 0);
+      // Percent HI = (Overall HI / Max Overall HI) × 100
+      const percentHIVal = maxOverallHI > 0
+        ? Math.round((overallHIVal / maxOverallHI) * 100)
+        : 0;
 
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
