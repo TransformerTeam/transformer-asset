@@ -1231,19 +1231,28 @@
     // =============================================
     function computeHI(item) {
       let overallSumHI = 0;
-      const ptStructure = buildPtStructure(item); // reuse same structure
+      const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
-        let ptNumerator = 0;
-        let ptDenominator = 0;
+        let minEval = 5;
+        let hasMethods = false;
+
         ptObj.subs.forEach(subObj => {
           subObj.methods.forEach(m => {
             const match = getMeasuredValueForItem(m.name, item);
             const evalScore = match.ratingScore || 5;
-            ptNumerator   += evalScore * m.mWeight;
-            ptDenominator += 5 * m.mWeight;
+            if (evalScore < minEval) {
+              minEval = evalScore;
+            }
+            hasMethods = true;
           });
         });
-        const ptHI = ptDenominator > 0 ? Math.round((ptNumerator / ptDenominator) * 100) : 100;
+
+        // Formula: Health Index = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
+        const ptWeight = ptObj.weight || 1;
+        const ptHI = hasMethods
+          ? Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100)
+          : 100;
+
         overallSumHI += ptHI;
       });
       const overallHIVal = overallSumHI;
@@ -1582,10 +1591,10 @@
       const ptResults = {};
 
       // Calculate dynamic method scores and PT Component Health Index
-      // Formula: HI = (Σ(EvalResult × mWeight) / Σ(5 × mWeight)) × 100
+      // Formula: HI = ((Evaluation Result (Min) × Weight) / (5 × Weight)) × 100
       ptStructure.forEach(ptObj => {
-        let ptNumerator = 0;
-        let ptDenominator = 0;
+        let minEval = 5;
+        let hasMethods = false;
 
         ptObj.subs.forEach(subObj => {
           let mScoreSum = 0;
@@ -1596,9 +1605,10 @@
             const mScore = evalScore === 5 ? m.maxScore : Math.round(m.maxScore * (evalScore / 5));
             mScoreSum += mScore;
 
-            // Accumulate numerator/denominator for HI formula
-            ptNumerator   += evalScore * m.mWeight;
-            ptDenominator += 5 * m.mWeight;
+            if (evalScore < minEval) {
+              minEval = evalScore;
+            }
+            hasMethods = true;
 
             m.dynResult = match.value || 'Normal';
             m.dynDate   = match.testDate ? formatDateToDdMmmYyyy(match.testDate) : m.defaultDate;
@@ -1612,9 +1622,10 @@
           subObj.dynSubRes = subResPct;
         });
 
-        // HI per PT Component = (Σ EvalResult*mWeight / Σ 5*mWeight) * 100
-        const ptHI = ptDenominator > 0
-          ? Math.round((ptNumerator / ptDenominator) * 100)
+        // HI per PT Component = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
+        const ptWeight = ptObj.weight || 1;
+        const ptHI = hasMethods
+          ? Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100)
           : 100;
 
         ptObj.dynPct = ptHI;
