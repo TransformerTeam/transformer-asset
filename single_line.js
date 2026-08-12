@@ -159,19 +159,82 @@ function setupEventListeners() {
   document.getElementById('csv-file-input').addEventListener('change', handleCSVImport);
 }
 
-// Fetch and Parse CSV File
+// Convert HEALTH_INDEX_DATA / TR_DATA array to SCADA record objects
+function convertHealthIndexDataToRecords(dataArray) {
+  if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
+  
+  return dataArray.map((item, idx) => {
+    const trInfo = item.trInfo || {};
+    const name = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || `TR-${idx + 1}`;
+    const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'] || trInfo.SERIAL_NUMBER || '-';
+    const site = item.site || item.SITE || item.LOCATION || trInfo.SITE || 'CUP-1';
+    const hi = item.healthIndex || item.healthIndexVal || item['Condition Health Index'] || trInfo.HI || 0;
+    const dp = item.estimatedDP || item['Estimated DP (From Furan)'] || '-';
+    const power = item.ratedPower || item.POWER_RATING_DETAIL || trInfo.POWER_RATING_DETAIL || (trInfo.POWER_RATING ? `${trInfo.POWER_RATING} MVA` : '-');
+    
+    let hv = parseFloat(item.hvRate || item.hvVoltage || item.HV_RATED || trInfo.HV_RATED || item['HV Rate (kV)']) || 0;
+    if (hv === 0 && (item.ratedVoltage || trInfo.HV_RATED)) {
+      hv = parseFloat(String(item.ratedVoltage || trInfo.HV_RATED).split('/')[0]) || 0;
+    }
+
+    const voltage = item.ratedVoltage || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED} kV` : (trInfo.HV_RATED ? `${trInfo.HV_RATED}/${trInfo.LV_RATED || ''} kV` : `${hv} kV`));
+
+    return {
+      "No.": String(idx + 1),
+      "Equipment Name": name,
+      "Serial No": serial,
+      "SITE": site,
+      "HV Rate (kV)": String(hv),
+      "Condition Health Index": String(hi),
+      "Estimated DP (From Furan)": typeof dp === 'number' ? dp.toFixed(2) : String(dp),
+      "Rated Power (MVA)": power,
+      "Rated Voltage (kV)": voltage,
+      "Service_Type": item.serviceType || trInfo.Service_Type || '',
+      "_rawItem": item
+    };
+  });
+}
+
+function tryFallbackData() {
+  let dataArray = null;
+  if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
+    dataArray = window.HEALTH_INDEX_DATA;
+  } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+    dataArray = HEALTH_INDEX_DATA;
+  } else if (typeof window !== 'undefined' && window.TR_DATA && Array.isArray(window.TR_DATA) && window.TR_DATA.length > 0) {
+    dataArray = window.TR_DATA;
+  } else if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA) && TR_DATA.length > 0) {
+    dataArray = TR_DATA;
+  }
+
+  if (dataArray && dataArray.length > 0) {
+    const records = convertHealthIndexDataToRecords(dataArray);
+    if (records && records.length > 0) {
+      rawTransformers = records;
+      initializeDashboard();
+      return true;
+    }
+  }
+  return false;
+}
+
+// Fetch and Parse CSV File with robust fallback to preloaded HEALTH_INDEX_DATA / TR_DATA
 function loadCSVData() {
   if (typeof healthDataCsv !== 'undefined' && healthDataCsv) {
     const records = parseHealthIndexSumCSV(healthDataCsv);
     if (records && records.length > 0) {
       rawTransformers = records;
       initializeDashboard();
-    } else {
-      showEmptyState("Could not parse HealthIndexSum.csv data.");
+      return;
     }
+  }
+
+  // Try fallback pre-compiled data first
+  if (tryFallbackData()) {
     return;
   }
 
+  // Otherwise fetch HealthIndexSum.csv
   fetch('HealthIndexSum.csv')
     .then(response => {
       if (!response.ok) {
@@ -185,12 +248,16 @@ function loadCSVData() {
         rawTransformers = records;
         initializeDashboard();
       } else {
-        showEmptyState("Could not parse HealthIndexSum.csv data.");
+        if (!tryFallbackData()) {
+          showEmptyState("Could not parse HealthIndexSum.csv data.");
+        }
       }
     })
     .catch(error => {
-      console.error(error);
-      showEmptyState("HealthIndexSum.csv not found. Please import it manually.");
+      console.warn("CSV fetch notice, using preloaded data:", error);
+      if (!tryFallbackData()) {
+        showEmptyState("HealthIndexSum.csv not found. Please import it manually.");
+      }
     });
 }
 
@@ -606,111 +673,114 @@ function applySearchFilter() {
   });
 }
 
-// Open Detail Page in New Tab
-function openDetailModal(serialNumber) {
-  window.open(`assessment.html?serial=${encodeURIComponent(serialNumber)}`, '_blank');
+// Helper to set modal text elements safely
+function setModalText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val || '-';
 }
-  const nextPM = tr["Next PM"] || '-';
-  const recommendation = tr["Recommendation"] || 'No specific maintenance recommended at this time.';
+
+// Open Detail Page / Modal
+function openDetailModal(serialNumber) {
+  const tr = rawTransformers.find(t => t["Serial No"] === serialNumber || t["Equipment Name"] === serialNumber) || rawTransformers[0];
+  if (!tr) return;
+
+  const name = tr["Equipment Name"] || '-';
+  const serial = tr["Serial No"] || '-';
+  const site = tr["SITE"] || '-';
+  const hiVal = parseInt(tr["Condition Health Index"]) || 0;
+  const ratedPower = tr["Rated Power (MVA)"] || tr["Rated Power\n(MVA)"] || '-';
+  const hvRate = tr["HV Rate (kV)"] || '-';
+  const lvRate = '-';
+  const dateToAssess = tr["Result_Date"] || tr["Date"] || '19-Jan-2026';
+  const recommendation = tr["Recommendation"] || (tr._rawItem?.recommendation) || 'No specific maintenance recommended at this time.';
 
   // Populate spec text
-  document.getElementById('modal-transformer-title').textContent = name;
-  document.getElementById('modal-transformer-subtitle').textContent = `Serial: ${serial} | Site: ${site}`;
+  const titleEl = document.getElementById('modal-transformer-title');
+  if (titleEl) titleEl.textContent = name;
+  const subEl = document.getElementById('modal-transformer-subtitle');
+  if (subEl) subEl.textContent = `Serial: ${serial} | Site: ${site}`;
   
-  document.getElementById('spec-site').textContent = site;
-  document.getElementById('spec-company').textContent = 'GPSC';
-  document.getElementById('spec-brand').textContent = '-'; // Not directly in this CSV
-  document.getElementById('spec-mfg-date').textContent = '-';
-  document.getElementById('spec-power-rating').textContent = `${ratedPower} MVA`;
-  document.getElementById('spec-cooling').textContent = '-';
-  document.getElementById('spec-tap-changer').textContent = '-';
-  document.getElementById('spec-vector-group').textContent = '-';
+  setModalText('spec-site', site);
+  setModalText('spec-company', 'GPSC');
+  setModalText('spec-brand', tr._rawItem?.trInfo?.BRAND || '-');
+  setModalText('spec-mfg-date', tr._rawItem?.trInfo?.MANUFACTURING_DATE || '-');
+  setModalText('spec-power-rating', `${ratedPower} MVA`);
+  setModalText('spec-cooling', tr._rawItem?.trInfo?.TYPE_OF_COOLING || '-');
+  setModalText('spec-tap-changer', tr._rawItem?.trInfo?.TAP_CHANGER_TYPE || '-');
+  setModalText('spec-vector-group', tr._rawItem?.trInfo?.VECTOR_GROUP || '-');
   
-  document.getElementById('spec-hv-voltage').textContent = `${hvRate} kV`;
-  document.getElementById('spec-lv-voltage').textContent = `${lvRate} kV`;
-  document.getElementById('spec-insulation').textContent = 'OIL TYPE'; // Default
-  document.getElementById('spec-mass').textContent = '-';
-  document.getElementById('spec-gps').textContent = '-';
+  setModalText('spec-hv-voltage', `${hvRate} kV`);
+  setModalText('spec-lv-voltage', `${lvRate} kV`);
+  setModalText('spec-insulation', 'OIL TYPE');
+  setModalText('spec-mass', '-');
+  setModalText('spec-gps', tr._rawItem?.trInfo?.LOCATION_GPS || '-');
   
   // Set health ring & score
-  document.getElementById('modal-health-score').textContent = hiVal;
-  document.getElementById('modal-inspection-date').textContent = dateToAssess;
+  const scoreEl = document.getElementById('modal-health-score');
+  if (scoreEl) scoreEl.textContent = hiVal;
+  const dateEl = document.getElementById('modal-inspection-date');
+  if (dateEl) dateEl.textContent = dateToAssess;
   
   const ring = document.getElementById('modal-health-ring');
-  ring.setAttribute('stroke-dasharray', `${hiVal}, 100`);
+  if (ring) {
+    ring.setAttribute('stroke-dasharray', `${hiVal}, 100`);
+    ring.className.baseVal = "circle";
+  }
   
   // Set health class & recommendation details
   const badge = document.getElementById('modal-health-badge');
-  badge.className = 'badge';
+  if (badge) badge.className = 'badge';
   
   const recCard = document.getElementById('rec-card');
-  recCard.className = 'recommendation-card';
+  if (recCard) recCard.className = 'recommendation-card';
   
   const recTitle = document.getElementById('rec-title');
   const recText = document.getElementById('rec-text');
   
-  ring.className.baseVal = "circle";
-  
   if (hiVal === 0 || isNaN(hiVal)) {
-    badge.classList.add('badge-noassess');
-    badge.textContent = 'NO ASSESS';
-    ring.classList.add('no-assess');
-    recCard.classList.add('no-assess');
-    recTitle.textContent = 'No Assessment Available';
-    recText.textContent = 'This transformer has not been assessed yet or has a Health Index of 0%.';
+    if (badge) { badge.classList.add('badge-noassess'); badge.textContent = 'NO ASSESS'; }
+    if (ring) ring.classList.add('no-assess');
+    if (recCard) recCard.classList.add('no-assess');
+    if (recTitle) recTitle.textContent = 'No Assessment Available';
+    if (recText) recText.textContent = 'This transformer has not been assessed yet or has a Health Index of 0%.';
   } else if (hiVal >= 80) {
-    badge.classList.add('badge-healthy');
-    badge.textContent = 'HEALTHY';
-    ring.classList.add('healthy');
-    recCard.classList.add('healthy');
-    recTitle.textContent = 'Healthy - Routine Maintenance';
-    recText.textContent = recommendation || 'Routine maintenance - no specific concerns identified.';
+    if (badge) { badge.classList.add('badge-healthy'); badge.textContent = 'HEALTHY'; }
+    if (ring) ring.classList.add('healthy');
+    if (recCard) recCard.classList.add('healthy');
+    if (recTitle) recTitle.textContent = 'Healthy - Routine Maintenance';
+    if (recText) recText.textContent = recommendation;
   } else if (hiVal >= 70) {
-    badge.classList.add('badge-monitoring');
-    badge.textContent = 'MONITORING';
-    ring.classList.add('monitoring');
-    recCard.classList.add('monitoring');
-    recTitle.textContent = 'Monitoring - Increased Surveillance';
-    recText.textContent = recommendation || 'Monitor closely - Scheduled Action';
+    if (badge) { badge.classList.add('badge-monitoring'); badge.textContent = 'MONITORING'; }
+    if (ring) ring.classList.add('monitoring');
+    if (recCard) recCard.classList.add('monitoring');
+    if (recTitle) recTitle.textContent = 'Monitoring - Increased Surveillance';
+    if (recText) recText.textContent = recommendation;
   } else if (hiVal >= 50) {
-    badge.classList.add('badge-warning');
-    badge.textContent = 'WARNING';
-    ring.classList.add('warning');
-    recCard.classList.add('warning');
-    recTitle.textContent = 'Warning - Plan Diagnostics';
-    recText.textContent = recommendation || 'Detailed diagnostics and oil filtration/replacement planned.';
+    if (badge) { badge.classList.add('badge-warning'); badge.textContent = 'WARNING'; }
+    if (ring) ring.classList.add('warning');
+    if (recCard) recCard.classList.add('warning');
+    if (recTitle) recTitle.textContent = 'Warning - Plan Diagnostics';
+    if (recText) recText.textContent = recommendation;
   } else {
-    badge.classList.add('badge-critical');
-    badge.textContent = 'CRITICAL';
-    ring.classList.add('critical');
-    recCard.classList.add('critical');
-    recTitle.textContent = 'Critical - Immediate Shutdown / Inspect';
-    recText.textContent = recommendation || 'Immediate offline electrical tests required.';
+    if (badge) { badge.classList.add('badge-critical'); badge.textContent = 'CRITICAL'; }
+    if (ring) ring.classList.add('critical');
+    if (recCard) recCard.classList.add('critical');
+    if (recTitle) recTitle.textContent = 'Critical - Immediate Shutdown / Inspect';
+    if (recText) recText.textContent = recommendation;
   }
   
   // Populate diagnostic subscores (A, Q, U, N/A)
-  populateSubscoreRow('gi', tr["Visual Inspection"] || 'N/A', 'General Visual Inspection');
-  populateSubscoreRow('api', tr["Active Part"] || 'N/A', 'Active Part Tests');
-  
-  // mainTankOil overall status
-  const mainTankOil = tr["Main Tank Oil"] || 'N/A';
-  populateSubscoreRow('ioi', mainTankOil, 'Insulating Oil Inspection');
-  
-  // OLTC
-  const oltcOil = tr["OLTC Oil"] || 'N/A';
-  populateSubscoreRow('oltci', oltcOil, 'OLTC Oil Inspection');
-  
-  // Bushing
-  populateSubscoreRow('bi', tr["Bushing"] || 'N/A', 'Bushing Test');
-  
-  // Arrester
-  populateSubscoreRow('ari', tr["Surge Arrester"] || 'N/A', 'Surge Arrester Test');
-  
-  // DGA
-  populateSubscoreRow('dga', tr["DGA"] || 'N/A', 'Dissolved Gas Analysis');
+  const rawItem = tr._rawItem || {};
+  populateSubscoreRow('gi', rawItem.visualInspection || 'N/A', 'General Visual Inspection');
+  populateSubscoreRow('api', rawItem.activePart?.overall || 'N/A', 'Active Part Tests');
+  populateSubscoreRow('ioi', rawItem.mainTankOil?.overall || 'N/A', 'Insulating Oil Inspection');
+  populateSubscoreRow('oltci', rawItem.oltcOil?.overall || 'N/A', 'OLTC Oil Inspection');
+  populateSubscoreRow('bi', rawItem.bushing || 'N/A', 'Bushing Test');
+  populateSubscoreRow('ari', rawItem.surgeArrester || 'N/A', 'Surge Arrester Test');
+  populateSubscoreRow('dga', rawItem.mainTankOil?.dga || 'N/A', 'Dissolved Gas Analysis');
   
   // Open Modal window
-  detailModal.classList.add('active');
+  if (detailModal) detailModal.classList.add('active');
 }
 
 // Convert A/Q/U to visual progress bar and label text
