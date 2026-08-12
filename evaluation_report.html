@@ -404,9 +404,10 @@
     /* ========================================================================= */
     .pdf-gauges-wrapper {
       display: grid;
-      grid-template-columns: 2fr 1.1fr 70px;
-      gap: 10px;
+      grid-template-columns: 1.1fr 64px 2.2fr 1.5fr;
+      gap: 8px;
       margin-bottom: 14px;
+      align-items: stretch;
     }
     .pdf-six-gauges-grid {
       display: grid;
@@ -850,17 +851,14 @@
       <span class="part-banner-subtitle">Component Indices, Life Analysis &amp; Diagnostic Tests</span>
     </div>
 
-    <!-- Gauges Section (6 Component Gauges + Overall Health Index + Accuracy) -->
+    <!-- Gauges & Analysis Section (Overall Health Index + Accuracy + 6 Component Gauges + Remaining Life Analysis) -->
     <div id="part1-gauges-section" class="pdf-gauges-wrapper">
-      <!-- 6 Component Gauges -->
-      <div class="pdf-six-gauges-grid" id="pdf-six-gauges-grid">
-        <!-- Rendered dynamically -->
-      </div>
-      <!-- Center Overall Health Gauge -->
+      <!-- 1. Far Left: Center Overall Health Gauge -->
       <div class="pdf-main-gauge-card" id="pdf-main-gauge-card">
         <!-- Rendered dynamically -->
       </div>
-      <!-- Right Accuracy Bar -->
+
+      <!-- 2. Far Left: Right Accuracy Bar -->
       <div class="pdf-accuracy-card">
         <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">100%</div>
         <div class="pdf-accuracy-bar-track">
@@ -868,17 +866,19 @@
         </div>
         <div class="pdf-accuracy-label">Accuracy<br>100%</div>
       </div>
-    </div>
 
-    <!-- Analysis Cards Grid (Remaining Life & Maintank Oil) -->
-    <div class="pdf-analysis-grid">
-      <!-- Remaining Life Analysis Card -->
+      <!-- 3. Middle: 6 Component Gauges -->
+      <div class="pdf-six-gauges-grid" id="pdf-six-gauges-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- 4. Far Right: Remaining Life Analysis Card -->
       <div class="pdf-analysis-card">
         <div class="pdf-analysis-card-title"><i class="fa-solid fa-clock"></i> Transformer Remaining Life Analysis</div>
         <table class="pdf-analysis-table">
           <tr>
             <td class="label-col">Degree of Polymerization (DP)</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-dp">1066.24</span></td>
+            <td class="val-col"><span class="pdf-status-pill-green" id="an-dp">1066</span></td>
           </tr>
           <tr>
             <td class="label-col">Transformer Remaining Life (Year)</td>
@@ -895,25 +895,6 @@
             <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
           </div>
         </div>
-      </div>
-
-      <!-- Maintank Oil Analysis Card -->
-      <div class="pdf-analysis-card">
-        <div class="pdf-analysis-card-title"><i class="fa-solid fa-vial"></i> Maintank Oil Analysis</div>
-        <table class="pdf-analysis-table">
-          <tr style="height: 32px;">
-            <td class="label-col">IFT</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-ift">32.6</span></td>
-          </tr>
-          <tr style="height: 32px;">
-            <td class="label-col">Acidity No.</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-acidity">0.01</span></td>
-          </tr>
-          <tr style="height: 32px;">
-            <td class="label-col">Color No.</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-color">1.5</span></td>
-          </tr>
-        </table>
       </div>
     </div>
 
@@ -1691,10 +1672,6 @@
       const lifePercent = Math.max(0, Math.min(100, (lifeNum / 40) * 100));
       const pointerEl = document.getElementById('an-dp-pointer');
       if (pointerEl) pointerEl.style.left = `${lifePercent.toFixed(1)}%`;
-
-      setElText('an-ift', 32.6);
-      setElText('an-acidity', 0.01);
-      setElText('an-color', 1.5);
 
       // Build HTML for Part 1 Table
       ptStructure.forEach(ptObj => {
