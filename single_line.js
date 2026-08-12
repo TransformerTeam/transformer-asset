@@ -185,8 +185,8 @@ function convertHealthIndexDataToRecords(dataArray) {
       "Serial No": serial,
       "SITE": site,
       "HV Rate (kV)": String(hv),
-      "Condition Health Index": String(hi),
-      "Estimated DP (From Furan)": typeof dp === 'number' ? dp.toFixed(2) : String(dp),
+      "Condition Health Index": String(Math.round(parseFloat(hi) || 0)),
+      "Estimated DP (From Furan)": typeof dp === 'number' ? String(Math.round(dp)) : (parseFloat(dp) ? String(Math.round(parseFloat(dp))) : String(dp)),
       "Rated Power (MVA)": power,
       "Rated Voltage (kV)": voltage,
       "Service_Type": item.serviceType || trInfo.Service_Type || '',
@@ -469,8 +469,9 @@ function renderActiveSite() {
 function createTransformerCard(tr, rowNum) {
   const name = tr["Equipment Name"] || '-';
   const serial = tr["Serial No"] || '-';
-  const hiVal = parseInt(tr["Condition Health Index"]) || 0;
-  const dpVal = tr["Estimated DP (From Furan)"] || '-';
+  const hiVal = Math.round(parseFloat(tr["Condition Health Index"])) || 0;
+  const rawDp = tr["Estimated DP (From Furan)"];
+  const dpVal = rawDp && !isNaN(parseFloat(rawDp)) ? Math.round(parseFloat(rawDp)) : (rawDp || '-');
   const ratedPower = tr["Rated Power (MVA)"] || tr["Rated Power\n(MVA)"] || '-';
   const ratedVolts = tr["Rated Voltage (kV)"] || tr["Rated Voltage\n(kV)"] || '-';
   

@@ -1390,7 +1390,7 @@
             <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
             <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
           </svg>
-          <div class="g-val">${valLabel} : ${p.toFixed(p % 1 === 0 ? 0 : 2)}</div>
+          <div class="g-val">${valLabel} : ${Math.round(p)}</div>
         </div>
       `;
     }
@@ -1668,7 +1668,7 @@
             <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
             <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
           </svg>
-          <div class="g-main-val-text">Overall Health Index Value : ${overallHIVal.toFixed(3)}</div>
+          <div class="g-main-val-text">Overall Health Index Value : ${Math.round(overallHIVal)}</div>
           <div class="g-main-sug">${sugText}</div>
         `;
       }
@@ -1677,7 +1677,8 @@
       const dpVal = item.estimatedDP || 1066.2425;
       const lifeVal = item.estimatedLife || 25;
 
-      setElText('an-dp', typeof dpVal === 'number' ? dpVal.toFixed(4) : dpVal);
+      const dpNum = typeof dpVal === 'number' ? Math.round(dpVal) : (parseFloat(dpVal) ? Math.round(parseFloat(dpVal)) : dpVal);
+      setElText('an-dp', dpNum);
 
       const lifeNum = parseFloat(lifeVal) || 0;
       const lifeEl = document.getElementById('an-life');

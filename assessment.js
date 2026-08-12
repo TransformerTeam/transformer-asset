@@ -1181,9 +1181,9 @@ function renderTable() {
       <td>${item.ratedPower} MVA</td>
       <td>${item.ratedVoltage} kV</td>
       <td>${item.serviceType}</td>
-      <td class="hi-cell ${getHIClass(hi)}">${hi !== null && hi !== undefined ? hi + '%' : '-'}</td>
+      <td class="hi-cell ${getHIClass(hi)}">${hi !== null && hi !== undefined ? Math.round(hi) + '%' : '-'}</td>
       <td>${getStatusBadge(hi, item.healthStatus)}</td>
-      <td>${item.estimatedDP || '-'}</td>
+      <td>${item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '-')}</td>
       <td>${renderParamIndicator(item.visualInspection)}</td>
       <td><div class="param-summary">${renderParamIndicator(getActiveSummary(item))}</div></td>
       <td><div class="param-summary">${renderParamIndicator(getOilSummary(item))}</div></td>
@@ -1402,7 +1402,7 @@ function openDetail(no) {
   // 2. Center Top: Speedometer Gauge + Remaining Life
   const hi = item.healthIndex;
   setElTxt('ex-est-life', item.estimatedLife || '-');
-  setElTxt('ex-est-dp', item.estimatedDP || '0');
+  setElTxt('ex-est-dp', item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '0'));
 
   const exEvalGaugeLink = document.getElementById('ex-eval-gauge-link');
   if (exEvalGaugeLink) {
@@ -2225,7 +2225,7 @@ function openDetail(no) {
     }
 
     const furanVal = mtOilRec.Furan_Analysis || '-';
-    const dpVal = item.estimatedDP || '-';
+    const dpVal = item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '-');
     const moisturePaper = item.moisturePaper || '-';
     const sludgeVal = mtOilRec.Sludge_Condition || '-';
 

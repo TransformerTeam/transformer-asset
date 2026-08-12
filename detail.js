@@ -537,11 +537,11 @@ function openDetail(no) {
   // 2. Speedometer Gauge
   const hi = item.healthIndex;
   setElTxt('ex-est-life', item.estimatedLife || '-');
-  setElTxt('ex-est-dp', item.estimatedDP || '0');
+  setElTxt('ex-est-dp', item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '0'));
 
   const score = document.getElementById('ex-gauge-score');
   if (score) {
-    score.textContent = (hi !== null && hi !== undefined) ? `HI ${hi}%` : 'HI --%';
+    score.textContent = (hi !== null && hi !== undefined) ? `HI ${Math.round(hi)}%` : 'HI --%';
     const hiVal = (hi !== null && hi !== undefined) ? hi : 0;
     if (hiVal >= 80) {
       score.style.color = '#22c55e';
@@ -1496,7 +1496,7 @@ function openDetail(no) {
     }
 
     const furanVal = mtOilRec.Furan_Analysis || '-';
-    const dpVal = item.estimatedDP || '-';
+    const dpVal = item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '-');
     const moisturePaper = item.moisturePaper || '-';
     const sludgeVal = mtOilRec.Sludge_Condition || '-';
 
