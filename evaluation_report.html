@@ -1692,6 +1692,33 @@
       if (pointerEl) pointerEl.style.left = `${lifePercent.toFixed(1)}%`;
 
       // Build HTML for Part 1 Table
+      // --- NEW FORMULA ---
+      // Health Index Score (per PT) = min(Evaluation Result across ALL methods in PT) * Weight
+      // Overall Transformer Health Index = sum of all Health Index Scores
+      // Overall Transformer Percent Health Index = (sumHIS / maxHIS) * 100
+      //   where maxHIS = sum of (5 * Weight) for each PT
+      let sumHIS = 0;
+      let maxHIS = 0;
+
+      // First pass: compute min Eval Result per PT and HIS
+      ptStructure.forEach(ptObj => {
+        let minEval = 5;
+        ptObj.subs.forEach(subObj => {
+          subObj.methods.forEach(m => {
+            const e = typeof m.dynEval === 'number' ? m.dynEval : parseInt(m.dynEval) || 5;
+            if (e < minEval) minEval = e;
+          });
+        });
+        ptObj.minEval = minEval;
+        ptObj.healthIndexScore = minEval * ptObj.weight;
+        sumHIS += ptObj.healthIndexScore;
+        maxHIS += 5 * ptObj.weight;
+      });
+
+      const overallHIScore = sumHIS;
+      const overallHIPct = maxHIS > 0 ? Math.round((sumHIS / maxHIS) * 100) : 0;
+
+      // Second pass: render rows
       ptStructure.forEach(ptObj => {
         let ptRowCount = 0;
         ptObj.subs.forEach(sub => { ptRowCount += sub.methods.length; });
@@ -1726,10 +1753,11 @@
             // 6. Evaluation Result (Badge 1..5)
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
 
-            // 7. Weight & 8. Health Index
+            // 7. Weight & 8. Health Index Score
             if (subIdx === 0 && mIdx === 0) {
               html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
-              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? Math.round(ptObj.dynHI) : ptObj.dynHI}</td>`;
+              const hisColor = ptObj.healthIndexScore >= 80 ? '#16a34a' : (ptObj.healthIndexScore >= 51 ? '#d97706' : '#dc2626');
+              html += `<td style="text-align:center; font-weight:700; color:${hisColor};" rowspan="${ptRowCount}">${ptObj.healthIndexScore}</td>`;
             }
 
             tr.innerHTML = html;
@@ -1744,7 +1772,7 @@
       sumTr1.style.fontWeight = '700';
       sumTr1.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)}</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIScore}</td>
       `;
       tbody.appendChild(sumTr1);
 
@@ -1753,7 +1781,7 @@
       sumTr2.style.fontWeight = '700';
       sumTr2.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)} %</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIPct} %</td>
       `;
       tbody.appendChild(sumTr2);
     }
