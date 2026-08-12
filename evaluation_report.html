@@ -1596,6 +1596,14 @@
         ? Math.round(parseFloat(item.healthIndex))
         : calcOverallHI;
 
+      // Max Overall HI = sum if every PT scores 100 (i.e., ptStructure.length × 100)
+      const maxOverallHI = ptStructure.length * 100;
+
+      // Percent HI = (Overall HI / Max Overall HI) * 100
+      const percentHIVal = maxOverallHI > 0
+        ? Math.round((overallHIVal / maxOverallHI) * 100)
+        : 0;
+
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
@@ -1767,7 +1775,7 @@
       sumTr2.style.fontWeight = '700';
       sumTr2.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)} %</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${percentHIVal} %</td>
       `;
       tbody.appendChild(sumTr2);
     }
