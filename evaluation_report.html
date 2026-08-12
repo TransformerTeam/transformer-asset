@@ -1793,24 +1793,15 @@
         });
       });
 
-      // Bottom Summary Rows
+      // Bottom Summary Row (Single Row)
       const sumTr1 = document.createElement('tr');
-      sumTr1.style.background = '#f8fafc';
+      sumTr1.style.background = '#eff6ff';
       sumTr1.style.fontWeight = '700';
       sumTr1.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)}</td>
-      `;
-      tbody.appendChild(sumTr1);
-
-      const sumTr2 = document.createElement('tr');
-      sumTr2.style.background = '#eff6ff';
-      sumTr2.style.fontWeight = '700';
-      sumTr2.innerHTML = `
-        <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
         <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${percentHIVal} %</td>
       `;
-      tbody.appendChild(sumTr2);
+      tbody.appendChild(sumTr1);
     }
 
     // ==========================================
