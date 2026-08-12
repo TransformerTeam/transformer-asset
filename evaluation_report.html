@@ -922,33 +922,22 @@
       <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection &amp; Maintenance.</div>
     </div>
 
-    <!-- Part 1 Table with 11 Columns matching PDF -->
+    <!-- Part 1 Table with 8 Columns -->
     <table class="eval-table-pdf" id="part1-table">
       <thead>
         <tr>
-          <th style="width: 10%;" rowspan="2">PT Component</th>
-          <th style="width: 11%;" rowspan="2">Sub-PT Component</th>
-          <th style="width: 20%;" rowspan="2">Test Method</th>
-          <th style="width: 7%;" rowspan="2">Testing Date</th>
-          <th style="width: 8%;" rowspan="2">Test Result<br>Status</th>
-          <th style="width: 8%;" rowspan="2">Test Result</th>
-          <th style="width: 6%;" rowspan="2">Evaluation<br>Result</th>
-          <th style="width: 14%;" colspan="3">Test Method Evaluation</th>
-          <th style="width: 10%;" colspan="3">Sub Component Health Index</th>
-          <th style="width: 5%;" rowspan="2">Weight</th>
-          <th style="width: 6%;" rowspan="2">Health<br>Index</th>
-        </tr>
-        <tr>
-          <th style="width: 4.5%;">Weight</th>
-          <th style="width: 4.5%;">Score</th>
-          <th style="width: 5%;">Worst</th>
-          <th style="width: 3.5%;">Full</th>
-          <th style="width: 3.5%;">Score</th>
-          <th style="width: 3%;">Result</th>
+          <th style="width: 14%;">PT Component</th>
+          <th style="width: 16%;">Sub-PT Component</th>
+          <th style="width: 28%;">Test Method</th>
+          <th style="width: 10%;">Testing Date</th>
+          <th style="width: 14%;">Test Result</th>
+          <th style="width: 8%;">Evaluation<br>Result</th>
+          <th style="width: 5%;">Weight</th>
+          <th style="width: 5%;">Health<br>Index</th>
         </tr>
       </thead>
       <tbody id="part1-table-body">
-        <!-- Dynamically rendered Part 1 11-column rows -->
+        <!-- Dynamically rendered Part 1 8-column rows -->
       </tbody>
     </table>
 
@@ -1731,31 +1720,16 @@
             // 4. Testing Date
             html += `<td style="text-align:center;">${m.dynDate}</td>`;
 
-            // 5. Test Result Status
-            html += `<td class="cell-uptodate">${m.dynStatus}</td>`;
-
-            // 6. Test Result
+            // 5. Test Result
             html += `<td style="text-align:center; font-weight:600;">${m.dynResult}</td>`;
 
-            // 7. Evaluation Result (Badge 1..5)
+            // 6. Evaluation Result (Badge 1..5)
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
 
-            // 8. Test Method Evaluation: Weight, Score, Worst
-            html += `<td style="text-align:center;">${m.mWeight}</td>`;
-            html += `<td style="text-align:center;">${m.dynScore}</td>`;
-            html += `<td style="text-align:center;">${m.mWorst || '-'}</td>`;
-
-            // 9. Sub Component Health Index: Full, Score, Result
-            if (mIdx === 0) {
-              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${subObj.full}</td>`;
-              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${subObj.dynSubScore}</td>`;
-              html += `<td style="text-align:center; font-weight:600;" rowspan="${subRowCount}">${typeof subObj.dynSubRes === 'number' ? subObj.dynSubRes.toFixed(subObj.dynSubRes % 1 === 0 ? 0 : 4) : subObj.dynSubRes}</td>`;
-            }
-
-            // 10. Weight & 11. Health Index
+            // 7. Weight & 8. Health Index
             if (subIdx === 0 && mIdx === 0) {
               html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
-              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? ptObj.dynHI.toFixed(ptObj.dynHI % 1 === 0 ? 0 : 3) : ptObj.dynHI}</td>`;
+              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? Math.round(ptObj.dynHI) : ptObj.dynHI}</td>`;
             }
 
             tr.innerHTML = html;
@@ -1769,8 +1743,8 @@
       sumTr1.style.background = '#f8fafc';
       sumTr1.style.fontWeight = '700';
       sumTr1.innerHTML = `
-        <td colspan="13" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIVal.toFixed(3)}</td>
+        <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)}</td>
       `;
       tbody.appendChild(sumTr1);
 
@@ -1778,8 +1752,8 @@
       sumTr2.style.background = '#eff6ff';
       sumTr2.style.fontWeight = '700';
       sumTr2.innerHTML = `
-        <td colspan="13" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIVal.toFixed(3)} %</td>
+        <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)} %</td>
       `;
       tbody.appendChild(sumTr2);
     }
