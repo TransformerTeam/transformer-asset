@@ -707,7 +707,9 @@ function openDetailModal(serialNumber) {
   setModalText('spec-mfg-date', tr._rawItem?.trInfo?.MANUFACTURING_DATE || '-');
   setModalText('spec-power-rating', `${ratedPower} MVA`);
   setModalText('spec-cooling', tr._rawItem?.trInfo?.TYPE_OF_COOLING || '-');
-  setModalText('spec-tap-changer', tr._rawItem?.trInfo?.TAP_CHANGER_TYPE || '-');
+  let tapVal = tr._rawItem?.trInfo?.TAP_CHANGER_TYPE || '-';
+  if (tapVal.toUpperCase().includes('NLTC')) tapVal = tapVal.replace(/NLTC/gi, 'DETC');
+  setModalText('spec-tap-changer', tapVal);
   setModalText('spec-vector-group', tr._rawItem?.trInfo?.VECTOR_GROUP || '-');
   
   setModalText('spec-hv-voltage', `${hvRate} kV`);

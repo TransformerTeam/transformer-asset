@@ -1174,19 +1174,18 @@
       setElText('info-service', serviceVal || '-');
       setElText('info-age', ageVal ? `${ageVal} Years` : '-');
 
-      // Look up dynamic TRInfo record
+      // Look up dynamic TRInfo record & normalize Tap Changer Name (NLTC -> DETC)
       const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
-      if (trInfo) {
-        setElText('info-manufacture', trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || mfgVal || 'TIRATHAI');
-        setElText('info-vector', trInfo.VECTOR_GROUP || vectorVal || 'Dyn1');
-        setElText('info-tap', trInfo.TAP_CHANGER_TYPE || tapVal || 'OLTC');
-        setElText('info-mfg', trInfo.MANUFACTURING_DATE ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : (mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-'));
-      } else {
-        setElText('info-manufacture', mfgVal || 'TIRATHAI');
-        setElText('info-vector', vectorVal || 'Dyn1');
-        setElText('info-tap', tapVal || 'OLTC');
-        setElText('info-mfg', mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-');
+      let rawTap = (trInfo && trInfo.TAP_CHANGER_TYPE) ? trInfo.TAP_CHANGER_TYPE : (tapVal || 'OLTC');
+      let displayTap = String(rawTap).trim();
+      if (displayTap.toUpperCase().includes('NLTC')) {
+        displayTap = displayTap.replace(/NLTC/gi, 'DETC');
       }
+
+      setElText('info-manufacture', (trInfo && (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND)) || mfgVal || 'TIRATHAI');
+      setElText('info-vector', (trInfo && trInfo.VECTOR_GROUP) || vectorVal || 'Dyn1');
+      setElText('info-tap', displayTap || 'OLTC');
+      setElText('info-mfg', (trInfo && trInfo.MANUFACTURING_DATE) ? formatDateToDdMmmYyyy(trInfo.MANUFACTURING_DATE) : (mfgDateVal ? formatDateToDdMmmYyyy(mfgDateVal) : '-'));
 
       // Sync select dropdown
       const selectEl = document.getElementById('eval-transformer-select');
@@ -1211,12 +1210,15 @@
       setElText('eval-recommendation-text', item.recommendation || 'Routine Inspection & Maintenance.');
 
       // Sub Scores
+      const rawTapUpper = String(rawTap || '').toUpperCase();
+      const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
+
       setSubScoreBox('active-part', item.activePart?.overall);
       setSubScoreBox('oil', item.mainTankOil?.overall);
       setSubScoreBox('bushing', item.bushing);
       setSubScoreBox('surge', item.surgeArrester);
       setSubScoreBox('visual', item.visualInspection);
-      setSubScoreBox('oltc', item.oltcOil?.overall || 'N/A');
+      setSubScoreBox('oltc', isOltcNA ? 'N/A' : (item.oltcOil?.overall || 'N/A'));
 
       // Render 3 Main Tables
       renderPart1Table(item);
@@ -1648,6 +1650,11 @@
         ? Math.round((overallHIVal / maxOverallHI) * 100)
         : 0;
 
+      // Check if Tap changer is NLTC/DETC -> OLTC is N/A
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER) : null;
+      const rawTapStr = String(item.TAP_CHANGER_TYPE || item.tapChangerType || (trInfoItem && trInfoItem.TAP_CHANGER_TYPE) || '').toUpperCase();
+      const isOltcNA = rawTapStr.includes('NLTC') || rawTapStr.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
+
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
@@ -1669,7 +1676,7 @@
           ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index', false)}
           ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index', false)}
           ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index', false)}
-          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', false)}
+          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', isOltcNA)}
           ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index', isBushingNA)}
           ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index', isSurgeNA)}
         `;

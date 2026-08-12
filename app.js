@@ -185,8 +185,14 @@ function setupEventListeners() {
   }
 }
 
-// Initialize Dashboard Components with Data
 function initializeDashboard(data) {
+  // Normalize NLTC -> DETC across dataset
+  data.forEach(item => {
+    if (item.TAP_CHANGER_TYPE && item.TAP_CHANGER_TYPE.toUpperCase().includes('NLTC')) {
+      item.TAP_CHANGER_TYPE = item.TAP_CHANGER_TYPE.replace(/NLTC/gi, 'DETC');
+    }
+  });
+
   rawData = data;
   
   // Populate filter dropdown choices
