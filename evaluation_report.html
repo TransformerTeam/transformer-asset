@@ -933,7 +933,7 @@
           <th style="width: 14%;">Test Result</th>
           <th style="width: 8%;">Evaluation<br>Result</th>
           <th style="width: 5%;">Weight</th>
-          <th style="width: 5%;">Health Index<br>Score</th>
+          <th style="width: 5%;">Health<br>Index</th>
         </tr>
       </thead>
       <tbody id="part1-table-body">
@@ -1542,12 +1542,15 @@
         }
       ];
 
-      let overallSumHI = 0;
+      let overallNumerator = 0;
+      let overallDenominator = 0;
       const ptResults = {};
 
-      // Calculate dynamic method scores, subcomponent scores, and PT component health index
+      // Calculate dynamic method scores and PT Component Health Index
+      // Formula: HI = (Σ(EvalResult × mWeight) / Σ(5 × mWeight)) × 100
       ptStructure.forEach(ptObj => {
-        let subSum = 0;
+        let ptNumerator = 0;
+        let ptDenominator = 0;
 
         ptObj.subs.forEach(subObj => {
           let mScoreSum = 0;
@@ -1558,59 +1561,69 @@
             const mScore = evalScore === 5 ? m.maxScore : Math.round(m.maxScore * (evalScore / 5));
             mScoreSum += mScore;
 
+            // Accumulate numerator/denominator for HI formula
+            ptNumerator   += evalScore * m.mWeight;
+            ptDenominator += 5 * m.mWeight;
+
             m.dynResult = match.value || 'Normal';
-            m.dynDate = match.testDate ? formatDateToDdMmmYyyy(match.testDate) : m.defaultDate;
-            m.dynEval = evalScore;
-            m.dynScore = mScore;
+            m.dynDate   = match.testDate ? formatDateToDdMmmYyyy(match.testDate) : m.defaultDate;
+            m.dynEval   = evalScore;
+            m.dynScore  = mScore;
             m.dynStatus = match.status || 'Uptodate!!';
           });
 
           subObj.dynSubScore = mScoreSum;
-          const subResPct = (mScoreSum / subObj.full) * subObj.subWeight;
+          const subResPct = subObj.full > 0 ? (mScoreSum / subObj.full) * subObj.subWeight : 0;
           subObj.dynSubRes = subResPct;
-          subSum += subResPct;
         });
 
-        const ptPct = Math.min(100, subSum);
-        const ptHI = (ptPct / 100) * ptObj.weight;
-        ptObj.dynPct = ptPct;
-        ptObj.dynHI = ptHI;
+        // HI per PT Component = (Σ EvalResult*mWeight / Σ 5*mWeight) * 100
+        const ptHI = ptDenominator > 0
+          ? Math.round((ptNumerator / ptDenominator) * 100)
+          : 100;
 
-        ptResults[ptObj.pt] = { pct: ptPct, hi: ptHI };
-        overallSumHI += ptHI;
+        ptObj.dynPct = ptHI;
+        ptObj.dynHI  = ptHI;
+
+        ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
+
+        // Overall: weighted by ptObj.weight (weight represents importance of each PT component)
+        overallNumerator   += ptHI * ptObj.weight;
+        overallDenominator += ptObj.weight;
       });
 
-      const overallHIVal = (item.healthIndex && item.healthIndex !== 90) ? parseFloat(item.healthIndex) : overallSumHI;
+      // Overall HI = weighted average of each PT's HI
+      const calcOverallHI = overallDenominator > 0
+        ? Math.round(overallNumerator / overallDenominator)
+        : 100;
+      const overallHIVal = (item.healthIndex && parseFloat(item.healthIndex) !== 90)
+        ? Math.round(parseFloat(item.healthIndex))
+        : calcOverallHI;
 
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
 
-      // Check if Tap Changer Type is NLTC (No Load Tap Changer — no OLTC test)
-      const tapChangerStr = String(item.tapChangerType || item.TAP_CHANGER_TYPE || item.Tap_Changer_Type || item['Tap Changer Type'] || '').toUpperCase();
-      const isNLTC = tapChangerStr.includes('NLTC');
-
       const isBushingNA = isUatOrAux || item.bushing === 'N/A';
-      const isSurgeNA   = isUatOrAux || item.surgeArrester === 'N/A';
-      const isOltcNA    = isNLTC;
+      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
 
       // Gauge Indices
-      const generalIndex    = ptResults['General Part']   ? ptResults['General Part'].pct   : 100.0;
-      const activePartIndex = ptResults['Active Part']    ? ptResults['Active Part'].pct    : 100.0;
-      const mainTankOilIndex= ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
-      const oltcIndex       = ptResults['OLTC']           ? ptResults['OLTC'].pct           : 100.0;
-      const bushingIndex    = ptResults['Bushing']        ? ptResults['Bushing'].pct        : 100.0;
-      const arresterIndex   = ptResults['Arrester']       ? ptResults['Arrester'].pct       : 46.67;
+      const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
+      const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
+      const mainTankOilIndex = ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
+      const oltcIndex = ptResults['OLTC'] ? ptResults['OLTC'].pct : 100.0;
+      const bushingIndex = ptResults['Bushing'] ? ptResults['Bushing'].pct : 100.0;
+      const arresterIndex = ptResults['Arrester'] ? ptResults['Arrester'].pct : 46.67;
 
       const sixGaugesGrid = document.getElementById('pdf-six-gauges-grid');
       if (sixGaugesGrid) {
         sixGaugesGrid.innerHTML = `
-          ${createHalfGaugeSVG(generalIndex,     'General Part Condition',         '%General Index',       false)}
-          ${createHalfGaugeSVG(activePartIndex,  'Active Part Condition',          '%Active Part Index',   false)}
-          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition','%Insulating Oil Index',false)}
-          ${createHalfGaugeSVG(oltcIndex,        'OLTC Condition',                 '%OLTC Index',          isOltcNA)}
-          ${createHalfGaugeSVG(bushingIndex,     'Bushing Condition',              '%Bushing Index',       isBushingNA)}
-          ${createHalfGaugeSVG(arresterIndex,    'Lightning Arrester Condition',   '%Arrester Index',      isSurgeNA)}
+          ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index', false)}
+          ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index', false)}
+          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index', false)}
+          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', false)}
+          ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index', isBushingNA)}
+          ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index', isSurgeNA)}
         `;
       }
 
@@ -1697,33 +1710,6 @@
       if (pointerEl) pointerEl.style.left = `${lifePercent.toFixed(1)}%`;
 
       // Build HTML for Part 1 Table
-      // --- NEW FORMULA ---
-      // Health Index Score (per PT) = min(Evaluation Result across ALL methods in PT) * Weight
-      // Overall Transformer Health Index = sum of all Health Index Scores
-      // Overall Transformer Percent Health Index = (sumHIS / maxHIS) * 100
-      //   where maxHIS = sum of (5 * Weight) for each PT
-      let sumHIS = 0;
-      let maxHIS = 0;
-
-      // First pass: compute min Eval Result per PT and HIS
-      ptStructure.forEach(ptObj => {
-        let minEval = 5;
-        ptObj.subs.forEach(subObj => {
-          subObj.methods.forEach(m => {
-            const e = typeof m.dynEval === 'number' ? m.dynEval : parseInt(m.dynEval) || 5;
-            if (e < minEval) minEval = e;
-          });
-        });
-        ptObj.minEval = minEval;
-        ptObj.healthIndexScore = minEval * ptObj.weight;
-        sumHIS += ptObj.healthIndexScore;
-        maxHIS += 5 * ptObj.weight;
-      });
-
-      const overallHIScore = sumHIS;
-      const overallHIPct = maxHIS > 0 ? Math.round((sumHIS / maxHIS) * 100) : 0;
-
-      // Second pass: render rows
       ptStructure.forEach(ptObj => {
         let ptRowCount = 0;
         ptObj.subs.forEach(sub => { ptRowCount += sub.methods.length; });
@@ -1758,11 +1744,10 @@
             // 6. Evaluation Result (Badge 1..5)
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
 
-            // 7. Weight & 8. Health Index Score
+            // 7. Weight & 8. Health Index
             if (subIdx === 0 && mIdx === 0) {
               html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
-              const hisColor = ptObj.healthIndexScore >= 80 ? '#16a34a' : (ptObj.healthIndexScore >= 51 ? '#d97706' : '#dc2626');
-              html += `<td style="text-align:center; font-weight:700; color:${hisColor};" rowspan="${ptRowCount}">${ptObj.healthIndexScore}</td>`;
+              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? Math.round(ptObj.dynHI) : ptObj.dynHI}</td>`;
             }
 
             tr.innerHTML = html;
@@ -1777,7 +1762,7 @@
       sumTr1.style.fontWeight = '700';
       sumTr1.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIScore}</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)}</td>
       `;
       tbody.appendChild(sumTr1);
 
@@ -1786,7 +1771,7 @@
       sumTr2.style.fontWeight = '700';
       sumTr2.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Percent Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${overallHIPct} %</td>
+        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${Math.round(overallHIVal)} %</td>
       `;
       tbody.appendChild(sumTr2);
     }
