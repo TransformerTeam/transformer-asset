@@ -1592,17 +1592,20 @@
 
       // Overall HI = simple sum of Health Index column values
       const calcOverallHI = overallSumHI;
-      const overallHIVal = (item.healthIndex && parseFloat(item.healthIndex) !== 90)
+      const useItemHI = !!(item.healthIndex && parseFloat(item.healthIndex) !== 90);
+      const overallHIVal = useItemHI
         ? Math.round(parseFloat(item.healthIndex))
         : calcOverallHI;
 
       // Max Overall HI = sum if every PT scores 100 (i.e., ptStructure.length × 100)
       const maxOverallHI = ptStructure.length * 100;
 
-      // Percent HI = (Overall HI / Max Overall HI) * 100
-      const percentHIVal = maxOverallHI > 0
-        ? Math.round((overallHIVal / maxOverallHI) * 100)
-        : 0;
+      // Percent HI:
+      //   - If overallHIVal came from item.healthIndex (already a 0-100% value) → use directly
+      //   - If computed from PT sum → (calcOverallHI / maxOverallHI) * 100
+      const percentHIVal = useItemHI
+        ? overallHIVal
+        : (maxOverallHI > 0 ? Math.round((calcOverallHI / maxOverallHI) * 100) : 0);
 
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
