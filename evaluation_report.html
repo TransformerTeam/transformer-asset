@@ -404,10 +404,15 @@
     /* ========================================================================= */
     .pdf-gauges-wrapper {
       display: grid;
-      grid-template-columns: 1.1fr 64px 2.2fr 1.5fr;
-      gap: 8px;
+      grid-template-columns: 1.45fr 60px 2.35fr;
+      gap: 10px;
       margin-bottom: 14px;
       align-items: stretch;
+    }
+    .pdf-left-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
     .pdf-six-gauges-grid {
       display: grid;
@@ -444,37 +449,33 @@
     }
     .pdf-main-gauge-card {
       background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 8px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex: 1;
     }
     .pdf-main-gauge-card .g-main-title {
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       color: #1e3a8a;
+      letter-spacing: 0.2px;
+    }
+    .pdf-main-gauge-card .g-main-sub {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #475569;
+      margin-top: 2px;
     }
     .pdf-main-gauge-card .g-main-val-text {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #0f172a;
+      font-size: 1.25rem;
+      font-weight: 800;
       margin-top: 4px;
-    }
-    .pdf-main-gauge-card .g-main-sug {
-      font-size: 0.63rem;
-      font-weight: 600;
-      color: #15803d;
-      background: #dcfce7;
-      border: 1px solid #bbf7d0;
-      padding: 3px 6px;
-      border-radius: 4px;
-      margin-top: 4px;
-      line-height: 1.2;
     }
     .pdf-accuracy-card {
       background: #ffffff;
@@ -851,14 +852,42 @@
       <span class="part-banner-subtitle">Component Indices, Life Analysis &amp; Diagnostic Tests</span>
     </div>
 
-    <!-- Gauges & Analysis Section (Overall Health Index + Accuracy + 6 Component Gauges + Remaining Life Analysis) -->
+    <!-- Gauges & Analysis Section (Left Stack: Overall Health + Remaining Life, Middle: Accuracy, Right: 6 Component Gauges) -->
     <div id="part1-gauges-section" class="pdf-gauges-wrapper">
-      <!-- 1. Far Left: Center Overall Health Gauge -->
-      <div class="pdf-main-gauge-card" id="pdf-main-gauge-card">
-        <!-- Rendered dynamically -->
+      <!-- 1. Left Stack: Overall Health Index (Top) + Remaining Life Analysis (Bottom) -->
+      <div class="pdf-left-stack">
+        <!-- Main Gauge Card (Prominent & Larger) -->
+        <div class="pdf-main-gauge-card" id="pdf-main-gauge-card">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Remaining Life Analysis Card (Below %Overall Health Index) -->
+        <div class="pdf-analysis-card">
+          <div class="pdf-analysis-card-title"><i class="fa-solid fa-clock"></i> Transformer Remaining Life Analysis</div>
+          <table class="pdf-analysis-table">
+            <tr>
+              <td class="label-col">Degree of Polymerization (DP)</td>
+              <td class="val-col"><span class="pdf-status-pill-green" id="an-dp">1066</span></td>
+            </tr>
+            <tr>
+              <td class="label-col">Transformer Remaining Life (Year)</td>
+              <td class="val-col" id="an-life" style="font-weight: 700;">25</td>
+            </tr>
+          </table>
+          <!-- Remaining Life (Year) Progress Bar -->
+          <div class="pdf-dp-bar-wrapper" style="margin-top: 8px;">
+            <div class="pdf-dp-bar-title">Remaining Life (Year)</div>
+            <div class="pdf-dp-track">
+              <div class="pdf-dp-pointer" id="an-dp-pointer" style="left: 62.5%;"></div>
+            </div>
+            <div class="pdf-dp-ticks">
+              <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- 2. Far Left: Right Accuracy Bar -->
+      <!-- 2. Middle Column: Accuracy Bar -->
       <div class="pdf-accuracy-card">
         <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">100%</div>
         <div class="pdf-accuracy-bar-track">
@@ -867,34 +896,9 @@
         <div class="pdf-accuracy-label">Accuracy<br>100%</div>
       </div>
 
-      <!-- 3. Middle: 6 Component Gauges -->
+      <!-- 3. Right Column: 6 Component Gauges Grid (2x3) -->
       <div class="pdf-six-gauges-grid" id="pdf-six-gauges-grid">
         <!-- Rendered dynamically -->
-      </div>
-
-      <!-- 4. Far Right: Remaining Life Analysis Card -->
-      <div class="pdf-analysis-card">
-        <div class="pdf-analysis-card-title"><i class="fa-solid fa-clock"></i> Transformer Remaining Life Analysis</div>
-        <table class="pdf-analysis-table">
-          <tr>
-            <td class="label-col">Degree of Polymerization (DP)</td>
-            <td class="val-col"><span class="pdf-status-pill-green" id="an-dp">1066</span></td>
-          </tr>
-          <tr>
-            <td class="label-col">Transformer Remaining Life (Year)</td>
-            <td class="val-col" id="an-life" style="font-weight: 700;">25</td>
-          </tr>
-        </table>
-        <!-- Remaining Life (Year) Progress Bar -->
-        <div class="pdf-dp-bar-wrapper" style="margin-top: 10px;">
-          <div class="pdf-dp-bar-title">Remaining Life (Year)</div>
-          <div class="pdf-dp-track">
-            <div class="pdf-dp-pointer" id="an-dp-pointer" style="left: 62.5%;"></div>
-          </div>
-          <div class="pdf-dp-ticks">
-            <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1626,14 +1630,13 @@
         const yellowPath = `M 50 12 A 36 36 0 0 1 79.12 26.84`;
         const greenPath = `M 79.12 26.84 A 36 36 0 0 1 86 48`;
 
-        const sugText = p >= 80 
-          ? 'Good Condition Suggestion: Maintain Normal Electrical test for every 5 years.' 
-          : 'Monitor Condition Suggestion: Plan detailed diagnostic inspection & oil sampling.';
+        const hiVal = Math.round(overallHIVal);
+        const hiColor = hiVal >= 80 ? '#16a34a' : (hiVal >= 51 ? '#d97706' : '#dc2626');
 
         mainGaugeCard.innerHTML = `
           <div class="g-main-title">Transformer</div>
-          <div style="font-size: 0.66rem; font-weight: 700; color: #475569;">%Overall Health Index</div>
-          <svg viewBox="0 0 100 62" style="width: 100%; height: 72px;">
+          <div class="g-main-sub">%Overall Health Index</div>
+          <svg viewBox="0 0 100 62" style="width: 100%; height: 95px; margin-top: 2px;">
             <path d="${redPath}" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
             <path d="${yellowPath}" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
             <path d="${greenPath}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" />
@@ -1649,8 +1652,7 @@
             <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
             <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
           </svg>
-          <div class="g-main-val-text">Overall Health Index Value : ${Math.round(overallHIVal)}</div>
-          <div class="g-main-sug">${sugText}</div>
+          <div class="g-main-val-text" style="color: ${hiColor};">HI ${hiVal}%</div>
         `;
       }
 
