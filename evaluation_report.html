@@ -1586,26 +1586,31 @@
       const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
 
+      // Check if Tap Changer Type is NLTC (No Load Tap Changer — no OLTC test)
+      const tapChangerStr = String(item.tapChangerType || item.TAP_CHANGER_TYPE || item.Tap_Changer_Type || item['Tap Changer Type'] || '').toUpperCase();
+      const isNLTC = tapChangerStr.includes('NLTC');
+
       const isBushingNA = isUatOrAux || item.bushing === 'N/A';
-      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
+      const isSurgeNA   = isUatOrAux || item.surgeArrester === 'N/A';
+      const isOltcNA    = isNLTC;
 
       // Gauge Indices
-      const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
-      const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
-      const mainTankOilIndex = ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
-      const oltcIndex = ptResults['OLTC'] ? ptResults['OLTC'].pct : 100.0;
-      const bushingIndex = ptResults['Bushing'] ? ptResults['Bushing'].pct : 100.0;
-      const arresterIndex = ptResults['Arrester'] ? ptResults['Arrester'].pct : 46.67;
+      const generalIndex    = ptResults['General Part']   ? ptResults['General Part'].pct   : 100.0;
+      const activePartIndex = ptResults['Active Part']    ? ptResults['Active Part'].pct    : 100.0;
+      const mainTankOilIndex= ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0;
+      const oltcIndex       = ptResults['OLTC']           ? ptResults['OLTC'].pct           : 100.0;
+      const bushingIndex    = ptResults['Bushing']        ? ptResults['Bushing'].pct        : 100.0;
+      const arresterIndex   = ptResults['Arrester']       ? ptResults['Arrester'].pct       : 46.67;
 
       const sixGaugesGrid = document.getElementById('pdf-six-gauges-grid');
       if (sixGaugesGrid) {
         sixGaugesGrid.innerHTML = `
-          ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index', false)}
-          ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index', false)}
-          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index', false)}
-          ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', false)}
-          ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index', isBushingNA)}
-          ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index', isSurgeNA)}
+          ${createHalfGaugeSVG(generalIndex,     'General Part Condition',         '%General Index',       false)}
+          ${createHalfGaugeSVG(activePartIndex,  'Active Part Condition',          '%Active Part Index',   false)}
+          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition','%Insulating Oil Index',false)}
+          ${createHalfGaugeSVG(oltcIndex,        'OLTC Condition',                 '%OLTC Index',          isOltcNA)}
+          ${createHalfGaugeSVG(bushingIndex,     'Bushing Condition',              '%Bushing Index',       isBushingNA)}
+          ${createHalfGaugeSVG(arresterIndex,    'Lightning Arrester Condition',   '%Arrester Index',      isSurgeNA)}
         `;
       }
 
