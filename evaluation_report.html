@@ -1667,7 +1667,7 @@
       // Update Center Overall Health Gauge
       const mainGaugeCard = document.getElementById('pdf-main-gauge-card');
       if (mainGaugeCard) {
-        const p = Math.max(0, Math.min(100, overallHIVal));
+        const p = Math.max(0, Math.min(100, percentHIVal));
         const angleRad = Math.PI * (1 - p / 100);
 
         const cx = 50;
@@ -1688,7 +1688,7 @@
         const yellowPath = `M 50 12 A 36 36 0 0 1 79.12 26.84`;
         const greenPath = `M 79.12 26.84 A 36 36 0 0 1 86 48`;
 
-        const hiVal = Math.round(overallHIVal);
+        const hiVal = percentHIVal;
         const hiColor = hiVal >= 80 ? '#16a34a' : (hiVal >= 51 ? '#d97706' : '#dc2626');
 
         mainGaugeCard.innerHTML = `
@@ -1794,12 +1794,13 @@
       });
 
       // Bottom Summary Row (Single Row)
+      const summaryColor = percentHIVal >= 80 ? '#16a34a' : (percentHIVal >= 51 ? '#d97706' : '#dc2626');
       const sumTr1 = document.createElement('tr');
       sumTr1.style.background = '#eff6ff';
       sumTr1.style.fontWeight = '700';
       sumTr1.innerHTML = `
         <td colspan="7" style="text-align: right; color: #1e3a8a; font-size: 0.65rem;">Overall Transformer Health Index</td>
-        <td style="text-align: center; color: #16a34a; font-size: 0.70rem;">${percentHIVal} %</td>
+        <td style="text-align: center; color: ${summaryColor}; font-size: 0.70rem;">${percentHIVal} %</td>
       `;
       tbody.appendChild(sumTr1);
     }
