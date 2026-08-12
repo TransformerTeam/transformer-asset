@@ -1542,8 +1542,7 @@
         }
       ];
 
-      let overallNumerator = 0;
-      let overallDenominator = 0;
+      let overallSumHI = 0;
       const ptResults = {};
 
       // Calculate dynamic method scores and PT Component Health Index
@@ -1587,15 +1586,12 @@
 
         ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
 
-        // Overall: weighted by ptObj.weight (weight represents importance of each PT component)
-        overallNumerator   += ptHI * ptObj.weight;
-        overallDenominator += ptObj.weight;
+        // Overall HI = sum of all PT Component Health Index values (sum of the Health Index column)
+        overallSumHI += ptHI;
       });
 
-      // Overall HI = weighted average of each PT's HI
-      const calcOverallHI = overallDenominator > 0
-        ? Math.round(overallNumerator / overallDenominator)
-        : 100;
+      // Overall HI = simple sum of Health Index column values
+      const calcOverallHI = overallSumHI;
       const overallHIVal = (item.healthIndex && parseFloat(item.healthIndex) !== 90)
         ? Math.round(parseFloat(item.healthIndex))
         : calcOverallHI;
