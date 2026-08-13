@@ -2194,56 +2194,107 @@
         }
         return { value: '38 dynes/cm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+      const mtDate = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : defaultDate;
+
       if (nameLower.includes('acidity')) {
-        if (latestMt && latestMt.ACIDITY) {
-          const date = latestMt.Date || latestMt.date;
-          const acidVal = latestMt.ACIDITY;
-          return { value: `${acidVal} mgKOH/g`, testDate: date, ratingScore: 5, recommendation: '-' };
+        if (latestMt && (latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity)) {
+          const acidVal = latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity;
+          const num = parseFloat(acidVal);
+          const score = isNaN(num) ? 5 : (num <= 0.05 ? 5 : (num <= 0.15 ? 4 : 3));
+          return { value: `${acidVal} mgKOH/g`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check acidity' };
         }
-        return { value: '0.02 mgKOH/g', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '0.01 mgKOH/g', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
-      if (nameLower.includes('furan')) {
-        if (latestMt && latestMt.FURAN) {
-          const date = latestMt.Date || latestMt.date;
-          const furanVal = latestMt.FURAN;
-          return { value: `${furanVal} ppb`, testDate: date, ratingScore: 5, recommendation: '-' };
+
+      if (nameLower.includes('conductivity')) {
+        if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY)) {
+          const condVal = latestMt.Conductivity || latestMt.CONDUCTIVITY;
+          return { value: `${condVal} pS/m`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+        }
+        return { value: '< 1.0 pS/m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+
+      if (nameLower.includes('color')) {
+        if (latestMt && (latestMt.Color_No || latestMt.COLOR)) {
+          const colVal = latestMt.Color_No || latestMt.COLOR;
+          return { value: `L ${colVal}`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+        }
+        return { value: 'L 1.0', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+
+      if (nameLower.includes('inhibitor')) {
+        if (latestMt && (latestMt.Inhibitor || latestMt.INHIBITOR)) {
+          const inhVal = latestMt.Inhibitor || latestMt.INHIBITOR;
+          return { value: `${inhVal} %`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+        }
+        return { value: '0.30 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+
+      if (nameLower.includes('furan') && !nameLower.includes('estimated dp')) {
+        if (latestMt && (latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan)) {
+          const furanVal = latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan;
+          const num = parseFloat(furanVal);
+          const score = isNaN(num) ? 5 : (num <= 100 ? 5 : (num <= 500 ? 4 : 3));
+          return { value: `${furanVal} ppb`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor paper degradation' };
         }
         return { value: '15 ppb', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+
       if (nameLower.includes('estimated dp')) {
-        return { value: `${item.estimatedDP || 950}`, testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        const dpVal = item.estimatedDP || item.ESTIMATED_DP || '950';
+        const num = parseFloat(dpVal);
+        const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 400 ? 4 : 3));
+        return { value: `${dpVal}`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor DP level' };
       }
-      if (nameLower.includes('conductivity')) {
-        return { value: '< 0.1 pS/m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
-      }
-      if (nameLower.includes('color')) {
-        return { value: 'L 0.5', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
-      }
-      if (nameLower.includes('inhibitor')) {
-        return { value: '0.30 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
-      }
+
       if (nameLower.includes('sludge')) {
+        if (latestMt && (latestMt.Sludge_Condition || latestMt.SLUDGE)) {
+          const sludgeVal = latestMt.Sludge_Condition || latestMt.SLUDGE;
+          const isNon = String(sludgeVal) === '0' || String(sludgeVal).toLowerCase().includes('non') || parseFloat(sludgeVal) < 0.05;
+          const valDisplay = isNon ? 'Non-sludge' : `${sludgeVal} %`;
+          return { value: valDisplay, testDate: mtDate, ratingScore: isNon ? 5 : 3, recommendation: isNon ? '-' : 'Inspect oil sludge' };
+        }
         return { value: 'Non-sludge', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+
       if (nameLower.includes('corrosive sulfur')) {
+        if (latestMt && (latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR)) {
+          const corrVal = latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR;
+          const isPass = String(corrVal).toLowerCase().includes('non') || String(corrVal).toLowerCase().includes('pass') || String(corrVal) === '1a' || String(corrVal) === '1b' || String(corrVal) === '0';
+          const valDisplay = isPass ? `Non-corrosive (${corrVal})` : `Corrosive (${corrVal})`;
+          return { value: valDisplay, testDate: mtDate, ratingScore: isPass ? 5 : 3, recommendation: isPass ? '-' : 'Add passivator' };
+        }
         return { value: 'Non-corrosive', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+
       if (nameLower.includes('passivator') || nameLower.includes('irgamet')) {
+        if (latestMt && (latestMt.Passivator || latestMt.PASSIVATOR)) {
+          const passVal = latestMt.Passivator || latestMt.PASSIVATOR;
+          const num = parseFloat(passVal);
+          const valStr = (isNaN(num) || num === 0) ? '> 100 ppm' : `${passVal} ppm`;
+          return { value: valStr, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+        }
         return { value: '> 100 ppm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+
       if (nameLower.includes('power factor at 100') || nameLower.includes('pf at 100')) {
-        if (latestMt && latestMt.PF_100) {
-          const date = latestMt.Date || latestMt.date;
-          return { value: `${latestMt.PF_100} %`, testDate: date, ratingScore: 5, recommendation: '-' };
+        if (latestMt && (latestMt.PF_100 || latestMt.pf_100)) {
+          const pfVal = latestMt.PF_100 || latestMt.pf_100;
+          const num = parseFloat(pfVal);
+          const score = isNaN(num) ? 5 : (num <= 1.0 ? 5 : (num <= 3.0 ? 4 : 3));
+          return { value: `${pfVal} %`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 100C' };
         }
-        return { value: '1.20 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '0.432 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
+
       if (nameLower.includes('power factor at 25') || nameLower.includes('pf at 25')) {
-        if (latestMt && latestMt.PF_25) {
-          const date = latestMt.Date || latestMt.date;
-          return { value: `${latestMt.PF_25} %`, testDate: date, ratingScore: 5, recommendation: '-' };
+        if (latestMt && (latestMt.PF_25 || latestMt.pf_25)) {
+          const pfVal = latestMt.PF_25 || latestMt.pf_25;
+          const num = parseFloat(pfVal);
+          const score = isNaN(num) ? 5 : (num <= 0.5 ? 5 : (num <= 1.0 ? 4 : 3));
+          return { value: `${pfVal} %`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 25C' };
         }
-        return { value: '0.35 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '0.005 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('capacitance')) {
         return { value: '%Err: 0.15%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
