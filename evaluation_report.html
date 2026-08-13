@@ -2141,16 +2141,32 @@
       // 11. Dissolve Gas Analysis (DGA) (MTOilData.csv)
       if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
         if (latestMt) {
-          const date = latestMt.Date || latestMt.date;
-          const res = latestMt.IEEE_C57_104 || latestMt.Test_Result || 'Normal';
-          const isWarn = res.toUpperCase().includes('STATUS 2') || res.toUpperCase().includes('MONITOR');
-          const isCrit = res.toUpperCase().includes('STATUS 3') || res.toUpperCase().includes('STATUS 4') || res.toUpperCase().includes('POOR');
-          const score = isCrit ? 1 : (isWarn ? 3 : 5);
-          return { value: res, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Perform DGA trend analysis' };
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
+          const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.Test_Result || '').toUpperCase();
+
+          const h2   = parseFloat(latestMt.H2 || 0);
+          const ch4  = parseFloat(latestMt.CH4 || 0);
+          const c2h6 = parseFloat(latestMt.C2H6 || 0);
+          const c2h4 = parseFloat(latestMt.C2H4 || 0);
+          const c2h2 = parseFloat(latestMt.C2H2 || 0);
+          const co   = parseFloat(latestMt.CO || 0);
+
+          // Thresholds IEEE C57.104 & Fault Diagnosis
+          const isT2 = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
+          const isT1 = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
+
+          if (isT2) {
+            return { value: 'Critical (Fault Detected)', testDate: date, ratingScore: 1, recommendation: 'Perform DGA trend & fault investigation' };
+          } else if (isT1) {
+            return { value: 'Caution (Gas Exceeded T1)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis' };
+          } else {
+            return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
+          }
         }
         const oCode = (item.mainTankOil?.overall || item.mainTankOil?.dga || 'A').toUpperCase();
-        const score = (oCode === 'Q') ? 3 : (oCode === 'U' ? 1 : 5);
-        return { value: score === 5 ? 'Status 1 (Normal)' : 'Questionable', testDate: defaultDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'DGA trend analysis' };
+        const score = (oCode === 'Q' || oCode.includes('MONITOR')) ? 3 : ((oCode === 'U' || oCode.includes('CRITICAL')) ? 1 : 5);
+        const textVal = score === 5 ? 'Normal (No Fault Detected)' : (score === 3 ? 'Caution (Monitor)' : 'Critical (Fault Detected)');
+        return { value: textVal, testDate: defaultDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Perform DGA trend analysis' };
       }
       if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
         if (latestMt && latestMt.BD) {
