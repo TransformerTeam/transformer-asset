@@ -1626,7 +1626,7 @@
                 { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'IFT', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Acidity', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Oil Resistivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 10, mWorst: '-' },
+                { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 10, mWorst: '-' },
                 { name: 'Color Number', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
                 { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' }
               ]
@@ -2295,11 +2295,37 @@
       }
       if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
         if (latestMt && latestMt.BD) {
-          const date = latestMt.Date || latestMt.date;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const bdvVal = latestMt.BD;
           const numBdv = parseFloat(bdvVal);
-          const score = numBdv >= 60 ? 5 : (numBdv >= 50 ? 4 : 3);
-          return { value: `${bdvVal} kV`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Plan oil filtration' };
+
+          // Voltage class lookup per IEEE C57.152-2013 Table 5 (ASTM D 1816 - 2 mm gap)
+          const hvVal = parseFloat(item.HV_RATED || item.hvRate || item['HV Rate (kV)'] || 115);
+          let minServiceBdv = 47; // Default for >69kV to <230kV (e.g. 115kV)
+          let minNewBdv = 52;
+          if (hvVal <= 69) {
+            minServiceBdv = 40;
+            minNewBdv = 45;
+          } else if (hvVal >= 230) {
+            minServiceBdv = 50;
+            minNewBdv = 55;
+          }
+
+          let score = 5;
+          if (numBdv >= minNewBdv) {
+            score = 5; // Meets new liquid standard
+          } else if (numBdv >= minServiceBdv) {
+            score = 4; // Meets service-aged acceptable limit per Table 5
+          } else if (numBdv >= minServiceBdv - 5) {
+            score = 3; // Fair / Monitoring
+          } else if (numBdv >= minServiceBdv - 10) {
+            score = 2; // Warning
+          } else {
+            score = 1; // Critical
+          }
+
+          const rec = score >= 4 ? '-' : `Plan oil filtration (IEEE C57.152 Table 5 limit for ${hvVal}kV is ${minServiceBdv} kV)`;
+          return { value: `${bdvVal} kV`, testDate: date, ratingScore: score, recommendation: rec };
         }
         return { value: '75 kV', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
@@ -2333,16 +2359,12 @@
         return { value: '0.01 mgKOH/g', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
 
-      if (nameLower.includes('resistivity') || nameLower.includes('conductivity')) {
-        if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY || latestMt.Resistivity)) {
-          const condVal = parseFloat(latestMt.Conductivity || latestMt.CONDUCTIVITY || 0);
-          if (condVal > 0) {
-            const resVal = (1000 / condVal).toFixed(1);
-            const score = condVal <= 10.0 ? 5 : (condVal <= 20.0 ? 3 : 1);
-            return { value: `${resVal} GOhm.m`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil resistivity' };
-          }
+      if (nameLower.includes('conductivity')) {
+        if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY)) {
+          const condVal = latestMt.Conductivity || latestMt.CONDUCTIVITY;
+          return { value: `${condVal} pS/m`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
         }
-        return { value: '> 100.0 GOhm.m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '< 1.0 pS/m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('color')) {
