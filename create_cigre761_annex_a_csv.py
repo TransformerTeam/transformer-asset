@@ -1,0 +1,557 @@
+import os
+import csv
+import sys
+
+sys.stdout.reconfigure(encoding='utf-8')
+
+OUT_PATH1 = r"C:\Users\NB\Downloads\TR Asset\CIGRE761_AnnexA_Criteria_Master.csv"
+OUT_PATH2 = r"C:\Users\NB\Downloads\TR Asset\Criteria\CIGRE761_AnnexA_Criteria_Master.csv"
+
+headers = [
+    "Table_Ref",
+    "Category_Component",
+    "Failure_Mode",
+    "Affected_Parameter_Test",
+    "Voltage_Class_kV",
+    "Unit",
+    "Band_A_Score_5_Excellent",
+    "Band_B_Score_4_Good",
+    "Band_C_Score_3_Fair_Monitor",
+    "Band_D_Score_2_Poor_Warning",
+    "Band_E_Score_1_VeryPoor",
+    "Band_F_Score_1_Critical",
+    "Standard_Reference"
+]
+
+rows = [
+    # =========================================================================
+    # TABLE A-8: MINERAL OIL CONDITION ASSESSMENT (CIGRE 761 ANNEX A)
+    # =========================================================================
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Chemical Contamination",
+        "Moisture in Oil (Water Content)",
+        "< 72.5 kV",
+        "ppm",
+        "< 20 ppm",
+        "< 30 ppm",
+        "30 - 40 ppm",
+        "40 - 55 ppm",
+        "55 - 70 ppm",
+        "> 70 ppm",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Chemical Contamination",
+        "Moisture in Oil (Water Content)",
+        "72.5 - 170 kV",
+        "ppm",
+        "< 10 ppm",
+        "< 20 ppm",
+        "20 - 30 ppm",
+        "30 - 45 ppm",
+        "45 - 60 ppm",
+        "> 60 ppm",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Chemical Contamination",
+        "Moisture in Oil (Water Content)",
+        "> 170 kV",
+        "ppm",
+        "< 10 ppm",
+        "< 15 ppm",
+        "15 - 20 ppm",
+        "20 - 30 ppm",
+        "30 - 40 ppm",
+        "> 40 ppm",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Dielectric Breakdown Voltage (BDV 2.5mm)",
+        "< 72.5 kV",
+        "kV",
+        "> 55 kV",
+        "> 40 kV",
+        "30 - 40 kV",
+        "25 - 30 kV",
+        "20 - 25 kV",
+        "< 20 kV",
+        "IEC 60156 / IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Dielectric Breakdown Voltage (BDV 2.5mm)",
+        "72.5 - 170 kV",
+        "kV",
+        "> 60 kV",
+        "> 50 kV",
+        "40 - 50 kV",
+        "30 - 40 kV",
+        "25 - 30 kV",
+        "< 25 kV",
+        "IEC 60156 / IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Dielectric Breakdown Voltage (BDV 2.5mm)",
+        "> 170 kV",
+        "kV",
+        "> 60 kV",
+        "> 60 kV",
+        "50 - 60 kV",
+        "40 - 50 kV",
+        "30 - 40 kV",
+        "< 30 kV",
+        "IEC 60156 / IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "DDF (Tan δ) @ 90 °C",
+        "< 72.5 kV",
+        "Ratio / %",
+        "≤ 0.015",
+        "< 0.10",
+        "0.10 - 0.50",
+        "> 0.50",
+        "> 1.00",
+        "> 2.00",
+        "IEC 60247 / IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "DDF (Tan δ) @ 90 °C",
+        "≥ 72.5 kV",
+        "Ratio / %",
+        "≤ 0.010",
+        "< 0.10",
+        "0.10 - 0.20",
+        "> 0.20",
+        "> 0.50",
+        "> 1.00",
+        "IEC 60247 / IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Acidity (Neutralization Value)",
+        "< 72.5 kV",
+        "mgKOH/g",
+        "≤ 0.03 mgKOH/g",
+        "< 0.15 mgKOH/g",
+        "0.15 - 0.30 mgKOH/g",
+        "> 0.30 mgKOH/g",
+        "> 0.40 mgKOH/g",
+        "> 0.50 mgKOH/g",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Acidity (Neutralization Value)",
+        "72.5 - 170 kV",
+        "mgKOH/g",
+        "≤ 0.03 mgKOH/g",
+        "< 0.10 mgKOH/g",
+        "0.10 - 0.20 mgKOH/g",
+        "> 0.20 mgKOH/g",
+        "> 0.30 mgKOH/g",
+        "> 0.40 mgKOH/g",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Acidity (Neutralization Value)",
+        "> 170 kV",
+        "mgKOH/g",
+        "≤ 0.03 mgKOH/g",
+        "< 0.10 mgKOH/g",
+        "0.10 - 0.15 mgKOH/g",
+        "> 0.15 mgKOH/g",
+        "> 0.25 mgKOH/g",
+        "> 0.35 mgKOH/g",
+        "IEC 60422 / IEEE C57.106"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Interfacial Tension (IFT)",
+        "Inhibited (All)",
+        "mN/m (dynes/cm)",
+        "> 35 mN/m",
+        "> 28 mN/m",
+        "22 - 28 mN/m",
+        "< 22 mN/m",
+        "< 18 mN/m",
+        "< 15 mN/m",
+        "IEC 60422 / ASTM D971"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Interfacial Tension (IFT)",
+        "Un-inhibited (All)",
+        "mN/m (dynes/cm)",
+        "> 35 mN/m",
+        "> 25 mN/m",
+        "20 - 25 mN/m",
+        "< 20 mN/m",
+        "< 16 mN/m",
+        "< 14 mN/m",
+        "IEC 60422 / ASTM D971"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Color (Lab Testing)",
+        "All Classes",
+        "Scale 0.0-8.5",
+        "Clear (0.0 - 0.5)",
+        "Pale Yellow (0.5 - 1.0)",
+        "Yellow (1.0 - 2.5)",
+        "Bright Yellow (2.5 - 4.0)",
+        "Amber (4.0 - 5.5)",
+        "Dark Brown (5.5 - 8.5)",
+        "IEEE C57.152 / ASTM D1500"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Inhibitor (DBPC)",
+        "All Classes",
+        "% of original",
+        "> 90% of original",
+        "> 60% of original",
+        "40% - 60% of original",
+        "< 40% of original",
+        "< 20% of original",
+        "< 10% of original",
+        "IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Degradation",
+        "Sediment and Sludge",
+        "All Classes",
+        "% by mass",
+        "Less than detection limit",
+        "Less than detection limit",
+        "< 0.02 % by mass",
+        "> 0.02 % by mass",
+        "> 0.05 % by mass",
+        "> 0.10 % by mass",
+        "IEC 60422"
+    ],
+    [
+        "Table A-8",
+        "Mineral Oil",
+        "Corrosive Sulphur",
+        "Corrosive Sulphur Test",
+        "All Classes",
+        "Qualitative",
+        "Non-corrosive",
+        "Non-corrosive",
+        "Less than detection limit",
+        "Slightly Corrosive",
+        "Corrosive",
+        "Extremely Corrosive",
+        "IEC 60422 / DIN 51353"
+    ],
+
+    # =========================================================================
+    # TABLE A-2: THERMAL (SOLID INSULATION & PAPER AGING) CONDITION ASSESSMENT
+    # =========================================================================
+    [
+        "Table A-2",
+        "Solid Insulation",
+        "Cellulose Aging",
+        "Degree of Polymerization (DP)",
+        "All Classes",
+        "DP Value",
+        "> 700 (New / Healthy Paper)",
+        "500 - 700 (Moderate Aging)",
+        "350 - 500 (Advanced Aging)",
+        "250 - 350 (Extensive Aging)",
+        "200 - 250 (End of Life)",
+        "< 200 (Critical Paper Degradation)",
+        "CIGRE 323 / IEC 60450"
+    ],
+    [
+        "Table A-2",
+        "Solid Insulation",
+        "Cellulose Aging",
+        "Furan (2-FAL)",
+        "All Classes",
+        "ppb",
+        "< 100 ppb",
+        "100 - 500 ppb",
+        "500 - 1500 ppb",
+        "1500 - 3000 ppb",
+        "3000 - 5000 ppb",
+        "> 5000 ppb",
+        "CIGRE 323 / ASTM D5837"
+    ],
+    [
+        "Table A-2",
+        "Solid Insulation",
+        "Thermal Gassing",
+        "Carbon Monoxide (CO)",
+        "Mineral & Ester",
+        "ppm",
+        "< 350 ppm",
+        "351 - 570 ppm",
+        "571 - 1400 ppm",
+        "< 2500 ppm",
+        "< 5000 ppm",
+        "> 5000 ppm",
+        "IEEE C57.104"
+    ],
+    [
+        "Table A-2",
+        "Solid Insulation",
+        "Thermal Gassing",
+        "Carbon Dioxide (CO2)",
+        "Mineral & Ester",
+        "ppm",
+        "< 2500 ppm",
+        "2501 - 4000 ppm",
+        "4001 - 10000 ppm",
+        "< 15000 ppm",
+        "< 20000 ppm",
+        "> 20000 ppm",
+        "IEEE C57.104"
+    ],
+
+    # =========================================================================
+    # TABLE A-4: BUSHING CONDITION ASSESSMENT (CIGRE 761 ANNEX A)
+    # =========================================================================
+    [
+        "Table A-4",
+        "Bushing",
+        "Oil Leakage",
+        "Visual Inspection (Oil Level)",
+        "OIP Bushing",
+        "% Full",
+        "Correct Oil Level (50% full)",
+        "30% full",
+        "20% full",
+        "10% full",
+        "Oil level not visible",
+        "Severe leakage / Dry",
+        "IEEE C57.152"
+    ],
+    [
+        "Table A-4",
+        "Bushing",
+        "Electrical Insulation",
+        "Capacitance C1 Change",
+        "OIP / RIP Bushing",
+        "% Change",
+        "Within ± 1.0 %",
+        "1.1 - 3.0 %",
+        "3.1 - 5.0 %",
+        "5.1 - 10.0 %",
+        "10.1 - 15.0 %",
+        "> 15.0 % (Layer Breakdown)",
+        "IEEE C57.152 / CIGRE 761"
+    ],
+    [
+        "Table A-4",
+        "Bushing",
+        "Electrical Insulation",
+        "Dissipation Factor / Power Factor (Tan δ / %PF C1)",
+        "OIP Bushing",
+        "%",
+        "≤ 0.50 %",
+        "0.51 - 0.70 %",
+        "0.71 - 1.00 %",
+        "1.01 - 1.50 %",
+        "1.51 - 2.00 %",
+        "> 2.00 % (Bushing Replacement)",
+        "IEEE C57.152 / CIGRE 761"
+    ],
+
+    # =========================================================================
+    # TABLE A-6: OLTC CONDITION ASSESSMENT (CIGRE 761 ANNEX A)
+    # =========================================================================
+    [
+        "Table A-6",
+        "OLTC",
+        "Oil Dielectric",
+        "Breakdown Voltage (BDV 2.5mm)",
+        "OLTC Oil",
+        "kV",
+        "> 50 kV",
+        "> 40 kV",
+        "> 30 kV",
+        "> 25 kV",
+        "> 20 kV",
+        "< 20 kV",
+        "IEC 60156"
+    ],
+    [
+        "Table A-6",
+        "OLTC",
+        "Oil Moisture",
+        "Water Content (KF)",
+        "OLTC Oil",
+        "ppm",
+        "< 20 ppm",
+        "< 30 ppm",
+        "< 40 ppm",
+        "< 50 ppm",
+        "> 50 ppm",
+        "> 70 ppm",
+        "IEC 60814"
+    ],
+    [
+        "Table A-6",
+        "OLTC",
+        "Thermal / Arcing Gassing",
+        "Acetylene (C2H2) in OLTC Compartment",
+        "OLTC Oil",
+        "ppm",
+        "No detectable LTC typical gasses",
+        "0 < C2H2 < 100 ppm",
+        "C2H2 > 300 ppm",
+        "C2H2 > 500 ppm",
+        "C2H2 > 1000 ppm",
+        "Typical LTC gas pattern + C2H2 > 1000 ppm",
+        "IEEE C57.139 / CIGRE 761"
+    ],
+    [
+        "Table A-6",
+        "OLTC",
+        "Mechanical",
+        "Maintenance Schedule Compliance",
+        "OLTC Mechanism",
+        "% Late",
+        "Maintenance according to schedule",
+        "20% late",
+        "40% late",
+        "60% late",
+        "80% late",
+        "100% late",
+        "OEM Specs"
+    ],
+    [
+        "Table A-6",
+        "OLTC",
+        "Mechanical",
+        "Age of Motor Drive",
+        "Motor Drive Linkage",
+        "Years",
+        "< 20 Years",
+        "< 30 Years",
+        "30 - 50 Years",
+        "> 50 Years",
+        "> 50 Years with defect",
+        "Motor drive trip / Failure",
+        "CIGRE 761"
+    ],
+
+    # =========================================================================
+    # TABLE A-9: NATURAL ESTER CONDITION ASSESSMENT (CIGRE 761 ANNEX A)
+    # =========================================================================
+    [
+        "Table A-9",
+        "Natural Ester Oil",
+        "Chemical Contamination",
+        "Moisture in Oil (Water Content)",
+        "< 72.5 kV",
+        "ppm",
+        "< 300 ppm",
+        "300 - 385 ppm",
+        "385 - 450 ppm",
+        "450 - 550 ppm",
+        "> 550 ppm",
+        "> 700 ppm",
+        "ASTM D1533 / IEC 60814"
+    ],
+    [
+        "Table A-9",
+        "Natural Ester Oil",
+        "Degradation",
+        "Dielectric Breakdown Voltage (BDV 2.5mm)",
+        "< 72.5 kV",
+        "kV",
+        "> 50 kV",
+        "> 40 kV",
+        "30 - 40 kV",
+        "< 30 kV",
+        "< 25 kV",
+        "< 20 kV",
+        "IEC 60156"
+    ],
+    [
+        "Table A-9",
+        "Natural Ester Oil",
+        "Degradation",
+        "DDF (Tan δ) @ 25 °C",
+        "All Classes",
+        "%",
+        "≤ 0.50 %",
+        "< 1.00 %",
+        "1.00 - 3.00 %",
+        "> 3.00 %",
+        "> 5.00 %",
+        "> 8.00 %",
+        "IEEE C57.147 / ASTM D924"
+    ],
+    [
+        "Table A-9",
+        "Natural Ester Oil",
+        "Degradation",
+        "Acidity (Neutralization Value)",
+        "All Classes",
+        "mgKOH/g",
+        "≤ 0.06 mgKOH/g",
+        "0.06 - 0.15 mgKOH/g",
+        "0.15 - 0.30 mgKOH/g",
+        "0.30 - 1.00 mgKOH/g",
+        "> 1.00 mgKOH/g",
+        "> 2.00 mgKOH/g",
+        "ASTM D974 / IEC 62021"
+    ]
+]
+
+# Write OUT_PATH1
+os.makedirs(os.path.dirname(OUT_PATH1), exist_ok=True)
+with open(OUT_PATH1, 'w', newline='', encoding='utf-8-sig') as f:
+    w = csv.writer(f)
+    w.writerow(headers)
+    w.writerows(rows)
+print(f"Created CIGRE 761 Annex A criteria CSV file at: {OUT_PATH1} ({len(rows)} criteria rows)")
+
+# Write OUT_PATH2
+os.makedirs(os.path.dirname(OUT_PATH2), exist_ok=True)
+with open(OUT_PATH2, 'w', newline='', encoding='utf-8-sig') as f:
+    w = csv.writer(f)
+    w.writerow(headers)
+    w.writerows(rows)
+print(f"Created CIGRE 761 Annex A criteria CSV file at: {OUT_PATH2} ({len(rows)} criteria rows)")
