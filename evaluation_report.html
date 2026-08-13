@@ -2158,14 +2158,14 @@
           if (isT2) {
             return { value: 'Critical (Fault Detected)', testDate: date, ratingScore: 1, recommendation: 'Perform DGA trend & fault investigation' };
           } else if (isT1) {
-            return { value: 'Caution (Gas Exceeded T1)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis' };
+            return { value: 'Monitoring (Gas Exceed Table2 and Moderate Paper Degradation)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis & monitor gas generation' };
           } else {
             return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
           }
         }
         const oCode = (item.mainTankOil?.overall || item.mainTankOil?.dga || 'A').toUpperCase();
         const score = (oCode === 'Q' || oCode.includes('MONITOR')) ? 3 : ((oCode === 'U' || oCode.includes('CRITICAL')) ? 1 : 5);
-        const textVal = score === 5 ? 'Normal (No Fault Detected)' : (score === 3 ? 'Caution (Monitor)' : 'Critical (Fault Detected)');
+        const textVal = score === 5 ? 'Normal (No Fault Detected)' : (score === 3 ? 'Monitoring (Gas Exceed Table2 and Moderate Paper Degradation)' : 'Critical (Fault Detected)');
         return { value: textVal, testDate: defaultDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Perform DGA trend analysis' };
       }
       if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
