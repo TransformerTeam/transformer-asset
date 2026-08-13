@@ -52,7 +52,7 @@ rows = [
     ],
 
     # 2. Dielectric Breakdown Voltage (BDV) - IEEE C57.152-2013 Table 5 (ASTM D 1816 [B13] - 2 mm gap)
-    # --- SERVICE-AGED INSULATING LIQUID ONLY ---
+    # --- SERVICE-AGED INSULATING LIQUID ONLY (Table 5 Minimum Limit = Score 2) ---
     [
         "Part 1: Condition Health Index (CHI)",
         "Insulating Oil",
@@ -63,13 +63,13 @@ rows = [
         "IEEE C57.152-2013 Table 5",
         "Primary (IEEE C57.152-2013 Table 5)",
         "kV",
-        "≥ 45 kV",
-        "≥ 40 kV (IEEE Table 5 Limit)",
-        "35 - 39 kV (Slightly degraded)",
-        "30 - 34 kV (Low BDV)",
-        "< 30 kV (Critical / Oil reconditioning required)",
+        "≥ 48 kV",
+        "45 - 47 kV",
+        "41 - 44 kV",
+        "40 kV (IEEE Table 5 Min Limit = Score 2)",
+        "< 40 kV (Critical / Below IEEE Table 5 Limit)",
         "1.67%",
-        "Minimum BDV is 40 kV for ≤69 kV service-aged oil per IEEE C57.152 Table 5"
+        "BDV = 40 kV is Score 2 (IEEE Table 5 Limit for ≤69 kV); BDV < 40 kV is Score 1 (Critical)"
     ],
     [
         "Part 1: Condition Health Index (CHI)",
@@ -81,13 +81,13 @@ rows = [
         "IEEE C57.152-2013 Table 5",
         "Primary (IEEE C57.152-2013 Table 5)",
         "kV",
-        "≥ 52 kV",
-        "≥ 47 kV (IEEE Table 5 Limit)",
-        "40 - 46 kV (Slightly degraded)",
-        "35 - 39 kV (Low BDV)",
-        "< 35 kV (Critical / Oil reconditioning required)",
+        "≥ 55 kV",
+        "52 - 54 kV",
+        "48 - 51 kV",
+        "47 kV (IEEE Table 5 Min Limit = Score 2)",
+        "< 47 kV (Critical / Below IEEE Table 5 Limit)",
         "1.67%",
-        "Minimum BDV is 47 kV for 69-230 kV service-aged oil per IEEE C57.152 Table 5"
+        "BDV = 47 kV is Score 2 (IEEE Table 5 Limit for 69-230 kV); BDV < 47 kV is Score 1 (Critical)"
     ],
     [
         "Part 1: Condition Health Index (CHI)",
@@ -99,13 +99,13 @@ rows = [
         "IEEE C57.152-2013 Table 5",
         "Primary (IEEE C57.152-2013 Table 5)",
         "kV",
-        "≥ 55 kV",
-        "≥ 50 kV (IEEE Table 5 Limit)",
-        "45 - 49 kV (Slightly degraded)",
-        "40 - 44 kV (Low BDV)",
-        "< 40 kV (Critical / Oil reconditioning required)",
+        "≥ 60 kV",
+        "55 - 59 kV",
+        "51 - 54 kV",
+        "50 kV (IEEE Table 5 Min Limit = Score 2)",
+        "< 50 kV (Critical / Below IEEE Table 5 Limit)",
         "1.67%",
-        "Minimum BDV is 50 kV for ≥230 kV service-aged oil per IEEE C57.152 Table 5"
+        "BDV = 50 kV is Score 2 (IEEE Table 5 Limit for ≥230 kV); BDV < 50 kV is Score 1 (Critical)"
     ],
 
     # 3. Other Insulating Oil Parameters (IEEE C57.152-2013)
@@ -840,7 +840,7 @@ with open(OUT_PATH1, 'w', newline='', encoding='utf-8-sig') as f:
     w = csv.writer(f)
     w.writerow(headers)
     w.writerows(rows)
-print(f"Created Service-Aged IEEE C57.152 Table 5 criteria CSV file at: {OUT_PATH1} ({len(rows)} items)")
+print(f"Created Table 5 Limit = Score 2 criteria CSV file at: {OUT_PATH1} ({len(rows)} items)")
 
 # Write OUT_PATH2 if unlocked
 try:
@@ -849,6 +849,6 @@ try:
         w = csv.writer(f)
         w.writerow(headers)
         w.writerows(rows)
-    print(f"Created Service-Aged IEEE C57.152 Table 5 criteria CSV file at: {OUT_PATH2} ({len(rows)} items)")
+    print(f"Created Table 5 Limit = Score 2 criteria CSV file at: {OUT_PATH2} ({len(rows)} items)")
 except Exception as e:
     print(f"Note: Could not write to {OUT_PATH2}: {e}")

@@ -2299,32 +2299,29 @@
           const bdvVal = latestMt.BD;
           const numBdv = parseFloat(bdvVal);
 
-          // Voltage class lookup per IEEE C57.152-2013 Table 5 (ASTM D 1816 - 2 mm gap)
+          // Voltage class lookup per IEEE C57.152-2013 Table 5 (ASTM D 1816 - 2 mm gap - Service-aged liquid)
           const hvVal = parseFloat(item.HV_RATED || item.hvRate || item['HV Rate (kV)'] || 115);
-          let minServiceBdv = 47; // Default for >69kV to <230kV (e.g. 115kV)
-          let minNewBdv = 52;
+          let minTable5 = 47; // Table 5 limit for 69 < kV < 230 (e.g. 115kV) -> 47 kV
           if (hvVal <= 69) {
-            minServiceBdv = 40;
-            minNewBdv = 45;
+            minTable5 = 40;
           } else if (hvVal >= 230) {
-            minServiceBdv = 50;
-            minNewBdv = 55;
+            minTable5 = 50;
           }
 
           let score = 5;
-          if (numBdv >= minNewBdv) {
-            score = 5; // Meets new liquid standard
-          } else if (numBdv >= minServiceBdv) {
-            score = 4; // Meets service-aged acceptable limit per Table 5
-          } else if (numBdv >= minServiceBdv - 5) {
+          if (numBdv < minTable5) {
+            score = 1; // Below Table 5 minimum limit -> Critical
+          } else if (numBdv === minTable5) {
+            score = 2; // At Table 5 minimum limit -> Warning (Score 2)
+          } else if (numBdv <= minTable5 + 4) {
             score = 3; // Fair / Monitoring
-          } else if (numBdv >= minServiceBdv - 10) {
-            score = 2; // Warning
+          } else if (numBdv <= minTable5 + 7) {
+            score = 4; // Good
           } else {
-            score = 1; // Critical
+            score = 5; // Excellent
           }
 
-          const rec = score >= 4 ? '-' : `Plan oil filtration (IEEE C57.152 Table 5 limit for ${hvVal}kV is ${minServiceBdv} kV)`;
+          const rec = score >= 4 ? '-' : `Plan oil filtration (IEEE C57.152 Table 5 min limit for ${hvVal}kV is ${minTable5} kV)`;
           return { value: `${bdvVal} kV`, testDate: date, ratingScore: score, recommendation: rec };
         }
         return { value: '75 kV', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
