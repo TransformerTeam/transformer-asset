@@ -2096,7 +2096,7 @@
     }
 
     function getMeasuredValueForItem(itemName, item) {
-      if (!itemName) return { value: 'Normal (Pass)', testDate: '19-Jan-2026', ratingScore: 5, recommendation: '-' };
+      if (!itemName) return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       const nameLower = itemName.toLowerCase();
 
       const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, item.serial) : null;
@@ -2111,8 +2111,6 @@
       const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, item.serial) : null;
       const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, item.serial) : null;
 
-      const defaultDate = item.Result_Date || item.testDate || item.DATE || '19-Jan-2026';
-
       // 1. Visual Inspection (VisualData.csv)
       if (nameLower.includes('visual inspection')) {
         if (latestVis) {
@@ -2122,9 +2120,7 @@
           const score = isWarn ? 3 : 5;
           return { value: res, testDate: date, ratingScore: score, recommendation: isWarn ? 'Plan visual touch-up' : '-' };
         }
-        const vCode = (item.visualInspection || 'A').toUpperCase();
-        const score = (vCode === 'Q' || vCode.includes('MONITOR')) ? 3 : (vCode === 'U' ? 1 : 5);
-        return { value: score === 5 ? 'Normal (Pass)' : 'Questionable', testDate: defaultDate, ratingScore: score, recommendation: score < 4 ? 'Plan visual touch-up' : '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 2. Magnetic Core sub-items (IRandPIData.csv)
@@ -2135,7 +2131,7 @@
           const score = parseFloat(latestPi.coregnd) >= 100 ? 5 : (parseFloat(latestPi.coregnd) >= 50 ? 4 : 3);
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core ground' };
         }
-        return { value: '> 100 MΩ', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('clamp-ground')) {
         if (latestPi && latestPi.framegnd && latestPi.framegnd !== '-') {
@@ -2144,7 +2140,7 @@
           const score = parseFloat(latestPi.framegnd) >= 100 ? 5 : (parseFloat(latestPi.framegnd) >= 50 ? 4 : 3);
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect clamp ground' };
         }
-        return { value: '> 100 MΩ', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('core-clamp')) {
         if (latestPi && latestPi.coreframe && latestPi.coreframe !== '-') {
@@ -2153,7 +2149,7 @@
           const score = parseFloat(latestPi.coreframe) >= 100 ? 5 : (parseFloat(latestPi.coreframe) >= 50 ? 4 : 3);
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core-clamp' };
         }
-        return { value: '> 100 MΩ', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 3. Exciting Current (ExcitingData.csv)
@@ -2165,9 +2161,7 @@
           const score = parseFloat(err) <= 2.0 ? 5 : 3;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check excitation pattern' };
         }
-        const apCode = (item.activePart?.excitingCurrent || item.activePart?.overall || 'A').toUpperCase();
-        const score = (apCode === 'Q') ? 3 : (apCode === 'U' ? 1 : 4);
-        return { value: 'Normal Pattern (%Err < 0.5%)', testDate: defaultDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check excitation pattern' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 4. Single Phase Short circuit impedance (SingleShortData.csv)
@@ -2179,7 +2173,7 @@
           const score = Math.abs(parseFloat(dev)) <= 1.5 ? 5 : 3;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 1-phase winding' };
         }
-        return { value: '%Dev < 1.5%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv)
@@ -2191,7 +2185,7 @@
           const score = Math.abs(parseFloat(dev)) <= 1.5 ? 5 : 3;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance' };
         }
-        return { value: '%Dev < 1.5%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 6. Transformer Turn Ratio (RatioData.csv)
@@ -2203,7 +2197,7 @@
           const score = Math.abs(parseFloat(err)) <= 0.5 ? 5 : 3;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check turn ratio' };
         }
-        return { value: '%Error < 0.05%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 7 & 8. DC Winding Resistance (HV & LV) (WindingData.csv)
@@ -2215,7 +2209,7 @@
           const score = Math.abs(parseFloat(dev)) <= 0.5 ? 5 : 4;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check HV winding' };
         }
-        return { value: 'HV %Dev < 0.5%', testDate: defaultDate, ratingScore: 4, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('dc winding resistance') && nameLower.includes('lv')) {
         if (latestWinding) {
@@ -2225,7 +2219,7 @@
           const score = Math.abs(parseFloat(dev)) <= 0.5 ? 5 : 4;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check LV winding' };
         }
-        return { value: 'LV %Dev < 0.5%', testDate: defaultDate, ratingScore: 4, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('dc winding resistance') || nameLower.includes('winding resistance')) {
         if (latestWinding) {
@@ -2235,7 +2229,7 @@
           const score = Math.abs(parseFloat(dev)) <= 0.5 ? 5 : 4;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding resistance' };
         }
-        return { value: '%Dev < 0.5%', testDate: defaultDate, ratingScore: 4, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 9. Insulation Power Factor (WindingPFData.csv)
@@ -2248,7 +2242,7 @@
           const score = numPf <= 0.5 ? 5 : (numPf <= 1.0 ? 4 : 3);
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding PF' };
         }
-        return { value: '0.35 %', testDate: defaultDate, ratingScore: 4, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 10. Insulation Resistance and PI (IRandPIData.csv)
@@ -2260,7 +2254,7 @@
           const score = numP >= 1.5 ? 5 : (numP >= 1.25 ? 4 : 3);
           return { value: pVal, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation dryness' };
         }
-        return { value: '1.85', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // 11. Dissolve Gas Analysis (DGA) (MTOilData.csv)
@@ -2288,10 +2282,7 @@
             return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
           }
         }
-        const oCode = (item.mainTankOil?.overall || item.mainTankOil?.dga || 'A').toUpperCase();
-        const score = (oCode === 'Q' || oCode.includes('MONITOR')) ? 3 : ((oCode === 'U' || oCode.includes('CRITICAL')) ? 1 : 5);
-        const textVal = score === 5 ? 'Normal (No Fault Detected)' : (score === 3 ? 'Monitoring (Gas Exceed Table2 and Moderate Paper Degradation)' : 'Critical (Fault Detected)');
-        return { value: textVal, testDate: defaultDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Perform DGA trend analysis' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
         if (latestMt && latestMt.BD) {
@@ -2324,7 +2315,7 @@
           const rec = score >= 4 ? '-' : `Plan oil filtration (IEEE C57.152 Table 5 min limit for ${hvVal}kV is ${minTable5} kV)`;
           return { value: `${bdvVal} kV`, testDate: date, ratingScore: score, recommendation: rec };
         }
-        return { value: '75 kV', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('water content')) {
         if (latestMt && latestMt.WC) {
@@ -2334,7 +2325,7 @@
           const score = numWc <= 15 ? 5 : (numWc <= 25 ? 4 : 3);
           return { value: `${wcVal} ppm`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor water content' };
         }
-        return { value: '12 ppm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('interfatial tension') || nameLower.includes('ift')) {
         if (latestMt && latestMt.IFT) {
@@ -2342,118 +2333,126 @@
           const iftVal = latestMt.IFT;
           return { value: `${iftVal} dynes/cm`, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: '38 dynes/cm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
-      const mtDate = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : defaultDate;
 
       if (nameLower.includes('acidity')) {
         if (latestMt && (latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity)) {
           const acidVal = latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(acidVal);
           const score = isNaN(num) ? 5 : (num <= 0.05 ? 5 : (num <= 0.15 ? 4 : 3));
-          return { value: `${acidVal} mgKOH/g`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check acidity' };
+          return { value: `${acidVal} mgKOH/g`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check acidity' };
         }
-        return { value: '0.01 mgKOH/g', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('conductivity')) {
         if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY)) {
           const condVal = latestMt.Conductivity || latestMt.CONDUCTIVITY;
-          return { value: `${condVal} pS/m`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
+          return { value: `${condVal} pS/m`, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: '< 1.0 pS/m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('color')) {
         if (latestMt && (latestMt.Color_No || latestMt.COLOR)) {
           const colVal = latestMt.Color_No || latestMt.COLOR;
-          return { value: `L ${colVal}`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
+          return { value: `L ${colVal}`, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: 'L 1.0', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('inhibitor')) {
         if (latestMt && (latestMt.Inhibitor || latestMt.INHIBITOR)) {
           const inhVal = latestMt.Inhibitor || latestMt.INHIBITOR;
-          return { value: `${inhVal} %`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
+          return { value: `${inhVal} %`, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: '0.30 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('furan') && !nameLower.includes('estimated dp')) {
         if (latestMt && (latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan)) {
           const furanVal = latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(furanVal);
           const score = isNaN(num) ? 5 : (num <= 100 ? 5 : (num <= 500 ? 4 : 3));
-          return { value: `${furanVal} ppb`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor paper degradation' };
+          return { value: `${furanVal} ppb`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor paper degradation' };
         }
-        return { value: '15 ppb', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('estimated dp')) {
-        const dpVal = item.estimatedDP || item.ESTIMATED_DP || '950';
-        const num = parseFloat(dpVal);
-        const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 400 ? 4 : 3));
-        return { value: `${dpVal}`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor DP level' };
+        if (item.estimatedDP || item.ESTIMATED_DP) {
+          const dpVal = item.estimatedDP || item.ESTIMATED_DP;
+          const date = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : '-';
+          const num = parseFloat(dpVal);
+          const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 400 ? 4 : 3));
+          return { value: `${dpVal}`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor DP level' };
+        }
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('sludge')) {
         if (latestMt && (latestMt.Sludge_Condition || latestMt.SLUDGE)) {
           const sludgeVal = latestMt.Sludge_Condition || latestMt.SLUDGE;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const isNon = String(sludgeVal) === '0' || String(sludgeVal).toLowerCase().includes('non') || parseFloat(sludgeVal) < 0.05;
           const valDisplay = isNon ? 'Non-sludge' : `${sludgeVal} %`;
-          return { value: valDisplay, testDate: mtDate, ratingScore: isNon ? 5 : 3, recommendation: isNon ? '-' : 'Inspect oil sludge' };
+          return { value: valDisplay, testDate: date, ratingScore: isNon ? 5 : 3, recommendation: isNon ? '-' : 'Inspect oil sludge' };
         }
-        return { value: 'Non-sludge', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('corrosive sulfur')) {
         if (latestMt && (latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR)) {
           const corrVal = latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const isPass = String(corrVal).toLowerCase().includes('non') || String(corrVal).toLowerCase().includes('pass') || String(corrVal) === '1a' || String(corrVal) === '1b' || String(corrVal) === '0';
           const valDisplay = isPass ? `Non-corrosive (${corrVal})` : `Corrosive (${corrVal})`;
-          return { value: valDisplay, testDate: mtDate, ratingScore: isPass ? 5 : 3, recommendation: isPass ? '-' : 'Add passivator' };
+          return { value: valDisplay, testDate: date, ratingScore: isPass ? 5 : 3, recommendation: isPass ? '-' : 'Add passivator' };
         }
-        return { value: 'Non-corrosive', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('passivator') || nameLower.includes('irgamet')) {
         if (latestMt && (latestMt.Passivator || latestMt.PASSIVATOR)) {
           const passVal = latestMt.Passivator || latestMt.PASSIVATOR;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(passVal);
           const valStr = (isNaN(num) || num === 0) ? '> 100 ppm' : `${passVal} ppm`;
-          return { value: valStr, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+          return { value: valStr, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: '> 100 ppm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('power factor at 100') || nameLower.includes('pf at 100')) {
         if (latestMt && (latestMt.PF_100 || latestMt.pf_100)) {
           const pfVal = latestMt.PF_100 || latestMt.pf_100;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(pfVal);
           const score = isNaN(num) ? 5 : (num <= 1.0 ? 5 : (num <= 3.0 ? 4 : 3));
-          return { value: `${pfVal} %`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 100C' };
+          return { value: `${pfVal} %`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 100C' };
         }
-        return { value: '0.432 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('power factor at 25') || nameLower.includes('pf at 25')) {
         if (latestMt && (latestMt.PF_25 || latestMt.pf_25)) {
           const pfVal = latestMt.PF_25 || latestMt.pf_25;
+          const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(pfVal);
           const score = isNaN(num) ? 5 : (num <= 0.5 ? 5 : (num <= 1.0 ? 4 : 3));
-          return { value: `${pfVal} %`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 25C' };
+          return { value: `${pfVal} %`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 25C' };
         }
-        return { value: '0.005 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
-      if (nameLower.includes('capacitance')) {
-        return { value: '%Err: 0.15%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
-      }
-      if (nameLower.includes('leakage current')) {
-        return { value: '%Err: 0.20%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
-      }
-      if (nameLower.includes('watt loss')) {
-        return { value: '%Err: 0.18%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+
+      if (nameLower.includes('capacitance') || nameLower.includes('leakage current') || nameLower.includes('watt loss')) {
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // Bushing & Surge
@@ -2462,14 +2461,14 @@
           const date = latestBush.Date || latestBush.date;
           return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: date, ratingScore: 4, recommendation: '-' };
         }
-        return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: defaultDate, ratingScore: 4, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('surge arrester')) {
         if (latestSurge) {
           const date = latestSurge.Date || latestSurge.date;
           return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
       // General Parts
@@ -2480,7 +2479,7 @@
           const score = parseFloat(latestVis.GND_resistance_Ohm) < 1.0 ? 5 : 3;
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Improve grounding' };
         }
-        return { value: 'Normal (< 1 Ω)', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('neutral ground')) {
         if (latestVis && latestVis.NGR_result && latestVis.NGR_result !== '-') {
@@ -2488,7 +2487,7 @@
           const date = latestVis.Date || latestVis.date;
           return { value: val, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: 'Normal (Pass)', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
       if (nameLower.includes('contact resistance')) {
         if (latestVis && latestVis.Transfomer_Earthing_connection_result && latestVis.Transfomer_Earthing_connection_result !== '-') {
@@ -2496,10 +2495,10 @@
           const date = latestVis.Date || latestVis.date;
           return { value: val, testDate: date, ratingScore: 5, recommendation: '-' };
         }
-        return { value: 'Normal (≤ 10 µΩ)', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
       }
 
-      return { value: 'Normal (Pass)', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      return { value: '-', testDate: '-', ratingScore: 5, recommendation: '-' };
     }
 
     function formatDateToDdMmmYyyy(dateStr) {
