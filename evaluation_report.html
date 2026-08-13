@@ -691,15 +691,19 @@
       text-align: center;
     }
     .badge-square {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      box-sizing: border-box;
       text-align: center;
       font-weight: 700;
       font-size: 0.60rem;
       color: #ffffff;
-      border-radius: 2px;
+      border-radius: 3px;
+      white-space: nowrap;
     }
     .bg-badge-5 { background: #16a34a; }
     .bg-badge-4 { background: #22c55e; }
