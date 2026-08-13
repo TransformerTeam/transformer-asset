@@ -1626,7 +1626,7 @@
                 { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'IFT', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Acidity', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 10, mWorst: '-' },
+                { name: 'Oil Resistivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 10, mWorst: '-' },
                 { name: 'Color Number', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
                 { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' }
               ]
@@ -2333,12 +2333,16 @@
         return { value: '0.01 mgKOH/g', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
 
-      if (nameLower.includes('conductivity')) {
-        if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY)) {
-          const condVal = latestMt.Conductivity || latestMt.CONDUCTIVITY;
-          return { value: `${condVal} pS/m`, testDate: mtDate, ratingScore: 5, recommendation: '-' };
+      if (nameLower.includes('resistivity') || nameLower.includes('conductivity')) {
+        if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY || latestMt.Resistivity)) {
+          const condVal = parseFloat(latestMt.Conductivity || latestMt.CONDUCTIVITY || 0);
+          if (condVal > 0) {
+            const resVal = (1000 / condVal).toFixed(1);
+            const score = condVal <= 10.0 ? 5 : (condVal <= 20.0 ? 3 : 1);
+            return { value: `${resVal} GOhm.m`, testDate: mtDate, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil resistivity' };
+          }
         }
-        return { value: '< 1.0 pS/m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+        return { value: '> 100.0 GOhm.m', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
 
       if (nameLower.includes('color')) {
