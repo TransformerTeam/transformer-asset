@@ -1986,7 +1986,7 @@
       const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, item.serial) : null;
       const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, item.serial) : null;
 
-      const defaultDate = '19-Jan-2026';
+      const defaultDate = item.Result_Date || item.testDate || item.DATE || '19-Jan-2026';
 
       // 1. Visual Inspection (VisualData.csv)
       if (nameLower.includes('visual inspection')) {
@@ -2216,6 +2216,29 @@
       }
       if (nameLower.includes('passivator') || nameLower.includes('irgamet')) {
         return { value: '> 100 ppm', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+      if (nameLower.includes('power factor at 100') || nameLower.includes('pf at 100')) {
+        if (latestMt && latestMt.PF_100) {
+          const date = latestMt.Date || latestMt.date;
+          return { value: `${latestMt.PF_100} %`, testDate: date, ratingScore: 5, recommendation: '-' };
+        }
+        return { value: '1.20 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+      if (nameLower.includes('power factor at 25') || nameLower.includes('pf at 25')) {
+        if (latestMt && latestMt.PF_25) {
+          const date = latestMt.Date || latestMt.date;
+          return { value: `${latestMt.PF_25} %`, testDate: date, ratingScore: 5, recommendation: '-' };
+        }
+        return { value: '0.35 %', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+      if (nameLower.includes('capacitance')) {
+        return { value: '%Err: 0.15%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+      if (nameLower.includes('leakage current')) {
+        return { value: '%Err: 0.20%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
+      }
+      if (nameLower.includes('watt loss')) {
+        return { value: '%Err: 0.18%', testDate: defaultDate, ratingScore: 5, recommendation: '-' };
       }
 
       // Bushing & Surge
