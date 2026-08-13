@@ -1140,7 +1140,7 @@
   </div>
 
   <!-- Include Data Scripts -->
-  <script src="health_data.js?v=20260810_v4"></script>
+  <script id="health-data-script" src="health_data.js?v=20260810_v4"></script>
   <script src="evaluation_criteria.js?v=20260810_v4"></script>
   <script src="assessment.js?v=20260810_v4"></script>
 
@@ -2539,7 +2539,7 @@
         link.click();
       });
     }
-    function handleRefreshData() {
+    async function handleRefreshData() {
       const modal = document.getElementById('refresh-loading-modal');
       const bar = document.getElementById('refresh-progress-bar');
       const statusText = document.getElementById('refresh-status-text');
@@ -2548,41 +2548,53 @@
 
       if (!modal || !bar || !statusText) return;
 
-      // 1. Show modal & start spinning
+      // 1. Show popup modal & start spinning
       modal.classList.add('active');
       if (spinIcon) spinIcon.classList.add('fa-spin');
-      bar.style.width = '10%';
-      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังเชื่อมต่อไฟล์ข้อมูล CSV...';
+      bar.style.width = '15%';
+      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังเชื่อมต่อข้อมูลและเตรียมโหลดไฟล์...';
 
-      // 2. Step 1 (35%)
-      setTimeout(() => {
+      try {
+        // 2. Step 1: Attempt backend sync if running on web server
         bar.style.width = '35%';
-        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> กำลังโหลดผลการทดสอบ & Health Index...';
-      }, 350);
-
-      // 3. Step 2 (75%) - Re-evaluate & reload views
-      setTimeout(() => {
-        bar.style.width = '75%';
-        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> กำลังประมวลผลเกณฑ์การประเมินไดนามิก...';
-        
+        statusText.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> กำลังอัปเดตข้อมูลทดสอบล่าสุด...';
         try {
-          refreshEvalView();
-          if (currentSerial) {
-            loadEvaluationBySerial(currentSerial);
-          }
-        } catch (e) {
-          console.warn('Error refreshing evaluation view:', e);
+          await fetch('/api/refresh-data', { method: 'POST' }).catch(() => {});
+        } catch (e) {}
+
+        // 3. Step 2: Dynamically re-fetch & load health_data.js with timestamp
+        bar.style.width = '60%';
+        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> กำลังโหลดไฟล์ health_data.js และอัปเดตชุดข้อมูล...';
+
+        await new Promise((resolve) => {
+          const oldScript = document.getElementById('health-data-script');
+          if (oldScript) oldScript.remove();
+
+          const script = document.createElement('script');
+          script.id = 'health-data-script';
+          script.src = `health_data.js?t=${Date.now()}`;
+          script.onload = () => resolve();
+          script.onerror = () => resolve();
+          document.head.appendChild(script);
+        });
+
+        // 4. Step 3: Re-evaluate assessment data & recalculate Health Index
+        bar.style.width = '85%';
+        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> กำลังคำนวณ Health Index และอัปเดตรายงาน...';
+
+        ensureAssessmentData();
+        populateEvalDropdown();
+        refreshEvalView();
+        if (currentSerial) {
+          loadEvaluationBySerial(currentSerial);
         }
-      }, 850);
 
-      // 4. Step 3 (100%) - Completed
-      setTimeout(() => {
+        // 5. Complete Step 4 (100%) - ONLY AFTER data update is fully finished
         bar.style.width = '100%';
-        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> อัปเดตข้อมูลและคำนวณผลเสร็จสมบูรณ์!';
-      }, 1300);
+        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> โหลดข้อมูลเรียบร้อยแล้ว!';
 
-      // 5. Hide modal & show toast notification
-      setTimeout(() => {
+        // 6. Wait briefly so user sees 100% completion status, then hide modal & show toast
+        await new Promise(r => setTimeout(r, 600));
         modal.classList.remove('active');
         if (spinIcon) spinIcon.classList.remove('fa-spin');
 
@@ -2592,7 +2604,15 @@
             toast.classList.remove('show');
           }, 3000);
         }
-      }, 1700);
+      } catch (err) {
+        console.error('Refresh error:', err);
+        bar.style.width = '100%';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> เกิดข้อผิดพลาดในการอัปเดตข้อมูล';
+        setTimeout(() => {
+          modal.classList.remove('active');
+          if (spinIcon) spinIcon.classList.remove('fa-spin');
+        }, 1500);
+      }
     }
   </script>
 
