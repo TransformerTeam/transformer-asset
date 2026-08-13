@@ -1345,10 +1345,17 @@
       const rawTapUpper = String(rawTap || '').toUpperCase();
       const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
 
+      const serviceTypeStr = String(serviceVal || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfo && (trInfo.SERVICE_TYPE || trInfo.APPLICATION)) || '').toUpperCase();
+      const serialStr = String(serialVal || '').toUpperCase();
+      const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
+
+      const isBushingNA = isUatOrAux || item.bushing === 'N/A';
+      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
+
       setSubScoreBox('active-part', item.activePart?.overall);
       setSubScoreBox('oil', item.mainTankOil?.overall);
-      setSubScoreBox('bushing', item.bushing);
-      setSubScoreBox('surge', item.surgeArrester);
+      setSubScoreBox('bushing', isBushingNA ? 'N/A' : (item.bushing || 'N/A'));
+      setSubScoreBox('surge', isSurgeNA ? 'N/A' : (item.surgeArrester || 'N/A'));
       setSubScoreBox('visual', item.visualInspection);
       setSubScoreBox('oltc', isOltcNA ? 'N/A' : (item.oltcOil?.overall || 'N/A'));
 
@@ -1365,6 +1372,7 @@
     // =============================================
     function computeHI(item) {
       let overallSumHI = 0;
+      let activePtCount = 0;
       const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
         let minEval = 5;
@@ -1372,7 +1380,7 @@
 
         ptObj.subs.forEach(subObj => {
           subObj.methods.forEach(m => {
-            const match = getMeasuredValueForItem(m.name, item);
+            const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
             if (!match.isNA && match.ratingScore != null) {
               const evalScore = match.ratingScore;
               if (evalScore < minEval) {
@@ -1384,15 +1392,15 @@
         });
 
         // Formula: Health Index = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
-        const ptWeight = ptObj.weight || 1;
-        const ptHI = hasMethods
-          ? Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100)
-          : 100;
-
-        overallSumHI += ptHI;
+        if (hasMethods) {
+          const ptWeight = ptObj.weight || 1;
+          const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
+          overallSumHI += ptHI;
+          activePtCount++;
+        }
       });
       const overallHIVal = overallSumHI;
-      const maxOverallHI = ptStructure.length * 100;
+      const maxOverallHI = activePtCount * 100;
       const percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
       return { overallHIVal, maxOverallHI, percentHIVal };
     }
@@ -1749,6 +1757,7 @@
 
       let overallSumHI = 0;
       const ptResults = {};
+      let activePtCount = 0;
 
       // Calculate dynamic method scores and PT Component Health Index
       // Formula: HI = ((Evaluation Result (Min) × Weight) / (5 × Weight)) × 100
@@ -1760,7 +1769,7 @@
           let mScoreSum = 0;
 
           subObj.methods.forEach(m => {
-            const match = getMeasuredValueForItem(m.name, item);
+            const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
             if (!match.isNA && match.ratingScore != null) {
               const evalScore = match.ratingScore;
               const mScore = evalScore === 5 ? m.maxScore : Math.round(m.maxScore * (evalScore / 5));
@@ -1791,25 +1800,25 @@
         });
 
         // HI per PT Component = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
-        const ptWeight = ptObj.weight || 1;
-        const ptHI = hasMethods
-          ? Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100)
-          : 100;
-
-        ptObj.dynPct = ptHI;
-        ptObj.dynHI  = ptHI;
-
-        ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
-
-        // Overall HI = sum of all PT Component Health Index values (sum of the Health Index column)
-        overallSumHI += ptHI;
+        if (hasMethods) {
+          const ptWeight = ptObj.weight || 1;
+          const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
+          ptObj.dynPct = ptHI;
+          ptObj.dynHI  = ptHI;
+          ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
+          overallSumHI += ptHI;
+          activePtCount++;
+        } else {
+          ptObj.dynPct = 'N/A';
+          ptObj.dynHI  = 'N/A';
+          ptResults[ptObj.pt] = { pct: 100, hi: 'N/A', isNA: true };
+        }
       });
 
       // Overall HI = sum of all PT Component Health Index values
       const overallHIVal = overallSumHI;
 
-      // Max Overall HI = ptStructure.length × 100 (each PT can score max 100)
-      const maxOverallHI = ptStructure.length * 100;
+      const maxOverallHI = activePtCount * 100;
 
       // Percent HI = (Overall HI / Max Overall HI) × 100
       const percentHIVal = maxOverallHI > 0
@@ -1822,8 +1831,9 @@
       const isOltcNA = rawTapStr.includes('NLTC') || rawTapStr.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
 
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
-      const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || '').toUpperCase();
-      const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX');
+      const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION)) || '').toUpperCase();
+      const serialStr = String(item.serial || item.SERIAL_NUMBER || item.Name || '').toUpperCase();
+      const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
 
       const isBushingNA = isUatOrAux || item.bushing === 'N/A';
       const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
@@ -2110,9 +2120,39 @@
       tbody.appendChild(sumTr);
     }
 
-    function getMeasuredValueForItem(itemName, item) {
+    function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (!itemName) return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+
+      // Look up dynamic TRInfo record
+      const serialVal = item.serial || item.SERIAL_NUMBER || item.Name || '';
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+
+      // Rule 1: Service Type (UAT, Auxiliary) -> Exclude Bushing & Surge Arrester
+      const serviceTypeStr = String(
+        item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION || trInfoItem.TYPE)) || ''
+      ).toUpperCase();
+      const serialStr = String(serialVal).toUpperCase();
+      const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') ||
+                         serialStr.includes('UAT') || serialStr.includes('AUX');
+
+      // Rule 2: Tap Changer Type (DETC / NLTC) -> Exclude OLTC
+      const tapStr = String(
+        item.TAP_CHANGER_TYPE || item.tapChangerType || (trInfoItem && trInfoItem.TAP_CHANGER_TYPE) || ''
+      ).toUpperCase();
+      const isOltcNA = tapStr.includes('NLTC') || tapStr.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
+
       const nameLower = itemName.toLowerCase();
+      const ptLower = (ptName || '').toLowerCase();
+
+      // Check Bushing & Surge Arrester exclusion for UAT/Auxiliary
+      if (isUatOrAux && (ptLower === 'bushing' || ptLower === 'arrester' || ptLower === 'surge arrester' || nameLower.includes('bushing') || nameLower.includes('surge arrester') || nameLower.includes('lightning arrester'))) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      // Check OLTC exclusion for DETC / NLTC
+      if (isOltcNA && (ptLower === 'oltc' || nameLower.includes('oltc'))) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
 
       const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, item.serial) : null;
       const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, item.serial) : null;
