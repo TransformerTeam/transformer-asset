@@ -2174,6 +2174,7 @@
 
       const nameLower = itemName.toLowerCase();
       const ptLower = (ptName || '').toLowerCase();
+      const subLower = (subName || '').toLowerCase();
 
       // Check Bushing & Surge Arrester exclusion for UAT/Auxiliary
       if (isUatOrAux && (ptLower === 'bushing' || ptLower === 'arrester' || ptLower === 'surge arrester' || nameLower.includes('bushing') || nameLower.includes('surge arrester') || nameLower.includes('lightning arrester'))) {
