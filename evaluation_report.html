@@ -2565,59 +2565,37 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 3. Exciting Current (ExcitingData.csv per Unified IEEE C57.152 & CIGRE TB 761 Standard)
+      // 3. Exciting Current (ExcitingData.csv per 3-Phase Pattern Analysis: IEEE C57.152 & CIGRE TB 761)
       if (nameLower.includes('exciting current')) {
         if (latestExciting) {
           const date = latestExciting.DATE || latestExciting.Date || latestExciting.date;
           const h1 = parseFloat(latestExciting.H1CENTER || latestExciting.H1MAX || latestExciting.H1MIN);
           const h2 = parseFloat(latestExciting.H2CENTER || latestExciting.H2MAX || latestExciting.H2MIN);
           const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
-          const maxErr = parseFloat(latestExciting.MAXERR || latestExciting.ERRH1CENTER || latestExciting.ERRH2CENTER || latestExciting.ERRH3CENTER || '0');
 
-          let patternScore = 5;
-          let fatScore = 5;
+          let score = 5;
 
-          // Dimension 1: 3-Phase Pattern Analysis (IEEE C57.152 & CIGRE TB 761)
+          // 3-Phase Pattern Analysis (IEEE C57.152 Cl. 7.2.11.2.5 & CIGRE TB 761)
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
             const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
             const isCenterLower = (h2 <= h1 && h2 <= h3);
 
             if (outerDiff <= 5.0 && isCenterLower) {
-              patternScore = 5; // Healthy / Good (H-L-H within 5%)
+              score = 5; // Healthy / Good (H-L-H pattern within 5%)
             } else if (outerDiff <= 10.0 && isCenterLower) {
-              patternScore = 4; // Healthy / Minor Variance (5-10%)
+              score = 4; // Healthy / Minor Variance (5-10%)
             } else if (outerDiff <= 15.0) {
-              patternScore = 3; // Monitor / Fair (10-15%)
+              score = 3; // Monitor / Fair (10-15%)
             } else if (outerDiff <= 25.0) {
-              patternScore = 2; // Warning / Poor (15-25%)
+              score = 2; // Warning / Poor (15-25%)
             } else {
-              patternScore = 1; // Critical / Very Poor (> 25% or abnormal pattern)
+              score = 1; // Critical / Very Poor (> 25% or abnormal pattern)
             }
           }
-
-          // Dimension 2: Comparison with FAT / Fingerprint (%Error from FAT per CIGRE TB 761)
-          if (!isNaN(maxErr) && maxErr > 0) {
-            if (maxErr <= 5.0) {
-              fatScore = 5;
-            } else if (maxErr <= 10.0) {
-              fatScore = 4;
-            } else if (maxErr <= 20.0) {
-              fatScore = 3;
-            } else if (maxErr <= 30.0) {
-              fatScore = 2;
-            } else {
-              fatScore = 1;
-            }
-          }
-
-          // Final Unified Score = worst of pattern & FAT comparison
-          const score = Math.min(patternScore, fatScore);
 
           let valStr = '';
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0) {
             valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA`;
-          } else if (!isNaN(maxErr) && maxErr > 0) {
-            valStr = `%Err: ${maxErr.toFixed(2)}%`;
           } else {
             valStr = 'Pattern Normal';
           }

@@ -59,9 +59,9 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 13,
     "category": "High Voltage Winding",
     "item": "Exciting Current",
-    "criteria": "Three-phase pattern: Outer phases equal within 5% (H-L-H pattern). Comparison with FAT: Error ≤ 5% (Good), 5-10% (Fair), > 30% (Critical)",
+    "criteria": "Three-phase pattern: Outer phases (Phase A & C) equal within 5% (H-L-H pattern). Middle phase lower by up to 20-50%",
     "standard": "IEEE C57.152-2013 / CIGRE TB 761",
-    "recommendation": "Investigate turn short / core damage if abnormal"
+    "recommendation": "Investigate turn short / core damage if abnormal pattern"
   },
   {
     "row": 14,
