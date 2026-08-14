@@ -103,7 +103,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
     { url: 'TestData/SurgeInfo.csv', target: d => surgeInfoCsvData = d },
     { url: 'TestData/SurgePFData.csv', target: d => surgePfCsvData = d },
-    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; } },
+    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; if (typeof window !== 'undefined') { window.irPiCsvData = d; window.piCsvData = d; } } },
     { url: 'TestData/WindingPFData.csv', target: d => windingPfCsvData = d },
     { url: 'TestData/RatioData.csv', target: d => ratioCsvData = d },
     { url: 'TestData/ExcitingData.csv', target: d => excitingCsvData = d },
@@ -215,15 +215,16 @@ function parseNum(val) {
 
 function findLatestRecord(csvArray, targetSerial) {
   if (!csvArray || !csvArray.length || !targetSerial) return null;
+  const cleanTarget = String(targetSerial || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   const matches = csvArray.filter(d => {
-    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || '';
+    if (!d) return false;
+    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || d['Serial No'] || d.Name || d.code || '';
     if (!s) return false;
     const s1 = String(s).trim().toLowerCase();
     const s2 = String(targetSerial).trim().toLowerCase();
     if (s1 === s2) return true;
-    const n1 = s1.replace(/\D/g, '');
-    const n2 = s2.replace(/\D/g, '');
-    if (n1 && n2 && n1 === n2) return true;
+    const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS))) return true;
     return s1.includes(s2) || s2.includes(s1);
   });
   if (!matches.length) return null;

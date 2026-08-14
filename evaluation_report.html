@@ -2156,11 +2156,13 @@
 
       const targetSerial = serialVal || item.serial || item.SERIAL_NUMBER || item.serial_number || item.Name || item.code || '';
 
+      const irPiDataArr = (typeof irPiCsvData !== 'undefined' && irPiCsvData && irPiCsvData.length) ? irPiCsvData : ((typeof window !== 'undefined' && window.irPiCsvData && window.irPiCsvData.length) ? window.irPiCsvData : []);
+
       const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, targetSerial) : null;
       const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, targetSerial) : null;
       const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, targetSerial) : null;
       const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, targetSerial) : null;
-      const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, targetSerial) : null;
+      const latestPi = findLatestRecord(irPiDataArr, targetSerial);
       const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, targetSerial) : null;
       const latestSingleShort = (typeof singleShortCsvData !== 'undefined') ? findLatestRecord(singleShortCsvData, targetSerial) : null;
       const latestThreeShort = (typeof threeShortCsvData !== 'undefined') ? findLatestRecord(threeShortCsvData, targetSerial) : null;
@@ -2188,12 +2190,24 @@
           const commentUpper = comment.toUpperCase();
 
           const subUpper = String(subName || '').toUpperCase();
-          let rawIr = latestPi.H_10 || latestPi.L_10 || latestPi.coregnd;
 
+          const getValidVal = (...keys) => {
+            for (let k of keys) {
+              const val = latestPi[k];
+              if (val !== undefined && val !== null && val !== '-' && val !== 'N/A' && String(val).trim() !== '') {
+                return String(val).trim();
+              }
+            }
+            return null;
+          };
+
+          let rawIr = null;
           if (subUpper.includes('LV')) {
-            rawIr = latestPi.L_10 || latestPi.L_1;
+            rawIr = getValidVal('L_10', 'L_1', 'l_10', 'l_1');
           } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY')) {
-            rawIr = latestPi.T_10 || latestPi.T_1;
+            rawIr = getValidVal('T_10', 'T_1', 't_10', 't_1');
+          } else {
+            rawIr = getValidVal('H_10', 'L_10', 'T_10', 'coregnd', 'framegnd', 'H_1', 'L_1', 'T_1');
           }
 
           let isCannotTest = false;
@@ -2201,7 +2215,7 @@
             isCannotTest = true;
           }
 
-          if (isCannotTest || !rawIr || rawIr === '-' || rawIr === 'N/A' || String(rawIr).trim() === '') {
+          if (isCannotTest || !rawIr) {
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }
 
@@ -2211,7 +2225,7 @@
           }
 
           const score = numIr >= 1000 ? 5 : (numIr >= 500 ? 4 : (numIr >= 100 ? 3 : 2));
-          const valStr = `${numIr > 100 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
+          const valStr = `${numIr >= 100 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
           return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
@@ -2347,24 +2361,34 @@
           const subUpper = String(subName || '').toUpperCase();
           const itemUpper = String(itemName || '').toUpperCase();
 
+          const getValidVal = (...keys) => {
+            for (let k of keys) {
+              const val = latestPi[k];
+              if (val !== undefined && val !== null && val !== '-' && val !== 'N/A' && String(val).trim() !== '') {
+                return String(val).trim();
+              }
+            }
+            return null;
+          };
+
           let rawPi = null;
           let windingKey = 'HV';
 
           if (itemUpper.includes('HV-LV') || subUpper.includes('HV-LV')) {
             windingKey = 'HV-LV';
-            rawPi = latestPi['HV-LV'] || latestPi.HV_LV || latestPi.H_L_PI;
+            rawPi = getValidVal('HV-LV', 'HV_LV', 'H_L_PI');
           } else if (itemUpper.includes('HV-TV') || subUpper.includes('HV-TV')) {
             windingKey = 'HV-TV';
-            rawPi = latestPi['HV-TV'] || latestPi.HV_TV || latestPi.H_T_PI;
+            rawPi = getValidVal('HV-TV', 'HV_TV', 'H_T_PI');
           } else if (subUpper.includes('LV') || itemUpper.includes('LV WINDING') || itemUpper.includes('LV')) {
             windingKey = 'LV';
-            rawPi = latestPi.L_PI || latestPi.l_pi;
+            rawPi = getValidVal('L_PI', 'l_pi', 'LV_PI');
           } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY') || itemUpper.includes('TV WINDING') || itemUpper.includes('TV')) {
             windingKey = 'TV';
-            rawPi = latestPi.T_PI || latestPi.t_pi;
+            rawPi = getValidVal('T_PI', 't_pi', 'TV_PI');
           } else {
             windingKey = 'HV';
-            rawPi = latestPi.H_PI || latestPi.h_pi;
+            rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI');
           }
 
           // Check comment for explicit HV-LV, HV-TV, or winding PI value
@@ -2386,7 +2410,7 @@
             isCannotTest = true;
           }
 
-          if (isCannotTest || !rawPi || rawPi === '-' || rawPi === 'N/A' || String(rawPi).trim() === '') {
+          if (isCannotTest || !rawPi) {
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }
 
