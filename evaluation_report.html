@@ -2574,15 +2574,28 @@
           const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
 
           let score = 5;
+          let patternName = 'H-L-H';
 
           // 3-Phase Pattern Analysis (IEEE C57.152 Cl. 7.2.11.2.5 & CIGRE TB 761)
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
-            const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
-            const isCenterLower = (h2 <= h1 && h2 <= h3);
+            // Detect IEEE C57.152 Pattern
+            if (h1 > h2 && h3 > h2) {
+              patternName = 'H-L-H';
+            } else if (h2 > h1 && h2 > h3) {
+              patternName = 'L-H-L';
+            } else if (Math.abs(h1 - h2) / Math.max(h1, h2) <= 0.05 && Math.abs(h2 - h3) / Math.max(h2, h3) <= 0.05) {
+              patternName = 'H-H-H';
+            } else if (h1 > h3 && h2 > h3) {
+              patternName = 'H-H-L';
+            } else if (h3 > h1 && h2 > h1) {
+              patternName = 'L-H-H';
+            }
 
-            if (outerDiff <= 5.0 && isCenterLower) {
+            const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
+
+            if (outerDiff <= 5.0 && (h2 <= h1 && h2 <= h3)) {
               score = 5; // Healthy / Good (H-L-H pattern within 5%)
-            } else if (outerDiff <= 10.0 && isCenterLower) {
+            } else if (outerDiff <= 10.0 && (h2 <= h1 && h2 <= h3)) {
               score = 4; // Healthy / Minor Variance (5-10%)
             } else if (outerDiff <= 15.0) {
               score = 3; // Monitor / Fair (10-15%)
@@ -2595,9 +2608,9 @@
 
           let valStr = '';
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0) {
-            valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA`;
+            valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA<br>Pattern: ${patternName}`;
           } else {
-            valStr = 'Pattern Normal';
+            valStr = `Pattern Normal<br>Pattern: ${patternName}`;
           }
 
           let recStr = '-';
