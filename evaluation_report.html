@@ -2154,17 +2154,19 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, item.serial) : null;
-      const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, item.serial) : null;
-      const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, item.serial) : null;
-      const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, item.serial) : null;
-      const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, item.serial) : null;
-      const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, item.serial) : null;
-      const latestSingleShort = (typeof singleShortCsvData !== 'undefined') ? findLatestRecord(singleShortCsvData, item.serial) : null;
-      const latestThreeShort = (typeof threeShortCsvData !== 'undefined') ? findLatestRecord(threeShortCsvData, item.serial) : null;
-      const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, item.serial) : null;
-      const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, item.serial) : null;
-      const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, item.serial) : null;
+      const targetSerial = serialVal || item.serial || item.SERIAL_NUMBER || item.serial_number || item.Name || item.code || '';
+
+      const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, targetSerial) : null;
+      const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, targetSerial) : null;
+      const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, targetSerial) : null;
+      const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, targetSerial) : null;
+      const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, targetSerial) : null;
+      const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, targetSerial) : null;
+      const latestSingleShort = (typeof singleShortCsvData !== 'undefined') ? findLatestRecord(singleShortCsvData, targetSerial) : null;
+      const latestThreeShort = (typeof threeShortCsvData !== 'undefined') ? findLatestRecord(threeShortCsvData, targetSerial) : null;
+      const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, targetSerial) : null;
+      const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, targetSerial) : null;
+      const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, targetSerial) : null;
 
       // 1. Visual Inspection (VisualData.csv)
       if (nameLower.includes('visual inspection')) {
