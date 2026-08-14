@@ -1780,9 +1780,10 @@
               }
               hasMethods = true;
 
-              m.dynResult = match.value || '-';
-              m.dynDate   = (match.testDate && match.testDate !== '-') ? formatDateToDdMmmYyyy(match.testDate) : '-';
-              m.dynEval   = evalScore;
+              m.dynResult  = match.value || '-';
+              m.dynDate    = (match.testDate && match.testDate !== '-') ? formatDateToDdMmmYyyy(match.testDate) : '-';
+              m.dynDateRaw = match.testDate;
+              m.dynEval    = evalScore;
               m.dynScore  = mScore;
               m.dynStatus = match.status || 'Uptodate!!';
             } else {
@@ -1967,7 +1968,21 @@
             html += `<td>${m.name}</td>`;
 
             // 4. Testing Date
-            html += `<td style="text-align:center;">${m.dynDate}</td>`;
+            let dateStyle = '';
+            if (m.dynDate && m.dynDate !== '-') {
+              const rawDateStr = m.dynDateRaw || m.dynDate;
+              const dObj = new Date(rawDateStr);
+              if (!isNaN(dObj.getTime())) {
+                const now = new Date();
+                const diffYears = (now - dObj) / (1000 * 60 * 60 * 24 * 365.25);
+                if (diffYears <= 3) {
+                  dateStyle = 'color: #22c55e; font-weight: 600;';
+                } else {
+                  dateStyle = 'color: #d97706; font-weight: 600;';
+                }
+              }
+            }
+            html += `<td style="text-align:center; ${dateStyle}">${m.dynDate}</td>`;
 
             // 5. Test Result
             html += `<td style="text-align:center; font-weight:600;">${m.dynResult}</td>`;
@@ -2189,8 +2204,6 @@
           const comment = String(latestPi.comment || latestPi.Comment || '').trim();
           const commentUpper = comment.toUpperCase();
 
-          const subUpper = String(subName || '').toUpperCase();
-
           const getValidVal = (...keys) => {
             for (let k of keys) {
               const val = latestPi[k];
@@ -2201,32 +2214,60 @@
             return null;
           };
 
-          let rawIr = null;
-          if (subUpper.includes('LV')) {
-            rawIr = getValidVal('L_10', 'L_1', 'l_10', 'l_1');
-          } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY')) {
-            rawIr = getValidVal('T_10', 'T_1', 't_10', 't_1');
-          } else {
-            rawIr = getValidVal('H_10', 'L_10', 'T_10', 'coregnd', 'framegnd', 'H_1', 'L_1', 'T_1');
-          }
+          const cg = getValidVal('coregnd', 'core_gnd');
+          const cf = getValidVal('coreframe', 'core_frame', 'coreclamp');
+          const fg = getValidVal('framegnd', 'frame_gnd', 'clampgnd');
 
           let isCannotTest = false;
           if (commentUpper.includes('CANNOT TEST') || commentUpper.includes('CAN NOT TEST') || commentUpper.includes('ไม่สามารถทดสอบได้')) {
             isCannotTest = true;
           }
 
-          if (isCannotTest || !rawIr) {
+          if (isCannotTest || (!cg && !cf && !fg)) {
+            // Fallback check for H_10 / L_10 if no coregnd / coreframe / framegnd
+            const subUpper = String(subName || '').toUpperCase();
+            let fallbackIr = getValidVal('H_10', 'L_10', 'T_10');
+            if (subUpper.includes('LV')) fallbackIr = getValidVal('L_10', 'L_1');
+            if (subUpper.includes('TV')) fallbackIr = getValidVal('T_10', 'T_1');
+
+            if (!isCannotTest && fallbackIr) {
+              const numIr = parseFloat(fallbackIr);
+              if (!isNaN(numIr) && numIr > 0) {
+                const score = numIr >= 1000 ? 5 : (numIr >= 500 ? 4 : (numIr >= 100 ? 3 : 2));
+                const valStr = `${numIr >= 1000 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
+                return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
+              }
+            }
+
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }
 
-          const numIr = parseFloat(rawIr);
-          if (isNaN(numIr) || numIr <= 0) {
-            return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+          // Build coregnd, coreframe, framegnd result string
+          const parts = [];
+          if (cg) parts.push(`Core-Gnd: ${cg} MΩ`);
+          if (cf) parts.push(`Core-Clamp: ${cf} MΩ`);
+          if (fg) parts.push(`Clamp-Gnd: ${fg} MΩ`);
+          const resStr = parts.join(', ');
+
+          // Calculate score 1-5 based on minimum insulation resistance value
+          const valNums = [cg, cf, fg].map(v => parseFloat(v)).filter(n => !isNaN(n) && n > 0);
+          let score = 5;
+          if (valNums.length > 0) {
+            const minVal = Math.min(...valNums);
+            if (minVal < 50) {
+              score = 1;
+            } else if (minVal < 100) {
+              score = 2;
+            } else if (minVal < 500) {
+              score = 3;
+            } else if (minVal < 1000) {
+              score = 4;
+            } else {
+              score = 5;
+            }
           }
 
-          const score = numIr >= 1000 ? 5 : (numIr >= 500 ? 4 : (numIr >= 100 ? 3 : 2));
-          const valStr = `${numIr >= 100 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
-          return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
+          return { value: resStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core insulation & grounding' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
