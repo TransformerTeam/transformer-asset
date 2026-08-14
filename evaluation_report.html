@@ -1377,8 +1377,6 @@
       const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
         if (ptObj.splitSubWeights) {
-          let sumSubHI = 0;
-          let activeSubs = 0;
           ptObj.subs.forEach(subObj => {
             let minSubEval = 5;
             let subHasMethods = false;
@@ -1394,14 +1392,10 @@
             });
             if (subHasMethods) {
               const subHI = Math.round((minSubEval / 5) * 100);
-              sumSubHI += (subHI * (subObj.weight || 5)) / 20;
-              activeSubs++;
+              overallSumHI += subHI;
+              activePtCount++;
             }
           });
-          if (activeSubs > 0) {
-            overallSumHI += sumSubHI;
-            activePtCount++;
-          }
         } else {
           let minEval = 5;
           let hasMethods = false;
@@ -1842,6 +1836,8 @@
           let activeSubs = 0;
           ptObj.subs.forEach(s => {
             if (typeof s.dynHI === 'number') {
+              overallSumHI += s.dynHI;
+              activePtCount++;
               sumSubHI += (s.dynHI * (s.weight || 5)) / 20;
               activeSubs++;
             }
@@ -1850,10 +1846,6 @@
           ptObj.dynPct = combinedOilHI;
           ptObj.dynHI  = combinedOilHI;
           ptResults[ptObj.pt] = { pct: typeof combinedOilHI === 'number' ? combinedOilHI : 100, hi: combinedOilHI };
-          if (activeSubs > 0) {
-            overallSumHI += sumSubHI;
-            activePtCount++;
-          }
         } else {
           // HI per PT Component = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
           if (hasMethods) {
