@@ -1856,17 +1856,19 @@
         });
 
         if (ptObj.splitSubWeights) {
-          let sumSubHI = 0;
+          let minOilSubHI = 100;
           let activeSubs = 0;
           ptObj.subs.forEach(s => {
             if (typeof s.dynHI === 'number') {
               overallSumHI += s.dynHI;
               activePtCount++;
-              sumSubHI += (s.dynHI * (s.weight || 5)) / 20;
+              if (s.dynHI < minOilSubHI) {
+                minOilSubHI = s.dynHI;
+              }
               activeSubs++;
             }
           });
-          const combinedOilHI = activeSubs > 0 ? Math.round(sumSubHI) : 'N/A';
+          const combinedOilHI = activeSubs > 0 ? minOilSubHI : 'N/A';
           ptObj.dynPct = combinedOilHI;
           ptObj.dynHI  = combinedOilHI;
           ptResults[ptObj.pt] = { pct: typeof combinedOilHI === 'number' ? combinedOilHI : 100, hi: combinedOilHI };
@@ -1938,10 +1940,23 @@
       const isBushingNA = isUatOrAux || item.bushing === 'N/A';
       const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
 
-      // Gauge Indices
+      // Gauge Indices: Use minimum of the 3 oil sub-categories for Insulation Oil Gauge
+      let minOilSubIndex = 100.0;
+      let hasOilSubs = false;
+      const oilPt = ptStructure.find(p => p.pt === 'Insulation Oil' || p.pt === 'Insulating Oil');
+      if (oilPt && oilPt.subs) {
+        oilPt.subs.forEach(s => {
+          if (typeof s.dynHI === 'number') {
+            hasOilSubs = true;
+            if (s.dynHI < minOilSubIndex) {
+              minOilSubIndex = s.dynHI;
+            }
+          }
+        });
+      }
       const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
       const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
-      const mainTankOilIndex = ptResults['Insulation Oil'] ? ptResults['Insulation Oil'].pct : (ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0);
+      const mainTankOilIndex = hasOilSubs ? minOilSubIndex : (ptResults['Insulation Oil'] ? ptResults['Insulation Oil'].pct : (ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0));
       const oltcIndex = ptResults['OLTC'] ? ptResults['OLTC'].pct : 100.0;
       const bushingIndex = ptResults['Bushing'] ? ptResults['Bushing'].pct : 100.0;
       const arresterIndex = ptResults['Arrester'] ? ptResults['Arrester'].pct : 46.67;
@@ -1951,7 +1966,7 @@
         sixGaugesGrid.innerHTML = `
           ${createHalfGaugeSVG(generalIndex, 'General Part Condition', '%General Index', false)}
           ${createHalfGaugeSVG(activePartIndex, 'Active Part Condition', '%Active Part Index', false)}
-          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulting Oil Condition', '%Insulating Oil Index', false)}
+          ${createHalfGaugeSVG(mainTankOilIndex, 'Maintank Insulating Oil Condition', '%Insulating Oil Index', false)}
           ${createHalfGaugeSVG(oltcIndex, 'OLTC Condition', '%OLTC Index', isOltcNA)}
           ${createHalfGaugeSVG(bushingIndex, 'Bushing Condition', '%Bushing Index', isBushingNA)}
           ${createHalfGaugeSVG(arresterIndex, 'Lightning Arrester Condition', '%Arrester Index', isSurgeNA)}
