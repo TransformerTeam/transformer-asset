@@ -1458,7 +1458,7 @@
       'High Voltage Winding': 20,
       'Low Voltage Winding': 10,
       'Tertiary Winding': 5,
-      'Insulating Oil in Main Tank': 25,
+      'Insulating Oil in Main Tank': 20,
       'Insulating Oil in OLTC': 5,
       'Surge Arrester': 10,
       'OLTC': 10,
@@ -1624,41 +1624,36 @@
           ]
         },
         {
-          pt: 'Insulating Oil', weight: 15,
+          pt: 'Insulating Oil', weight: 20,
           subs: [
             {
-              sub: 'Dissolve Gas Analysis', full: 100, subWeight: 25,
+              sub: 'DGA', full: 100, subWeight: 25,
               methods: [
                 { name: 'Dissolve Gas Analysis (DGA)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 100, mWorst: '-' }
               ]
             },
             {
-              sub: 'Electrical Chemical and Physical', full: 100, subWeight: 25,
+              sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25,
               methods: [
-                { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 4, maxScore: 20, mWorst: '-' },
-                { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 4, maxScore: 20, mWorst: '-' },
+                { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
+                { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
+              ]
+            },
+            {
+              sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50,
+              methods: [
                 { name: 'Power Factor at 25 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'IFT', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Acidity', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 10, mWorst: '-' },
+                { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
                 { name: 'Color Number', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
-                { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Paper Aging', full: 100, subWeight: 25,
-              methods: [
-                { name: 'Furan [2-FAL]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 40, mWorst: '-' },
-                { name: 'Estimated DP [Furan]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 40, mWorst: '-' },
-                { name: 'Sludge condition', defaultDate: '2025-09-15', mWeight: 3, maxScore: 20, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'Corrosive Sulfur', full: 100, subWeight: 25,
-              methods: [
-                { name: 'Corrosive Sulfur', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
-                { name: 'Passivator [Irgamet 39]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
+                { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
+                { name: 'Furan [2-FAL]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
+                { name: 'Estimated DP [Furan]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
+                { name: 'Sludge condition', defaultDate: '2025-09-15', mWeight: 3, maxScore: 5, mWorst: '-' },
+                { name: 'Corrosive Sulfur', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' },
+                { name: 'Passivator [Irgamet 39]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' }
               ]
             }
           ]
