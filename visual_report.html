@@ -791,14 +791,17 @@
         return `<span class="status-badge status-na">Not Available</span>`;
       }
       const val = resultStr.trim();
-      if (val === 'A' || val.toLowerCase().includes('normal') || val.toLowerCase().includes('good')) {
+      const valLower = val.toLowerCase();
+
+      // Check Abnormal / Unacceptable / Critical first!
+      if (val === 'U' || valLower.includes('abnormal') || valLower.includes('unacceptable') || valLower.includes('critical') || valLower.includes('action')) {
+        return `<span class="status-badge status-unacceptable">${valLower.includes('abnormal') ? 'Abnormal' : 'Unacceptable'}</span>`;
+      }
+      if (val === 'Q' || valLower.includes('questionable') || valLower.includes('warning') || valLower.includes('monitor') || valLower.includes('fair')) {
+        return `<span class="status-badge status-questionable">${valLower.includes('monitor') ? 'Monitor' : 'Questionable'}</span>`;
+      }
+      if (val === 'A' || valLower === 'normal' || valLower.includes('good') || valLower.startsWith('normal')) {
         return `<span class="status-badge status-normal">Normal</span>`;
-      }
-      if (val === 'Q' || val.toLowerCase().includes('questionable') || val.toLowerCase().includes('warning')) {
-        return `<span class="status-badge status-questionable">Questionable</span>`;
-      }
-      if (val === 'U' || val.toLowerCase().includes('unacceptable') || val.toLowerCase().includes('action')) {
-        return `<span class="status-badge status-unacceptable">Unacceptable</span>`;
       }
       return `<span class="status-badge status-normal">${val}</span>`;
     }
@@ -809,7 +812,7 @@
       tbody.innerHTML = '';
 
       itemsConfig.forEach(cfg => {
-        const condVal = record[cfg.resKey] || 'Normal';
+        const condVal = (record[cfg.resKey] !== undefined && record[cfg.resKey] !== null && String(record[cfg.resKey]).trim() !== '') ? record[cfg.resKey].trim() : 'Normal';
         const remVal = record[cfg.remKey] || '-';
         const tr = document.createElement('tr');
         tr.innerHTML = `

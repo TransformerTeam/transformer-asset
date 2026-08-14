@@ -2336,10 +2336,38 @@
       if (nameLower.includes('visual inspection')) {
         if (latestVis) {
           const date = latestVis.Date || latestVis.date;
-          const res = latestVis.Visual_Result || latestVis.Maintank_result || latestVis.Test_Result || 'Normal';
-          const isWarn = res.toUpperCase().includes('Q') || res.toUpperCase().includes('MONITOR') || res.toUpperCase().includes('FAIR');
-          const score = isWarn ? 3 : 5;
-          return { value: res, testDate: date, ratingScore: score, recommendation: isWarn ? 'Plan visual touch-up' : '-' };
+          let res = latestVis.Visual_Result || latestVis.Maintank_result || latestVis.Test_Result;
+
+          // Check if specific sub-component visual exists
+          if (subLower.includes('bushing') || ptLower.includes('bushing')) {
+            res = latestVis.Bushing_Result || latestVis.HVB_result || res;
+          } else if (subLower.includes('arrester') || ptLower.includes('arrester')) {
+            res = latestVis.Arrester_Result || latestVis.SA_result || res;
+          } else if (subLower.includes('oltc') || ptLower.includes('oltc')) {
+            res = latestVis.OLTC_Result || latestVis.Condition_of_OLTC_Panel_result || res;
+          } else {
+            // Overall inspection: check if any component has Abnormal / Defect
+            const abnormalItems = [];
+            if (String(latestVis.Radiator_valve_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('Radiator valve leak');
+            if (String(latestVis.BCT_terminal_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('BCT terminal leak');
+            if (String(latestVis.Oil_level_M_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('Low oil level');
+
+            if (abnormalItems.length > 0 && (!res || res === 'Normal' || res === 'A')) {
+              res = `Abnormal (${abnormalItems.join(', ')})`;
+            }
+          }
+
+          res = res || 'Normal';
+          const resUpper = res.toUpperCase();
+          const isCrit = resUpper.includes('U') || resUpper.includes('ABNORMAL') || resUpper.includes('CRITICAL') || resUpper.includes('UNACCEPTABLE');
+          const isWarn = resUpper.includes('Q') || resUpper.includes('MONITOR') || resUpper.includes('FAIR') || resUpper.includes('WARNING');
+          const score = isCrit ? 1 : (isWarn ? 3 : 5);
+          return {
+            value: res,
+            testDate: date,
+            ratingScore: score,
+            recommendation: isCrit ? 'Immediate visual maintenance required' : (isWarn ? 'Plan visual touch-up' : '-')
+          };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
