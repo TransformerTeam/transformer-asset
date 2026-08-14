@@ -1374,6 +1374,7 @@
     function computeHI(item) {
       let overallSumHI = 0;
       let activePtCount = 0;
+      let worstDgaOrBdvEval = 5;
       const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
         if (ptObj.splitSubWeights) {
@@ -1394,6 +1395,14 @@
               const subHI = Math.round((minSubEval / 5) * 100);
               overallSumHI += subHI;
               activePtCount++;
+
+              // Check DGA and Dielectric Breakdown & Water Content for Capping Rule
+              const subNameUpper = String(subObj.sub || '').toUpperCase();
+              if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+                if (minSubEval < worstDgaOrBdvEval) {
+                  worstDgaOrBdvEval = minSubEval;
+                }
+              }
             }
           });
         } else {
@@ -1424,8 +1433,21 @@
       });
       const overallHIVal = overallSumHI;
       const maxOverallHI = activePtCount * 100;
-      const percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
-      return { overallHIVal, maxOverallHI, percentHIVal };
+      let percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
+
+      // Capping Rule (แนวทางที่ 1): Cap Overall HI based on DGA and BDV & Water Content
+      // Score 1 (Critical) -> Cap at 49%
+      // Score 2 (Warning)  -> Cap at 69%
+      // Score 3 (Monitor)  -> Cap at 79%
+      if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+        percentHIVal = 49;
+      } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+        percentHIVal = 69;
+      } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+        percentHIVal = 79;
+      }
+
+      return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval };
     }
 
     function setSubScoreBox(idKey, valStr) {
@@ -1870,9 +1892,36 @@
       const maxOverallHI = activePtCount * 100;
 
       // Percent HI = (Overall HI / Max Overall HI) × 100
-      const percentHIVal = maxOverallHI > 0
+      let percentHIVal = maxOverallHI > 0
         ? Math.round((overallHIVal / maxOverallHI) * 100)
         : 0;
+
+      // Capping Rule (แนวทางที่ 1): Cap Overall HI based on DGA and BDV & Water Content
+      // Score 1 (Critical) -> Cap at 49%
+      // Score 2 (Warning)  -> Cap at 69%
+      // Score 3 (Monitor)  -> Cap at 79%
+      let worstDgaOrBdvEval = 5;
+      ptStructure.forEach(pt => {
+        pt.subs.forEach(s => {
+          const subNameUpper = String(s.sub || '').toUpperCase();
+          if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+            if (typeof s.dynHI === 'number') {
+              const evalScoreFromHI = Math.round((s.dynHI * 5) / 100);
+              if (evalScoreFromHI < worstDgaOrBdvEval) {
+                worstDgaOrBdvEval = evalScoreFromHI;
+              }
+            }
+          }
+        });
+      });
+
+      if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+        percentHIVal = 49;
+      } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+        percentHIVal = 69;
+      } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+        percentHIVal = 79;
+      }
 
       // Check if Tap changer is NLTC/DETC -> OLTC is N/A
       const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER) : null;
