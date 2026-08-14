@@ -67,7 +67,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 14,
     "category": "High Voltage Winding",
     "item": "Single Phase Short Circuit Impedance",
-    "criteria": "within 3% average three phase",
+    "criteria": "%Deviation within 3% average three phase",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
