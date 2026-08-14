@@ -1335,10 +1335,21 @@ function openDetail(no) {
   const visRec = findLatestRecord(visualCsvData, item.serial);
   const exVisualText = document.getElementById('ex-visual-text');
   if (exVisualText) {
+    let hasAbnormal = false;
+    if (visRec) {
+      Object.keys(visRec).forEach(k => {
+        if (k.toLowerCase().endsWith('_result')) {
+          const v = String(visRec[k] || '').toUpperCase();
+          if (v === 'ABNORMAL' || v === 'U' || v === 'UNACCEPTABLE' || v === 'CRITICAL' || v === 'POOR') {
+            hasAbnormal = true;
+          }
+        }
+      });
+    }
     const visVal = visRec ? (visRec.Test_Result || visRec.Summary || visRec.Visual || item.visualInspection || 'A') : (item.visualInspection || 'A');
     let visLabel = 'Normal (A)';
     let visClass = 'ex-status-good';
-    if (visVal === 'Q' || visVal === 'Questionable' || visVal === 'Monitor' || visVal === 'Fair') {
+    if (hasAbnormal || visVal === 'Q' || visVal === 'Questionable' || visVal === 'Monitor' || visVal === 'Fair') {
       visLabel = 'Questionable (Q)';
       visClass = 'ex-status-fair';
     } else if (visVal === 'U' || visVal === 'Unacceptable' || visVal === 'Critical' || visVal === 'Poor') {

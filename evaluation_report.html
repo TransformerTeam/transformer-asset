@@ -2335,39 +2335,100 @@
       // 1. Visual Inspection (VisualData.csv)
       if (nameLower.includes('visual inspection')) {
         if (latestVis) {
-          const date = latestVis.Date || latestVis.date;
-          let res = latestVis.Visual_Result || latestVis.Maintank_result || latestVis.Test_Result;
+          const date = latestVis.Date || latestVis.date || '-';
 
-          // Check if specific sub-component visual exists
+          // Specific sub-component visual inspection
           if (subLower.includes('bushing') || ptLower.includes('bushing')) {
-            res = latestVis.Bushing_Result || latestVis.HVB_result || res;
-          } else if (subLower.includes('arrester') || ptLower.includes('arrester')) {
-            res = latestVis.Arrester_Result || latestVis.SA_result || res;
-          } else if (subLower.includes('oltc') || ptLower.includes('oltc')) {
-            res = latestVis.OLTC_Result || latestVis.Condition_of_OLTC_Panel_result || res;
-          } else {
-            // Overall inspection: check if any component has Abnormal / Defect
-            const abnormalItems = [];
-            if (String(latestVis.Radiator_valve_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('Radiator valve leak');
-            if (String(latestVis.BCT_terminal_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('BCT terminal leak');
-            if (String(latestVis.Oil_level_M_result || '').toUpperCase().includes('ABNORMAL')) abnormalItems.push('Low oil level');
-
-            if (abnormalItems.length > 0 && (!res || res === 'Normal' || res === 'A')) {
-              res = `Abnormal (${abnormalItems.join(', ')})`;
+            const bushingRemarks = [];
+            ['HVB_result', 'NBH_result', 'LVB_result', 'NBL_result', 'HV_bushing_result', 'NB_result', 'LV_bushing_result'].forEach(k => {
+              const val = String(latestVis[k] || '').toUpperCase();
+              if (val === 'ABNORMAL' || val === 'U' || val === 'UNACCEPTABLE' || val === 'CRITICAL' || val === 'POOR') {
+                const base = k.slice(0, -7);
+                const rem = latestVis[base + '_remark'] || latestVis[base + '_Remark'] || base.replace(/_/g, ' ');
+                if (rem && rem !== '-' && !bushingRemarks.includes(rem)) bushingRemarks.push(rem);
+              }
+            });
+            if (bushingRemarks.length > 0) {
+              return { value: bushingRemarks.join(', '), testDate: date, ratingScore: 3, recommendation: 'Plan visual maintenance / Repair defects' };
             }
+            return { value: 'Normal', testDate: date, ratingScore: 5, recommendation: '-' };
           }
 
-          res = res || 'Normal';
-          const resUpper = res.toUpperCase();
-          const isCrit = resUpper.includes('U') || resUpper.includes('ABNORMAL') || resUpper.includes('CRITICAL') || resUpper.includes('UNACCEPTABLE');
-          const isWarn = resUpper.includes('Q') || resUpper.includes('MONITOR') || resUpper.includes('FAIR') || resUpper.includes('WARNING');
-          const score = isCrit ? 1 : (isWarn ? 3 : 5);
-          return {
-            value: res,
-            testDate: date,
-            ratingScore: score,
-            recommendation: isCrit ? 'Immediate visual maintenance required' : (isWarn ? 'Plan visual touch-up' : '-')
-          };
+          if (subLower.includes('arrester') || ptLower.includes('arrester')) {
+            const arrVal = String(latestVis.SA_result || latestVis.Arrester_Result || '').toUpperCase();
+            if (arrVal === 'ABNORMAL' || arrVal === 'U' || arrVal === 'UNACCEPTABLE' || arrVal === 'CRITICAL') {
+              const rem = latestVis.SA_remark || latestVis.Arrester_remark || 'Arrester abnormal';
+              return { value: rem, testDate: date, ratingScore: 3, recommendation: 'Plan visual maintenance / Repair defects' };
+            }
+            return { value: 'Normal', testDate: date, ratingScore: 5, recommendation: '-' };
+          }
+
+          if (subLower.includes('oltc') || ptLower.includes('oltc')) {
+            const oltcRemarks = [];
+            ['OLTC_Oil_surge_relay_result', 'OLTC_Pressure_relief_device_result', 'OLTC_Oil_Filter_pressure_result', 'Condition_of_OLTC_Panel_result', 'OLTC_Tank_result'].forEach(k => {
+              const val = String(latestVis[k] || '').toUpperCase();
+              if (val === 'ABNORMAL' || val === 'U' || val === 'UNACCEPTABLE' || val === 'CRITICAL') {
+                const base = k.slice(0, -7);
+                const rem = latestVis[base + '_remark'] || latestVis[base + '_Remark'] || base.replace(/_/g, ' ');
+                if (rem && rem !== '-' && !oltcRemarks.includes(rem)) oltcRemarks.push(rem);
+              }
+            });
+            if (oltcRemarks.length > 0) {
+              return { value: oltcRemarks.join(', '), testDate: date, ratingScore: 3, recommendation: 'Plan visual maintenance / Repair defects' };
+            }
+            return { value: 'Normal', testDate: date, ratingScore: 5, recommendation: '-' };
+          }
+
+          // Overall Visual Inspection (General Part): Check all abnormal items across the full report
+          const abnormalRemarks = [];
+
+          Object.keys(latestVis).forEach(key => {
+            const val = String(latestVis[key] || '').trim();
+            const valUpper = val.toUpperCase();
+            if (key.toLowerCase().endsWith('_result')) {
+              if (valUpper === 'ABNORMAL' || valUpper === 'U' || valUpper === 'UNACCEPTABLE' || valUpper === 'CRITICAL' || valUpper === 'POOR' || valUpper === 'ACTION') {
+                const baseName = key.slice(0, -7); // remove '_result'
+                const remarkKey = baseName + '_remark';
+                const foundKey = Object.keys(latestVis).find(k => k.toLowerCase() === remarkKey.toLowerCase());
+                const remarkVal = foundKey ? latestVis[foundKey] : '';
+                const cleanRemark = String(remarkVal || '').trim();
+                if (cleanRemark && cleanRemark !== '-' && cleanRemark !== 'Normal' && !abnormalRemarks.includes(cleanRemark)) {
+                  abnormalRemarks.push(cleanRemark);
+                } else {
+                  const readableName = baseName.replace(/_/g, ' ');
+                  if (!abnormalRemarks.includes(readableName)) {
+                    abnormalRemarks.push(readableName);
+                  }
+                }
+              }
+            }
+          });
+
+          // Check general comments for defects
+          ['comment1', 'comment2', 'comment3', 'comment4', 'comment5', 'comment6'].forEach(ck => {
+            const cVal = String(latestVis[ck] || '').trim();
+            if (cVal && cVal !== '-' && (cVal.toLowerCase().includes('leak') || cVal.toLowerCase().includes('abnormal') || cVal.toLowerCase().includes('defect') || cVal.toLowerCase().includes('low') || cVal.toLowerCase().includes('crack') || cVal.toLowerCase().includes('rust'))) {
+              if (!abnormalRemarks.some(r => r.toLowerCase() === cVal.toLowerCase() || cVal.toLowerCase().includes(r.toLowerCase()))) {
+                abnormalRemarks.push(cVal);
+              }
+            }
+          });
+
+          if (abnormalRemarks.length > 0) {
+            return {
+              value: abnormalRemarks.join(', '),
+              testDate: date,
+              ratingScore: 3, // Score 3 (Yellow Monitor)
+              recommendation: 'Plan visual maintenance / Repair defects'
+            };
+          } else {
+            return {
+              value: 'Normal',
+              testDate: date,
+              ratingScore: 5, // Score 5 (Healthy)
+              recommendation: '-'
+            };
+          }
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
