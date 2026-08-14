@@ -2125,9 +2125,9 @@
             const isVisualInspection = String(m.name || '').toLowerCase().includes('visual inspection');
             const cleanResult = String(m.dynResult || '-');
             if (isVisualInspection) {
-              html += `<td style="text-align:center; font-weight:600; line-height:1.25; padding:4px 6px; font-size:0.68rem; max-width:240px;" title="${cleanResult.replace(/"/g, '&quot;')}"><div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; max-height:2.6em;">${m.dynResult}</div></td>`;
+              html += `<td style="text-align:center; font-weight:600; line-height:1.2; padding:3px 4px; font-size:0.58rem; max-width:240px;" title="${cleanResult.replace(/"/g, '&quot;')}"><div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; max-height:2.4em;">${m.dynResult}</div></td>`;
             } else {
-              html += `<td style="text-align:center; font-weight:600; line-height:1.35; padding:6px 4px; font-size:0.70rem;">${m.dynResult}</td>`;
+              html += `<td style="text-align:center; font-weight:600; line-height:1.25; padding:3px 4px; font-size:0.60rem;">${m.dynResult}</td>`;
             }
 
             // 6. Evaluation Result (Badge 1..5)
