@@ -1968,7 +1968,7 @@
             let methodDisplayName = m.name;
             const subTextStr = m.subText || (m.name.includes('Insulation Resistance and PI') ? 'IEEE C57.152-2013, PI > 1.25' : '');
             if (subTextStr) {
-              methodDisplayName += `<br><span style="font-size: 0.70rem; color: #475569; font-weight: 500;">${subTextStr}</span>`;
+              methodDisplayName += `<br>${subTextStr}`;
             }
             html += `<td>${methodDisplayName}</td>`;
 
