@@ -74,8 +74,8 @@ var EVALUATION_CRITERIA_DATA = [
   {
     "row": 15,
     "category": "High Voltage Winding",
-    "item": "3 Phase Short Circuit Impedance",
-    "criteria": "Three phase equivalent test result should be within 3% of nameplate values",
+    "item": "Three Phase Short Circuit Impedance",
+    "criteria": "%Deviation within 3% of nameplate",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },

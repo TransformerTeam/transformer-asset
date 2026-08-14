@@ -1649,7 +1649,7 @@
               methods: [
                 { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Short Circuit Impedance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+                { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
                 { name: 'Turn Ratio (%Error from FAT/Oldest)', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
@@ -2647,14 +2647,15 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv)
-      if (nameLower.includes('three phase short circuit') || (nameLower.includes('three') && nameLower.includes('short')) || nameLower.includes('short circuit') || nameLower.includes('leakage impedance')) {
+      // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv per IEEE C57.152-2013: %Deviation within 3% of nameplate)
+      if (nameLower.includes('three phase short circuit') || nameLower.includes('three phase impedance') || (nameLower.includes('three') && nameLower.includes('short')) || (nameLower.includes('short circuit') && !nameLower.includes('single'))) {
         if (latestThreeShort) {
           const date = latestThreeShort.Date || latestThreeShort.date;
           const dev = latestThreeShort.HV_Cen_Dev || latestThreeShort.HV_Max_Dev || latestThreeShort.Short_Circuit_Impedance_Result || '0.5';
           const val = `%Dev: ${dev}%`;
-          const score = Math.abs(parseFloat(dev)) <= 1.5 ? 5 : 3;
-          return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance' };
+          const numDev = Math.abs(parseFloat(dev));
+          const score = isNaN(numDev) ? 5 : (numDev <= 3.0 ? 5 : (numDev <= 5.0 ? 3 : 1));
+          return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance (IEEE C57.152)' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
