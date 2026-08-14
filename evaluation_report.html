@@ -2121,8 +2121,9 @@
             }
             html += `<td style="text-align:center; ${dateStyle}">${m.dynDate}</td>`;
 
-            // 5. Test Result
-            html += `<td style="text-align:center; font-weight:600; line-height:1.35; padding:6px 4px;">${m.dynResult}</td>`;
+            // 5. Test Result (Max 2 lines with tooltip)
+            const cleanResult = String(m.dynResult || '-');
+            html += `<td style="text-align:center; font-weight:600; line-height:1.25; padding:4px 6px; font-size:0.68rem; max-width:240px;" title="${cleanResult.replace(/"/g, '&quot;')}"><div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; max-height:2.6em;">${m.dynResult}</div></td>`;
 
             // 6. Evaluation Result (Badge 1..5)
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
@@ -2415,8 +2416,26 @@
           });
 
           if (abnormalRemarks.length > 0) {
+            // Clean up and summarize abnormal remarks into concise 2-line text
+            const cleanedRemarks = [];
+            abnormalRemarks.forEach(r => {
+              let s = String(r || '').trim();
+              if (!s || s === '-' || s.toLowerCase() === 'normal') return;
+              s = s.replace(/The butterfly valve was found to have an oil leak\.?/gi, 'Butterfly valve oil leak')
+                   .replace(/CT box was found as oil leak\.?/gi, 'BCT box oil leak')
+                   .replace(/was found to have an oil leak\.?/gi, 'oil leak')
+                   .replace(/was found as oil leak\.?/gi, 'oil leak')
+                   .replace(/Oil level almost low\.?/gi, 'Oil level low')
+                   .replace(/\.+$/, '');
+              if (!cleanedRemarks.some(existing => existing.toLowerCase() === s.toLowerCase() || existing.toLowerCase().includes(s.toLowerCase()))) {
+                cleanedRemarks.push(s);
+              }
+            });
+
+            const summaryText = cleanedRemarks.length > 0 ? cleanedRemarks.join(', ') : abnormalRemarks.join(', ');
+
             return {
-              value: abnormalRemarks.join(', '),
+              value: summaryText,
               testDate: date,
               ratingScore: 3, // Score 3 (Yellow Monitor)
               recommendation: 'Plan visual maintenance / Repair defects'
