@@ -2085,13 +2085,13 @@
               html += `<td class="cell-sub-pt" rowspan="${subRowCount}">${subObj.sub}</td>`;
             }
 
-            // 3. Test Method
-            let methodDisplayName = m.name;
+            // 3. Test Method (First line bold, second line regular subtext)
+            let methodDisplayName = `<span style="font-weight: 700; color: #0f172a;">${m.name}</span>`;
             const subTextStr = m.subText || (m.name.includes('Insulation Resistance and PI') ? 'IEEE C57.152-2013, PI > 1.25' : '');
             if (subTextStr) {
-              methodDisplayName += `<br>${subTextStr}`;
+              methodDisplayName += `<br><span style="font-size: 0.54rem; color: #64748b; font-weight: 400; line-height: 1.15; display: inline-block; margin-top: 1px;">${subTextStr}</span>`;
             }
-            html += `<td>${methodDisplayName}</td>`;
+            html += `<td style="line-height: 1.25; padding: 3px 6px;">${methodDisplayName}</td>`;
 
             // 4. Testing Date
             let dateStyle = '';
