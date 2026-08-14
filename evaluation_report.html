@@ -1279,7 +1279,7 @@
       const siteVal = item.site || item.SITE || item.LOCATION || 'N/A';
       const powerVal = item.ratedPower || item.POWER_RATING_DETAIL || (item.POWER_RATING ? `${item.POWER_RATING} MVA` : null);
       const voltVal = item.ratedVoltage || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED} kV` : item.HV_RATED);
-      const serviceVal = item.serviceType || item.Service_Type || item.SERVICE_TYPE;
+      const serviceVal = item['Service Type'] || item.serviceType || item.Service_Type || item.SERVICE_TYPE;
       const ageVal = item.serviceAge || item.AGE || item.SERVICE_AGE;
       const mfgVal = item.MANUFACTURER_COMPANY || item.BRAND || item.MANUFACTURER;
       const vectorVal = item.VECTOR_GROUP || item.vectorGroup;
@@ -1345,7 +1345,7 @@
       const rawTapUpper = String(rawTap || '').toUpperCase();
       const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
 
-      const serviceTypeStr = String(serviceVal || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfo && (trInfo.SERVICE_TYPE || trInfo.APPLICATION)) || '').toUpperCase();
+      const serviceTypeStr = String(serviceVal || item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfo && (trInfo['Service Type'] || trInfo.SERVICE_TYPE || trInfo.APPLICATION)) || '').toUpperCase();
       const serialStr = String(serialVal || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
 
@@ -1832,8 +1832,8 @@
       const isOltcNA = rawTapStr.includes('NLTC') || rawTapStr.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
 
       // Check if Service Type is UAT or Auxiliary (No Bushing & Surge tests)
-      const serviceTypeStr = String(item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION)) || '').toUpperCase();
-      const serialStr = String(item.serial || item.SERIAL_NUMBER || item.Name || '').toUpperCase();
+      const serviceTypeStr = String(item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem['Service Type'] || trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION)) || '').toUpperCase();
+      const serialStr = String(item.serial || item.SERIAL_NUMBER || item['Serial No'] || item.Name || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
 
       const isBushingNA = isUatOrAux || item.bushing === 'N/A';
@@ -2160,7 +2160,7 @@
 
       // Rule 1: Service Type (UAT, Auxiliary) -> Exclude Bushing & Surge Arrester
       const serviceTypeStr = String(
-        item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION || trInfoItem.TYPE)) || ''
+        item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem['Service Type'] || trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION || trInfoItem.TYPE)) || ''
       ).toUpperCase();
       const serialStr = String(serialVal).toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') ||
@@ -2177,7 +2177,7 @@
       const subLower = (subName || '').toLowerCase();
 
       // Check Bushing & Surge Arrester exclusion for UAT/Auxiliary
-      if (isUatOrAux && (ptLower === 'bushing' || ptLower === 'arrester' || ptLower === 'surge arrester' || nameLower.includes('bushing') || nameLower.includes('surge arrester') || nameLower.includes('lightning arrester'))) {
+      if (isUatOrAux && (ptLower === 'bushing' || ptLower === 'arrester' || ptLower === 'surge arrester' || nameLower.includes('bushing') || nameLower.includes('surge arrester') || nameLower.includes('lightning arrester') || subLower.includes('bushing') || subLower.includes('arrester'))) {
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
