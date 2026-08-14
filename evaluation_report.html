@@ -705,12 +705,13 @@
       border-radius: 3px;
       white-space: nowrap;
     }
-    .bg-badge-5 { background: #16a34a; }
-    .bg-badge-4 { background: #22c55e; }
-    .bg-badge-3 { background: #d97706; }
-    .bg-badge-2 { background: #ea580c; }
-    .bg-badge-1 { background: #dc2626; }
+    .bg-badge-5 { background: #10b981; }
+    .bg-badge-4 { background: #10b981; }
+    .bg-badge-3 { background: #eab308; }
+    .bg-badge-2 { background: #f97316; }
+    .bg-badge-1 { background: #ef4444; }
     .bg-badge-na, .bg-badge-NA, .bg-badge-N\/A { background: #64748b; color: #ffffff; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
 
     /* Recommendation Box */
     .rec-box {
@@ -1326,15 +1327,15 @@
       // 1. Part 1: Condition Health Index Summary
       // Compute HI from formula (same as table) — do NOT use item.healthIndex directly
       const { percentHIVal: hi } = computeHI(item);
-      const hiStatus = hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Monitor' : 'Critical');
+      const hiStatus = hi >= 80 ? 'Healthy' : (hi >= 70 ? 'Monitor' : (hi >= 50 ? 'Warning' : 'Critical'));
       setElText('summary-hi-score', `${hi}%`);
       const scoreEl = document.getElementById('summary-hi-score');
-      if (scoreEl) scoreEl.style.color = hi >= 80 ? '#16a34a' : (hi >= 51 ? '#d97706' : '#dc2626');
+      if (scoreEl) scoreEl.style.color = hi >= 80 ? '#10b981' : (hi >= 70 ? '#eab308' : (hi >= 50 ? '#f97316' : '#ef4444'));
 
       const statusEl = document.getElementById('summary-hi-status');
       if (statusEl) {
         statusEl.textContent = hiStatus;
-        statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 51 ? 'badge-warn' : 'badge-danger')}`;
+        statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 70 ? 'badge-warn' : (hi >= 50 ? 'badge-orange' : 'badge-danger'))}`;
       }
 
       setElText('summary-dp', item.estimatedDP || '950');
@@ -1568,9 +1569,10 @@
       const p2x = (cx - sideOffset * Math.cos(perpRad)).toFixed(2);
       const p2y = (cy + sideOffset * Math.sin(perpRad)).toFixed(2);
 
-      // 3 Arc paths (Red: 0-50%, Yellow: 50-80%, Green: 80-100%)
+      // 4 Arc paths (Red: <50%, Orange: 50-69%, Yellow: 70-79%, Green: >=80%)
       const redPath = `M 14 48 A 36 36 0 0 1 50 12`;
-      const yellowPath = `M 50 12 A 36 36 0 0 1 79.12 26.84`;
+      const orangePath = `M 50 12 A 36 36 0 0 1 71.16 18.88`;
+      const yellowPath = `M 71.16 18.88 A 36 36 0 0 1 79.12 26.84`;
       const greenPath = `M 79.12 26.84 A 36 36 0 0 1 86 48`;
 
       return `
@@ -1578,7 +1580,8 @@
           <div class="g-title">${label}</div>
           <svg viewBox="0 0 100 62" style="width: 100%; height: 62px;">
             <path d="${redPath}" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
-            <path d="${yellowPath}" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
+            <path d="${orangePath}" fill="none" stroke="#f97316" stroke-width="10" stroke-linecap="butt" />
+            <path d="${yellowPath}" fill="none" stroke="#eab308" stroke-width="10" stroke-linecap="butt" />
             <path d="${greenPath}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" />
 
             <text x="12" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">0</text>
@@ -1933,11 +1936,12 @@
         const p2y = (cy + sideOffset * Math.sin(perpRad)).toFixed(2);
 
         const redPath = `M 14 48 A 36 36 0 0 1 50 12`;
-        const yellowPath = `M 50 12 A 36 36 0 0 1 79.12 26.84`;
+        const orangePath = `M 50 12 A 36 36 0 0 1 71.16 18.88`;
+        const yellowPath = `M 71.16 18.88 A 36 36 0 0 1 79.12 26.84`;
         const greenPath = `M 79.12 26.84 A 36 36 0 0 1 86 48`;
 
         const hiVal = percentHIVal;
-        const hiColor = hiVal >= 80 ? '#16a34a' : (hiVal >= 51 ? '#d97706' : '#dc2626');
+        const hiColor = hiVal >= 80 ? '#10b981' : (hiVal >= 70 ? '#eab308' : (hiVal >= 50 ? '#f97316' : '#ef4444'));
 
         mainGaugeCard.innerHTML = `
           <div class="pdf-main-gauge-content">
@@ -1946,7 +1950,8 @@
               <div class="g-main-sub">%Overall Health Index</div>
               <svg viewBox="0 0 100 62" style="width: 100%; height: 95px; margin-top: 2px;">
                 <path d="${redPath}" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
-                <path d="${yellowPath}" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
+                <path d="${orangePath}" fill="none" stroke="#f97316" stroke-width="10" stroke-linecap="butt" />
+                <path d="${yellowPath}" fill="none" stroke="#eab308" stroke-width="10" stroke-linecap="butt" />
                 <path d="${greenPath}" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" />
 
                 <text x="12" y="59" font-size="7.5" font-weight="700" fill="#64748b" text-anchor="middle">0</text>
@@ -2086,7 +2091,7 @@
       });
 
       // Bottom Summary Row (Single Row)
-      const summaryColor = percentHIVal >= 80 ? '#16a34a' : (percentHIVal >= 51 ? '#d97706' : '#dc2626');
+      const summaryColor = percentHIVal >= 80 ? '#10b981' : (percentHIVal >= 70 ? '#eab308' : (percentHIVal >= 50 ? '#f97316' : '#ef4444'));
       const sumTr1 = document.createElement('tr');
       sumTr1.style.background = '#eff6ff';
       sumTr1.style.fontWeight = '700';
