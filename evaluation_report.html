@@ -1375,28 +1375,56 @@
       let activePtCount = 0;
       const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
-        let minEval = 5;
-        let hasMethods = false;
-
-        ptObj.subs.forEach(subObj => {
-          subObj.methods.forEach(m => {
-            const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
-            if (!match.isNA && match.ratingScore != null) {
-              const evalScore = match.ratingScore;
-              if (evalScore < minEval) {
-                minEval = evalScore;
+        if (ptObj.splitSubWeights) {
+          let sumSubHI = 0;
+          let activeSubs = 0;
+          ptObj.subs.forEach(subObj => {
+            let minSubEval = 5;
+            let subHasMethods = false;
+            subObj.methods.forEach(m => {
+              const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+              if (!match.isNA && match.ratingScore != null) {
+                const evalScore = match.ratingScore;
+                if (evalScore < minSubEval) {
+                  minSubEval = evalScore;
+                }
+                subHasMethods = true;
               }
-              hasMethods = true;
+            });
+            if (subHasMethods) {
+              const subHI = Math.round((minSubEval / 5) * 100);
+              sumSubHI += (subHI * (subObj.weight || 5)) / 20;
+              activeSubs++;
             }
           });
-        });
+          if (activeSubs > 0) {
+            overallSumHI += sumSubHI;
+            activePtCount++;
+          }
+        } else {
+          let minEval = 5;
+          let hasMethods = false;
 
-        // Formula: Health Index = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
-        if (hasMethods) {
-          const ptWeight = ptObj.weight || 1;
-          const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
-          overallSumHI += ptHI;
-          activePtCount++;
+          ptObj.subs.forEach(subObj => {
+            subObj.methods.forEach(m => {
+              const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+              if (!match.isNA && match.ratingScore != null) {
+                const evalScore = match.ratingScore;
+                if (evalScore < minEval) {
+                  minEval = evalScore;
+                }
+                hasMethods = true;
+              }
+            });
+          });
+
+          // Formula: Health Index = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
+          if (hasMethods) {
+            const ptWeight = ptObj.weight || 1;
+            const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
+            overallSumHI += ptHI;
+            activePtCount++;
+          }
         }
       });
       const overallHIVal = overallSumHI;
@@ -1627,23 +1655,23 @@
           ]
         },
         {
-          pt: 'Insulation Oil', weight: 20,
+          pt: 'Insulation Oil', weight: 20, splitSubWeights: true,
           subs: [
             {
-              sub: 'DGA', full: 100, subWeight: 25,
+              sub: 'DGA', full: 100, subWeight: 25, weight: 5,
               methods: [
                 { name: 'Dissolve Gas Analysis (DGA)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 100, mWorst: '-' }
               ]
             },
             {
-              sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25,
+              sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25, weight: 5,
               methods: [
                 { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
                 { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
               ]
             },
             {
-              sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50,
+              sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50, weight: 10,
               methods: [
                 { name: 'Power Factor at 25 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
@@ -1765,6 +1793,8 @@
 
         ptObj.subs.forEach(subObj => {
           let mScoreSum = 0;
+          let minSubEval = 5;
+          let subHasMethods = false;
 
           subObj.methods.forEach(m => {
             const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
@@ -1776,7 +1806,11 @@
               if (evalScore < minEval) {
                 minEval = evalScore;
               }
+              if (evalScore < minSubEval) {
+                minSubEval = evalScore;
+              }
               hasMethods = true;
+              subHasMethods = true;
 
               m.dynResult  = match.value || '-';
               m.dynDate    = (match.testDate && match.testDate !== '-') ? formatDateToDdMmmYyyy(match.testDate) : '-';
@@ -1796,21 +1830,41 @@
           subObj.dynSubScore = mScoreSum;
           const subResPct = subObj.full > 0 ? (mScoreSum / subObj.full) * subObj.subWeight : 0;
           subObj.dynSubRes = subResPct;
+          subObj.dynHI = subHasMethods ? Math.round((minSubEval / 5) * 100) : 'N/A';
         });
 
-        // HI per PT Component = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
-        if (hasMethods) {
-          const ptWeight = ptObj.weight || 1;
-          const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
-          ptObj.dynPct = ptHI;
-          ptObj.dynHI  = ptHI;
-          ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
-          overallSumHI += ptHI;
-          activePtCount++;
+        if (ptObj.splitSubWeights) {
+          let sumSubHI = 0;
+          let activeSubs = 0;
+          ptObj.subs.forEach(s => {
+            if (typeof s.dynHI === 'number') {
+              sumSubHI += (s.dynHI * (s.weight || 5)) / 20;
+              activeSubs++;
+            }
+          });
+          const combinedOilHI = activeSubs > 0 ? Math.round(sumSubHI) : 'N/A';
+          ptObj.dynPct = combinedOilHI;
+          ptObj.dynHI  = combinedOilHI;
+          ptResults[ptObj.pt] = { pct: typeof combinedOilHI === 'number' ? combinedOilHI : 100, hi: combinedOilHI };
+          if (activeSubs > 0) {
+            overallSumHI += sumSubHI;
+            activePtCount++;
+          }
         } else {
-          ptObj.dynPct = 'N/A';
-          ptObj.dynHI  = 'N/A';
-          ptResults[ptObj.pt] = { pct: 100, hi: 'N/A', isNA: true };
+          // HI per PT Component = ((Evaluation Result (Min) * Weight) / (5 * Weight)) * 100
+          if (hasMethods) {
+            const ptWeight = ptObj.weight || 1;
+            const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
+            ptObj.dynPct = ptHI;
+            ptObj.dynHI  = ptHI;
+            ptResults[ptObj.pt] = { pct: ptHI, hi: ptHI };
+            overallSumHI += ptHI;
+            activePtCount++;
+          } else {
+            ptObj.dynPct = 'N/A';
+            ptObj.dynHI  = 'N/A';
+            ptResults[ptObj.pt] = { pct: 100, hi: 'N/A', isNA: true };
+          }
         }
       });
 
@@ -2005,9 +2059,18 @@
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
 
             // 7. Weight & 8. Health Index
-            if (subIdx === 0 && mIdx === 0) {
-              html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
-              html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? Math.round(ptObj.dynHI) : ptObj.dynHI}</td>`;
+            if (ptObj.splitSubWeights) {
+              if (mIdx === 0) {
+                const subWeightDisplay = subObj.weight !== undefined ? subObj.weight : subObj.subWeight;
+                const subHiDisplay = typeof subObj.dynHI === 'number' ? Math.round(subObj.dynHI) : subObj.dynHI;
+                html += `<td style="text-align:center; font-weight:700;" rowspan="${subRowCount}">${subWeightDisplay}</td>`;
+                html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${subRowCount}">${subHiDisplay}</td>`;
+              }
+            } else {
+              if (subIdx === 0 && mIdx === 0) {
+                html += `<td style="text-align:center; font-weight:700;" rowspan="${ptRowCount}">${ptObj.weight}</td>`;
+                html += `<td style="text-align:center; font-weight:700; color:#1e3a8a;" rowspan="${ptRowCount}">${typeof ptObj.dynHI === 'number' ? Math.round(ptObj.dynHI) : ptObj.dynHI}</td>`;
+              }
             }
 
             tr.innerHTML = html;
