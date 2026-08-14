@@ -66,8 +66,8 @@ var EVALUATION_CRITERIA_DATA = [
   {
     "row": 14,
     "category": "High Voltage Winding",
-    "item": "Single Phase Leakage Impedance",
-    "criteria": "Impedance measured shall\ncompare within 3% with another phase",
+    "item": "Single Phase Short Circuit Impedance",
+    "criteria": "Should be within 3% of the average value of all three phases",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
