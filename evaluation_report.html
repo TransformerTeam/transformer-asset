@@ -2214,7 +2214,7 @@
       }
 
       // 2. Magnetic Core sub-items (IRandPIData.csv)
-      if (nameLower.includes('insulation resistance')) {
+      if ((subLower.includes('magnetic') || subLower.includes('core') || ptLower.includes('magnetic')) && nameLower.includes('insulation resistance')) {
         if (latestPi) {
           const date = latestPi.date || latestPi.Date || latestPi.DATE;
           const comment = String(latestPi.comment || latestPi.Comment || '').trim();
