@@ -1975,7 +1975,18 @@
               if (!isNaN(dObj.getTime())) {
                 const now = new Date();
                 const diffYears = (now - dObj) / (1000 * 60 * 60 * 24 * 365.25);
-                if (diffYears <= 3) {
+
+                const ptNameUpper = String(ptObj.pt || '').toUpperCase();
+                const subNameUpper = String(subObj.sub || '').toUpperCase();
+                const methodNameUpper = String(m.name || '').toUpperCase();
+
+                const isVisualOrOil = ptNameUpper.includes('OIL') || subNameUpper.includes('OIL') || subNameUpper.includes('VISUAL') || 
+                                      methodNameUpper.includes('VISUAL') || methodNameUpper.includes('OIL') || methodNameUpper.includes('DGA') || 
+                                      methodNameUpper.includes('FURAN') || methodNameUpper.includes('WATER') || methodNameUpper.includes('DIELECTRIC');
+
+                const thresholdYears = isVisualOrOil ? 1 : 3;
+
+                if (diffYears <= thresholdYears) {
                   dateStyle = 'color: #22c55e; font-weight: 600;';
                 } else {
                   dateStyle = 'color: #d97706; font-weight: 600;';
