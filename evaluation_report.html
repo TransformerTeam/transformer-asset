@@ -2565,51 +2565,36 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 3. Exciting Current (ExcitingData.csv per IEEE C57.152-2013 Clause 7.2.11.2.5)
+      // 3. Exciting Current (ExcitingData.csv evaluated purely by 3-Phase Pattern per IEEE C57.152-2013 Clause 7.2.11.2.5)
       if (nameLower.includes('exciting current')) {
         if (latestExciting) {
           const date = latestExciting.DATE || latestExciting.Date || latestExciting.date;
           const h1 = parseFloat(latestExciting.H1CENTER || latestExciting.H1MAX || latestExciting.H1MIN);
           const h2 = parseFloat(latestExciting.H2CENTER || latestExciting.H2MAX || latestExciting.H2MIN);
           const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
-          const maxErr = parseFloat(latestExciting.MAXERR || latestExciting.ERRH1CENTER || latestExciting.ERRH2CENTER || latestExciting.ERRH3CENTER || '0');
 
           let score = 5;
 
-          // Evaluate 3-phase magnetic pattern per IEEE C57.152-2013 Cl. 7.2.11.2.5
+          // Pure 3-phase magnetic pattern evaluation per IEEE C57.152-2013 Cl. 7.2.11.2.5
+          // (Outer phases A & C similar within 5%, middle phase B up to 30-50% lower)
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
             const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
             const isCenterLower = (h2 <= h1 && h2 <= h3);
 
             if (outerDiff <= 5.0 && isCenterLower) {
-              score = 5;
+              score = 5; // Healthy: Pattern Normal (H-L-H, outer diff <= 5%)
             } else if (outerDiff <= 10.0 && isCenterLower) {
-              score = 4;
+              score = 4; // Healthy: Minor pattern variance (outer diff 5-10%)
             } else if (outerDiff <= 25.0 || !isCenterLower) {
-              score = 3;
+              score = 3; // Monitor: Moderate variance (outer diff 10-25% or center not lowest)
             } else {
-              score = 1;
-            }
-          }
-
-          // Evaluate deviation from FAT / previous baseline
-          if (!isNaN(maxErr) && maxErr > 0) {
-            if (maxErr > 50.0) {
-              score = Math.min(score, 1);
-            } else if (maxErr > 25.0) {
-              score = Math.min(score, 2);
-            } else if (maxErr > 10.0) {
-              score = Math.min(score, 3);
-            } else if (maxErr > 5.0) {
-              score = Math.min(score, 4);
+              score = 1; // Critical: Abnormal pattern (outer diff > 25%)
             }
           }
 
           let valStr = '';
           if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0) {
             valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA`;
-          } else if (!isNaN(maxErr) && maxErr > 0) {
-            valStr = `%Err: ${maxErr.toFixed(2)}%`;
           } else {
             valStr = 'Pattern Normal';
           }
