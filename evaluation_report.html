@@ -2179,8 +2179,43 @@
       }
 
       // 2. Magnetic Core sub-items (IRandPIData.csv)
+      if (nameLower.includes('insulation resistance')) {
+        if (latestPi) {
+          const date = latestPi.date || latestPi.Date || latestPi.DATE;
+          const comment = String(latestPi.comment || latestPi.Comment || '').trim();
+          const commentUpper = comment.toUpperCase();
+
+          const subUpper = String(subName || '').toUpperCase();
+          let rawIr = latestPi.H_10 || latestPi.L_10 || latestPi.coregnd;
+
+          if (subUpper.includes('LV')) {
+            rawIr = latestPi.L_10 || latestPi.L_1;
+          } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY')) {
+            rawIr = latestPi.T_10 || latestPi.T_1;
+          }
+
+          let isCannotTest = false;
+          if (commentUpper.includes('CANNOT TEST') || commentUpper.includes('CAN NOT TEST') || commentUpper.includes('ไม่สามารถทดสอบได้')) {
+            isCannotTest = true;
+          }
+
+          if (isCannotTest || !rawIr || rawIr === '-' || rawIr === 'N/A' || String(rawIr).trim() === '') {
+            return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+          }
+
+          const numIr = parseFloat(rawIr);
+          if (isNaN(numIr) || numIr <= 0) {
+            return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+          }
+
+          const score = numIr >= 1000 ? 5 : (numIr >= 500 ? 4 : (numIr >= 100 ? 3 : 2));
+          const valStr = `${numIr > 100 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
+          return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
+        }
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
       if (nameLower.includes('core-ground')) {
-        if (latestPi && latestPi.coregnd && latestPi.coregnd !== '-') {
+        if (latestPi && latestPi.coregnd && latestPi.coregnd !== '-' && latestPi.coregnd !== 'N/A') {
           const val = `${latestPi.coregnd} MΩ`;
           const date = latestPi.date || latestPi.Date;
           const score = parseFloat(latestPi.coregnd) >= 100 ? 5 : (parseFloat(latestPi.coregnd) >= 50 ? 4 : 3);
@@ -2189,7 +2224,7 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
       if (nameLower.includes('clamp-ground')) {
-        if (latestPi && latestPi.framegnd && latestPi.framegnd !== '-') {
+        if (latestPi && latestPi.framegnd && latestPi.framegnd !== '-' && latestPi.framegnd !== 'N/A') {
           const val = `${latestPi.framegnd} MΩ`;
           const date = latestPi.date || latestPi.Date;
           const score = parseFloat(latestPi.framegnd) >= 100 ? 5 : (parseFloat(latestPi.framegnd) >= 50 ? 4 : 3);
@@ -2198,7 +2233,7 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
       if (nameLower.includes('core-clamp')) {
-        if (latestPi && latestPi.coreframe && latestPi.coreframe !== '-') {
+        if (latestPi && latestPi.coreframe && latestPi.coreframe !== '-' && latestPi.coreframe !== 'N/A') {
           const val = `${latestPi.coreframe} MΩ`;
           const date = latestPi.date || latestPi.Date;
           const score = parseFloat(latestPi.coreframe) >= 100 ? 5 : (parseFloat(latestPi.coreframe) >= 50 ? 4 : 3);
@@ -2301,13 +2336,85 @@
       }
 
       // 10. Insulation Resistance and PI (IRandPIData.csv)
-      if (nameLower.includes('polarization index')) {
-        if (latestPi && latestPi.H_PI) {
-          const date = latestPi.date || latestPi.Date;
-          const pVal = latestPi.H_PI;
-          const numP = parseFloat(pVal);
-          const score = numP >= 1.5 ? 5 : (numP >= 1.25 ? 4 : 3);
-          return { value: pVal, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation dryness' };
+      if (nameLower.includes('polarization index') || nameLower.includes('pi')) {
+        if (latestPi) {
+          const date = latestPi.date || latestPi.Date || latestPi.DATE;
+          const comment = String(latestPi.comment || latestPi.Comment || '').trim();
+          const commentUpper = comment.toUpperCase();
+
+          const subUpper = String(subName || '').toUpperCase();
+          const itemUpper = String(itemName || '').toUpperCase();
+
+          let rawPi = null;
+          let windingKey = 'HV';
+
+          if (itemUpper.includes('HV-LV') || subUpper.includes('HV-LV')) {
+            windingKey = 'HV-LV';
+            rawPi = latestPi['HV-LV'] || latestPi.HV_LV || latestPi.H_L_PI;
+          } else if (itemUpper.includes('HV-TV') || subUpper.includes('HV-TV')) {
+            windingKey = 'HV-TV';
+            rawPi = latestPi['HV-TV'] || latestPi.HV_TV || latestPi.H_T_PI;
+          } else if (subUpper.includes('LV') || itemUpper.includes('LV WINDING') || itemUpper.includes('LV')) {
+            windingKey = 'LV';
+            rawPi = latestPi.L_PI || latestPi.l_pi;
+          } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY') || itemUpper.includes('TV WINDING') || itemUpper.includes('TV')) {
+            windingKey = 'TV';
+            rawPi = latestPi.T_PI || latestPi.t_pi;
+          } else {
+            windingKey = 'HV';
+            rawPi = latestPi.H_PI || latestPi.h_pi;
+          }
+
+          // Check comment for explicit HV-LV, HV-TV, or winding PI value
+          if (commentUpper.includes(windingKey)) {
+            const regex = new RegExp(windingKey + '[\\s:=]+([0-9.]+)', 'i');
+            const match = comment.match(regex);
+            if (match && match[1]) {
+              rawPi = match[1];
+            }
+          }
+
+          // Check if comment specifies cannot test for this winding
+          let isCannotTest = false;
+          if (windingKey === 'HV' && (commentUpper.includes('HV SIDE CAN NOT TEST') || commentUpper.includes('HIGH VOLTAGE WINDING CANNOT TEST') || commentUpper.includes('HV ไม่สามารถทดสอบได้'))) {
+            isCannotTest = true;
+          } else if (windingKey === 'LV' && (commentUpper.includes('LV CANNOT TEST') || commentUpper.includes('LV ไม่สามารถ'))) {
+            isCannotTest = true;
+          } else if (windingKey === 'TV' && (commentUpper.includes('NO TERTIARY') || commentUpper.includes('TV CANNOT TEST') || commentUpper.includes('TV ไม่สามารถ'))) {
+            isCannotTest = true;
+          }
+
+          if (isCannotTest || !rawPi || rawPi === '-' || rawPi === 'N/A' || String(rawPi).trim() === '') {
+            return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+          }
+
+          const numPi = parseFloat(rawPi);
+          if (isNaN(numPi) || numPi <= 0) {
+            return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+          }
+
+          // 1-5 Score criteria per IEEE C57.152 Table 12 & Master Criteria:
+          // PI >= 2.00 : Score 5 (Excellent / Green)
+          // 1.50 <= PI < 2.00 : Score 4 (Good / Green)
+          // 1.25 <= PI < 1.50 : Score 3 (Fair / Yellow)
+          // 1.00 <= PI < 1.25 : Score 2 (Warning / Orange)
+          // PI < 1.00 : Score 1 (Critical / Red)
+          let score = 5;
+          if (numPi < 1.00) {
+            score = 1;
+          } else if (numPi < 1.25) {
+            score = 2;
+          } else if (numPi < 1.50) {
+            score = 3;
+          } else if (numPi < 2.00) {
+            score = 4;
+          } else {
+            score = 5;
+          }
+
+          const valStr = numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2);
+          const rec = score >= 4 ? '-' : (score === 3 ? 'Monitor insulation dryness' : 'Perform insulation drying process');
+          return { value: valStr, testDate: date, ratingScore: score, recommendation: rec };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
