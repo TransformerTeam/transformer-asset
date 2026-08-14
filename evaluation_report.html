@@ -2234,6 +2234,20 @@
             isCannotTest = true;
           }
 
+          // Calculate score 1-5 based on user specified thresholds for Magnetic Core Insulation Resistance:
+          // Score 5 (เขียวเข้ม #16a34a): IR >= 500 MΩ
+          // Score 4 (เขียวสด #22c55e): 300 <= IR < 500 MΩ
+          // Score 3 (ส้มเหลือง #d97706): 100 <= IR < 300 MΩ
+          // Score 2 (ส้มอิฐ #ea580c): 10 <= IR < 100 MΩ
+          // Score 1 (แดง #dc2626): IR < 10 MΩ
+          const evaluateIrScore = (numIr) => {
+            if (numIr < 10) return 1;
+            if (numIr < 100) return 2;
+            if (numIr < 300) return 3;
+            if (numIr < 500) return 4;
+            return 5;
+          };
+
           if (isCannotTest || (!cg && !cf && !fg)) {
             // Fallback check for H_10 / L_10 if no coregnd / coreframe / framegnd
             const subUpper = String(subName || '').toUpperCase();
@@ -2244,8 +2258,8 @@
             if (!isCannotTest && fallbackIr) {
               const numIr = parseFloat(fallbackIr);
               if (!isNaN(numIr) && numIr > 0) {
-                const score = numIr >= 1000 ? 5 : (numIr >= 500 ? 4 : (numIr >= 100 ? 3 : 2));
-                const valStr = `${numIr >= 1000 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
+                const score = evaluateIrScore(numIr);
+                const valStr = `${numIr >= 500 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
                 return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
               }
             }
@@ -2260,22 +2274,11 @@
           if (fg) parts.push(`Clamp-Gnd: ${fg} MΩ`);
           const resStr = parts.join(', ');
 
-          // Calculate score 1-5 based on minimum insulation resistance value
           const valNums = [cg, cf, fg].map(v => parseFloat(v)).filter(n => !isNaN(n) && n > 0);
           let score = 5;
           if (valNums.length > 0) {
             const minVal = Math.min(...valNums);
-            if (minVal < 50) {
-              score = 1;
-            } else if (minVal < 100) {
-              score = 2;
-            } else if (minVal < 500) {
-              score = 3;
-            } else if (minVal < 1000) {
-              score = 4;
-            } else {
-              score = 5;
-            }
+            score = evaluateIrScore(minVal);
           }
 
           return { value: resStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core insulation & grounding' };
@@ -2286,7 +2289,8 @@
         if (latestPi && latestPi.coregnd && latestPi.coregnd !== '-' && latestPi.coregnd !== 'N/A') {
           const val = `${latestPi.coregnd} MΩ`;
           const date = latestPi.date || latestPi.Date;
-          const score = parseFloat(latestPi.coregnd) >= 100 ? 5 : (parseFloat(latestPi.coregnd) >= 50 ? 4 : 3);
+          const num = parseFloat(latestPi.coregnd);
+          const score = isNaN(num) ? 5 : (num >= 500 ? 5 : (num >= 300 ? 4 : (num >= 100 ? 3 : (num >= 10 ? 2 : 1))));
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core ground' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
@@ -2295,7 +2299,8 @@
         if (latestPi && latestPi.framegnd && latestPi.framegnd !== '-' && latestPi.framegnd !== 'N/A') {
           const val = `${latestPi.framegnd} MΩ`;
           const date = latestPi.date || latestPi.Date;
-          const score = parseFloat(latestPi.framegnd) >= 100 ? 5 : (parseFloat(latestPi.framegnd) >= 50 ? 4 : 3);
+          const num = parseFloat(latestPi.framegnd);
+          const score = isNaN(num) ? 5 : (num >= 500 ? 5 : (num >= 300 ? 4 : (num >= 100 ? 3 : (num >= 10 ? 2 : 1))));
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect clamp ground' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
@@ -2304,7 +2309,8 @@
         if (latestPi && latestPi.coreframe && latestPi.coreframe !== '-' && latestPi.coreframe !== 'N/A') {
           const val = `${latestPi.coreframe} MΩ`;
           const date = latestPi.date || latestPi.Date;
-          const score = parseFloat(latestPi.coreframe) >= 100 ? 5 : (parseFloat(latestPi.coreframe) >= 50 ? 4 : 3);
+          const num = parseFloat(latestPi.coreframe);
+          const score = isNaN(num) ? 5 : (num >= 500 ? 5 : (num >= 300 ? 4 : (num >= 100 ? 3 : (num >= 10 ? 2 : 1))));
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core-clamp' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
