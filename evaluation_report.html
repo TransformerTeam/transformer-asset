@@ -1657,7 +1657,7 @@
                 { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
-                { name: 'Turn Ratio (%Error from FAT/Oldest)', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+                { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
@@ -2667,14 +2667,15 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 6. Transformer Turn Ratio (RatioData.csv)
+      // 6. Transformer Turn Ratio (RatioData.csv per IEEE C57.152-2013: %Deviation within 0.5% of nameplate)
       if (nameLower.includes('turn ratio') || nameLower.includes('ratio')) {
         if (latestRatio) {
           const date = latestRatio.date || latestRatio.Date;
-          const err = latestRatio.MAXERR || latestRatio.H1_cen_err || '0.05';
-          const val = `%Error: ${err}%`;
-          const score = Math.abs(parseFloat(err)) <= 0.5 ? 5 : 3;
-          return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check turn ratio' };
+          const err = latestRatio.MAXERR || latestRatio.H1_cen_err || latestRatio.Turn_Ratio_Result || '0.05';
+          const numErr = Math.abs(parseFloat(err));
+          const val = `%Dev: ${isNaN(numErr) ? err : numErr.toFixed(2)}%`;
+          const score = isNaN(numErr) ? 5 : (numErr <= 0.5 ? 5 : (numErr <= 1.0 ? 3 : 1));
+          return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check turn ratio / tap changer (IEEE C57.152)' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }

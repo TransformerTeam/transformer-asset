@@ -83,7 +83,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 16,
     "category": "High Voltage Winding",
     "item": "Turn Ratio",
-    "criteria": "± 0.5% error from Calculated Ratio",
+    "criteria": "%Deviation within 0.5% of nameplate",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
