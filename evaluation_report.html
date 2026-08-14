@@ -1275,17 +1275,25 @@
 
       if (!item) return;
 
-      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || serial;
-      const nameVal = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || '-';
-      const siteVal = item.site || item.SITE || item.LOCATION || 'N/A';
-      const powerVal = item.ratedPower || item.POWER_RATING_DETAIL || (item.POWER_RATING ? `${item.POWER_RATING} MVA` : null);
-      const voltVal = item.ratedVoltage || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED} kV` : item.HV_RATED);
-      const serviceVal = item['Service Type'] || item.serviceType || item.Service_Type || item.SERVICE_TYPE;
-      const ageVal = item.serviceAge || item.AGE || item.SERVICE_AGE;
-      const mfgVal = item.MANUFACTURER_COMPANY || item.BRAND || item.MANUFACTURER;
-      const vectorVal = item.VECTOR_GROUP || item.vectorGroup;
-      const tapVal = item.TAP_CHANGER_TYPE || item.tapChangerType;
-      const mfgDateVal = item.MANUFACTURING_DATE || item.MANUFACTURING_YEAR;
+      // Look up dynamic TRInfo record & normalize Tap Changer Name (NLTC -> DETC)
+      const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+
+      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || (trInfo && trInfo.SERIAL_NUMBER) || serial;
+      const nameVal = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || (trInfo && (trInfo.EQUIPMENT_NAME || trInfo['Equipment Name'])) || '-';
+      const siteVal = item.site || item.SITE || item.LOCATION || (trInfo && (trInfo.SITE || trInfo.LOCATION)) || 'N/A';
+      
+      const powerVal = item.ratedPower || item['Rated Power (MVA)'] || item['Rated Power'] || item.POWER_RATING_DETAIL || item.POWER_RATING || item.RATED_POWER || (trInfo && (trInfo['Rated Power (MVA)'] || trInfo.POWER_RATING_DETAIL || trInfo.POWER_RATING || trInfo.RATED_POWER));
+      
+      const voltVal = item.ratedVoltage || item['Rated Voltage (kV)'] || item['Rated Voltage'] || ((item['HV Rate (kV)'] && item['LV Rate (kV)']) ? `${item['HV Rate (kV)']}/${item['LV Rate (kV)']}` : null) || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED}` : null) || item.HV_RATED || item['HV Rate (kV)'] || (trInfo && (trInfo['Rated Voltage (kV)'] || trInfo.RATED_VOLTAGE || trInfo.VOLTAGE_RATING || ((trInfo.HV_RATED && trInfo.LV_RATED) ? `${trInfo.HV_RATED}/${trInfo.LV_RATED}` : null) || trInfo.HV_RATED));
+      
+      const serviceVal = item['Service Type'] || item.serviceType || item.Service_Type || item.SERVICE_TYPE || (trInfo && (trInfo['Service Type'] || trInfo.serviceType || trInfo.Service_Type || trInfo.SERVICE_TYPE || trInfo.APPLICATION));
+      
+      const ageVal = item.serviceAge || item['Service Age (Year)'] || item['Service Age'] || item.AGE || item.SERVICE_AGE || (trInfo && (trInfo['Service Age (Year)'] || trInfo.SERVICE_AGE || trInfo.AGE));
+      
+      const mfgVal = (trInfo && (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || trInfo.MANUFACTURER)) || item.MANUFACTURER_COMPANY || item.BRAND || item.MANUFACTURER;
+      const vectorVal = (trInfo && trInfo.VECTOR_GROUP) || item.VECTOR_GROUP || item.vectorGroup;
+      const tapVal = (trInfo && trInfo.TAP_CHANGER_TYPE) || item.TAP_CHANGER_TYPE || item.tapChangerType;
+      const mfgDateVal = (trInfo && trInfo.MANUFACTURING_DATE) || item.MANUFACTURING_DATE || item.MANUFACTURING_YEAR;
 
       // Update Report Links
       setElHref('link-detail', `detail.html?serial=${encodeURIComponent(serialVal)}`);
@@ -1301,14 +1309,12 @@
       setElText('info-name', nameVal);
       setElText('info-serial', serialVal);
       setElText('info-code', nameVal);
-      setElText('info-power', powerVal ? (String(powerVal).includes('MVA') ? powerVal : `${powerVal} MVA`) : '-');
-      setElText('info-voltage', voltVal ? (String(voltVal).includes('kV') ? voltVal : `${voltVal} kV`) : '-');
-      setElText('info-fluid', item.TYPE_OF_INSULATION || 'Mineral Oil');
+      setElText('info-power', powerVal ? (String(powerVal).toUpperCase().includes('MVA') ? powerVal : `${powerVal} MVA`) : '-');
+      setElText('info-voltage', voltVal ? (String(voltVal).toUpperCase().includes('KV') ? voltVal : `${voltVal} kV`) : '-');
+      setElText('info-fluid', item.TYPE_OF_INSULATION || (trInfo && trInfo.TYPE_OF_INSULATION) || 'Mineral Oil');
       setElText('info-service', serviceVal || '-');
-      setElText('info-age', ageVal ? `${ageVal} Years` : '-');
+      setElText('info-age', ageVal ? (String(ageVal).toLowerCase().includes('year') ? ageVal : `${ageVal} Years`) : '-');
 
-      // Look up dynamic TRInfo record & normalize Tap Changer Name (NLTC -> DETC)
-      const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
       let rawTap = (trInfo && trInfo.TAP_CHANGER_TYPE) ? trInfo.TAP_CHANGER_TYPE : (tapVal || 'OLTC');
       let displayTap = String(rawTap).trim();
       if (displayTap.toUpperCase().includes('NLTC')) {
