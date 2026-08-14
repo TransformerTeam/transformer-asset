@@ -1996,7 +1996,7 @@
             html += `<td style="text-align:center; ${dateStyle}">${m.dynDate}</td>`;
 
             // 5. Test Result
-            html += `<td style="text-align:center; font-weight:600;">${m.dynResult}</td>`;
+            html += `<td style="text-align:center; font-weight:600; line-height:1.35; padding:6px 4px;">${m.dynResult}</td>`;
 
             // 6. Evaluation Result (Badge 1..5)
             html += `<td style="text-align:center;"><span class="badge-square bg-badge-${m.dynEval}">${m.dynEval}</span></td>`;
@@ -2267,12 +2267,12 @@
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }
 
-          // Build coregnd, coreframe, framegnd result string
+          // Build coregnd, coreframe, framegnd result string (new line for each item)
           const parts = [];
           if (cg) parts.push(`Core-Gnd: ${cg} MΩ`);
           if (cf) parts.push(`Core-Clamp: ${cf} MΩ`);
           if (fg) parts.push(`Clamp-Gnd: ${fg} MΩ`);
-          const resStr = parts.join(', ');
+          const resStr = parts.join('<br>');
 
           const valNums = [cg, cf, fg].map(v => parseFloat(v)).filter(n => !isNaN(n) && n > 0);
           let score = 5;
