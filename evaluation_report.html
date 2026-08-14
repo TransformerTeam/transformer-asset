@@ -1275,10 +1275,11 @@
 
       if (!item) return;
 
+      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || serial;
+      
       // Look up dynamic TRInfo record & normalize Tap Changer Name (NLTC -> DETC)
       const trInfo = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
 
-      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || (trInfo && trInfo.SERIAL_NUMBER) || serial;
       const nameVal = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || (trInfo && (trInfo.EQUIPMENT_NAME || trInfo['Equipment Name'])) || '-';
       const siteVal = item.site || item.SITE || item.LOCATION || (trInfo && (trInfo.SITE || trInfo.LOCATION)) || 'N/A';
       
