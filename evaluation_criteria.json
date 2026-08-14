@@ -122,8 +122,8 @@
   {
     "row": 21,
     "category": "High Voltage Winding",
-    "item": "Polarization Index (PI)",
-    "criteria": "PI should be more than 1.25",
+    "item": "Insulation Resistance and PI",
+    "criteria": "PI > 1.25",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
@@ -162,8 +162,8 @@
   {
     "row": 27,
     "category": "Low Voltage Winding",
-    "item": "Polarization Index (PI)",
-    "criteria": "PI should be more than 1.25",
+    "item": "Insulation Resistance and PI",
+    "criteria": "PI > 1.25",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
@@ -202,8 +202,8 @@
   {
     "row": 33,
     "category": "Tertiary Winding",
-    "item": "Polarization Index (PI)",
-    "criteria": "PI should be more than 1.25",
+    "item": "Insulation Resistance and PI",
+    "criteria": "PI > 1.25",
     "standard": "IEEE C57.152-2013",
     "recommendation": ""
   },
