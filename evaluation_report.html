@@ -1627,33 +1627,23 @@
           ]
         },
         {
-          pt: 'DGA', weight: 5,
+          pt: 'Insulation Oil', weight: 20,
           subs: [
             {
-              sub: 'Dissolve Gas Analysis', full: 100, subWeight: 100,
+              sub: 'DGA', full: 100, subWeight: 25,
               methods: [
                 { name: 'Dissolve Gas Analysis (DGA)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 100, mWorst: '-' }
               ]
-            }
-          ]
-        },
-        {
-          pt: 'Dielectric Breakdown & Water Content', weight: 5,
-          subs: [
+            },
             {
-              sub: 'Oil Quality (BDV & Moisture)', full: 100, subWeight: 100,
+              sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25,
               methods: [
                 { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
                 { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
               ]
-            }
-          ]
-        },
-        {
-          pt: 'Oil Properties, Paper Aging, Corrosive Sulfur', weight: 10,
-          subs: [
+            },
             {
-              sub: 'Chemical & Paper Aging', full: 100, subWeight: 100,
+              sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50,
               methods: [
                 { name: 'Power Factor at 25 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
@@ -1850,10 +1840,7 @@
       // Gauge Indices
       const generalIndex = ptResults['General Part'] ? ptResults['General Part'].pct : 100.0;
       const activePartIndex = ptResults['Active Part'] ? ptResults['Active Part'].pct : 100.0;
-      const dgaHI = ptResults['DGA'] ? ptResults['DGA'].pct : 100.0;
-      const bdvHI = ptResults['Dielectric Breakdown & Water Content'] ? ptResults['Dielectric Breakdown & Water Content'].pct : 100.0;
-      const propHI = ptResults['Oil Properties, Paper Aging, Corrosive Sulfur'] ? ptResults['Oil Properties, Paper Aging, Corrosive Sulfur'].pct : 100.0;
-      const mainTankOilIndex = ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : Math.round((dgaHI * 5 + bdvHI * 5 + propHI * 10) / 20);
+      const mainTankOilIndex = ptResults['Insulation Oil'] ? ptResults['Insulation Oil'].pct : (ptResults['Insulating Oil'] ? ptResults['Insulating Oil'].pct : 100.0);
       const oltcIndex = ptResults['OLTC'] ? ptResults['OLTC'].pct : 100.0;
       const bushingIndex = ptResults['Bushing'] ? ptResults['Bushing'].pct : 100.0;
       const arresterIndex = ptResults['Arrester'] ? ptResults['Arrester'].pct : 46.67;
