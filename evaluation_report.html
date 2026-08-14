@@ -1585,11 +1585,13 @@
       const p2x = (cx - sideOffset * Math.cos(perpRad)).toFixed(2);
       const p2y = (cy + sideOffset * Math.sin(perpRad)).toFixed(2);
 
-      // 4 Arc paths (Red: <50%, Orange: 50-69%, Yellow: 70-79%, Green: >=80%)
-      const redPath = `M 14 48 A 36 36 0 0 1 50 12`;
-      const orangePath = `M 50 12 A 36 36 0 0 1 71.16 18.88`;
-      const yellowPath = `M 71.16 18.88 A 36 36 0 0 1 79.12 26.84`;
+      // 4 Arc paths for 6 Sub-Gauges (Red: <40%, Orange: 40-<60%, Yellow: 60-<80%, Green: >=80%)
+      const redPath = `M 14 48 A 36 36 0 0 1 38.88 13.76`;
+      const orangePath = `M 38.88 13.76 A 36 36 0 0 1 61.12 13.76`;
+      const yellowPath = `M 61.12 13.76 A 36 36 0 0 1 79.12 26.84`;
       const greenPath = `M 79.12 26.84 A 36 36 0 0 1 86 48`;
+
+      const subValColor = p >= 80 ? '#10b981' : (p >= 60 ? '#eab308' : (p >= 40 ? '#f97316' : '#ef4444'));
 
       return `
         <div class="pdf-gauge-card">
@@ -1611,7 +1613,7 @@
             <circle cx="${cx}" cy="${cy}" r="5.5" fill="#0f172a" stroke="#ffffff" stroke-width="1.8" />
             <circle cx="${cx}" cy="${cy}" r="2" fill="#ffffff" />
           </svg>
-          <div class="g-val">${valLabel} : ${Math.round(p)}</div>
+          <div class="g-val" style="color: ${subValColor}; font-weight: 700;">${valLabel} : ${Math.round(p)}</div>
         </div>
       `;
     }
