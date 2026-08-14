@@ -1059,12 +1059,12 @@
     <table class="eval-table-pdf" id="part1-table">
       <thead>
         <tr>
-          <th style="width: 14%;">PT Component</th>
-          <th style="width: 16%;">Sub-PT Component</th>
-          <th style="width: 28%;">Test Method</th>
-          <th style="width: 10%;">Testing Date</th>
-          <th style="width: 14%;">Test Result</th>
-          <th style="width: 8%;">Evaluation<br>Result</th>
+          <th style="width: 12%;">PT Component</th>
+          <th style="width: 13%;">Sub-PT Component</th>
+          <th style="width: 24%;">Test Method</th>
+          <th style="width: 9%;">Testing Date</th>
+          <th style="width: 25%;">Test Result</th>
+          <th style="width: 7%;">Evaluation<br>Result</th>
           <th style="width: 5%;">Weight</th>
           <th style="width: 5%;">Health<br>Index</th>
         </tr>
@@ -2134,7 +2134,7 @@
             const isDash = m.dynResult === '-' || !m.dynResult;
             const alignStyle = isDash ? 'text-align:center;' : 'text-align:left; padding-left:6px;';
             if (isVisualInspection) {
-              html += `<td style="${alignStyle} font-weight:600; line-height:1.2; padding:3px 4px; font-size:0.58rem; max-width:240px;" title="${cleanResult.replace(/"/g, '&quot;')}"><div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; max-height:2.4em;">${m.dynResult}</div></td>`;
+              html += `<td style="${alignStyle} font-weight:600; line-height:1.2; padding:3px 4px; font-size:0.58rem; max-width:320px;" title="${cleanResult.replace(/"/g, '&quot;')}"><div style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word; max-height:2.4em;">${m.dynResult}</div></td>`;
             } else {
               html += `<td style="${alignStyle} font-weight:600; line-height:1.25; padding:3px 4px; font-size:0.60rem;">${m.dynResult}</td>`;
             }
