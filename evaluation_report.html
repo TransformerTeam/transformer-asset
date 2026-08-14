@@ -1601,7 +1601,7 @@
                 { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Insulation Resistance and PI', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
               ]
             },
             {
@@ -1610,7 +1610,7 @@
                 { name: 'Winding Resistance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
                 { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
-                { name: 'Insulation Resistance and PI', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
               ]
             },
             {
@@ -1618,7 +1618,7 @@
               methods: [
                 { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 40, mWorst: '-' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 30, mWorst: '-' },
-                { name: 'Insulation Resistance and PI', defaultDate: '2025-06-03', mWeight: 3, maxScore: 30, mWorst: '-' }
+                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 30, mWorst: '-' }
               ]
             }
           ]
@@ -1965,7 +1965,12 @@
             }
 
             // 3. Test Method
-            html += `<td>${m.name}</td>`;
+            let methodDisplayName = m.name;
+            const subTextStr = m.subText || (m.name.includes('Insulation Resistance and PI') ? 'IEEE C57.152-2013, PI > 1.25' : '');
+            if (subTextStr) {
+              methodDisplayName += `<br><span style="font-size: 0.70rem; color: #475569; font-weight: 500;">${subTextStr}</span>`;
+            }
+            html += `<td>${methodDisplayName}</td>`;
 
             // 4. Testing Date
             let dateStyle = '';
