@@ -2,10 +2,93 @@
  * Transformer Health Index Assessment - Core Logic
  */
 
+function parseHealthIndexSumCSV(rows) {
+  if (!rows || rows.length === 0) return [];
+  const results = [];
+  rows.forEach((row, idx) => {
+    const name = row['Equipment Name'] || row.name || row.Equipment_Name || row.EQUIPMENT_NAME || row.Equipment || row['Name'] || '';
+    const serial = row['Serial No'] || row['Serial No.'] || row.serial || row.Serial_No || row.Serial || row.SERIAL_NUMBER || row.Serial_no || '';
+    if (!name && !serial) return;
+
+    function pVal(v) {
+      if (v === undefined || v === null || v === '-' || v === '' || v === 'N/A' || v === 'None') return null;
+      const n = Number(v);
+      return isNaN(n) ? v : n;
+    }
+
+    results.push({
+      no: idx,
+      name: String(name),
+      serial: String(serial),
+      site: String(row.SITE || row.site || ''),
+      ratedPower: pVal(row['Rated Power (MVA)']),
+      hvRate: pVal(row['HV Rate (kV)']),
+      lvRate: pVal(row['LV Rate (kV)']),
+      ratedVoltage: String(row['Rated Voltage (kV)'] || ''),
+      serviceType: String(row['Service Type'] || ''),
+      serviceAge: pVal(row['Service Age (Year)']),
+      healthIndex: pVal(row['Condition Health Index']),
+      healthStatus: String(row['Health Index Status'] || ''),
+      estimatedDP: pVal(row['Estimated DP (From Furan)']),
+      estimatedLife: pVal(row['Estimated Remaining Life time (Year)']),
+      visualInspection: String(row['Visual Inspection'] || 'N/A'),
+      activePart: {
+        overall: String(row['Active Part'] || 'N/A'),
+        insulationResistance: String(row['Insulation Resistance & PI'] || 'N/A'),
+        insulationPowerFactor: String(row['Insulation Power Factor'] || 'N/A'),
+        excitingCurrent: String(row['Exciting Current'] || 'N/A'),
+        ratioPolarity: String(row['Ratio&Polarity'] || 'N/A'),
+        windingResistance: String(row['Winding Resistance'] || 'N/A'),
+        shortCircuit1P: String(row['1∅ Short Circuit Impedance'] || 'N/A'),
+        shortCircuit3P: String(row['3∅ Short Circuit Impedance'] || 'N/A'),
+        coreToGround: String(row['Core to Ground'] || 'N/A')
+      },
+      bushing: String(row.Bushing || 'N/A'),
+      surgeArrester: String(row['Surge Arrester'] || 'N/A'),
+      dynamicResistance: String(row['Dynamic Resistance Measurement (OLTC)'] || 'N/A'),
+      fra: String(row['Frequency Response Analysis (FRA)'] || 'N/A'),
+      moisturePaper: String(row['%Moisture in paper (FDS)'] || 'N/A'),
+      mainTankOil: {
+        overall: String(row['Main Tank Oil'] || 'N/A'),
+        dga: String(row.DGA || 'N/A'),
+        waterContent: String(row['Water Content'] || 'N/A'),
+        dielectricBreakdown: String(row['Dielectric Breakdown'] || 'N/A'),
+        pf25: String(row['PF at 25 °C'] || 'N/A'),
+        pf100: String(row['PF at 100 °C'] || 'N/A'),
+        conductivity: String(row.Conductivity || 'N/A'),
+        ift: String(row['Interfratial Tension (IFT)'] || row['Interfacial Tension (IFT)'] || 'N/A'),
+        acidity: String(row.Acidity || 'N/A'),
+        color: String(row.Color || 'N/A'),
+        inhibitor: String(row.Inhibitor || 'N/A'),
+        corrosiveSulfur: String(row['Corrosive Sulfur'] || 'N/A')
+      },
+      passivator: String(row.Passivator || 'N/A'),
+      furan: String(row.Furan || 'N/A'),
+      sludge: String(row.Sludge || 'N/A'),
+      oltcOil: {
+        dga: String(row['DGA (OLTC)'] || 'N/A'),
+        dielectricBreakdown: String(row['Dielectric Breakdown (OLTC)'] || 'N/A'),
+        waterContent: String(row['Water Content (OLTC)'] || 'N/A')
+      },
+      dateToAssess: String(row['Date To Assess'] || ''),
+      lastPM: String(row['Last PM'] || ''),
+      nextPM: String(row['Next PM'] || ''),
+      recommendation: String(row.Recommendation || '')
+    });
+  });
+  return results;
+}
+
 function getInitialHealthData() {
-  if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) return window.HEALTH_INDEX_DATA;
-  if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) return HEALTH_INDEX_DATA;
-  return [];
+  let raw = [];
+  if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
+    raw = window.HEALTH_INDEX_DATA;
+  } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+    raw = HEALTH_INDEX_DATA;
+  }
+  if (!raw || raw.length === 0) return [];
+  if (raw[0] && raw[0].name && typeof raw[0].activePart === 'object') return raw;
+  return parseHealthIndexSumCSV(raw);
 }
 
 var assessmentData = getInitialHealthData();
@@ -130,82 +213,6 @@ function loadAllTestDataCSVs() {
   });
 }
 
-function parseHealthIndexSumCSV(rows) {
-  if (!rows || rows.length === 0) return [];
-  const results = [];
-  rows.forEach((row, idx) => {
-    const name = row['Equipment Name'] || row.name || row.Equipment_Name || row.EQUIPMENT_NAME || row.Equipment || row['Name'] || '';
-    const serial = row['Serial No'] || row['Serial No.'] || row.serial || row.Serial_No || row.Serial || row.SERIAL_NUMBER || row.Serial_no || '';
-    if (!name && !serial) return;
-
-    function pVal(v) {
-      if (v === undefined || v === null || v === '-' || v === '' || v === 'N/A' || v === 'None') return null;
-      const n = Number(v);
-      return isNaN(n) ? v : n;
-    }
-
-    results.push({
-      no: idx,
-      name: String(name),
-      serial: String(serial),
-      site: String(row.SITE || row.site || ''),
-      ratedPower: pVal(row['Rated Power (MVA)']),
-      hvRate: pVal(row['HV Rate (kV)']),
-      lvRate: pVal(row['LV Rate (kV)']),
-      ratedVoltage: String(row['Rated Voltage (kV)'] || ''),
-      serviceType: String(row['Service Type'] || ''),
-      serviceAge: pVal(row['Service Age (Year)']),
-      healthIndex: pVal(row['Condition Health Index']),
-      healthStatus: String(row['Health Index Status'] || ''),
-      estimatedDP: pVal(row['Estimated DP (From Furan)']),
-      estimatedLife: pVal(row['Estimated Remaining Life time (Year)']),
-      visualInspection: String(row['Visual Inspection'] || 'N/A'),
-      activePart: {
-        overall: String(row['Active Part'] || 'N/A'),
-        insulationResistance: String(row['Insulation Resistance & PI'] || 'N/A'),
-        insulationPowerFactor: String(row['Insulation Power Factor'] || 'N/A'),
-        excitingCurrent: String(row['Exciting Current'] || 'N/A'),
-        ratioPolarity: String(row['Ratio&Polarity'] || 'N/A'),
-        windingResistance: String(row['Winding Resistance'] || 'N/A'),
-        shortCircuit1P: String(row['1∅ Short Circuit Impedance'] || 'N/A'),
-        shortCircuit3P: String(row['3∅ Short Circuit Impedance'] || 'N/A'),
-        coreToGround: String(row['Core to Ground'] || 'N/A')
-      },
-      bushing: String(row.Bushing || 'N/A'),
-      surgeArrester: String(row['Surge Arrester'] || 'N/A'),
-      dynamicResistance: String(row['Dynamic Resistance Measurement (OLTC)'] || 'N/A'),
-      fra: String(row['Frequency Response Analysis (FRA)'] || 'N/A'),
-      moisturePaper: String(row['%Moisture in paper (FDS)'] || 'N/A'),
-      mainTankOil: {
-        overall: String(row['Main Tank Oil'] || 'N/A'),
-        dga: String(row.DGA || 'N/A'),
-        waterContent: String(row['Water Content'] || 'N/A'),
-        dielectricBreakdown: String(row['Dielectric Breakdown'] || 'N/A'),
-        pf25: String(row['PF at 25 °C'] || 'N/A'),
-        pf100: String(row['PF at 100 °C'] || 'N/A'),
-        conductivity: String(row.Conductivity || 'N/A'),
-        ift: String(row['Interfratial Tension (IFT)'] || row['Interfacial Tension (IFT)'] || 'N/A'),
-        acidity: String(row.Acidity || 'N/A'),
-        color: String(row.Color || 'N/A'),
-        inhibitor: String(row.Inhibitor || 'N/A'),
-        corrosiveSulfur: String(row['Corrosive Sulfur'] || 'N/A')
-      },
-      passivator: String(row.Passivator || 'N/A'),
-      furan: String(row.Furan || 'N/A'),
-      sludge: String(row.Sludge || 'N/A'),
-      oltcOil: {
-        dga: String(row['DGA (OLTC)'] || 'N/A'),
-        dielectricBreakdown: String(row['Dielectric Breakdown (OLTC)'] || 'N/A'),
-        waterContent: String(row['Water Content (OLTC)'] || 'N/A')
-      },
-      dateToAssess: String(row['Date To Assess'] || ''),
-      lastPM: String(row['Last PM'] || ''),
-      nextPM: String(row['Next PM'] || ''),
-      recommendation: String(row.Recommendation || '')
-    });
-  });
-  return results;
-}
 
 function parseNum(val) {
   if (val === null || val === undefined || val === '' || val === '-' || val === 'N/A') return null;
