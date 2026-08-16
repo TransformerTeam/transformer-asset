@@ -2676,14 +2676,36 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv per IEEE C57.152-2013: %Deviation within 3% of nameplate)
+      // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv per IEEE C57.152-2013: 3 Taps Display: Max, Center, Min)
       if (nameLower.includes('three phase short circuit') || nameLower.includes('three phase impedance') || (nameLower.includes('three') && nameLower.includes('short')) || (nameLower.includes('short circuit') && !nameLower.includes('single'))) {
         if (latestThreeShort) {
           const date = latestThreeShort.Date || latestThreeShort.date;
-          const dev = latestThreeShort.HV_Cen_Dev || latestThreeShort.HV_Max_Dev || latestThreeShort.Short_Circuit_Impedance_Result || '0.5';
-          const val = `%Dev: ${dev}%`;
-          const numDev = Math.abs(parseFloat(dev));
-          const score = isNaN(numDev) ? 5 : (numDev <= 3.0 ? 5 : (numDev <= 5.0 ? 3 : 1));
+          const maxDev = parseFloat(latestThreeShort.HV_Max_Dev);
+          const cenDev = parseFloat(latestThreeShort.HV_Cen_Dev);
+          const minDev = parseFloat(latestThreeShort.HV_Min_Dev);
+          const tap1Dev = parseFloat(latestThreeShort.HV_Tap1_Dev);
+          const tap1Name = latestThreeShort.HV_Tap1 && latestThreeShort.HV_Tap1 !== '-' ? `Tap ${latestThreeShort.HV_Tap1}` : 'Tap 1';
+
+          const parts = [];
+          if (!isNaN(maxDev)) parts.push(`Max: ${maxDev.toFixed(2)}%`);
+          if (!isNaN(cenDev)) parts.push(`Cen: ${cenDev.toFixed(2)}%`);
+          if (!isNaN(minDev)) parts.push(`Min: ${minDev.toFixed(2)}%`);
+
+          if (parts.length === 0) {
+            if (!isNaN(tap1Dev)) {
+              parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
+            } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-') {
+              const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
+              parts.push(`%Dev: ${isNaN(resNum) ? latestThreeShort.Short_Circuit_Impedance_Result : resNum.toFixed(2)}%`);
+            }
+          }
+
+          const val = parts.join(', ') || '%Dev: 0.5%';
+          
+          const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
+          const worstDev = validDevs.length > 0 ? Math.max(...validDevs.map(Math.abs)) : 0.5;
+
+          const score = worstDev <= 3.0 ? 5 : (worstDev <= 5.0 ? 3 : 1);
           return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance (IEEE C57.152)' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
