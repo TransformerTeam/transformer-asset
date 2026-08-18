@@ -2,10 +2,21 @@
  * Transformer Health Index Assessment - Core Logic
  */
 
+function isExcludedSite(site) {
+  if (!site) return false;
+  const s = String(site).trim().toLowerCase();
+  if (s === 'scrap' || s.includes('scrap')) return true;
+  if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+  return false;
+}
+
 function parseHealthIndexSumCSV(rows) {
   if (!rows || rows.length === 0) return [];
   const results = [];
   rows.forEach((row, idx) => {
+    const site = String(row.SITE || row.site || '');
+    if (isExcludedSite(site)) return;
+
     const name = row['Equipment Name'] || row.name || row.Equipment_Name || row.EQUIPMENT_NAME || row.Equipment || row['Name'] || '';
     const serial = row['Serial No'] || row['Serial No.'] || row.serial || row.Serial_No || row.Serial || row.SERIAL_NUMBER || row.Serial_no || '';
     if (!name && !serial) return;
@@ -17,10 +28,10 @@ function parseHealthIndexSumCSV(rows) {
     }
 
     results.push({
-      no: idx,
+      no: results.length,
       name: String(name),
       serial: String(serial),
-      site: String(row.SITE || row.site || ''),
+      site: site,
       ratedPower: pVal(row['Rated Power (MVA)']),
       hvRate: pVal(row['HV Rate (kV)']),
       lvRate: pVal(row['LV Rate (kV)']),
@@ -87,8 +98,9 @@ function getInitialHealthData() {
     raw = HEALTH_INDEX_DATA;
   }
   if (!raw || raw.length === 0) return [];
-  if (raw[0] && raw[0].name && typeof raw[0].activePart === 'object') return raw;
-  return parseHealthIndexSumCSV(raw);
+  const filteredRaw = raw.filter(r => !isExcludedSite(r.SITE || r.site));
+  if (filteredRaw[0] && filteredRaw[0].name && typeof filteredRaw[0].activePart === 'object') return filteredRaw;
+  return parseHealthIndexSumCSV(filteredRaw);
 }
 
 var assessmentData = getInitialHealthData();
@@ -220,9 +232,16 @@ function parseNum(val) {
   return (!isNaN(num)) ? num : null;
 }
 
+var _latestRecordCache = new Map();
+
 function findLatestRecord(csvArray, targetSerial) {
   if (!csvArray || !csvArray.length || !targetSerial) return null;
   const cleanTarget = String(targetSerial || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const cacheKey = `${csvArray.length}_${cleanTarget}`;
+  if (_latestRecordCache.has(cacheKey)) {
+    return _latestRecordCache.get(cacheKey);
+  }
+
   const matches = csvArray.filter(d => {
     if (!d) return false;
     const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || d['Serial No'] || d.Name || d.code || '';
@@ -234,7 +253,10 @@ function findLatestRecord(csvArray, targetSerial) {
     if (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS))) return true;
     return s1.includes(s2) || s2.includes(s1);
   });
-  if (!matches.length) return null;
+  if (!matches.length) {
+    _latestRecordCache.set(cacheKey, null);
+    return null;
+  }
   matches.sort((a, b) => {
     const dA = new Date(a.date || a.Date || a['Test Date'] || a.Test_Date || 0);
     const dB = new Date(b.date || b.Date || b['Test Date'] || b.Test_Date || 0);
@@ -242,7 +264,9 @@ function findLatestRecord(csvArray, targetSerial) {
     if (isNaN(dB.getTime())) return -1;
     return dB - dA;
   });
-  return matches[0];
+  const result = matches[0];
+  _latestRecordCache.set(cacheKey, result);
+  return result;
 }
 
 function initAssessment() {
@@ -254,13 +278,24 @@ function initAssessment() {
     setTheme(savedTheme);
     return;
   }
+  
   populateFilterDropdowns();
+  
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
   setTheme(savedTheme);
   applyFilters();
 }
 
 function setupListeners() {
+  // Listen for CSV test data completion to re-evaluate fleet with latest test values
+  document.addEventListener('allTestDataLoaded', () => {
+    const isReportOrDetail = window.location.pathname.toLowerCase().includes('evaluation') || 
+                             document.getElementById('eval-transformer-select') !== null;
+    if (!isReportOrDetail && typeof syncAssessmentWithEvaluationEngine === 'function') {
+      syncAssessmentWithEvaluationEngine();
+    }
+  });
+
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
@@ -1146,17 +1181,34 @@ function getWorstParam(values) {
 }
 
 function getActiveSummary(item) {
-  const vals = Object.values(item.activePart).filter(v => v && v !== 'N/A');
+  if (!item) return 'N/A';
+  if (typeof item.activePart === 'string') return item.activePart;
+  if (item.activePart && item.activePart.overall && item.activePart.overall !== 'N/A') {
+    return item.activePart.overall;
+  }
+  const vals = Object.values(item.activePart || {}).filter(v => v && v !== 'N/A');
+  if (vals.length === 0) return 'N/A';
   return getWorstParam(vals);
 }
 
 function getOilSummary(item) {
-  const vals = Object.values(item.mainTankOil).filter(v => v && v !== 'N/A');
+  if (!item) return 'N/A';
+  if (typeof item.mainTankOil === 'string') return item.mainTankOil;
+  if (item.mainTankOil && item.mainTankOil.overall && item.mainTankOil.overall !== 'N/A') {
+    return item.mainTankOil.overall;
+  }
+  const vals = Object.values(item.mainTankOil || {}).filter(v => v && v !== 'N/A');
+  if (vals.length === 0) return 'N/A';
   return getWorstParam(vals);
 }
 
 function getOltcSummary(item) {
-  const vals = Object.values(item.oltcOil).filter(v => v && v !== 'N/A');
+  if (!item) return 'N/A';
+  if (typeof item.oltcOil === 'string') return item.oltcOil;
+  if (item.oltcOil && item.oltcOil.overall && item.oltcOil.overall !== 'N/A') {
+    return item.oltcOil.overall;
+  }
+  const vals = Object.values(item.oltcOil || {}).filter(v => v && v !== 'N/A');
   if (vals.length === 0) return 'N/A';
   return getWorstParam(vals);
 }
@@ -1198,7 +1250,10 @@ function renderTable() {
       <td>${renderParamIndicator(item.bushing)}</td>
       <td>${renderParamIndicator(getOltcSummary(item))}</td>
       <td>${renderLastPM(item.lastPM)}</td>
-      <td><button class="btn-view" onclick="openDetail(${item.no})"><i class="fa-solid fa-expand"></i> Detail</button></td>
+      <td style="white-space: nowrap;">
+        <button class="btn-view" onclick="openDetail(${item.no})" title="Quick Detail View"><i class="fa-solid fa-expand"></i> Detail</button>
+        <a href="evaluation_report.html?serial=${encodeURIComponent(item.serial)}" target="_blank" class="btn-view" style="text-decoration:none; display:inline-flex; align-items:center; margin-left:4px; background: rgba(79, 70, 229, 0.15); color: #818cf8; border-color: rgba(99, 102, 241, 0.3);" title="View Full Evaluation Report"><i class="fa-solid fa-file-lines" style="margin-right:3px;"></i> Eval</a>
+      </td>
     `;
     tbody.appendChild(row);
   });

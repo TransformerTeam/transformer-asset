@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -715,16 +715,142 @@
 
     /* Recommendation Box */
     .rec-box {
-      background: #fff7ed;
-      border: 1px solid #ffedd5;
-      border-left: 4px solid #ea580c;
-      padding: 12px 16px;
-      border-radius: 4px;
-      margin-top: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 4px solid #f59e0b;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-top: 14px;
       margin-bottom: 20px;
+      font-size: 0.84rem;
+      color: var(--text-main, #f8fafc);
+      line-height: 1.6;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+    }
+    .rec-box .rec-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #818cf8;
+    }
+    .rec-box .rec-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
       font-size: 0.82rem;
-      color: #9a3412;
-      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .rec-box .badge-good {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .rec-box .badge-warn {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .rec-box .badge-critical {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .rec-box .rec-list {
+      margin: 4px 0 0 0;
+      padding-left: 22px;
+      font-size: 0.83rem;
+      line-height: 1.65;
+    }
+    .rec-box .rec-list li {
+      margin-bottom: 5px;
+      color: inherit;
+    }
+    .rec-box .rec-item-critical {
+      color: #f87171 !important;
+      font-weight: 600;
+    }
+    .rec-box .rec-banner-good {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .rec-box .rec-description {
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: inherit;
+    }
+
+    .rec-box.rec-box-good {
+      border-left-color: #10b981;
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .rec-box.rec-box-warn {
+      border-left-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .rec-box.rec-box-critical {
+      border-left-color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Light Theme Styling for Recommendation Box */
+    [data-theme="light"] .rec-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    [data-theme="light"] .rec-box .rec-title {
+      color: #4338ca;
+    }
+    [data-theme="light"] .rec-box .rec-list li {
+      color: #1e293b;
+    }
+    [data-theme="light"] .rec-box .rec-description {
+      color: #334155;
+    }
+    [data-theme="light"] .rec-box .badge-good {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    [data-theme="light"] .rec-box .badge-warn {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+    [data-theme="light"] .rec-box .badge-critical {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    [data-theme="light"] .rec-box .rec-item-critical {
+      color: #b91c1c !important;
+    }
+    [data-theme="light"] .rec-box.rec-box-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+    }
+    [data-theme="light"] .rec-box.rec-box-warn {
+      background: #fffdf5;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #d97706;
+    }
+    [data-theme="light"] .rec-box.rec-box-critical {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-left: 4px solid #dc2626;
     }
 
     /* Action Links Bar */
@@ -914,9 +1040,6 @@
       <button class="btn btn-secondary" onclick="handleRefreshData()" id="refresh-data-btn" title="Refresh & Reload Report Data">
         <i id="refresh-spin-icon" class="fa-solid fa-arrows-rotate"></i> Refresh
       </button>
-      <button class="btn btn-secondary" onclick="toggleTheme()">
-        <i id="theme-icon" class="fa-solid fa-sun"></i> Theme
-      </button>
       <button class="btn btn-primary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print PDF
       </button>
@@ -1050,9 +1173,11 @@
     </div>
 
     <!-- Recommendation Box -->
-    <div class="rec-box">
-      <strong><i class="fa-solid fa-triangle-exclamation"></i> Assessment Recommendation:</strong>
-      <div id="eval-recommendation-text" style="margin-top: 4px;">Routine Inspection &amp; Maintenance.</div>
+    <div class="rec-box" id="eval-recommendation-box">
+      <div class="rec-title">
+        <i class="fa-solid fa-clipboard-check"></i> Interpretation and Recommendations
+      </div>
+      <div id="eval-recommendation-text">Analyzing diagnostic test results...</div>
     </div>
 
     <!-- Part 1 Table with 8 Columns -->
@@ -1135,41 +1260,113 @@
 
     <!-- Quick Links Bar -->
     <div class="action-links">
-      <a id="link-detail" href="#" class="report-link-btn"><i class="fa-solid fa-eye"></i> View Full Detail Page</a>
-      <a id="link-pf" href="#" class="report-link-btn"><i class="fa-solid fa-file-lines"></i> View Winding PF Report</a>
-      <a id="link-bushing" href="#" class="report-link-btn"><i class="fa-solid fa-plug"></i> View Bushing PF Report</a>
-      <a id="link-dga" href="#" class="report-link-btn"><i class="fa-solid fa-flask"></i> View Main Tank DGA Report</a>
-      <a id="link-visual" href="#" class="report-link-btn"><i class="fa-solid fa-magnifying-glass"></i> View Visual Inspection Report</a>
-      <a id="link-pi" href="#" class="report-link-btn"><i class="fa-solid fa-bolt"></i> View PI Report</a>
+          <th style="width: 11%;">Test Result</th>
+          <th style="width: 8%;">Evaluation Result</th>
+          <th style="width: 6%;">Weight</th>
+          <th style="width: 17%;">Health Index</th>
+        </tr>
+      </thead>
+      <tbody id="part1-tbody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+
+    <!-- Part 2 Table with 8 Columns -->
+    <table class="eval-table-pdf" id="part2-table" style="margin-top: 14px;">
+      <thead>
+        <tr>
+          <th style="width: 12%;">PT Component</th>
+          <th style="width: 13%;">Sub-PT Component</th>
+          <th style="width: 24%;">Test Method</th>
+          <th style="width: 9%;">Testing Date</th>
+          <th style="width: 11%;">Test Result</th>
+          <th style="width: 8%;">Evaluation Result</th>
+          <th style="width: 6%;">Weight</th>
+          <th style="width: 17%;">Health Index</th>
+        </tr>
+      </thead>
+      <tbody id="part2-tbody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+
+    <!-- Part 3 Table with 8 Columns -->
+    <table class="eval-table-pdf" id="part3-table" style="margin-top: 14px;">
+      <thead>
+        <tr>
+          <th style="width: 12%;">PT Component</th>
+          <th style="width: 13%;">Sub-PT Component</th>
+          <th style="width: 24%;">Test Method</th>
+          <th style="width: 9%;">Testing Date</th>
+          <th style="width: 11%;">Test Result</th>
+          <th style="width: 8%;">Evaluation Result</th>
+          <th style="width: 6%;">Weight</th>
+          <th style="width: 17%;">Health Index</th>
+        </tr>
+      </thead>
+      <tbody id="part3-tbody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+
+    <!-- Action Links Bar -->
+    <div class="action-links no-print">
+      <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-gauge-high"></i> Fleet Dashboard</a>
+      <a href="assessment.html" class="btn btn-secondary"><i class="fa-solid fa-list-check"></i> Assessment Table</a>
+      <a href="single_line.html" class="btn btn-secondary"><i class="fa-solid fa-diagram-project"></i> SCADA Single Line</a>
+      <button class="btn btn-secondary" onclick="exportToJPG()"><i class="fa-solid fa-image"></i> Export JPG</button>
+      <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print PDF Report</button>
     </div>
 
   </div>
 
-  <!-- Include Data Scripts -->
-  <script id="health-data-script" src="health_data.js?v=20260810_v4"></script>
-  <script src="evaluation_criteria.js?v=20260810_v4"></script>
-  <script src="assessment.js?v=20260810_v4"></script>
+  <!-- JavaScript Modules -->
+  <script src="health_data.js"></script>
+  <script src="evaluation_criteria.js"></script>
+  <script src="evaluation_engine.js"></script>
+  <script src="assessment.js"></script>
 
   <script>
     var currentSerial = '';
     var evalRetryCount = 0;
+    var refreshEvalTimer = null;
+
+    function isExcludedSite(site) {
+      if (!site) return false;
+      const s = String(site).trim().toLowerCase();
+      if (s === 'scrap' || s.includes('scrap')) return true;
+      if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+      return false;
+    }
 
     function ensureAssessmentData() {
       let data = [];
-      if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
-        data = window.HEALTH_INDEX_DATA;
-      } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
-        data = HEALTH_INDEX_DATA;
-      } else if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
+      if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
         data = window.assessmentData;
       } else if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
         data = assessmentData;
+      } else if (typeof window !== 'undefined' && window.HEALTH_INDEX_DATA && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
+        data = window.HEALTH_INDEX_DATA;
+      } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+        data = HEALTH_INDEX_DATA;
       }
 
       if (data && data.length > 0) {
-        assessmentData = data;
-        if (typeof window !== 'undefined') window.assessmentData = data;
+        const filtered = data.filter(item => !isExcludedSite(item.SITE || item.site));
+        if (typeof parseHealthIndexSumCSV === 'function' && filtered.length > 0 && (!filtered[0].activePart || typeof filtered[0].activePart !== 'object')) {
+          assessmentData = parseHealthIndexSumCSV(filtered);
+        } else {
+          assessmentData = filtered;
+        }
+        if (typeof window !== 'undefined') window.assessmentData = assessmentData;
       }
+    }
+
+    function scheduleRefreshEvalView() {
+      if (refreshEvalTimer) clearTimeout(refreshEvalTimer);
+      refreshEvalTimer = setTimeout(() => {
+        refreshEvalView();
+      }, 50);
     }
 
     function refreshEvalView() {
@@ -1204,16 +1401,17 @@
       }
     }
 
-    document.addEventListener('allTestDataLoaded', refreshEvalView);
+    document.addEventListener('allTestDataLoaded', scheduleRefreshEvalView);
     if (window.allCSVsPromise) {
-      window.allCSVsPromise.then(refreshEvalView);
+      window.allCSVsPromise.then(scheduleRefreshEvalView);
     }
     window.addEventListener('load', refreshEvalView);
 
     function populateEvalDropdown() {
-      ensureAssessmentData();
       const selectEl = document.getElementById('eval-transformer-select');
-      if (selectEl && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
+      if (!selectEl) return;
+      
+      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) {
         const curVal = selectEl.value;
         selectEl.innerHTML = '';
         assessmentData.forEach(item => {
@@ -1231,10 +1429,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
-
+      document.documentElement.setAttribute('data-theme', 'light');
       refreshEvalView();
     });
 
@@ -1332,9 +1527,12 @@
       if (selectEl) selectEl.value = serialVal;
 
       // 1. Part 1: Condition Health Index Summary
-      // Compute HI from formula (same as table) — do NOT use item.healthIndex directly
-      const { percentHIVal: hi } = computeHI(item);
-      const hiStatus = hi >= 80 ? 'Healthy' : (hi >= 70 ? 'Monitor' : (hi >= 50 ? 'Warning' : 'Critical'));
+      // Compute HI from formula (same as table)
+      let { percentHIVal: computedHI } = (typeof computeHI === 'function') ? computeHI(item) : { percentHIVal: 0 };
+      const originalHI = parseFloat(item.healthIndex || item['Condition Health Index']) || 0;
+      const hi = computedHI > 0 ? computedHI : originalHI;
+      const hiStatus = hi >= 80 ? 'Healthy' : (hi >= 70 ? 'Monitor' : (hi >= 50 ? 'Warning' : (hi > 0 ? 'Critical' : 'No Assess')));
+      
       setElText('summary-hi-score', `${hi}%`);
       const scoreEl = document.getElementById('summary-hi-score');
       if (scoreEl) scoreEl.style.color = hi >= 80 ? '#10b981' : (hi >= 70 ? '#eab308' : (hi >= 50 ? '#f97316' : '#ef4444'));
@@ -1345,27 +1543,40 @@
         statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 70 ? 'badge-warn' : (hi >= 50 ? 'badge-orange' : 'badge-danger'))}`;
       }
 
-      setElText('summary-dp', item.estimatedDP || '950');
-      setElText('summary-life', item.estimatedLife ? `${item.estimatedLife} yrs` : '25 yrs');
-      setElText('eval-recommendation-text', item.recommendation || 'Routine Inspection & Maintenance.');
+      setElText('summary-dp', item.estimatedDP || item['Estimated DP (From Furan)'] || '950');
+      setElText('summary-life', item.estimatedLife ? `${item.estimatedLife} yrs` : (item['Estimated Remaining Life time (Year)'] ? `${item['Estimated Remaining Life time (Year)']} yrs` : '25 yrs'));
+      
+      const recContainer = document.getElementById('eval-recommendation-box');
+      const recEl = document.getElementById('eval-recommendation-text');
+      if (recEl) {
+        if (typeof generateDetailedRecommendation === 'function') {
+          const recRes = generateDetailedRecommendation(item);
+          recEl.innerHTML = recRes.html;
+          if (recContainer) {
+            recContainer.className = `rec-box ${recRes.isCritical ? 'rec-box-critical' : (recRes.isGood ? 'rec-box-good' : 'rec-box-warn')}`;
+          }
+        } else {
+          recEl.textContent = item.recommendation || item.Recommendation || 'Routine Inspection & Maintenance.';
+        }
+      }
 
       // Sub Scores
       const rawTapUpper = String(rawTap || '').toUpperCase();
-      const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
+      const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A' || item['OLTC Oil'] === 'N/A';
 
       const serviceTypeStr = String(serviceVal || item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfo && (trInfo['Service Type'] || trInfo.SERVICE_TYPE || trInfo.APPLICATION)) || '').toUpperCase();
       const serialStr = String(serialVal || '').toUpperCase();
       const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
 
-      const isBushingNA = isUatOrAux || item.bushing === 'N/A';
-      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
+      const isBushingNA = isUatOrAux || item.bushing === 'N/A' || item['Bushing'] === 'N/A';
+      const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A' || item['Surge Arrester'] === 'N/A';
 
-      setSubScoreBox('active-part', item.activePart?.overall);
-      setSubScoreBox('oil', item.mainTankOil?.overall);
-      setSubScoreBox('bushing', isBushingNA ? 'N/A' : (item.bushing || 'N/A'));
-      setSubScoreBox('surge', isSurgeNA ? 'N/A' : (item.surgeArrester || 'N/A'));
-      setSubScoreBox('visual', item.visualInspection);
-      setSubScoreBox('oltc', isOltcNA ? 'N/A' : (item.oltcOil?.overall || 'N/A'));
+      setSubScoreBox('active-part', (item.activePart && item.activePart.overall) || item['Active Part']);
+      setSubScoreBox('oil', (item.mainTankOil && item.mainTankOil.overall) || item['Main Tank Oil']);
+      setSubScoreBox('bushing', isBushingNA ? 'N/A' : (item.bushing || item['Bushing'] || 'N/A'));
+      setSubScoreBox('surge', isSurgeNA ? 'N/A' : (item.surgeArrester || item['Surge Arrester'] || 'N/A'));
+      setSubScoreBox('visual', item.visualInspection || item['Visual Inspection']);
+      setSubScoreBox('oltc', isOltcNA ? 'N/A' : ((item.oltcOil && item.oltcOil.overall) || item['OLTC Oil'] || 'N/A'));
 
       // Render 3 Main Tables
       renderPart1Table(item);
@@ -3139,27 +3350,12 @@
       return `${day}-${month}-${year}`;
     }
 
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('tr-dashboard-theme', next);
-      updateThemeIcon(next);
-    }
-
-    function updateThemeIcon(theme) {
-      const icon = document.getElementById('theme-icon');
-      if (icon) {
-        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-      }
-    }
-
     function exportToJPG() {
       const paper = document.getElementById('evaluation-paper');
       html2canvas(paper, {
         scale: 2,
         useCORS: true,
-        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
+        backgroundColor: '#ffffff'
       }).then(canvas => {
         const link = document.createElement('a');
         link.download = `Evaluation_Report_${currentSerial}.jpg`;

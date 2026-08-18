@@ -1,0 +1,1187 @@
+/**
+ * GPSC Transformer Asset Management - Evaluation Engine
+ * Authoritative implementation of Condition Health Index (CHI), Component Evaluation, and Diagnostic Rules
+ */
+
+function isExcludedSite(site) {
+  if (!site) return false;
+  const s = String(site).trim().toLowerCase();
+  if (s === 'scrap' || s.includes('scrap')) return true;
+  if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+  return false;
+}
+
+// ==========================================
+// buildPtStructure: Returns PT component data
+// (shared across Assessment Dashboard & Evaluation Report)
+// ==========================================
+function buildPtStructure(item) {
+  return [
+    {
+      pt: 'General Part', weight: 5,
+      subs: [
+        {
+          sub: 'Overall Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        }
+      ]
+    },
+    {
+      pt: 'Active Part', weight: 25,
+      subs: [
+        {
+          sub: 'Magnetic Core', full: 100, subWeight: 30,
+          methods: [
+            { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'HV Winding', full: 100, subWeight: 40,
+          methods: [
+            { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+            { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+            { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+            { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Winding', full: 100, subWeight: 20,
+          methods: [
+            { name: 'Winding Resistance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+            { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'TV Winding', full: 100, subWeight: 10,
+          methods: [
+            { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 40, mWorst: '-' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 30, mWorst: '-' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 30, mWorst: '-' }
+          ]
+        }
+      ]
+    },
+    {
+      pt: 'Insulation Oil', weight: 20, splitSubWeights: true,
+      subs: [
+        {
+          sub: 'DGA', full: 100, subWeight: 25, weight: 5,
+          methods: [
+            { name: 'Dissolve Gas Analysis (DGA)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 100, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25, weight: 5,
+          methods: [
+            { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50, weight: 10,
+          methods: [
+            { name: 'Power Factor at 25 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'IFT', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Acidity', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Color Number', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Furan [2-FAL]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
+            { name: 'Estimated DP [Furan]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
+            { name: 'Sludge condition', defaultDate: '2025-09-15', mWeight: 3, maxScore: 5, mWorst: '-' },
+            { name: 'Corrosive Sulfur', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' },
+            { name: 'Passivator [Irgamet 39]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' }
+          ]
+        }
+      ]
+    },
+    {
+      pt: 'OLTC', weight: 20,
+      subs: [
+        {
+          sub: 'OLTC Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'OLTC Oil', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Breakdown Voltage (kV)', defaultDate: '2025-09-15', mWeight: 4, maxScore: 23.5294, mWorst: '-' },
+            { name: 'Water Content (ppm)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 29.4118, mWorst: '-' }
+          ]
+        }
+      ]
+    },
+    {
+      pt: 'Bushing', weight: 25,
+      subs: [
+        {
+          sub: 'Bushing Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'Phase A', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Phase B', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Phase C', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        }
+      ]
+    },
+    {
+      pt: 'Arrester', weight: 5,
+      subs: [
+        {
+          sub: 'Arrester Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'Phase A', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Phase B', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'Phase C', full: 100, subWeight: 33.3333,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        }
+      ]
+    }
+  ];
+}
+
+// ==========================================
+// getMeasuredValueForItem: Dynamic CSV query & Scoring
+// ==========================================
+function getMeasuredValueForItem(itemName, item, ptName, subName) {
+  const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+  const nameLower = (itemName || '').toLowerCase();
+  const ptLower = (ptName || '').toLowerCase();
+  const subLower = (subName || '').toLowerCase();
+
+  const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+  const isOltcNA = trInfoItem && trInfoItem.TAP_CHANGER_TYPE && (trInfoItem.TAP_CHANGER_TYPE.includes('NLTC') || trInfoItem.TAP_CHANGER_TYPE.includes('DETC'));
+
+  if (ptLower.includes('oltc') && isOltcNA) {
+    return { value: 'N/A (DETC/NLTC)', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 1. General Visual Inspection (VisualData.csv)
+  if (nameLower.includes('visual inspection') || nameLower.includes('visual')) {
+    const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, serialVal) : null;
+    if (latestVis) {
+      const date = latestVis.Date || latestVis.date || latestVis.DATE;
+      const abnormalRemarks = [];
+
+      Object.keys(latestVis).forEach(key => {
+        const val = String(latestVis[key] || '').trim();
+        const valUpper = val.toUpperCase();
+        if (key.toLowerCase().endsWith('_result')) {
+          if (valUpper === 'ABNORMAL' || valUpper === 'U' || valUpper === 'UNACCEPTABLE' || valUpper === 'CRITICAL' || valUpper === 'POOR' || valUpper === 'ACTION') {
+            const baseName = key.slice(0, -7);
+            const remarkKey = baseName + '_remark';
+            const foundKey = Object.keys(latestVis).find(k => k.toLowerCase() === remarkKey.toLowerCase());
+            const remarkVal = foundKey ? latestVis[foundKey] : '';
+            const cleanRemark = String(remarkVal || '').trim();
+            if (cleanRemark && cleanRemark !== '-' && cleanRemark !== 'Normal' && !abnormalRemarks.includes(cleanRemark)) {
+              abnormalRemarks.push(cleanRemark);
+            } else {
+              const readableName = baseName.replace(/_/g, ' ');
+              if (!abnormalRemarks.includes(readableName)) {
+                abnormalRemarks.push(readableName);
+              }
+            }
+          }
+        }
+      });
+
+      ['comment1', 'comment2', 'comment3', 'comment4', 'comment5', 'comment6'].forEach(ck => {
+        const cVal = String(latestVis[ck] || '').trim();
+        if (cVal && cVal !== '-' && (cVal.toLowerCase().includes('leak') || cVal.toLowerCase().includes('abnormal') || cVal.toLowerCase().includes('defect') || cVal.toLowerCase().includes('low') || cVal.toLowerCase().includes('crack') || cVal.toLowerCase().includes('rust'))) {
+          if (!abnormalRemarks.some(r => r.toLowerCase() === cVal.toLowerCase() || cVal.toLowerCase().includes(r.toLowerCase()))) {
+            abnormalRemarks.push(cVal);
+          }
+        }
+      });
+
+      if (abnormalRemarks.length > 0) {
+        const cleanedRemarks = [];
+        abnormalRemarks.forEach(r => {
+          let s = String(r || '').trim();
+          if (!s || s === '-' || s.toLowerCase() === 'normal') return;
+          s = s.replace(/The butterfly valve was found to have an oil leak\.?/gi, 'Butterfly valve oil leak')
+               .replace(/CT box was found as oil leak\.?/gi, 'BCT box oil leak')
+               .replace(/was found to have an oil leak\.?/gi, 'oil leak')
+               .replace(/was found as oil leak\.?/gi, 'oil leak')
+               .replace(/Oil level almost low\.?/gi, 'Oil level low')
+               .replace(/\.+$/, '');
+          if (!cleanedRemarks.some(existing => existing.toLowerCase() === s.toLowerCase() || existing.toLowerCase().includes(s.toLowerCase()))) {
+            cleanedRemarks.push(s);
+          }
+        });
+
+        const summaryText = cleanedRemarks.length > 0 ? cleanedRemarks.join(', ') : abnormalRemarks.join(', ');
+        return {
+          value: summaryText,
+          testDate: date,
+          ratingScore: 3,
+          recommendation: 'Plan visual maintenance / Repair defects'
+        };
+      } else {
+        return {
+          value: 'Normal',
+          testDate: date,
+          ratingScore: 5,
+          recommendation: '-'
+        };
+      }
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 2. Magnetic Core (IRandPIData.csv)
+  if ((subLower.includes('magnetic') || subLower.includes('core') || ptLower.includes('magnetic')) && nameLower.includes('insulation resistance')) {
+    const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, serialVal) : null;
+    if (latestPi) {
+      const date = latestPi.date || latestPi.Date || latestPi.DATE;
+      const comment = String(latestPi.comment || latestPi.Comment || '').trim();
+      const commentUpper = comment.toUpperCase();
+
+      const getValidVal = (...keys) => {
+        for (let k of keys) {
+          const val = latestPi[k];
+          if (val !== undefined && val !== null && val !== '-' && val !== 'N/A' && String(val).trim() !== '') {
+            return String(val).trim();
+          }
+        }
+        return null;
+      };
+
+      const cg = getValidVal('coregnd', 'core_gnd');
+      const cf = getValidVal('coreframe', 'core_frame', 'coreclamp');
+      const fg = getValidVal('framegnd', 'frame_gnd', 'clampgnd');
+
+      let isCannotTest = commentUpper.includes('CANNOT TEST') || commentUpper.includes('CAN NOT TEST') || commentUpper.includes('ไม่สามารถทดสอบได้');
+
+      const evaluateIrScore = (numIr) => {
+        if (numIr < 10) return 1;
+        if (numIr < 100) return 2;
+        if (numIr < 300) return 3;
+        if (numIr < 500) return 4;
+        return 5;
+      };
+
+      if (isCannotTest || (!cg && !cf && !fg)) {
+        const subUpper = String(subName || '').toUpperCase();
+        let fallbackIr = getValidVal('H_10', 'L_10', 'T_10');
+        if (subUpper.includes('LV')) fallbackIr = getValidVal('L_10', 'L_1');
+        if (subUpper.includes('TV')) fallbackIr = getValidVal('T_10', 'T_1');
+
+        if (!isCannotTest && fallbackIr) {
+          const numIr = parseFloat(fallbackIr);
+          if (!isNaN(numIr) && numIr > 0) {
+            const score = evaluateIrScore(numIr);
+            const valStr = `${numIr >= 500 ? Math.round(numIr) : numIr.toFixed(1)} MΩ`;
+            return { value: valStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check insulation resistance' };
+          }
+        }
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      const parts = [];
+      if (cg) parts.push(`Core-Gnd: ${cg} MΩ`);
+      if (cf) parts.push(`Core-Clamp: ${cf} MΩ`);
+      if (fg) parts.push(`Clamp-Gnd: ${fg} MΩ`);
+      const resStr = parts.join('<br>');
+
+      const valNums = [cg, cf, fg].map(v => parseFloat(v)).filter(n => !isNaN(n) && n > 0);
+      let score = 5;
+      if (valNums.length > 0) {
+        score = evaluateIrScore(Math.min(...valNums));
+      }
+      return { value: resStr, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect core insulation & grounding' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 3. Exciting Current (ExcitingData.csv)
+  if (nameLower.includes('exciting current')) {
+    const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, serialVal) : null;
+    if (latestExciting) {
+      const date = latestExciting.DATE || latestExciting.Date || latestExciting.date;
+      const h1 = parseFloat(latestExciting.H1CENTER || latestExciting.H1MAX || latestExciting.H1MIN);
+      const h2 = parseFloat(latestExciting.H2CENTER || latestExciting.H2MAX || latestExciting.H2MIN);
+      const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
+
+      let score = 5;
+      let patternName = 'H-L-H';
+
+      if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
+        if (h1 > h2 && h3 > h2) {
+          patternName = 'H-L-H';
+        } else if (h2 > h1 && h2 > h3) {
+          patternName = 'L-H-L';
+        } else if (Math.abs(h1 - h2) / Math.max(h1, h2) <= 0.05 && Math.abs(h2 - h3) / Math.max(h2, h3) <= 0.05) {
+          patternName = 'H-H-H';
+        } else if (h1 > h3 && h2 > h3) {
+          patternName = 'H-H-L';
+        } else if (h3 > h1 && h2 > h1) {
+          patternName = 'L-H-H';
+        }
+
+        const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
+        if (outerDiff <= 5.0 && (h2 <= h1 && h2 <= h3)) {
+          score = 5;
+        } else if (outerDiff <= 10.0 && (h2 <= h1 && h2 <= h3)) {
+          score = 4;
+        } else if (outerDiff <= 15.0) {
+          score = 3;
+        } else if (outerDiff <= 25.0) {
+          score = 2;
+        } else {
+          score = 1;
+        }
+      }
+
+      let valStr = (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0) ?
+        `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA<br>Pattern: ${patternName}` :
+        `Pattern Normal<br>Pattern: ${patternName}`;
+
+      let recStr = '-';
+      if (score === 3) recStr = 'Core demagnetization recommended (IEEE C57.152 / CIGRE TB 761)';
+      else if (score === 2) recStr = 'Check core grounding & perform FRA (IEEE C57.152 / CIGRE TB 761)';
+      else if (score === 1) recStr = 'Investigate turn short / core damage immediately (IEEE C57.152 / CIGRE TB 761)';
+
+      return { value: valStr, testDate: date, ratingScore: score, recommendation: recStr };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 4. Single Phase Short Circuit Impedance (SingleShortData.csv: 3 Taps Display)
+  if (nameLower.includes('single phase short circuit') || nameLower.includes('single phase impedance') || (nameLower.includes('single') && (nameLower.includes('short') || nameLower.includes('impedance')))) {
+    const latestSingleShort = (typeof singleShortCsvData !== 'undefined') ? findLatestRecord(singleShortCsvData, serialVal) : null;
+    if (latestSingleShort) {
+      const date = latestSingleShort.Date || latestSingleShort.date;
+      const maxDev = parseFloat(latestSingleShort.HV_Max_Dev);
+      const cenDev = parseFloat(latestSingleShort.HV_Cen_Dev);
+      const minDev = parseFloat(latestSingleShort.HV_Min_Dev);
+      const tap1Dev = parseFloat(latestSingleShort.HV_Tap1_Dev);
+      const tap1Name = latestSingleShort.HV_Tap1 && latestSingleShort.HV_Tap1 !== '-' ? `Tap ${latestSingleShort.HV_Tap1}` : 'Tap 1';
+
+      const parts = [];
+      if (!isNaN(maxDev)) parts.push(`Max: ${maxDev.toFixed(2)}%`);
+      if (!isNaN(cenDev)) parts.push(`Cen: ${cenDev.toFixed(2)}%`);
+      if (!isNaN(minDev)) parts.push(`Min: ${minDev.toFixed(2)}%`);
+
+      if (parts.length === 0) {
+        if (!isNaN(tap1Dev)) {
+          parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
+        } else if (latestSingleShort.Single_Phase_Result && latestSingleShort.Single_Phase_Result !== '-') {
+          const resNum = parseFloat(latestSingleShort.Single_Phase_Result);
+          parts.push(`%Dev: ${isNaN(resNum) ? latestSingleShort.Single_Phase_Result : resNum.toFixed(2)}%`);
+        }
+      }
+
+      const val = parts.join(', ') || '%Dev: 0.5%';
+      const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestSingleShort.Single_Phase_Result)].filter(v => !isNaN(v));
+      const worstDev = validDevs.length > 0 ? Math.max(...validDevs.map(Math.abs)) : 0.5;
+      const score = worstDev <= 3.0 ? 5 : (worstDev <= 5.0 ? 3 : 1);
+      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 1-phase winding impedance (IEEE C57.152)' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 5. Three Phase Short Circuit Impedance (ThreeShortData.csv: 3 Taps Display)
+  if (nameLower.includes('three phase short circuit') || nameLower.includes('three phase impedance') || (nameLower.includes('three') && nameLower.includes('short')) || (nameLower.includes('short circuit') && !nameLower.includes('single'))) {
+    const latestThreeShort = (typeof threeShortCsvData !== 'undefined') ? findLatestRecord(threeShortCsvData, serialVal) : null;
+    if (latestThreeShort) {
+      const date = latestThreeShort.Date || latestThreeShort.date;
+      const maxDev = parseFloat(latestThreeShort.HV_Max_Dev);
+      const cenDev = parseFloat(latestThreeShort.HV_Cen_Dev);
+      const minDev = parseFloat(latestThreeShort.HV_Min_Dev);
+      const tap1Dev = parseFloat(latestThreeShort.HV_Tap1_Dev);
+      const tap1Name = latestThreeShort.HV_Tap1 && latestThreeShort.HV_Tap1 !== '-' ? `Tap ${latestThreeShort.HV_Tap1}` : 'Tap 1';
+
+      const parts = [];
+      if (!isNaN(maxDev)) parts.push(`Max: ${maxDev.toFixed(2)}%`);
+      if (!isNaN(cenDev)) parts.push(`Cen: ${cenDev.toFixed(2)}%`);
+      if (!isNaN(minDev)) parts.push(`Min: ${minDev.toFixed(2)}%`);
+
+      if (parts.length === 0) {
+        if (!isNaN(tap1Dev)) {
+          parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
+        } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-') {
+          const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
+          parts.push(`%Dev: ${isNaN(resNum) ? latestThreeShort.Short_Circuit_Impedance_Result : resNum.toFixed(2)}%`);
+        }
+      }
+
+      const val = parts.join(', ') || '%Dev: 0.5%';
+      const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
+      const worstDev = validDevs.length > 0 ? Math.max(...validDevs.map(Math.abs)) : 0.5;
+      const score = worstDev <= 3.0 ? 5 : (worstDev <= 5.0 ? 3 : 1);
+      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance (IEEE C57.152)' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 6. Turn Ratio (RatioData.csv)
+  if (nameLower.includes('turn ratio') || nameLower.includes('ratio')) {
+    const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, serialVal) : null;
+    if (latestRatio) {
+      const date = latestRatio.date || latestRatio.Date;
+      const err = latestRatio.MAXERR || latestRatio.H1_cen_err || latestRatio.Turn_Ratio_Result || '0.05';
+      const numErr = Math.abs(parseFloat(err));
+      const val = `%Dev: ${isNaN(numErr) ? err : numErr.toFixed(2)}%`;
+      const score = isNaN(numErr) ? 5 : (numErr <= 0.5 ? 5 : (numErr <= 1.0 ? 3 : 1));
+      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check turn ratio / tap changer (IEEE C57.152)' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 7. Winding Resistance (WindingData.csv)
+  if (nameLower.includes('winding resistance')) {
+    const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, serialVal) : null;
+    if (latestWinding) {
+      const date = latestWinding.DATE || latestWinding.Date || latestWinding.date;
+      const dev = latestWinding.DEVCENTER || latestWinding.DEVMAX || '0.2';
+      const val = `%Dev: ${dev}%`;
+      const score = Math.abs(parseFloat(dev)) <= 0.5 ? 5 : 4;
+      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding resistance' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 8. Power Factor (%PF) (WindingPFData.csv)
+  if (nameLower.includes('power factor') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('at 25') && !nameLower.includes('at 100')) {
+    const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, serialVal) : null;
+    if (latestWindingPf) {
+      const date = latestWindingPf.date || latestWindingPf.Date;
+      const pf = latestWindingPf.maxhv_tand || latestWindingPf.chl_pf_1 || latestWindingPf.chl_ch_pf_1 || '0.35';
+      const val = `%PF: ${pf}%`;
+      const numPf = parseFloat(pf);
+      const score = numPf <= 0.5 ? 5 : (numPf <= 1.0 ? 4 : 3);
+      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding PF' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 9. Insulation Resistance and PI (IRandPIData.csv)
+  if (nameLower.includes('polarization index') || nameLower.includes('pi') || nameLower.includes('insulation resistance and pi')) {
+    const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, serialVal) : null;
+    if (latestPi) {
+      const date = latestPi.date || latestPi.Date || latestPi.DATE;
+      const comment = String(latestPi.comment || latestPi.Comment || '').trim();
+      const commentUpper = comment.toUpperCase();
+      const subUpper = String(subName || '').toUpperCase();
+      const itemUpper = String(itemName || '').toUpperCase();
+
+      const getValidVal = (...keys) => {
+        for (let k of keys) {
+          const val = latestPi[k];
+          if (val !== undefined && val !== null && val !== '-' && val !== 'N/A' && String(val).trim() !== '') {
+            return String(val).trim();
+          }
+        }
+        return null;
+      };
+
+      let rawPi = null;
+      let windingKey = 'HV';
+
+      if (itemUpper.includes('HV-LV') || subUpper.includes('HV-LV')) {
+        windingKey = 'HV-LV';
+        rawPi = getValidVal('HV-LV', 'HV_LV', 'H_L_PI');
+      } else if (itemUpper.includes('HV-TV') || subUpper.includes('HV-TV')) {
+        windingKey = 'HV-TV';
+        rawPi = getValidVal('HV-TV', 'HV_TV', 'H_T_PI');
+      } else if (subUpper.includes('LV') || itemUpper.includes('LV WINDING') || itemUpper.includes('LV')) {
+        windingKey = 'LV';
+        rawPi = getValidVal('L_PI', 'l_pi', 'LV_PI');
+      } else if (subUpper.includes('TV') || subUpper.includes('TERTIARY') || itemUpper.includes('TV WINDING') || itemUpper.includes('TV')) {
+        windingKey = 'TV';
+        rawPi = getValidVal('T_PI', 't_pi', 'TV_PI');
+      } else {
+        windingKey = 'HV';
+        rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI');
+      }
+
+      if (commentUpper.includes(windingKey)) {
+        const regex = new RegExp(windingKey + '[\\s:=]+([0-9.]+)', 'i');
+        const match = comment.match(regex);
+        if (match && match[1]) rawPi = match[1];
+      }
+
+      let isCannotTest = false;
+      if (windingKey === 'HV' && (commentUpper.includes('HV SIDE CAN NOT TEST') || commentUpper.includes('HIGH VOLTAGE WINDING CANNOT TEST') || commentUpper.includes('HV ไม่สามารถทดสอบได้'))) isCannotTest = true;
+      else if (windingKey === 'LV' && (commentUpper.includes('LV CANNOT TEST') || commentUpper.includes('LV ไม่สามารถ'))) isCannotTest = true;
+      else if (windingKey === 'TV' && (commentUpper.includes('NO TERTIARY') || commentUpper.includes('TV CANNOT TEST') || commentUpper.includes('TV ไม่สามารถ'))) isCannotTest = true;
+
+      if (isCannotTest || !rawPi) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      const numPi = parseFloat(rawPi);
+      if (isNaN(numPi) || numPi <= 0) return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+
+      let score = 5;
+      if (numPi < 1.00) score = 1;
+      else if (numPi < 1.25) score = 2;
+      else if (numPi < 1.50) score = 3;
+      else if (numPi < 2.00) score = 4;
+      else score = 5;
+
+      const valStr = numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2);
+      const rec = score >= 4 ? '-' : (score === 3 ? 'Monitor insulation dryness' : 'Perform insulation drying process');
+      return { value: valStr, testDate: date, ratingScore: score, recommendation: rec };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 10. Oil & DGA (MTOilData.csv)
+  const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, serialVal) : null;
+  if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
+    if (latestMt) {
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.Test_Result || '').toUpperCase();
+      const h2   = parseFloat(latestMt.H2 || 0);
+      const ch4  = parseFloat(latestMt.CH4 || 0);
+      const c2h6 = parseFloat(latestMt.C2H6 || 0);
+      const c2h4 = parseFloat(latestMt.C2H4 || 0);
+      const c2h2 = parseFloat(latestMt.C2H2 || 0);
+      const co   = parseFloat(latestMt.CO || 0);
+
+      const isT2 = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
+      const isT1 = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
+
+      if (isT2) return { value: 'Critical (Fault Detected)', testDate: date, ratingScore: 1, recommendation: 'Perform DGA trend & fault investigation' };
+      else if (isT1) return { value: 'Monitoring (Gas Exceed Table 2)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis & monitor gas generation' };
+      else return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('dielectrc breakdown') || nameLower.includes('dielectric breakdown')) {
+    if (latestMt && latestMt.BD) {
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const bdvVal = latestMt.BD;
+      const numBdv = parseFloat(bdvVal);
+      const hvVal = parseFloat(item.HV_RATED || item.hvRate || item['HV Rate (kV)'] || 115);
+      let minTable5 = 47;
+      if (hvVal <= 69) minTable5 = 40;
+      else if (hvVal >= 230) minTable5 = 50;
+
+      let score = 5;
+      if (numBdv < minTable5) score = 1;
+      else if (numBdv === minTable5) score = 2;
+      else if (numBdv <= minTable5 + 4) score = 3;
+      else if (numBdv <= minTable5 + 7) score = 4;
+      else score = 5;
+
+      return { value: `${bdvVal} kV`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : `Plan oil filtration (Min ${minTable5} kV)` };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('water content') && !ptLower.includes('oltc') && !subLower.includes('oltc')) {
+    if (latestMt && latestMt.WC) {
+      const date = latestMt.Date || latestMt.date;
+      const wcVal = latestMt.WC;
+      const numWc = parseFloat(wcVal);
+      const score = numWc <= 15 ? 5 : (numWc <= 25 ? 4 : 3);
+      return { value: `${wcVal} ppm`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor water content' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('interfatial tension') || nameLower.includes('ift')) {
+    if (latestMt && latestMt.IFT) {
+      const date = latestMt.Date || latestMt.date;
+      const iftVal = latestMt.IFT;
+      return { value: `${iftVal} dynes/cm`, testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('acidity')) {
+    if (latestMt && (latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity)) {
+      const acidVal = latestMt.Acidity_No || latestMt.ACIDITY || latestMt.Acidity;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const num = parseFloat(acidVal);
+      const score = isNaN(num) ? 5 : (num <= 0.05 ? 5 : (num <= 0.15 ? 4 : 3));
+      return { value: `${acidVal} mgKOH/g`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check acidity' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('conductivity')) {
+    if (latestMt && (latestMt.Conductivity || latestMt.CONDUCTIVITY)) {
+      const condVal = latestMt.Conductivity || latestMt.CONDUCTIVITY;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      return { value: `${condVal} pS/m`, testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('color')) {
+    if (latestMt && (latestMt.Color_No || latestMt.COLOR)) {
+      const colVal = latestMt.Color_No || latestMt.COLOR;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      return { value: `L ${colVal}`, testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('inhibitor')) {
+    if (latestMt && (latestMt.Inhibitor || latestMt.INHIBITOR)) {
+      const inhVal = latestMt.Inhibitor || latestMt.INHIBITOR;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      return { value: `${inhVal} %`, testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('furan') && !nameLower.includes('estimated dp')) {
+    if (latestMt && (latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan)) {
+      const furanVal = latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const num = parseFloat(furanVal);
+      const score = isNaN(num) ? 5 : (num <= 100 ? 5 : (num <= 500 ? 4 : 3));
+      return { value: `${furanVal} ppb`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor paper degradation' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('estimated dp')) {
+    const dpVal = item.estimatedDP || item.ESTIMATED_DP || (item['Estimated DP (From Furan)']);
+    if (dpVal) {
+      const date = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : '-';
+      const num = parseFloat(dpVal);
+      const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 400 ? 4 : 3));
+      return { value: `${dpVal}`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor DP level' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('sludge')) {
+    if (latestMt && (latestMt.Sludge_Condition || latestMt.SLUDGE)) {
+      const sludgeVal = latestMt.Sludge_Condition || latestMt.SLUDGE;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const isNon = String(sludgeVal) === '0' || String(sludgeVal).toLowerCase().includes('non') || parseFloat(sludgeVal) < 0.05;
+      const valDisplay = isNon ? 'Non-sludge' : `${sludgeVal} %`;
+      return { value: valDisplay, testDate: date, ratingScore: isNon ? 5 : 3, recommendation: isNon ? '-' : 'Inspect oil sludge' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('corrosive sulfur')) {
+    if (latestMt && (latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR)) {
+      const corrVal = latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const isPass = String(corrVal).toLowerCase().includes('non') || String(corrVal).toLowerCase().includes('pass') || String(corrVal) === '1a' || String(corrVal) === '1b' || String(corrVal) === '0';
+      const valDisplay = isPass ? `Non-corrosive (${corrVal})` : `Corrosive (${corrVal})`;
+      return { value: valDisplay, testDate: date, ratingScore: isPass ? 5 : 3, recommendation: isPass ? '-' : 'Add passivator' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('passivator') || nameLower.includes('irgamet')) {
+    if (latestMt && (latestMt.Passivator || latestMt.PASSIVATOR)) {
+      const passVal = latestMt.Passivator || latestMt.PASSIVATOR;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const num = parseFloat(passVal);
+      const valStr = (isNaN(num) || num === 0) ? '> 100 ppm' : `${passVal} ppm`;
+      return { value: valStr, testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('power factor at 100') || nameLower.includes('pf at 100')) {
+    if (latestMt && (latestMt.PF_100 || latestMt.pf_100)) {
+      const pfVal = latestMt.PF_100 || latestMt.pf_100;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const num = parseFloat(pfVal);
+      const score = isNaN(num) ? 5 : (num <= 1.0 ? 5 : (num <= 3.0 ? 4 : 3));
+      return { value: `${pfVal} %`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 100C' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  if (nameLower.includes('power factor at 25') || nameLower.includes('pf at 25')) {
+    if (latestMt && (latestMt.PF_25 || latestMt.pf_25)) {
+      const pfVal = latestMt.PF_25 || latestMt.pf_25;
+      const date = latestMt.Date || latestMt.date || latestMt.DATE;
+      const num = parseFloat(pfVal);
+      const score = isNaN(num) ? 5 : (num <= 0.5 ? 5 : (num <= 1.0 ? 4 : 3));
+      return { value: `${pfVal} %`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check oil PF at 25C' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 11. OLTC Oil (OLTCOilData.csv)
+  if (ptLower.includes('oltc') || subLower.includes('oltc')) {
+    const latestOltc = (typeof oltcOilCsvData !== 'undefined') ? findLatestRecord(oltcOilCsvData, serialVal) : null;
+    if (nameLower.includes('breakdown voltage') || nameLower.includes('bdv')) {
+      if (latestOltc && latestOltc.BD) {
+        const date = latestOltc.Date || latestOltc.date;
+        const bdv = parseFloat(latestOltc.BD);
+        const score = bdv >= 40 ? 5 : (bdv >= 30 ? 4 : 3);
+        return { value: `${latestOltc.BD} kV`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Filter OLTC oil' };
+      }
+    }
+    if (nameLower.includes('water content') || nameLower.includes('wc')) {
+      if (latestOltc && latestOltc.WC) {
+        const date = latestOltc.Date || latestOltc.date;
+        const wc = parseFloat(latestOltc.WC);
+        const score = wc <= 30 ? 5 : (wc <= 40 ? 4 : 3);
+        return { value: `${latestOltc.WC} ppm`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check OLTC moisture' };
+      }
+    }
+  }
+
+  // 12. Bushing (BushingPFData.csv)
+  if (ptLower.includes('bushing') || nameLower.includes('bushing')) {
+    const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, serialVal) : null;
+    if (latestBush) {
+      const date = latestBush.Date || latestBush.date;
+      return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: date, ratingScore: 4, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 13. Surge Arrester (SurgePFData.csv)
+  if (ptLower.includes('arrester') || nameLower.includes('surge arrester') || nameLower.includes('leakage current') || nameLower.includes('watt loss')) {
+    const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, serialVal) : null;
+    if (latestSurge) {
+      const date = latestSurge.Date || latestSurge.date;
+      return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: date, ratingScore: 5, recommendation: '-' };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+}
+
+// ==========================================
+// computeHI: Authoritative Condition Health Index calculation
+// ==========================================
+function computeHI(item) {
+  let overallSumHI = 0;
+  let activePtCount = 0;
+  let worstDgaOrBdvEval = 5;
+  const ptStructure = buildPtStructure(item);
+
+  ptStructure.forEach(ptObj => {
+    if (ptObj.splitSubWeights) {
+      ptObj.subs.forEach(subObj => {
+        let minSubEval = 5;
+        let subHasMethods = false;
+        subObj.methods.forEach(m => {
+          const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+          if (!match.isNA && match.ratingScore != null) {
+            const evalScore = match.ratingScore;
+            if (evalScore < minSubEval) {
+              minSubEval = evalScore;
+            }
+            subHasMethods = true;
+          }
+        });
+        if (subHasMethods) {
+          const subHI = Math.round((minSubEval / 5) * 100);
+          overallSumHI += subHI;
+          activePtCount++;
+
+          const subNameUpper = String(subObj.sub || '').toUpperCase();
+          if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+            if (minSubEval < worstDgaOrBdvEval) {
+              worstDgaOrBdvEval = minSubEval;
+            }
+          }
+        }
+      });
+    } else {
+      let minEval = 5;
+      let hasMethods = false;
+
+      ptObj.subs.forEach(subObj => {
+        subObj.methods.forEach(m => {
+          const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+          if (!match.isNA && match.ratingScore != null) {
+            const evalScore = match.ratingScore;
+            if (evalScore < minEval) {
+              minEval = evalScore;
+            }
+            hasMethods = true;
+          }
+        });
+      });
+
+      if (hasMethods) {
+        const ptWeight = ptObj.weight || 1;
+        const ptHI = Math.round(((minEval * ptWeight) / (5 * ptWeight)) * 100);
+        overallSumHI += ptHI;
+        activePtCount++;
+      }
+    }
+  });
+
+  const overallHIVal = overallSumHI;
+  const maxOverallHI = activePtCount * 100;
+  let percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
+
+  // Capping Rule:
+  // Score 1 (Critical) -> Cap at 49%
+  // Score 2 (Warning)  -> Cap at 69%
+  // Score 3 (Monitor)  -> Cap at 79%
+  if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+    percentHIVal = 49;
+  } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+    percentHIVal = 69;
+  } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+    percentHIVal = 79;
+  }
+
+  return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval };
+}
+
+// ==========================================
+// syncAssessmentWithEvaluationEngine: Synchronizes fleet dataset
+// ==========================================
+function syncAssessmentWithEvaluationEngine() {
+  if (typeof assessmentData === 'undefined' || !Array.isArray(assessmentData) || assessmentData.length === 0) {
+    return;
+  }
+
+  // Check if at least some test CSVs have been loaded before running dynamic recalculation
+  const hasLoadedCSVs = (typeof mtOilCsvData !== 'undefined' && mtOilCsvData.length > 0) ||
+                        (typeof visualCsvData !== 'undefined' && visualCsvData.length > 0) ||
+                        (typeof irPiCsvData !== 'undefined' && irPiCsvData.length > 0) ||
+                        (typeof trInfoCsvData !== 'undefined' && trInfoCsvData.length > 0);
+
+  if (!hasLoadedCSVs) {
+    return;
+  }
+
+  function scoreToAqu(score, isNA) {
+    if (isNA || score === null || score === undefined) return 'N/A';
+    if (score >= 4) return 'A';
+    if (score === 3) return 'Q';
+    return 'U';
+  }
+
+  assessmentData.forEach(item => {
+    if (!item) return;
+    try {
+      const site = item.site || item.SITE || '';
+      if (isExcludedSite(site)) return;
+
+      const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+      if (!serial) return;
+
+      const ptStructure = buildPtStructure(item);
+
+      let minPtScores = {
+        activePart: 5,
+        bushing: 5,
+        surgeArrester: 5,
+        oltc: 5,
+        oil: 5,
+        visual: 5
+      };
+      let ptHasData = {
+        activePart: false,
+        bushing: false,
+        surgeArrester: false,
+        oltc: false,
+        oil: false,
+        visual: false
+      };
+
+      const recs = [];
+
+      ptStructure.forEach(ptObj => {
+        const ptKey = ptObj.id || String(ptObj.pt || '').toLowerCase();
+        let currentPtGroup = 'activePart';
+        if (ptKey.includes('bush')) currentPtGroup = 'bushing';
+        else if (ptKey.includes('surge') || ptKey.includes('arrest')) currentPtGroup = 'surgeArrester';
+        else if (ptKey.includes('oltc') || ptKey.includes('tap changer')) currentPtGroup = 'oltc';
+        else if (ptKey.includes('oil')) currentPtGroup = 'oil';
+        else if (ptKey.includes('visual') || ptKey.includes('general')) currentPtGroup = 'visual';
+
+        ptObj.subs.forEach(subObj => {
+          subObj.methods.forEach(m => {
+            const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+            if (!match.isNA && match.ratingScore != null) {
+              const s = match.ratingScore;
+              ptHasData[currentPtGroup] = true;
+              if (s < minPtScores[currentPtGroup]) {
+                minPtScores[currentPtGroup] = s;
+              }
+              if (match.recommendation && match.recommendation !== '-' && !match.recommendation.toLowerCase().includes('routine')) {
+                if (!recs.includes(match.recommendation)) recs.push(match.recommendation);
+              }
+            }
+          });
+        });
+      });
+
+      const { percentHIVal } = computeHI(item);
+      if (percentHIVal > 0) {
+        item.healthIndex = percentHIVal;
+        item.healthStatus = percentHIVal >= 80 ? 'Healthy' : (percentHIVal >= 51 ? 'Monitor' : 'Critical');
+      }
+
+      if (ptHasData.visual) item.visualInspection = scoreToAqu(minPtScores.visual);
+      if (!item.activePart || typeof item.activePart !== 'object') item.activePart = {};
+      if (ptHasData.activePart) item.activePart.overall = scoreToAqu(minPtScores.activePart);
+      
+      if (!item.mainTankOil || typeof item.mainTankOil !== 'object') item.mainTankOil = {};
+      if (ptHasData.oil) item.mainTankOil.overall = scoreToAqu(minPtScores.oil);
+      
+      if (ptHasData.bushing) item.bushing = scoreToAqu(minPtScores.bushing);
+      if (ptHasData.surgeArrester) item.surgeArrester = scoreToAqu(minPtScores.surgeArrester);
+      if (ptHasData.oltc) {
+        if (!item.oltcOil || typeof item.oltcOil !== 'object') item.oltcOil = {};
+        item.oltcOil.overall = scoreToAqu(minPtScores.oltc);
+      }
+
+      const recRes = generateDetailedRecommendation(item);
+      item.recommendation = recRes.plainText;
+      item.recommendationHtml = recRes.html;
+    } catch (e) {
+      console.warn('Error evaluating transformer', item.serial, e);
+    }
+  });
+
+  if (typeof applyFilters === 'function' && typeof filteredAssessment !== 'undefined') {
+    applyFilters();
+  }
+}
+
+function cleanStandardRef(str) {
+  if (!str) return '';
+  return str
+    .replace(/\s*\([^)]*(?:IEEE|IEC|CIGRE|C57|60422|60599|62535|Table|Std|Clause)[^)]*\)/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// ==========================================
+// generateDetailedRecommendation: Grouped by PT Component (No Standards)
+// ==========================================
+function generateDetailedRecommendation(item) {
+  const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+  const ptStructure = (typeof buildPtStructure === 'function') ? buildPtStructure(item) : [];
+
+  const groups = {
+    critical: [],
+    generalPart: [],
+    activePart: [],
+    insulationOil: [],
+    bushing: [],
+    arrester: [],
+    oltc: []
+  };
+
+  // 1. Scan diagnostic test results
+  ptStructure.forEach(ptObj => {
+    const ptKey = ptObj.id || String(ptObj.pt || '').toLowerCase();
+    ptObj.subs.forEach(subObj => {
+      subObj.methods.forEach(m => {
+        const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+        if (!match.isNA && match.ratingScore != null) {
+          const score = match.ratingScore;
+          let rec = cleanStandardRef(match.recommendation);
+          const mName = m.name;
+          const val = match.value;
+
+          if (score <= 3 && rec && rec !== '-' && !rec.toLowerCase().includes('routine')) {
+            if (score === 1) {
+              groups.critical.push(`<strong>${mName}</strong>: ${rec} (Measured: ${val})`);
+            } else if (ptKey.includes('oil') || ptKey.includes('dga') || mName.includes('DGA') || mName.includes('Breakdown') || mName.includes('Water') || mName.includes('Acidity') || mName.includes('Conductivity') || mName.includes('Corrosive')) {
+              if (!groups.insulationOil.includes(rec)) groups.insulationOil.push(rec);
+            } else if (ptKey.includes('active') || ptKey.includes('magnetic') || ptKey.includes('winding') || mName.includes('Winding') || mName.includes('Impedance') || mName.includes('Ratio') || mName.includes('Exciting') || mName.includes('Resistance')) {
+              if (!groups.activePart.includes(rec)) groups.activePart.push(rec);
+            } else if (ptKey.includes('visual') || ptKey.includes('general')) {
+              if (!groups.generalPart.includes(rec)) groups.generalPart.push(rec);
+            } else if (ptKey.includes('bush')) {
+              if (!groups.bushing.includes(rec)) groups.bushing.push(rec);
+            } else if (ptKey.includes('arrest') || ptKey.includes('surge')) {
+              if (!groups.arrester.includes(rec)) groups.arrester.push(rec);
+            } else if (ptKey.includes('oltc')) {
+              if (!groups.oltc.includes(rec)) groups.oltc.push(rec);
+            }
+          }
+        }
+      });
+    });
+  });
+
+  // 2. Scan visual inspection remarks (VisualData.csv)
+  const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, serial) : null;
+  if (latestVis) {
+    const defects = [];
+    ['comment1', 'comment2', 'comment3', 'comment4', 'comment5', 'comment6'].forEach(ck => {
+      const cVal = String(latestVis[ck] || '').trim();
+      if (cVal && cVal !== '-' && (cVal.toLowerCase().includes('leak') || cVal.toLowerCase().includes('low') || cVal.toLowerCase().includes('crack') || cVal.toLowerCase().includes('rust') || cVal.toLowerCase().includes('hot') || cVal.toLowerCase().includes('defect') || cVal.toLowerCase().includes('abnormal'))) {
+        if (!defects.some(d => d.toLowerCase() === cVal.toLowerCase())) defects.push(cVal);
+      }
+    });
+    if (defects.length > 0) {
+      const defStr = `Repair defects identified during visual inspection: ${defects.join(', ')}`;
+      if (!groups.generalPart.some(v => v.toLowerCase().includes('visual inspection'))) {
+        groups.generalPart.push(defStr);
+      }
+    }
+  }
+
+  // 3. Scan master CSV recommendation
+  const masterRec = String(item.Recommendation || item.recommendation || '').trim();
+  if (masterRec && masterRec !== '-' && !masterRec.toLowerCase().includes('routine')) {
+    const recParts = masterRec.split(/[,;\.]\s*/).map(p => p.trim()).filter(p => p.length > 0 && !p.toLowerCase().includes('routine'));
+    recParts.forEach(p => {
+      const cleanedP = cleanStandardRef(p);
+      const pLower = cleanedP.toLowerCase();
+      if (!cleanedP) return;
+
+      if (pLower.includes('oil') || pLower.includes('passivator') || pLower.includes('purify') || pLower.includes('ift') || pLower.includes('conductivity') || pLower.includes('corrosive')) {
+        if (!groups.insulationOil.some(o => o.toLowerCase().includes(pLower) || pLower.includes(o.toLowerCase()))) {
+          groups.insulationOil.push(cleanedP);
+        }
+      } else if (pLower.includes('re-test') || pLower.includes('short circuit') || pLower.includes('resistance') || pLower.includes('power factor') || pLower.includes('dfr')) {
+        if (!groups.activePart.some(a => a.toLowerCase().includes(pLower) || pLower.includes(a.toLowerCase()))) {
+          groups.activePart.push(cleanedP);
+        }
+      } else if (pLower.includes('leak') || pLower.includes('hot spot') || pLower.includes('top-up') || pLower.includes('top up') || pLower.includes('buchholz') || pLower.includes('nitrogen') || pLower.includes('n2')) {
+        if (!groups.generalPart.some(v => v.toLowerCase().includes(pLower) || pLower.includes(v.toLowerCase()))) {
+          groups.generalPart.push(cleanedP);
+        }
+      } else if (pLower.includes('oltc') || pLower.includes('tap')) {
+        if (!groups.oltc.some(ol => ol.toLowerCase().includes(pLower) || pLower.includes(ol.toLowerCase()))) {
+          groups.oltc.push(cleanedP);
+        }
+      } else if (pLower.includes('overdue')) {
+        if (!groups.activePart.some(a => a.includes('overdue') || a.includes('Overdue'))) {
+          groups.activePart.push(`PM Testing Overdue: Schedule and perform routine preventive maintenance program`);
+        }
+      }
+    });
+  }
+
+  const totalIssues = groups.critical.length + groups.generalPart.length + groups.activePart.length + groups.insulationOil.length + groups.bushing.length + groups.arrester.length + groups.oltc.length;
+
+  if (totalIssues === 0) {
+    return {
+      isGood: true,
+      isCritical: false,
+      plainText: 'Normal Condition: All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance.',
+      html: `
+        <div class="rec-banner-good">
+          <div class="rec-status-badge badge-good">
+            <i class="fa-solid fa-circle-check"></i> Normal Condition: Standard Operation
+          </div>
+          <div class="rec-description">
+            All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance.
+          </div>
+        </div>
+      `
+    };
+  }
+
+  const isCritical = groups.critical.length > 0;
+  let html = `
+    <div class="rec-status-badge ${isCritical ? 'badge-critical' : 'badge-warn'}">
+      <i class="fa-solid ${isCritical ? 'fa-triangle-exclamation' : 'fa-wrench'}"></i> ${isCritical ? 'Critical Condition: Urgent Corrective Action Required' : 'Maintenance & Monitoring Required: Recommended Corrective Actions'}
+    </div>
+    <ul class="rec-list">
+  `;
+
+  if (groups.critical.length > 0) {
+    html += `<li class="rec-item-critical"><strong>⚠️ Urgent Action:</strong> ${groups.critical.join(' | ')}</li>`;
+  }
+  if (groups.generalPart.length > 0) {
+    html += `<li><strong>🔍 General Part (Visual Inspection):</strong> ${groups.generalPart.join('; ')}</li>`;
+  }
+  if (groups.activePart.length > 0) {
+    html += `<li><strong>⚡ Active Part:</strong> ${groups.activePart.join('; ')}</li>`;
+  }
+  if (groups.insulationOil.length > 0) {
+    html += `<li><strong>🛢️ Insulation Oil:</strong> ${groups.insulationOil.join('; ')}</li>`;
+  }
+  if (groups.bushing.length > 0) {
+    html += `<li><strong>🔌 Bushing:</strong> ${groups.bushing.join('; ')}</li>`;
+  }
+  if (groups.arrester.length > 0) {
+    html += `<li><strong>⚡ Arrester:</strong> ${groups.arrester.join('; ')}</li>`;
+  }
+  if (groups.oltc.length > 0) {
+    html += `<li><strong>⚙️ OLTC:</strong> ${groups.oltc.join('; ')}</li>`;
+  }
+
+  html += `</ul>`;
+
+  const plainText = [
+    ...(groups.critical.length > 0 ? [`[Urgent Action] ${groups.critical.join(' | ')}`] : []),
+    ...(groups.generalPart.length > 0 ? [`[General Part] ${groups.generalPart.join('; ')}`] : []),
+    ...(groups.activePart.length > 0 ? [`[Active Part] ${groups.activePart.join('; ')}`] : []),
+    ...(groups.insulationOil.length > 0 ? [`[Insulation Oil] ${groups.insulationOil.join('; ')}`] : []),
+    ...(groups.bushing.length > 0 ? [`[Bushing] ${groups.bushing.join('; ')}`] : []),
+    ...(groups.arrester.length > 0 ? [`[Arrester] ${groups.arrester.join('; ')}`] : []),
+    ...(groups.oltc.length > 0 ? [`[OLTC] ${groups.oltc.join('; ')}`] : [])
+  ].join(' | ');
+
+  return {
+    isGood: false,
+    isCritical: isCritical,
+    plainText: plainText,
+    html: html
+  };
+}
+
+// Attach globally
+if (typeof window !== 'undefined') {
+  window.buildPtStructure = buildPtStructure;
+  window.getMeasuredValueForItem = getMeasuredValueForItem;
+  window.computeHI = computeHI;
+  window.syncAssessmentWithEvaluationEngine = syncAssessmentWithEvaluationEngine;
+  window.generateDetailedRecommendation = generateDetailedRecommendation;
+}

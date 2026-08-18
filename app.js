@@ -185,15 +185,25 @@ function setupEventListeners() {
   }
 }
 
+function isExcludedSite(site) {
+  if (!site) return false;
+  const s = String(site).trim().toLowerCase();
+  if (s === 'scrap' || s.includes('scrap')) return true;
+  if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+  return false;
+}
+
 function initializeDashboard(data) {
+  const validData = (data || []).filter(item => !isExcludedSite(item.SITE || item.site));
+
   // Normalize NLTC -> DETC across dataset
-  data.forEach(item => {
+  validData.forEach(item => {
     if (item.TAP_CHANGER_TYPE && item.TAP_CHANGER_TYPE.toUpperCase().includes('NLTC')) {
       item.TAP_CHANGER_TYPE = item.TAP_CHANGER_TYPE.replace(/NLTC/gi, 'DETC');
     }
   });
 
-  rawData = data;
+  rawData = validData;
   
   // Populate filter dropdown choices
   populateFilterOptions();

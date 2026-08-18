@@ -159,11 +159,19 @@ function setupEventListeners() {
   document.getElementById('csv-file-input').addEventListener('change', handleCSVImport);
 }
 
+function isExcludedSite(site) {
+  if (!site) return false;
+  const s = String(site).trim().toLowerCase();
+  if (s === 'scrap' || s.includes('scrap')) return true;
+  if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+  return false;
+}
+
 // Convert HEALTH_INDEX_DATA / TR_DATA array to SCADA record objects
 function convertHealthIndexDataToRecords(dataArray) {
   if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
   
-  return dataArray.map((item, idx) => {
+  return dataArray.filter(item => !isExcludedSite(item.site || item.SITE || (item.trInfo && item.trInfo.SITE))).map((item, idx) => {
     const trInfo = item.trInfo || {};
     const name = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || `TR-${idx + 1}`;
     const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'] || trInfo.SERIAL_NUMBER || '-';
@@ -322,6 +330,7 @@ function parseHealthIndexSumCSV(csvText) {
       }
       record[header] = val;
     });
+    if (isExcludedSite(record.SITE)) continue;
     records.push(record);
   }
   
