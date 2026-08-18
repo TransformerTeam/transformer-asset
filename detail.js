@@ -163,30 +163,44 @@ function parseHealthIndexSumCSV(rows) {
   return results;
 }
 
-// Find matching record by serial
+// Find matching record by serial with fast caching
+var _latestRecordCacheDetail = new Map();
+
 function findLatestRecord(csvArray, targetSerial) {
   if (!csvArray || !csvArray.length || !targetSerial) return null;
+  const cleanTarget = String(targetSerial || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const cacheKey = `${csvArray.length}_${cleanTarget}`;
+  if (_latestRecordCacheDetail.has(cacheKey)) {
+    return _latestRecordCacheDetail.get(cacheKey);
+  }
+
   const matches = csvArray.filter(d => {
     const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || '';
     if (!s) return false;
     const s1 = String(s).trim().toLowerCase();
     const s2 = String(targetSerial).trim().toLowerCase();
     if (s1 === s2) return true;
-    const n1 = s1.replace(/\D/g, '');
-    const n2 = s2.replace(/\D/g, '');
-    if (n1 && n2 && n1 === n2) return true;
+    const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS))) return true;
     return s1.includes(s2) || s2.includes(s1);
   });
 
-  if (matches.length === 0) return null;
+  if (matches.length === 0) {
+    _latestRecordCacheDetail.set(cacheKey, null);
+    return null;
+  }
 
   matches.sort((a, b) => {
-    const da = new Date(a.date || a.Date || '');
-    const db = new Date(b.date || b.Date || '');
+    const da = new Date(a.date || a.Date || a['Test Date'] || a.Test_Date || '');
+    const db = new Date(b.date || b.Date || b['Test Date'] || b.Test_Date || '');
+    if (isNaN(da.getTime())) return 1;
+    if (isNaN(db.getTime())) return -1;
     return db - da;
   });
 
-  return matches[0];
+  const result = matches[0];
+  _latestRecordCacheDetail.set(cacheKey, result);
+  return result;
 }
 
 // Format DGA Date
@@ -470,6 +484,25 @@ function openDetail(no) {
     }
   }
 
+  // Sync with Evaluation Report Engine
+  if (typeof computeHI === 'function') {
+    try {
+      const { percentHIVal } = computeHI(item);
+      if (percentHIVal > 0) {
+        item.healthIndex = percentHIVal;
+        item.healthStatus = percentHIVal >= 80 ? 'Healthy' : (percentHIVal >= 51 ? 'Monitor' : 'Critical');
+      }
+    } catch (e) {
+      console.warn('computeHI error in detail.js', e);
+    }
+  }
+
+  // Update button to Evaluation Report
+  const evalBtn = document.getElementById('btn-eval-report');
+  if (evalBtn) {
+    evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
+  }
+
   // Excel Visual Indicator
   const exVisualText = document.getElementById('ex-visual-text');
   if (exVisualText) {
@@ -488,48 +521,16 @@ function openDetail(no) {
     exVisualText.className = `excel-visual-box ${visClass}`;
   }
 
-  // Recommendation Text
+  // Interpretation and Recommendations Box
   const recEl = document.getElementById('ex-recommendation-text');
   if (recEl) {
-    const recText = (item.recommendation && item.recommendation.trim()) ? item.recommendation.trim() : 'No specific recommendation recorded.';
-    const recCardParent = recEl.closest('.excel-card');
-    const recCardHeader = recCardParent ? recCardParent.querySelector('.excel-card-header') : null;
-
-    const isRoutine = /^routine/i.test(recText);
-    if (!isRoutine) {
-      if (recCardParent) {
-        recCardParent.classList.add('rec-alert-yellow');
-        recCardParent.style.border = '';
-        recCardParent.style.boxShadow = '';
-      }
-      if (recCardHeader) {
-        recCardHeader.style.background = '';
-        recCardHeader.style.color = '';
-      }
-      recEl.style.background = '';
-      recEl.style.color = '';
-      recEl.style.fontWeight = '';
+    if (typeof generateDetailedRecommendation === 'function') {
+      const recRes = generateDetailedRecommendation(item);
+      recEl.innerHTML = recRes.html;
+      recEl.style.fontSize = '0.78rem';
+      recEl.style.lineHeight = '1.45';
     } else {
-      if (recCardParent) {
-        recCardParent.classList.remove('rec-alert-yellow');
-        recCardParent.style.border = '';
-        recCardParent.style.boxShadow = '';
-      }
-      if (recCardHeader) {
-        recCardHeader.style.background = '';
-        recCardHeader.style.color = '';
-      }
-      recEl.style.background = '';
-      recEl.style.color = '';
-      recEl.style.fontWeight = '';
-    }
-
-    const rawItems = recText.split(/,\s*/).map(s => s.trim()).filter(s => s.length > 0);
-    if (rawItems.length > 1) {
-      recEl.innerHTML = '<ul style="margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 4px; list-style-type: disc; font-size: 0.68rem; line-height: 1.35;">' +
-        rawItems.map(it => `<li style="margin-bottom: 2px;">${it}</li>`).join('') +
-        '</ul>';
-    } else {
+      const recText = (item.recommendation && item.recommendation.trim()) ? item.recommendation.trim() : 'Normal Condition: All diagnostic test results are within acceptable limits.';
       recEl.textContent = recText;
     }
   }
