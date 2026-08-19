@@ -101,9 +101,10 @@ function buildPtStructure(item) {
         {
           sub: 'TV Winding', full: 100, subWeight: 10,
           methods: [
-            { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 40, mWorst: '-' },
-            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 30, mWorst: '-' },
-            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 30, mWorst: '-' }
+            { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
+            { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
           ]
         }
       ]
@@ -522,7 +523,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, serialVal) : null;
     if (latestWinding) {
       const date = latestWinding.DATE || latestWinding.Date || latestWinding.date;
-      const isLv = nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv');
+      const isTv = nameLower.includes('tv') || String(subName || '').toLowerCase().includes('tv') || String(subName || '').toLowerCase().includes('tertiary');
+      const isLv = !isTv && (nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv'));
 
       const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
       const rawTapStr = String(item.TAP_CHANGER_TYPE || item.tapChangerType || (trInfoItem && trInfoItem.TAP_CHANGER_TYPE) || '').toUpperCase();
@@ -533,20 +535,30 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
       let val = '';
       let devPhase = 0;
-      let devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
+      let devFat = 0;
       let tapDetails = [];
 
-      if (isLv) {
+      if (isTv) {
+        // TV Winding (Tertiary)
+        devPhase = Math.abs(parseFloat(latestWinding.DEVT) || parseFloat(latestWinding.MAXYERR) || 0);
+        devFat = Math.abs(parseFloat(latestWinding.MAXYERR) || parseFloat(latestWinding.MAXERR) || 0);
+        let tapName = 'Tap Cen';
+        val = `${tapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        if (devPhase > 2.0) tapDetails.push(`${tapName} ${devPhase.toFixed(2)}%`);
+      } else if (isLv) {
         // LV Winding
         devPhase = Math.abs(parseFloat(latestWinding.DEVX) || parseFloat(latestWinding.DEVMAXX) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXXERR) || parseFloat(latestWinding.MAXERR) || 0);
-        val = `LV: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        let tapName = 'Tap Cen';
+        val = `${tapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        if (devPhase > 2.0) tapDetails.push(`${tapName} ${devPhase.toFixed(2)}%`);
       } else if (isOltcMode && hasMaxMin) {
         // HV Winding with OLTC (Tests at Tap Max, Center, Min)
         const devMax = Math.abs(parseFloat(latestWinding.DEVMAX) || 0);
         const devCen = Math.abs(parseFloat(latestWinding.DEVCENTER) || 0);
         const devMin = Math.abs(parseFloat(latestWinding.DEVMIN) || 0);
         devPhase = Math.max(devMax, devCen, devMin);
+        devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
 
         val = `Tap (Max: ${devMax.toFixed(2)}%, Cen: ${devCen.toFixed(2)}%, Min: ${devMin.toFixed(2)}%), FAT: ${devFat.toFixed(2)}%`;
         if (devMax > 2.0) tapDetails.push(`Tap Max ${devMax.toFixed(2)}%`);
@@ -562,6 +574,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         }
 
         devPhase = Math.abs(parseFloat(latestWinding.DEVTAP1) || parseFloat(latestWinding.DEVCENTER) || parseFloat(latestWinding.DEVMAX) || parseFloat(latestWinding.DEVMAXX) || 0);
+        devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
         val = `${specificTapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
         if (devPhase > 2.0) tapDetails.push(`${specificTapName} ${devPhase.toFixed(2)}%`);
       }
@@ -583,13 +596,14 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
       let rec = '-';
       if (score < 4) {
-        if (isLv) {
-          rec = `Check LV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+        const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
+        if (isTv) {
+          rec = `Check TV winding resistance & connections${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+        } else if (isLv) {
+          rec = `Check LV winding resistance & connections${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else if (isOltcMode && hasMaxMin) {
-          const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
           rec = `Check HV winding resistance & OLTC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else {
-          const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
           rec = `Check HV winding resistance & DETC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         }
       }
