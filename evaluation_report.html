@@ -1883,7 +1883,7 @@
       }
 
       const hvWindingSub = {
-        sub: 'HV Winding', full: 100, subWeight: (is3Winding ? 30 : 45),
+        sub: 'HV Winding', full: 100, subWeight: (isAuto ? 40 : (is3Winding ? 30 : 45)),
         methods: [
           { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
           { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
@@ -1897,8 +1897,10 @@
       };
 
       const lvWindingSub = {
-        sub: 'LV Winding', full: 100, subWeight: (is3Winding ? 30 : 45),
-        methods: [
+        sub: 'LV Winding', full: 100, subWeight: (isAuto ? 10 : (is3Winding ? 30 : 45)),
+        methods: isAuto ? [
+          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 100, mWorst: 100 }
+        ] : [
           { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
           { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
           { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
@@ -1907,7 +1909,7 @@
       };
 
       const tvWindingSub = {
-        sub: 'TV Winding', full: 100, subWeight: (isAuto ? 45 : 30),
+        sub: 'TV Winding', full: 100, subWeight: (isAuto ? 40 : 30),
         methods: [
           { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
           { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
@@ -1923,16 +1925,12 @@
             { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
-        hvWindingSub
+        hvWindingSub,
+        lvWindingSub
       ];
 
-      if (isAuto) {
+      if (isAuto || is3Winding) {
         activePartSubs.push(tvWindingSub);
-      } else if (is3Winding) {
-        activePartSubs.push(lvWindingSub);
-        activePartSubs.push(tvWindingSub);
-      } else {
-        activePartSubs.push(lvWindingSub);
       }
 
       return [
