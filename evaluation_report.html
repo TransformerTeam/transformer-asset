@@ -1879,13 +1879,13 @@
 
       const activePartSubs = [
         {
-          sub: 'Magnetic Core', full: 100, subWeight: 30,
+          sub: 'Magnetic Core', full: 100, subWeight: 10,
           methods: [
             { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
         {
-          sub: 'HV Winding', full: 100, subWeight: is3Winding ? 40 : 45,
+          sub: 'HV Winding', full: 100, subWeight: is3Winding ? 30 : 45,
           methods: [
             { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
             { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
@@ -1898,7 +1898,7 @@
           ]
         },
         {
-          sub: 'LV Winding', full: 100, subWeight: is3Winding ? 20 : 25,
+          sub: 'LV Winding', full: 100, subWeight: is3Winding ? 30 : 45,
           methods: [
             { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
             { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
@@ -1910,7 +1910,7 @@
 
       if (is3Winding) {
         activePartSubs.push({
-          sub: 'TV Winding', full: 100, subWeight: 10,
+          sub: 'TV Winding', full: 100, subWeight: 30,
           methods: [
             { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
             { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
