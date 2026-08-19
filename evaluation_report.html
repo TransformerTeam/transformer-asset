@@ -3618,7 +3618,7 @@
             rawPi = getValidVal('T_PI', 't_pi', 'TV_PI');
           } else {
             windingKey = 'HV';
-            rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI');
+            rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI', 'L_PI', 'l_pi', 'T_PI');
           }
 
           // Check comment for explicit HV-LV, HV-TV, or winding PI value
@@ -3638,6 +3638,21 @@
             isCannotTest = true;
           } else if (windingKey === 'TV' && (commentUpper.includes('NO TERTIARY') || commentUpper.includes('TV CANNOT TEST') || commentUpper.includes('TV ไม่สามารถ'))) {
             isCannotTest = true;
+          }
+
+          // Fallback calculation from 10m/1m resistance if explicit PI not given
+          if (!rawPi && !isCannotTest) {
+            const h10 = parseFloat(latestPi.H_10);
+            const h1 = parseFloat(latestPi.H_1);
+            if (!isNaN(h10) && !isNaN(h1) && h1 > 0) {
+              rawPi = (h10 / h1).toFixed(4);
+            } else {
+              const l10 = parseFloat(latestPi.L_10);
+              const l1 = parseFloat(latestPi.L_1);
+              if (!isNaN(l10) && !isNaN(l1) && l1 > 0) {
+                rawPi = (l10 / l1).toFixed(4);
+              }
+            }
           }
 
           if (isCannotTest || !rawPi) {
@@ -3668,7 +3683,7 @@
             score = 5;
           }
 
-          const valStr = numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2);
+          const valStr = 'PI = ' + (numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2));
           const rec = score >= 4 ? '-' : (score === 3 ? 'Monitor insulation dryness' : 'Perform insulation drying process');
           return { value: valStr, testDate: date, ratingScore: score, recommendation: rec };
         }

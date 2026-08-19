@@ -1088,7 +1088,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         rawPi = getValidVal('T_PI', 't_pi', 'TV_PI');
       } else {
         windingKey = 'HV';
-        rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI');
+        rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI', 'L_PI', 'l_pi', 'T_PI');
       }
 
       if (commentUpper.includes(windingKey)) {
@@ -1101,6 +1101,21 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (windingKey === 'HV' && (commentUpper.includes('HV SIDE CAN NOT TEST') || commentUpper.includes('HIGH VOLTAGE WINDING CANNOT TEST') || commentUpper.includes('HV ไม่สามารถทดสอบได้'))) isCannotTest = true;
       else if (windingKey === 'LV' && (commentUpper.includes('LV CANNOT TEST') || commentUpper.includes('LV ไม่สามารถ'))) isCannotTest = true;
       else if (windingKey === 'TV' && (commentUpper.includes('NO TERTIARY') || commentUpper.includes('TV CANNOT TEST') || commentUpper.includes('TV ไม่สามารถ'))) isCannotTest = true;
+
+      // Fallback calculation from 10m/1m resistance if explicit PI not given
+      if (!rawPi && !isCannotTest) {
+        const h10 = parseFloat(latestPi.H_10);
+        const h1 = parseFloat(latestPi.H_1);
+        if (!isNaN(h10) && !isNaN(h1) && h1 > 0) {
+          rawPi = (h10 / h1).toFixed(4);
+        } else {
+          const l10 = parseFloat(latestPi.L_10);
+          const l1 = parseFloat(latestPi.L_1);
+          if (!isNaN(l10) && !isNaN(l1) && l1 > 0) {
+            rawPi = (l10 / l1).toFixed(4);
+          }
+        }
+      }
 
       if (isCannotTest || !rawPi) {
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
@@ -1116,7 +1131,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       else if (numPi < 2.00) score = 4;
       else score = 5;
 
-      const valStr = numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2);
+      const valStr = 'PI = ' + (numPi > 100 ? numPi.toFixed(1) : numPi.toFixed(2));
       const rec = score >= 4 ? '-' : (score === 3 ? 'Monitor insulation dryness' : 'Perform insulation drying process');
       return { value: valStr, testDate: date, ratingScore: score, recommendation: rec };
     }
