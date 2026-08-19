@@ -1865,11 +1865,59 @@
       const hvRated = parseFloat((item && (item.HV_RATED || item.HV_Voltage)) || (trInfoItem && trInfoItem.HV_RATED) || '115');
       const is230kVorAbove = hvRated >= 230;
 
+      const noWindingStr = String((item && (item.NO_WINDING || item.no_winding)) || (trInfoItem && trInfoItem.NO_WINDING) || '').trim();
+      const lv2Rated = String((item && item.LV2_RATED) || (trInfoItem && trInfoItem.LV2_RATED) || '').trim();
+      const spec = String((item && (item.SPECIFICATION || item.MODEL_TYPE)) || (trInfoItem && (trInfoItem.SPECIFICATION || trInfoItem.MODEL_TYPE)) || '').toUpperCase();
+      const is3Winding = noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W');
+
       let hvPfSubText = 'IEEE C57.152-2013, Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%';
       if (isNaturalEster) {
         hvPfSubText = 'IEEE C57.152-2013, Natural Ester: Normal ≤ 1.0%, Service Limit ≤ 1.5%';
       } else if (is230kVorAbove) {
         hvPfSubText = 'IEEE C57.152-2013, Mineral Oil ≥ 230 kV: Normal ≤ 0.4%, Service Limit ≤ 1.0%';
+      }
+
+      const activePartSubs = [
+        {
+          sub: 'Magnetic Core', full: 100, subWeight: 30,
+          methods: [
+            { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'HV Winding', full: 100, subWeight: is3Winding ? 40 : 45,
+          methods: [
+            { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+            { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+            { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+            { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Winding', full: 100, subWeight: is3Winding ? 20 : 25,
+          methods: [
+            { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+            { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+          ]
+        }
+      ];
+
+      if (is3Winding) {
+        activePartSubs.push({
+          sub: 'TV Winding', full: 100, subWeight: 10,
+          methods: [
+            { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
+            { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
+            { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
+            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
+          ]
+        });
       }
 
       return [
@@ -1886,45 +1934,7 @@
         },
         {
           pt: 'Active Part', weight: 25,
-          subs: [
-            {
-              sub: 'Magnetic Core', full: 100, subWeight: 30,
-              methods: [
-                { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
-              ]
-            },
-            {
-              sub: 'HV Winding', full: 100, subWeight: 40,
-              methods: [
-                { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
-                { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-                { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-                { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'LV Winding', full: 100, subWeight: 20,
-              methods: [
-                { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
-                { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
-                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
-              ]
-            },
-            {
-              sub: 'TV Winding', full: 100, subWeight: 10,
-              methods: [
-                { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
-                { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
-                { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
-                { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
-              ]
-            }
-          ]
+          subs: activePartSubs
         },
         {
           pt: 'Insulation Oil', weight: 20, splitSubWeights: true,
