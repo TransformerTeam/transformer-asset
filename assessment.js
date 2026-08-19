@@ -333,7 +333,7 @@ function setupListeners() {
   }
   
   // Filters
-  ['filter-site', 'filter-service', 'filter-health-status', 'filter-param'].forEach(id => {
+  ['filter-site', 'filter-service', 'filter-health-status', 'filter-pm-status', 'filter-param'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('change', () => { 
@@ -583,13 +583,13 @@ function applyFilters() {
   const elSite = document.getElementById('filter-site');
   const elService = document.getElementById('filter-service');
   const elStatus = document.getElementById('filter-health-status');
-  const elParam = document.getElementById('filter-param');
+  const elPmStatus = document.getElementById('filter-pm-status') || document.getElementById('filter-param');
   const elSearch = document.getElementById('search-box');
 
   const siteFilter = elSite ? elSite.value : 'all';
   const serviceFilter = elService ? elService.value : 'all';
   const statusFilter = elStatus ? elStatus.value : 'all';
-  const paramFilter = elParam ? elParam.value : 'all';
+  const pmStatusFilter = elPmStatus ? elPmStatus.value : 'all';
   const searchQuery = elSearch ? elSearch.value.toLowerCase().trim() : '';
   
   // Show parameter filter status span if active
@@ -615,11 +615,24 @@ function applyFilters() {
       }
     }
     
-    if (paramFilter !== 'all') {
-      if (paramFilter === 'has-U' && !hasParamValue(item, 'U')) return false;
-      if (paramFilter === 'has-W' && !hasParamValue(item, 'W')) return false;
-      if (paramFilter === 'has-Q' && !hasParamValue(item, 'Q')) return false;
-      if (paramFilter === 'all-A' && !allParamsAcceptable(item)) return false;
+    if (pmStatusFilter !== 'all') {
+      const lastPM = item.lastPM;
+      const match = String(lastPM).match(/\b(20\d\d)\b/);
+      let isOverdue = false;
+      let hasValidYear = false;
+      if (match) {
+        hasValidYear = true;
+        const year = parseInt(match[1], 10);
+        const currentYear = new Date().getFullYear();
+        isOverdue = (currentYear - year) > 3;
+      }
+
+      if (pmStatusFilter === 'overdue' && !isOverdue) return false;
+      if (pmStatusFilter === 'on-plan' && (!hasValidYear || isOverdue)) return false;
+      if (pmStatusFilter === 'has-U' && !hasParamValue(item, 'U')) return false;
+      if (pmStatusFilter === 'has-W' && !hasParamValue(item, 'W')) return false;
+      if (pmStatusFilter === 'has-Q' && !hasParamValue(item, 'Q')) return false;
+      if (pmStatusFilter === 'all-A' && !allParamsAcceptable(item)) return false;
     }
     
     if (activeParamAlertFilter) {
