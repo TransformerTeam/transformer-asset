@@ -535,25 +535,120 @@ header p {
   border-color: #60a5fa;
 }
 
-/* Card Body */
+/* Card Body Base */
 .tr-card-body {
-  background-color: var(--scada-bg-card);
-  border: 1px solid var(--scada-border);
-  border-radius: 6px;
+  border-radius: 8px;
   width: 100%;
-  padding: 0.5rem 0.4rem;
+  padding: 0.55rem 0.45rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-  backdrop-filter: var(--glass-blur);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
 }
 
-.tr-scada-card:hover .tr-card-body {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+/* Glassmorphism by Health Index Condition */
+/* Healthy (HI >= 80%) - Emerald Frosted Glass */
+.tr-scada-card.healthy .tr-card-body,
+.tr-scada-card.good .tr-card-body {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0.30) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.40);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), 0 0 14px rgba(16, 185, 129, 0.20);
+}
+.tr-scada-card.healthy:hover .tr-card-body,
+.tr-scada-card.good:hover .tr-card-body {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.28) 0%, rgba(6, 78, 59, 0.44) 100%);
+  border-color: rgba(52, 211, 153, 0.75);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.45), 0 0 24px rgba(16, 185, 129, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Monitoring (70% <= HI <= 79%) - Yellow / Gold Frosted Glass */
+.tr-scada-card.monitoring .tr-card-body,
+.tr-scada-card.fair .tr-card-body {
+  background: linear-gradient(145deg, rgba(234, 179, 8, 0.18) 0%, rgba(113, 63, 18, 0.30) 100%);
+  border: 1px solid rgba(250, 204, 21, 0.40);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), 0 0 14px rgba(234, 179, 8, 0.20);
+}
+.tr-scada-card.monitoring:hover .tr-card-body,
+.tr-scada-card.fair:hover .tr-card-body {
+  background: linear-gradient(145deg, rgba(234, 179, 8, 0.28) 0%, rgba(113, 63, 18, 0.44) 100%);
+  border-color: rgba(250, 204, 21, 0.75);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.45), 0 0 24px rgba(234, 179, 8, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Warning (50% <= HI <= 69%) - Orange / Amber Frosted Glass */
+.tr-scada-card.warning .tr-card-body,
+.tr-scada-card.poor .tr-card-body {
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.20) 0%, rgba(124, 45, 18, 0.32) 100%);
+  border: 1px solid rgba(251, 146, 60, 0.44);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), 0 0 16px rgba(249, 115, 22, 0.22);
+}
+.tr-scada-card.warning:hover .tr-card-body,
+.tr-scada-card.poor:hover .tr-card-body {
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.30) 0%, rgba(124, 45, 18, 0.46) 100%);
+  border-color: rgba(251, 146, 60, 0.80);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.45), 0 0 26px rgba(249, 115, 22, 0.50);
+  transform: translateY(-2px);
+}
+
+/* Critical (HI < 50%) - Crimson / Ruby Frosted Glass */
+.tr-scada-card.critical .tr-card-body {
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.24) 0%, rgba(127, 29, 29, 0.36) 100%);
+  border: 1px solid rgba(248, 113, 113, 0.50);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35), 0 0 18px rgba(239, 68, 68, 0.30);
+}
+.tr-scada-card.critical:hover .tr-card-body {
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.34) 0%, rgba(127, 29, 29, 0.50) 100%);
+  border-color: rgba(248, 113, 113, 0.85);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.45), 0 0 28px rgba(239, 68, 68, 0.55);
+  transform: translateY(-2px);
+}
+
+/* No Assess (HI = 0%) - Slate / Grey Frosted Glass */
+.tr-scada-card.no-assess .tr-card-body {
+  background: linear-gradient(145deg, rgba(71, 85, 105, 0.2) 0%, rgba(30, 41, 59, 0.35) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.tr-scada-card.no-assess:hover .tr-card-body {
+  background: linear-gradient(145deg, rgba(71, 85, 105, 0.3) 0%, rgba(30, 41, 59, 0.48) 100%);
+  border-color: rgba(148, 163, 184, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Light Mode Glassmorphism Overrides */
+[data-theme="light"] .tr-scada-card.healthy .tr-card-body,
+[data-theme="light"] .tr-scada-card.good .tr-card-body {
+  background: linear-gradient(145deg, rgba(236, 253, 245, 0.85) 0%, rgba(209, 250, 229, 0.65) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.15);
+}
+[data-theme="light"] .tr-scada-card.monitoring .tr-card-body,
+[data-theme="light"] .tr-scada-card.fair .tr-card-body {
+  background: linear-gradient(145deg, rgba(254, 252, 232, 0.85) 0%, rgba(254, 240, 138, 0.65) 100%);
+  border: 1px solid rgba(202, 138, 4, 0.45);
+  box-shadow: 0 6px 18px rgba(202, 138, 4, 0.15);
+}
+[data-theme="light"] .tr-scada-card.warning .tr-card-body,
+[data-theme="light"] .tr-scada-card.poor .tr-card-body {
+  background: linear-gradient(145deg, rgba(255, 247, 237, 0.85) 0%, rgba(254, 215, 170, 0.65) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.45);
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.15);
+}
+[data-theme="light"] .tr-scada-card.critical .tr-card-body {
+  background: linear-gradient(145deg, rgba(254, 242, 242, 0.85) 0%, rgba(254, 202, 202, 0.65) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.45);
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.15);
+}
+[data-theme="light"] .tr-scada-card.no-assess .tr-card-body {
+  background: linear-gradient(145deg, rgba(248, 250, 252, 0.85) 0%, rgba(226, 232, 240, 0.65) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* SVG Gauge Styling */
