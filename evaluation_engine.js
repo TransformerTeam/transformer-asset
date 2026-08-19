@@ -1447,7 +1447,7 @@ function computeHI(item) {
 // Excludes N/A (grey) PT components (OLTC, Bushing, Lightning Arrester)
 // ==========================================
 function computeAccuracy(item) {
-  if (!item) return { totalApplicableMethods: 0, scoredMethods: 0, accuracyPct: 100, isOltcNA: false, isBushingNA: false, isSurgeNA: false };
+  if (!item) return { totalApplicableMethods: 0, scoredMethods: 0, accuracyPct: 100, isOltcNA: false, isBushingNA: false, isSurgeNA: false, ptBreakdown: [] };
 
   const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER) : null;
   const rawTapStr = String(item.TAP_CHANGER_TYPE || item.tapChangerType || (trInfoItem && trInfoItem.TAP_CHANGER_TYPE) || '').toUpperCase();
@@ -1463,6 +1463,7 @@ function computeAccuracy(item) {
   const ptStructure = buildPtStructure(item);
   let totalApplicableMethods = 0;
   let scoredMethods = 0;
+  const ptBreakdown = [];
 
   ptStructure.forEach(ptObj => {
     const ptKey = String(ptObj.pt || '').toLowerCase();
@@ -1470,21 +1471,35 @@ function computeAccuracy(item) {
                    (ptKey.includes('bush') && isBushingNA) ||
                    ((ptKey.includes('arrest') || ptKey.includes('surge')) && isSurgeNA);
 
-    if (isGrey) return; // Exclude grey / N/A PT components
+    let ptApplicable = 0;
+    let ptScored = 0;
 
-    ptObj.subs.forEach(subObj => {
-      subObj.methods.forEach(m => {
-        totalApplicableMethods++;
-        const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
-        if (!match.isNA && match.ratingScore != null) {
-          scoredMethods++;
-        }
+    if (!isGrey) {
+      ptObj.subs.forEach(subObj => {
+        subObj.methods.forEach(m => {
+          ptApplicable++;
+          const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+          if (!match.isNA && match.ratingScore != null) {
+            ptScored++;
+          }
+        });
       });
+      totalApplicableMethods += ptApplicable;
+      scoredMethods += ptScored;
+    }
+
+    const pct = ptApplicable > 0 ? Math.round((ptScored / ptApplicable) * 100) : (isGrey ? null : 100);
+    ptBreakdown.push({
+      pt: ptObj.pt,
+      isNA: isGrey,
+      applicable: ptApplicable,
+      scored: ptScored,
+      pct: pct
     });
   });
 
   const accuracyPct = totalApplicableMethods > 0 ? Math.round((scoredMethods / totalApplicableMethods) * 100) : 100;
-  return { totalApplicableMethods, scoredMethods, accuracyPct, isOltcNA, isBushingNA, isSurgeNA };
+  return { totalApplicableMethods, scoredMethods, accuracyPct, isOltcNA, isBushingNA, isSurgeNA, ptBreakdown };
 }
 
 // ==========================================

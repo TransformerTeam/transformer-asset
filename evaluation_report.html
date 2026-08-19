@@ -481,6 +481,105 @@
       margin-left: 8px;
       height: 100%;
       min-width: 46px;
+      position: relative;
+      cursor: pointer;
+    }
+    .accuracy-hover-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: -10px;
+      width: 260px;
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      transform: translateY(6px);
+      text-align: left;
+    }
+    .accuracy-hover-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 25px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: #0f172a transparent transparent transparent;
+    }
+    .pdf-main-accuracy-side:hover .accuracy-hover-tooltip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .acc-tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      gap: 6px;
+    }
+    .acc-badge {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+    }
+    .acc-tooltip-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 8px 0;
+    }
+    .acc-tooltip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .acc-tooltip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      gap: 8px;
+    }
+    .acc-tooltip-row.na-row {
+      opacity: 0.55;
+    }
+    .acc-row-label {
+      font-weight: 600;
+      color: #cbd5e1;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+    .acc-row-bar-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .acc-row-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .acc-row-val {
+      font-weight: 700;
+      font-size: 0.72rem;
+      white-space: nowrap;
+      text-align: right;
+      min-width: 60px;
+    }
+    .acc-row-val.na {
+      color: #94a3b8;
     }
     .pdf-main-gauge-card .g-main-title {
       font-size: 0.88rem;
@@ -2274,9 +2373,52 @@
         const hiVal = percentHIVal;
         const hiColor = hiVal >= 80 ? '#10b981' : (hiVal >= 70 ? '#eab308' : (hiVal >= 50 ? '#f97316' : '#ef4444'));
 
-        const accResult = typeof computeAccuracy === 'function' ? computeAccuracy(item) : { accuracyPct: 100 };
+        const accResult = typeof computeAccuracy === 'function' ? computeAccuracy(item) : { accuracyPct: 100, ptBreakdown: [] };
         const accuracyPct = accResult.accuracyPct;
         const accColor = accuracyPct >= 80 ? '#10b981' : (accuracyPct >= 50 ? '#eab308' : '#ef4444');
+        const ptBreakdown = accResult.ptBreakdown || [];
+
+        const titleLines = [`Accuracy Breakdown (Overall: ${accuracyPct}%):`];
+        ptBreakdown.forEach(b => {
+          if (b.isNA) {
+            titleLines.push(`• ${b.pt}: N/A`);
+          } else {
+            titleLines.push(`• ${b.pt}: ${b.pct}% (${b.scored}/${b.applicable})`);
+          }
+        });
+        const nativeTitle = titleLines.join('\n');
+
+        const tooltipHtml = `
+          <div class="accuracy-hover-tooltip">
+            <div class="acc-tooltip-header">
+              <span><i class="fa-solid fa-chart-pie" style="color: #60a5fa; margin-right: 4px;"></i> Accuracy Breakdown</span>
+              <span class="acc-badge" style="background: ${accColor}; color: #fff;">${accuracyPct}%</span>
+            </div>
+            <div class="acc-tooltip-divider"></div>
+            <div class="acc-tooltip-list">
+              ${ptBreakdown.map(b => {
+                if (b.isNA) {
+                  return `
+                    <div class="acc-tooltip-row na-row">
+                      <span class="acc-row-label">${b.pt}</span>
+                      <span class="acc-row-val na">N/A</span>
+                    </div>
+                  `;
+                }
+                const bColor = b.pct >= 80 ? '#10b981' : (b.pct >= 50 ? '#eab308' : '#ef4444');
+                return `
+                  <div class="acc-tooltip-row">
+                    <span class="acc-row-label">${b.pt}</span>
+                    <div class="acc-row-bar-track">
+                      <div class="acc-row-bar-fill" style="width: ${b.pct}%; background: ${bColor};"></div>
+                    </div>
+                    <span class="acc-row-val" style="color: ${bColor};">${b.pct}% <small style="color: #94a3b8; font-weight: normal;">(${b.scored}/${b.applicable})</small></span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
 
         mainGaugeCard.innerHTML = `
           <div class="pdf-main-gauge-content">
@@ -2304,12 +2446,13 @@
             </div>
 
             <!-- Integrated Accuracy Bar (Right side of Overall Health Index Card) -->
-            <div class="pdf-main-accuracy-side">
+            <div class="pdf-main-accuracy-side" title="${nativeTitle}">
               <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">${accuracyPct}%</div>
               <div class="pdf-accuracy-bar-track">
                 <div class="pdf-accuracy-bar-fill" style="height: ${accuracyPct}%; background: ${accColor};"></div>
               </div>
               <div class="pdf-accuracy-label">Accuracy</div>
+              ${tooltipHtml}
             </div>
           </div>
         `;
