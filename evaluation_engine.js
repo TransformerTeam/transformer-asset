@@ -3,6 +3,45 @@
  * Authoritative implementation of Condition Health Index (CHI), Component Evaluation, and Diagnostic Rules
  */
 
+var _evalLatestRecordCache = new Map();
+
+function findLatestRecord(csvArray, targetSerial) {
+  if (!csvArray || !csvArray.length || !targetSerial) return null;
+  const cleanTarget = String(targetSerial).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const cacheKey = `${csvArray.length}_${cleanTarget}`;
+  if (_evalLatestRecordCache.has(cacheKey)) {
+    return _evalLatestRecordCache.get(cacheKey);
+  }
+
+  const matches = csvArray.filter(d => {
+    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || '';
+    if (!s) return false;
+    const s1 = String(s).trim().toLowerCase();
+    const s2 = String(targetSerial).trim().toLowerCase();
+    if (s1 === s2) return true;
+    const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS))) return true;
+    return s1.includes(s2) || s2.includes(s1);
+  });
+
+  if (!matches.length) {
+    _evalLatestRecordCache.set(cacheKey, null);
+    return null;
+  }
+
+  matches.sort((a, b) => {
+    const dA = new Date(a.date || a.Date || a['Test Date'] || a.Test_Date || 0);
+    const dB = new Date(b.date || b.Date || b['Test Date'] || b.Test_Date || 0);
+    if (isNaN(dA.getTime())) return 1;
+    if (isNaN(dB.getTime())) return -1;
+    return dB - dA;
+  });
+
+  const result = matches[0];
+  _evalLatestRecordCache.set(cacheKey, result);
+  return result;
+}
+
 function isExcludedSite(site) {
   if (!site) return false;
   const s = String(site).trim().toLowerCase();
@@ -1008,6 +1047,8 @@ function cleanStandardRef(str) {
 // ==========================================
 // generateDetailedRecommendation: Grouped by PT Component (No Standards)
 // ==========================================
+// generateDetailedRecommendation: Dynamic Diagnostic Evaluation (No HealthIndexSum dependence)
+// ==========================================
 function generateDetailedRecommendation(item) {
   const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'];
   const ptStructure = (typeof buildPtStructure === 'function') ? buildPtStructure(item) : [];
@@ -1022,7 +1063,17 @@ function generateDetailedRecommendation(item) {
     oltc: []
   };
 
-  // 1. Scan diagnostic test results
+  // Helper to add unique recommendation item
+  const addRec = (groupArr, text) => {
+    if (!text || text === '-' || text.toLowerCase().includes('routine')) return;
+    const cleanText = cleanStandardRef(text);
+    if (!cleanText) return;
+    if (!groupArr.some(existing => existing.toLowerCase() === cleanText.toLowerCase() || existing.toLowerCase().includes(cleanText.toLowerCase()) || cleanText.toLowerCase().includes(existing.toLowerCase()))) {
+      groupArr.push(cleanText);
+    }
+  };
+
+  // 1. Scan diagnostic test results from measured values across PT Structure
   ptStructure.forEach(ptObj => {
     const ptKey = ptObj.id || String(ptObj.pt || '').toLowerCase();
     ptObj.subs.forEach(subObj => {
@@ -1030,25 +1081,25 @@ function generateDetailedRecommendation(item) {
         const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
         if (!match.isNA && match.ratingScore != null) {
           const score = match.ratingScore;
-          let rec = cleanStandardRef(match.recommendation);
+          const rec = cleanStandardRef(match.recommendation);
           const mName = m.name;
           const val = match.value;
 
           if (score <= 3 && rec && rec !== '-' && !rec.toLowerCase().includes('routine')) {
             if (score === 1) {
               groups.critical.push(`<strong>${mName}</strong>: ${rec} (Measured: ${val})`);
-            } else if (ptKey.includes('oil') || ptKey.includes('dga') || mName.includes('DGA') || mName.includes('Breakdown') || mName.includes('Water') || mName.includes('Acidity') || mName.includes('Conductivity') || mName.includes('Corrosive')) {
-              if (!groups.insulationOil.includes(rec)) groups.insulationOil.push(rec);
-            } else if (ptKey.includes('active') || ptKey.includes('magnetic') || ptKey.includes('winding') || mName.includes('Winding') || mName.includes('Impedance') || mName.includes('Ratio') || mName.includes('Exciting') || mName.includes('Resistance')) {
-              if (!groups.activePart.includes(rec)) groups.activePart.push(rec);
+            } else if (ptKey.includes('oil') || ptKey.includes('dga') || mName.includes('DGA') || mName.includes('Breakdown') || mName.includes('Water') || mName.includes('Acidity') || mName.includes('Conductivity') || mName.includes('Corrosive') || mName.includes('Passivator') || mName.includes('Furan')) {
+              addRec(groups.insulationOil, rec);
+            } else if (ptKey.includes('active') || ptKey.includes('magnetic') || ptKey.includes('winding') || mName.includes('Winding') || mName.includes('Impedance') || mName.includes('Ratio') || mName.includes('Exciting') || mName.includes('Resistance') || mName.includes('PI') || mName.includes('Polarization')) {
+              addRec(groups.activePart, rec);
             } else if (ptKey.includes('visual') || ptKey.includes('general')) {
-              if (!groups.generalPart.includes(rec)) groups.generalPart.push(rec);
+              addRec(groups.generalPart, rec);
             } else if (ptKey.includes('bush')) {
-              if (!groups.bushing.includes(rec)) groups.bushing.push(rec);
+              addRec(groups.bushing, rec);
             } else if (ptKey.includes('arrest') || ptKey.includes('surge')) {
-              if (!groups.arrester.includes(rec)) groups.arrester.push(rec);
-            } else if (ptKey.includes('oltc')) {
-              if (!groups.oltc.includes(rec)) groups.oltc.push(rec);
+              addRec(groups.arrester, rec);
+            } else if (ptKey.includes('oltc') || ptKey.includes('tap')) {
+              addRec(groups.oltc, rec);
             }
           }
         }
@@ -1056,55 +1107,90 @@ function generateDetailedRecommendation(item) {
     });
   });
 
-  // 2. Scan visual inspection remarks (VisualData.csv)
+  // 2. Scan visual inspection defects from VisualData.csv
   const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, serial) : null;
   if (latestVis) {
     const defects = [];
     ['comment1', 'comment2', 'comment3', 'comment4', 'comment5', 'comment6'].forEach(ck => {
       const cVal = String(latestVis[ck] || '').trim();
-      if (cVal && cVal !== '-' && (cVal.toLowerCase().includes('leak') || cVal.toLowerCase().includes('low') || cVal.toLowerCase().includes('crack') || cVal.toLowerCase().includes('rust') || cVal.toLowerCase().includes('hot') || cVal.toLowerCase().includes('defect') || cVal.toLowerCase().includes('abnormal'))) {
+      if (cVal && cVal !== '-' && cVal !== 'None' && (
+        cVal.toLowerCase().includes('leak') || 
+        cVal.toLowerCase().includes('low') || 
+        cVal.toLowerCase().includes('crack') || 
+        cVal.toLowerCase().includes('rust') || 
+        cVal.toLowerCase().includes('hot') || 
+        cVal.toLowerCase().includes('defect') || 
+        cVal.toLowerCase().includes('abnormal') ||
+        cVal.toLowerCase().includes('damaged') ||
+        cVal.toLowerCase().includes('repair')
+      )) {
         if (!defects.some(d => d.toLowerCase() === cVal.toLowerCase())) defects.push(cVal);
       }
     });
     if (defects.length > 0) {
-      const defStr = `Repair defects identified during visual inspection: ${defects.join(', ')}`;
-      if (!groups.generalPart.some(v => v.toLowerCase().includes('visual inspection'))) {
-        groups.generalPart.push(defStr);
+      addRec(groups.generalPart, `Plan visual maintenance & repair defects: ${defects.join(', ')}`);
+    }
+  }
+
+  // 3. Evaluate specific electrical & oil conditions directly from CSV records
+  // Oil condition check (MTOilData.csv)
+  const latestOil = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, serial) : null;
+  if (latestOil) {
+    const bdv = parseFloat(latestOil.bdv || latestOil.BDV || latestOil.Breakdown_Voltage || latestOil.breakdown_voltage);
+    if (!isNaN(bdv) && bdv < 40) {
+      addRec(groups.insulationOil, `Dielectric breakdown voltage low (${bdv} kV): Perform oil filtration and dehydration`);
+    }
+    const water = parseFloat(latestOil.water || latestOil.Water || latestOil.water_content || latestOil.Water_Content);
+    if (!isNaN(water) && water > 25) {
+      addRec(groups.insulationOil, `High water content in oil (${water} ppm): Perform vacuum oil dehydration`);
+    }
+    const acid = parseFloat(latestOil.acidity || latestOil.Acidity || latestOil.Acid || latestOil.NN);
+    if (!isNaN(acid) && acid > 0.15) {
+      addRec(groups.insulationOil, `Elevated oil acidity (${acid} mg KOH/g): Plan oil reclaiming or oil replacement`);
+    }
+    const ift = parseFloat(latestOil.ift || latestOil.IFT || latestOil.Interfacial_Tension);
+    if (!isNaN(ift) && ift < 22) {
+      addRec(groups.insulationOil, `Low interfacial tension (${ift} mN/m): Plan oil reclaiming`);
+    }
+    const cond = parseFloat(latestOil.conductivity || latestOil.Conductivity);
+    if (!isNaN(cond) && cond > 100) {
+      addRec(groups.insulationOil, `High oil conductivity (${cond} pS/m): Perform oil reclaiming / degumming`);
+    }
+    const corr = String(latestOil.corrosive || latestOil.Corrosive || latestOil.corrosive_sulfur || latestOil.Corrosive_Sulfur || '').trim();
+    if (corr && (corr.toLowerCase().includes('corrosive') || corr.toLowerCase().includes('3b') || corr.toLowerCase().includes('4a') || corr.toLowerCase().includes('poten'))) {
+      addRec(groups.insulationOil, `Corrosive sulfur risk detected: Add metal passivator (Irgamet 39) and monitor passivator level`);
+    }
+    const pass = parseFloat(latestOil.passivator || latestOil.Passivator);
+    if (!isNaN(pass) && pass < 100) {
+      addRec(groups.insulationOil, `Passivator level low (${pass} ppm): Top up metal passivator to target concentration (> 100 ppm)`);
+    }
+  }
+
+  // Active Part check (IRandPIData.csv)
+  const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, serial) : null;
+  if (latestPi) {
+    const rawHPi = parseFloat(latestPi.H_PI || latestPi.h_pi || latestPi.HV_PI || latestPi['HV-LV']);
+    if (!isNaN(rawHPi) && rawHPi > 0 && rawHPi < 1.3) {
+      if (rawHPi < 1.0) {
+        groups.critical.push(`<strong>Active Part Insulation</strong>: Low Polarization Index (PI = ${rawHPi.toFixed(2)} < 1.0): Urgent insulation dry-out required`);
+      } else {
+        addRec(groups.activePart, `Low Polarization Index (PI = ${rawHPi.toFixed(2)}): Perform insulation drying process and moisture investigation`);
       }
     }
   }
 
-  // 3. Scan master CSV recommendation
-  const masterRec = String(item.Recommendation || item.recommendation || '').trim();
-  if (masterRec && masterRec !== '-' && !masterRec.toLowerCase().includes('routine')) {
-    const recParts = masterRec.split(/[,;\.]\s*/).map(p => p.trim()).filter(p => p.length > 0 && !p.toLowerCase().includes('routine'));
-    recParts.forEach(p => {
-      const cleanedP = cleanStandardRef(p);
-      const pLower = cleanedP.toLowerCase();
-      if (!cleanedP) return;
-
-      if (pLower.includes('oil') || pLower.includes('passivator') || pLower.includes('purify') || pLower.includes('ift') || pLower.includes('conductivity') || pLower.includes('corrosive')) {
-        if (!groups.insulationOil.some(o => o.toLowerCase().includes(pLower) || pLower.includes(o.toLowerCase()))) {
-          groups.insulationOil.push(cleanedP);
-        }
-      } else if (pLower.includes('re-test') || pLower.includes('short circuit') || pLower.includes('resistance') || pLower.includes('power factor') || pLower.includes('dfr')) {
-        if (!groups.activePart.some(a => a.toLowerCase().includes(pLower) || pLower.includes(a.toLowerCase()))) {
-          groups.activePart.push(cleanedP);
-        }
-      } else if (pLower.includes('leak') || pLower.includes('hot spot') || pLower.includes('top-up') || pLower.includes('top up') || pLower.includes('buchholz') || pLower.includes('nitrogen') || pLower.includes('n2')) {
-        if (!groups.generalPart.some(v => v.toLowerCase().includes(pLower) || pLower.includes(v.toLowerCase()))) {
-          groups.generalPart.push(cleanedP);
-        }
-      } else if (pLower.includes('oltc') || pLower.includes('tap')) {
-        if (!groups.oltc.some(ol => ol.toLowerCase().includes(pLower) || pLower.includes(ol.toLowerCase()))) {
-          groups.oltc.push(cleanedP);
-        }
-      } else if (pLower.includes('overdue')) {
-        if (!groups.activePart.some(a => a.includes('overdue') || a.includes('Overdue'))) {
-          groups.activePart.push(`PM Testing Overdue: Schedule and perform routine preventive maintenance program`);
-        }
+  // Check Overdue PM Testing
+  const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, serial) : null;
+  const ratioDateStr = latestRatio ? (latestRatio.date || latestRatio.Date) : null;
+  if (ratioDateStr) {
+    const match = String(ratioDateStr).match(/\b(20\d\d)\b/);
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const currentYear = new Date().getFullYear();
+      if ((currentYear - year) > 3) {
+        addRec(groups.activePart, `PM Electrical Testing Overdue (${year}): Schedule and perform routine comprehensive preventive maintenance testing`);
       }
-    });
+    }
   }
 
   const totalIssues = groups.critical.length + groups.generalPart.length + groups.activePart.length + groups.insulationOil.length + groups.bushing.length + groups.arrester.length + groups.oltc.length;
