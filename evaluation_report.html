@@ -2378,16 +2378,6 @@
         const accColor = accuracyPct >= 80 ? '#10b981' : (accuracyPct >= 50 ? '#eab308' : '#ef4444');
         const ptBreakdown = accResult.ptBreakdown || [];
 
-        const titleLines = [`Accuracy Breakdown (Overall: ${accuracyPct}%):`];
-        ptBreakdown.forEach(b => {
-          if (b.isNA) {
-            titleLines.push(`• ${b.pt}: N/A`);
-          } else {
-            titleLines.push(`• ${b.pt}: ${b.pct}% (${b.scored}/${b.applicable})`);
-          }
-        });
-        const nativeTitle = titleLines.join('\n');
-
         const tooltipHtml = `
           <div class="accuracy-hover-tooltip">
             <div class="acc-tooltip-header">
@@ -2446,7 +2436,7 @@
             </div>
 
             <!-- Integrated Accuracy Bar (Right side of Overall Health Index Card) -->
-            <div class="pdf-main-accuracy-side" title="${nativeTitle}">
+            <div class="pdf-main-accuracy-side">
               <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">${accuracyPct}%</div>
               <div class="pdf-accuracy-bar-track">
                 <div class="pdf-accuracy-bar-fill" style="height: ${accuracyPct}%; background: ${accColor};"></div>
