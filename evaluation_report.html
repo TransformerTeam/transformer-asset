@@ -3320,11 +3320,25 @@
             return !isNaN(num);
           };
 
-          const getCapNum = (v) => {
-            if (isValidNum(v)) {
-              const num = parseFloat(v);
-              if (num > 0) return num;
+          const oldestWindingPf = (typeof windingPfCsvData !== 'undefined') ? (function(dataset, serial) {
+            if (!dataset || !serial) return null;
+            const sUpper = String(serial).trim().toUpperCase();
+            const matches = dataset.filter(r => (r.serial || r.SERIAL_NUMBER || r.Serial_no || r.Serial_No || '').toUpperCase() === sUpper);
+            if (matches.length === 0) return null;
+            matches.sort((a, b) => new Date(a.date || a.DATE || 0) - new Date(b.date || b.DATE || 0));
+            return matches[0];
+          })(windingPfCsvData, serialVal) : null;
+
+          const getCapDev = (currentCap, initialCap, fallbackObjVal, fallbackMaxVal) => {
+            if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
+            if (isValidNum(currentCap) && isValidNum(initialCap)) {
+              const cur = parseFloat(currentCap);
+              const init = parseFloat(initialCap);
+              if (init > 0 && cur > 0) {
+                return Math.abs(((cur - init) / init) * 100);
+              }
             }
+            if (isValidNum(fallbackMaxVal)) return Math.abs(parseFloat(fallbackMaxVal));
             return null;
           };
 
@@ -3337,64 +3351,64 @@
             if (isLv) {
               return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
             } else if (isTv) {
-              const ct = getCapNum(latestWindingPf.ct_cap);
-              const cth = getCapNum(latestWindingPf.cth_cap);
-              const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
-              if (ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
+              const ctDev = getCapDev(latestWindingPf.ct_cap, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.Object8, latestWindingPf.maxctv_change);
+              const cthDev = getCapDev(latestWindingPf.cth_cap, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.Object9, latestWindingPf.maxctv_change);
+              const validDevs = [ctDev, cthDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
-                const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
-                const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
-                val = `CT: ${ctStr}, CTH: ${cthStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const ctStr = ctDev !== null ? `${ctDev.toFixed(2)}%` : '-';
+                const cthStr = cthDev !== null ? `${cthDev.toFixed(2)}%` : '-';
+                val = `CT %Dev: ${ctStr}, CTH %Dev: ${cthStr}`;
               }
             } else {
-              // HV Winding: CH, CHT (stored in ch_cap and chl_cap)
-              const ch = getCapNum(latestWindingPf.ch_cap);
-              const cht = getCapNum(latestWindingPf.chl_cap);
-              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
-              if (ch !== null || cht !== null || (maxHvChange !== null && maxHvChange > 0)) {
+              // HV Winding: CH, CHT (stored in ch_cap/Object2 and chl_cap/Object3)
+              const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
+              const chtDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+              const validDevs = [chDev, chtDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
-                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
-                const chtStr = cht !== null ? `${cht.toFixed(1)} pF` : '-';
-                val = `CH: ${chStr}, CHT: ${chtStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const chStr = chDev !== null ? `${chDev.toFixed(2)}%` : '-';
+                const chtStr = chtDev !== null ? `${chtDev.toFixed(2)}%` : '-';
+                val = `CH %Dev: ${chStr}, CHT %Dev: ${chtStr}`;
               }
             }
           } else if (is3Winding) {
             // 3 Winding: HV (CH, CHL), LV (CL, CLT), TV (CT, CTH)
             if (isTv) {
-              const ct = getCapNum(latestWindingPf.ct_cap);
-              const cth = getCapNum(latestWindingPf.cth_cap);
-              const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
-              if (ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
+              const ctDev = getCapDev(latestWindingPf.ct_cap, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.Object8, latestWindingPf.maxctv_change);
+              const cthDev = getCapDev(latestWindingPf.cth_cap, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.Object9, latestWindingPf.maxctv_change);
+              const validDevs = [ctDev, cthDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
-                const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
-                const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
-                val = `CT: ${ctStr}, CTH: ${cthStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const ctStr = ctDev !== null ? `${ctDev.toFixed(2)}%` : '-';
+                const cthStr = cthDev !== null ? `${cthDev.toFixed(2)}%` : '-';
+                val = `CT %Dev: ${ctStr}, CTH %Dev: ${cthStr}`;
               }
             } else if (isLv) {
-              const cl = getCapNum(latestWindingPf.cl_cap);
-              const clt = getCapNum(latestWindingPf.clh_cap);
-              const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
-              if (cl !== null || clt !== null || (maxLvChange !== null && maxLvChange > 0)) {
+              const clDev = getCapDev(latestWindingPf.cl_cap, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.Object5, latestWindingPf.maxclv_change);
+              const cltDev = getCapDev(latestWindingPf.clh_cap, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.Object6, latestWindingPf.maxclv_change);
+              const validDevs = [clDev, cltDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
-                const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
-                const cltStr = clt !== null ? `${clt.toFixed(1)} pF` : '-';
-                val = `CL: ${clStr}, CLT: ${cltStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const clStr = clDev !== null ? `${clDev.toFixed(2)}%` : '-';
+                const cltStr = cltDev !== null ? `${cltDev.toFixed(2)}%` : '-';
+                val = `CL %Dev: ${clStr}, CLT %Dev: ${cltStr}`;
               }
             } else {
               // HV Winding: CH, CHL
-              const ch = getCapNum(latestWindingPf.ch_cap);
-              const chl = getCapNum(latestWindingPf.chl_cap);
-              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
-              if (ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
+              const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
+              const chlDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+              const validDevs = [chDev, chlDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
-                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
-                const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
-                val = `CH: ${chStr}, CHL: ${chlStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const chStr = chDev !== null ? `${chDev.toFixed(2)}%` : '-';
+                const chlStr = chlDev !== null ? `${chlDev.toFixed(2)}%` : '-';
+                val = `CH %Dev: ${chStr}, CHL %Dev: ${chlStr}`;
               }
             }
           } else {
@@ -3402,27 +3416,27 @@
             if (isTv) {
               return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
             } else if (isLv) {
-              const cl = getCapNum(latestWindingPf.cl_cap);
-              const clh = getCapNum(latestWindingPf.clh_cap);
-              const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
-              if (cl !== null || clh !== null || (maxLvChange !== null && maxLvChange > 0)) {
+              const clDev = getCapDev(latestWindingPf.cl_cap, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.Object5, latestWindingPf.maxclv_change);
+              const clhDev = getCapDev(latestWindingPf.clh_cap, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.Object6, latestWindingPf.maxclv_change);
+              const validDevs = [clDev, clhDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
-                const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
-                const clhStr = clh !== null ? `${clh.toFixed(1)} pF` : '-';
-                val = `CL: ${clStr}, CLH: ${clhStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const clStr = clDev !== null ? `${clDev.toFixed(2)}%` : '-';
+                const clhStr = clhDev !== null ? `${clhDev.toFixed(2)}%` : '-';
+                val = `CL %Dev: ${clStr}, CLH %Dev: ${clhStr}`;
               }
             } else {
               // HV Winding: CH, CHL
-              const ch = getCapNum(latestWindingPf.ch_cap);
-              const chl = getCapNum(latestWindingPf.chl_cap);
-              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
-              if (ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
+              const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
+              const chlDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+              const validDevs = [chDev, chlDev].filter(v => v !== null);
+              if (validDevs.length > 0) {
                 hasValidData = true;
-                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
-                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
-                const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
-                val = `CH: ${chStr}, CHL: ${chlStr} (%Dev = ${errFat.toFixed(2)}%)`;
+                errFat = Math.max(...validDevs);
+                const chStr = chDev !== null ? `${chDev.toFixed(2)}%` : '-';
+                const chlStr = chlDev !== null ? `${chlDev.toFixed(2)}%` : '-';
+                val = `CH %Dev: ${chStr}, CHL %Dev: ${chlStr}`;
               }
             }
           }
