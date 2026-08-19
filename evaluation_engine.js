@@ -1115,25 +1115,15 @@ function generateDetailedRecommendation(item) {
       isCritical: false,
       plainText: 'Normal Condition: All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance.',
       html: `
-        <div class="rec-banner-good">
-          <div class="rec-status-badge badge-good">
-            <i class="fa-solid fa-circle-check"></i> Normal Condition: Standard Operation
-          </div>
-          <div class="rec-description">
-            All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance.
-          </div>
+        <div class="rec-description">
+          All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance.
         </div>
       `
     };
   }
 
   const isCritical = groups.critical.length > 0;
-  let html = `
-    <div class="rec-status-badge ${isCritical ? 'badge-critical' : 'badge-warn'}">
-      <i class="fa-solid ${isCritical ? 'fa-triangle-exclamation' : 'fa-wrench'}"></i> ${isCritical ? 'Critical Condition: Urgent Corrective Action Required' : 'Maintenance & Monitoring Required: Recommended Corrective Actions'}
-    </div>
-    <ul class="rec-list">
-  `;
+  let html = `<ul class="rec-list">`;
 
   if (groups.critical.length > 0) {
     html += `<li class="rec-item-critical"><strong>⚠️ Urgent Action:</strong> ${groups.critical.join(' | ')}</li>`;
