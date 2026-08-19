@@ -1,14 +1,24 @@
 // Standalone Detail Page Logic for GPSC Transformer Asset Management
 // Completely cut off and independent of assessment.js
 
-let assessmentData = [];
-let trInfoCsvData = [];
-let bushingPfCsvData = [];
-let bushingInfoCsvData = [];
-let mtOilCsvData = [];
-let mainTankDgaCsvData = [];
-let oltcOilCsvData = [];
-let piCsvData = [];
+var assessmentData = [];
+var trInfoCsvData = [];
+var bushingPfCsvData = [];
+var bushingInfoCsvData = [];
+var mtOilCsvData = [];
+var mainTankDgaCsvData = [];
+var oltcOilCsvData = [];
+var piCsvData = [];
+
+// Auto-initialize assessmentData from HEALTH_INDEX_DATA if available
+if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+  if (typeof parseHealthIndexSumCSV === 'function') {
+    assessmentData = parseHealthIndexSumCSV(HEALTH_INDEX_DATA);
+  } else {
+    assessmentData = HEALTH_INDEX_DATA;
+  }
+  if (typeof window !== 'undefined') window.assessmentData = assessmentData;
+}
 
 // Helper to set element text content safely
 const setElTxt = (id, txt) => {
@@ -400,19 +410,37 @@ function loadAllTestDataCSVs() {
 
 // Main detail renderer
 function openDetail(no) {
-  if ((!assessmentData || !assessmentData.length) && typeof HEALTH_INDEX_DATA !== 'undefined') {
-    assessmentData = HEALTH_INDEX_DATA;
+  if (!assessmentData || !assessmentData.length) {
+    if (typeof window !== 'undefined' && window.assessmentData && window.assessmentData.length > 0) {
+      assessmentData = window.assessmentData;
+    } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+      assessmentData = (typeof parseHealthIndexSumCSV === 'function') ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : HEALTH_INDEX_DATA;
+      if (typeof window !== 'undefined') window.assessmentData = assessmentData;
+    }
   }
 
   let item = null;
   if (assessmentData && assessmentData.length > 0) {
-    if (typeof no === 'number') {
+    if (typeof no === 'object' && no !== null) {
+      item = no;
+    } else if (typeof no === 'number') {
       item = assessmentData.find(i => i.no === no);
     }
     if (!item && no !== undefined && no !== null) {
       const target = String(no).trim();
-      item = assessmentData.find(i => i.no === Number(target) || String(i.serial) === target || String(i.serial).includes(target) || target.includes(String(i.serial)));
+      item = assessmentData.find(i => 
+        i.no === Number(target) || 
+        String(i.serial) === target || 
+        String(i['Serial No']) === target ||
+        String(i.serial).includes(target) || 
+        target.includes(String(i.serial)) ||
+        (i.name && String(i.name).toLowerCase() === target.toLowerCase()) ||
+        (i['Equipment Name'] && String(i['Equipment Name']).toLowerCase() === target.toLowerCase())
+      );
     }
+  }
+  if (!item && assessmentData && assessmentData.length > 0) {
+    item = assessmentData[0];
   }
   if (!item) return;
 

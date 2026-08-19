@@ -631,12 +631,25 @@
   <script src="detail.js?v=20260810_v3"></script>
 
   <script>
+    function isExcludedSite(site) {
+      if (!site) return false;
+      const s = String(site).trim().toLowerCase();
+      if (s === 'scrap' || s.includes('scrap')) return true;
+      if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+      return false;
+    }
+
     function getAssessmentDataArray() {
-      if (typeof assessmentData !== 'undefined' && assessmentData && assessmentData.length > 0) {
-        return assessmentData;
+      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
+        return assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
       }
-      if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA && HEALTH_INDEX_DATA.length > 0) {
-        assessmentData = HEALTH_INDEX_DATA;
+      if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
+        return window.assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
+      }
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+        const parsed = (typeof parseHealthIndexSumCSV === 'function') ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : HEALTH_INDEX_DATA;
+        assessmentData = parsed.filter(i => !isExcludedSite(i.site || i.SITE));
+        if (typeof window !== 'undefined') window.assessmentData = assessmentData;
         return assessmentData;
       }
       return [];
@@ -646,13 +659,19 @@
       const data = getAssessmentDataArray();
       const selectEl = document.getElementById('detail-transformer-select');
       if (selectEl && data.length > 0) {
+        const curVal = selectEl.value;
         selectEl.innerHTML = '';
         data.forEach(item => {
-          const opt = document.createElement('option');
-          opt.value = item.serial;
-          opt.textContent = `${item.name} (${item.serial})`;
-          selectEl.appendChild(opt);
+          const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+          const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
+          if (s) {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = `${n || s} (${s})`;
+            selectEl.appendChild(opt);
+          }
         });
+        if (curVal) selectEl.value = curVal;
       }
     }
 
@@ -661,15 +680,13 @@
       populateTransformerDropdown();
 
       const urlParams = new URLSearchParams(window.location.search);
-      let serialParam = urlParams.get('serial');
+      let serialParam = urlParams.get('serial') || urlParams.get('no') || urlParams.get('id');
 
       if (!serialParam && data.length > 0) {
         serialParam = data[0].serial;
       }
 
       if (serialParam) {
-        const selectEl = document.getElementById('detail-transformer-select');
-        if (selectEl) selectEl.value = serialParam;
         loadDetailBySerial(serialParam);
       }
     }
@@ -680,17 +697,16 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      // ตรวจสอบและรอให้ Promise ของการโหลดไฟล์ CSV ใน assessment.js ทำงานเสร็จก่อน
-      if (window.allCSVsPromise) {
-        window.allCSVsPromise.then(() => {
+      // Render immediately with preloaded data
+      initDetailPage();
+
+      // Background CSV loading
+      if (typeof loadAllTestDataCSVs === 'function') {
+        loadAllTestDataCSVs().then(() => {
           initDetailPage();
-        }).catch(err => {
-          console.error("Error loading CSV files:", err);
-          initDetailPage(); // Fallback กรณีโหลดไฟล์ไม่สำเร็จ
+        }).catch(() => {
+          initDetailPage();
         });
-      } else {
-        // กรณีไม่มีการโหลด CSV ให้ทำงานตามปกติ
-        initDetailPage();
       }
     }
 
@@ -709,8 +725,22 @@
     function loadDetailBySerial(serial) {
       const data = getAssessmentDataArray();
       if (!data || !data.length) return;
-      const item = data.find(x => String(x.serial) === String(serial) || String(x.serial).startsWith(String(serial)) || String(serial).startsWith(String(x.serial)));
+      
+      let item = data.find(x => String(x.serial) === String(serial));
+      if (!item) {
+        const cleanTarget = String(serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+        item = data.find(x => {
+          const s = String(x.serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+          const n = String(x.name || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+          return (s && (s === cleanTarget || s.includes(cleanTarget) || cleanTarget.includes(s))) ||
+                 (n && (n === cleanTarget || n.includes(cleanTarget) || cleanTarget.includes(n)));
+        });
+      }
+      if (!item) item = data[0];
       if (!item) return;
+
+      const selectEl = document.getElementById('detail-transformer-select');
+      if (selectEl && item.serial) selectEl.value = item.serial;
 
       // Update Report Links
       const evalBtn = document.getElementById('btn-eval-report');
@@ -731,9 +761,9 @@
       const oilLink = document.getElementById('ex-oil-link');
       if (oilLink) oilLink.href = `oil_report.html?serial=${encodeURIComponent(item.serial)}`;
 
-      // Call assessment.js openDetail logic with item.no
+      // Render detail view
       if (typeof openDetail === 'function') {
-        openDetail(item.no);
+        openDetail(item);
       }
     }
 
