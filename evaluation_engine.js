@@ -665,9 +665,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       }
 
       // Scoring criteria:
-      // 1. Natural Ester: Normal <= 1.0%, Service Limit <= 1.5%
-      // 2. Mineral Oil >= 230 kV: Normal <= 0.4%, Service Limit <= 1.0%
-      // 3. Mineral Oil < 230 kV: Normal <= 0.5%, Service Limit <= 1.0%
+      // 1. Natural Ester: Normal <= 0.8% (Score 5), <= 1.0% (Score 4), <= 2.0% (Score 2), > 2.0% (Score 1)
+      // 2. Mineral Oil >= 230 kV: Normal <= 0.4% (Score 5), <= 1.0% (Score 4), <= 2.0% (Score 2), > 2.0% (Score 1)
+      // 3. Mineral Oil < 230 kV: Normal <= 0.5% (Score 5), <= 1.0% (Score 4), <= 2.0% (Score 2), > 2.0% (Score 1)
       let score = 5;
       let rec = '-';
 
@@ -676,12 +676,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           score = 5;
         } else if (maxPf <= 1.0) {
           score = 4;
-        } else if (maxPf <= 1.5) {
-          score = 3;
-          rec = 'Check winding insulation & moisture (Natural Ester: Normal ≤ 1.0%, Service Limit ≤ 1.5%)';
         } else if (maxPf <= 2.0) {
           score = 2;
-          rec = 'High Power Factor - dry out or recondition insulation (Natural Ester limit exceeded)';
+          rec = 'Check winding insulation & oil moisture (Natural Ester limit exceeded > 1.0%)';
         } else {
           score = 1;
           rec = 'Critical Power Factor - investigate insulation breakdown';
@@ -691,12 +688,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           score = 5;
         } else if (maxPf <= 1.0) {
           score = 4;
-        } else if (maxPf <= 1.5) {
-          score = 3;
-          rec = 'Check winding insulation & oil moisture (Mineral Oil ≥ 230 kV: Normal ≤ 0.4%, Service Limit ≤ 1.0%)';
         } else if (maxPf <= 2.0) {
           score = 2;
-          rec = 'High Power Factor - dry out or recondition insulation (Limit > 1.0%)';
+          rec = 'Check winding insulation & oil moisture (Mineral Oil ≥ 230 kV service limit exceeded > 1.0%)';
         } else {
           score = 1;
           rec = 'Critical Power Factor - investigate insulation breakdown';
@@ -707,12 +701,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           score = 5;
         } else if (maxPf <= 1.0) {
           score = 4;
-        } else if (maxPf <= 1.5) {
-          score = 3;
-          rec = 'Check winding insulation & oil moisture (Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%)';
         } else if (maxPf <= 2.0) {
           score = 2;
-          rec = 'High Power Factor - dry out or recondition insulation (Limit > 1.0%)';
+          rec = 'Check winding insulation & oil moisture (Mineral Oil < 230 kV service limit exceeded > 1.0%)';
         } else {
           score = 1;
           rec = 'Critical Power Factor - investigate insulation breakdown';
