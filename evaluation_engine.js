@@ -764,12 +764,24 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   }
 
   if (nameLower.includes('passivator') || nameLower.includes('irgamet')) {
-    if (latestMt && (latestMt.Passivator || latestMt.PASSIVATOR)) {
+    if (latestMt && (latestMt.Passivator !== undefined && latestMt.Passivator !== null && String(latestMt.Passivator).trim() !== '')) {
       const passVal = latestMt.Passivator || latestMt.PASSIVATOR;
       const date = latestMt.Date || latestMt.date || latestMt.DATE;
       const num = parseFloat(passVal);
-      const valStr = (isNaN(num) || num === 0) ? '> 100 ppm' : `${passVal} ppm`;
-      return { value: valStr, testDate: date, ratingScore: 5, recommendation: '-' };
+      const corrVal = String(latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR || '').trim();
+      const isCorrosive = corrVal && (corrVal.toLowerCase().includes('corrosive') || corrVal.toLowerCase().includes('3b') || corrVal.toLowerCase().includes('4a') || corrVal.toLowerCase().includes('poten'));
+
+      if (isNaN(num) || num <= 0) {
+        if (isCorrosive) {
+          return { value: '0 ppm (Depleted)', testDate: date, ratingScore: 3, recommendation: 'Add passivator (Irgamet 39)' };
+        } else {
+          return { value: '0 ppm (Not Added)', testDate: date, ratingScore: 5, recommendation: '-' };
+        }
+      } else {
+        const score = num >= 100 ? 5 : (num >= 50 ? 4 : 3);
+        const rec = score >= 4 ? '-' : 'Top up metal passivator (> 100 ppm)';
+        return { value: `${num} ppm`, testDate: date, ratingScore: score, recommendation: rec };
+      }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
@@ -1157,12 +1169,15 @@ function generateDetailedRecommendation(item) {
       addRec(groups.insulationOil, `High oil conductivity (${cond} pS/m): Perform oil reclaiming / degumming`);
     }
     const corr = String(latestOil.corrosive || latestOil.Corrosive || latestOil.corrosive_sulfur || latestOil.Corrosive_Sulfur || '').trim();
-    if (corr && (corr.toLowerCase().includes('corrosive') || corr.toLowerCase().includes('3b') || corr.toLowerCase().includes('4a') || corr.toLowerCase().includes('poten'))) {
-      addRec(groups.insulationOil, `Corrosive sulfur risk detected: Add metal passivator (Irgamet 39) and monitor passivator level`);
-    }
+    const isCorrosive = corr && (corr.toLowerCase().includes('corrosive') || corr.toLowerCase().includes('3b') || corr.toLowerCase().includes('4a') || corr.toLowerCase().includes('poten'));
     const pass = parseFloat(latestOil.passivator || latestOil.Passivator);
-    if (!isNaN(pass) && pass < 100) {
-      addRec(groups.insulationOil, `Passivator level low (${pass} ppm): Top up metal passivator to target concentration (> 100 ppm)`);
+
+    if (isCorrosive) {
+      if (isNaN(pass) || pass < 100) {
+        addRec(groups.insulationOil, `Corrosive sulfur detected (${corr}): Add/top-up metal passivator (Irgamet 39 > 100 ppm, currently ${isNaN(pass) ? 0 : pass} ppm)`);
+      }
+    } else if (!isNaN(pass) && pass > 0 && pass < 50) {
+      addRec(groups.insulationOil, `Passivator level depleting (${pass} ppm): Monitor passivator concentration`);
     }
   }
 
