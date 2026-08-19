@@ -176,32 +176,46 @@
     }
 
     /* Interpretation & Recommendation text styling */
-    #ex-recommendation-text,
-    .rec-box,
-    .rec-list {
+    .rec-box.rec-box-good,
+    .rec-box.rec-box-good .rec-list,
+    .rec-box.rec-box-good .rec-list li,
+    .rec-box.rec-box-good .rec-description,
+    .rec-box.rec-box-good #ex-recommendation-text {
+      color: #34d399 !important;
+    }
+    .rec-box.rec-box-good .rec-list li strong {
+      color: #10b981 !important;
+    }
+    [data-theme="light"] .rec-box.rec-box-good,
+    [data-theme="light"] .rec-box.rec-box-good .rec-list,
+    [data-theme="light"] .rec-box.rec-box-good .rec-list li,
+    [data-theme="light"] .rec-box.rec-box-good .rec-description,
+    [data-theme="light"] .rec-box.rec-box-good #ex-recommendation-text {
+      color: #15803d !important;
+    }
+    [data-theme="light"] .rec-box.rec-box-good .rec-list li strong {
+      color: #166534 !important;
+    }
+
+    .rec-box:not(.rec-box-good):not(.rec-box-critical),
+    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list,
+    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li,
+    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-description,
+    #ex-recommendation-text {
       color: #f97316 !important;
     }
-    #ex-recommendation-text .rec-list li,
-    .rec-list li {
-      color: #f97316 !important;
-      margin-bottom: 5px;
-    }
-    #ex-recommendation-text .rec-list li strong,
-    .rec-list li strong {
+    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li strong {
       color: #ea580c !important;
       font-weight: 700;
     }
-    #ex-recommendation-text .rec-description,
-    .rec-description {
-      color: #f97316 !important;
-    }
-    [data-theme="light"] #ex-recommendation-text,
-    [data-theme="light"] #ex-recommendation-text .rec-list li,
-    [data-theme="light"] .rec-list li {
+    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical),
+    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list,
+    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li,
+    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-description,
+    [data-theme="light"] #ex-recommendation-text {
       color: #ea580c !important;
     }
-    [data-theme="light"] #ex-recommendation-text .rec-list li strong,
-    [data-theme="light"] .rec-list li strong {
+    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li strong {
       color: #c2410c !important;
     }
   </style>
