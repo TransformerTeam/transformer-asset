@@ -1858,6 +1858,20 @@
     // (shared by renderPart1Table and computeHI)
     // ==========================================
     function buildPtStructure(item) {
+      const serialVal = item ? (item['Serial No'] || item.serial || item.SERIAL_NUMBER || '') : '';
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined' && serialVal) ? findLatestRecord(trInfoCsvData, serialVal) : null;
+      const insulationType = String((item && item.TYPE_OF_INSULATION) || (trInfoItem && trInfoItem.TYPE_OF_INSULATION) || '').toLowerCase();
+      const isNaturalEster = insulationType.includes('ester') || insulationType.includes('fr3') || insulationType.includes('natural');
+      const hvRated = parseFloat((item && (item.HV_RATED || item.HV_Voltage)) || (trInfoItem && trInfoItem.HV_RATED) || '115');
+      const is230kVorAbove = hvRated >= 230;
+
+      let hvPfSubText = 'IEEE C57.152-2013, Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%';
+      if (isNaturalEster) {
+        hvPfSubText = 'IEEE C57.152-2013, Natural Ester: Normal ≤ 1.0%, Service Limit ≤ 1.5%';
+      } else if (is230kVorAbove) {
+        hvPfSubText = 'IEEE C57.152-2013, Mineral Oil ≥ 230 kV: Normal ≤ 0.4%, Service Limit ≤ 1.0%';
+      }
+
       return [
         {
           pt: 'General Part', weight: 5,
@@ -1887,7 +1901,7 @@
                 { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
                 { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
                 { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+                { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
                 { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
               ]
@@ -1896,7 +1910,7 @@
               sub: 'LV Winding', full: 100, subWeight: 20,
               methods: [
                 { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
-                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+                { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
                 { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
               ]
@@ -1905,7 +1919,7 @@
               sub: 'TV Winding', full: 100, subWeight: 10,
               methods: [
                 { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
-                { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
+                { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
                 { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
                 { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
               ]
@@ -3048,15 +3062,101 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      // 9. Insulation Power Factor (WindingPFData.csv)
-      if (nameLower.includes('insulation power factor') || nameLower.includes('pf @ 20')) {
+      // 9. Power Factor (WindingPFData.csv)
+      if (nameLower === 'power factor' || (nameLower.includes('power factor') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('at 25') && !nameLower.includes('at 100'))) {
         if (latestWindingPf) {
           const date = latestWindingPf.date || latestWindingPf.Date;
-          const pf = latestWindingPf.maxhv_tand || latestWindingPf.chl_pf_1 || latestWindingPf.chl_ch_pf_1 || '0.35';
-          const val = `%PF: ${pf}%`;
-          const numPf = parseFloat(pf);
-          const score = numPf <= 0.5 ? 5 : (numPf <= 1.0 ? 4 : 3);
-          return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding PF' };
+          const isTv = nameLower.includes('tv') || String(subName || '').toLowerCase().includes('tv') || String(subName || '').toLowerCase().includes('tertiary');
+          const isLv = !isTv && (nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv'));
+
+          const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+          const insulationType = String(item.TYPE_OF_INSULATION || (trInfoItem && trInfoItem.TYPE_OF_INSULATION) || '').toLowerCase();
+          const isNaturalEster = insulationType.includes('ester') || insulationType.includes('fr3') || insulationType.includes('natural');
+          const hvRated = parseFloat(item.HV_RATED || item.HV_Voltage || (trInfoItem && trInfoItem.HV_RATED) || '115');
+          const is230kVorAbove = hvRated >= 230;
+
+          let val = '';
+          let maxPf = 0;
+
+          if (isTv) {
+            // TV Winding
+            const ct_cth = parseFloat(latestWindingPf.ct_cth_pf_2) || parseFloat(latestWindingPf.ct_cth_pf_1) || 0;
+            const ct = parseFloat(latestWindingPf.ct_pf_2) || parseFloat(latestWindingPf.ct_pf_1) || 0;
+            const cth = parseFloat(latestWindingPf.cth_pf_2) || parseFloat(latestWindingPf.cth_pf_1) || 0;
+            maxPf = parseFloat(latestWindingPf.maxtv_tand) || Math.max(ct_cth, ct, cth);
+            val = `CT+CTH: ${ct_cth.toFixed(2)}%, CT: ${ct.toFixed(2)}%, CTH: ${cth.toFixed(2)}%`;
+          } else if (isLv) {
+            // LV Winding
+            const clh_cl = parseFloat(latestWindingPf.clh_cl_pf_2) || parseFloat(latestWindingPf.clh_cl_pf_1) || 0;
+            const cl = parseFloat(latestWindingPf.cl_pf_2) || parseFloat(latestWindingPf.cl_pf_1) || 0;
+            const clh = parseFloat(latestWindingPf.clh_pf_2) || parseFloat(latestWindingPf.clh_pf_1) || 0;
+            maxPf = parseFloat(latestWindingPf.maxlv_tand) || Math.max(clh_cl, cl, clh);
+            val = `CL+CLH: ${clh_cl.toFixed(2)}%, CL: ${cl.toFixed(2)}%, CLH: ${clh.toFixed(2)}%`;
+          } else {
+            // HV Winding: แสดงค่า %PF ของ CH+CHL, CH, CHL
+            const ch_chl = parseFloat(latestWindingPf.chl_ch_pf_2) || parseFloat(latestWindingPf.chl_ch_pf_1) || 0;
+            const ch = parseFloat(latestWindingPf.ch_pf_2) || parseFloat(latestWindingPf.ch_pf_1) || 0;
+            const chl = parseFloat(latestWindingPf.chl_pf_2) || parseFloat(latestWindingPf.chl_pf_1) || 0;
+            maxPf = parseFloat(latestWindingPf.maxhv_tand) || Math.max(ch_chl, ch, chl);
+            val = `CH+CHL: ${ch_chl.toFixed(2)}%, CH: ${ch.toFixed(2)}%, CHL: ${chl.toFixed(2)}%`;
+          }
+
+          // Scoring criteria:
+          // 1. Natural Ester: Normal <= 1.0%, Service Limit <= 1.5%
+          // 2. Mineral Oil >= 230 kV: Normal <= 0.4%, Service Limit <= 1.0%
+          // 3. Mineral Oil < 230 kV: Normal <= 0.5%, Service Limit <= 1.0%
+          let score = 5;
+          let rec = '-';
+
+          if (isNaturalEster) {
+            if (maxPf <= 0.8) {
+              score = 5;
+            } else if (maxPf <= 1.0) {
+              score = 4;
+            } else if (maxPf <= 1.5) {
+              score = 3;
+              rec = 'Check winding insulation & moisture (Natural Ester: Normal ≤ 1.0%, Service Limit ≤ 1.5%)';
+            } else if (maxPf <= 2.0) {
+              score = 2;
+              rec = 'High Power Factor - dry out or recondition insulation (Natural Ester limit exceeded)';
+            } else {
+              score = 1;
+              rec = 'Critical Power Factor - investigate insulation breakdown';
+            }
+          } else if (is230kVorAbove) {
+            if (maxPf <= 0.4) {
+              score = 5;
+            } else if (maxPf <= 1.0) {
+              score = 4;
+            } else if (maxPf <= 1.5) {
+              score = 3;
+              rec = 'Check winding insulation & oil moisture (Mineral Oil ≥ 230 kV: Normal ≤ 0.4%, Service Limit ≤ 1.0%)';
+            } else if (maxPf <= 2.0) {
+              score = 2;
+              rec = 'High Power Factor - dry out or recondition insulation (Limit > 1.0%)';
+            } else {
+              score = 1;
+              rec = 'Critical Power Factor - investigate insulation breakdown';
+            }
+          } else {
+            // Mineral Oil < 230 kV
+            if (maxPf <= 0.5) {
+              score = 5;
+            } else if (maxPf <= 1.0) {
+              score = 4;
+            } else if (maxPf <= 1.5) {
+              score = 3;
+              rec = 'Check winding insulation & oil moisture (Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%)';
+            } else if (maxPf <= 2.0) {
+              score = 2;
+              rec = 'High Power Factor - dry out or recondition insulation (Limit > 1.0%)';
+            } else {
+              score = 1;
+              rec = 'Critical Power Factor - investigate insulation breakdown';
+            }
+          }
+
+          return { value: val, testDate: date, ratingScore: score, recommendation: rec };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
