@@ -2236,6 +2236,10 @@
         const hiVal = percentHIVal;
         const hiColor = hiVal >= 80 ? '#10b981' : (hiVal >= 70 ? '#eab308' : (hiVal >= 50 ? '#f97316' : '#ef4444'));
 
+        const accResult = typeof computeAccuracy === 'function' ? computeAccuracy(item) : { accuracyPct: 100 };
+        const accuracyPct = accResult.accuracyPct;
+        const accColor = accuracyPct >= 80 ? '#10b981' : (accuracyPct >= 50 ? '#eab308' : '#ef4444');
+
         mainGaugeCard.innerHTML = `
           <div class="pdf-main-gauge-content">
             <div class="pdf-main-gauge-left">
@@ -2263,11 +2267,11 @@
 
             <!-- Integrated Accuracy Bar (Right side of Overall Health Index Card) -->
             <div class="pdf-main-accuracy-side">
-              <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">100%</div>
+              <div style="font-size: 0.58rem; font-weight: 700; color: #1e3a8a;">${accuracyPct}%</div>
               <div class="pdf-accuracy-bar-track">
-                <div class="pdf-accuracy-bar-fill" style="height: 100%;"></div>
+                <div class="pdf-accuracy-bar-fill" style="height: ${accuracyPct}%; background: ${accColor};"></div>
               </div>
-              <div class="pdf-accuracy-label">Accuracy<br>100%</div>
+              <div class="pdf-accuracy-label">Accuracy<br>${accuracyPct}%</div>
             </div>
           </div>
         `;

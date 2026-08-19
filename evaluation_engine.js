@@ -935,6 +935,52 @@ function computeHI(item) {
 }
 
 // ==========================================
+// computeAccuracy: Calculates Evaluation Result Accuracy %
+// Formula: (Number of scored test items / Total applicable test items) * 100
+// Excludes N/A (grey) PT components (OLTC, Bushing, Lightning Arrester)
+// ==========================================
+function computeAccuracy(item) {
+  if (!item) return { totalApplicableMethods: 0, scoredMethods: 0, accuracyPct: 100, isOltcNA: false, isBushingNA: false, isSurgeNA: false };
+
+  const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER) : null;
+  const rawTapStr = String(item.TAP_CHANGER_TYPE || item.tapChangerType || (trInfoItem && trInfoItem.TAP_CHANGER_TYPE) || '').toUpperCase();
+  const isOltcNA = rawTapStr.includes('NLTC') || rawTapStr.includes('DETC') || item.oltc === 'N/A' || item.oltcOil === 'N/A';
+
+  const serviceTypeStr = String(item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem['Service Type'] || trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION)) || '').toUpperCase();
+  const serialStr = String(item.serial || item.SERIAL_NUMBER || item['Serial No'] || item.Name || '').toUpperCase();
+  const isUatOrAux = serviceTypeStr.includes('UAT') || serviceTypeStr.includes('AUXILIARY') || serviceTypeStr.includes('AUX') || serialStr.includes('UAT') || serialStr.includes('AUX');
+
+  const isBushingNA = isUatOrAux || item.bushing === 'N/A';
+  const isSurgeNA = isUatOrAux || item.surgeArrester === 'N/A';
+
+  const ptStructure = buildPtStructure(item);
+  let totalApplicableMethods = 0;
+  let scoredMethods = 0;
+
+  ptStructure.forEach(ptObj => {
+    const ptKey = String(ptObj.pt || '').toLowerCase();
+    const isGrey = (ptKey.includes('oltc') && isOltcNA) ||
+                   (ptKey.includes('bush') && isBushingNA) ||
+                   ((ptKey.includes('arrest') || ptKey.includes('surge')) && isSurgeNA);
+
+    if (isGrey) return; // Exclude grey / N/A PT components
+
+    ptObj.subs.forEach(subObj => {
+      subObj.methods.forEach(m => {
+        totalApplicableMethods++;
+        const match = getMeasuredValueForItem(m.name, item, ptObj.pt, subObj.sub);
+        if (!match.isNA && match.ratingScore != null) {
+          scoredMethods++;
+        }
+      });
+    });
+  });
+
+  const accuracyPct = totalApplicableMethods > 0 ? Math.round((scoredMethods / totalApplicableMethods) * 100) : 100;
+  return { totalApplicableMethods, scoredMethods, accuracyPct, isOltcNA, isBushingNA, isSurgeNA };
+}
+
+// ==========================================
 // syncAssessmentWithEvaluationEngine: Synchronizes fleet dataset
 // ==========================================
 function syncAssessmentWithEvaluationEngine() {
