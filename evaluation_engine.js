@@ -540,7 +540,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         // LV Winding
         devPhase = Math.abs(parseFloat(latestWinding.DEVX) || parseFloat(latestWinding.DEVMAXX) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXXERR) || parseFloat(latestWinding.MAXERR) || 0);
-        val = `Fix Tap: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        val = `LV: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
       } else if (isOltcMode && hasMaxMin) {
         // HV Winding with OLTC (Tests at Tap Max, Center, Min)
         const devMax = Math.abs(parseFloat(latestWinding.DEVMAX) || 0);
@@ -553,10 +553,17 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         if (devCen > 2.0) tapDetails.push(`Tap Cen ${devCen.toFixed(2)}%`);
         if (devMin > 2.0) tapDetails.push(`Tap Min ${devMin.toFixed(2)}%`);
       } else {
-        // HV Winding with DETC / Fix Tap
-        devPhase = Math.abs(parseFloat(latestWinding.DEVCENTER) || parseFloat(latestWinding.DEVMAX) || parseFloat(latestWinding.DEVMAXX) || 0);
-        val = `Fix Tap: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
-        if (devPhase > 2.0) tapDetails.push(`Fix Tap ${devPhase.toFixed(2)}%`);
+        // HV Winding with DETC / Specific Tap
+        let specificTapName = 'Tap Cen';
+        if (latestWinding.H1TAP1 && latestWinding.H1TAP1 !== '-' && latestWinding.H1TAP1 !== '') {
+          specificTapName = `Tap ${latestWinding.H1TAP1}`;
+        } else if (latestWinding.DEVCENTER && latestWinding.DEVCENTER !== '-' && latestWinding.DEVCENTER !== '') {
+          specificTapName = 'Tap Cen';
+        }
+
+        devPhase = Math.abs(parseFloat(latestWinding.DEVTAP1) || parseFloat(latestWinding.DEVCENTER) || parseFloat(latestWinding.DEVMAX) || parseFloat(latestWinding.DEVMAXX) || 0);
+        val = `${specificTapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        if (devPhase > 2.0) tapDetails.push(`${specificTapName} ${devPhase.toFixed(2)}%`);
       }
 
       // Scoring according to IEEE C57.152-2013:
@@ -582,7 +589,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
           rec = `Check HV winding resistance & OLTC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else {
-          rec = `Check HV winding resistance & DETC fix tap contacts (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+          const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
+          rec = `Check HV winding resistance & DETC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         }
       }
 
