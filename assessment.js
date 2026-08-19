@@ -617,6 +617,7 @@ function applyFilters() {
     
     if (paramFilter !== 'all') {
       if (paramFilter === 'has-U' && !hasParamValue(item, 'U')) return false;
+      if (paramFilter === 'has-W' && !hasParamValue(item, 'W')) return false;
       if (paramFilter === 'has-Q' && !hasParamValue(item, 'Q')) return false;
       if (paramFilter === 'all-A' && !allParamsAcceptable(item)) return false;
     }
@@ -1173,18 +1174,26 @@ function renderLastPM(lastPM) {
 }
 
 function renderParamIndicator(value) {
-  if (!value || value === '') return '';
-  if (value === 'N/A') return '<span class="param-indicator param-NA">-</span>';
-  if (value === 'A') return '<span class="param-indicator param-A">A</span>';
-  if (value === 'Q') return '<span class="param-indicator param-Q">Q</span>';
-  if (value === 'U') return '<span class="param-indicator param-U">U</span>';
-  return `<span class="param-indicator param-NA">${value}</span>`;
+  if (!value || value === '' || value === '-' || value === 'N/A' || value === 'None') {
+    return '<span class="param-indicator param-NA">-</span>';
+  }
+  const v = String(value).trim().toUpperCase();
+  if (v === 'A') return '<span class="param-indicator param-A">A</span>';
+  if (v === 'Q') return '<span class="param-indicator param-Q">Q</span>';
+  if (v === 'W') return '<span class="param-indicator param-W">W</span>';
+  if (v === 'U') return '<span class="param-indicator param-U">U</span>';
+  return `<span class="param-indicator param-NA">${v}</span>`;
 }
 
 function getWorstParam(values) {
-  if (values.includes('U')) return 'U';
-  if (values.includes('Q')) return 'Q';
-  return 'A';
+  if (!values || values.length === 0) return 'N/A';
+  const clean = values.map(v => String(v).trim().toUpperCase()).filter(v => v && v !== 'N/A' && v !== '-');
+  if (clean.length === 0) return 'N/A';
+  if (clean.includes('U')) return 'U';
+  if (clean.includes('W')) return 'W';
+  if (clean.includes('Q')) return 'Q';
+  if (clean.includes('A')) return 'A';
+  return 'N/A';
 }
 
 function getActiveSummary(item) {

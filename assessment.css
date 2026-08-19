@@ -477,6 +477,18 @@ header p {
   border-color: #fde047 !important;
 }
 
+.param-W {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+[data-theme="light"] .param-W {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  border-color: #fdba74 !important;
+}
+
 .param-U {
   background: rgba(239, 68, 68, 0.15);
   color: var(--color-critical);

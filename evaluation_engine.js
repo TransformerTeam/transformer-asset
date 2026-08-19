@@ -956,6 +956,8 @@ function syncAssessmentWithEvaluationEngine() {
     if (isNA || score === null || score === undefined) return 'N/A';
     if (score >= 4) return 'A';
     if (score === 3) return 'Q';
+    if (score === 2) return 'W';
+    if (score <= 1) return 'U';
     return 'U';
   }
 
@@ -1018,7 +1020,7 @@ function syncAssessmentWithEvaluationEngine() {
       const { percentHIVal } = computeHI(item);
       if (percentHIVal > 0) {
         item.healthIndex = percentHIVal;
-        item.healthStatus = percentHIVal >= 80 ? 'Healthy' : (percentHIVal >= 51 ? 'Monitor' : 'Critical');
+        item.healthStatus = percentHIVal >= 80 ? 'Healthy' : (percentHIVal >= 70 ? 'Monitor' : (percentHIVal >= 50 ? 'Warning' : 'Critical'));
       }
 
       if (ptHasData.visual) item.visualInspection = scoreToAqu(minPtScores.visual);
@@ -1034,6 +1036,52 @@ function syncAssessmentWithEvaluationEngine() {
         if (!item.oltcOil || typeof item.oltcOil !== 'object') item.oltcOil = {};
         item.oltcOil.overall = scoreToAqu(minPtScores.oltc);
       }
+
+      // Sync latest PM date across all test CSV records
+      const dateCandidates = [
+        item.lastPM,
+        item.Last_PM,
+        item['Last PM']
+      ];
+      if (typeof mtOilCsvData !== 'undefined') {
+        const r = findLatestRecord(mtOilCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof irPiCsvData !== 'undefined') {
+        const r = findLatestRecord(irPiCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof ratioCsvData !== 'undefined') {
+        const r = findLatestRecord(ratioCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof windingCsvData !== 'undefined') {
+        const r = findLatestRecord(windingCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof bushingPfCsvData !== 'undefined') {
+        const r = findLatestRecord(bushingPfCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof visualCsvData !== 'undefined') {
+        const r = findLatestRecord(visualCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+      if (typeof oltcOilCsvData !== 'undefined') {
+        const r = findLatestRecord(oltcOilCsvData, serial);
+        if (r) dateCandidates.push(r.Date || r.date || r.DATE);
+      }
+
+      let maxPmYear = null;
+      dateCandidates.forEach(d => {
+        if (!d) return;
+        const match = String(d).match(/\b(20\d\d)\b/);
+        if (match) {
+          const yr = parseInt(match[1], 10);
+          if (!maxPmYear || yr > maxPmYear) maxPmYear = yr;
+        }
+      });
+      if (maxPmYear) item.lastPM = String(maxPmYear);
 
       const recRes = generateDetailedRecommendation(item);
       item.recommendation = recRes.plainText;
