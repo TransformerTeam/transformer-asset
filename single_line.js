@@ -855,7 +855,8 @@ function openDetailModal(serialNumber) {
   setModalText('spec-site', site);
   setModalText('spec-company', 'GPSC');
   setModalText('spec-brand', trInfo.BRAND || '-');
-  setModalText('spec-mfg-date', trInfo.MANUFACTURING_DATE || '-');
+  const mfgVal = trInfo.MANUFACTURING_DATE || rawItem.MANUFACTURING_DATE || rawItem.mfgDate;
+  setModalText('spec-mfg-date', (typeof formatDateToDdMmmYyyy === 'function') ? formatDateToDdMmmYyyy(mfgVal) : (mfgVal || '-'));
   setModalText('spec-power-rating', `${ratedPower} MVA`);
   setModalText('spec-cooling', trInfo.TYPE_OF_COOLING || '-');
   
@@ -874,7 +875,7 @@ function openDetailModal(serialNumber) {
   const scoreEl = document.getElementById('modal-health-score');
   if (scoreEl) scoreEl.textContent = hiVal;
   const dateEl = document.getElementById('modal-inspection-date');
-  if (dateEl) dateEl.textContent = dateToAssess;
+  if (dateEl) dateEl.textContent = (typeof formatDateToDdMmmYyyy === 'function') ? formatDateToDdMmmYyyy(dateToAssess) : dateToAssess;
   
   const ring = document.getElementById('modal-health-ring');
   if (ring) {

@@ -213,9 +213,12 @@ function findLatestRecord(csvArray, targetSerial) {
   return result;
 }
 
-// Format DGA Date
+// Format Date as DD-MMM-YYYY
 function formatDgaDate(dateStr) {
-  if (!dateStr) return '-';
+  if (!dateStr || dateStr === '-' || dateStr === 'N/A') return '-';
+  if (typeof formatDateToDdMmmYyyy === 'function') {
+    return formatDateToDdMmmYyyy(dateStr);
+  }
   let d;
   if (dateStr instanceof Date) {
     d = dateStr;
@@ -223,7 +226,6 @@ function formatDgaDate(dateStr) {
     d = new Date(dateStr);
   }
   if (isNaN(d.getTime())) {
-    // If it's not a valid date, clean up time part if any and return it
     let clean = String(dateStr).trim();
     if (clean.includes(' ')) {
       clean = clean.split(' ')[0];
@@ -234,7 +236,7 @@ function formatDgaDate(dateStr) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const day = String(d.getDate()).padStart(2, '0');
   const month = months[d.getMonth()];
-  const year = String(d.getFullYear()).slice(-2);
+  const year = d.getFullYear();
   return `${day}-${month}-${year}`;
 }
 
