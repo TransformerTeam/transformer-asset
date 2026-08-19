@@ -909,7 +909,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
             const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
             const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
-            val = `CT: ${ctStr}, CTH: ${cthStr}`;
+            val = `CT: ${ctStr}, CTH: ${cthStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         } else {
           // HV Winding: CH, CHT (stored in ch_cap and chl_cap)
@@ -921,7 +921,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
             const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
             const chtStr = cht !== null ? `${cht.toFixed(1)} pF` : '-';
-            val = `CH: ${chStr}, CHT: ${chtStr}`;
+            val = `CH: ${chStr}, CHT: ${chtStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         }
       } else if (is3Winding) {
@@ -935,7 +935,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
             const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
             const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
-            val = `CT: ${ctStr}, CTH: ${cthStr}`;
+            val = `CT: ${ctStr}, CTH: ${cthStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         } else if (isLv) {
           const cl = getCapNum(latestWindingPf.cl_cap);
@@ -946,7 +946,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
             const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
             const cltStr = clt !== null ? `${clt.toFixed(1)} pF` : '-';
-            val = `CL: ${clStr}, CLT: ${cltStr}`;
+            val = `CL: ${clStr}, CLT: ${cltStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         } else {
           // HV Winding: CH, CHL
@@ -958,7 +958,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
             const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
             const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
-            val = `CH: ${chStr}, CHL: ${chlStr}`;
+            val = `CH: ${chStr}, CHL: ${chlStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         }
       } else {
@@ -974,7 +974,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
             const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
             const clhStr = clh !== null ? `${clh.toFixed(1)} pF` : '-';
-            val = `CL: ${clStr}, CLH: ${clhStr}`;
+            val = `CL: ${clStr}, CLH: ${clhStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         } else {
           // HV Winding: CH, CHL
@@ -986,7 +986,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
             const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
             const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
-            val = `CH: ${chStr}, CHL: ${chlStr}`;
+            val = `CH: ${chStr}, CHL: ${chlStr} (%Dev = ${errFat.toFixed(2)}%)`;
           }
         }
       }
