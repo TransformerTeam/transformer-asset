@@ -648,30 +648,67 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const hvRated = parseFloat(item.HV_RATED || item.HV_Voltage || (trInfoItem && trInfoItem.HV_RATED) || '115');
       const is230kVorAbove = hvRated >= 230;
 
+      const isValidPfNum = (v) => {
+        if (v === undefined || v === null) return false;
+        const s = String(v).trim();
+        if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+        const num = parseFloat(s);
+        return !isNaN(num) && num > 0;
+      };
+
+      const getPfVal = (v2, v1) => {
+        if (isValidPfNum(v2)) return parseFloat(v2);
+        if (isValidPfNum(v1)) return parseFloat(v1);
+        return null;
+      };
+
       let val = '';
       let maxPf = 0;
+      let hasValidData = false;
 
       if (isTv) {
         // TV Winding
-        const ct_cth = parseFloat(latestWindingPf.ct_cth_pf_2) || parseFloat(latestWindingPf.ct_cth_pf_1) || 0;
-        const ct = parseFloat(latestWindingPf.ct_pf_2) || parseFloat(latestWindingPf.ct_pf_1) || 0;
-        const cth = parseFloat(latestWindingPf.cth_pf_2) || parseFloat(latestWindingPf.cth_pf_1) || 0;
-        maxPf = parseFloat(latestWindingPf.maxtv_tand) || Math.max(ct_cth, ct, cth);
-        val = `CT+CTH: ${ct_cth.toFixed(2)}%, CT: ${ct.toFixed(2)}%, CTH: ${cth.toFixed(2)}%`;
+        const ct_cth = getPfVal(latestWindingPf.ct_cth_pf_2, latestWindingPf.ct_cth_pf_1);
+        const ct = getPfVal(latestWindingPf.ct_pf_2, latestWindingPf.ct_pf_1);
+        const cth = getPfVal(latestWindingPf.cth_pf_2, latestWindingPf.cth_pf_1);
+        const maxTv = isValidPfNum(latestWindingPf.maxtv_tand) ? parseFloat(latestWindingPf.maxtv_tand) : null;
+
+        const validValues = [ct_cth, ct, cth, maxTv].filter(v => v !== null);
+        if (validValues.length > 0) {
+          hasValidData = true;
+          maxPf = Math.max(...validValues);
+          val = `CT+CTH: ${(ct_cth ?? 0).toFixed(2)}%, CT: ${(ct ?? 0).toFixed(2)}%, CTH: ${(cth ?? 0).toFixed(2)}%`;
+        }
       } else if (isLv) {
         // LV Winding
-        const clh_cl = parseFloat(latestWindingPf.clh_cl_pf_2) || parseFloat(latestWindingPf.clh_cl_pf_1) || 0;
-        const cl = parseFloat(latestWindingPf.cl_pf_2) || parseFloat(latestWindingPf.cl_pf_1) || 0;
-        const clh = parseFloat(latestWindingPf.clh_pf_2) || parseFloat(latestWindingPf.clh_pf_1) || 0;
-        maxPf = parseFloat(latestWindingPf.maxlv_tand) || Math.max(clh_cl, cl, clh);
-        val = `CL+CLH: ${clh_cl.toFixed(2)}%, CL: ${cl.toFixed(2)}%, CLH: ${clh.toFixed(2)}%`;
+        const clh_cl = getPfVal(latestWindingPf.clh_cl_pf_2, latestWindingPf.clh_cl_pf_1);
+        const cl = getPfVal(latestWindingPf.cl_pf_2, latestWindingPf.cl_pf_1);
+        const clh = getPfVal(latestWindingPf.clh_pf_2, latestWindingPf.clh_pf_1);
+        const maxLv = isValidPfNum(latestWindingPf.maxlv_tand) ? parseFloat(latestWindingPf.maxlv_tand) : null;
+
+        const validValues = [clh_cl, cl, clh, maxLv].filter(v => v !== null);
+        if (validValues.length > 0) {
+          hasValidData = true;
+          maxPf = Math.max(...validValues);
+          val = `CL+CLH: ${(clh_cl ?? 0).toFixed(2)}%, CL: ${(cl ?? 0).toFixed(2)}%, CLH: ${(clh ?? 0).toFixed(2)}%`;
+        }
       } else {
         // HV Winding: แสดงค่า %PF ของ CH+CHL, CH, CHL
-        const ch_chl = parseFloat(latestWindingPf.chl_ch_pf_2) || parseFloat(latestWindingPf.chl_ch_pf_1) || 0;
-        const ch = parseFloat(latestWindingPf.ch_pf_2) || parseFloat(latestWindingPf.ch_pf_1) || 0;
-        const chl = parseFloat(latestWindingPf.chl_pf_2) || parseFloat(latestWindingPf.chl_pf_1) || 0;
-        maxPf = parseFloat(latestWindingPf.maxhv_tand) || Math.max(ch_chl, ch, chl);
-        val = `CH+CHL: ${ch_chl.toFixed(2)}%, CH: ${ch.toFixed(2)}%, CHL: ${chl.toFixed(2)}%`;
+        const ch_chl = getPfVal(latestWindingPf.chl_ch_pf_2, latestWindingPf.chl_ch_pf_1);
+        const ch = getPfVal(latestWindingPf.ch_pf_2, latestWindingPf.ch_pf_1);
+        const chl = getPfVal(latestWindingPf.chl_pf_2, latestWindingPf.chl_pf_1);
+        const maxHv = isValidPfNum(latestWindingPf.maxhv_tand) ? parseFloat(latestWindingPf.maxhv_tand) : null;
+
+        const validValues = [ch_chl, ch, chl, maxHv].filter(v => v !== null);
+        if (validValues.length > 0) {
+          hasValidData = true;
+          maxPf = Math.max(...validValues);
+          val = `CH+CHL: ${(ch_chl ?? 0).toFixed(2)}%, CH: ${(ch ?? 0).toFixed(2)}%, CHL: ${(chl ?? 0).toFixed(2)}%`;
+        }
+      }
+
+      if (!hasValidData) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
       // Scoring criteria:
