@@ -1138,8 +1138,8 @@
       const facCHL = cleanRequiredStr(facItem.PF_C_Winding_HL);
 
       const facCL_CLT = cleanRequiredStr(facItem.PF_C_Winding_LHLG);
-      const facCL = cleanRequiredStr(facItem.PF_C_Winding_LH);
-      const facCLT = cleanRequiredStr(facItem.PF_C_Winding_LG);
+      const facCL = cleanRequiredStr(facItem.PF_C_Winding_LG || facItem.PF_C_Winding_L);
+      const facCLT = cleanRequiredStr(facItem.PF_C_Winding_LH || facItem.PF_C_Winding_LT);
 
       const facCT_CHT = cleanRequiredStr(facItem.PF_C_Winding_TGTH);
       const facCT = cleanRequiredStr(facItem.PF_C_Winding_TG);
