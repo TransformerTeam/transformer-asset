@@ -56,11 +56,15 @@ function isExcludedSite(site) {
 // ==========================================
 function buildPtStructure(item) {
   const serialVal = item ? (item['Serial No'] || item.serial || item.SERIAL_NUMBER || '') : '';
-  const trInfoItem = (typeof trInfoCsvData !== 'undefined' && serialVal) ? findLatestRecord(trInfoCsvData, serialVal) : null;
-  const insulationType = String((item && item.TYPE_OF_INSULATION) || (trInfoItem && trInfoItem.TYPE_OF_INSULATION) || '').toLowerCase();
+  const trInfoItem = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length > 0 && serialVal) 
+    ? findLatestRecord(trInfoCsvData, serialVal) 
+    : (item?.trInfo || (typeof TR_DATA !== 'undefined' ? TR_DATA.find(x => String(x.SERIAL_NUMBER || x.Serial_No || '').trim().toLowerCase() === String(serialVal).trim().toLowerCase()) : null));
+  const insulationType = String((item && (item.TYPE_OF_INSULATION || item.fluid)) || (trInfoItem && (trInfoItem.TYPE_OF_INSULATION || trInfoItem.WINDING_INSULATION)) || '').toLowerCase();
   const isNaturalEster = insulationType.includes('ester') || insulationType.includes('fr3') || insulationType.includes('natural');
   const hvRated = parseFloat((item && (item.HV_RATED || item.HV_Voltage)) || (trInfoItem && trInfoItem.HV_RATED) || '115');
   const is230kVorAbove = hvRated >= 230;
+
+  const dgaSubText = isNaturalEster ? 'IEEE C57.155-2014, Natural Ester and Synthetic Ester' : 'IEEE C57.104-2019, Mineral Oil';
 
   const vg = String((item && (item.VECTOR_GROUP || item.vectorGroup)) || (trInfoItem && trInfoItem.VECTOR_GROUP) || '').toUpperCase();
   const mt = String((item && (item.MODEL_TYPE || item.modelType)) || (trInfoItem && trInfoItem.MODEL_TYPE) || '').toUpperCase();
@@ -154,9 +158,7 @@ function buildPtStructure(item) {
           methods: [
             { 
               name: 'Dissolve Gas Analysis (DGA)', 
-              subText: (String(rawItem.trInfo?.TYPE_OF_INSULATION || rawItem.fluid || rawItem.TYPE_OF_INSULATION || rawItem.WINDING_INSULATION || '').toLowerCase().includes('ester')) 
-                ? 'IEEE C57.155-2014, Natural Ester and Synthetic Ester' 
-                : 'IEEE C57.104-2019, Mineral Oil', 
+              subText: dgaSubText, 
               defaultDate: '2025-09-15', 
               mWeight: 5, 
               maxScore: 100, 
@@ -1160,8 +1162,11 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const c2h2 = parseFloat(latestMt.C2H2 || 0);
       const co   = parseFloat(latestMt.CO || 0);
 
-      const fluidType = String(item.trInfo?.TYPE_OF_INSULATION || item.fluid || item.TYPE_OF_INSULATION || item.WINDING_INSULATION || '').trim().toLowerCase();
-      const isEster = fluidType.includes('ester');
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length > 0 && serialVal)
+        ? findLatestRecord(trInfoCsvData, serialVal)
+        : (item?.trInfo || (typeof TR_DATA !== 'undefined' ? TR_DATA.find(x => String(x.SERIAL_NUMBER || x.Serial_No || '').trim().toLowerCase() === String(serialVal).trim().toLowerCase()) : null));
+      const fluidType = String((item && (item.TYPE_OF_INSULATION || item.fluid)) || (trInfoItem && (trInfoItem.TYPE_OF_INSULATION || trInfoItem.WINDING_INSULATION)) || '').trim().toLowerCase();
+      const isEster = fluidType.includes('ester') || fluidType.includes('fr3') || fluidType.includes('natural');
 
       let isCritical = false;
       let isCaution = false;

@@ -186,11 +186,11 @@ function loadAllTestDataCSVs() {
         }
       }
     },
-    { url: 'TestData/TRinfo2.csv', target: d => trInfoCsvData = d },
-    { url: 'TestData/BushingPFData.csv', target: d => bushingPfCsvData = d },
-    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
-    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
-    { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
+    { url: 'TestData/TRinfo2.csv', target: d => { trInfoCsvData = d; if (typeof window !== 'undefined') window.trInfoCsvData = d; } },
+    { url: 'TestData/BushingPFData.csv', target: d => { bushingPfCsvData = d; if (typeof window !== 'undefined') window.bushingPfCsvData = d; } },
+    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } },
+    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } } },
+    { url: 'TestData/OLTCOilData.csv', target: d => { oltcOilCsvData = d; if (typeof window !== 'undefined') window.oltcOilCsvData = d; } },
   ];
 
   csvFiles.push(
