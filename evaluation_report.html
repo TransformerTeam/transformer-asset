@@ -1865,10 +1865,15 @@
       const hvRated = parseFloat((item && (item.HV_RATED || item.HV_Voltage)) || (trInfoItem && trInfoItem.HV_RATED) || '115');
       const is230kVorAbove = hvRated >= 230;
 
+      const vg = String((item && (item.VECTOR_GROUP || item.vectorGroup)) || (trInfoItem && trInfoItem.VECTOR_GROUP) || '').toUpperCase();
+      const mt = String((item && (item.MODEL_TYPE || item.modelType)) || (trInfoItem && trInfoItem.MODEL_TYPE) || '').toUpperCase();
+      const app = String((item && (item.APPLICATION || item.Service_Type)) || (trInfoItem && (trInfoItem.APPLICATION || trInfoItem.Service_Type)) || '').toUpperCase();
+      const spec = String((item && (item.SPECIFICATION || item.REMARK || item.MODEL_TYPE)) || (trInfoItem && (trInfoItem.SPECIFICATION || trInfoItem.REMARK || trInfoItem.MODEL_TYPE)) || '').toUpperCase();
       const noWindingStr = String((item && (item.NO_WINDING || item.no_winding)) || (trInfoItem && trInfoItem.NO_WINDING) || '').trim();
       const lv2Rated = String((item && item.LV2_RATED) || (trInfoItem && trInfoItem.LV2_RATED) || '').trim();
-      const spec = String((item && (item.SPECIFICATION || item.MODEL_TYPE)) || (trInfoItem && (trInfoItem.SPECIFICATION || trInfoItem.MODEL_TYPE)) || '').toUpperCase();
-      const is3Winding = noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W');
+
+      const isAuto = vg.includes('YNA') || vg.includes('AUTO') || mt.includes('AUTO') || app.includes('AUTO') || spec.includes('AUTO');
+      const is3Winding = !isAuto && (noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W'));
 
       let hvPfSubText = 'IEEE C57.152-2013, Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%';
       if (isNaturalEster) {
@@ -1877,6 +1882,40 @@
         hvPfSubText = 'IEEE C57.152-2013, Mineral Oil ≥ 230 kV: Normal ≤ 0.4%, Service Limit ≤ 1.0%';
       }
 
+      const hvWindingSub = {
+        sub: 'HV Winding', full: 100, subWeight: (is3Winding ? 30 : 45),
+        methods: [
+          { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+          { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+          { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+          { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+          { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+          { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+          { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+          { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+        ]
+      };
+
+      const lvWindingSub = {
+        sub: 'LV Winding', full: 100, subWeight: (is3Winding ? 30 : 45),
+        methods: [
+          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+          { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+          { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
+          { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+        ]
+      };
+
+      const tvWindingSub = {
+        sub: 'TV Winding', full: 100, subWeight: (isAuto ? 45 : 30),
+        methods: [
+          { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
+          { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
+          { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
+          { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
+        ]
+      };
+
       const activePartSubs = [
         {
           sub: 'Magnetic Core', full: 100, subWeight: 10,
@@ -1884,40 +1923,16 @@
             { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
-        {
-          sub: 'HV Winding', full: 100, subWeight: is3Winding ? 30 : 45,
-          methods: [
-            { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
-            { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-            { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-            { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
-            { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Winding', full: 100, subWeight: is3Winding ? 30 : 45,
-          methods: [
-            { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
-            { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
-            { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
-            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
-          ]
-        }
+        hvWindingSub
       ];
 
-      if (is3Winding) {
-        activePartSubs.push({
-          sub: 'TV Winding', full: 100, subWeight: 30,
-          methods: [
-            { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
-            { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
-            { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
-            { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
-          ]
-        });
+      if (isAuto) {
+        activePartSubs.push(tvWindingSub);
+      } else if (is3Winding) {
+        activePartSubs.push(lvWindingSub);
+        activePartSubs.push(tvWindingSub);
+      } else {
+        activePartSubs.push(lvWindingSub);
       }
 
       return [
@@ -3085,6 +3100,16 @@
           const hvRated = parseFloat(item.HV_RATED || item.HV_Voltage || (trInfoItem && trInfoItem.HV_RATED) || '115');
           const is230kVorAbove = hvRated >= 230;
 
+          const vg = String((item && (item.VECTOR_GROUP || item.vectorGroup)) || (trInfoItem && trInfoItem.VECTOR_GROUP) || '').toUpperCase();
+          const mt = String((item && (item.MODEL_TYPE || item.modelType)) || (trInfoItem && trInfoItem.MODEL_TYPE) || '').toUpperCase();
+          const app = String((item && (item.APPLICATION || item.Service_Type)) || (trInfoItem && (trInfoItem.APPLICATION || trInfoItem.Service_Type)) || '').toUpperCase();
+          const spec = String((item && (item.SPECIFICATION || item.REMARK || item.MODEL_TYPE)) || (trInfoItem && (trInfoItem.SPECIFICATION || trInfoItem.REMARK || trInfoItem.MODEL_TYPE)) || '').toUpperCase();
+          const noWindingStr = String((item && (item.NO_WINDING || item.no_winding)) || (trInfoItem && trInfoItem.NO_WINDING) || '').trim();
+          const lv2Rated = String((item && item.LV2_RATED) || (trInfoItem && trInfoItem.LV2_RATED) || '').trim();
+
+          const isAuto = vg.includes('YNA') || vg.includes('AUTO') || mt.includes('AUTO') || app.includes('AUTO') || spec.includes('AUTO');
+          const is3Winding = !isAuto && (noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W'));
+
           const isValidPfNum = (v) => {
             if (v === undefined || v === null) return false;
             const s = String(v).trim();
@@ -3103,44 +3128,105 @@
           let maxPf = 0;
           let hasValidData = false;
 
-          if (isTv) {
-            // TV Winding
-            const ct_cth = getPfVal(latestWindingPf.ct_cth_pf_2, latestWindingPf.ct_cth_pf_1);
-            const ct = getPfVal(latestWindingPf.ct_pf_2, latestWindingPf.ct_pf_1);
-            const cth = getPfVal(latestWindingPf.cth_pf_2, latestWindingPf.cth_pf_1);
-            const maxTv = isValidPfNum(latestWindingPf.maxtv_tand) ? parseFloat(latestWindingPf.maxtv_tand) : null;
-
-            const validValues = [ct_cth, ct, cth, maxTv].filter(v => v !== null);
-            if (validValues.length > 0) {
-              hasValidData = true;
-              maxPf = Math.max(...validValues);
-              val = `CT+CTH: ${(ct_cth ?? 0).toFixed(2)}%, CT: ${(ct ?? 0).toFixed(2)}%, CTH: ${(cth ?? 0).toFixed(2)}%`;
+          if (isAuto) {
+            // Auto Transformer: HV (CH, CHT), LV (-, -), TV (CT, CTH)
+            if (isLv) {
+              return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+            } else if (isTv) {
+              const ct = getPfVal(latestWindingPf.ct_pf_2, latestWindingPf.ct_pf_1);
+              const cth = getPfVal(latestWindingPf.cth_pf_2, latestWindingPf.cth_pf_1);
+              const maxTv = isValidPfNum(latestWindingPf.maxtv_tand) ? parseFloat(latestWindingPf.maxtv_tand) : null;
+              const validValues = [ct, cth, maxTv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const ctStr = ct !== null ? `${ct.toFixed(2)}%` : '-';
+                const cthStr = cth !== null ? `${cth.toFixed(2)}%` : '-';
+                val = `CT: ${ctStr}, CTH: ${cthStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHT
+              const ch = getPfVal(latestWindingPf.ch_pf_2, latestWindingPf.ch_pf_1);
+              const cht = getPfVal(latestWindingPf.chl_pf_2, latestWindingPf.chl_pf_1);
+              const maxHv = isValidPfNum(latestWindingPf.maxhv_tand) ? parseFloat(latestWindingPf.maxhv_tand) : null;
+              const validValues = [ch, cht, maxHv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const chStr = ch !== null ? `${ch.toFixed(2)}%` : '-';
+                const chtStr = cht !== null ? `${cht.toFixed(2)}%` : '-';
+                val = `CH: ${chStr}, CHT: ${chtStr}`;
+              }
             }
-          } else if (isLv) {
-            // LV Winding
-            const clh_cl = getPfVal(latestWindingPf.clh_cl_pf_2, latestWindingPf.clh_cl_pf_1);
-            const cl = getPfVal(latestWindingPf.cl_pf_2, latestWindingPf.cl_pf_1);
-            const clh = getPfVal(latestWindingPf.clh_pf_2, latestWindingPf.clh_pf_1);
-            const maxLv = isValidPfNum(latestWindingPf.maxlv_tand) ? parseFloat(latestWindingPf.maxlv_tand) : null;
-
-            const validValues = [clh_cl, cl, clh, maxLv].filter(v => v !== null);
-            if (validValues.length > 0) {
-              hasValidData = true;
-              maxPf = Math.max(...validValues);
-              val = `CL+CLH: ${(clh_cl ?? 0).toFixed(2)}%, CL: ${(cl ?? 0).toFixed(2)}%, CLH: ${(clh ?? 0).toFixed(2)}%`;
+          } else if (is3Winding) {
+            // 3 Winding: HV (CH, CHL), LV (CL, CLT), TV (CT, CTH)
+            if (isTv) {
+              const ct = getPfVal(latestWindingPf.ct_pf_2, latestWindingPf.ct_pf_1);
+              const cth = getPfVal(latestWindingPf.cth_pf_2, latestWindingPf.cth_pf_1);
+              const maxTv = isValidPfNum(latestWindingPf.maxtv_tand) ? parseFloat(latestWindingPf.maxtv_tand) : null;
+              const validValues = [ct, cth, maxTv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const ctStr = ct !== null ? `${ct.toFixed(2)}%` : '-';
+                const cthStr = cth !== null ? `${cth.toFixed(2)}%` : '-';
+                val = `CT: ${ctStr}, CTH: ${cthStr}`;
+              }
+            } else if (isLv) {
+              const cl = getPfVal(latestWindingPf.cl_pf_2, latestWindingPf.cl_pf_1);
+              const clt = getPfVal(latestWindingPf.clh_pf_2, latestWindingPf.clh_pf_1);
+              const maxLv = isValidPfNum(latestWindingPf.maxlv_tand) ? parseFloat(latestWindingPf.maxlv_tand) : null;
+              const validValues = [cl, clt, maxLv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const clStr = cl !== null ? `${cl.toFixed(2)}%` : '-';
+                const cltStr = clt !== null ? `${clt.toFixed(2)}%` : '-';
+                val = `CL: ${clStr}, CLT: ${cltStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHL
+              const ch = getPfVal(latestWindingPf.ch_pf_2, latestWindingPf.ch_pf_1);
+              const chl = getPfVal(latestWindingPf.chl_pf_2, latestWindingPf.chl_pf_1);
+              const maxHv = isValidPfNum(latestWindingPf.maxhv_tand) ? parseFloat(latestWindingPf.maxhv_tand) : null;
+              const validValues = [ch, chl, maxHv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const chStr = ch !== null ? `${ch.toFixed(2)}%` : '-';
+                const chlStr = chl !== null ? `${chl.toFixed(2)}%` : '-';
+                val = `CH: ${chStr}, CHL: ${chlStr}`;
+              }
             }
           } else {
-            // HV Winding: แสดงค่า %PF ของ CH+CHL, CH, CHL
-            const ch_chl = getPfVal(latestWindingPf.chl_ch_pf_2, latestWindingPf.chl_ch_pf_1);
-            const ch = getPfVal(latestWindingPf.ch_pf_2, latestWindingPf.ch_pf_1);
-            const chl = getPfVal(latestWindingPf.chl_pf_2, latestWindingPf.chl_pf_1);
-            const maxHv = isValidPfNum(latestWindingPf.maxhv_tand) ? parseFloat(latestWindingPf.maxhv_tand) : null;
-
-            const validValues = [ch_chl, ch, chl, maxHv].filter(v => v !== null);
-            if (validValues.length > 0) {
-              hasValidData = true;
-              maxPf = Math.max(...validValues);
-              val = `CH+CHL: ${(ch_chl ?? 0).toFixed(2)}%, CH: ${(ch ?? 0).toFixed(2)}%, CHL: ${(chl ?? 0).toFixed(2)}%`;
+            // 2 Winding: HV (CH, CHL), LV (CL, CLH), TV (-, -)
+            if (isTv) {
+              return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+            } else if (isLv) {
+              const cl = getPfVal(latestWindingPf.cl_pf_2, latestWindingPf.cl_pf_1);
+              const clh = getPfVal(latestWindingPf.clh_pf_2, latestWindingPf.clh_pf_1);
+              const maxLv = isValidPfNum(latestWindingPf.maxlv_tand) ? parseFloat(latestWindingPf.maxlv_tand) : null;
+              const validValues = [cl, clh, maxLv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const clStr = cl !== null ? `${cl.toFixed(2)}%` : '-';
+                const clhStr = clh !== null ? `${clh.toFixed(2)}%` : '-';
+                val = `CL: ${clStr}, CLH: ${clhStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHL
+              const ch = getPfVal(latestWindingPf.ch_pf_2, latestWindingPf.ch_pf_1);
+              const chl = getPfVal(latestWindingPf.chl_pf_2, latestWindingPf.chl_pf_1);
+              const maxHv = isValidPfNum(latestWindingPf.maxhv_tand) ? parseFloat(latestWindingPf.maxhv_tand) : null;
+              const validValues = [ch, chl, maxHv].filter(v => v !== null);
+              if (validValues.length > 0) {
+                hasValidData = true;
+                maxPf = Math.max(...validValues);
+                const chStr = ch !== null ? `${ch.toFixed(2)}%` : '-';
+                const chlStr = chl !== null ? `${chl.toFixed(2)}%` : '-';
+                val = `CH: ${chStr}, CHL: ${chlStr}`;
+              }
             }
           }
 
@@ -3215,6 +3301,17 @@
           const isTv = nameLower.includes('tv') || String(subName || '').toLowerCase().includes('tv') || String(subName || '').toLowerCase().includes('tertiary');
           const isLv = !isTv && (nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv'));
 
+          const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+          const vg = String((item && (item.VECTOR_GROUP || item.vectorGroup)) || (trInfoItem && trInfoItem.VECTOR_GROUP) || '').toUpperCase();
+          const mt = String((item && (item.MODEL_TYPE || item.modelType)) || (trInfoItem && trInfoItem.MODEL_TYPE) || '').toUpperCase();
+          const app = String((item && (item.APPLICATION || item.Service_Type)) || (trInfoItem && (trInfoItem.APPLICATION || trInfoItem.Service_Type)) || '').toUpperCase();
+          const spec = String((item && (item.SPECIFICATION || item.REMARK || item.MODEL_TYPE)) || (trInfoItem && (trInfoItem.SPECIFICATION || trInfoItem.REMARK || trInfoItem.MODEL_TYPE)) || '').toUpperCase();
+          const noWindingStr = String((item && (item.NO_WINDING || item.no_winding)) || (trInfoItem && trInfoItem.NO_WINDING) || '').trim();
+          const lv2Rated = String((item && item.LV2_RATED) || (trInfoItem && trInfoItem.LV2_RATED) || '').trim();
+
+          const isAuto = vg.includes('YNA') || vg.includes('AUTO') || mt.includes('AUTO') || app.includes('AUTO') || spec.includes('AUTO');
+          const is3Winding = !isAuto && (noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W'));
+
           const isValidNum = (v) => {
             if (v === undefined || v === null) return false;
             const s = String(v).trim();
@@ -3235,41 +3332,98 @@
           let errFat = null;
           let hasValidData = false;
 
-          if (isTv) {
-            // TV Winding
-            const ct_cth = getCapNum(latestWindingPf.ct_cth_cap);
-            const ct = getCapNum(latestWindingPf.ct_cap);
-            const cth = getCapNum(latestWindingPf.cth_cap);
-            const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
-
-            if (ct_cth !== null || ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
-              hasValidData = true;
-              errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
-              val = `FAT Dev: ${errFat.toFixed(2)}%`;
+          if (isAuto) {
+            // Auto Transformer: HV (CH, CHT), LV (-, -), TV (CT, CTH)
+            if (isLv) {
+              return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+            } else if (isTv) {
+              const ct = getCapNum(latestWindingPf.ct_cap);
+              const cth = getCapNum(latestWindingPf.cth_cap);
+              const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
+              if (ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
+                hasValidData = true;
+                errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
+                const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
+                const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
+                val = `CT: ${ctStr}, CTH: ${cthStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHT (stored in ch_cap and chl_cap)
+              const ch = getCapNum(latestWindingPf.ch_cap);
+              const cht = getCapNum(latestWindingPf.chl_cap);
+              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
+              if (ch !== null || cht !== null || (maxHvChange !== null && maxHvChange > 0)) {
+                hasValidData = true;
+                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
+                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
+                const chtStr = cht !== null ? `${cht.toFixed(1)} pF` : '-';
+                val = `CH: ${chStr}, CHT: ${chtStr}`;
+              }
             }
-          } else if (isLv) {
-            // LV Winding
-            const clh_cl = getCapNum(latestWindingPf.clh_cl_cap);
-            const cl = getCapNum(latestWindingPf.cl_cap);
-            const clh = getCapNum(latestWindingPf.clh_cap);
-            const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
-
-            if (clh_cl !== null || cl !== null || clh !== null || (maxLvChange !== null && maxLvChange > 0)) {
-              hasValidData = true;
-              errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
-              val = `FAT Dev: ${errFat.toFixed(2)}%`;
+          } else if (is3Winding) {
+            // 3 Winding: HV (CH, CHL), LV (CL, CLT), TV (CT, CTH)
+            if (isTv) {
+              const ct = getCapNum(latestWindingPf.ct_cap);
+              const cth = getCapNum(latestWindingPf.cth_cap);
+              const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
+              if (ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
+                hasValidData = true;
+                errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
+                const ctStr = ct !== null ? `${ct.toFixed(1)} pF` : '-';
+                const cthStr = cth !== null ? `${cth.toFixed(1)} pF` : '-';
+                val = `CT: ${ctStr}, CTH: ${cthStr}`;
+              }
+            } else if (isLv) {
+              const cl = getCapNum(latestWindingPf.cl_cap);
+              const clt = getCapNum(latestWindingPf.clh_cap);
+              const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
+              if (cl !== null || clt !== null || (maxLvChange !== null && maxLvChange > 0)) {
+                hasValidData = true;
+                errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
+                const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
+                const cltStr = clt !== null ? `${clt.toFixed(1)} pF` : '-';
+                val = `CL: ${clStr}, CLT: ${cltStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHL
+              const ch = getCapNum(latestWindingPf.ch_cap);
+              const chl = getCapNum(latestWindingPf.chl_cap);
+              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
+              if (ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
+                hasValidData = true;
+                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
+                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
+                const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
+                val = `CH: ${chStr}, CHL: ${chlStr}`;
+              }
             }
           } else {
-            // HV Winding
-            const ch_chl = getCapNum(latestWindingPf.chl_ch_cap);
-            const ch = getCapNum(latestWindingPf.ch_cap);
-            const chl = getCapNum(latestWindingPf.chl_cap);
-            const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
-
-            if (ch_chl !== null || ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
-              hasValidData = true;
-              errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
-              val = `FAT Dev: ${errFat.toFixed(2)}%`;
+            // 2 Winding: HV (CH, CHL), LV (CL, CLH), TV (-, -)
+            if (isTv) {
+              return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+            } else if (isLv) {
+              const cl = getCapNum(latestWindingPf.cl_cap);
+              const clh = getCapNum(latestWindingPf.clh_cap);
+              const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
+              if (cl !== null || clh !== null || (maxLvChange !== null && maxLvChange > 0)) {
+                hasValidData = true;
+                errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
+                const clStr = cl !== null ? `${cl.toFixed(1)} pF` : '-';
+                const clhStr = clh !== null ? `${clh.toFixed(1)} pF` : '-';
+                val = `CL: ${clStr}, CLH: ${clhStr}`;
+              }
+            } else {
+              // HV Winding: CH, CHL
+              const ch = getCapNum(latestWindingPf.ch_cap);
+              const chl = getCapNum(latestWindingPf.chl_cap);
+              const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
+              if (ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
+                hasValidData = true;
+                errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
+                const chStr = ch !== null ? `${ch.toFixed(1)} pF` : '-';
+                const chlStr = chl !== null ? `${chl.toFixed(1)} pF` : '-';
+                val = `CH: ${chStr}, CHL: ${chlStr}`;
+              }
             }
           }
 
