@@ -83,7 +83,7 @@ function buildPtStructure(item) {
             { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
             { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
             { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-            { name: 'Winding Resistance (%DEV from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+            { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
             { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
             { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
             { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
@@ -92,7 +92,7 @@ function buildPtStructure(item) {
         {
           sub: 'LV Winding', full: 100, subWeight: 20,
           methods: [
-            { name: 'Winding Resistance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+            { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
             { name: 'Power Factor (%PF)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
             { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
             { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
@@ -522,10 +522,43 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestWinding = (typeof windingCsvData !== 'undefined') ? findLatestRecord(windingCsvData, serialVal) : null;
     if (latestWinding) {
       const date = latestWinding.DATE || latestWinding.Date || latestWinding.date;
-      const dev = latestWinding.DEVCENTER || latestWinding.DEVMAX || '0.2';
-      const val = `%Dev: ${dev}%`;
-      const score = Math.abs(parseFloat(dev)) <= 0.5 ? 5 : 4;
-      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check winding resistance' };
+      const isLv = nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv');
+
+      let devPhase = 0;
+      let devFat = 0;
+
+      if (isLv) {
+        // LV Winding
+        devPhase = Math.abs(parseFloat(latestWinding.DEVX) || 0);
+        devFat = Math.abs(parseFloat(latestWinding.MAXXERR) || parseFloat(latestWinding.MAXERR) || 0);
+      } else {
+        // HV Winding
+        const devMax = Math.abs(parseFloat(latestWinding.DEVMAX) || 0);
+        const devCen = Math.abs(parseFloat(latestWinding.DEVCENTER) || 0);
+        const devMin = Math.abs(parseFloat(latestWinding.DEVMIN) || 0);
+        devPhase = Math.max(devMax, devCen, devMin);
+        devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
+      }
+
+      const val = `Phase: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+
+      // Scoring according to IEEE C57.152-2013:
+      // Standard Limit: %Dev between Phase <= 2%, %DEV from FAT/Oldest <= 5%
+      let score = 5;
+      if (devPhase <= 1.0 && devFat <= 3.0) {
+        score = 5;
+      } else if (devPhase <= 2.0 && devFat <= 5.0) {
+        score = 4;
+      } else if (devPhase <= 3.0 || devFat <= 7.0) {
+        score = 3;
+      } else if (devPhase <= 5.0 || devFat <= 10.0) {
+        score = 2;
+      } else {
+        score = 1;
+      }
+
+      const rec = score >= 4 ? '-' : (isLv ? 'Check LV winding resistance & connections (IEEE C57.152)' : 'Check HV winding resistance & tap contacts (IEEE C57.152)');
+      return { value: val, testDate: date, ratingScore: score, recommendation: rec };
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
