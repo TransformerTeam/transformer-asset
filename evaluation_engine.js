@@ -90,7 +90,7 @@ function buildPtStructure(item) {
         { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
         { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
         { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
-        { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
+        { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
         { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
       ]
     },
@@ -99,7 +99,7 @@ function buildPtStructure(item) {
       methods: [
         { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
         { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
-        { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
+        { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
         { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
       ]
     }
@@ -111,7 +111,7 @@ function buildPtStructure(item) {
       methods: [
         { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
         { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
-        { name: 'Capacitance (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
+        { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
         { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
       ]
     });
@@ -771,7 +771,97 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
 
-  // 9. Insulation Resistance and PI (IRandPIData.csv)
+  // 9. Winding Capacitance (%Error from FAT/Oldest) (WindingPFData.csv)
+  if (nameLower.includes('capacitance') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('surge') && !nameLower.includes('arrester')) {
+    const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, serialVal) : null;
+    if (latestWindingPf) {
+      const date = latestWindingPf.date || latestWindingPf.Date;
+      const isTv = nameLower.includes('tv') || String(subName || '').toLowerCase().includes('tv') || String(subName || '').toLowerCase().includes('tertiary');
+      const isLv = !isTv && (nameLower.includes('lv') || String(subName || '').toLowerCase().includes('lv'));
+
+      const isValidNum = (v) => {
+        if (v === undefined || v === null) return false;
+        const s = String(v).trim();
+        if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+        const num = parseFloat(s);
+        return !isNaN(num);
+      };
+
+      const getCapNum = (v) => {
+        if (isValidNum(v)) {
+          const num = parseFloat(v);
+          if (num > 0) return num;
+        }
+        return null;
+      };
+
+      let val = '';
+      let errFat = null;
+      let hasValidData = false;
+
+      if (isTv) {
+        // TV Winding
+        const ct_cth = getCapNum(latestWindingPf.ct_cth_cap);
+        const ct = getCapNum(latestWindingPf.ct_cap);
+        const cth = getCapNum(latestWindingPf.cth_cap);
+        const maxTvChange = isValidNum(latestWindingPf.maxctv_change) ? parseFloat(latestWindingPf.maxctv_change) : null;
+
+        if (ct_cth !== null || ct !== null || cth !== null || (maxTvChange !== null && maxTvChange > 0)) {
+          hasValidData = true;
+          errFat = maxTvChange !== null ? Math.abs(maxTvChange) : 0;
+          val = `FAT Dev: ${errFat.toFixed(2)}%`;
+        }
+      } else if (isLv) {
+        // LV Winding
+        const clh_cl = getCapNum(latestWindingPf.clh_cl_cap);
+        const cl = getCapNum(latestWindingPf.cl_cap);
+        const clh = getCapNum(latestWindingPf.clh_cap);
+        const maxLvChange = isValidNum(latestWindingPf.maxclv_change) ? parseFloat(latestWindingPf.maxclv_change) : null;
+
+        if (clh_cl !== null || cl !== null || clh !== null || (maxLvChange !== null && maxLvChange > 0)) {
+          hasValidData = true;
+          errFat = maxLvChange !== null ? Math.abs(maxLvChange) : 0;
+          val = `FAT Dev: ${errFat.toFixed(2)}%`;
+        }
+      } else {
+        // HV Winding
+        const ch_chl = getCapNum(latestWindingPf.chl_ch_cap);
+        const ch = getCapNum(latestWindingPf.ch_cap);
+        const chl = getCapNum(latestWindingPf.chl_cap);
+        const maxHvChange = isValidNum(latestWindingPf.maxchv_change) ? parseFloat(latestWindingPf.maxchv_change) : null;
+
+        if (ch_chl !== null || ch !== null || chl !== null || (maxHvChange !== null && maxHvChange > 0)) {
+          hasValidData = true;
+          errFat = maxHvChange !== null ? Math.abs(maxHvChange) : 0;
+          val = `FAT Dev: ${errFat.toFixed(2)}%`;
+        }
+      }
+
+      if (!hasValidData || errFat === null) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      // Scoring criteria: IEEE C57.152-2013 (%Dev <= 5.0%)
+      let score = 5;
+      if (errFat <= 1.0) {
+        score = 5;
+      } else if (errFat <= 5.0) {
+        score = 4;
+      } else if (errFat <= 7.0) {
+        score = 3;
+      } else if (errFat <= 10.0) {
+        score = 2;
+      } else {
+        score = 1;
+      }
+
+      const rec = score >= 4 ? '-' : 'Check winding capacitance & deformation (IEEE C57.152: %Dev ≤ 5%)';
+      return { value: val, testDate: date, ratingScore: score, recommendation: rec };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
+  // 10. Insulation Resistance and PI (IRandPIData.csv)
   if (nameLower.includes('polarization index') || nameLower.includes('pi') || nameLower.includes('insulation resistance and pi')) {
     const latestPi = (typeof irPiCsvData !== 'undefined') ? findLatestRecord(irPiCsvData, serialVal) : null;
     if (latestPi) {
