@@ -152,7 +152,16 @@ function buildPtStructure(item) {
         {
           sub: 'DGA', full: 100, subWeight: 25, weight: 5,
           methods: [
-            { name: 'Dissolve Gas Analysis (DGA)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 100, mWorst: '-' }
+            { 
+              name: 'Dissolve Gas Analysis (DGA)', 
+              subText: (String(rawItem.trInfo?.TYPE_OF_INSULATION || rawItem.fluid || rawItem.TYPE_OF_INSULATION || rawItem.WINDING_INSULATION || '').toLowerCase().includes('ester')) 
+                ? 'IEEE C57.155-2014, Natural Ester and Synthetic Ester' 
+                : 'IEEE C57.104-2019, Mineral Oil', 
+              defaultDate: '2025-09-15', 
+              mWeight: 5, 
+              maxScore: 100, 
+              mWorst: '-' 
+            }
           ]
         },
         {
@@ -1143,7 +1152,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
     if (latestMt) {
       const date = latestMt.Date || latestMt.date || latestMt.DATE;
-      const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.Test_Result || '').toUpperCase();
+      const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.IEEE_C57_155 || latestMt.Test_Result || '').toUpperCase();
       const h2   = parseFloat(latestMt.H2 || 0);
       const ch4  = parseFloat(latestMt.CH4 || 0);
       const c2h6 = parseFloat(latestMt.C2H6 || 0);
@@ -1151,12 +1160,48 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const c2h2 = parseFloat(latestMt.C2H2 || 0);
       const co   = parseFloat(latestMt.CO || 0);
 
-      const isT2 = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
-      const isT1 = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
+      const fluidType = String(item.trInfo?.TYPE_OF_INSULATION || item.fluid || item.TYPE_OF_INSULATION || item.WINDING_INSULATION || '').trim().toLowerCase();
+      const isEster = fluidType.includes('ester');
 
-      if (isT2) return { value: 'Critical (Fault Detected)', testDate: date, ratingScore: 1, recommendation: 'Perform DGA trend & fault investigation' };
-      else if (isT1) return { value: 'Monitoring (Gas Exceed Table 2)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis & monitor gas generation' };
-      else return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
+      let isCritical = false;
+      let isCaution = false;
+
+      if (isEster) {
+        // IEEE C57.155-2014 (Natural Ester & Synthetic Ester)
+        // Arcing/Thermal Fault (Status 3): C2H2 > 35 or C2H4 > 200 or H2 > 1000 or CH4 > 300 or C2H6 > 600
+        // Caution/Monitoring (Status 2): C2H2 > 1 or C2H4 > 40 or H2 > 300 or CH4 > 50 or C2H6 > 250 or CO > 500
+        isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 1000 || ch4 > 300 || c2h6 > 600 || c2h4 > 200 || c2h2 > 35;
+        isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 300 || ch4 > 50 || c2h6 > 250 || c2h4 > 40 || c2h2 > 1 || co > 500;
+      } else {
+        // IEEE C57.104-2019 (Mineral Oil)
+        // Status 3 Fault: C2H2 > 35 or C2H4 > 200 or H2 > 700 or CH4 > 400
+        // Status 2 Caution: C2H2 > 1 or C2H4 > 50 or H2 > 100 or CH4 > 120 or C2H6 > 65 or CO > 350
+        isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
+        isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
+      }
+
+      if (isCritical) {
+        return { 
+          value: isEster ? 'Critical (IEEE C57.155 Status 3 Fault)' : 'Critical (IEEE C57.104 Status 3 Fault)', 
+          testDate: date, 
+          ratingScore: 1, 
+          recommendation: 'Perform DGA trend & fault investigation' 
+        };
+      } else if (isCaution) {
+        return { 
+          value: isEster ? 'Monitoring (IEEE C57.155 Gas Exceed Table 1)' : 'Monitoring (IEEE C57.104 Gas Exceed Table 2)', 
+          testDate: date, 
+          ratingScore: 3, 
+          recommendation: 'Perform DGA trend analysis & monitor gas generation' 
+        };
+      } else {
+        return { 
+          value: 'Normal (No Fault Detected)', 
+          testDate: date, 
+          ratingScore: 5, 
+          recommendation: '-' 
+        };
+      }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
