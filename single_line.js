@@ -167,16 +167,111 @@ function isExcludedSite(site) {
   return false;
 }
 
+// Global CSV Data holders for Dynamic Evaluation Engine
+let trInfoCsvData = [];
+let bushingPfCsvData = [];
+let mtOilCsvData = [];
+let mainTankDgaCsvData = [];
+let oltcOilCsvData = [];
+let visualCsvData = [];
+let bushingInfoCsvData = [];
+let surgeInfoCsvData = [];
+let surgePfCsvData = [];
+let irPiCsvData = [];
+let piCsvData = [];
+let windingPfCsvData = [];
+let ratioCsvData = [];
+let excitingCsvData = [];
+let windingCsvData = [];
+let singleShortCsvData = [];
+let threeShortCsvData = [];
+let fraCsvData = [];
+let dfrCsvData = [];
+let drmCsvData = [];
+let pdOnlineCsvData = [];
+let thermoScanCsvData = [];
+let factoryDataCsvData = [];
+
+// Helper for parsing CSV into Objects
+function parseDgaCSV(txt) {
+  if (!txt || !txt.trim()) return [];
+  const lines = txt.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length < 2) return [];
+
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+  const rows = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const rawCols = lines[i].split(',');
+    const obj = {};
+    headers.forEach((h, idx) => {
+      obj[h] = (rawCols[idx] || '').trim().replace(/^["']|["']$/g, '');
+    });
+
+    obj.serial = obj.SERIAL_NUMBER || obj.Serial_no || obj.Serial_No || obj.serial || obj['Serial No'] || obj['Serial No.'] || obj['\ufeffSERIAL_NUMBER'] || obj['\ufeffSerial_no'];
+    obj.date = obj.DATE || obj.Date || obj.date || obj['Test Date'] || obj['Testing Date'];
+    rows.push(obj);
+  }
+  return rows;
+}
+
+var _latestRecordCache = new Map();
+
+function findLatestRecord(csvArray, targetSerial) {
+  if (!csvArray || !csvArray.length || !targetSerial) return null;
+  const cleanTarget = String(targetSerial || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const cacheKey = `${csvArray.length}_${cleanTarget}`;
+  if (_latestRecordCache.has(cacheKey)) {
+    return _latestRecordCache.get(cacheKey);
+  }
+
+  const matches = csvArray.filter(d => {
+    if (!d) return false;
+    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || d['Serial No.'] || d['Serial No'] || d.Name || d.code || '';
+    if (!s) return false;
+    const s1 = String(s).trim().toLowerCase();
+    const s2 = String(targetSerial).trim().toLowerCase();
+    if (s1 === s2) return true;
+    const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS))) return true;
+    return s1.includes(s2) || s2.includes(s1);
+  });
+  if (!matches.length) {
+    _latestRecordCache.set(cacheKey, null);
+    return null;
+  }
+  matches.sort((a, b) => {
+    const dA = new Date(a.date || a.Date || a['Test Date'] || a.Test_Date || 0);
+    const dB = new Date(b.date || b.Date || b['Test Date'] || b.Test_Date || 0);
+    if (isNaN(dA.getTime())) return 1;
+    if (isNaN(dB.getTime())) return -1;
+    return dB - dA;
+  });
+  const result = matches[0];
+  _latestRecordCache.set(cacheKey, result);
+  return result;
+}
+
 // Convert HEALTH_INDEX_DATA / TR_DATA array to SCADA record objects
 function convertHealthIndexDataToRecords(dataArray) {
   if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
   
   return dataArray.filter(item => !isExcludedSite(item.site || item.SITE || (item.trInfo && item.trInfo.SITE))).map((item, idx) => {
-    const trInfo = item.trInfo || {};
+    const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'] || (item.trInfo && item.trInfo.SERIAL_NUMBER) || '-';
+    const trInfo = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData.length > 0) ? (findLatestRecord(trInfoCsvData, serial) || item.trInfo || {}) : (item.trInfo || {});
+    
     const name = item.name || item.EQUIPMENT_NAME || item['Equipment Name'] || trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || `TR-${idx + 1}`;
-    const serial = item.serial || item.SERIAL_NUMBER || item['Serial No'] || trInfo.SERIAL_NUMBER || '-';
     const site = item.site || item.SITE || item.LOCATION || trInfo.SITE || 'CUP-1';
-    const hi = item.healthIndex || item.healthIndexVal || item['Condition Health Index'] || trInfo.HI || 0;
+    
+    // Compute dynamic Health Index following Evaluation Report
+    let hi = item.healthIndex || item.healthIndexVal || item['Condition Health Index'] || trInfo.HI || 0;
+    if (typeof computeHI === 'function') {
+      const computed = computeHI(item);
+      if (computed && computed.percentHIVal > 0) {
+        hi = computed.percentHIVal;
+      }
+    }
+
     const dp = item.estimatedDP || item['Estimated DP (From Furan)'] || '-';
     const power = item.ratedPower || item.POWER_RATING_DETAIL || trInfo.POWER_RATING_DETAIL || (trInfo.POWER_RATING ? `${trInfo.POWER_RATING} MVA` : '-');
     
@@ -186,6 +281,9 @@ function convertHealthIndexDataToRecords(dataArray) {
     }
 
     const voltage = item.ratedVoltage || ((item.HV_RATED && item.LV_RATED) ? `${item.HV_RATED}/${item.LV_RATED} kV` : (trInfo.HV_RATED ? `${trInfo.HV_RATED}/${trInfo.LV_RATED || ''} kV` : `${hv} kV`));
+
+    // Dynamic Recommendation & Subscores following Evaluation Report
+    const recRes = (typeof generateDetailedRecommendation === 'function') ? generateDetailedRecommendation(item) : { plainText: item.recommendation || '', html: '' };
 
     return {
       "No.": String(idx + 1),
@@ -198,7 +296,8 @@ function convertHealthIndexDataToRecords(dataArray) {
       "Rated Power (MVA)": power,
       "Rated Voltage (kV)": voltage,
       "Service_Type": item.serviceType || trInfo.Service_Type || '',
-      "_rawItem": item
+      "Recommendation": recRes.plainText,
+      "_rawItem": { ...item, trInfo, recommendation: recRes.plainText, recommendationHtml: recRes.html }
     };
   });
 }
@@ -226,47 +325,57 @@ function tryFallbackData() {
   return false;
 }
 
-// Fetch and Parse CSV File with robust fallback to preloaded HEALTH_INDEX_DATA / TR_DATA
+// Fetch and Parse all test CSVs and sync evaluation engine
 function loadCSVData() {
-  if (typeof healthDataCsv !== 'undefined' && healthDataCsv) {
-    const records = parseHealthIndexSumCSV(healthDataCsv);
-    if (records && records.length > 0) {
-      rawTransformers = records;
-      initializeDashboard();
-      return;
-    }
-  }
+  // First initialize with preloaded data for instant rendering
+  tryFallbackData();
 
-  // Try fallback pre-compiled data first
-  if (tryFallbackData()) {
-    return;
-  }
+  // Load all test CSVs in background to compute exact evaluation report results
+  const csvFiles = [
+    { url: 'TestData/TRinfo2.csv', target: d => { trInfoCsvData = d; if (typeof window !== 'undefined') window.trInfoCsvData = d; } },
+    { url: 'TestData/BushingPFData.csv', target: d => { bushingPfCsvData = d; if (typeof window !== 'undefined') window.bushingPfCsvData = d; } },
+    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } },
+    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
+    { url: 'TestData/OLTCOilData.csv', target: d => { oltcOilCsvData = d; if (typeof window !== 'undefined') window.oltcOilCsvData = d; } },
+    { url: 'TestData/VisualData.csv', target: d => { visualCsvData = d; if (typeof window !== 'undefined') window.visualCsvData = d; } },
+    { url: 'TestData/BushingInfo.csv', target: d => { bushingInfoCsvData = d; if (typeof window !== 'undefined') window.bushingInfoCsvData = d; } },
+    { url: 'TestData/SurgeInfo.csv', target: d => { surgeInfoCsvData = d; if (typeof window !== 'undefined') window.surgeInfoCsvData = d; } },
+    { url: 'TestData/SurgePFData.csv', target: d => { surgePfCsvData = d; if (typeof window !== 'undefined') window.surgePfCsvData = d; } },
+    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; if (typeof window !== 'undefined') { window.irPiCsvData = d; window.piCsvData = d; } } },
+    { url: 'TestData/WindingPFData.csv', target: d => { windingPfCsvData = d; if (typeof window !== 'undefined') window.windingPfCsvData = d; } },
+    { url: 'TestData/RatioData.csv', target: d => { ratioCsvData = d; if (typeof window !== 'undefined') window.ratioCsvData = d; } },
+    { url: 'TestData/ExcitingData.csv', target: d => { excitingCsvData = d; if (typeof window !== 'undefined') window.excitingCsvData = d; } },
+    { url: 'TestData/WindingData.csv', target: d => { windingCsvData = d; if (typeof window !== 'undefined') window.windingCsvData = d; } },
+    { url: 'TestData/SingleShortData.csv', target: d => { singleShortCsvData = d; if (typeof window !== 'undefined') window.singleShortCsvData = d; } },
+    { url: 'TestData/ThreeShortData.csv', target: d => { threeShortCsvData = d; if (typeof window !== 'undefined') window.threeShortCsvData = d; } },
+    { url: 'TestData/FRAData.csv', target: d => { fraCsvData = d; if (typeof window !== 'undefined') window.fraCsvData = d; } },
+    { url: 'TestData/DFRData.csv', target: d => { dfrCsvData = d; if (typeof window !== 'undefined') window.dfrCsvData = d; } },
+    { url: 'TestData/DRMData.csv', target: d => { drmCsvData = d; if (typeof window !== 'undefined') window.drmCsvData = d; } },
+    { url: 'TestData/PDonlineData.csv', target: d => { pdOnlineCsvData = d; if (typeof window !== 'undefined') window.pdOnlineCsvData = d; } },
+    { url: 'TestData/ThermoScanData.csv', target: d => { thermoScanCsvData = d; if (typeof window !== 'undefined') window.thermoScanCsvData = d; } },
+    { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } }
+  ];
 
-  // Otherwise fetch HealthIndexSum.csv
-  fetch('HealthIndexSum.csv')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to load HealthIndexSum.csv');
-      }
-      return response.text();
-    })
-    .then(csvText => {
-      const records = parseHealthIndexSumCSV(csvText);
+  Promise.allSettled(
+    csvFiles.map(item =>
+      fetch(item.url)
+        .then(r => r.ok ? r.text() : '')
+        .then(txt => {
+          if (txt) item.target(parseDgaCSV(txt));
+        })
+    )
+  ).then(() => {
+    // Re-evaluate all transformers with fresh test CSV datasets
+    if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+      const records = convertHealthIndexDataToRecords(HEALTH_INDEX_DATA);
       if (records && records.length > 0) {
         rawTransformers = records;
-        initializeDashboard();
-      } else {
-        if (!tryFallbackData()) {
-          showEmptyState("Could not parse HealthIndexSum.csv data.");
-        }
+        renderActiveSite();
       }
-    })
-    .catch(error => {
-      console.warn("CSV fetch notice, using preloaded data:", error);
-      if (!tryFallbackData()) {
-        showEmptyState("HealthIndexSum.csv not found. Please import it manually.");
-      }
-    });
+    }
+  }).catch(err => {
+    console.warn("Test data CSV fetch notice:", err);
+  });
 }
 
 // Simple robust CSV parser that skips category header row
@@ -694,15 +803,42 @@ function openDetailModal(serialNumber) {
   const tr = rawTransformers.find(t => t["Serial No"] === serialNumber || t["Equipment Name"] === serialNumber) || rawTransformers[0];
   if (!tr) return;
 
+  const rawItem = tr._rawItem || {};
+  const trInfo = rawItem.trInfo || {};
+
   const name = tr["Equipment Name"] || '-';
   const serial = tr["Serial No"] || '-';
   const site = tr["SITE"] || '-';
   const hiVal = parseInt(tr["Condition Health Index"]) || 0;
   const ratedPower = tr["Rated Power (MVA)"] || tr["Rated Power\n(MVA)"] || '-';
   const hvRate = tr["HV Rate (kV)"] || '-';
-  const lvRate = '-';
-  const dateToAssess = tr["Result_Date"] || tr["Date"] || '19-Jan-2026';
-  const recommendation = tr["Recommendation"] || (tr._rawItem?.recommendation) || 'No specific maintenance recommended at this time.';
+  
+  let lvRate = trInfo.LV_RATED || '';
+  if (!lvRate && (tr["Rated Voltage (kV)"] || '').includes('/')) {
+    lvRate = tr["Rated Voltage (kV)"].split('/')[1];
+  }
+
+  // Determine latest test date
+  let dateToAssess = tr["Result_Date"] || tr["Date"] || '19-Jan-2026';
+  const dateCandidates = [];
+  if (typeof mtOilCsvData !== 'undefined') {
+    const r = findLatestRecord(mtOilCsvData, serial);
+    if (r) dateCandidates.push(r.date || r.Date || r.DATE);
+  }
+  if (typeof visualCsvData !== 'undefined') {
+    const r = findLatestRecord(visualCsvData, serial);
+    if (r) dateCandidates.push(r.date || r.Date || r.DATE);
+  }
+  if (typeof irPiCsvData !== 'undefined') {
+    const r = findLatestRecord(irPiCsvData, serial);
+    if (r) dateCandidates.push(r.date || r.Date || r.DATE);
+  }
+  if (dateCandidates.length > 0) {
+    dateCandidates.sort((a, b) => new Date(b) - new Date(a));
+    if (dateCandidates[0]) dateToAssess = dateCandidates[0];
+  }
+
+  const recommendation = tr["Recommendation"] || rawItem.recommendation || 'All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits.';
 
   // Populate spec text
   const titleEl = document.getElementById('modal-transformer-title');
@@ -710,22 +846,29 @@ function openDetailModal(serialNumber) {
   const subEl = document.getElementById('modal-transformer-subtitle');
   if (subEl) subEl.textContent = `Serial: ${serial} | Site: ${site}`;
   
+  // Set Evaluation Report Link Button
+  const evalReportBtn = document.getElementById('modal-eval-report-btn');
+  if (evalReportBtn) {
+    evalReportBtn.href = `evaluation_report.html?serial=${encodeURIComponent(serial)}`;
+  }
+
   setModalText('spec-site', site);
   setModalText('spec-company', 'GPSC');
-  setModalText('spec-brand', tr._rawItem?.trInfo?.BRAND || '-');
-  setModalText('spec-mfg-date', tr._rawItem?.trInfo?.MANUFACTURING_DATE || '-');
+  setModalText('spec-brand', trInfo.BRAND || '-');
+  setModalText('spec-mfg-date', trInfo.MANUFACTURING_DATE || '-');
   setModalText('spec-power-rating', `${ratedPower} MVA`);
-  setModalText('spec-cooling', tr._rawItem?.trInfo?.TYPE_OF_COOLING || '-');
-  let tapVal = tr._rawItem?.trInfo?.TAP_CHANGER_TYPE || '-';
+  setModalText('spec-cooling', trInfo.TYPE_OF_COOLING || '-');
+  
+  let tapVal = trInfo.TAP_CHANGER_TYPE || rawItem.tapChangerType || '-';
   if (tapVal.toUpperCase().includes('NLTC')) tapVal = tapVal.replace(/NLTC/gi, 'DETC');
   setModalText('spec-tap-changer', tapVal);
-  setModalText('spec-vector-group', tr._rawItem?.trInfo?.VECTOR_GROUP || '-');
+  setModalText('spec-vector-group', trInfo.VECTOR_GROUP || '-');
   
-  setModalText('spec-hv-voltage', `${hvRate} kV`);
-  setModalText('spec-lv-voltage', `${lvRate} kV`);
+  setModalText('spec-hv-voltage', hvRate && !hvRate.includes('kV') ? `${hvRate} kV` : (hvRate || '-'));
+  setModalText('spec-lv-voltage', lvRate ? `${String(lvRate).replace(/kV/i, '').trim()} kV` : '-');
   setModalText('spec-insulation', 'OIL TYPE');
-  setModalText('spec-mass', '-');
-  setModalText('spec-gps', tr._rawItem?.trInfo?.LOCATION_GPS || '-');
+  setModalText('spec-mass', trInfo.TOTAL_MASS ? `${trInfo.TOTAL_MASS} kg` : '-');
+  setModalText('spec-gps', trInfo.LOCATION_GPS || '-');
   
   // Set health ring & score
   const scoreEl = document.getElementById('modal-health-score');
@@ -750,52 +893,111 @@ function openDetailModal(serialNumber) {
   const recText = document.getElementById('rec-text');
   
   if (hiVal === 0 || isNaN(hiVal)) {
-    if (badge) { badge.classList.add('badge-noassess'); badge.textContent = 'NO ASSESS'; }
-    if (ring) ring.classList.add('no-assess');
-    if (recCard) recCard.classList.add('no-assess');
+    if (badge) { badge.className = 'badge badge-noassess'; badge.textContent = 'NO ASSESS'; }
+    if (ring) ring.className.baseVal = 'circle no-assess';
+    if (recCard) recCard.className = 'recommendation-card no-assess';
     if (recTitle) recTitle.textContent = 'No Assessment Available';
-    if (recText) recText.textContent = 'This transformer has not been assessed yet or has a Health Index of 0%.';
+    if (recText) recText.innerHTML = 'This transformer has not been assessed yet or has a Health Index of 0%.';
   } else if (hiVal >= 80) {
-    if (badge) { badge.classList.add('badge-healthy'); badge.textContent = 'HEALTHY'; }
-    if (ring) ring.classList.add('healthy');
-    if (recCard) recCard.classList.add('healthy');
+    if (badge) { badge.className = 'badge badge-healthy'; badge.textContent = 'HEALTHY'; }
+    if (ring) ring.className.baseVal = 'circle healthy';
+    if (recCard) recCard.className = 'recommendation-card healthy';
     if (recTitle) recTitle.textContent = 'Healthy - Routine Maintenance';
-    if (recText) recText.textContent = recommendation;
+    if (recText) recText.innerHTML = rawItem.recommendationHtml || recommendation;
   } else if (hiVal >= 70) {
-    if (badge) { badge.classList.add('badge-monitoring'); badge.textContent = 'MONITORING'; }
-    if (ring) ring.classList.add('monitoring');
-    if (recCard) recCard.classList.add('monitoring');
+    if (badge) { badge.className = 'badge badge-monitoring'; badge.textContent = 'MONITORING'; }
+    if (ring) ring.className.baseVal = 'circle monitoring';
+    if (recCard) recCard.className = 'recommendation-card monitoring';
     if (recTitle) recTitle.textContent = 'Monitoring - Increased Surveillance';
-    if (recText) recText.textContent = recommendation;
+    if (recText) recText.innerHTML = rawItem.recommendationHtml || recommendation;
   } else if (hiVal >= 50) {
-    if (badge) { badge.classList.add('badge-warning'); badge.textContent = 'WARNING'; }
-    if (ring) ring.classList.add('warning');
-    if (recCard) recCard.classList.add('warning');
+    if (badge) { badge.className = 'badge badge-warning'; badge.textContent = 'WARNING'; }
+    if (ring) ring.className.baseVal = 'circle warning';
+    if (recCard) recCard.className = 'recommendation-card warning';
     if (recTitle) recTitle.textContent = 'Warning - Plan Diagnostics';
-    if (recText) recText.textContent = recommendation;
+    if (recText) recText.innerHTML = rawItem.recommendationHtml || recommendation;
   } else {
-    if (badge) { badge.classList.add('badge-critical'); badge.textContent = 'CRITICAL'; }
-    if (ring) ring.classList.add('critical');
-    if (recCard) recCard.classList.add('critical');
-    if (recTitle) recTitle.textContent = 'Critical - Immediate Shutdown / Inspect';
-    if (recText) recText.textContent = recommendation;
+    if (badge) { badge.className = 'badge badge-critical'; badge.textContent = 'CRITICAL'; }
+    if (ring) ring.className.baseVal = 'circle critical';
+    if (recCard) recCard.className = 'recommendation-card critical';
+    if (recTitle) recTitle.textContent = 'Critical - Immediate Inspection / Action Required';
+    if (recText) recText.innerHTML = rawItem.recommendationHtml || recommendation;
   }
   
-  // Populate diagnostic subscores (A, Q, U, N/A)
-  const rawItem = tr._rawItem || {};
-  populateSubscoreRow('gi', rawItem.visualInspection || 'N/A', 'General Visual Inspection');
-  populateSubscoreRow('api', rawItem.activePart?.overall || 'N/A', 'Active Part Tests');
-  populateSubscoreRow('ioi', rawItem.mainTankOil?.overall || 'N/A', 'Insulating Oil Inspection');
-  populateSubscoreRow('oltci', rawItem.oltcOil?.overall || 'N/A', 'OLTC Oil Inspection');
-  populateSubscoreRow('bi', rawItem.bushing || 'N/A', 'Bushing Test');
-  populateSubscoreRow('ari', rawItem.surgeArrester || 'N/A', 'Surge Arrester Test');
-  populateSubscoreRow('dga', rawItem.mainTankOil?.dga || 'N/A', 'Dissolved Gas Analysis');
+  // Populate diagnostic subscores (A, Q, W, U, N/A) dynamically
+  let visScore = rawItem.visualInspection || 'N/A';
+  let actScore = rawItem.activePart?.overall || 'N/A';
+  let oilScore = rawItem.mainTankOil?.overall || 'N/A';
+  let oltcScore = rawItem.oltcOil?.overall || 'N/A';
+  let bushScore = rawItem.bushing || 'N/A';
+  let surgeScore = rawItem.surgeArrester || 'N/A';
+  let dgaScore = rawItem.mainTankOil?.dga || 'N/A';
+
+  if (typeof buildPtStructure === 'function' && typeof getMeasuredValueForItem === 'function') {
+    const ptStructure = buildPtStructure(rawItem);
+    let minPtScores = { activePart: 5, bushing: 5, surgeArrester: 5, oltc: 5, oil: 5, visual: 5, dga: 5 };
+    let ptHasData = { activePart: false, bushing: false, surgeArrester: false, oltc: false, oil: false, visual: false, dga: false };
+    
+    ptStructure.forEach(ptObj => {
+      const ptKey = ptObj.id || String(ptObj.pt || '').toLowerCase();
+      let currentPtGroup = 'activePart';
+      if (ptKey.includes('bush')) currentPtGroup = 'bushing';
+      else if (ptKey.includes('surge') || ptKey.includes('arrest')) currentPtGroup = 'surgeArrester';
+      else if (ptKey.includes('oltc') || ptKey.includes('tap changer')) currentPtGroup = 'oltc';
+      else if (ptKey.includes('oil')) currentPtGroup = 'oil';
+      else if (ptKey.includes('visual') || ptKey.includes('general')) currentPtGroup = 'visual';
+
+      ptObj.subs.forEach(subObj => {
+        subObj.methods.forEach(m => {
+          const match = getMeasuredValueForItem(m.name, rawItem, ptObj.pt, subObj.sub);
+          if (!match.isNA && match.ratingScore != null) {
+            const s = match.ratingScore;
+            ptHasData[currentPtGroup] = true;
+            if (s < minPtScores[currentPtGroup]) minPtScores[currentPtGroup] = s;
+            if (m.name.includes('DGA')) {
+              ptHasData.dga = true;
+              if (s < minPtScores.dga) minPtScores.dga = s;
+            }
+          }
+        });
+      });
+    });
+
+    function scoreToAqu(s, has) {
+      if (!has || s == null) return 'N/A';
+      if (s >= 4) return 'A';
+      if (s === 3) return 'Q';
+      if (s === 2) return 'W';
+      return 'U';
+    }
+
+    const rawTapUpper = String(trInfo.TAP_CHANGER_TYPE || rawItem.tapChangerType || '').toUpperCase();
+    const isOltcNA = rawTapUpper.includes('NLTC') || rawTapUpper.includes('DETC');
+    const sType = String(rawItem.serviceType || rawItem['Service Type'] || trInfo.Service_Type || '').toUpperCase();
+    const isAux = sType.includes('UAT') || sType.includes('AUX');
+
+    if (ptHasData.visual) visScore = scoreToAqu(minPtScores.visual, true);
+    if (ptHasData.activePart) actScore = scoreToAqu(minPtScores.activePart, true);
+    if (ptHasData.oil) oilScore = scoreToAqu(minPtScores.oil, true);
+    if (ptHasData.oltc) oltcScore = isOltcNA ? 'N/A' : scoreToAqu(minPtScores.oltc, true);
+    if (ptHasData.bushing) bushScore = isAux ? 'N/A' : scoreToAqu(minPtScores.bushing, true);
+    if (ptHasData.surgeArrester) surgeScore = isAux ? 'N/A' : scoreToAqu(minPtScores.surgeArrester, true);
+    if (ptHasData.dga) dgaScore = scoreToAqu(minPtScores.dga, true);
+  }
+
+  populateSubscoreRow('gi', visScore, 'General Visual Inspection');
+  populateSubscoreRow('api', actScore, 'Active Part Tests');
+  populateSubscoreRow('ioi', oilScore, 'Insulating Oil Inspection');
+  populateSubscoreRow('oltci', oltcScore, 'OLTC Oil Inspection');
+  populateSubscoreRow('bi', bushScore, 'Bushing Test');
+  populateSubscoreRow('ari', surgeScore, 'Surge Arrester Test');
+  populateSubscoreRow('dga', dgaScore, 'Dissolved Gas Analysis');
   
   // Open Modal window
   if (detailModal) detailModal.classList.add('active');
 }
 
-// Convert A/Q/U to visual progress bar and label text
+// Convert A/Q/W/U to visual progress bar and label text
 function populateSubscoreRow(id, statusChar, nameLabel) {
   const nameSpan = document.getElementById(`name-${id}`);
   if (nameSpan) nameSpan.textContent = nameLabel;
@@ -812,11 +1014,15 @@ function populateSubscoreRow(id, statusChar, nameLabel) {
     statusText = 'Acceptable (A)';
     color = 'var(--color-good)';
   } else if (statusChar === 'Q') {
-    pct = 60;
+    pct = 70;
     statusText = 'Questionable (Q)';
     color = 'var(--color-fair)';
+  } else if (statusChar === 'W') {
+    pct = 45;
+    statusText = 'Warning (W)';
+    color = 'var(--color-poor, #f97316)';
   } else if (statusChar === 'U') {
-    pct = 30;
+    pct = 20;
     statusText = 'Unacceptable (U)';
     color = 'var(--color-critical)';
   } else if (statusChar === 'N/A' || statusChar === '-' || !statusChar) {
@@ -824,7 +1030,6 @@ function populateSubscoreRow(id, statusChar, nameLabel) {
     statusText = 'Not Applicable (N/A)';
     color = 'var(--scada-text-muted)';
   } else {
-    // If it's a numeric score or another code
     pct = parseInt(statusChar) || 0;
     statusText = `Score: ${statusChar}`;
     color = 'var(--scada-blue-bus)';

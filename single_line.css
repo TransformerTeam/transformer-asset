@@ -1160,7 +1160,28 @@ header p {
 .rec-text {
   font-size: 0.75rem;
   color: var(--scada-text-secondary);
-  line-height: 1.4;
+  line-height: 1.45;
+}
+
+.rec-text ul.rec-list {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  list-style-type: disc;
+}
+
+.rec-text ul.rec-list li {
+  margin-bottom: 4px;
+}
+
+.rec-text .rec-item-critical {
+  color: var(--color-critical, #ef4444) !important;
+  font-weight: 600;
+}
+
+.rec-text .rec-item-critical strong {
+  color: #dc2626 !important;
 }
 
 /* Empty State Styles */
