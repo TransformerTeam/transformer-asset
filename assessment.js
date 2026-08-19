@@ -609,8 +609,9 @@ function applyFilters() {
       } else {
         if (hi === null || hi === undefined || hi === 0) return false;
         if (statusFilter === 'Healthy' && hi < 80) return false;
-        if ((statusFilter === 'Monitoring' || statusFilter === 'Warning') && (hi < 51 || hi >= 80)) return false;
-        if (statusFilter === 'Critical' && hi > 50) return false;
+        if (statusFilter === 'Monitoring' && (hi < 70 || hi >= 80)) return false;
+        if (statusFilter === 'Warning' && (hi < 50 || hi >= 70)) return false;
+        if (statusFilter === 'Critical' && hi >= 50) return false;
       }
     }
     
@@ -665,11 +666,11 @@ function sortData() {
 
 function updateKPIs() {
   const total = filteredAssessment.length;
-  const withHI = filteredAssessment.filter(i => i.healthIndex !== null && i.healthIndex !== undefined).length;
+  const withHI = filteredAssessment.filter(i => i.healthIndex !== null && i.healthIndex !== undefined && i.healthIndex > 0).length;
   const healthy = filteredAssessment.filter(i => i.healthIndex >= 80).length;
-  const monitoring = filteredAssessment.filter(i => i.healthIndex >= 51 && i.healthIndex < 80).length;
-  const critical = filteredAssessment.filter(i => i.healthIndex <= 50 && i.healthIndex > 0).length;
-  const warning = monitoring;
+  const monitoring = filteredAssessment.filter(i => i.healthIndex >= 70 && i.healthIndex < 80).length;
+  const warning = filteredAssessment.filter(i => i.healthIndex >= 50 && i.healthIndex < 70).length;
+  const critical = filteredAssessment.filter(i => i.healthIndex < 50 && i.healthIndex > 0).length;
   
   const kpiAssessed = document.getElementById('kpi-assessed');
   const kpiAssessedSub = document.getElementById('kpi-assessed-sub');
@@ -687,7 +688,7 @@ function updateKPIs() {
 
   // Update bottom SCADA-style indicators
   const hiValues = filteredAssessment
-    .filter(i => i.healthIndex !== null && i.healthIndex !== undefined)
+    .filter(i => i.healthIndex !== null && i.healthIndex !== undefined && i.healthIndex > 0)
     .map(i => i.healthIndex);
   const avgHI = hiValues.length > 0 ? Math.round(hiValues.reduce((a, b) => a + b, 0) / hiValues.length) : 0;
 
@@ -715,18 +716,19 @@ function getChartColors() {
 }
 
 function renderHealthDistChart() {
-  let counts = { healthy: 0, monitoring: 0, critical: 0, noData: 0 };
+  let counts = { healthy: 0, monitoring: 0, warning: 0, critical: 0, noData: 0 };
   filteredAssessment.forEach(item => {
     const hi = item.healthIndex;
     if (hi === null || hi === undefined || hi === 0) { counts.noData++; return; }
     if (hi >= 80) counts.healthy++;
-    else if (hi >= 51) counts.monitoring++;
+    else if (hi >= 70) counts.monitoring++;
+    else if (hi >= 50) counts.warning++;
     else counts.critical++;
   });
 
   // Calculate Assessed and Non-Assessed stats
-  const total = counts.healthy + counts.monitoring + counts.critical + counts.noData;
-  const assessed = counts.healthy + counts.monitoring + counts.critical;
+  const total = counts.healthy + counts.monitoring + counts.warning + counts.critical + counts.noData;
+  const assessed = counts.healthy + counts.monitoring + counts.warning + counts.critical;
   const nonAssessed = counts.noData;
   const assessedPct = total > 0 ? ((assessed / total) * 100).toFixed(1) : '0.0';
   const nonAssessedPct = total > 0 ? ((nonAssessed / total) * 100).toFixed(1) : '0.0';
@@ -738,8 +740,8 @@ function renderHealthDistChart() {
   
   const colors = getChartColors();
   const opts = {
-    series: [counts.healthy, counts.monitoring, counts.critical, counts.noData],
-    labels: ['Healthy (>= 80%)', 'Fair / Monitor (51-79%)', 'Critical (<= 50%)', 'No Assess (=0)'],
+    series: [counts.healthy, counts.monitoring, counts.warning, counts.critical, counts.noData],
+    labels: ['Healthy (≥ 80%)', 'Monitoring (70-79%)', 'Warning (50-69%)', 'Critical (< 50%)', 'No Assess (=0)'],
     chart: { 
       type: 'donut', 
       height: 280, 
@@ -752,7 +754,7 @@ function renderHealthDistChart() {
           const statusDropdown = document.getElementById('filter-health-status');
           if (!statusDropdown) return;
           
-          const statusValues = ['Healthy', 'Monitoring', 'Critical', 'No Assess'];
+          const statusValues = ['Healthy', 'Monitoring', 'Warning', 'Critical', 'No Assess'];
           const targetValue = statusValues[index];
           
           if (statusDropdown.value === targetValue) {
@@ -766,7 +768,7 @@ function renderHealthDistChart() {
         }
       }
     },
-    colors: ['#10b981', '#eab308', '#ef4444', '#6b7280'],
+    colors: ['#10b981', '#eab308', '#f97316', '#ef4444', '#6b7280'],
     legend: { position: 'bottom', fontSize: '11px' },
     dataLabels: {
       enabled: true,
@@ -1131,10 +1133,14 @@ function getStatusBadge(hi, status) {
     displayStatus = 'Healthy';
     badgeClass = 'badge-healthy';
     iconClass = 'fa-check-circle';
-  } else if (hi >= 51) {
+  } else if (hi >= 70) {
     displayStatus = 'Monitor';
     badgeClass = 'badge-monitoring';
     iconClass = 'fa-eye';
+  } else if (hi >= 50) {
+    displayStatus = 'Warning';
+    badgeClass = 'badge-warning';
+    iconClass = 'fa-triangle-exclamation';
   } else {
     displayStatus = 'Critical';
     badgeClass = 'badge-critical';
@@ -1147,7 +1153,8 @@ function getStatusBadge(hi, status) {
 function getHIClass(hi) {
   if (hi === null || hi === undefined || hi === 0) return 'hi-noassess';
   if (hi >= 80) return 'hi-good';
-  if (hi >= 51) return 'hi-fair';
+  if (hi >= 70) return 'hi-fair';
+  if (hi >= 50) return 'hi-warning';
   return 'hi-critical';
 }
 
