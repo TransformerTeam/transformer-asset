@@ -542,12 +542,12 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         // TV Winding (Tertiary)
         devPhase = Math.abs(parseFloat(latestWinding.DEVT) || parseFloat(latestWinding.MAXYERR) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXYERR) || parseFloat(latestWinding.MAXERR) || 0);
-        val = `Phase: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        val = `Phase: ${devPhase.toFixed(2)}%<br>FAT: ${devFat.toFixed(2)}%`;
       } else if (isLv) {
         // LV Winding
         devPhase = Math.abs(parseFloat(latestWinding.DEVX) || parseFloat(latestWinding.DEVMAXX) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXXERR) || parseFloat(latestWinding.MAXERR) || 0);
-        val = `Phase: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        val = `Phase: ${devPhase.toFixed(2)}%<br>FAT: ${devFat.toFixed(2)}%`;
       } else if (isOltcMode && hasMaxMin) {
         // HV Winding with OLTC (Tests at Tap Max, Center, Min)
         const devMax = Math.abs(parseFloat(latestWinding.DEVMAX) || 0);
@@ -556,7 +556,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         devPhase = Math.max(devMax, devCen, devMin);
         devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
 
-        val = `Tap (Max: ${devMax.toFixed(2)}%, Cen: ${devCen.toFixed(2)}%, Min: ${devMin.toFixed(2)}%), FAT: ${devFat.toFixed(2)}%`;
+        val = `Tap (Max: ${devMax.toFixed(2)}%, Cen: ${devCen.toFixed(2)}%, Min: ${devMin.toFixed(2)}%)<br>FAT: ${devFat.toFixed(2)}%`;
         if (devMax > 2.0) tapDetails.push(`Tap Max ${devMax.toFixed(2)}%`);
         if (devCen > 2.0) tapDetails.push(`Tap Cen ${devCen.toFixed(2)}%`);
         if (devMin > 2.0) tapDetails.push(`Tap Min ${devMin.toFixed(2)}%`);
@@ -571,7 +571,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
         devPhase = Math.abs(parseFloat(latestWinding.DEVTAP1) || parseFloat(latestWinding.DEVCENTER) || parseFloat(latestWinding.DEVMAX) || parseFloat(latestWinding.DEVMAXX) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
-        val = `${specificTapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
+        val = `${specificTapName}: ${devPhase.toFixed(2)}%<br>FAT: ${devFat.toFixed(2)}%`;
         if (devPhase > 2.0) tapDetails.push(`${specificTapName} ${devPhase.toFixed(2)}%`);
       }
 
