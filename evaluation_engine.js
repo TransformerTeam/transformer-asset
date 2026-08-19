@@ -542,16 +542,12 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         // TV Winding (Tertiary)
         devPhase = Math.abs(parseFloat(latestWinding.DEVT) || parseFloat(latestWinding.MAXYERR) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXYERR) || parseFloat(latestWinding.MAXERR) || 0);
-        let tapName = 'Tap Cen';
-        val = `${tapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
-        if (devPhase > 2.0) tapDetails.push(`${tapName} ${devPhase.toFixed(2)}%`);
+        val = `Phase: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
       } else if (isLv) {
         // LV Winding
         devPhase = Math.abs(parseFloat(latestWinding.DEVX) || parseFloat(latestWinding.DEVMAXX) || 0);
         devFat = Math.abs(parseFloat(latestWinding.MAXXERR) || parseFloat(latestWinding.MAXERR) || 0);
-        let tapName = 'Tap Cen';
-        val = `${tapName}: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
-        if (devPhase > 2.0) tapDetails.push(`${tapName} ${devPhase.toFixed(2)}%`);
+        val = `Phase: ${devPhase.toFixed(2)}%, FAT: ${devFat.toFixed(2)}%`;
       } else if (isOltcMode && hasMaxMin) {
         // HV Winding with OLTC (Tests at Tap Max, Center, Min)
         const devMax = Math.abs(parseFloat(latestWinding.DEVMAX) || 0);
@@ -596,14 +592,15 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
       let rec = '-';
       if (score < 4) {
-        const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
         if (isTv) {
-          rec = `Check TV winding resistance & connections${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+          rec = `Check TV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else if (isLv) {
-          rec = `Check LV winding resistance & connections${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+          rec = `Check LV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else if (isOltcMode && hasMaxMin) {
+          const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
           rec = `Check HV winding resistance & OLTC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         } else {
+          const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
           rec = `Check HV winding resistance & DETC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
         }
       }
