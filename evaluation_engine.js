@@ -882,22 +882,32 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         return !isNaN(num);
       };
 
+      const sUpper = String(serialVal || '').trim().toUpperCase();
       const oldestWindingPf = (typeof windingPfCsvData !== 'undefined') ? (function(dataset, serial) {
         if (!dataset || !serial) return null;
-        const sUpper = String(serial).trim().toUpperCase();
         const matches = dataset.filter(r => (r.serial || r.SERIAL_NUMBER || r.Serial_no || r.Serial_No || '').toUpperCase() === sUpper);
         if (matches.length === 0) return null;
         matches.sort((a, b) => new Date(a.date || a.DATE || 0) - new Date(b.date || b.DATE || 0));
         return matches[0];
       })(windingPfCsvData, serialVal) : null;
 
-      const getCapDev = (currentCap, initialCap, fallbackObjVal, fallbackMaxVal) => {
+      const facItem = (typeof factoryDataCsvData !== 'undefined' && Array.isArray(factoryDataCsvData))
+        ? factoryDataCsvData.find(x => String(x.Serial_No || x.serial || '').trim().toUpperCase() === sUpper)
+        : null;
+
+      const getCapDev = (currentCap, fallbackObjVal, fatCap, oldestCap, fallbackMaxVal) => {
         if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
-        if (isValidNum(currentCap) && isValidNum(initialCap)) {
+        if (isValidNum(currentCap)) {
           const cur = parseFloat(currentCap);
-          const init = parseFloat(initialCap);
-          if (init > 0 && cur > 0) {
-            return Math.abs(((cur - init) / init) * 100);
+          if (cur > 0) {
+            if (isValidNum(fatCap)) {
+              const fat = parseFloat(fatCap);
+              if (fat > 0) return Math.abs(((cur - fat) / fat) * 100);
+            }
+            if (isValidNum(oldestCap)) {
+              const old = parseFloat(oldestCap);
+              if (old > 0) return Math.abs(((cur - old) / old) * 100);
+            }
           }
         }
         if (isValidNum(fallbackMaxVal)) return Math.abs(parseFloat(fallbackMaxVal));
@@ -913,8 +923,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         if (isLv) {
           return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
         } else if (isTv) {
-          const ctDev = getCapDev(latestWindingPf.ct_cap, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.Object8, latestWindingPf.maxctv_change);
-          const cthDev = getCapDev(latestWindingPf.cth_cap, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.Object9, latestWindingPf.maxctv_change);
+          const fatCT = facItem ? (facItem.PF_C_Winding_TG || facItem.PF_C_Winding_T) : null;
+          const fatCTH = facItem ? facItem.PF_C_Winding_TH : null;
+          const ctDev = getCapDev(latestWindingPf.ct_cap, latestWindingPf.Object8, fatCT, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.maxctv_change);
+          const cthDev = getCapDev(latestWindingPf.cth_cap, latestWindingPf.Object9, fatCTH, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.maxctv_change);
           const validDevs = [ctDev, cthDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -925,8 +937,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           }
         } else {
           // HV Winding: CH, CHT (stored in ch_cap/Object2 and chl_cap/Object3)
-          const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
-          const chtDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+          const fatCH = facItem ? (facItem.PF_C_Winding_HG || facItem.PF_C_Winding_H) : null;
+          const fatCHT = facItem ? (facItem.PF_C_Winding_TH || facItem.PF_C_Winding_HL) : null;
+          const chDev = getCapDev(latestWindingPf.ch_cap, latestWindingPf.Object2, fatCH, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.maxchv_change);
+          const chtDev = getCapDev(latestWindingPf.chl_cap, latestWindingPf.Object3, fatCHT, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.maxchv_change);
           const validDevs = [chDev, chtDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -939,8 +953,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       } else if (is3Winding) {
         // 3 Winding: HV (CH, CHL), LV (CL, CLT), TV (CT, CTH)
         if (isTv) {
-          const ctDev = getCapDev(latestWindingPf.ct_cap, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.Object8, latestWindingPf.maxctv_change);
-          const cthDev = getCapDev(latestWindingPf.cth_cap, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.Object9, latestWindingPf.maxctv_change);
+          const fatCT = facItem ? (facItem.PF_C_Winding_TG || facItem.PF_C_Winding_T) : null;
+          const fatCTH = facItem ? facItem.PF_C_Winding_TH : null;
+          const ctDev = getCapDev(latestWindingPf.ct_cap, latestWindingPf.Object8, fatCT, oldestWindingPf ? oldestWindingPf.ct_cap : null, latestWindingPf.maxctv_change);
+          const cthDev = getCapDev(latestWindingPf.cth_cap, latestWindingPf.Object9, fatCTH, oldestWindingPf ? oldestWindingPf.cth_cap : null, latestWindingPf.maxctv_change);
           const validDevs = [ctDev, cthDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -950,8 +966,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             val = `CT %Dev: ${ctStr}, CTH %Dev: ${cthStr}`;
           }
         } else if (isLv) {
-          const clDev = getCapDev(latestWindingPf.cl_cap, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.Object5, latestWindingPf.maxclv_change);
-          const cltDev = getCapDev(latestWindingPf.clh_cap, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.Object6, latestWindingPf.maxclv_change);
+          const fatCL = facItem ? (facItem.PF_C_Winding_LG || facItem.PF_C_Winding_L) : null;
+          const fatCLT = facItem ? (facItem.PF_C_Winding_LH || facItem.PF_C_Winding_LT) : null;
+          const clDev = getCapDev(latestWindingPf.cl_cap, latestWindingPf.Object5, fatCL, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.maxclv_change);
+          const cltDev = getCapDev(latestWindingPf.clh_cap, latestWindingPf.Object6, fatCLT, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.maxclv_change);
           const validDevs = [clDev, cltDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -962,8 +980,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           }
         } else {
           // HV Winding: CH, CHL
-          const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
-          const chlDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+          const fatCH = facItem ? (facItem.PF_C_Winding_HG || facItem.PF_C_Winding_H) : null;
+          const fatCHL = facItem ? (facItem.PF_C_Winding_HL || facItem.PF_C_Winding_HLHG) : null;
+          const chDev = getCapDev(latestWindingPf.ch_cap, latestWindingPf.Object2, fatCH, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.maxchv_change);
+          const chlDev = getCapDev(latestWindingPf.chl_cap, latestWindingPf.Object3, fatCHL, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.maxchv_change);
           const validDevs = [chDev, chlDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -978,8 +998,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         if (isTv) {
           return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
         } else if (isLv) {
-          const clDev = getCapDev(latestWindingPf.cl_cap, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.Object5, latestWindingPf.maxclv_change);
-          const clhDev = getCapDev(latestWindingPf.clh_cap, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.Object6, latestWindingPf.maxclv_change);
+          const fatCL = facItem ? (facItem.PF_C_Winding_LG || facItem.PF_C_Winding_L) : null;
+          const fatCLH = facItem ? (facItem.PF_C_Winding_LH || facItem.PF_C_Winding_LT) : null;
+          const clDev = getCapDev(latestWindingPf.cl_cap, latestWindingPf.Object5, fatCL, oldestWindingPf ? oldestWindingPf.cl_cap : null, latestWindingPf.maxclv_change);
+          const clhDev = getCapDev(latestWindingPf.clh_cap, latestWindingPf.Object6, fatCLH, oldestWindingPf ? oldestWindingPf.clh_cap : null, latestWindingPf.maxclv_change);
           const validDevs = [clDev, clhDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;
@@ -990,8 +1012,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           }
         } else {
           // HV Winding: CH, CHL
-          const chDev = getCapDev(latestWindingPf.ch_cap, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.Object2, latestWindingPf.maxchv_change);
-          const chlDev = getCapDev(latestWindingPf.chl_cap, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.Object3, latestWindingPf.maxchv_change);
+          const fatCH = facItem ? (facItem.PF_C_Winding_HG || facItem.PF_C_Winding_H) : null;
+          const fatCHL = facItem ? (facItem.PF_C_Winding_HL || facItem.PF_C_Winding_HLHG) : null;
+          const chDev = getCapDev(latestWindingPf.ch_cap, latestWindingPf.Object2, fatCH, oldestWindingPf ? oldestWindingPf.ch_cap : null, latestWindingPf.maxchv_change);
+          const chlDev = getCapDev(latestWindingPf.chl_cap, latestWindingPf.Object3, fatCHL, oldestWindingPf ? oldestWindingPf.chl_cap : null, latestWindingPf.maxchv_change);
           const validDevs = [chDev, chlDev].filter(v => v !== null);
           if (validDevs.length > 0) {
             hasValidData = true;

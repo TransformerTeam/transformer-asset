@@ -209,7 +209,8 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
     { url: 'TestData/DRMData.csv', target: d => drmCsvData = d },
     { url: 'TestData/PDonlineData.csv', target: d => pdOnlineCsvData = d },
-    { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d }
+    { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d },
+    { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } }
   );
 
   return Promise.allSettled(
