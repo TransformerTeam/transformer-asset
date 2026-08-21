@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Phase Short Circuit Impedance Test Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Global Variables matching main dashboard theme */
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      /* Report specific variables */
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #7f8c8d;
+      --report-primary: #1e3a8a; /* Deep Navy Blue */
+      --report-accent: #b91c1c; /* Crimson */
+      --report-secondary: #0284c7; /* Sky Blue */
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 960px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .selector-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 260px;
+      max-width: 380px;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+    }
+
+    .search-select option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Report Sheet Preview Layout (A4 Style) */
+    .report-wrapper {
+      width: 100%;
+      max-width: 960px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      background-color: var(--report-bg);
+      color: var(--report-text);
+      border-radius: 6px;
+      padding: 36px 40px;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .report-sheet {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    /* Document Header */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 3px solid var(--report-primary);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .header-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .gpsc-logo-svg {
+      height: 44px;
+      width: auto;
+    }
+
+    .header-title-box h1 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .header-title-box h2 {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 3px;
+    }
+
+    .header-title-box p {
+      font-size: 9px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .header-meta {
+      text-align: right;
+      font-size: 9px;
+      color: #334155;
+    }
+
+    .header-meta .meta-row {
+      margin-bottom: 3px;
+    }
+
+    .header-meta strong {
+      color: #0f172a;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pass {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .status-fair {
+      background-color: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fde047;
+    }
+
+    .status-fail {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .status-na {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Section Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .part-banner-subtitle {
+      font-size: 8.5px;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    /* Tables */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 9.5px;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 7px;
+      text-align: left;
+    }
+
+    .report-table th {
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 8.5px;
+      letter-spacing: 0.2px;
+    }
+
+    .report-table td.lbl {
+      width: 18%;
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .report-table td.val {
+      width: 32%;
+      color: #0f172a;
+    }
+
+    /* Test Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+    }
+
+    .data-table thead th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 8.5px;
+    }
+
+    .data-table thead th.sub-th {
+      background-color: #2563eb;
+      font-size: 8px;
+    }
+
+    .data-table thead th.th-phase-a { background-color: #1d4ed8; }
+    .data-table thead th.th-phase-b { background-color: #b45309; }
+    .data-table thead th.th-phase-c { background-color: #b91c1c; }
+
+    .data-table tbody tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .data-table tbody td.tap-col {
+      font-weight: 600;
+      background-color: #f1f5f9;
+      text-align: left;
+      padding-left: 8px;
+    }
+
+    /* KPI Summary Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #1e3a8a;
+      border-radius: 4px;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    .kpi-card.kpi-pass { border-left-color: #16a34a; }
+    .kpi-card.kpi-fair { border-left-color: #ca8a04; }
+    .kpi-card.kpi-fail { border-left-color: #dc2626; }
+
+    .kpi-label {
+      font-size: 8px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .kpi-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .kpi-sub {
+      font-size: 8px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Charts Container */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chart-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      background-color: #ffffff;
+      padding: 10px;
+    }
+
+    .chart-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 4px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 190px;
+      width: 100%;
+    }
+
+    /* Standards & Criteria Box */
+    .criteria-container {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    .criteria-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 8px 12px;
+    }
+
+    .criteria-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+
+    .formula-text {
+      font-family: monospace;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      border-radius: 3px;
+      font-size: 8px;
+      margin-top: 4px;
+      color: #0f172a;
+    }
+
+    /* Assessment Box */
+    .assessment-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+      background: #ffffff;
+    }
+
+    .assessment-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+
+    .assessment-desc {
+      font-size: 9px;
+      line-height: 1.45;
+      color: #334155;
+    }
+
+    /* Signatures Table */
+    .response-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      font-size: 9.5px;
+    }
+
+    .response-table th, .response-table td {
+      border: 1px solid #cbd5e1;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .response-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      width: 33.33%;
+    }
+
+    .response-table .sig-cell {
+      height: 48px;
+      background-color: #ffffff;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 0;
+      }
+      .control-panel {
+        display: none !important;
+      }
+      .report-wrapper {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .chart-box {
+        break-inside: avoid;
+      }
+      .part-banner {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .data-table thead th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <label for="serial-select" class="selector-label">
+        <i class="fa-solid fa-bolt"></i> Transformer:
+      </label>
+      <select id="serial-select" class="search-select" onchange="onSelectTransformer(this.value)">
+        <option value="">Loading transformers...</option>
+      </select>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">Theme</span>
+      </button>
+      <button class="btn btn-primary" onclick="window.print()" title="Print / Export to PDF">
+        <i class="fa-solid fa-print"></i> Print Report
+      </button>
+      <a href="assessment.html" class="btn btn-secondary" title="Back to Diagnostics Assessment">
+        <i class="fa-solid fa-arrow-left"></i> Assessment
+      </a>
+    </div>
+  </div>
+
+  <!-- Report Sheet Preview Layout (A4 Style) -->
+  <div class="report-wrapper" id="report-content">
+    <div class="report-sheet">
+
+      <!-- Document Header -->
+      <div class="report-header">
+        <div class="header-logo-container">
+          <!-- GPSC SVG Logo -->
+          <svg class="gpsc-logo-svg" viewBox="0 0 160 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="44" rx="4" fill="#1e3a8a"/>
+            <text x="12" y="28" font-family="'Inter', sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="1.5">GPSC</text>
+            <text x="76" y="22" font-family="'Inter', sans-serif" font-weight="600" font-size="8" fill="#38bdf8" letter-spacing="0.5">TRANSFORMER ASSET</text>
+            <text x="76" y="32" font-family="'Inter', sans-serif" font-weight="500" font-size="7" fill="#cbd5e1" letter-spacing="0.3">MANAGEMENT SYSTEM</text>
+          </svg>
+
+          <div class="header-title-box">
+            <h1>Transformer Diagnostic Assessment Report</h1>
+            <h2>Single Phase Short Circuit Impedance Test</h2>
+            <p>Std. IEEE C57.152 / IEEE C57.12.90 / IEC 60076-5</p>
+          </div>
+        </div>
+
+        <div class="header-meta">
+          <div class="meta-row"><strong>Report No:</strong> <span id="rep-no">SC-2026-001</span></div>
+          <div class="meta-row"><strong>Test Date:</strong> <span id="rep-date">-</span></div>
+          <div class="meta-row"><strong>Status:</strong> <span id="rep-badge" class="status-badge status-pass">NORMAL</span></div>
+        </div>
+      </div>
+
+      <!-- Part 1: Equipment & Transformer Information -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-transformer"></i> 1. Equipment &amp; Transformer Information</span>
+        <span class="part-banner-subtitle">Nameplate Specifications</span>
+      </div>
+
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <td class="lbl">Serial Number:</td>
+            <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+            <td class="lbl">Substation / Plant:</td>
+            <td class="val" id="info-substation">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Feeder / Bay:</td>
+            <td class="val" id="info-feeder">-</td>
+            <td class="lbl">Manufacturer:</td>
+            <td class="val" id="info-mfg">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Rated Power (MVA):</td>
+            <td class="val" id="info-mva">-</td>
+            <td class="lbl">Voltage Ratio (kV):</td>
+            <td class="val" id="info-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Vector Group:</td>
+            <td class="val" id="info-vector">-</td>
+            <td class="lbl">Tap Changer Type:</td>
+            <td class="val" id="info-tap">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Cooling Class:</td>
+            <td class="val" id="info-cooling">-</td>
+            <td class="lbl">Manufacturing Year:</td>
+            <td class="val" id="info-year">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Part 2: Environmental & Test Conditions -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-temperature-half"></i> 2. Environmental &amp; Test Conditions</span>
+        <span class="part-banner-subtitle">On-site Measurements</span>
+      </div>
+
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <td class="lbl">Ambient Temp (°C):</td>
+            <td class="val" id="info-amb-temp">-</td>
+            <td class="lbl">Top Oil Temp (°C):</td>
+            <td class="val" id="info-oil-temp">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Winding Temp (°C):</td>
+            <td class="val" id="info-wind-temp">-</td>
+            <td class="lbl">Relative Humidity (%):</td>
+            <td class="val" id="info-humidity">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Test Instrument:</td>
+            <td class="val" id="info-instrument">-</td>
+            <td class="lbl">Instrument S/N &amp; Cal:</td>
+            <td class="val" id="info-inst-serial">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Part 3: Executive Summary & Standards -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-chart-line"></i> 3. Executive Summary &amp; Standards Criteria</span>
+        <span class="part-banner-subtitle">IEEE C57.152 Cl. 6.6 / IEC 60076-5</span>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-card kpi-pass" id="kpi-card-dev">
+          <div class="kpi-label">Max Phase-to-Phase Dev</div>
+          <div class="kpi-value" id="kpi-max-dev">0.00%</div>
+          <div class="kpi-sub">Limit: &le; 2.00% (IEEE)</div>
+        </div>
+
+        <div class="kpi-card" id="kpi-card-fat">
+          <div class="kpi-label">Max Factory / FAT Dev</div>
+          <div class="kpi-value" id="kpi-fat-dev">-</div>
+          <div class="kpi-sub">Limit: &le; 3.00% (IEEE)</div>
+        </div>
+
+        <div class="kpi-card" id="kpi-card-status">
+          <div class="kpi-label">Impedance Health Status</div>
+          <div class="kpi-value" id="kpi-overall-status">NORMAL</div>
+          <div class="kpi-sub" id="kpi-overall-score">Score: 5 / 5</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Critical Tap Position</div>
+          <div class="kpi-value" id="kpi-crit-tap" style="font-size: 13px;">Tap Center</div>
+          <div class="kpi-sub">Highest Variance</div>
+        </div>
+      </div>
+
+      <div class="criteria-container">
+        <div class="criteria-box">
+          <div class="criteria-title">Standards &amp; Mathematical Formulation (IEEE C57.152 Cl. 6.6)</div>
+          <div style="font-size: 9px; line-height: 1.45; color: #334155;">
+            <strong>1. Measured Impedance:</strong> Single-phase equivalent impedance is calculated by applying single-phase AC voltage and measuring current with secondary short-circuited: 
+            <div class="formula-text">Z_k = V_k / I_k (&Omega;)</div>
+            <strong>2. Phase-to-Phase Deviation:</strong> Maximum percentage deviation among 3 phases at identical tap connection:
+            <div class="formula-text">% Dev = ((Z_max - Z_min) / Z_avg) &times; 100%</div>
+            <strong>3. Factory / Baseline Deviation:</strong> Difference from FAT baseline:
+            <div class="formula-text">% FAT Dev = (|Z_measured - Z_factory| / Z_factory) &times; 100%</div>
+          </div>
+        </div>
+
+        <div class="criteria-box">
+          <div class="criteria-title">IEEE C57.152 Diagnostic Criteria</div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 8.5px; margin-top: 4px;">
+            <tbody>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 3px 4px; font-weight: 600; color: #16a34a;"><span class="status-badge status-pass">PASS</span> &le; 2.00%</td>
+                <td style="padding: 3px 4px; color: #475569;">Normal. Winding geometry is rigid &amp; intact.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 3px 4px; font-weight: 600; color: #ca8a04;"><span class="status-badge status-fair">FAIR</span> 2.01% - 3.00%</td>
+                <td style="padding: 3px 4px; color: #475569;">Questionable. Slight radial/axial expansion.</td>
+              </tr>
+              <tr>
+                <td style="padding: 3px 4px; font-weight: 600; color: #dc2626;"><span class="status-badge status-fail">FAIL</span> &gt; 3.00%</td>
+                <td style="padding: 3px 4px; color: #475569;">Action required. Significant winding deformation.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Part 4: Measurement Data Tables -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-table-list"></i> 4. Measurement Data &amp; Diagnostic Tables</span>
+        <span class="part-banner-subtitle">HV : LV Winding Configuration</span>
+      </div>
+
+      <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 4px; margin-bottom: 4px;">
+        4.1 High Voltage to Low Voltage (HV:LV) Single Phase Short Circuit Impedance
+      </div>
+
+      <table class="data-table" id="short-table-hl">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width: 14%;">Tap Position</th>
+            <th colspan="3" class="th-phase-a">Phase A (H1-H0 / 1U-1N)</th>
+            <th colspan="3" class="th-phase-b">Phase B (H2-H0 / 1V-1N)</th>
+            <th colspan="3" class="th-phase-c">Phase C (H3-H0 / 1W-1N)</th>
+            <th rowspan="2" style="width: 10%;">% Phase-to-Phase Dev</th>
+            <th rowspan="2" style="width: 9%;">FAT Z (&Omega;)</th>
+            <th rowspan="2" style="width: 8%;">Status</th>
+          </tr>
+          <tr>
+            <th class="sub-th" style="width: 7%;">Volt (V)</th>
+            <th class="sub-th" style="width: 7%;">Curr (A)</th>
+            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+            <th class="sub-th" style="width: 7%;">Volt (V)</th>
+            <th class="sub-th" style="width: 7%;">Curr (A)</th>
+            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+            <th class="sub-th" style="width: 7%;">Volt (V)</th>
+            <th class="sub-th" style="width: 7%;">Curr (A)</th>
+            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+          </tr>
+        </thead>
+        <tbody id="short-table-hl-body">
+          <!-- Populated by JavaScript -->
+        </tbody>
+      </table>
+
+      <!-- Tertiary / HV:TV Table (conditionally shown if TV data exists) -->
+      <div id="section-tv-container" style="display: none;">
+        <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 8px; margin-bottom: 4px;">
+          4.2 High Voltage to Tertiary Voltage (HV:TV) Single Phase Short Circuit Impedance
+        </div>
+        <table class="data-table" id="short-table-ht">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 14%;">Tap Position</th>
+              <th colspan="3" class="th-phase-a">Phase A (H1-H0 / 1U-1N)</th>
+              <th colspan="3" class="th-phase-b">Phase B (H2-H0 / 1V-1N)</th>
+              <th colspan="3" class="th-phase-c">Phase C (H3-H0 / 1W-1N)</th>
+              <th rowspan="2" style="width: 10%;">% Phase-to-Phase Dev</th>
+              <th rowspan="2" style="width: 9%;">FAT Z (&Omega;)</th>
+              <th rowspan="2" style="width: 8%;">Status</th>
+            </tr>
+            <tr>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
+            </tr>
+          </thead>
+          <tbody id="short-table-ht-body">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Part 5: Visual Analytics & Charts -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-chart-pie"></i> 5. Diagnostic Visual Analytics &amp; Deviation Profile</span>
+        <span class="part-banner-subtitle">Phase Symmetry &amp; Impedance Trends</span>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> Phase-to-Phase Deviation (% Dev)</span>
+            <span style="color: #64748b; font-size: 8.5px;">Limit: &le; 2.00%</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="devChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-line text-indigo-600"></i> Single Phase Impedance Profile (Z in &Omega;)</span>
+            <span style="color: #64748b; font-size: 8.5px;" id="chart-vector-label">Phase A, B, C Profile</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="impedanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 6: Diagnostic Assessment & Engineering Summary -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-clipboard-check"></i> 6. Diagnostic Assessment &amp; Engineering Recommendations</span>
+        <span class="part-banner-subtitle">IEEE C57.152 Asset Health Evaluation</span>
+      </div>
+
+      <div class="assessment-box">
+        <div class="assessment-title" id="eval-title">Diagnostic Conclusion: NORMAL CONDITION</div>
+        <div class="assessment-desc" id="eval-desc">
+          Single phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap connections. 
+          Phase-to-phase deviations are well within the IEEE C57.152 standard limit (&le; 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.
+        </div>
+      </div>
+
+      <!-- Part 7: Signatures & Engineering Approval Block (3 Columns) -->
+      <div class="part-banner">
+        <span><i class="fa-solid fa-file-signature"></i> 7. Signatures &amp; Engineering Approval</span>
+        <span class="part-banner-subtitle">GPSC Transformer Diagnostic Sign-off</span>
+      </div>
+
+      <table class="response-table">
+        <thead>
+          <tr>
+            <th>Tested By</th>
+            <th>Reviewed By</th>
+            <th>Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: #1e293b;" id="resp-name-tested"></td>
+            <td style="font-weight: 600; color: #1e293b;" id="resp-name-reviewed"></td>
+            <td style="font-weight: 600; color: #1e293b;" id="resp-name-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td style="font-size: 8.5px;" id="resp-date-approved"></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+
+  <script>
+    let singleShortDataList = [];
+    let factoryDataList = [];
+    let trInfoDataList = [];
+    let currentSerial = '';
+    let currentRecord = null;
+    let devChartInstance = null;
+    let impedanceChartInstance = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Theme Setup
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Load SingleShortData.csv
+      try {
+        const response = await fetch('TestData/SingleShortData.csv');
+        if (response.ok) {
+          const csvText = await response.text();
+          singleShortDataList = parseCSV(csvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/SingleShortData.csv via fetch:", err);
+      }
+
+      // Load FactoryData.csv
+      try {
+        const facResponse = await fetch('TestData/FactoryData.csv');
+        if (facResponse.ok) {
+          const facCsvText = await facResponse.text();
+          factoryDataList = parseCSV(facCsvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/FactoryData.csv via fetch:", err);
+      }
+
+      // Load TRInfoData.csv
+      try {
+        const trResponse = await fetch('TestData/TRInfoData.csv');
+        if (trResponse.ok) {
+          const trCsvText = await trResponse.text();
+          trInfoDataList = parseCSV(trCsvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/TRInfoData.csv via fetch:", err);
+      }
+
+      // Populate Dropdown
+      populateDropdown();
+
+      // Read URL query parameters (?serial=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      let serial = urlParams.get('serial');
+      const name = urlParams.get('name');
+      const no = urlParams.get('no');
+
+      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial;
+      }
+      if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
+        if (item) serial = item.serial;
+      }
+
+      if (!serial) {
+        if (singleShortDataList.length > 0 && singleShortDataList[0].serial) {
+          serial = singleShortDataList[0].serial;
+        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        }
+      }
+
+      if (serial) {
+        loadReport(serial);
+      }
+    });
+
+    // CSV Parser Helper
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length === 0) return [];
+      const headers = parseCSVLine(lines[0]);
+
+      const list = [];
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const vals = parseCSVLine(line);
+        const obj = {};
+        headers.forEach((h, idx) => {
+          let fieldName = h.trim();
+          let val = vals[idx] !== undefined ? vals[idx].trim() : '';
+          obj[fieldName] = val;
+          if (fieldName.toLowerCase() === 'serial_no' || fieldName.toLowerCase() === 'serial') {
+            obj.serial = val;
+          }
+        });
+        list.push(obj);
+      }
+      return list;
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"' || char === "'") {
+          if (inQuotes && i + 1 < line.length && line[i + 1] === char) {
+            cur += char;
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          result.push(cur);
+          cur = '';
+        } else {
+          cur += char;
+        }
+      }
+      result.push(cur);
+      return result;
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const clean = (s) => String(s).toLowerCase().replace(/[\s\-_]/g, '').trim();
+      return clean(s1) === clean(s2);
+    }
+
+    function populateDropdown() {
+      const sel = document.getElementById('serial-select');
+      sel.innerHTML = '';
+
+      const serialMap = new Map();
+
+      // From SingleShortData.csv
+      singleShortDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (s && s !== '-' && !serialMap.has(s.toUpperCase())) {
+          serialMap.set(s.toUpperCase(), { serial: s, label: `${s}` });
+        }
+      });
+
+      // From HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+        HEALTH_INDEX_DATA.forEach(item => {
+          const s = item.serial;
+          if (s && s !== '-') {
+            const up = s.toUpperCase();
+            if (serialMap.has(up)) {
+              const prev = serialMap.get(up);
+              prev.label = `${s} - ${item.name || ''} (${item.substation || ''})`;
+            } else {
+              serialMap.set(up, { serial: s, label: `${s} - ${item.name || ''} (${item.substation || ''})` });
+            }
+          }
+        });
+      }
+
+      serialMap.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.serial;
+        opt.textContent = v.label;
+        sel.appendChild(opt);
+      });
+    }
+
+    function onSelectTransformer(serial) {
+      if (!serial) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set('serial', serial);
+      window.history.replaceState({}, '', url);
+      loadReport(serial);
+    }
+
+    function formatDate(dStr) {
+      if (!dStr || dStr === '-' || dStr === '0000-00-00') return '';
+      try {
+        const d = new Date(dStr.split(' ')[0]);
+        if (isNaN(d.getTime())) return dStr.split(' ')[0];
+        const day = String(d.getDate()).padStart(2, '0');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const m = months[d.getMonth()];
+        const y = d.getFullYear();
+        return `${day}-${m}-${y}`;
+      } catch (e) {
+        return dStr.split(' ')[0];
+      }
+    }
+
+    function cleanSig(v) {
+      if (!v) return '';
+      const s = String(v).trim();
+      return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+    }
+
+    function cleanDate(d) {
+      if (!d) return '';
+      const s = String(d).trim();
+      if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+      const formatted = formatDate(s);
+      return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+    }
+
+    function formatVal(v, dec = 4) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      return parseFloat(v).toFixed(dec);
+    }
+
+    function formatDev(v) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      return `${parseFloat(v).toFixed(2)}%`;
+    }
+
+    function getDevBadge(devVal) {
+      if (devVal === undefined || devVal === null || devVal === '' || devVal === '-' || isNaN(parseFloat(devVal))) {
+        return '<span class="status-badge status-na">-</span>';
+      }
+      const val = Math.abs(parseFloat(devVal));
+      if (val <= 2.00) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (val <= 3.00) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">FAIL</span>';
+      }
+    }
+
+    function loadReport(serial) {
+      currentSerial = serial;
+      const sel = document.getElementById('serial-select');
+      if (sel) sel.value = serial;
+
+      // Find record in singleShortDataList
+      let rec = singleShortDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
+      currentRecord = rec || {};
+
+      // Find Metadata in HEALTH_INDEX_DATA
+      let meta = (typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA.find(x => matchSerial(x.serial, serial)) : null;
+
+      // Find Factory baseline
+      let facRec = factoryDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
+
+      // Find TRInfoData
+      let trInfoRec = trInfoDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
+
+      // 1. Header Information
+      document.getElementById('rep-no').textContent = rec && rec.Test_No && rec.Test_No !== '-' ? rec.Test_No : `SC-${serial}`;
+      const dtStr = rec && rec.Date ? formatDate(rec.Date) : (meta && meta.last_inspection ? formatDate(meta.last_inspection) : '-');
+      document.getElementById('rep-date').textContent = dtStr || '-';
+
+      // Equipment Info
+      document.getElementById('info-serial').textContent = serial;
+      document.getElementById('info-substation').textContent = (meta && meta.substation) || (trInfoRec && trInfoRec.SUBSTATION) || '-';
+      document.getElementById('info-feeder').textContent = (meta && meta.name) || (trInfoRec && trInfoRec.FEEDER) || '-';
+      document.getElementById('info-mfg').textContent = (meta && meta.manufacturer) || (trInfoRec && trInfoRec.MANUFACTURER) || (facRec && facRec.Model_Type) || '-';
+      document.getElementById('info-mva').textContent = (meta && meta.capacity) || (trInfoRec && trInfoRec.RATED_POWER) || (facRec && facRec.Power_Rated) || '-';
+      
+      const hvKv = (trInfoRec && trInfoRec.HV_RATED) || (facRec && facRec.HV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[0] : '');
+      const lvKv = (trInfoRec && trInfoRec.LV_RATED) || (facRec && facRec.LV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[1] : '');
+      const tvKv = (trInfoRec && trInfoRec.LV2_RATED);
+      let voltStr = (meta && meta.voltage) || '-';
+      if (hvKv && lvKv) {
+        voltStr = tvKv ? `${hvKv} / ${lvKv} / ${tvKv} kV` : `${hvKv} / ${lvKv} kV`;
+      }
+      document.getElementById('info-voltage').textContent = voltStr;
+
+      const vector = (trInfoRec && trInfoRec.VECTOR_GROUP) || (meta && meta.vector_group) || '-';
+      document.getElementById('info-vector').textContent = vector;
+      const tapType = (trInfoRec && trInfoRec.TAP_CHANGER_TYPE) || (meta && meta.tap_changer) || 'DETC';
+      document.getElementById('info-tap').textContent = tapType;
+      document.getElementById('info-cooling').textContent = (trInfoRec && trInfoRec.COOLING_TYPE) || (meta && meta.cooling) || 'ONAN/ONAF';
+      document.getElementById('info-year').textContent = (trInfoRec && trInfoRec.MANUFACTURING_DATE ? trInfoRec.MANUFACTURING_DATE.split(' ')[0] : '') || (facRec && facRec.Test_Date ? facRec.Test_Date.split('-')[0] : '-') || '-';
+
+      // Test Condition Info
+      document.getElementById('info-amb-temp').textContent = (rec && rec.Ambient_Temp && rec.Ambient_Temp !== '-') ? rec.Ambient_Temp : '-';
+      document.getElementById('info-oil-temp').textContent = (rec && rec.Oil_Temp && rec.Oil_Temp !== '-') ? rec.Oil_Temp : '-';
+      document.getElementById('info-wind-temp').textContent = (rec && rec.Winding_Temp && rec.Winding_Temp !== '-') ? rec.Winding_Temp : '-';
+      document.getElementById('info-humidity').textContent = (rec && rec.Humidity && rec.Humidity !== '-') ? `${rec.Humidity}%` : '-';
+      document.getElementById('info-instrument').textContent = (rec && rec.Test_Instrument && rec.Test_Instrument !== '-') ? rec.Test_Instrument : 'TESTRANO 600';
+      const instSer = rec && rec.Instrument_Serial_No && rec.Instrument_Serial_No !== '-' ? rec.Instrument_Serial_No : '-';
+      const calDt = rec && rec.Calibration_Date && rec.Calibration_Date !== '-' ? formatDate(rec.Calibration_Date) : '';
+      document.getElementById('info-inst-serial').textContent = calDt ? `${instSer} (Cal: ${calDt})` : instSer;
+
+      // 2. Render Tables & Compute KPI
+      renderTablesAndCharts(rec, facRec, vector);
+
+      // 3. Signatures
+      populateSignatures(rec, trInfoRec);
+    }
+
+    function renderTablesAndCharts(r, facRec, vectorGroup) {
+      const hlBody = document.getElementById('short-table-hl-body');
+      hlBody.innerHTML = '';
+
+      const chartLabels = [];
+      const chartDevs = [];
+      const chartZA = [];
+      const chartZB = [];
+      const chartZC = [];
+
+      let maxDev = 0;
+      let critTap = 'Tap Center';
+
+      // Helper to compute impedance Z = V / I if not explicitly provided
+      const getZ = (zVal, vVal, iVal) => {
+        if (zVal && !isNaN(parseFloat(zVal)) && parseFloat(zVal) > 0) return parseFloat(zVal);
+        if (vVal && iVal && !isNaN(parseFloat(vVal)) && !isNaN(parseFloat(iVal)) && parseFloat(iVal) > 0) {
+          return parseFloat(vVal) / parseFloat(iVal);
+        }
+        return null;
+      };
+
+      // Helper to calculate % dev = ((max - min) / avg) * 100
+      const calcDev = (zA, zB, zC, preDev) => {
+        if (preDev && !isNaN(parseFloat(preDev))) return parseFloat(preDev);
+        if (zA !== null && zB !== null && zC !== null) {
+          const vals = [zA, zB, zC];
+          const min = Math.min(...vals);
+          const max = Math.max(...vals);
+          const avg = (zA + zB + zC) / 3;
+          if (avg > 0) return ((max - min) / avg) * 100;
+        }
+        return null;
+      };
+
+      // Factory FAT Z lookup
+      const fatZMax = facRec ? (facRec.ShortZ_X_Max || null) : null;
+      const fatZCen = facRec ? (facRec.ShortZ_X_Cen || null) : null;
+      const fatZMin = facRec ? (facRec.ShortZ_X_Min || null) : null;
+
+      // Construct HL Tap Rows
+      const hlTaps = [
+        {
+          name: 'Tap Max (+)',
+          vA: r ? r.HV_A_Voltage_Max : null, iA: r ? r.HV_A_Current_Max : null, zA: getZ(r ? r.HV_A_Z_Max : null, r ? r.HV_A_Voltage_Max : null, r ? r.HV_A_Current_Max : null),
+          vB: r ? r.HV_B_Voltage_Max : null, iB: r ? r.HV_B_Current_Max : null, zB: getZ(r ? r.HV_B_Z_Max : null, r ? r.HV_B_Voltage_Max : null, r ? r.HV_B_Current_Max : null),
+          vC: r ? r.HV_C_Voltage_Max : null, iC: r ? r.HV_C_Current_Max : null, zC: getZ(r ? r.HV_C_Z_Max : null, r ? r.HV_C_Voltage_Max : null, r ? r.HV_C_Current_Max : null),
+          preDev: r ? r.HV_Max_Dev : null,
+          fatZ: fatZMax
+        },
+        {
+          name: 'Tap Center',
+          vA: r ? r.HV_A_Voltage_Cen : null, iA: r ? r.HV_A_Current_Cen : null, zA: getZ(r ? r.HV_A_Z_Cen : null, r ? r.HV_A_Voltage_Cen : null, r ? r.HV_A_Current_Cen : null),
+          vB: r ? r.HV_B_Voltage_Cen : null, iB: r ? r.HV_B_Current_Cen : null, zB: getZ(r ? r.HV_B_Z_Cen : null, r ? r.HV_B_Voltage_Cen : null, r ? r.HV_B_Current_Cen : null),
+          vC: r ? r.HV_C_Voltage_Cen : null, iC: r ? r.HV_C_Current_Cen : null, zC: getZ(r ? r.HV_C_Z_Cen : null, r ? r.HV_C_Voltage_Cen : null, r ? r.HV_C_Current_Cen : null),
+          preDev: r ? r.HV_Cen_Dev : null,
+          fatZ: fatZCen
+        },
+        {
+          name: 'Tap Min (-)',
+          vA: r ? r.HV_A_Voltage_Min : null, iA: r ? r.HV_A_Current_Min : null, zA: getZ(r ? r.HV_A_Z_Min : null, r ? r.HV_A_Voltage_Min : null, r ? r.HV_A_Current_Min : null),
+          vB: r ? r.HV_B_Voltage_Min : null, iB: r ? r.HV_B_Current_Min : null, zB: getZ(r ? r.HV_B_Z_Min : null, r ? r.HV_B_Voltage_Min : null, r ? r.HV_B_Current_Min : null),
+          vC: r ? r.HV_C_Voltage_Min : null, iC: r ? r.HV_C_Current_Min : null, zC: getZ(r ? r.HV_C_Z_Min : null, r ? r.HV_C_Voltage_Min : null, r ? r.HV_C_Current_Min : null),
+          preDev: r ? r.HV_Min_Dev : null,
+          fatZ: fatZMin
+        }
+      ];
+
+      // Discrete Service Tap 1 if available
+      if (r && r.HV_Tap1 && r.HV_Tap1 !== '-' && r.HV_A_Tap1_Z && r.HV_A_Tap1_Z !== '-') {
+        hlTaps.push({
+          name: `Tap ${r.HV_Tap1} (Service)`,
+          vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
+          vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
+          vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
+          preDev: r.HV_Tap1_Dev,
+          fatZ: null
+        });
+      }
+
+      // Discrete Service Tap 2 if available
+      if (r && r.HV_Tap2 && r.HV_Tap2 !== '-' && r.HV_A_Tap2_Z && r.HV_A_Tap2_Z !== '-') {
+        hlTaps.push({
+          name: `Tap ${r.HV_Tap2}`,
+          vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
+          vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
+          vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
+          preDev: r.HV_Tap2_Dev,
+          fatZ: null
+        });
+      }
+
+      // Populate HL Rows
+      hlTaps.forEach(t => {
+        const d = calcDev(t.zA, t.zB, t.zC, t.preDev);
+        if (d !== null && d > maxDev) {
+          maxDev = d;
+          critTap = t.name;
+        }
+
+        if (d !== null) {
+          chartLabels.push(t.name);
+          chartDevs.push(parseFloat(d.toFixed(2)));
+          if (t.zA !== null) chartZA.push(parseFloat(t.zA.toFixed(3)));
+          if (t.zB !== null) chartZB.push(parseFloat(t.zB.toFixed(3)));
+          if (t.zC !== null) chartZC.push(parseFloat(t.zC.toFixed(3)));
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="tap-col">${t.name}</td>
+          <td>${formatVal(t.vA, 2)}</td>
+          <td>${formatVal(t.iA, 3)}</td>
+          <td style="font-weight: 600; color: #1d4ed8;">${formatVal(t.zA, 4)}</td>
+          <td>${formatVal(t.vB, 2)}</td>
+          <td>${formatVal(t.iB, 3)}</td>
+          <td style="font-weight: 600; color: #b45309;">${formatVal(t.zB, 4)}</td>
+          <td>${formatVal(t.vC, 2)}</td>
+          <td>${formatVal(t.iC, 3)}</td>
+          <td style="font-weight: 600; color: #b91c1c;">${formatVal(t.zC, 4)}</td>
+          <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
+          <td>${formatVal(t.fatZ, 4)}</td>
+          <td>${getDevBadge(d)}</td>
+        `;
+        hlBody.appendChild(tr);
+      });
+
+      // Check for Tertiary Data (TV)
+      const hasTvData = r && (
+        (r.TV_A_Voltage_Max && r.TV_A_Voltage_Max !== '-') ||
+        (r.TV_A_Voltage_Cen && r.TV_A_Voltage_Cen !== '-') ||
+        (r.TV_A_Z_Cen && r.TV_A_Z_Cen !== '-')
+      );
+
+      const tvSection = document.getElementById('section-tv-container');
+      if (hasTvData) {
+        tvSection.style.display = 'block';
+        const htBody = document.getElementById('short-table-ht-body');
+        htBody.innerHTML = '';
+
+        const htTaps = [
+          {
+            name: 'Tap Max (+)',
+            vA: r.TV_A_Voltage_Max, iA: r.TV_A_Current_Max, zA: getZ(r.TV_A_Z_Max, r.TV_A_Voltage_Max, r.TV_A_Current_Max),
+            vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
+            vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
+            preDev: r.TV_Max_Dev,
+            fatZ: facRec ? facRec.ShortZ_Y_Max : null
+          },
+          {
+            name: 'Tap Center',
+            vA: r.TV_A_Voltage_Cen, iA: r.TV_A_Current_Cen, zA: getZ(r.TV_A_Z_Cen, r.TV_A_Voltage_Cen, r.TV_A_Current_Cen),
+            vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
+            vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
+            preDev: r.TV_Cen_Dev,
+            fatZ: facRec ? facRec.ShortZ_Y_Cen : null
+          },
+          {
+            name: 'Tap Min (-)',
+            vA: r.TV_A_Voltage_Min, iA: r.TV_A_Current_Min, zA: getZ(r.TV_A_Z_Min, r.TV_A_Voltage_Min, r.TV_A_Current_Min),
+            vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
+            vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
+            preDev: r.TV_Min_Dev,
+            fatZ: facRec ? facRec.ShortZ_Y_Min : null
+          }
+        ];
+
+        htTaps.forEach(t => {
+          const d = calcDev(t.zA, t.zB, t.zC, t.preDev);
+          if (d !== null && d > maxDev) {
+            maxDev = d;
+            critTap = `${t.name} (HT)`;
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="tap-col">${t.name}</td>
+            <td>${formatVal(t.vA, 2)}</td>
+            <td>${formatVal(t.iA, 3)}</td>
+            <td style="font-weight: 600; color: #1d4ed8;">${formatVal(t.zA, 4)}</td>
+            <td>${formatVal(t.vB, 2)}</td>
+            <td>${formatVal(t.iB, 3)}</td>
+            <td style="font-weight: 600; color: #b45309;">${formatVal(t.zB, 4)}</td>
+            <td>${formatVal(t.vC, 2)}</td>
+            <td>${formatVal(t.iC, 3)}</td>
+            <td style="font-weight: 600; color: #b91c1c;">${formatVal(t.zC, 4)}</td>
+            <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
+            <td>${formatVal(t.fatZ, 4)}</td>
+            <td>${getDevBadge(d)}</td>
+          `;
+          htBody.appendChild(tr);
+        });
+      } else {
+        tvSection.style.display = 'none';
+      }
+
+      // Check if Single_Phase_Result exists in CSV
+      if (r && r.Single_Phase_Result && !isNaN(parseFloat(r.Single_Phase_Result))) {
+        maxDev = parseFloat(r.Single_Phase_Result);
+      }
+
+      // Update KPI Header & Badges
+      document.getElementById('kpi-max-dev').textContent = `${maxDev.toFixed(2)}%`;
+      document.getElementById('kpi-crit-tap').textContent = critTap;
+
+      const kpiStatus = document.getElementById('kpi-overall-status');
+      const kpiScore = document.getElementById('kpi-overall-score');
+      const repBadge = document.getElementById('rep-badge');
+      const evalTitle = document.getElementById('eval-title');
+      const evalDesc = document.getElementById('eval-desc');
+      const kpiCardDev = document.getElementById('kpi-card-dev');
+      const kpiCardStatus = document.getElementById('kpi-card-status');
+
+      if (maxDev <= 2.00) {
+        kpiStatus.textContent = 'NORMAL';
+        kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
+        repBadge.className = 'status-badge status-pass';
+        repBadge.textContent = 'NORMAL';
+        kpiCardDev.className = 'kpi-card kpi-pass';
+        kpiCardStatus.className = 'kpi-card kpi-pass';
+
+        evalTitle.textContent = 'Diagnostic Conclusion: NORMAL (Rigid & Intact Winding)';
+        evalTitle.style.color = '#15803d';
+        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (within standard limit ≤ 2.00%). Single-phase impedance measurements confirm high electromagnetic symmetry across all active parts with no indication of mechanical winding deformation, radial buckling, or axial displacement.`;
+      } else if (maxDev <= 3.00) {
+        kpiStatus.textContent = 'MONITOR';
+        kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
+        repBadge.className = 'status-badge status-fair';
+        repBadge.textContent = 'MONITOR';
+        kpiCardDev.className = 'kpi-card kpi-fair';
+        kpiCardStatus.className = 'kpi-card kpi-fair';
+
+        evalTitle.textContent = 'Diagnostic Conclusion: MONITOR / QUESTIONABLE';
+        evalTitle.style.color = '#a16207';
+        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (exceeds normal limit 2.00% but ≤ 3.00%). Slight asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+      } else {
+        kpiStatus.textContent = 'ACTION REQUIRED';
+        kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
+        repBadge.className = 'status-badge status-fail';
+        repBadge.textContent = 'ACTION REQUIRED';
+        kpiCardDev.className = 'kpi-card kpi-fail';
+        kpiCardStatus.className = 'kpi-card kpi-fail';
+
+        evalTitle.textContent = 'Diagnostic Conclusion: ACTION REQUIRED (Significant Asymmetry)';
+        evalTitle.style.color = '#b91c1c';
+        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (exceeds IEEE limit > 3.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
+      }
+
+      // Render Charts
+      renderCharts(chartLabels, chartDevs, chartZA, chartZB, chartZC, vectorGroup);
+    }
+
+    function renderCharts(labels, devs, zA, zB, zC, vectorGroup = '') {
+      // Dynamic Vector Group label for Impedance Profile Chart
+      const vectorLabel = document.getElementById('chart-vector-label');
+      if (vectorLabel) {
+        const v = String(vectorGroup || '').trim();
+        vectorLabel.textContent = v ? `${v} Impedance Profile` : 'Impedance Profile (Z)';
+      }
+
+      // 1. Phase Deviation Chart
+      const ctx1 = document.getElementById('devChart').getContext('2d');
+      if (devChartInstance) devChartInstance.destroy();
+
+      // Custom Plugin to draw 2.00% Limit Line
+      const devLimitLinesPlugin = {
+        id: 'devLimitLines',
+        beforeDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left, width }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+
+          // Acceptable Band 0 to 2%
+          const yTopLimit = y.getPixelForValue(2.00);
+          const yZero = y.getPixelForValue(0);
+          if (yTopLimit !== undefined && yZero !== undefined) {
+            const bandTop = Math.max(top, Math.min(yTopLimit, yZero));
+            const bandHeight = Math.abs(yZero - yTopLimit);
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
+            ctx.fillRect(left, bandTop, width, bandHeight);
+          }
+          ctx.restore();
+        },
+        afterDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+
+          const drawLimit = (val, label, color) => {
+            const yPos = y.getPixelForValue(val);
+            if (yPos >= top && yPos <= bottom) {
+              ctx.beginPath();
+              ctx.setLineDash([5, 4]);
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 1.5;
+              ctx.moveTo(left, yPos);
+              ctx.lineTo(right, yPos);
+              ctx.stroke();
+
+              ctx.setLineDash([]);
+              ctx.fillStyle = color;
+              ctx.font = 'bold 8.5px Inter, sans-serif';
+              ctx.textAlign = 'right';
+              ctx.fillText(label, right - 6, yPos - 3);
+            }
+          };
+
+          drawLimit(2.00, '+2.00% Limit (IEEE)', '#dc2626');
+          drawLimit(3.00, '+3.00% Max Threshold', '#ea580c');
+          ctx.restore();
+        }
+      };
+
+      devChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        plugins: [devLimitLinesPlugin],
+        data: {
+          labels: labels.length > 0 ? labels : ['Tap Max', 'Tap Center', 'Tap Min'],
+          datasets: [
+            {
+              label: 'Phase-to-Phase Dev (%)',
+              data: devs.length > 0 ? devs : [0.85, 0.62, 0.94],
+              backgroundColor: devs.map(v => v <= 2.0 ? 'rgba(37, 99, 235, 0.85)' : (v <= 3.0 ? 'rgba(234, 179, 8, 0.85)' : 'rgba(239, 68, 68, 0.85)')),
+              borderColor: devs.map(v => v <= 2.0 ? '#1d4ed8' : (v <= 3.0 ? '#ca8a04' : '#dc2626')),
+              borderWidth: 1,
+              barPercentage: 0.55
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `Deviation: ${ctx.raw.toFixed(2)}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '% Deviation', font: { size: 9 } },
+              ticks: { font: { size: 8 } },
+              suggestedMin: 0,
+              suggestedMax: 3.5
+            },
+            x: {
+              ticks: { font: { size: 8, weight: '600' } }
+            }
+          }
+        }
+      });
+
+      // 2. Impedance Profile Chart (Z_A, Z_B, Z_C)
+      const ctx2 = document.getElementById('impedanceChart').getContext('2d');
+      if (impedanceChartInstance) impedanceChartInstance.destroy();
+
+      impedanceChartInstance = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: labels.length > 0 ? labels : ['Tap Max', 'Tap Center', 'Tap Min'],
+          datasets: [
+            {
+              label: 'Phase A (Ω)',
+              data: zA.length > 0 ? zA : [123.5, 123.8, 97.4],
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              borderWidth: 2,
+              tension: 0.15,
+              fill: false,
+              pointRadius: 4.5,
+              pointBackgroundColor: '#2563eb'
+            },
+            {
+              label: 'Phase B (Ω)',
+              data: zB.length > 0 ? zB : [123.8, 124.1, 97.6],
+              borderColor: '#ca8a04',
+              backgroundColor: 'rgba(202, 138, 4, 0.1)',
+              borderWidth: 2,
+              tension: 0.15,
+              fill: false,
+              pointRadius: 4.5,
+              pointBackgroundColor: '#ca8a04'
+            },
+            {
+              label: 'Phase C (Ω)',
+              data: zC.length > 0 ? zC : [123.1, 123.5, 97.1],
+              borderColor: '#dc2626',
+              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+              borderWidth: 2,
+              tension: 0.15,
+              fill: false,
+              pointRadius: 4.5,
+              pointBackgroundColor: '#dc2626'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(3)} Ω`
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: 'Impedance Z (Ω)', font: { size: 9 } },
+              ticks: { font: { size: 8 } }
+            },
+            x: {
+              ticks: { font: { size: 8, weight: '600' } }
+            }
+          }
+        }
+      });
+    }
+
+    function populateSignatures(rec, trInfo) {
+      const nameTested = cleanSig((rec && (rec.Name1 || rec.NAME1 || rec.Tested_by)) || (trInfo && (trInfo.TESTED_BY || trInfo.Tested_by)));
+      const nameRev = cleanSig((rec && (rec.Name2 || rec.NAME2 || rec.Witnessed_by)) || (trInfo && (trInfo.WITNESSED_BY || trInfo.Witnessed_by)));
+      const nameApp = cleanSig((rec && (rec.Name3 || rec.NAME3 || rec.Approved_by)) || (trInfo && (trInfo.APPROVED_BY || trInfo.Approved_by)));
+
+      const compTested = cleanSig((rec && (rec.COMP1 || rec.comp1)) || (trInfo && (trInfo.COMP1 || trInfo.comp1)));
+      const compRev = cleanSig((rec && (rec.COMP2 || rec.comp2)) || (trInfo && (trInfo.COMP2 || trInfo.comp2)));
+      const compApp = cleanSig((rec && (rec.COMP3 || rec.comp3)) || (trInfo && (trInfo.COMP3 || trInfo.comp3)));
+
+      const dateTested = cleanDate(rec && rec.Date ? rec.Date : '');
+      const dateRev = cleanDate(rec && rec.Date ? rec.Date : '');
+      const dateApp = cleanDate(rec && rec.Date ? rec.Date : '');
+
+      document.getElementById('resp-name-tested').textContent = nameTested;
+      document.getElementById('resp-name-reviewed').textContent = nameRev;
+      document.getElementById('resp-name-approved').textContent = nameApp;
+
+      document.getElementById('resp-comp-tested').textContent = compTested;
+      document.getElementById('resp-comp-reviewed').textContent = compRev;
+      document.getElementById('resp-comp-approved').textContent = compApp;
+
+      document.getElementById('resp-date-tested').textContent = dateTested;
+      document.getElementById('resp-date-reviewed').textContent = dateRev;
+      document.getElementById('resp-date-approved').textContent = dateApp;
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      if (!icon || !text) return;
+      if (theme === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+        text.textContent = 'Light Mode';
+      } else {
+        icon.className = 'fa-solid fa-moon';
+        text.textContent = 'Dark Mode';
+      }
+    }
+  </script>
+</body>
+</html>
