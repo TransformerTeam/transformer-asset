@@ -1045,6 +1045,16 @@
       font-size: 0.50rem;
     }
 
+    /* Signatures Table */
+    table.response-table th {
+      background-color: #1e3a8a !important;
+      color: #ffffff !important;
+      font-weight: 700;
+    }
+    table.response-table td.sig-cell {
+      height: 45px;
+    }
+
     /* Print styling */
     @media print {
       body {
@@ -1424,6 +1434,42 @@
       </tbody>
     </table>
 
+    <!-- Signatures / Approval Block -->
+    <div class="part-banner part-banner-1" style="margin-top: 24px; background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
+      <span><i class="fa-solid fa-file-signature"></i> Signatures &amp; Engineering Approval</span>
+      <span class="part-banner-subtitle">GPSC Transformer Asset Evaluation Sign-off</span>
+    </div>
+    <table class="report-table response-table" style="margin-top: 6px; margin-bottom: 24px; width: 100%; border-collapse: collapse; font-size: 9.5px;">
+      <thead>
+        <tr>
+          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff; padding: 6px; border: 1px solid #cbd5e1;">Tested By</th>
+          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff; padding: 6px; border: 1px solid #cbd5e1;">Reviewed By</th>
+          <th style="width: 33.4%; text-align: center; background-color: #1e3a8a; color: #ffffff; padding: 6px; border: 1px solid #cbd5e1;">Approved By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="height: 45px;">
+          <td class="sig-cell" style="border: 1px solid #cbd5e1; background-color: #ffffff;"></td>
+          <td class="sig-cell" style="border: 1px solid #cbd5e1; background-color: #ffffff;"></td>
+          <td class="sig-cell" style="border: 1px solid #cbd5e1; background-color: #ffffff;"></td>
+        </tr>
+        <tr>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-tested">-</td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-reviewed">-</td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-approved">-</td>
+        </tr>
+        <tr>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-tested">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-reviewed">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-approved">-</td>
+        </tr>
+        <tr>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-tested">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-reviewed">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-approved">Date: -</td>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
 
@@ -1700,6 +1746,40 @@
       renderPart1Table(item);
       renderPart2Table(item);
       renderPart3Table(item);
+
+      // Populate Signatures / Approval
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER || item.Name) : null;
+      const tester = (trInfoItem && (trInfoItem.TESTED_BY || trInfoItem.Tested_by)) || item.Tested_by || item.Name1 || item.NAME1 || 'Mr. Nattapong M.';
+      const reviewer = (trInfoItem && (trInfoItem.WITNESSED_BY || trInfoItem.Witnessed_by)) || item.Witnessed_by || item.Name2 || item.NAME2 || 'Mr. Pornpong S.';
+      const approver = (trInfoItem && (trInfoItem.APPROVED_BY || trInfoItem.Approved_by)) || item.Approved_by || item.Name3 || item.NAME3 || 'Mr. Somchai K.';
+
+      const compTested = (trInfoItem && trInfoItem.COMP1) || item.COMP1 || 'Hitachi Energy';
+      const compReviewed = (trInfoItem && trInfoItem.COMP2) || item.COMP2 || 'GPSC';
+      const compApproved = 'GPSC Asset Management';
+
+      const dateStr = item.testDate || item.date || item.Date || '';
+      const formattedDateStr = (dateStr && dateStr !== '-') ? (typeof formatDate === 'function' ? formatDate(dateStr) : dateStr) : '-';
+
+      const elNameTested = document.getElementById('resp-name-tested');
+      const elNameRev = document.getElementById('resp-name-reviewed');
+      const elNameApp = document.getElementById('resp-name-approved');
+      if (elNameTested) elNameTested.textContent = tester;
+      if (elNameRev) elNameRev.textContent = reviewer;
+      if (elNameApp) elNameApp.textContent = approver;
+
+      const elCompTested = document.getElementById('resp-comp-tested');
+      const elCompRev = document.getElementById('resp-comp-reviewed');
+      const elCompApp = document.getElementById('resp-comp-approved');
+      if (elCompTested) elCompTested.textContent = compTested;
+      if (elCompRev) elCompRev.textContent = compReviewed;
+      if (elCompApp) elCompApp.textContent = compApproved;
+
+      const elDateTested = document.getElementById('resp-date-tested');
+      const elDateRev = document.getElementById('resp-date-reviewed');
+      const elDateApp = document.getElementById('resp-date-approved');
+      if (elDateTested) elDateTested.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
+      if (elDateRev) elDateRev.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
+      if (elDateApp) elDateApp.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
     }
 
     // =============================================

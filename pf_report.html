@@ -391,7 +391,7 @@
     }
 
     table.response-table td.sig-cell {
-      height: 65px;
+      height: 45px;
     }
 
     /* Status Dynamic Colors */
@@ -863,36 +863,31 @@
       <table class="report-table response-table" style="margin-bottom:0;">
         <thead>
           <tr>
-            <th style="width: 10%;"></th>
-            <th style="width: 30%;">Tested By</th>
-            <th style="width: 30%;">Reviewed By</th>
-            <th style="width: 30%;">Approved By</th>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="lbl">Company</td>
-            <td class="val" id="resp-company-tested">-</td>
-            <td class="val" id="resp-company-reviewed">-</td>
-            <td class="val" id="resp-company-approved">-</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="lbl">Name</td>
             <td class="val" id="resp-name-tested">-</td>
             <td class="val" id="resp-name-reviewed">-</td>
             <td class="val" id="resp-name-approved">-</td>
           </tr>
           <tr>
-            <td class="lbl" style="height:65px;">Signature</td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
           </tr>
           <tr>
-            <td class="lbl">Date</td>
-            <td class="val" id="resp-date-tested">-</td>
-            <td class="val" id="resp-date-reviewed">-</td>
-            <td class="val" id="resp-date-approved">-</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
           </tr>
         </tbody>
       </table>
@@ -1231,19 +1226,18 @@
       renderResultsTable('tertiary-results-body', tertiaryResults, fluid, voltage);
 
       // Signatures block
-      document.getElementById('resp-company-tested').textContent = pfItem.COMP1 || 'TIS';
-      document.getElementById('resp-company-reviewed').textContent = '';
-      document.getElementById('resp-company-approved').textContent = pfItem.COMP2 || 'GLOW';
-      
-      document.getElementById('resp-name-tested').textContent = pfItem.test_name || '-';
-      document.getElementById('resp-name-reviewed').textContent = '';
-      document.getElementById('resp-name-approved').textContent = pfItem.witness_name || '-';
-      
-      document.getElementById('resp-company-reviewed').textContent = '';
-      
-      document.getElementById('resp-date-tested').textContent = formatDate(pfItem.date);
-      document.getElementById('resp-date-reviewed').textContent = formatDate(pfItem.date);
-      document.getElementById('resp-date-approved').textContent = formatDate(pfItem.date);
+      const dateStr = formatDate(pfItem.date);
+      document.getElementById('resp-name-tested').textContent = pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || 'Mr. Nattapong M.';
+      document.getElementById('resp-name-reviewed').textContent = pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || 'Mr. Pornpong S.';
+      document.getElementById('resp-name-approved').textContent = pfItem.Name3 || pfItem.NAME3 || 'Mr. Somchai K.';
+
+      document.getElementById('resp-comp-tested').textContent = pfItem.COMP1 || 'Hitachi Energy';
+      document.getElementById('resp-comp-reviewed').textContent = pfItem.COMP2 || 'GPSC';
+      document.getElementById('resp-comp-approved').textContent = 'GPSC Asset Management';
+
+      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
 
       // Populate Trend Winding Selector dynamically
       const trendSelect = document.getElementById('trend-winding-select');

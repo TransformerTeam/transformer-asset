@@ -665,39 +665,34 @@
 
     <!-- 19. SIGNATURES / APPROVAL -->
     <div class="section-banner" style="margin-top: 20px;">SIGNATURES / APPROVAL</div>
-    <table class="report-table">
+    <table class="report-table response-table" style="margin-bottom: 0;">
       <thead>
         <tr style="background-color: #1e3a8a; color: #ffffff;">
-          <th style="width: 16%; background-color: #1e3a8a; color: #ffffff;">Response</th>
-          <th style="width: 28%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Tested By</th>
-          <th style="width: 28%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Review By</th>
-          <th style="width: 28%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Approved By</th>
+          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Tested By</th>
+          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Reviewed By</th>
+          <th style="width: 33.4%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Approved By</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td style="font-weight: 700;">Company</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-company-tested">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-company-reviewed">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-company-approved">-</td>
+        <tr style="height: 45px;">
+          <td class="sig-cell"></td>
+          <td class="sig-cell"></td>
+          <td class="sig-cell"></td>
         </tr>
         <tr>
-          <td style="font-weight: 700;">Name</td>
           <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-tested">-</td>
           <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-reviewed">-</td>
           <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-approved">-</td>
         </tr>
-        <tr style="height: 35px;">
-          <td style="font-weight: 700; vertical-align: middle;">Signature</td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-tested">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-reviewed">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-approved">-</td>
         </tr>
         <tr>
-          <td style="font-weight: 700;">Date</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-date-tested">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-date-reviewed">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-date-approved">-</td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-tested">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-approved">Date: -</td>
         </tr>
       </tbody>
     </table>
@@ -1257,21 +1252,22 @@
       // 19. SIGNATURES / APPROVAL
       const comp1 = r.COMP1 || 'TIS Engineering and Service Co.,Ltd.';
       const comp2 = r.COMP2 || 'GPSC';
-      const tester = r.Tested_by || '-';
-      const witness = r.Witnessed_by || '-';
+      const tester = r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1 || 'Mr. Nattapong M.';
+      const witness = r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || 'Mr. Pornpong S.';
+      const approver = r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || 'Mr. Somchai K.';
       const dateStr = formatDateToDdMmmYyyy(r.date);
 
-      document.getElementById('resp-company-tested').textContent = comp1;
-      document.getElementById('resp-company-reviewed').textContent = '-';
-      document.getElementById('resp-company-approved').textContent = comp2;
+      document.getElementById('resp-company-tested').textContent = comp1 || 'Hitachi Energy';
+      document.getElementById('resp-company-reviewed').textContent = comp2 || 'GPSC';
+      document.getElementById('resp-company-approved').textContent = 'GPSC Asset Management';
 
       document.getElementById('resp-name-tested').textContent = tester;
-      document.getElementById('resp-name-reviewed').textContent = '-';
-      document.getElementById('resp-name-approved').textContent = witness;
+      document.getElementById('resp-name-reviewed').textContent = witness;
+      document.getElementById('resp-name-approved').textContent = approver;
 
-      document.getElementById('resp-date-tested').textContent = dateStr;
-      document.getElementById('resp-date-reviewed').textContent = '-';
-      document.getElementById('resp-date-approved').textContent = dateStr;
+      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
     }
 
     function renderTableRows(tbodyId, rowConfigs, dataObj) {

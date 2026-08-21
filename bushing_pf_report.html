@@ -383,7 +383,7 @@
     }
 
     table.response-table td.sig-cell {
-      height: 65px;
+      height: 45px;
     }
 
     /* Status Dynamic Colors */
@@ -874,36 +874,31 @@
       <table class="report-table response-table" style="margin-bottom:0;">
         <thead>
           <tr>
-            <th style="width: 10%;"></th>
-            <th style="width: 30%;">Tested By</th>
-            <th style="width: 30%;">Reviewed By</th>
-            <th style="width: 30%;">Approved By</th>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="lbl">Company</td>
-            <td class="val" id="resp-company-tested">-</td>
-            <td class="val" id="resp-company-reviewed">GPSC HV Maintenance</td>
-            <td class="val" id="resp-company-approved">GPSC HV Maintenance</td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="lbl">Name</td>
             <td class="val" id="resp-name-tested">-</td>
             <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">Mr. Jirasak Suksakun</td>
+            <td class="val" id="resp-name-approved">-</td>
           </tr>
           <tr>
-            <td class="lbl" style="height:65px;">Signature</td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
           </tr>
           <tr>
-            <td class="lbl">Date</td>
-            <td class="val" id="resp-date-tested">-</td>
-            <td class="val" id="resp-date-reviewed">-</td>
-            <td class="val" id="resp-date-approved">-</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
           </tr>
         </tbody>
       </table>
@@ -1137,12 +1132,18 @@
         document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
         document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
 
-        document.getElementById('resp-name-tested').textContent = latest.test_name || '-';
-        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || '-';
-        document.getElementById('resp-company-tested').textContent = `${latest.COMP2 || ''} / ${latest.COMP1 || ''}`.replace(/^\s*\/\s*/, '');
-        document.getElementById('resp-date-tested').textContent = formatReportDate(latest.date);
-        document.getElementById('resp-date-reviewed').textContent = formatReportDate(latest.date);
-        document.getElementById('resp-date-approved').textContent = formatReportDate(latest.date);
+        const dateStr = formatReportDate(latest.date);
+        document.getElementById('resp-name-tested').textContent = latest.test_name || latest.Name1 || latest.NAME1 || 'Mr. Nattapong M.';
+        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || latest.Name2 || latest.NAME2 || 'Mr. Pornpong S.';
+        document.getElementById('resp-name-approved').textContent = latest.Name3 || latest.NAME3 || 'Mr. Somchai K.';
+
+        document.getElementById('resp-comp-tested').textContent = latest.COMP1 || 'Hitachi Energy';
+        document.getElementById('resp-comp-reviewed').textContent = latest.COMP2 || 'GPSC';
+        document.getElementById('resp-comp-approved').textContent = 'GPSC Asset Management';
+
+        document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+        document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+        document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
 
         renderC1Table(latest, infoRecords);
         renderC2Table(latest, infoRecords);
