@@ -805,7 +805,6 @@
   <script>
     let singleShortDataList = [];
     let factoryDataList = [];
-    let trInfoDataList = [];
     let currentSerial = '';
     let currentRecord = null;
     let devChartInstance = null;
@@ -839,17 +838,6 @@
         console.warn("Could not load TestData/FactoryData.csv via fetch:", err);
       }
 
-      // Load TRInfoData.csv
-      try {
-        const trResponse = await fetch('TestData/TRInfoData.csv');
-        if (trResponse.ok) {
-          const trCsvText = await trResponse.text();
-          trInfoDataList = parseCSV(trCsvText);
-        }
-      } catch (err) {
-        console.warn("Could not load TestData/TRInfoData.csv via fetch:", err);
-      }
-
       // Populate Dropdowns
       populateDropdown();
 
@@ -877,192 +865,391 @@
       }
 
       if (serial) {
-        switchTransformer(serial);
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl) selectEl.value = serial;
+        loadReportBySerial(serial);
       }
     });
 
-    // CSV Parser Helper
+    // Robust CSV Parser supporting quotes and trim
     function parseCSV(text) {
-      const lines = text.trim().split(/\r?\n/);
-      if (lines.length === 0) return [];
-      const headers = parseCSVLine(lines[0]);
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim());
+      const result = [];
 
-      const list = [];
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
-        const vals = parseCSVLine(line);
-        const obj = {};
-        headers.forEach((h, idx) => {
-          let fieldName = h.trim();
-          let val = vals[idx] !== undefined ? vals[idx].trim() : '';
-          obj[fieldName] = val;
-          if (fieldName.toLowerCase() === 'serial_no' || fieldName.toLowerCase() === 'serial') {
-            obj.serial = val;
-          }
-        });
-        list.push(obj);
-      }
-      return list;
-    }
 
-    function parseCSVLine(line) {
-      const result = [];
-      let cur = '';
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        if (char === '"' || char === "'") {
-          if (inQuotes && i + 1 < line.length && line[i + 1] === char) {
-            cur += char;
-            i++;
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
           } else {
-            inQuotes = !inQuotes;
+            entry += char;
           }
-        } else if (char === ',' && !inQuotes) {
-          result.push(cur);
-          cur = '';
-        } else {
-          cur += char;
         }
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || '';
+        obj.date = obj.date || obj.Date || '';
+        result.push(obj);
       }
-      result.push(cur);
       return result;
     }
 
     function matchSerial(s1, s2) {
       if (!s1 || !s2) return false;
-      const clean = (s) => String(s).toLowerCase().replace(/[\s\-_]/g, '').trim();
-      return clean(s1) === clean(s2);
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
     }
 
     function populateDropdown() {
-      const sel = document.getElementById('transformer-select');
-      sel.innerHTML = '';
+      const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
 
-      const serialMap = new Map();
+      const addedSerials = new Set();
 
-      // From SingleShortData.csv
-      singleShortDataList.forEach(item => {
-        const s = item.serial || item.Serial_No;
-        if (s && s !== '-' && !serialMap.has(s.toUpperCase())) {
-          serialMap.set(s.toUpperCase(), { serial: s, label: `${s}` });
-        }
-      });
-
-      // From HEALTH_INDEX_DATA
-      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        HEALTH_INDEX_DATA.forEach(item => {
-          const s = item.serial;
-          if (s && s !== '-') {
-            const up = s.toUpperCase();
-            if (serialMap.has(up)) {
-              const prev = serialMap.get(up);
-              prev.label = `${s} - ${item.name || ''} (${item.substation || ''})`;
-            } else {
-              serialMap.set(up, { serial: s, label: `${s} - ${item.name || ''} (${item.substation || ''})` });
-            }
+      // 1. From HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
+          const n = meta['Equipment Name'] || meta.name || s;
+          if (s && !addedSerials.has(s.toUpperCase())) {
+            addedSerials.add(s.toUpperCase());
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = `${n} (${s})`;
+            selectEl.appendChild(opt);
           }
         });
       }
 
-      serialMap.forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v.serial;
-        opt.textContent = v.label;
-        sel.appendChild(opt);
+      // 2. From SingleShortData.csv
+      singleShortDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
+          addedSerials.add(s.toUpperCase());
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          selectEl.appendChild(opt);
+        }
       });
     }
 
     function switchTransformer(serial) {
-      if (!serial) return;
       currentSerial = serial;
-      const sel = document.getElementById('transformer-select');
-      if (sel) sel.value = serial;
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadReportBySerial(serial);
+    }
 
-      // Update URL without reload
-      const url = new URL(window.location.href);
-      url.searchParams.set('serial', serial);
-      window.history.replaceState({}, '', url);
+    function switchTestDate(dateStr) {
+      const records = singleShortDataList.filter(x => matchSerial(x.serial, currentSerial));
+      const found = records.find(r => r.date === dateStr);
+      if (found) {
+        renderShortReport(found);
+      }
+    }
 
-      // Populate Test Date Selector
-      const matchingRecords = singleShortDataList.filter(x => matchSerial(x.serial || x.Serial_No, serial));
-      const dateSel = document.getElementById('test-date-select');
-      dateSel.innerHTML = '';
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === 'None' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      if (matchingRecords.length > 0) {
-        matchingRecords.forEach((r, idx) => {
+      // Match YYYY-MM-DD or YYYY/MM/DD
+      const ymdMatch = cleanStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (ymdMatch) {
+        const y = parseInt(ymdMatch[1], 10);
+        const m = parseInt(ymdMatch[2], 10) - 1;
+        const d = parseInt(ymdMatch[3], 10);
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      // Match D-Mmm-YY or DD-Mmm-YYYY e.g. "1-Jan-06" or "14-Jul-2026"
+      const dmyTextMatch = cleanStr.match(/^(\d{1,2})[-/]([A-Za-z]{3,4})[-/](\d{2,4})$/);
+      if (dmyTextMatch) {
+        const d = parseInt(dmyTextMatch[1], 10);
+        const mStr = dmyTextMatch[2].substring(0, 3).toLowerCase();
+        let y = parseInt(dmyTextMatch[3], 10);
+        if (y < 100) {
+          y = y >= 50 ? 1900 + y : 2000 + y;
+        }
+        const mIdx = months.findIndex(m => m.toLowerCase() === mStr);
+        if (mIdx !== -1) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[mIdx]}-${y}`;
+        }
+      }
+
+      // Match M/D/YYYY or D/M/YYYY
+      const slashMatch = cleanStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (slashMatch) {
+        let p1 = parseInt(slashMatch[1], 10);
+        let p2 = parseInt(slashMatch[2], 10);
+        let y = parseInt(slashMatch[3], 10);
+        let d, m;
+        if (p1 > 12) {
+          d = p1;
+          m = p2 - 1;
+        } else {
+          m = p1 - 1;
+          d = p2;
+        }
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+
+      return cleanStr;
+    }
+
+    function loadReportBySerial(serial) {
+      currentSerial = serial;
+      const rawRecords = singleShortDataList.filter(x => matchSerial(x.serial, serial));
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        return new Date(dStr);
+      };
+
+      rawRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+      // Populate Date selector
+      const dateSelect = document.getElementById('test-date-select');
+      dateSelect.innerHTML = '';
+      if (rawRecords.length > 0) {
+        rawRecords.forEach((r, idx) => {
           const opt = document.createElement('option');
-          opt.value = idx;
-          opt.textContent = formatDate(r.Date) || `Test #${idx + 1}`;
-          dateSel.appendChild(opt);
+          opt.value = r.date;
+          opt.textContent = r.date ? formatDate_ddMmmyyyy(r.date) : `Test #${idx + 1}`;
+          dateSelect.appendChild(opt);
         });
-        currentRecord = matchingRecords[0];
       } else {
+        const facRec = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial, serial));
         const opt = document.createElement('option');
-        opt.value = 0;
-        opt.textContent = 'No Test Data';
-        dateSel.appendChild(opt);
-        currentRecord = {};
+        opt.value = facRec && facRec.Test_Date ? facRec.Test_Date : '';
+        opt.textContent = facRec && facRec.Test_Date ? formatDate_ddMmmyyyy(facRec.Test_Date) : 'No Test Date';
+        dateSelect.appendChild(opt);
       }
 
-      renderReportContent();
+      const activeRecord = rawRecords.length > 0 ? rawRecords[0] : null;
+      renderShortReport(activeRecord);
     }
 
-    function switchTestDate(idx) {
-      const matchingRecords = singleShortDataList.filter(x => matchSerial(x.serial || x.Serial_No, currentSerial));
-      if (matchingRecords[idx]) {
-        currentRecord = matchingRecords[idx];
-        renderReportContent();
+    function renderShortReport(record) {
+      currentRecord = record;
+      const serial = currentSerial;
+
+      // 1. Multi-Source Metadata Resolution (Matches Ratio Report)
+      let name = '-';
+      let site = '-';
+      let mfg = '-';
+      let power = '-';
+      let hvRated = 115;
+      let lvRated = 22;
+      let tvRated = null;
+      let voltageStr = '-';
+      let vectorGroup = 'Dyn1';
+      let tapType = 'DETC';
+      let service = 'Distribution';
+      let noWinding = 2;
+
+      const parseKvVal = (val) => {
+        if (!val || val === 'None' || val === 'N/A' || val === '-') return null;
+        const clean = String(val).replace(/kV/gi, '').trim();
+        const num = parseFloat(clean);
+        return isNaN(num) ? null : num;
+      };
+
+      // 1.1 FactoryData.csv
+      const facMeta = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial || x['Serial No'], serial));
+      if (facMeta) {
+        if (facMeta.Site && facMeta.Site !== '-' && facMeta.Site !== '') site = facMeta.Site;
+        if (facMeta.Power_Rated && facMeta.Power_Rated !== '-' && facMeta.Power_Rated !== '') {
+          const pr = parseFloat(facMeta.Power_Rated);
+          if (!isNaN(pr) && pr > 0) {
+            power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+          }
+        }
+        if (facMeta.HV_Rated) {
+          const p = parseKvVal(facMeta.HV_Rated);
+          if (p) hvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.LV_Rated) {
+          const p = parseKvVal(facMeta.LV_Rated);
+          if (p) lvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.TV_Rated && facMeta.TV_Rated !== 'None' && facMeta.TV_Rated !== '-') {
+          const p = parseKvVal(facMeta.TV_Rated);
+          if (p) tvRated = p > 1000 ? p / 1000 : p;
+        }
       }
-    }
 
-    function formatDate(dStr) {
-      if (!dStr || dStr === '-' || dStr === '0000-00-00') return '';
-      try {
-        const d = new Date(dStr.split(' ')[0]);
-        if (isNaN(d.getTime())) return dStr.split(' ')[0];
-        const day = String(d.getDate()).padStart(2, '0');
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const m = months[d.getMonth()];
-        const y = d.getFullYear();
-        return `${day}-${m}-${y}`;
-      } catch (e) {
-        return dStr.split(' ')[0];
+      // 1.2 HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        const meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No || x.SERIAL_NUMBER, serial));
+        if (meta) {
+          if (meta['Equipment Name'] && meta['Equipment Name'] !== '-') name = meta['Equipment Name'];
+          else if (meta.name && meta.name !== '-') name = meta.name;
+
+          if (meta.SITE && meta.SITE !== '-') site = meta.SITE;
+          else if (meta.site && meta.site !== '-') site = meta.site;
+          else if (meta.substation && meta.substation !== '-') site = meta.substation;
+
+          const pRaw = meta['Rated Power (MVA)'] || meta.ratedPower || meta.power || meta.capacity;
+          if (pRaw && pRaw !== '-') {
+            const pNum = parseFloat(pRaw);
+            if (!isNaN(pNum)) {
+              power = pNum >= 1000 ? `${(pNum / 1000).toFixed(0)} MVA` : `${pNum} MVA`;
+            } else {
+              power = `${pRaw} MVA`;
+            }
+          }
+
+          const vRaw = meta['Rated Voltage (kV)'] || meta.ratedVoltage || meta.voltage;
+          if (vRaw && vRaw !== '-') voltageStr = `${vRaw} kV`;
+
+          if (meta['Service Type'] && meta['Service Type'] !== '-') service = meta['Service Type'];
+          else if (meta.serviceType && meta.serviceType !== '-') service = meta.serviceType;
+
+          if (meta['Vector Group'] && meta['Vector Group'] !== '-') vectorGroup = meta['Vector Group'];
+          else if (meta.vectorGroup && meta.vectorGroup !== '-') vectorGroup = meta.vectorGroup;
+          else if (meta.vector_group && meta.vector_group !== '-') vectorGroup = meta.vector_group;
+
+          if (meta.Manufacturer && meta.Manufacturer !== '-') mfg = meta.Manufacturer;
+          else if (meta.manufacture && meta.manufacture !== '-') mfg = meta.manufacture;
+          else if (meta.manufacturer && meta.manufacturer !== '-') mfg = meta.manufacturer;
+
+          if (meta.tap_changer && meta.tap_changer !== '-') tapType = meta.tap_changer;
+        }
       }
-    }
 
-    function cleanSig(v) {
-      if (!v) return '';
-      const s = String(v).trim();
-      return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
-    }
+      // 1.3 TR_DATA (from data.js / TRInfo.csv)
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x['Serial No'] || x.serial, serial));
+        if (rawMeta) {
+          if (rawMeta.LOCAL_EQUIPMENT_CODE && rawMeta.LOCAL_EQUIPMENT_CODE !== '-') {
+            name = rawMeta.LOCAL_EQUIPMENT_CODE;
+          } else if (rawMeta.DEVICE_CODE && rawMeta.DEVICE_CODE !== '-') {
+            name = rawMeta.DEVICE_CODE;
+          }
 
-    function cleanDate(d) {
-      if (!d) return '';
-      const s = String(d).trim();
-      if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
-      const formatted = formatDate(s);
-      return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
-    }
+          if (rawMeta.SITE && rawMeta.SITE !== '-') site = rawMeta.SITE;
+          else if (rawMeta.SUBSTATION && rawMeta.SUBSTATION !== '-') site = rawMeta.SUBSTATION;
 
-    function formatVal(v, dec = 4) {
-      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
-      return parseFloat(v).toFixed(dec);
-    }
+          if (rawMeta.MANUFACTURER_COMPANY && rawMeta.MANUFACTURER_COMPANY !== '-') mfg = rawMeta.MANUFACTURER_COMPANY;
+          else if (rawMeta.BRAND && rawMeta.BRAND !== '-') mfg = rawMeta.BRAND;
 
-    function getDevBadge(devVal) {
-      if (devVal === undefined || devVal === null || devVal === '' || devVal === '-' || isNaN(parseFloat(devVal))) {
-        return '<span class="status-badge status-na">-</span>';
+          if (rawMeta.POWER_RATING_DETAIL && rawMeta.POWER_RATING_DETAIL !== '-') {
+            power = rawMeta.POWER_RATING_DETAIL;
+          } else if (rawMeta.POWER_RATING && rawMeta.POWER_RATING !== '-') {
+            const pr = parseFloat(rawMeta.POWER_RATING);
+            if (!isNaN(pr)) {
+              power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+            }
+          }
+
+          if (!facMeta || !facMeta.HV_Rated) {
+            if (rawMeta.HV_RATED && rawMeta.HV_RATED !== '-') hvRated = parseFloat(rawMeta.HV_RATED) || hvRated;
+          }
+          if (!facMeta || !facMeta.LV_Rated) {
+            if (rawMeta.LV_RATED && rawMeta.LV_RATED !== '-') lvRated = parseFloat(rawMeta.LV_RATED) || lvRated;
+          }
+          if (!facMeta || !facMeta.TV_Rated) {
+            if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') tvRated = parseFloat(rawMeta.LV2_RATED);
+          }
+
+          if (rawMeta.VECTOR_GROUP && rawMeta.VECTOR_GROUP !== '-') vectorGroup = rawMeta.VECTOR_GROUP;
+          if (rawMeta.TAP_CHANGER_TYPE && rawMeta.TAP_CHANGER_TYPE !== '-') tapType = rawMeta.TAP_CHANGER_TYPE;
+          if (rawMeta.APPLICATION && rawMeta.APPLICATION !== '-') service = rawMeta.APPLICATION;
+          if (rawMeta.NO_WINDING && rawMeta.NO_WINDING !== '-') noWinding = parseInt(rawMeta.NO_WINDING, 10) || 2;
+        }
       }
-      const val = Math.abs(parseFloat(devVal));
-      if (val <= 2.00) {
-        return '<span class="status-badge status-pass">PASS</span>';
-      } else if (val <= 3.00) {
-        return '<span class="status-badge status-fair">FAIR</span>';
-      } else {
-        return '<span class="status-badge status-fail">FAIL</span>';
+
+      if (tvRated) {
+        voltageStr = `${hvRated} / ${lvRated} / ${tvRated} kV`;
+      } else if (hvRated && lvRated) {
+        voltageStr = `${hvRated} / ${lvRated} kV`;
       }
+
+      // Check if Auto-transformer or 3-Winding
+      const isAuto = vectorGroup.toLowerCase().includes('auto') || 
+                     vectorGroup.toLowerCase().includes('na0') || 
+                     vectorGroup.toLowerCase().includes('yna') || 
+                     String(name).toLowerCase().includes('auto');
+
+      const hasTertiaryVector = /\([a-z0-9]+\)/i.test(vectorGroup) || 
+                                /(d11d11|d11d1|yn0d|yn0y|yn11d)/i.test(vectorGroup);
+
+      const is3W = (noWinding === 3) || 
+                   (tvRated !== null && tvRated > 0) || 
+                   hasTertiaryVector || 
+                   isAuto;
+
+      // Populate Identification Table
+      document.getElementById('info-header-id').textContent = 'EMM-TR-F-004, Rev.1';
+      document.getElementById('info-eq-name').textContent = name;
+      document.getElementById('info-site').textContent = site;
+      document.getElementById('info-serial').textContent = serial;
+      document.getElementById('info-power').textContent = power;
+      document.getElementById('info-voltage').textContent = voltageStr;
+      document.getElementById('info-vector').textContent = vectorGroup;
+
+      let windingCountStr = '2 Windings';
+      if (isAuto) {
+        windingCountStr = 'Auto-Transformer (2 + Tertiary)';
+      } else if (is3W) {
+        windingCountStr = '3 Windings';
+      }
+      document.getElementById('info-winding').textContent = windingCountStr;
+      document.getElementById('info-tap').textContent = tapType;
+
+      // 2. Populate Test Environment & Apparatus
+      const r = record || {};
+      document.getElementById('info-instrument').textContent = r.Test_Instrument && r.Test_Instrument !== '-' ? r.Test_Instrument : 'Omicron TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = r.Instrument_Serial_No && r.Instrument_Serial_No !== '-' ? r.Instrument_Serial_No : '-';
+      document.getElementById('info-instrument-calib').textContent = r.Calibration_Date && r.Calibration_Date !== '-' ? formatDate_ddMmmyyyy(r.Calibration_Date) : '-';
+
+      document.getElementById('env-ambient').textContent = r.Ambient_Temp && r.Ambient_Temp !== '-' ? `${r.Ambient_Temp} °C` : '- °C';
+      document.getElementById('env-oil').textContent = r.Oil_Temp && r.Oil_Temp !== '-' ? `${r.Oil_Temp} °C` : '- °C';
+      document.getElementById('env-winding').textContent = r.Winding_Temp && r.Winding_Temp !== '-' ? `${r.Winding_Temp} °C` : '- °C';
+      document.getElementById('env-humidity').textContent = r.Humidity && r.Humidity !== '-' ? `${r.Humidity}%` : '-%';
+
+      // 3. Render Measurement Data Tables
+      renderMeasurementTables(r, facMeta, vectorGroup, is3W, isAuto);
+
+      // 4. Signatures
+      populateSignatures(r);
     }
 
     function getPhaseRatioConnections(vectorGroup, mode = 'HL') {
@@ -1103,61 +1290,26 @@
       };
     }
 
-    function renderReportContent() {
-      const r = currentRecord || {};
-      const serial = currentSerial;
-
-      // Find Metadata in HEALTH_INDEX_DATA
-      let meta = (typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA.find(x => matchSerial(x.serial, serial)) : null;
-
-      // Find Factory baseline
-      let facRec = factoryDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
-
-      // Find TRInfoData
-      let trInfoRec = trInfoDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
-
-      // 1. Equipment Identification Info
-      document.getElementById('info-eq-name').textContent = (meta && meta.name) || (trInfoRec && trInfoRec.FEEDER) || '-';
-      document.getElementById('info-site').textContent = (meta && meta.substation) || (trInfoRec && trInfoRec.SUBSTATION) || '-';
-      document.getElementById('info-serial').textContent = serial;
-
-      const powerVal = (meta && meta.capacity) || (trInfoRec && trInfoRec.RATED_POWER) || (facRec && facRec.Power_Rated) || '-';
-      document.getElementById('info-power').textContent = powerVal ? (String(powerVal).toUpperCase().includes('MVA') ? powerVal : `${powerVal} MVA`) : '-';
-
-      const hvKv = (trInfoRec && trInfoRec.HV_RATED) || (facRec && facRec.HV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[0] : '');
-      const lvKv = (trInfoRec && trInfoRec.LV_RATED) || (facRec && facRec.LV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[1] : '');
-      const tvKv = (trInfoRec && trInfoRec.LV2_RATED);
-      let voltStr = (meta && meta.voltage) || '-';
-      if (hvKv && lvKv) {
-        voltStr = tvKv ? `${hvKv} / ${lvKv} / ${tvKv} kV` : `${hvKv} / ${lvKv} kV`;
-      }
-      document.getElementById('info-voltage').textContent = voltStr;
-
-      const vector = (trInfoRec && trInfoRec.VECTOR_GROUP) || (meta && meta.vector_group) || '-';
-      document.getElementById('info-vector').textContent = vector;
-      const noWinding = (trInfoRec && trInfoRec.NO_WINDING) || (meta && meta.no_winding) || 2;
-      document.getElementById('info-winding').textContent = `${noWinding} Windings`;
-      const tapType = (trInfoRec && trInfoRec.TAP_CHANGER_TYPE) || (meta && meta.tap_changer) || 'DETC';
-      document.getElementById('info-tap').textContent = tapType;
-
-      // 2. Test Environment & Instrument
-      document.getElementById('info-instrument').textContent = (r && r.Test_Instrument && r.Test_Instrument !== '-') ? r.Test_Instrument : 'Omicron TESTRANO 600';
-      document.getElementById('info-instrument-serial').textContent = (r && r.Instrument_Serial_No && r.Instrument_Serial_No !== '-') ? r.Instrument_Serial_No : '-';
-      document.getElementById('info-instrument-calib').textContent = (r && r.Calibration_Date && r.Calibration_Date !== '-') ? formatDate(r.Calibration_Date) : '-';
-
-      document.getElementById('env-ambient').textContent = (r && r.Ambient_Temp && r.Ambient_Temp !== '-') ? `${r.Ambient_Temp} °C` : '- °C';
-      document.getElementById('env-oil').textContent = (r && r.Oil_Temp && r.Oil_Temp !== '-') ? `${r.Oil_Temp} °C` : '- °C';
-      document.getElementById('env-winding').textContent = (r && r.Winding_Temp && r.Winding_Temp !== '-') ? `${r.Winding_Temp} °C` : '- °C';
-      document.getElementById('env-humidity').textContent = (r && r.Humidity && r.Humidity !== '-') ? `${r.Humidity}%` : '-%';
-
-      // 3. Render Tables & Diagnostic Charts
-      renderShortCircuitTables(r, facRec, vector, noWinding, tapType);
-
-      // 4. Populate Signatures
-      populateSignatures(r, trInfoRec);
+    function formatVal(v, dec = 4) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      return parseFloat(v).toFixed(dec);
     }
 
-    function renderShortCircuitTables(r, facRec, vectorGroup, noWinding, tapType) {
+    function getDevBadge(devVal) {
+      if (devVal === undefined || devVal === null || devVal === '' || devVal === '-' || isNaN(parseFloat(devVal))) {
+        return '<span class="status-badge status-na">-</span>';
+      }
+      const val = Math.abs(parseFloat(devVal));
+      if (val <= 2.00) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (val <= 3.00) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">FAIL</span>';
+      }
+    }
+
+    function renderMeasurementTables(r, facMeta, vectorGroup, is3W, isAuto) {
       const container = document.getElementById('short-tables-container');
       container.innerHTML = '';
 
@@ -1168,7 +1320,6 @@
       const chartZC = [];
 
       let fleetMaxDev = 0;
-      let fleetMaxFatDev = 0;
       let critTap = 'Tap Center';
 
       const getZ = (zVal, vVal, iVal) => {
@@ -1228,9 +1379,9 @@
 
       const hlBody = hlTableBox.querySelector('#short-table-hl-body');
 
-      const fatZMax = facRec ? (facRec.ShortZ_X_Max || null) : null;
-      const fatZCen = facRec ? (facRec.ShortZ_X_Cen || null) : null;
-      const fatZMin = facRec ? (facRec.ShortZ_X_Min || null) : null;
+      const fatZMax = facMeta ? (facMeta.ShortZ_X_Max || null) : null;
+      const fatZCen = facMeta ? (facMeta.ShortZ_X_Cen || null) : null;
+      const fatZMin = facMeta ? (facMeta.ShortZ_X_Min || null) : null;
 
       const hlTaps = [
         {
@@ -1367,7 +1518,7 @@
             vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
             vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
             preDev: r.TV_Max_Dev,
-            fatZ: facRec ? facRec.ShortZ_Y_Max : null
+            fatZ: facMeta ? facMeta.ShortZ_Y_Max : null
           },
           {
             name: 'Tap Center',
@@ -1375,7 +1526,7 @@
             vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
             vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
             preDev: r.TV_Cen_Dev,
-            fatZ: facRec ? facRec.ShortZ_Y_Cen : null
+            fatZ: facMeta ? facMeta.ShortZ_Y_Cen : null
           },
           {
             name: 'Tap Min (-)',
@@ -1383,7 +1534,7 @@
             vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
             vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
             preDev: r.TV_Min_Dev,
-            fatZ: facRec ? facRec.ShortZ_Y_Min : null
+            fatZ: facMeta ? facMeta.ShortZ_Y_Min : null
           }
         ];
 
@@ -1453,7 +1604,6 @@
     }
 
     function renderCharts(labels, devs, zA, zB, zC, vectorGroup = '') {
-      // Dynamic Vector Group label for Impedance Profile Chart
       const vectorLabel = document.getElementById('chart-vector-label');
       if (vectorLabel) {
         const v = String(vectorGroup || '').trim();
@@ -1621,30 +1771,33 @@
       });
     }
 
-    function populateSignatures(rec, trInfo) {
-      const nameTested = cleanSig((rec && (rec.Name1 || rec.NAME1 || rec.Tested_by)) || (trInfo && (trInfo.TESTED_BY || trInfo.Tested_by)));
-      const nameRev = cleanSig((rec && (rec.Name2 || rec.NAME2 || rec.Witnessed_by)) || (trInfo && (trInfo.WITNESSED_BY || trInfo.Witnessed_by)));
-      const nameApp = cleanSig((rec && (rec.Name3 || rec.NAME3 || rec.Approved_by)) || (trInfo && (trInfo.APPROVED_BY || trInfo.Approved_by)));
+    function populateSignatures(rec) {
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
 
-      const compTested = cleanSig((rec && (rec.COMP1 || rec.comp1)) || (trInfo && (trInfo.COMP1 || trInfo.comp1)));
-      const compRev = cleanSig((rec && (rec.COMP2 || rec.comp2)) || (trInfo && (trInfo.COMP2 || trInfo.comp2)));
-      const compApp = cleanSig((rec && (rec.COMP3 || rec.comp3)) || (trInfo && (trInfo.COMP3 || trInfo.comp3)));
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDate_ddMmmyyyy(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      const dateTested = cleanDate(rec && rec.Date ? rec.Date : '');
-      const dateRev = cleanDate(rec && rec.Date ? rec.Date : '');
-      const dateApp = cleanDate(rec && rec.Date ? rec.Date : '');
+      const r = rec || {};
+      document.getElementById('resp-name-tested').textContent = cleanSig(r.Name1 || r.NAME1 || r.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.Name2 || r.NAME2 || r.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(r.Name3 || r.NAME3 || r.Approved_by);
 
-      document.getElementById('resp-name-tested').textContent = nameTested;
-      document.getElementById('resp-name-reviewed').textContent = nameRev;
-      document.getElementById('resp-name-approved').textContent = nameApp;
+      document.getElementById('resp-comp-tested').textContent = cleanSig(r.COMP1 || r.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
 
-      document.getElementById('resp-comp-tested').textContent = compTested;
-      document.getElementById('resp-comp-reviewed').textContent = compRev;
-      document.getElementById('resp-comp-approved').textContent = compApp;
-
-      document.getElementById('resp-date-tested').textContent = dateTested;
-      document.getElementById('resp-date-reviewed').textContent = dateRev;
-      document.getElementById('resp-date-approved').textContent = dateApp;
+      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
     }
 
     function toggleTheme() {
