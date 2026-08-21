@@ -1723,13 +1723,40 @@
 
         const isOLTC1or3 = tapType && (tapType.toUpperCase().includes('OLTC1') || tapType.toUpperCase().includes('OLTC3'));
 
+        const getServiceTapInfo = (tapVal, cenHv, cenSec, vGroup, isAutoTR, modeTR) => {
+          const tapNum = parseInt(String(tapVal).replace(/[^0-9]/g, ''), 10);
+          let tapHv = cenHv;
+          if (tapNum === 2) {
+            // Tap 2: +2.5% of Center Tap HV Volts
+            tapHv = cenHv * 1.025;
+          } else if (tapNum === 4) {
+            // Tap 4: -2.5% of Center Tap HV Volts
+            tapHv = cenHv * 0.975;
+          } else if (tapNum === 1) {
+            // Tap 1: Max (+5.0%)
+            tapHv = maxHvV;
+          } else if (tapNum === 5) {
+            // Tap 5: Min (-5.0%)
+            tapHv = minHvV;
+          } else {
+            tapHv = cenHv;
+          }
+          const calcR = calculateTheoreticalRatio(tapHv / 1000, cenSec / 1000, vGroup, isAutoTR && modeTR === 'HL', modeTR);
+          return {
+            hvVolt: tapHv,
+            secVolt: cenSec,
+            calcRatio: calcR
+          };
+        };
+
         // For 2-Winding or Auto Transformer only, include discrete service tap if present and valid (Do not show if OLTC1, OLTC3 or invalid "-")
         if (!is3W && !isOLTC1or3 && r && isTapValValid(r.H1_tap_N1, r.H1_ratio1)) {
+          const sInfo1 = getServiceTapInfo(r.H1_tap_N1, cenHvV, cenSecV, vectorGroup, isAuto, mode);
           taps.push({
             name: `Tap ${r.H1_tap_N1} (Service)`,
-            hvVolt: cenHvV.toFixed(0),
-            secVolt: cenSecV.toFixed(0),
-            calcRatio: cenCalcRatio.toFixed(4),
+            hvVolt: sInfo1.hvVolt.toFixed(0),
+            secVolt: sInfo1.secVolt.toFixed(0),
+            calcRatio: sInfo1.calcRatio.toFixed(4),
             h1_ratio: r.H1_ratio1, h1_err: r.H1_err1, h1_phd: r.H1_phd1,
             h2_ratio: r.H2_ratio1, h2_err: r.H2_err1, h2_phd: r.H2_phd1,
             h3_ratio: r.H3_ratio1, h3_err: r.H3_err1, h3_phd: r.H3_phd1,
@@ -1737,11 +1764,12 @@
         }
 
         if (!is3W && !isOLTC1or3 && r && isTapValValid(r.H1_tap_N2, r.H1_ratio2)) {
+          const sInfo2 = getServiceTapInfo(r.H1_tap_N2, cenHvV, cenSecV, vectorGroup, isAuto, mode);
           taps.push({
             name: `Tap ${r.H1_tap_N2}`,
-            hvVolt: cenHvV.toFixed(0),
-            secVolt: cenSecV.toFixed(0),
-            calcRatio: cenCalcRatio.toFixed(4),
+            hvVolt: sInfo2.hvVolt.toFixed(0),
+            secVolt: sInfo2.secVolt.toFixed(0),
+            calcRatio: sInfo2.calcRatio.toFixed(4),
             h1_ratio: r.H1_ratio2, h1_err: r.H1_err2, h1_phd: r.H1_phd2,
             h2_ratio: r.H2_ratio2, h2_err: r.H2_err2, h2_phd: r.H2_phd2,
             h3_ratio: r.H3_ratio2, h3_err: r.H3_err2, h3_phd: r.H3_phd2,
@@ -2228,11 +2256,24 @@
 
       // Add discrete Service Tap if available (H1_tap_N1)
       if (r.H1_tap_N1 && r.H1_ratio1) {
+        const tapNum = parseInt(String(r.H1_tap_N1).replace(/[^0-9]/g, ''), 10);
+        let sHvVolt = cenHvV;
+        if (tapNum === 2) {
+          sHvVolt = cenHvV * 1.025;
+        } else if (tapNum === 4) {
+          sHvVolt = cenHvV * 0.975;
+        } else if (tapNum === 1) {
+          sHvVolt = maxHvV;
+        } else if (tapNum === 5) {
+          sHvVolt = minHvV;
+        }
+        const sCalcRatio = calculateTheoreticalRatio(sHvVolt / 1000, cenLvV / 1000, vectorGroup, isAuto, 'HL');
+
         taps.push({
           name: `Tap ${r.H1_tap_N1} (Service)`,
-          hvVolt: (hvRated * 1000).toFixed(0),
-          lvVolt: (lvRated * 1000).toFixed(0),
-          calcRatio: r.H1_tap_rate_N1 || baseCalcRatio.toFixed(4),
+          hvVolt: sHvVolt.toFixed(0),
+          lvVolt: cenLvV.toFixed(0),
+          calcRatio: sCalcRatio.toFixed(4),
           h1_ratio: r.H1_ratio1, h1_err: r.H1_err1, h1_phd: r.H1_phd1,
           h2_ratio: r.H2_ratio1, h2_err: r.H2_err1, h2_phd: r.H2_phd1,
           h3_ratio: r.H3_ratio1, h3_err: r.H3_err1, h3_phd: r.H3_phd1,
