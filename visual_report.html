@@ -680,19 +680,19 @@
           <td class="sig-cell"></td>
         </tr>
         <tr>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-tested">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-reviewed">-</td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-approved">-</td>
+          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-tested"></td>
+          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-reviewed"></td>
+          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-approved"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-tested">-</td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-reviewed">-</td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-approved">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-tested"></td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-reviewed"></td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-approved"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-tested"></td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-reviewed"></td>
+          <td style="text-align: center; font-size: 8.5px;" id="resp-date-approved"></td>
         </tr>
       </tbody>
     </table>
@@ -1249,26 +1249,31 @@
         photoGrid.style.display = 'none';
       }
 
-      // 19. SIGNATURES / APPROVAL
-      const comp1 = r.COMP1 || r.comp1 || '-';
-      const comp2 = r.COMP2 || r.comp2 || '-';
-      const comp3 = r.COMP3 || r.comp3 || '-';
-      const tester = r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1 || '-';
-      const witness = r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name || '-';
-      const approver = r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name || '-';
-      const dateStr = formatDateToDdMmmYyyy(r.date);
+      // 19. SIGNATURES / APPROVAL (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDateToDdMmmYyyy(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      document.getElementById('resp-company-tested').textContent = comp1;
-      document.getElementById('resp-company-reviewed').textContent = comp2;
-      document.getElementById('resp-company-approved').textContent = comp3;
+      document.getElementById('resp-company-tested').textContent = cleanSig(r.COMP1 || r.comp1);
+      document.getElementById('resp-company-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
+      document.getElementById('resp-company-approved').textContent = cleanSig(r.COMP3 || r.comp3);
 
-      document.getElementById('resp-name-tested').textContent = tester;
-      document.getElementById('resp-name-reviewed').textContent = witness;
-      document.getElementById('resp-name-approved').textContent = approver;
+      document.getElementById('resp-name-tested').textContent = cleanSig(r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name);
+      document.getElementById('resp-name-approved').textContent = cleanSig(r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name);
 
-      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
     }
 
     function renderTableRows(tbodyId, rowConfigs, dataObj) {

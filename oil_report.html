@@ -800,19 +800,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested">-</td>
-            <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">-</td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -1159,19 +1159,31 @@
       // Passivator
       populateRow('passivator', 'Passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, 1);
 
-      // Signatures
-      const dateStr = formatDate(curr.Date);
-      document.getElementById('resp-name-tested').textContent = curr.Name1 || curr.NAME1 || curr.test_name || curr.Tested_by || '-';
-      document.getElementById('resp-name-reviewed').textContent = curr.Name2 || curr.NAME2 || curr.witness_name || curr.reviewed_name || curr.Witnessed_by || '-';
-      document.getElementById('resp-name-approved').textContent = curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by || '-';
+      // Signatures (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDate(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      document.getElementById('resp-comp-tested').textContent = curr.COMP1 || curr.comp1 || '-';
-      document.getElementById('resp-comp-reviewed').textContent = curr.COMP2 || curr.comp2 || '-';
-      document.getElementById('resp-comp-approved').textContent = curr.COMP3 || curr.comp3 || '-';
+      document.getElementById('resp-name-tested').textContent = cleanSig(curr.Name1 || curr.NAME1 || curr.test_name || curr.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(curr.Name2 || curr.NAME2 || curr.witness_name || curr.reviewed_name || curr.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by);
 
-      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-comp-tested').textContent = cleanSig(curr.COMP1 || curr.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(curr.COMP2 || curr.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(curr.COMP3 || curr.comp3);
+
+      document.getElementById('resp-date-tested').textContent = cleanDate(curr.Date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(curr.Date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(curr.Date);
 
       // Render Trending Chart
       currentValidItems = items;

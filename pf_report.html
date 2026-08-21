@@ -875,19 +875,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested">-</td>
-            <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">-</td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -1225,19 +1225,31 @@
       ];
       renderResultsTable('tertiary-results-body', tertiaryResults, fluid, voltage);
 
-      // Signatures block
-      const dateStr = formatDate(pfItem.date);
-      document.getElementById('resp-name-tested').textContent = pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || pfItem.Tested_by || '-';
-      document.getElementById('resp-name-reviewed').textContent = pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || pfItem.reviewed_name || pfItem.Witnessed_by || '-';
-      document.getElementById('resp-name-approved').textContent = pfItem.Name3 || pfItem.NAME3 || pfItem.approved_name || pfItem.Approved_by || '-';
+      // Signatures block (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDate(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      document.getElementById('resp-comp-tested').textContent = pfItem.COMP1 || pfItem.comp1 || '-';
-      document.getElementById('resp-comp-reviewed').textContent = pfItem.COMP2 || pfItem.comp2 || '-';
-      document.getElementById('resp-comp-approved').textContent = pfItem.COMP3 || pfItem.comp3 || '-';
+      document.getElementById('resp-name-tested').textContent = cleanSig(pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || pfItem.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || pfItem.reviewed_name || pfItem.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(pfItem.Name3 || pfItem.NAME3 || pfItem.approved_name || pfItem.Approved_by);
 
-      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-comp-tested').textContent = cleanSig(pfItem.COMP1 || pfItem.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(pfItem.COMP2 || pfItem.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(pfItem.COMP3 || pfItem.comp3);
+
+      document.getElementById('resp-date-tested').textContent = cleanDate(pfItem.date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(pfItem.date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(pfItem.date);
 
       // Populate Trend Winding Selector dynamically
       const trendSelect = document.getElementById('trend-winding-select');

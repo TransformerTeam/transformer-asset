@@ -741,19 +741,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested">-</td>
-            <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">-</td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -1101,19 +1101,31 @@
       document.getElementById('frame-gnd').textContent = formatVal(piItem.framegnd);
       document.getElementById('core-frame').textContent = formatVal(piItem.coreframe);
 
-      // Signatures
-      const dateStr = formatDate(piItem.date);
-      document.getElementById('resp-name-tested').textContent = piItem.test_name || piItem.Name1 || piItem.NAME1 || piItem.Tested_by || '-';
-      document.getElementById('resp-name-reviewed').textContent = piItem.witness_name || piItem.Name2 || piItem.NAME2 || piItem.reviewed_name || piItem.Witnessed_by || '-';
-      document.getElementById('resp-name-approved').textContent = piItem.Name3 || piItem.NAME3 || piItem.approved_name || piItem.Approved_by || '-';
+      // Signatures (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDate(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      document.getElementById('resp-comp-tested').textContent = piItem.COMP1 || piItem.comp1 || '-';
-      document.getElementById('resp-comp-reviewed').textContent = piItem.COMP2 || piItem.comp2 || '-';
-      document.getElementById('resp-comp-approved').textContent = piItem.COMP3 || piItem.comp3 || '-';
+      document.getElementById('resp-name-tested').textContent = cleanSig(piItem.test_name || piItem.Name1 || piItem.NAME1 || piItem.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(piItem.witness_name || piItem.Name2 || piItem.NAME2 || piItem.reviewed_name || piItem.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(piItem.Name3 || piItem.NAME3 || piItem.approved_name || piItem.Approved_by);
 
-      document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+      document.getElementById('resp-comp-tested').textContent = cleanSig(piItem.COMP1 || piItem.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(piItem.COMP2 || piItem.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(piItem.COMP3 || piItem.comp3);
+
+      document.getElementById('resp-date-tested').textContent = cleanDate(piItem.date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(piItem.date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(piItem.date);
     }
 
     // Helper formatter functions

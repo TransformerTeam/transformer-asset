@@ -886,19 +886,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested">-</td>
-            <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">-</td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -1132,18 +1132,31 @@
         document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
         document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
 
-        const dateStr = formatReportDate(latest.date);
-        document.getElementById('resp-name-tested').textContent = latest.test_name || latest.Name1 || latest.NAME1 || latest.Tested_by || '-';
-        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || latest.Name2 || latest.NAME2 || latest.reviewed_name || latest.Witnessed_by || '-';
-        document.getElementById('resp-name-approved').textContent = latest.Name3 || latest.NAME3 || latest.approved_name || latest.Approved_by || '-';
+        // Signatures (Dynamic values; if missing leave blank)
+        const cleanSig = (v) => {
+          if (!v) return '';
+          const s = String(v).trim();
+          return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+        };
+        const cleanDate = (d) => {
+          if (!d) return '';
+          const s = String(d).trim();
+          if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+          const formatted = formatReportDate(s);
+          return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+        };
 
-        document.getElementById('resp-comp-tested').textContent = latest.COMP1 || latest.comp1 || '-';
-        document.getElementById('resp-comp-reviewed').textContent = latest.COMP2 || latest.comp2 || '-';
-        document.getElementById('resp-comp-approved').textContent = latest.COMP3 || latest.comp3 || '-';
+        document.getElementById('resp-name-tested').textContent = cleanSig(latest.test_name || latest.Name1 || latest.NAME1 || latest.Tested_by);
+        document.getElementById('resp-name-reviewed').textContent = cleanSig(latest.witness_name || latest.Name2 || latest.NAME2 || latest.reviewed_name || latest.Witnessed_by);
+        document.getElementById('resp-name-approved').textContent = cleanSig(latest.Name3 || latest.NAME3 || latest.approved_name || latest.Approved_by);
 
-        document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-        document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
-        document.getElementById('resp-date-approved').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
+        document.getElementById('resp-comp-tested').textContent = cleanSig(latest.COMP1 || latest.comp1);
+        document.getElementById('resp-comp-reviewed').textContent = cleanSig(latest.COMP2 || latest.comp2);
+        document.getElementById('resp-comp-approved').textContent = cleanSig(latest.COMP3 || latest.comp3);
+
+        document.getElementById('resp-date-tested').textContent = cleanDate(latest.date);
+        document.getElementById('resp-date-reviewed').textContent = cleanDate(latest.date);
+        document.getElementById('resp-date-approved').textContent = cleanDate(latest.date);
 
         renderC1Table(latest, infoRecords);
         renderC2Table(latest, infoRecords);

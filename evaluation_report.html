@@ -1454,19 +1454,19 @@
           <td class="sig-cell" style="border: 1px solid #cbd5e1; background-color: #ffffff;"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-tested">-</td>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-reviewed">-</td>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-approved">-</td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-tested"></td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-reviewed"></td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-approved"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-tested">-</td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-reviewed">-</td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-approved">-</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-tested"></td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-reviewed"></td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-approved"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-tested">Date: -</td>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-reviewed">Date: -</td>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-approved">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-tested"></td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-reviewed"></td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-approved"></td>
         </tr>
       </tbody>
     </table>
@@ -1747,18 +1747,31 @@
       renderPart2Table(item);
       renderPart3Table(item);
 
-      // Populate Signatures / Approval
-      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER || item.Name) : null;
-      const tester = (trInfoItem && (trInfoItem.TESTED_BY || trInfoItem.Tested_by)) || item.Tested_by || item.Name1 || item.NAME1 || '-';
-      const reviewer = (trInfoItem && (trInfoItem.WITNESSED_BY || trInfoItem.Witnessed_by)) || item.Witnessed_by || item.Name2 || item.NAME2 || item.reviewed_name || '-';
-      const approver = (trInfoItem && (trInfoItem.APPROVED_BY || trInfoItem.Approved_by)) || item.Approved_by || item.Name3 || item.NAME3 || item.approved_name || '-';
+      // Populate Signatures / Approval (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = (typeof formatDate === 'function' ? formatDate(s) : s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
 
-      const compTested = (trInfoItem && (trInfoItem.COMP1 || trInfoItem.comp1)) || item.COMP1 || item.comp1 || '-';
-      const compReviewed = (trInfoItem && (trInfoItem.COMP2 || trInfoItem.comp2)) || item.COMP2 || item.comp2 || '-';
-      const compApproved = (trInfoItem && (trInfoItem.COMP3 || trInfoItem.comp3)) || item.COMP3 || item.comp3 || '-';
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER || item.Name) : null;
+      const tester = cleanSig((trInfoItem && (trInfoItem.TESTED_BY || trInfoItem.Tested_by)) || item.Tested_by || item.Name1 || item.NAME1);
+      const reviewer = cleanSig((trInfoItem && (trInfoItem.WITNESSED_BY || trInfoItem.Witnessed_by)) || item.Witnessed_by || item.Name2 || item.NAME2 || item.reviewed_name);
+      const approver = cleanSig((trInfoItem && (trInfoItem.APPROVED_BY || trInfoItem.Approved_by)) || item.Approved_by || item.Name3 || item.NAME3 || item.approved_name);
+
+      const compTested = cleanSig((trInfoItem && (trInfoItem.COMP1 || trInfoItem.comp1)) || item.COMP1 || item.comp1);
+      const compReviewed = cleanSig((trInfoItem && (trInfoItem.COMP2 || trInfoItem.comp2)) || item.COMP2 || item.comp2);
+      const compApproved = cleanSig((trInfoItem && (trInfoItem.COMP3 || trInfoItem.comp3)) || item.COMP3 || item.comp3);
 
       const dateStr = item.testDate || item.date || item.Date || '';
-      const formattedDateStr = (dateStr && dateStr !== '-') ? (typeof formatDate === 'function' ? formatDate(dateStr) : dateStr) : '-';
+      const dateText = cleanDate(dateStr);
 
       const elNameTested = document.getElementById('resp-name-tested');
       const elNameRev = document.getElementById('resp-name-reviewed');
@@ -1777,9 +1790,9 @@
       const elDateTested = document.getElementById('resp-date-tested');
       const elDateRev = document.getElementById('resp-date-reviewed');
       const elDateApp = document.getElementById('resp-date-approved');
-      if (elDateTested) elDateTested.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
-      if (elDateRev) elDateRev.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
-      if (elDateApp) elDateApp.textContent = formattedDateStr !== '-' ? `Date: ${formattedDateStr}` : 'Date: -';
+      if (elDateTested) elDateTested.textContent = dateText;
+      if (elDateRev) elDateRev.textContent = dateText;
+      if (elDateApp) elDateApp.textContent = dateText;
     }
 
     // =============================================

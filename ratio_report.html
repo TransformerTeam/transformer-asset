@@ -1011,19 +1011,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested">-</td>
-            <td class="val" id="resp-name-reviewed">-</td>
-            <td class="val" id="resp-name-approved">-</td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -1474,16 +1474,29 @@
       document.getElementById('env-winding').textContent = r.WINDINGTEMP ? `${r.WINDINGTEMP} °C` : '- °C';
       document.getElementById('env-humidity').textContent = r.HUMIDITY ? `${r.HUMIDITY} %` : '-%';
 
-      // Sign-off (Dynamic values; if missing display '-')
-      document.getElementById('resp-name-tested').textContent = r.NAME1 || r.Name1 || r.test_name || r.Tested_by || '-';
-      document.getElementById('resp-name-reviewed').textContent = r.NAME2 || r.Name2 || r.witness_name || r.reviewed_name || r.Witnessed_by || '-';
-      document.getElementById('resp-name-approved').textContent = r.NAME3 || r.Name3 || r.approved_name || r.Approved_by || '-';
-      document.getElementById('resp-comp-tested').textContent = r.COMP1 || r.comp1 || '-';
-      document.getElementById('resp-comp-reviewed').textContent = r.COMP2 || r.comp2 || '-';
-      document.getElementById('resp-comp-approved').textContent = r.COMP3 || r.comp3 || '-';
-      document.getElementById('resp-date-tested').textContent = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
+      // Sign-off (Dynamic values; if missing leave blank)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+      };
+      const cleanDate = (d) => {
+        if (!d) return '';
+        const s = String(d).trim();
+        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
+        const formatted = formatDate_ddMmmyyyy(s);
+        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+      };
+
+      document.getElementById('resp-name-tested').textContent = cleanSig(r.NAME1 || r.Name1 || r.test_name || r.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.NAME2 || r.Name2 || r.witness_name || r.reviewed_name || r.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(r.NAME3 || r.Name3 || r.approved_name || r.Approved_by);
+      document.getElementById('resp-comp-tested').textContent = cleanSig(r.COMP1 || r.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
+      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
+      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
 
       // Show / Hide Winding Tabs (Hidden per user specification)
       const tabContainer = document.getElementById('winding-tab-container');
