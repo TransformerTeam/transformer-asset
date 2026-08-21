@@ -1723,24 +1723,30 @@
 
         const isOLTC1or3 = tapType && (tapType.toUpperCase().includes('OLTC1') || tapType.toUpperCase().includes('OLTC3'));
 
-        const getServiceTapInfo = (tapVal, cenHv, cenSec, vGroup, isAutoTR, modeTR) => {
+        const getServiceTapInfo = (tapVal, cenHv, cenSec, vGroup, isAutoTR, modeTR, currentTapType) => {
           const tapNum = parseInt(String(tapVal).replace(/[^0-9]/g, ''), 10);
+          const tTypeStr = String(currentTapType || tapType || '').toUpperCase().trim();
+          const isDETC = tTypeStr.includes('DETC') || tTypeStr.includes('NLTC') || tTypeStr.includes('OCTC') || tTypeStr.includes('OFF') || (!tTypeStr.includes('OLTC') && tapNum >= 1 && tapNum <= 5);
+
           let tapHv = cenHv;
-          if (tapNum === 2) {
-            // Tap 2: +2.5% of Center Tap HV Volts
-            tapHv = cenHv * 1.025;
-          } else if (tapNum === 4) {
-            // Tap 4: -2.5% of Center Tap HV Volts
-            tapHv = cenHv * 0.975;
-          } else if (tapNum === 1) {
-            // Tap 1: Max (+5.0%)
-            tapHv = maxHvV;
-          } else if (tapNum === 5) {
-            // Tap 5: Min (-5.0%)
-            tapHv = minHvV;
+          if (isDETC) {
+            // เฉพาะ DETC เท่านั้น: Tap 2 (+2.5%), Tap 4 (-2.5%) ของ Center Tap
+            if (tapNum === 2) {
+              tapHv = cenHv * 1.025;
+            } else if (tapNum === 4) {
+              tapHv = cenHv * 0.975;
+            } else if (tapNum === 1) {
+              tapHv = maxHvV;
+            } else if (tapNum === 5) {
+              tapHv = minHvV;
+            } else {
+              tapHv = cenHv;
+            }
           } else {
+            // กรณี OLTC หรือประเภทอื่น
             tapHv = cenHv;
           }
+
           const calcR = calculateTheoreticalRatio(tapHv / 1000, cenSec / 1000, vGroup, isAutoTR && modeTR === 'HL', modeTR);
           return {
             hvVolt: tapHv,
@@ -2257,15 +2263,20 @@
       // Add discrete Service Tap if available (H1_tap_N1)
       if (r.H1_tap_N1 && r.H1_ratio1) {
         const tapNum = parseInt(String(r.H1_tap_N1).replace(/[^0-9]/g, ''), 10);
+        const tTypeStr = String(r.TAP_CHANGER_TYPE || r.tapType || '').toUpperCase().trim();
+        const isDETC = tTypeStr.includes('DETC') || tTypeStr.includes('NLTC') || tTypeStr.includes('OCTC') || tTypeStr.includes('OFF') || (!tTypeStr.includes('OLTC') && tapNum >= 1 && tapNum <= 5);
+
         let sHvVolt = cenHvV;
-        if (tapNum === 2) {
-          sHvVolt = cenHvV * 1.025;
-        } else if (tapNum === 4) {
-          sHvVolt = cenHvV * 0.975;
-        } else if (tapNum === 1) {
-          sHvVolt = maxHvV;
-        } else if (tapNum === 5) {
-          sHvVolt = minHvV;
+        if (isDETC) {
+          if (tapNum === 2) {
+            sHvVolt = cenHvV * 1.025;
+          } else if (tapNum === 4) {
+            sHvVolt = cenHvV * 0.975;
+          } else if (tapNum === 1) {
+            sHvVolt = maxHvV;
+          } else if (tapNum === 5) {
+            sHvVolt = minHvV;
+          }
         }
         const sCalcRatio = calculateTheoreticalRatio(sHvVolt / 1000, cenLvV / 1000, vectorGroup, isAuto, 'HL');
 
