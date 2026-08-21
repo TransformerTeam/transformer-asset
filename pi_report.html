@@ -501,7 +501,7 @@
         <tr>
           <td class="lbl">Serial No.</td>
           <td class="val" id="info-serial">-</td>
-          <td class="lbl">Power Rating (kVA)</td>
+          <td class="lbl">Power Rating (MVA)</td>
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
@@ -563,8 +563,8 @@
       <!-- Primary Winding Test -->
       <div class="section-title">Winding Insulation Resistance & Polarization Index (PI)</div>
       
-      <div class="winding-section">
-        <div class="winding-header">Primary Winding Test [HV-(LV+GND)]</div>
+      <div class="winding-section" id="sec-w1">
+        <div class="winding-header" id="hdr-w1">Primary Winding Test [HV-(LV&TV+GND)]</div>
         <div class="voltage-line">Test Voltage: <span id="h-voltage" class="voltage-val">-</span> Vdc</div>
         <table class="report-table winding-table">
           <thead>
@@ -601,8 +601,8 @@
       </div>
 
       <!-- Secondary Winding Test -->
-      <div class="winding-section">
-        <div class="winding-header">Secondary Winding Test [LV-(HV+GND)]</div>
+      <div class="winding-section" id="sec-w2">
+        <div class="winding-header" id="hdr-w2">Secondary Winding Test [LV-(HV&TV+GND)]</div>
         <div class="voltage-line">Test Voltage: <span id="l-voltage" class="voltage-val">-</span> Vdc</div>
         <table class="report-table winding-table">
           <thead>
@@ -638,9 +638,9 @@
         </table>
       </div>
 
-      <!-- Tertiary Winding Test -->
-      <div class="winding-section">
-        <div class="winding-header">Primary to Secondary Winding Test [HV-LV]</div>
+      <!-- Tertiary / Primary to Secondary Winding Test -->
+      <div class="winding-section" id="sec-w3">
+        <div class="winding-header" id="hdr-w3">Primary to Secondary Winding Test [HV-LV]</div>
         <div class="voltage-line">Test Voltage: <span id="t-voltage" class="voltage-val">-</span> Vdc</div>
         <table class="report-table winding-table">
           <thead>
@@ -771,7 +771,7 @@
   <script src="health_data.js"></script>
   
   <script>
-    // In-memory data store for PIData.csv
+    // In-memory data store for IRandPIData.csv
     let piDataList = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -780,19 +780,19 @@
       document.documentElement.setAttribute('data-theme', activeTheme);
       updateThemeIcon(activeTheme);
 
-      // 1. Fetch and Parse PIData.csv
+      // 1. Fetch and Parse IRandPIData.csv
       try {
-        const response = await fetch('TestData/PIData.csv');
-        if (!response.ok) throw new Error("Failed to fetch PIData.csv");
-        const csvText = await response.text();
-        piDataList = parseCSV(csvText);
+        let response = await fetch('TestData/IRandPIData.csv');
+        if (!response.ok) response = await fetch('TestData/PIData.csv');
+        if (response.ok) {
+          const csvText = await response.text();
+          piDataList = parseCSV(csvText);
+        }
       } catch (err) {
-        console.error("Error loading PIData.csv:", err);
-        alert("Unable to load insulation resistance test data (PIData.csv). Make sure the server is running on port 9090.");
-        return;
+        console.warn("Could not load IRandPIData.csv via fetch, continuing with metadata:", err);
       }
 
-      // 2. Populate Dropdown list of transformers that exist in the csv
+      // 2. Populate Dropdown list of transformers
       populateDropdown();
 
       // 3. Resolve initial selection from URL params
@@ -803,7 +803,7 @@
 
       // Helper lookup
       if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.name.toLowerCase() === name.toLowerCase());
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
         if (item) serial = item.serial;
       }
       if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
@@ -812,12 +812,17 @@
       }
 
       // Default selection fallback if no match found
-      if (!serial && piDataList.length > 0) {
-        serial = piDataList[0].serial;
+      if (!serial) {
+        if (piDataList.length > 0 && piDataList[0].serial) {
+          serial = piDataList[0].serial;
+        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        }
       }
 
       if (serial) {
-        document.getElementById('transformer-select').value = serial;
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl) selectEl.value = serial;
         loadReportBySerial(serial);
       }
     });
@@ -855,6 +860,8 @@
         headers.forEach((header, index) => {
           obj[header] = row[index] || '';
         });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || '';
+        obj.date = obj.date || obj.Date || '';
         result.push(obj);
       }
       return result;
@@ -863,32 +870,49 @@
     // Populate Selector options with Name + Serial
     function populateDropdown() {
       const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
       selectEl.innerHTML = '';
       
-      // Match each csv serial to metadata name
-      piDataList.forEach(piItem => {
-        let displayName = piItem.serial;
-        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-          const meta = HEALTH_INDEX_DATA.find(x => x.serial === piItem.serial);
-          if (meta) {
-            displayName = `${meta.name} (${piItem.serial})`;
+      const addedSerials = new Set();
+
+      // Priority 1: HEALTH_INDEX_DATA (all fleet transformers)
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          if (meta.serial && !addedSerials.has(meta.serial)) {
+            addedSerials.add(meta.serial);
+            const opt = document.createElement('option');
+            opt.value = meta.serial;
+            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
+            selectEl.appendChild(opt);
           }
+        });
+      }
+
+      // Priority 2: Any extra serials in piDataList
+      piDataList.forEach(piItem => {
+        if (piItem.serial && !addedSerials.has(piItem.serial)) {
+          addedSerials.add(piItem.serial);
+          const opt = document.createElement('option');
+          opt.value = piItem.serial;
+          opt.textContent = piItem.serial;
+          selectEl.appendChild(opt);
         }
-        
-        const opt = document.createElement('option');
-        opt.value = piItem.serial;
-        opt.textContent = displayName;
-        selectEl.appendChild(opt);
       });
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
     }
 
     // Main loading and populating function
     function loadReportBySerial(serial) {
-      const rawItems = piDataList.filter(x => x.serial === serial);
-      if (!rawItems || rawItems.length === 0) {
-        alert(`No insulation resistance data found for Serial: ${serial}`);
-        return;
-      }
+      const rawItems = piDataList.filter(x => matchSerial(x.serial, serial));
 
       const parseDate = (dStr) => {
         if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
@@ -915,11 +939,6 @@
       };
 
       const validItems = rawItems.filter(hasValidPIData);
-      if (validItems.length === 0) {
-        alert(`No valid Insulation Resistance test records found for Serial: ${serial}`);
-        return;
-      }
-
       validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
       const seenDates = new Set();
@@ -933,7 +952,7 @@
         }
       }
 
-      const piItem = items[0];
+      const piItem = items[0] || {};
 
       // Fetch metadata from TR_DATA (data.js) and HEALTH_INDEX_DATA (health_data.js)
       let name = '-';
@@ -945,25 +964,31 @@
       let service = '-';
 
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+        const meta = HEALTH_INDEX_DATA.find(x => {
+          const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
+          return matchSerial(s, serial);
+        });
         if (meta) {
-          name = meta.name;
-          site = meta.site;
-          power = meta.ratedPower ? (meta.ratedPower * 1000) : '-'; // convert MVA to kVA
-          voltage = meta.ratedVoltage;
-          service = meta.serviceType;
+          name = meta.name || meta['Equipment Name'] || '-';
+          site = meta.site || meta['SITE'] || '-';
+          power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
+          voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
+          service = meta.serviceType || meta['Service Type'] || '-';
         }
       }
 
       if (typeof TR_DATA !== 'undefined') {
-        const rawMeta = TR_DATA.find(x => x.SERIAL_NUMBER === serial);
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x['Serial No'] || x['Serial No.'], serial));
         if (rawMeta) {
-          mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
-          if (rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
-          if (rawMeta.POWER_RATING) power = rawMeta.POWER_RATING;
-          if (rawMeta.HV_RATED && rawMeta.LV_RATED) {
+          if (name === '-') name = rawMeta.NAME || rawMeta.EQUIPMENT_NAME || '-';
+          if (site === '-') site = rawMeta.SITE || rawMeta.LOCATION || '-';
+          if (mfg === '-') mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
+          if (fluid === 'Mineral Oil' && rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
+          if (power === '-') power = rawMeta.POWER_RATING || '-';
+          if (voltage === '-' && rawMeta.HV_RATED && rawMeta.LV_RATED) {
             voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
           }
+          if (service === '-') service = rawMeta.SERVICE_TYPE || rawMeta.APPLICATION || '-';
         }
       }
 
@@ -971,7 +996,7 @@
       document.getElementById('info-eq-name').textContent = name;
       document.getElementById('info-site').textContent = site;
       document.getElementById('info-serial').textContent = serial;
-      document.getElementById('info-power').textContent = formatNumber(power);
+      document.getElementById('info-power').textContent = (power && power !== '-') ? Number(power).toLocaleString() : '-';
       document.getElementById('info-mfg').textContent = mfg;
       document.getElementById('info-voltage').textContent = voltage;
       document.getElementById('info-fluid').textContent = fluid;
@@ -988,6 +1013,48 @@
       document.getElementById('env-winding').textContent = piItem.winding_temp || '-';
       document.getElementById('env-humidity').textContent = piItem.humidity || '-';
 
+      // Determine Transformer Winding Type (2 Winding, 3 Winding, or Auto Transformer)
+      let trType = '2W';
+      const metaObj = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) ? HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x['Serial No.'], serial)) : null;
+      const rawMetaObj = (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) ? TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x['Serial No'] || x['Serial No.'], serial)) : null;
+
+      const vg = String((metaObj && metaObj.vectorGroup) || (rawMetaObj && rawMetaObj.VECTOR_GROUP) || '').toUpperCase();
+      const mt = String((metaObj && (metaObj.modelType || metaObj['Service Type'])) || (rawMetaObj && (rawMetaObj.MODEL_TYPE || rawMetaObj.APPLICATION)) || '').toUpperCase();
+      const app = String((metaObj && (metaObj.serviceType || metaObj['Service Type'])) || (rawMetaObj && (rawMetaObj.SERVICE_TYPE || rawMetaObj.APPLICATION)) || '').toUpperCase();
+      const spec = String((metaObj && metaObj.specification) || (rawMetaObj && (rawMetaObj.SPECIFICATION || rawMetaObj.REMARK)) || '').toUpperCase();
+      const noW = String((rawMetaObj && rawMetaObj.NO_WINDING) || (metaObj && metaObj.noWinding) || '').trim();
+      const lv2 = String((rawMetaObj && rawMetaObj.LV2_RATED) || (metaObj && metaObj.lv2Rated) || '').trim();
+
+      if (vg.includes('YNA') || vg.includes('AUTO') || mt.includes('AUTO') || app.includes('AUTO') || spec.includes('AUTO')) {
+        trType = 'AUTO';
+      } else if (noW === '3' || (lv2 !== '' && lv2 !== '-' && lv2 !== '0') || spec.includes('3W')) {
+        trType = '3W';
+      }
+
+      const hdrW1 = document.getElementById('hdr-w1');
+      const hdrW2 = document.getElementById('hdr-w2');
+      const hdrW3 = document.getElementById('hdr-w3');
+      const secW3 = document.getElementById('sec-w3');
+
+      if (hdrW1 && hdrW2 && hdrW3 && secW3) {
+        if (trType === 'AUTO') {
+          hdrW1.textContent = 'Primary&Secondary Winding Test [HV&LV-(TV+GND)]';
+          hdrW2.textContent = 'Tertiary Winding Test [TV-HV&LV+GND]';
+          secW3.style.display = 'none';
+        } else if (trType === '3W') {
+          hdrW1.textContent = 'Primary Winding Test [HV-(LV&TV+GND)]';
+          hdrW2.textContent = 'Secondary Winding Test [LV-(HV&TV+GND)]';
+          hdrW3.textContent = 'Tertiary Winding Test [TV-HV&LV+GND]';
+          secW3.style.display = 'block';
+        } else {
+          // Default: 2 Winding Transformer
+          hdrW1.textContent = 'Primary Winding Test [HV-(LV&TV+GND)]';
+          hdrW2.textContent = 'Secondary Winding Test [LV-(HV&TV+GND)]';
+          hdrW3.textContent = 'Primary to Secondary Winding Test [HV-LV]';
+          secW3.style.display = 'block';
+        }
+      }
+
       // Fill Primary Winding (HV) Table
       document.getElementById('h-voltage').textContent = piItem.test_voltage || '-';
       for (let i = 1; i <= 10; i++) {
@@ -999,16 +1066,31 @@
       hPiCell.className = getPIClass(hPiVal);
 
       // Fill Secondary Winding (LV) Table
-      document.getElementById('l-voltage').textContent = piItem.test_voltage2 || '-';
-      for (let i = 1; i <= 10; i++) {
-        document.getElementById(`l-${i}`).textContent = formatVal(piItem[`L_${i}`]);
+      let lVoltageVal = piItem.test_voltage2 || '-';
+      let lPiRaw = piItem.L_PI;
+      let lPrefix = 'L';
+
+      // For Auto Transformer, if Tertiary test data is stored in T_ columns instead of L_, map T_ to Section 2
+      if (trType === 'AUTO') {
+        const hasLData = piItem['L_1'] && piItem['L_1'] !== '-';
+        const hasTData = piItem['T_1'] && piItem['T_1'] !== '-';
+        if (!hasLData && hasTData) {
+          lVoltageVal = piItem.test_voltage3 || lVoltageVal;
+          lPiRaw = piItem.T_PI;
+          lPrefix = 'T';
+        }
       }
-      const lPiVal = formatPI(piItem.L_PI);
+
+      document.getElementById('l-voltage').textContent = lVoltageVal;
+      for (let i = 1; i <= 10; i++) {
+        document.getElementById(`l-${i}`).textContent = formatVal(piItem[`${lPrefix}_${i}`]);
+      }
+      const lPiVal = formatPI(lPiRaw);
       const lPiCell = document.getElementById('l-pi');
       lPiCell.textContent = lPiVal;
       lPiCell.className = getPIClass(lPiVal);
 
-      // Fill Tertiary Winding (TV) Table
+      // Fill Tertiary Winding (TV) Table (for 2W and 3W)
       document.getElementById('t-voltage').textContent = piItem.test_voltage3 || '-';
       for (let i = 1; i <= 10; i++) {
         document.getElementById(`t-${i}`).textContent = formatVal(piItem[`T_${i}`]);

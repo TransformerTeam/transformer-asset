@@ -617,7 +617,7 @@
           <tr>
             <td class="lbl">Serial No.</td>
             <td class="val" id="meta-serial">-</td>
-            <td class="lbl">Power Rating (kVA)</td>
+            <td class="lbl">Power Rating (MVA)</td>
             <td class="val" id="meta-power">-</td>
           </tr>
           <tr>
@@ -884,7 +884,7 @@
           </tr>
           <tr>
             <td class="lbl">Serial No.</td><td class="val p2-meta-serial">-</td>
-            <td class="lbl">Power Rating (kVA)</td><td class="val p2-meta-power">-</td>
+            <td class="lbl">Power Rating (MVA)</td><td class="val p2-meta-power">-</td>
           </tr>
           <tr>
             <td class="lbl">Manufacture</td><td class="val p2-meta-mfg">-</td>
@@ -976,7 +976,7 @@
           </tr>
           <tr>
             <td class="lbl">Serial No.</td><td class="val p3-meta-serial">-</td>
-            <td class="lbl">Power Rating (kVA)</td><td class="val p3-meta-power">-</td>
+            <td class="lbl">Power Rating (MVA)</td><td class="val p3-meta-power">-</td>
           </tr>
           <tr>
             <td class="lbl">Manufacture</td><td class="val p3-meta-mfg">-</td>
@@ -1058,7 +1058,7 @@
           </tr>
           <tr>
             <td class="lbl">Serial No.</td><td class="val p4-meta-serial">-</td>
-            <td class="lbl">Power Rating (kVA)</td><td class="val p4-meta-power">-</td>
+            <td class="lbl">Power Rating (MVA)</td><td class="val p4-meta-power">-</td>
           </tr>
           <tr>
             <td class="lbl">Manufacture</td><td class="val p4-meta-mfg">-</td>
@@ -1259,30 +1259,47 @@
 
     function populateTransformerSelect() {
       const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
       selectEl.innerHTML = '';
       
-      const uniqueSerials = [...new Set(dgaDataList.map(item => item.serial))].filter(Boolean);
-      
-      uniqueSerials.forEach(serial => {
-        let displayName = serial;
-        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-          const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
-          if (meta) displayName = `${meta.name} (${serial})`;
+      const addedSerials = new Set();
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          if (meta.serial && !addedSerials.has(meta.serial)) {
+            addedSerials.add(meta.serial);
+            const opt = document.createElement('option');
+            opt.value = meta.serial;
+            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
+            selectEl.appendChild(opt);
+          }
+        });
+      }
+
+      dgaDataList.forEach(item => {
+        if (item.serial && !addedSerials.has(item.serial)) {
+          addedSerials.add(item.serial);
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = item.serial;
+          selectEl.appendChild(opt);
         }
-        const opt = document.createElement('option');
-        opt.value = serial;
-        opt.textContent = displayName;
-        selectEl.appendChild(opt);
       });
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
     }
 
     // Main loading and populating function
     function loadReportBySerial(serial) {
-      const rawItems = dgaDataList.filter(x => x.serial === serial);
-      if (!rawItems || rawItems.length === 0) {
-        alert(`No DGA data found for Serial: ${serial}`);
-        return;
-      }
+      const rawItems = dgaDataList.filter(x => matchSerial(x.serial, serial));
 
       const parseDate = (dStr) => {
         if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
@@ -1309,12 +1326,6 @@
 
       // Filter out items with no gas test data at all
       const validItems = rawItems.filter(hasValidDGAData);
-      if (validItems.length === 0) {
-        alert(`No valid DGA test records found for Serial: ${serial}`);
-        return;
-      }
-
-      // Sort descending (latest date first)
       validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
       
       // Deduplicate items by test date timestamp so each test date appears only once per Serial No.
@@ -1343,29 +1354,35 @@
       let service = '-';
 
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+        const meta = HEALTH_INDEX_DATA.find(x => {
+          const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
+          return matchSerial(s, serial);
+        });
         if (meta) {
-          name = meta.name || name;
-          site = meta.site || site;
-          power = meta.ratedPower ? (meta.ratedPower * 1000) : (meta.powerRating || power);
-          voltage = meta.ratedVoltage || meta.voltageRating || voltage;
-          service = meta.serviceType || service;
+          name = meta.name || meta['Equipment Name'] || name;
+          site = meta.site || meta['SITE'] || site;
+          power = meta.ratedPower || meta['Rated Power (MVA)'] || meta.powerRating || power;
+          voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || meta.voltageRating || voltage;
+          service = meta.serviceType || meta['Service Type'] || service;
         }
       }
 
       if (typeof TR_DATA !== 'undefined') {
-        const rawMeta = TR_DATA.find(x => x.SERIAL_NUMBER === serial);
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x['Serial No'] || x['Serial No.'], serial));
         if (rawMeta) {
+          if (name === '-' || !name) name = rawMeta.NAME || rawMeta.EQUIPMENT_NAME || '-';
+          if (site === '-' || !site) site = rawMeta.SITE || rawMeta.LOCATION || '-';
           if (rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND) mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND;
           if (rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
-          if (rawMeta.POWER_RATING && rawMeta.POWER_RATING !== '-') power = rawMeta.POWER_RATING;
+          if ((power === '-' || !power) && rawMeta.POWER_RATING) power = rawMeta.POWER_RATING;
           if (rawMeta.MANUFACTURING_DATE) curr.MANUFACTURING_DATE = rawMeta.MANUFACTURING_DATE;
-          if (rawMeta.HV_RATED && rawMeta.LV_RATED) {
+          if (voltage === '-' && rawMeta.HV_RATED && rawMeta.LV_RATED) {
             voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
             if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') {
               voltage += ` / ${rawMeta.LV2_RATED}`;
             }
           }
+          if (service === '-' || !service) service = rawMeta.SERVICE_TYPE || rawMeta.APPLICATION || '-';
         }
       }
 

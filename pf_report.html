@@ -563,7 +563,7 @@
         <tr>
           <td class="lbl">Serial No.</td>
           <td class="val" id="info-serial">-</td>
-          <td class="lbl">Power Rating (kVA)</td>
+          <td class="lbl">Power Rating (MVA)</td>
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
@@ -916,19 +916,20 @@
 
       // Load CSVs
       try {
-        const pfResponse = await fetch('TestData/PFData.csv');
-        if (!pfResponse.ok) throw new Error("Failed to fetch PFData.csv");
-        const pfText = await pfResponse.text();
-        pfDataList = parseCSV(pfText);
+        let pfResponse = await fetch('TestData/WindingPFData.csv');
+        if (!pfResponse.ok) pfResponse = await fetch('TestData/PFData.csv');
+        if (pfResponse.ok) {
+          const pfText = await pfResponse.text();
+          pfDataList = parseCSV(pfText);
+        }
 
         const facResponse = await fetch('TestData/FactoryData.csv');
-        if (!facResponse.ok) throw new Error("Failed to fetch FactoryData.csv");
-        const facText = await facResponse.text();
-        factoryDataList = parseCSV(facText);
+        if (facResponse.ok) {
+          const facText = await facResponse.text();
+          factoryDataList = parseCSV(facText);
+        }
       } catch (err) {
-        console.error("Error loading test databases:", err);
-        alert("Unable to load test databases (PFData.csv / FactoryData.csv). Please verify your server is active.");
-        return;
+        console.warn("Could not load WindingPFData.csv via fetch, continuing with metadata:", err);
       }
 
       populateDropdown();
@@ -940,7 +941,7 @@
       const no = urlParams.get('no');
 
       if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.name.toLowerCase() === name.toLowerCase());
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
         if (item) serial = item.serial;
       }
       if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
@@ -949,12 +950,17 @@
       }
 
       // Default selection fallback if no match found
-      if (!serial && pfDataList.length > 0) {
-        serial = pfDataList[0].serial;
+      if (!serial) {
+        if (pfDataList.length > 0 && pfDataList[0].serial) {
+          serial = pfDataList[0].serial;
+        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        }
       }
 
       if (serial) {
-        document.getElementById('transformer-select').value = serial;
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl) selectEl.value = serial;
         loadReportBySerial(serial);
       }
     });
@@ -992,6 +998,8 @@
         headers.forEach((header, index) => {
           obj[header] = row[index] || '';
         });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || '';
+        obj.date = obj.date || obj.Date || '';
         result.push(obj);
       }
       return result;
@@ -1000,31 +1008,49 @@
     // Populate Selector options
     function populateDropdown() {
       const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
       selectEl.innerHTML = '';
       
-      pfDataList.forEach(pfItem => {
-        let displayName = pfItem.serial;
-        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-          const meta = HEALTH_INDEX_DATA.find(x => x.serial === pfItem.serial);
-          if (meta) {
-            displayName = `${meta.name} (${pfItem.serial})`;
+      const addedSerials = new Set();
+
+      // Priority 1: HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          if (meta.serial && !addedSerials.has(meta.serial)) {
+            addedSerials.add(meta.serial);
+            const opt = document.createElement('option');
+            opt.value = meta.serial;
+            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
+            selectEl.appendChild(opt);
           }
+        });
+      }
+
+      // Priority 2: pfDataList
+      pfDataList.forEach(pfItem => {
+        if (pfItem.serial && !addedSerials.has(pfItem.serial)) {
+          addedSerials.add(pfItem.serial);
+          const opt = document.createElement('option');
+          opt.value = pfItem.serial;
+          opt.textContent = pfItem.serial;
+          selectEl.appendChild(opt);
         }
-        
-        const opt = document.createElement('option');
-        opt.value = pfItem.serial;
-        opt.textContent = displayName;
-        selectEl.appendChild(opt);
       });
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
     }
 
     // Load dynamic report data by serial
     function loadReportBySerial(serial) {
-      const rawItems = pfDataList.filter(x => x.serial === serial);
-      if (!rawItems || rawItems.length === 0) {
-        alert(`No Insulation Power Factor data found for Serial: ${serial}`);
-        return;
-      }
+      const rawItems = pfDataList.filter(x => matchSerial(x.serial, serial));
 
       const parseDate = (dStr) => {
         if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
@@ -1051,11 +1077,6 @@
       };
 
       const validItems = rawItems.filter(hasValidPFData);
-      if (validItems.length === 0) {
-        alert(`No valid Insulation Power Factor test records found for Serial: ${serial}`);
-        return;
-      }
-
       validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
       const seenDates = new Set();
@@ -1069,9 +1090,8 @@
         }
       }
 
-      const pfItem = items[0];
-
-      const facItem = factoryDataList.find(x => x.Serial_No === serial) || {};
+      const pfItem = items[0] || {};
+      const facItem = factoryDataList.find(x => matchSerial(x.Serial_No || x.serial, serial)) || {};
 
       // Winding metadata
       let name = '-';
@@ -1084,31 +1104,37 @@
       let service = '-';
 
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial);
+        const meta = HEALTH_INDEX_DATA.find(x => {
+          const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
+          return matchSerial(s, serial);
+        });
         if (meta) {
-          name = meta.name;
-          site = meta.site;
-          power = meta.ratedPower ? (meta.ratedPower * 1000) : '-'; // convert MVA to kVA
-          voltage = meta.ratedVoltage;
-          service = meta.serviceType;
+          name = meta.name || meta['Equipment Name'] || '-';
+          site = meta.site || meta['SITE'] || '-';
+          power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
+          voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
+          service = meta.serviceType || meta['Service Type'] || '-';
         }
       }
 
       if (typeof TR_DATA !== 'undefined') {
-        const rawMeta = TR_DATA.find(x => x.SERIAL_NUMBER === serial);
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x['Serial No'] || x['Serial No.'], serial));
         if (rawMeta) {
-          mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
-          if (rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
-          if (rawMeta.POWER_RATING) power = rawMeta.POWER_RATING;
+          if (name === '-') name = rawMeta.NAME || rawMeta.EQUIPMENT_NAME || '-';
+          if (site === '-') site = rawMeta.SITE || rawMeta.LOCATION || '-';
+          if (mfg === '-') mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
+          if (fluid === 'Mineral Oil' && rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
+          if (power === '-') power = rawMeta.POWER_RATING || '-';
           if (rawMeta.NO_WINDING) {
             numWindings = parseInt(rawMeta.NO_WINDING) || 3;
           }
-          if (rawMeta.HV_RATED && rawMeta.LV_RATED) {
+          if (voltage === '-' && rawMeta.HV_RATED && rawMeta.LV_RATED) {
             voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
             if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') {
               voltage += ` / ${rawMeta.LV2_RATED}`;
             }
           }
+          if (service === '-') service = rawMeta.SERVICE_TYPE || rawMeta.APPLICATION || '-';
         }
       }
 
@@ -1116,7 +1142,7 @@
       document.getElementById('info-eq-name').textContent = name;
       document.getElementById('info-site').textContent = site;
       document.getElementById('info-serial').textContent = serial;
-      document.getElementById('info-power').textContent = formatVal(power);
+      document.getElementById('info-power').textContent = (power && power !== '-') ? Number(power).toLocaleString() : '-';
       document.getElementById('info-mfg').textContent = mfg;
       document.getElementById('info-voltage').textContent = voltage;
       document.getElementById('info-fluid').textContent = fluid;

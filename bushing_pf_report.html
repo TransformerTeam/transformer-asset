@@ -934,31 +934,67 @@
         const [infoResp, pfResp, trInfoResp] = await Promise.all([
           fetch('TestData/BushingInfo.csv'),
           fetch('TestData/BushingPFData.csv'),
-          fetch('TRInfo.csv')
+          fetch('TRInfo.csv').catch(() => fetch('TestData/TRinfo2.csv'))
         ]);
-        if (infoResp.ok) bushingInfoList = parseCSV(await infoResp.text());
-        if (pfResp.ok) bushingPfDataList = parseCSV(await pfResp.text());
-        if (trInfoResp.ok) trInfoList = parseCSV(await trInfoResp.text());
+        if (infoResp && infoResp.ok) bushingInfoList = parseCSV(await infoResp.text());
+        if (pfResp && pfResp.ok) bushingPfDataList = parseCSV(await pfResp.text());
+        if (trInfoResp && trInfoResp.ok) trInfoList = parseCSV(await trInfoResp.text());
       } catch (e) {
-        console.error('Failed to load Bushing CSV databases', e);
+        console.warn('Failed to load Bushing CSV databases', e);
       }
 
       // Populate Transformer dropdown
       const selectEl = document.getElementById('transformer-select');
-      if (selectEl && typeof assessmentData !== 'undefined') {
-        assessmentData.forEach(item => {
-          const opt = document.createElement('option');
-          opt.value = item.serial;
-          opt.textContent = `${item.name} (${item.serial})`;
-          selectEl.appendChild(opt);
+      if (selectEl) {
+        selectEl.innerHTML = '';
+        const addedSerials = new Set();
+        const fleet = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA))
+          ? HEALTH_INDEX_DATA 
+          : ((typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) ? assessmentData : []);
+
+        fleet.forEach(item => {
+          if (item.serial && !addedSerials.has(item.serial)) {
+            addedSerials.add(item.serial);
+            const opt = document.createElement('option');
+            opt.value = item.serial;
+            opt.textContent = `${item.name || item.serial} (${item.serial})`;
+            selectEl.appendChild(opt);
+          }
+        });
+
+        bushingPfDataList.forEach(item => {
+          const s = item.serial || item.Serial_No || item.Serial;
+          if (s && !addedSerials.has(s)) {
+            addedSerials.add(s);
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            selectEl.appendChild(opt);
+          }
         });
       }
 
       // Get Serial from URL parameter
       const urlParams = new URLSearchParams(window.location.search);
       let serial = urlParams.get('serial');
-      if (!serial && typeof assessmentData !== 'undefined' && assessmentData.length > 0) {
-        serial = assessmentData[0].serial;
+      const name = urlParams.get('name');
+      const no = urlParams.get('no');
+
+      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial;
+      }
+      if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
+        if (item) serial = item.serial;
+      }
+
+      if (!serial) {
+        if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        } else if (bushingPfDataList.length > 0) {
+          serial = bushingPfDataList[0].serial;
+        }
       }
 
       if (serial) {
@@ -1018,11 +1054,16 @@
     function renderBushingReport(serial) {
       // Equipment Info — priority: TRInfo.csv > health_data.js assessmentData
       let item = null;
-      if (typeof assessmentData !== 'undefined') {
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        item = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial, serial));
+      } else if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) {
         item = assessmentData.find(x => matchSerial(x.serial, serial));
       }
       // Find matching TRInfo record
-      const trInfo = trInfoList.find(r => matchSerial(r.SERIAL_NUMBER, serial));
+      let trInfo = trInfoList.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, serial));
+      if (!trInfo && typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        trInfo = TR_DATA.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, serial));
+      }
 
       // Populate equipment details from TRInfo.csv (richer data source)
       document.getElementById('info-eq-name').textContent =

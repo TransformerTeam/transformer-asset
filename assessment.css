@@ -284,6 +284,11 @@ header p {
   margin: 0.25rem 0;
 }
 
+.kpi-healthy .kpi-value { color: var(--color-good); }
+.kpi-monitor .kpi-value { color: var(--color-fair); }
+.kpi-warning-card .kpi-value { color: var(--color-poor); }
+.kpi-critical-card .kpi-value { color: var(--color-critical); }
+
 .kpi-sub {
   font-size: 0.7rem;
   color: var(--text-muted);
@@ -465,9 +470,21 @@ header p {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+.param-M {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+[data-theme="light"] .param-M {
+  background: #fefce8 !important;
+  color: #854d0e !important;
+  border-color: #fde047 !important;
+}
+
 .param-Q {
   background: rgba(234, 179, 8, 0.15);
-  color: var(--color-fair);
+  color: #eab308;
   border: 1px solid rgba(234, 179, 8, 0.3);
 }
 
@@ -489,11 +506,17 @@ header p {
   border-color: #fdba74 !important;
 }
 
-.param-U {
+.param-C, .param-U {
   background: rgba(239, 68, 68, 0.15);
-  color: var(--color-critical);
+  color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.3);
   animation: pulseU 2s ease-in-out infinite;
+}
+
+[data-theme="light"] .param-C, [data-theme="light"] .param-U {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border-color: #fca5a5 !important;
 }
 
 @keyframes pulseU {

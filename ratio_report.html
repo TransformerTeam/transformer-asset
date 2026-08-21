@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voltage Ratio & Turn Ratio (TTR) Test Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Global Variables matching main dashboard theme */
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      /* Report specific variables */
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #7f8c8d;
+      --report-primary: #1e3a8a; /* Deep Navy Blue */
+      --report-accent: #b91c1c; /* Crimson */
+      --report-secondary: #0284c7; /* Sky Blue */
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 960px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .selector-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 260px;
+      max-width: 380px;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+    }
+
+    .search-select option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Report Sheet Preview Layout (A4 Style) */
+    .report-wrapper {
+      width: 100%;
+      max-width: 960px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      background-color: var(--report-bg);
+      color: var(--report-text);
+      border-radius: 6px;
+      padding: 36px 40px;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .report-sheet {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      font-size: 10.5px;
+      line-height: 1.4;
+    }
+
+    /* Document Header */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 3px solid var(--report-primary);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .report-title-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+    }
+
+    .type-badge.badge-3w {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    .type-badge.badge-auto {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .report-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--report-primary);
+      letter-spacing: 0.3px;
+    }
+
+    .report-subtitle {
+      font-size: 11px;
+      color: var(--report-accent);
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .logo-container img {
+      height: 46px;
+      object-fit: contain;
+    }
+
+    /* Section Headers */
+    .section-title {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title span.badge-info {
+      font-size: 9px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: none;
+    }
+
+    /* Standard Report Table */
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 10px;
+    }
+
+    table.report-table th, 
+    table.report-table td {
+      border: 1px solid #94a3b8;
+      padding: 4px 6px;
+      text-align: left;
+    }
+
+    table.report-table th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      text-align: center;
+      color: #1e293b;
+    }
+
+    table.info-table td.lbl {
+      width: 16%;
+      font-weight: 700;
+      background-color: #f8fafc;
+      color: #334155;
+    }
+
+    table.info-table td.val {
+      width: 34%;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+
+    .row-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+    }
+
+    /* Winding View Tabs for 3-Winding / Auto-Transformers */
+    .winding-tabs {
+      display: flex;
+      gap: 4px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    .winding-tab-btn {
+      padding: 4px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid #94a3b8;
+      border-bottom: none;
+      background: #e2e8f0;
+      color: #334155;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .winding-tab-btn.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+
+    /* KPI Summary Cards */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .kpi-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .kpi-sub {
+      font-size: 8.5px;
+      color: #475569;
+      margin-top: 1px;
+    }
+
+    /* Table sub-headers */
+    table.data-table th.th-group {
+      background-color: #e2e8f0;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    table.data-table th.th-phase {
+      background-color: #f8fafc;
+      font-size: 9px;
+    }
+
+    table.data-table td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    table.data-table td.tap-col {
+      font-weight: 700;
+      background-color: #f8fafc;
+    }
+
+    table.data-table td.bold-val {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 8.5px;
+      text-transform: uppercase;
+    }
+
+    .status-pass, .status-good {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .status-monitor, .status-fair {
+      background-color: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde047;
+    }
+
+    .status-fail, .status-critical {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .status-na {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Chart Box */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    .chart-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px 20px 12px;
+      background: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .chart-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 195px;
+      width: 100%;
+    }
+
+    /* Criteria and Formula Box */
+    .criteria-container {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+    }
+
+    .criteria-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 8px 10px;
+      background: #f8fafc;
+    }
+
+    .criteria-title {
+      font-weight: 700;
+      font-size: 9.5px;
+      margin-bottom: 4px;
+      color: #1e3a8a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 3px;
+    }
+
+    .formula-text {
+      font-family: 'Courier New', monospace;
+      font-size: 9px;
+      background: #eef2ff;
+      padding: 4px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      color: #312e81;
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Signature & Response Box */
+    table.response-table th {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    table.response-table td.lbl {
+      width: 16%;
+      font-weight: 700;
+      background-color: #f8fafc;
+    }
+
+    table.response-table td.val {
+      text-align: center;
+      font-weight: 600;
+      color: #1e293b;
+      height: 22px;
+    }
+
+    table.response-table td.sig-cell {
+      height: 50px;
+    }
+
+    /* Print & Export Media Queries */
+    @page {
+      size: A4 portrait;
+      margin: 8mm 8mm 8mm 8mm;
+    }
+
+    @media print {
+      *, *::before, *::after {
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-size: 8.5px !important;
+      }
+      .control-panel, .winding-tabs, .btn, .btn-group {
+        display: none !important;
+      }
+      .report-wrapper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border: none !important;
+        background: #ffffff !important;
+        overflow: visible !important;
+      }
+      .report-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        font-size: 8.5px !important;
+        line-height: 1.3 !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+      }
+      .report-header {
+        padding-bottom: 8px !important;
+        margin-bottom: 10px !important;
+        border-bottom-width: 2.5px !important;
+      }
+      .report-title {
+        font-size: 15px !important;
+      }
+      .report-subtitle {
+        font-size: 10px !important;
+        margin-top: 2px !important;
+      }
+      .logo-container img {
+        height: 38px !important;
+      }
+      .section-title {
+        background-color: #1e3a8a !important;
+        color: #ffffff !important;
+        font-size: 9.5px !important;
+        font-weight: 700 !important;
+        padding: 3px 8px !important;
+        margin-top: 10px !important;
+        margin-bottom: 5px !important;
+        border-radius: 2px !important;
+      }
+      .section-title span.badge-info {
+        font-size: 8px !important;
+        padding: 1px 5px !important;
+      }
+      .ratio-table-block {
+        margin-bottom: 8px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      table.report-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        margin-bottom: 6px !important;
+        font-size: 8px !important;
+        border-collapse: collapse !important;
+      }
+      table.report-table th, 
+      table.report-table td {
+        padding: 2.5px 4px !important;
+        border: 0.75px solid #cbd5e1 !important;
+        word-break: break-word !important;
+      }
+      table.report-table th {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        font-size: 8px !important;
+        font-weight: 700 !important;
+      }
+      table.report-table td.bold-val {
+        font-weight: 700 !important;
+        color: #1e3a8a !important;
+      }
+      .info-table td.lbl {
+        width: 38% !important;
+        font-weight: 600 !important;
+        font-size: 8px !important;
+        padding: 2.5px 5px !important;
+      }
+      .info-table td.val {
+        font-size: 8px !important;
+        padding: 2.5px 5px !important;
+      }
+      .kpi-bar {
+        padding: 5px 8px !important;
+        margin-bottom: 8px !important;
+        gap: 8px !important;
+        border-radius: 4px !important;
+      }
+      .kpi-item {
+        padding: 4px 6px !important;
+      }
+      .kpi-lbl {
+        font-size: 7.5px !important;
+      }
+      .kpi-val {
+        font-size: 11px !important;
+      }
+      .status-badge {
+        font-size: 7.5px !important;
+        padding: 1.5px 5px !important;
+      }
+      .status-pass, .status-good {
+        background-color: #dcfce7 !important;
+        color: #166534 !important;
+      }
+      .status-fair, .status-monitor {
+        background-color: #fef9c3 !important;
+        color: #854d0e !important;
+      }
+      .status-fail, .status-critical {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+      }
+      .charts-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        margin-bottom: 18px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .chart-card {
+        padding: 6px 8px 18px 8px !important;
+        border: 0.75px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        border-radius: 4px !important;
+        overflow: visible !important;
+        margin-bottom: 4px !important;
+      }
+      .chart-header {
+        font-size: 8.5px !important;
+        margin-bottom: 4px !important;
+      }
+      .chart-container {
+        position: relative !important;
+        height: 160px !important;
+        max-height: 160px !important;
+        width: 100% !important;
+        padding-bottom: 8px !important;
+      }
+      .criteria-container {
+        margin-top: 18px !important;
+        margin-bottom: 8px !important;
+        gap: 8px !important;
+      }
+      .conclusion-box {
+        padding: 6px 10px !important;
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+        font-size: 8px !important;
+        line-height: 1.35 !important;
+        border-radius: 4px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .conclusion-box strong {
+        font-size: 8.5px !important;
+      }
+      table.response-table {
+        margin-top: 6px !important;
+        margin-bottom: 0 !important;
+        font-size: 8px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      table.response-table th {
+        font-size: 8px !important;
+        padding: 3px 5px !important;
+      }
+      table.response-table td.sig-cell {
+        height: 46px !important;
+      }
+      table.response-table td.val {
+        height: 18px !important;
+        font-size: 8px !important;
+        padding: 2px 4px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <label for="transformer-select" class="selector-label">
+        <i class="fa-solid fa-bolt text-indigo-400"></i> Transformer:
+      </label>
+      <select id="transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <!-- Dynamically populated -->
+      </select>
+
+      <label for="test-date-select" class="selector-label" style="margin-left: 8px;">
+        <i class="fa-solid fa-calendar-day"></i> Test Date:
+      </label>
+      <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
+        <!-- Dynamically populated -->
+      </select>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
+      </button>
+      <button class="btn btn-secondary" onclick="captureReportJPG()" title="Capture JPG Image">
+        <i class="fa-solid fa-camera"></i> Capture
+      </button>
+      <button class="btn btn-primary" onclick="window.print()" title="Print or Save PDF">
+        <i class="fa-solid fa-print"></i> Print / PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Printable / Exportable Report Wrapper -->
+  <div class="report-wrapper" id="report-content">
+    <div class="report-sheet">
+
+      <!-- Header Section -->
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">TRANSFORMER TURN RATIO REPORT</div>
+          <div class="report-subtitle">Std.IEEE C57.152 / IEEE C57.12.90 / IEC 60076-1</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- 1. Equipment Identification -->
+      <div class="section-title">
+        <span>1. Transformer Identification &amp; Rating Information</span>
+        <span class="badge-info" id="info-header-id">EMM-TR-F-003, Rev.1</span>
+      </div>
+      <table class="report-table info-table">
+        <tr>
+          <td class="lbl">Equipment Name:</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Substation / Site:</td>
+          <td class="val" id="info-site">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial">-</td>
+          <td class="lbl">Rated Power:</td>
+          <td class="val" id="info-power">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Voltage Ratings:</td>
+          <td class="val" id="info-voltage">-</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap">-</td>
+        </tr>
+      </table>
+
+      <!-- 2. Test Environment & Instrument -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">2. Test Instrument &amp; Apparatus</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Test Set / Model:</td>
+              <td class="val" id="info-instrument">Omicron TESTRANO 600</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">DA193X</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 6.5</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">3. Environmental &amp; Thermal Conditions</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Summary KPI Row -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Max Ratio Error</div>
+          <div class="kpi-value" id="kpi-max-error">0.00%</div>
+          <div class="kpi-sub">Limit: &le; &plusmn;0.50%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Phase-to-Phase Dev.</div>
+          <div class="kpi-value" id="kpi-max-dev">0.00%</div>
+          <div class="kpi-sub">Limit: &le; 0.50%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Max Phase Angle Shift</div>
+          <div class="kpi-value" id="kpi-max-phd">0.00&deg;</div>
+          <div class="kpi-sub">Tolerance: &lt; 0.50&deg;</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Overall Evaluation</div>
+          <div class="kpi-value" id="kpi-overall-status"><span class="status-badge status-pass">NORMAL</span></div>
+          <div class="kpi-sub" id="kpi-overall-score">Score: 5 / 5</div>
+        </div>
+      </div>
+
+      <!-- Winding View Tabs for 3-Winding / Auto-Transformers -->
+      <div class="winding-tabs" id="winding-tab-container" style="display: none;">
+        <button class="winding-tab-btn active" onclick="switchWindingView('HL')">Primary - Secondary (HV - LV)</button>
+        <button class="winding-tab-btn" id="tab-btn-ht" onclick="switchWindingView('HT')">Primary - Tertiary (HV - TV)</button>
+        <button class="winding-tab-btn" id="tab-btn-lt" onclick="switchWindingView('LT')">Secondary - Tertiary (LV - TV)</button>
+      </div>
+
+      <!-- 4. Voltage Ratio & Turn Ratio Test Results Section -->
+      <div id="ratio-tables-container">
+        <!-- Dynamic Ratio Tables rendered via JavaScript -->
+      </div>
+
+      <!-- Ratio Visual Charts Grid -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-line text-indigo-600"></i> % Ratio Error vs. Tap Position</span>
+            <span style="color: #64748b; font-size: 8.5px;">Standard Threshold: &plusmn;0.50%</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="ratioErrorChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> Measured vs. Calculated Ratio Profile</span>
+            <span style="color: #64748b; font-size: 8.5px;" id="chart-ratio-vector-label">Dyn11 Winding Ratio</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="ratioProfileChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standards, Mathematical Formulas & Evaluation Criteria -->
+      <div class="criteria-container">
+        <div class="criteria-box">
+          <div class="criteria-title">Standards &amp; Mathematical Formulation (IEEE C57.152 / IEC 60076-1)</div>
+          <div style="font-size: 9px; line-height: 1.45; color: #334155;">
+            <strong>1. Voltage Ratio Tolerance:</strong> Ratio error must not exceed <strong>&plusmn;0.50%</strong> of nameplate ratio on all tap connections (IEEE C57.152 Cl. 6.5 &amp; IEC 60076-1 Cl. 9.3).<br>
+            <strong>2. Phase-to-Phase Deviation:</strong> Maximum difference among 3 phases at any tap shall be <strong>&le; 0.50%</strong>.<br>
+            <strong>3. Phase Displacement Angle:</strong> Should match vector group nominal angle within <strong>&plusmn;0.5&deg;</strong>.
+          </div>
+          <div class="formula-text" id="formula-display">
+            % Error = ((Measured Ratio - Calculated Ratio) / Calculated Ratio) &times; 100%<br>
+            Calculated Ratio (Dyn) = V_HV / (&radic;3 &times; V_LV) | (YNd) = (&radic;3 &times; V_HV) / V_LV | (YNyn / YNa0 / Auto) = V_HV / V_LV
+          </div>
+        </div>
+
+        <div class="criteria-box">
+          <div class="criteria-title">Health Index &amp; Assessment Severity Matrix</div>
+          <table style="width: 100%; font-size: 8.5px; border-collapse: collapse; margin-top: 4px;">
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <th style="text-align: left; padding: 2px;">Condition</th>
+              <th style="text-align: center; padding: 2px;">% Ratio Error</th>
+              <th style="text-align: center; padding: 2px;">Score</th>
+              <th style="text-align: right; padding: 2px;">Action</th>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-good">Good / Normal</span></td>
+              <td style="text-align: center;">&le; &plusmn;0.50%</td>
+              <td style="text-align: center; font-weight: bold;">5</td>
+              <td style="text-align: right; color: #166534;">Routine Operation</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-fair">Questionable</span></td>
+              <td style="text-align: center;">0.51% - 1.00%</td>
+              <td style="text-align: center; font-weight: bold;">3 - 4</td>
+              <td style="text-align: right; color: #854d0e;">Investigate / Retest</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-critical">Abnormal / Critical</span></td>
+              <td style="text-align: center;">&gt; 1.00%</td>
+              <td style="text-align: center; font-weight: bold;">1 - 2</td>
+              <td style="text-align: right; color: #991b1b;">Immediate Inspection</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Diagnostic Conclusion & Recommendations -->
+      <div class="section-title">5. Engineering Assessment &amp; Recommendations</div>
+      <table class="report-table info-table" style="margin-bottom: 12px;">
+        <tr>
+          <td class="lbl" style="width: 18%;">Diagnostic Summary:</td>
+          <td class="val" colspan="3" id="diag-summary" style="font-weight: 500; color: #0f172a;">
+            The turn ratio test results across all tested tap positions comply with IEEE Std C57.152-2013 and IEC 60076-1 requirements. The maximum ratio error is within the &plusmn;0.5% allowable limit with negligible phase displacement, confirming correct winding turns, intact core geometry, and proper tap changer mechanical alignment.
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Recommendation:</td>
+          <td class="val" colspan="3" id="diag-recommendation" style="font-weight: 600; color: #166534;">
+            Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.
+          </td>
+        </tr>
+      </table>
+
+      <!-- Sign-off & Verification Block -->
+      <table class="report-table response-table">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed / Witnessed By</th>
+            <th style="width: 33.4%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td class="val" id="resp-name-tested">Mr. Jirasak S.</td>
+            <td class="val" id="resp-name-reviewed">Mr. Suchat M.</td>
+            <td class="val" id="resp-name-approved">Mr. Somchai K.</td>
+          </tr>
+          <tr>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">GPSC / Hitachi Energy</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">GPSC Electrical Team</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;">GPSC Asset Management</td>
+          </tr>
+          <tr>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">Date: -</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">Date: -</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+
+  <script>
+    let ratioDataList = [];
+    let factoryDataList = [];
+    let currentSerial = '';
+    let currentRecord = null;
+    let currentWindingView = 'HL';
+    let ratioErrorChartInstance = null;
+    let ratioProfileChartInstance = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Theme Setup
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      // Load RatioData.csv & FactoryData.csv
+      try {
+        const response = await fetch('TestData/RatioData.csv');
+        if (response.ok) {
+          const csvText = await response.text();
+          ratioDataList = parseCSV(csvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/RatioData.csv via fetch, continuing with metadata:", err);
+      }
+
+      try {
+        const facResponse = await fetch('TestData/FactoryData.csv');
+        if (facResponse.ok) {
+          const facCsvText = await facResponse.text();
+          factoryDataList = parseCSV(facCsvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/FactoryData.csv via fetch:", err);
+      }
+
+      // Populate Dropdowns
+      populateDropdown();
+
+      // Read URL query params
+      const urlParams = new URLSearchParams(window.location.search);
+      let serial = urlParams.get('serial');
+      const name = urlParams.get('name');
+      const no = urlParams.get('no');
+
+      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial;
+      }
+      if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
+        if (item) serial = item.serial;
+      }
+
+      if (!serial) {
+        if (ratioDataList.length > 0 && ratioDataList[0].serial) {
+          serial = ratioDataList[0].serial;
+        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        }
+      }
+
+      if (serial) {
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl) selectEl.value = serial;
+        loadReportBySerial(serial);
+      }
+    });
+
+    // CSV Parser supporting quotes and multi-columns
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim());
+      const result = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || '';
+        obj.date = obj.date || obj.Date || '';
+        result.push(obj);
+      }
+      return result;
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
+    }
+
+    function populateDropdown() {
+      const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
+
+      const addedSerials = new Set();
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
+          const n = meta['Equipment Name'] || meta.name || s;
+          if (s && !addedSerials.has(s)) {
+            addedSerials.add(s);
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = `${n} (${s})`;
+            selectEl.appendChild(opt);
+          }
+        });
+      }
+
+      ratioDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (s && !addedSerials.has(s)) {
+          addedSerials.add(s);
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          selectEl.appendChild(opt);
+        }
+      });
+    }
+
+    function switchTransformer(serial) {
+      currentSerial = serial;
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadReportBySerial(serial);
+    }
+
+    function switchTestDate(dateStr) {
+      const records = ratioDataList.filter(x => matchSerial(x.serial, currentSerial));
+      const found = records.find(r => r.date === dateStr);
+      if (found) {
+        renderRatioReport(found);
+      }
+    }
+
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === 'None' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      // Match YYYY-MM-DD or YYYY/MM/DD
+      const ymdMatch = cleanStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (ymdMatch) {
+        const y = parseInt(ymdMatch[1], 10);
+        const m = parseInt(ymdMatch[2], 10) - 1;
+        const d = parseInt(ymdMatch[3], 10);
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      // Match D-Mmm-YY or DD-Mmm-YYYY e.g. "1-Jan-06" or "14-Jul-2026"
+      const dmyTextMatch = cleanStr.match(/^(\d{1,2})[-/]([A-Za-z]{3,4})[-/](\d{2,4})$/);
+      if (dmyTextMatch) {
+        const d = parseInt(dmyTextMatch[1], 10);
+        const mStr = dmyTextMatch[2].substring(0, 3).toLowerCase();
+        let y = parseInt(dmyTextMatch[3], 10);
+        if (y < 100) {
+          y = y >= 50 ? 1900 + y : 2000 + y;
+        }
+        const mIdx = months.findIndex(m => m.toLowerCase() === mStr);
+        if (mIdx !== -1) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[mIdx]}-${y}`;
+        }
+      }
+
+      // Match M/D/YYYY or D/M/YYYY
+      const slashMatch = cleanStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (slashMatch) {
+        let p1 = parseInt(slashMatch[1], 10);
+        let p2 = parseInt(slashMatch[2], 10);
+        let y = parseInt(slashMatch[3], 10);
+        let d, m;
+        if (p1 > 12) {
+          d = p1;
+          m = p2 - 1;
+        } else {
+          m = p1 - 1;
+          d = p2;
+        }
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+
+      return cleanStr;
+    }
+
+    function loadReportBySerial(serial) {
+      currentSerial = serial;
+      const rawRecords = ratioDataList.filter(x => matchSerial(x.serial, serial));
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        return new Date(dStr);
+      };
+
+      rawRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+      // Populate Date selector
+      const dateSelect = document.getElementById('test-date-select');
+      dateSelect.innerHTML = '';
+      if (rawRecords.length > 0) {
+        rawRecords.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = r.date;
+          opt.textContent = r.date ? formatDate_ddMmmyyyy(r.date) : `Test #${idx + 1}`;
+          dateSelect.appendChild(opt);
+        });
+      } else {
+        const facRec = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial, serial));
+        const opt = document.createElement('option');
+        opt.value = facRec && facRec.Test_Date ? facRec.Test_Date : '';
+        opt.textContent = facRec && facRec.Test_Date ? formatDate_ddMmmyyyy(facRec.Test_Date) : 'No Test Date';
+        dateSelect.appendChild(opt);
+      }
+
+      const activeRecord = rawRecords.length > 0 ? rawRecords[0] : null;
+      renderRatioReport(activeRecord);
+    }
+
+    function renderRatioReport(record) {
+      currentRecord = record;
+      const serial = currentSerial;
+
+      // Fetch Transformer Metadata from TR_DATA & HEALTH_INDEX_DATA
+      let name = '-';
+      let site = '-';
+      let mfg = '-';
+      let power = '-';
+      let hvRated = 115;
+      let lvRated = 22;
+      let tvRated = null;
+      let voltageStr = '-';
+      let vectorGroup = 'Dyn11';
+      let tapType = 'OLTC';
+      let service = 'Generator Step-Up (GSU)';
+      let mfgDate = '-';
+      let noWinding = 2;
+
+      // 1. Check FactoryData.csv (facMeta)
+      const parseKvVal = (val) => {
+        if (!val || val === 'None' || val === 'N/A' || val === '-') return null;
+        const clean = String(val).replace(/kV/gi, '').trim();
+        const num = parseFloat(clean);
+        return isNaN(num) ? null : num;
+      };
+
+      const facMeta = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial || x['Serial No'], serial));
+      if (facMeta) {
+        if (facMeta.Site && facMeta.Site !== '-' && facMeta.Site !== '') site = facMeta.Site;
+        if (facMeta.Power_Rated && facMeta.Power_Rated !== '-' && facMeta.Power_Rated !== '') {
+          const pr = parseFloat(facMeta.Power_Rated);
+          if (!isNaN(pr) && pr > 0) {
+            power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+          }
+        }
+        if (facMeta.HV_Rated) {
+          const p = parseKvVal(facMeta.HV_Rated);
+          if (p) hvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.LV_Rated) {
+          const p = parseKvVal(facMeta.LV_Rated);
+          if (p) lvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.TV_Rated && facMeta.TV_Rated !== 'None' && facMeta.TV_Rated !== '-') {
+          const p = parseKvVal(facMeta.TV_Rated);
+          if (p) tvRated = p > 1000 ? p / 1000 : p;
+        }
+      }
+
+      // 2. Check HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        const meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No || x.SERIAL_NUMBER, serial));
+        if (meta) {
+          if (meta['Equipment Name'] && meta['Equipment Name'] !== '-') name = meta['Equipment Name'];
+          else if (meta.name && meta.name !== '-') name = meta.name;
+
+          if (meta.SITE && meta.SITE !== '-') site = meta.SITE;
+          else if (meta.site && meta.site !== '-') site = meta.site;
+
+          const pRaw = meta['Rated Power (MVA)'] || meta.ratedPower || meta.power;
+          if (pRaw && pRaw !== '-') {
+            const pNum = parseFloat(pRaw);
+            if (!isNaN(pNum)) {
+              power = pNum >= 1000 ? `${(pNum / 1000).toFixed(0)} MVA` : `${pNum} MVA`;
+            } else {
+              power = `${pRaw} MVA`;
+            }
+          }
+
+          const vRaw = meta['Rated Voltage (kV)'] || meta.ratedVoltage;
+          if (vRaw && vRaw !== '-') voltageStr = `${vRaw} kV`;
+
+          if (meta['Service Type'] && meta['Service Type'] !== '-') service = meta['Service Type'];
+          else if (meta.serviceType && meta.serviceType !== '-') service = meta.serviceType;
+
+          if (meta['Vector Group'] && meta['Vector Group'] !== '-') vectorGroup = meta['Vector Group'];
+          else if (meta.vectorGroup && meta.vectorGroup !== '-') vectorGroup = meta.vectorGroup;
+
+          if (meta.Manufacturer && meta.Manufacturer !== '-') mfg = meta.Manufacturer;
+          else if (meta.manufacture && meta.manufacture !== '-') mfg = meta.manufacture;
+        }
+      }
+
+      // 3. Check TR_DATA (data.js / TRInfo.csv)
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x['Serial No'] || x.serial, serial));
+        if (rawMeta) {
+          if (rawMeta.LOCAL_EQUIPMENT_CODE && rawMeta.LOCAL_EQUIPMENT_CODE !== '-') {
+            name = rawMeta.LOCAL_EQUIPMENT_CODE;
+          } else if (rawMeta.DEVICE_CODE && rawMeta.DEVICE_CODE !== '-') {
+            name = rawMeta.DEVICE_CODE;
+          }
+
+          if (rawMeta.SITE && rawMeta.SITE !== '-') site = rawMeta.SITE;
+          if (rawMeta.MANUFACTURER_COMPANY && rawMeta.MANUFACTURER_COMPANY !== '-') mfg = rawMeta.MANUFACTURER_COMPANY;
+          else if (rawMeta.BRAND && rawMeta.BRAND !== '-') mfg = rawMeta.BRAND;
+
+          if (rawMeta.POWER_RATING_DETAIL && rawMeta.POWER_RATING_DETAIL !== '-') {
+            power = rawMeta.POWER_RATING_DETAIL;
+          } else if (rawMeta.POWER_RATING && rawMeta.POWER_RATING !== '-') {
+            const pr = parseFloat(rawMeta.POWER_RATING);
+            if (!isNaN(pr)) {
+              power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+            }
+          }
+
+          if (!facMeta || !facMeta.HV_Rated) {
+            if (rawMeta.HV_RATED && rawMeta.HV_RATED !== '-') hvRated = parseFloat(rawMeta.HV_RATED) || hvRated;
+          }
+          if (!facMeta || !facMeta.LV_Rated) {
+            if (rawMeta.LV_RATED && rawMeta.LV_RATED !== '-') lvRated = parseFloat(rawMeta.LV_RATED) || lvRated;
+          }
+          if (!facMeta || !facMeta.TV_Rated) {
+            if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') tvRated = parseFloat(rawMeta.LV2_RATED);
+          }
+
+          if (rawMeta.VECTOR_GROUP && rawMeta.VECTOR_GROUP !== '-') vectorGroup = rawMeta.VECTOR_GROUP;
+          if (rawMeta.TAP_CHANGER_TYPE && rawMeta.TAP_CHANGER_TYPE !== '-') tapType = rawMeta.TAP_CHANGER_TYPE;
+          if (rawMeta.APPLICATION && rawMeta.APPLICATION !== '-') service = rawMeta.APPLICATION;
+          if (rawMeta.MANUFACTURING_DATE && rawMeta.MANUFACTURING_DATE !== '-') mfgDate = rawMeta.MANUFACTURING_DATE.split(' ')[0];
+          if (rawMeta.NO_WINDING && rawMeta.NO_WINDING !== '-') noWinding = parseInt(rawMeta.NO_WINDING, 10) || 2;
+        }
+      }
+
+      if (tvRated) {
+        voltageStr = `${hvRated} / ${lvRated} / ${tvRated} kV`;
+      } else if (hvRated && lvRated) {
+        voltageStr = `${hvRated} / ${lvRated} kV`;
+      }
+
+      // Check if 3-Winding or Auto-transformer
+      const isAuto = vectorGroup.toLowerCase().includes('auto') || 
+                     vectorGroup.toLowerCase().includes('na0') || 
+                     vectorGroup.toLowerCase().includes('yna') || 
+                     String(name).toLowerCase().includes('auto');
+
+      const hasTertiaryVector = /\([a-z0-9]+\)/i.test(vectorGroup) || 
+                                /(d11d11|d11d1|yn0d|yn0y|yn11d)/i.test(vectorGroup);
+
+      const is3W = (noWinding === 3) || 
+                   (tvRated !== null && tvRated > 0) || 
+                   hasTertiaryVector || 
+                   isAuto;
+
+      // Populate Identification Table
+      document.getElementById('info-header-id').textContent = 'EMM-TR-F-003, Rev.1';
+      document.getElementById('info-eq-name').textContent = name;
+      document.getElementById('info-site').textContent = site;
+      document.getElementById('info-serial').textContent = serial;
+      document.getElementById('info-power').textContent = power;
+      document.getElementById('info-voltage').textContent = voltageStr;
+      document.getElementById('info-vector').textContent = vectorGroup;
+      
+      // No. of winding
+      let windingCountStr = '2';
+      if (isAuto) {
+        windingCountStr = 'Auto-Transformer (2 + Tertiary)';
+      } else if (is3W) {
+        windingCountStr = '3';
+      }
+      const infoWindingEl = document.getElementById('info-winding');
+      if (infoWindingEl) infoWindingEl.textContent = windingCountStr;
+
+      document.getElementById('info-tap').textContent = tapType;
+
+      // Populate Test Environment & Apparatus from record if available
+      const r = record || {};
+      document.getElementById('info-instrument').textContent = r.TESTINS || 'Omicron TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = r.INSSERIAL || 'DA193X';
+      document.getElementById('info-instrument-calib').textContent = r.INSCAL ? formatDate_ddMmmyyyy(r.INSCAL) : '-';
+
+      document.getElementById('env-ambient').textContent = r.AMBIENT ? `${r.AMBIENT} °C` : '- °C';
+      document.getElementById('env-oil').textContent = r.OILTEMP ? `${r.OILTEMP} °C` : '- °C';
+      document.getElementById('env-winding').textContent = r.WINDINGTEMP ? `${r.WINDINGTEMP} °C` : '- °C';
+      document.getElementById('env-humidity').textContent = r.HUMIDITY ? `${r.HUMIDITY} %` : '-%';
+
+      // Sign-off
+      document.getElementById('resp-name-tested').textContent = r.NAME1 || 'Mr. Jirasak S.';
+      document.getElementById('resp-name-reviewed').textContent = r.NAME2 || 'Mr. Suchat M.';
+      document.getElementById('resp-comp-tested').textContent = r.COMP1 || 'GPSC';
+      document.getElementById('resp-comp-reviewed').textContent = r.COMP2 || 'GPSC';
+      document.getElementById('resp-date-tested').textContent = r.date ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
+      document.getElementById('resp-date-reviewed').textContent = r.date ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
+      document.getElementById('resp-date-approved').textContent = r.date ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : 'Date: -';
+
+      // Show / Hide Winding Tabs (Hidden per user specification)
+      const tabContainer = document.getElementById('winding-tab-container');
+      if (tabContainer) tabContainer.style.display = 'none';
+
+      // Build Ratio Tap Tables Section (2-Winding, 3-Winding, Auto Transformer)
+      renderRatioTablesSection(r, hvRated, lvRated, tvRated, vectorGroup, is3W, isAuto, tapType);
+    }
+
+    function calculateTheoreticalRatio(hvKv, lvKv, vectorGroup, isAuto, mode = 'HL') {
+      if (!hvKv || !lvKv || lvKv === 0) return 1.0;
+      const v = String(vectorGroup || '').toUpperCase().trim();
+
+      // 1. Auto Transformer or Star-Star (YNa0, YNa0(d1) HL, YNyn, Yyn, Auto): TR = V_HV / V_LV
+      if ((isAuto || v.includes('YNA') || v.includes('AUTO') || v.includes('YNYN') || v.includes('YYN') || v.startsWith('YN0') || v.startsWith('Y0')) && mode === 'HL') {
+        return (hvKv * 1000) / (lvKv * 1000);
+      }
+
+      // 2. Primary is Delta (D), Secondary/Tertiary is Star (Y/YN) -> Dyn, Dy, Dyn1y1:
+      // Phase HV = V_HV (line-to-line)
+      // Phase LV = V_LV / sqrt(3) (line-to-neutral)
+      // TR = Phase HV / Phase LV = (sqrt(3) * V_HV) / V_LV
+      if (v.startsWith('D') && (v.includes('Y') || v.includes('YN')) && !(mode === 'HT' && (v.includes('D0') || v.includes('D11') || v.includes('D1')))) {
+        return (Math.sqrt(3) * (hvKv * 1000)) / (lvKv * 1000);
+      }
+      
+      // 3. Primary is Star (YN/Y), Secondary/Tertiary is Delta (D/d) -> YNd, Yd, YNd1, YNd11, YNd1d1, YNa0(d1) Tertiary:
+      // Phase HV = V_HV / sqrt(3) (line-to-neutral)
+      // Phase LV = V_LV (line-to-line)
+      // TR = Phase HV / Phase LV = V_HV / (sqrt(3) * V_LV)
+      if ((v.startsWith('Y') || v.startsWith('YN') || v.includes('YNA')) && (v.includes('D') || v.includes('(D'))) {
+        return (hvKv * 1000) / (Math.sqrt(3) * (lvKv * 1000));
+      }
+
+      // 4. Default Star-Star (YNyn, Yyn) or Delta-Delta (Dd): TR = V_HV / V_LV
+      return (hvKv * 1000) / (lvKv * 1000);
+    }
+
+    function formatVal(v, dec = 4) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      return parseFloat(v).toFixed(dec);
+    }
+
+    function formatErr(v) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      const num = parseFloat(v);
+      const sign = num > 0 ? '+' : '';
+      return `${sign}${num.toFixed(2)}%`;
+    }
+
+    function getErrorBadge(errVal) {
+      if (errVal === undefined || errVal === null || errVal === '' || errVal === '-' || isNaN(parseFloat(errVal))) {
+        return '<span class="status-badge status-na">-</span>';
+      }
+      const absErr = Math.abs(parseFloat(errVal));
+      if (absErr <= 0.50) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (absErr <= 1.00) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">FAIL</span>';
+      }
+    }
+
+
+
+    function createSingleRatioTableObject(titleText, mode, r, hvRated, secRated, vectorGroup, isAuto, is3W = false, tapType = 'OLTC') {
+      const conn = getPhaseRatioConnections(vectorGroup, mode);
+      const facRecord = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial, currentSerial));
+
+      const getTapVolt = (facVal, fallbackVal) => {
+        if (facVal && !isNaN(parseFloat(facVal))) {
+          return parseFloat(facVal);
+        }
+        return fallbackVal;
+      };
+
+      let maxHvV, maxSecV, cenHvV, cenSecV, minHvV, minSecV;
+
+      if (mode === 'HT') {
+        maxHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Max_HV, hvRated * 1000 * 1.05) : (hvRated * 1000 * 1.05);
+        maxSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Max_LV, (secRated || 11) * 1000) : ((secRated || 11) * 1000);
+
+        cenHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Cen_HV, hvRated * 1000) : (hvRated * 1000);
+        cenSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Cen_LV, (secRated || 11) * 1000) : ((secRated || 11) * 1000);
+
+        minHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Min_HV, hvRated * 1000 * 0.95) : (hvRated * 1000 * 0.95);
+        minSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL2_Tap_Min_LV, (secRated || 11) * 1000) : ((secRated || 11) * 1000);
+      } else {
+        maxHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Max_HV, hvRated * 1000 * 1.05) : (hvRated * 1000 * 1.05);
+        maxSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Max_LV, secRated * 1000) : (secRated * 1000);
+
+        cenHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Cen_HV, hvRated * 1000) : (hvRated * 1000);
+        cenSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Cen_LV, secRated * 1000) : (secRated * 1000);
+
+        minHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Min_HV, hvRated * 1000 * 0.95) : (hvRated * 1000 * 0.95);
+        minSecV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Min_LV, secRated * 1000) : (secRated * 1000);
+      }
+
+      const maxCalcRatio = calculateTheoreticalRatio(maxHvV / 1000, maxSecV / 1000, vectorGroup, isAuto && mode === 'HL', mode);
+      const cenCalcRatio = calculateTheoreticalRatio(cenHvV / 1000, cenSecV / 1000, vectorGroup, isAuto && mode === 'HL', mode);
+      const minCalcRatio = calculateTheoreticalRatio(minHvV / 1000, minSecV / 1000, vectorGroup, isAuto && mode === 'HL', mode);
+
+      let taps = [];
+      if (mode === 'HT') {
+        // HT mode (HV-TV): For 3-winding, populate Tap Center using Tap H-Y / Service data (r.H1_ratio1, r.H2_ratio1, r.H3_ratio1)
+        const calcErr = (m, c) => {
+          if (!m || isNaN(parseFloat(m)) || !c) return null;
+          return (((parseFloat(m) - c) / c) * 100).toFixed(2);
+        };
+
+        const isHyValid = r && r.H1_ratio1 && r.H1_ratio1 !== '-' && !isNaN(parseFloat(r.H1_ratio1)) && parseFloat(r.H1_ratio1) > 0;
+        const hasHyData = isHyValid && r.H1_tap_N1 && r.H1_tap_N1 !== '-';
+
+        const h1CenR = hasHyData ? r.H1_ratio1 : (r ? (r.HT_H1_tap_cen_ratio || r.HT_cen_ratio || null) : null);
+        const h2CenR = hasHyData ? (r.H2_ratio1 || r.H1_ratio1) : (r ? (r.HT_H2_tap_cen_ratio || h1CenR) : null);
+        const h3CenR = hasHyData ? (r.H3_ratio1 || r.H1_ratio1) : (r ? (r.HT_H3_tap_cen_ratio || h1CenR) : null);
+
+        const h1CenErr = hasHyData ? (r.H1_err1 || calcErr(h1CenR, cenCalcRatio)) : (r ? (r.HT_H1_cen_err || calcErr(h1CenR, cenCalcRatio)) : null);
+        const h2CenErr = hasHyData ? (r.H2_err1 || h1CenErr) : (r ? (r.HT_H2_cen_err || calcErr(h2CenR, cenCalcRatio)) : null);
+        const h3CenErr = hasHyData ? (r.H3_err1 || h1CenErr) : (r ? (r.HT_H3_cen_err || calcErr(h3CenR, cenCalcRatio)) : null);
+
+        const h1CenPhd = hasHyData ? (r.H1_phd1 || '0.00') : (r ? r.HT_H1_cen_phd : null);
+        const h2CenPhd = hasHyData ? (r.H2_phd1 || h1CenPhd) : (r ? r.HT_H2_cen_phd : null);
+        const h3CenPhd = hasHyData ? (r.H3_phd1 || h1CenPhd) : (r ? r.HT_H3_cen_phd : null);
+
+        const htCalcRatioStr = (hasHyData && r.H1_tap_rate_N1 && !isNaN(parseFloat(r.H1_tap_rate_N1))) 
+          ? parseFloat(r.H1_tap_rate_N1).toFixed(4) 
+          : cenCalcRatio.toFixed(4);
+
+        taps = [
+          {
+            name: 'Tap Max (+)',
+            hvVolt: maxHvV.toFixed(0),
+            secVolt: maxSecV.toFixed(0),
+            calcRatio: maxCalcRatio.toFixed(4),
+            h1_ratio: r ? (r.HT_H1_tap_max_ratio || null) : null,
+            h1_err: r ? r.HT_H1_max_err : null,
+            h1_phd: r ? r.HT_H1_max_phd : null,
+            h2_ratio: r ? (r.HT_H2_tap_max_ratio || null) : null,
+            h2_err: r ? r.HT_H2_max_err : null,
+            h2_phd: r ? r.HT_H2_max_phd : null,
+            h3_ratio: r ? (r.HT_H3_tap_max_ratio || null) : null,
+            h3_err: r ? r.HT_H3_max_err : null,
+            h3_phd: r ? r.HT_H3_max_phd : null,
+          },
+          {
+            name: 'Tap Center',
+            hvVolt: cenHvV.toFixed(0),
+            secVolt: cenSecV.toFixed(0),
+            calcRatio: htCalcRatioStr,
+            h1_ratio: h1CenR, h1_err: h1CenErr, h1_phd: h1CenPhd,
+            h2_ratio: h2CenR, h2_err: h2CenErr, h2_phd: h2CenPhd,
+            h3_ratio: h3CenR, h3_err: h3CenErr, h3_phd: h3CenPhd,
+          },
+          {
+            name: 'Tap Min (-)',
+            hvVolt: minHvV.toFixed(0),
+            secVolt: minSecV.toFixed(0),
+            calcRatio: minCalcRatio.toFixed(4),
+            h1_ratio: r ? (r.HT_H1_tap_min_ratio || null) : null,
+            h1_err: r ? r.HT_H1_min_err : null,
+            h1_phd: r ? r.HT_H1_min_phd : null,
+            h2_ratio: r ? (r.HT_H2_tap_min_ratio || null) : null,
+            h2_err: r ? r.HT_H2_min_err : null,
+            h2_phd: r ? r.HT_H2_min_phd : null,
+            h3_ratio: r ? (r.HT_H3_tap_min_ratio || null) : null,
+            h3_err: r ? r.HT_H3_min_err : null,
+            h3_phd: r ? r.HT_H3_min_phd : null,
+          }
+        ];
+      } else {
+        // HL mode (HV-LV): Measured values STRICTLY from RatioData (r) ONLY
+        const h1MaxR = r ? (r.H1_tap_max_ratio || null) : null;
+        const h1CenR = r ? (r.H1_tap_cen_ratio || null) : null;
+        const h1MinR = r ? (r.H1_tap_min_ratio || null) : null;
+
+        const h2MaxR = r ? (r.H2_tap_max_ratio || null) : null;
+        const h2CenR = r ? (r.H2_tap_cen_ratio || null) : null;
+        const h2MinR = r ? (r.H3_tap_min_ratio || null) : null;
+
+        const h3MaxR = r ? (r.H3_tap_max_ratio || null) : null;
+        const h3CenR = r ? (r.H3_tap_cen_ratio || null) : null;
+        const h3MinR = r ? (r.H3_tap_min_ratio || null) : null;
+
+        taps = [
+          {
+            name: 'Tap Max (+)',
+            hvVolt: maxHvV.toFixed(0),
+            secVolt: maxSecV.toFixed(0),
+            calcRatio: maxCalcRatio.toFixed(4),
+            h1_ratio: h1MaxR, h1_err: r ? r.H1_max_err : null, h1_phd: r ? r.H1_max_phd : null,
+            h2_ratio: h2MaxR, h2_err: r ? r.H2_max_err : null, h2_phd: r ? r.H2_max_phd : null,
+            h3_ratio: h3MaxR, h3_err: r ? r.H3_max_err : null, h3_phd: r ? r.H3_max_phd : null,
+          },
+          {
+            name: 'Tap Center',
+            hvVolt: cenHvV.toFixed(0),
+            secVolt: cenSecV.toFixed(0),
+            calcRatio: cenCalcRatio.toFixed(4),
+            h1_ratio: h1CenR, h1_err: r ? r.H1_cen_err : null, h1_phd: r ? r.H1_cen_phd : null,
+            h2_ratio: h2CenR, h2_err: r ? r.H2_cen_err : null, h2_phd: r ? r.H2_cen_phd : null,
+            h3_ratio: h3CenR, h3_err: r ? r.H3_cen_err : null, h3_phd: r ? r.H3_cen_phd : null,
+          },
+          {
+            name: 'Tap Min (-)',
+            hvVolt: minHvV.toFixed(0),
+            secVolt: minSecV.toFixed(0),
+            calcRatio: minCalcRatio.toFixed(4),
+            h1_ratio: h1MinR, h1_err: r ? r.H1_min_err : null, h1_phd: r ? r.H1_min_phd : null,
+            h2_ratio: h2MinR, h2_err: r ? r.H2_min_err : null, h2_phd: r ? r.H2_min_phd : null,
+            h3_ratio: h3MinR, h3_err: r ? r.H3_min_err : null, h3_phd: r ? r.H3_min_phd : null,
+          }
+        ];
+
+        const isTapValValid = (tapVal, ratioVal) => {
+          if (!tapVal || tapVal === '-' || tapVal === '' || tapVal === '0') return false;
+          if (!ratioVal || ratioVal === '-' || ratioVal === '' || ratioVal === '0') return false;
+          if (isNaN(parseFloat(ratioVal)) || parseFloat(ratioVal) <= 0) return false;
+          const tapStr = String(tapVal).trim().toLowerCase();
+          if (tapStr === '-' || tapStr === 'none' || tapStr === 'n/a') return false;
+          return true;
+        };
+
+        const isOLTC1or3 = tapType && (tapType.toUpperCase().includes('OLTC1') || tapType.toUpperCase().includes('OLTC3'));
+
+        // For 2-Winding or Auto Transformer only, include discrete service tap if present and valid (Do not show if OLTC1, OLTC3 or invalid "-")
+        if (!is3W && !isOLTC1or3 && r && isTapValValid(r.H1_tap_N1, r.H1_ratio1)) {
+          taps.push({
+            name: `Tap ${r.H1_tap_N1} (Service)`,
+            hvVolt: cenHvV.toFixed(0),
+            secVolt: cenSecV.toFixed(0),
+            calcRatio: cenCalcRatio.toFixed(4),
+            h1_ratio: r.H1_ratio1, h1_err: r.H1_err1, h1_phd: r.H1_phd1,
+            h2_ratio: r.H2_ratio1, h2_err: r.H2_err1, h2_phd: r.H2_phd1,
+            h3_ratio: r.H3_ratio1, h3_err: r.H3_err1, h3_phd: r.H3_phd1,
+          });
+        }
+
+        if (!is3W && !isOLTC1or3 && r && isTapValValid(r.H1_tap_N2, r.H1_ratio2)) {
+          taps.push({
+            name: `Tap ${r.H1_tap_N2}`,
+            hvVolt: cenHvV.toFixed(0),
+            secVolt: cenSecV.toFixed(0),
+            calcRatio: cenCalcRatio.toFixed(4),
+            h1_ratio: r.H1_ratio2, h1_err: r.H1_err2, h1_phd: r.H1_phd2,
+            h2_ratio: r.H2_ratio2, h2_err: r.H2_err2, h2_phd: r.H2_phd2,
+            h3_ratio: r.H3_ratio2, h3_err: r.H3_err2, h3_phd: r.H3_phd2,
+          });
+        }
+      }
+
+      // Filter out any invalid / dummy Tap rows like "Tap - (Service)" or "Tap -"
+      taps = taps.filter(t => {
+        if (!t || !t.name) return false;
+        const n = t.name.trim();
+        if (n === 'Tap -' || n === 'Tap - (Service)' || n.startsWith('Tap -')) return false;
+        return true;
+      });
+
+      const secColLabel = mode === 'HT' ? 'TV Volts' : 'LV Volts';
+
+      return {
+        titleText,
+        mode,
+        secColLabel,
+        conn,
+        taps
+      };
+    }
+
+    function renderRatioTablesSection(r, hvRated, lvRated, tvRated, vectorGroup, is3W, isAuto, tapType = 'OLTC') {
+      const container = document.getElementById('ratio-tables-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      // Hide tab bar container
+      const tabContainer = document.getElementById('winding-tab-container');
+      if (tabContainer) tabContainer.style.display = 'none';
+
+      const is3WindingPure = is3W && !isAuto;
+
+      let tablesData = [];
+
+      if (is3WindingPure) {
+        // Case: 3 Winding -> 2 Tables (4.1 HV:LV and 4.2 HV:TV)
+        tablesData.push(createSingleRatioTableObject('4.1 Ratio Measurement (HV:LV)', 'HL', r, hvRated, lvRated, vectorGroup, isAuto, true, tapType));
+        tablesData.push(createSingleRatioTableObject('4.2 Ratio Measurement (HV:TV)', 'HT', r, hvRated, tvRated || (lvRated * 0.5), vectorGroup, false, true, tapType));
+      } else {
+        // Case: 2 Winding or Auto Transformer -> 1 Table (4. Ratio Measurement (HV:LV))
+        tablesData.push(createSingleRatioTableObject('4. Ratio Measurement (HV:LV)', 'HL', r, hvRated, lvRated, vectorGroup, isAuto, false, tapType));
+      }
+
+      // Render Tables HTML
+      let aggregateMaxErr = 0;
+      let aggregateMaxDev = 0;
+      let aggregateMaxPhd = 0;
+
+      let chartTapLabels = [];
+      let chartErrPhA = [];
+      let chartErrPhB = [];
+      let chartErrPhC = [];
+      let chartMeasRatio = [];
+      let chartCalcRatio = [];
+
+      tablesData.forEach((td, tableIdx) => {
+        const tableBlock = document.createElement('div');
+        tableBlock.className = 'ratio-table-block';
+        tableBlock.style.marginBottom = '16px';
+
+        let rowsHtml = '';
+        td.taps.forEach(t => {
+          const errs = [parseFloat(t.h1_err), parseFloat(t.h2_err), parseFloat(t.h3_err)].filter(x => !isNaN(x));
+          const ratios = [parseFloat(t.h1_ratio), parseFloat(t.h2_ratio), parseFloat(t.h3_ratio)].filter(x => !isNaN(x));
+          const phds = [parseFloat(t.h1_phd), parseFloat(t.h2_phd), parseFloat(t.h3_phd)].filter(x => !isNaN(x));
+
+          let maxErr = errs.length > 0 ? Math.max(...errs.map(Math.abs)) : null;
+          let phDev = null;
+          if (ratios.length === 3) {
+            const maxR = Math.max(...ratios);
+            const minR = Math.min(...ratios);
+            if (minR > 0) phDev = ((maxR - minR) / minR) * 100;
+          }
+
+          if (maxErr !== null && maxErr > aggregateMaxErr) aggregateMaxErr = maxErr;
+          if (phDev !== null && phDev > aggregateMaxDev) aggregateMaxDev = phDev;
+          if (phds.length > 0) {
+            const mPhd = Math.max(...phds.map(Math.abs));
+            if (mPhd > aggregateMaxPhd) aggregateMaxPhd = mPhd;
+          }
+
+          // Populate charts data (Include both HV:LV and HV:TV for 3-winding transformers)
+          const hasTestData = (errs.length > 0 || ratios.length > 0);
+          if (hasTestData) {
+            let labelName = t.name;
+            if (is3WindingPure) {
+              const prefix = td.mode === 'HT' ? 'HV:TV - ' : 'HV:LV - ';
+              labelName = prefix + t.name;
+            }
+            chartTapLabels.push(labelName);
+            chartErrPhA.push(!isNaN(parseFloat(t.h1_err)) ? parseFloat(t.h1_err) : 0);
+            chartErrPhB.push(!isNaN(parseFloat(t.h2_err)) ? parseFloat(t.h2_err) : 0);
+            chartErrPhC.push(!isNaN(parseFloat(t.h3_err)) ? parseFloat(t.h3_err) : 0);
+
+            const avgMeas = ratios.length > 0 ? (ratios.reduce((a, b) => a + b, 0) / ratios.length) : parseFloat(t.calcRatio);
+            chartMeasRatio.push(avgMeas);
+            chartCalcRatio.push(parseFloat(t.calcRatio));
+          }
+
+          const fmtPhd = (val) => {
+            if (val === undefined || val === null || val === '' || val === '-') return '0.00°';
+            const num = parseFloat(val);
+            return isNaN(num) ? '0.00°' : `${num.toFixed(2)}°`;
+          };
+
+          rowsHtml += `
+            <tr>
+              <td class="tap-col">${t.name}</td>
+              <td>${t.hvVolt}</td>
+              <td>${t.secVolt}</td>
+              <td class="bold-val">${t.calcRatio}</td>
+              <td>${formatVal(t.h1_ratio)}</td>
+              <td>${formatErr(t.h1_err)}</td>
+              <td>${fmtPhd(t.h1_phd)}</td>
+              <td>${formatVal(t.h2_ratio)}</td>
+              <td>${formatErr(t.h2_err)}</td>
+              <td>${fmtPhd(t.h2_phd)}</td>
+              <td>${formatVal(t.h3_ratio)}</td>
+              <td>${formatErr(t.h3_err)}</td>
+              <td>${fmtPhd(t.h3_phd)}</td>
+              <td style="font-weight: 700;">${maxErr !== null ? `${maxErr.toFixed(2)}%` : '-'}</td>
+              <td>${phDev !== null ? `${phDev.toFixed(2)}%` : '-'}</td>
+              <td>${maxErr !== null ? getErrorBadge(maxErr) : '<span class="status-badge status-na">N/A</span>'}</td>
+            </tr>
+          `;
+        });
+
+        tableBlock.innerHTML = `
+          <div class="section-title" style="margin-bottom: 6px;">
+            <span>${td.titleText}</span>
+            <span class="badge-info">Tolerance: &le; &plusmn;0.50% (IEEE C57.152)</span>
+          </div>
+          <table class="report-table data-table" style="margin-bottom: 12px;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width: 7%;">Tap Pos.</th>
+                <th rowspan="2" style="width: 10%;">HV Volts<br><span style="font-size: 8px; font-weight: normal;">(V)</span></th>
+                <th rowspan="2" style="width: 9%;">${td.secColLabel}<br><span style="font-size: 8px; font-weight: normal;">(V)</span></th>
+                <th rowspan="2" style="width: 10%;">Calculated<br>Ratio</th>
+                <th colspan="3" class="th-group" style="width: 21%;">${td.conn.phA}</th>
+                <th colspan="3" class="th-group" style="width: 21%;">${td.conn.phB}</th>
+                <th colspan="3" class="th-group" style="width: 21%;">${td.conn.phC}</th>
+                <th rowspan="2" style="width: 7%;">Max<br>Error</th>
+                <th rowspan="2" style="width: 6%;">Phase<br>Dev.</th>
+                <th rowspan="2" style="width: 8%;">Status</th>
+              </tr>
+              <tr>
+                <th class="th-phase">Measured</th>
+                <th class="th-phase">% Err</th>
+                <th class="th-phase">&theta; (&deg;)</th>
+                <th class="th-phase">Measured</th>
+                <th class="th-phase">% Err</th>
+                <th class="th-phase">&theta; (&deg;)</th>
+                <th class="th-phase">Measured</th>
+                <th class="th-phase">% Err</th>
+                <th class="th-phase">&theta; (&deg;)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        `;
+        container.appendChild(tableBlock);
+      });
+
+      // Update KPI Header Values
+      if (r.MAXERR && !isNaN(parseFloat(r.MAXERR))) {
+        aggregateMaxErr = Math.max(aggregateMaxErr, parseFloat(r.MAXERR));
+      }
+      if (r.MAXDEV && !isNaN(parseFloat(r.MAXDEV))) {
+        aggregateMaxDev = Math.max(aggregateMaxDev, parseFloat(r.MAXDEV));
+      }
+
+      document.getElementById('kpi-max-error').textContent = `${aggregateMaxErr.toFixed(2)}%`;
+      document.getElementById('kpi-max-dev').textContent = `${aggregateMaxDev.toFixed(2)}%`;
+      document.getElementById('kpi-max-phd').textContent = `${aggregateMaxPhd.toFixed(2)}°`;
+
+      const kpiStatus = document.getElementById('kpi-overall-status');
+      const kpiScore = document.getElementById('kpi-overall-score');
+      if (aggregateMaxErr <= 0.50) {
+        kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
+        kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
+      } else if (aggregateMaxErr <= 1.00) {
+        kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
+        kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
+      } else {
+        kpiStatus.innerHTML = '<span class="status-badge status-fail">ACTION REQUIRED</span>';
+        kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
+      }
+
+      // Render Charts
+      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio);
+    }
+
+    function formatVal(v, dec = 4) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      return parseFloat(v).toFixed(dec);
+    }
+
+    function formatErr(v) {
+      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
+      const num = parseFloat(v);
+      const sign = num > 0 ? '+' : '';
+      return `${sign}${num.toFixed(2)}%`;
+    }
+
+    function getErrorBadge(errVal) {
+      if (errVal === undefined || errVal === null || errVal === '' || errVal === '-' || isNaN(parseFloat(errVal))) {
+        return '<span class="status-badge status-na">-</span>';
+      }
+      const absErr = Math.abs(parseFloat(errVal));
+      if (absErr <= 0.50) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (absErr <= 1.00) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">FAIL</span>';
+      }
+    }
+
+    function getPhaseRatioConnections(vectorGroup, mode = 'HL') {
+      const v = String(vectorGroup || '').toUpperCase().trim();
+      const secLetter = (mode === 'HT' || mode === 'LT') ? 'Y' : 'X';
+      const priLetter = (mode === 'LT') ? 'X' : 'H';
+
+      // Determine effective vector group for current mode
+      let effVg = v;
+      if (mode === 'HT') {
+        const isPriDelta = v.startsWith('D');
+        const priPrefix = isPriDelta ? 'D' : 'YN';
+
+        // Check if there is tertiary designation in parentheses e.g. (d1), (d11)
+        const parenMatch = v.match(/\(([a-z0-9]+)\)/i);
+        if (parenMatch) {
+          effVg = priPrefix + parenMatch[1].toUpperCase();
+        } else {
+          // Check compound 3W vector groups like YNd1d1, Dyn11d0, Dyn1y1
+          const match3W = v.match(/^(YN|Y|D)(yn|y|d|a)?([0-9]+)?([ydyn]+)([0-9]+)?$/i);
+          if (match3W && match3W[4]) {
+            const tertType = match3W[4].toUpperCase();
+            const tertNum = match3W[5] !== undefined ? match3W[5] : '1';
+            effVg = priPrefix + tertType + tertNum;
+          } else {
+            if (v.includes('D0') || v.endsWith('D0')) effVg = priPrefix + 'D0';
+            else if (v.includes('D11') || v.endsWith('D11')) effVg = priPrefix + 'D11';
+            else if (v.includes('D1') || v.endsWith('D1')) effVg = priPrefix + 'D1';
+            else if (v.includes('D5') || v.endsWith('D5')) effVg = priPrefix + 'D5';
+            else if (v.includes('D7') || v.endsWith('D7')) effVg = priPrefix + 'D7';
+            else if (v.includes('Y1') || v.endsWith('Y1')) effVg = priPrefix + 'Y1';
+            else if (v.includes('Y0') || v.endsWith('Y0')) effVg = priPrefix + 'Y0';
+          }
+        }
+      } else if (mode === 'LT') {
+        effVg = 'YNd1';
+      }
+
+      const ev = effVg.toUpperCase();
+      const P = priLetter;
+      const S = secLetter;
+
+      // Auto-Transformers or Star-Star 0 displacement
+      if (ev.includes('AUTO') || ev.includes('YNA') || (ev.startsWith('YN') && ev.includes('YN0')) || (ev.startsWith('Y') && !ev.includes('D') && ev.includes('0'))) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}1-${S}0)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}2-${S}0)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}3-${S}0)`
+        };
+      }
+
+      // Dyn1 / Dy1 (30 deg lag)
+      if (ev.startsWith('D') && ev.includes('1') && !ev.includes('11')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}2-${S}0)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}3-${S}0)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}1-${S}0)`
+        };
+      }
+
+      // Dyn11 / Dy11 (30 deg lead)
+      if (ev.startsWith('D') && ev.includes('11')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}1-${S}0)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}2-${S}0)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}3-${S}0)`
+        };
+      }
+
+      // Dyn5 / Dy5 (150 deg lag)
+      if (ev.startsWith('D') && ev.includes('5')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}0-${S}2)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}0-${S}3)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}0-${S}1)`
+        };
+      }
+
+      // Dyn7 / Dy7 (210 deg lag)
+      if (ev.startsWith('D') && ev.includes('7')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}0-${S}1)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}0-${S}2)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}0-${S}3)`
+        };
+      }
+
+      // Dyn9 / Dy9 (270 deg lag)
+      if (ev.startsWith('D') && ev.includes('9')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}0-${S}3)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}0-${S}1)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}0-${S}2)`
+        };
+      }
+
+      // YNd1 / Yd1
+      if ((ev.startsWith('Y') || ev.startsWith('YN')) && ev.includes('D') && ev.includes('1') && !ev.includes('11')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}1-${S}3)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}2-${S}1)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}3-${S}2)`
+        };
+      }
+
+      // YNd11 / Yd11
+      if ((ev.startsWith('Y') || ev.startsWith('YN')) && ev.includes('D') && ev.includes('11')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}1-${S}2)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}2-${S}3)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}3-${S}1)`
+        };
+      }
+
+      // YNd5 / Yd5
+      if ((ev.startsWith('Y') || ev.startsWith('YN')) && ev.includes('D') && ev.includes('5')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}3-${S}1)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}1-${S}2)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}2-${S}3)`
+        };
+      }
+
+      // YNd7 / Yd7
+      if ((ev.startsWith('Y') || ev.startsWith('YN')) && ev.includes('D') && ev.includes('7')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}2-${S}3)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}3-${S}1)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}1-${S}2)`
+        };
+      }
+
+      // YNd9 / Yd9
+      if ((ev.startsWith('Y') || ev.startsWith('YN')) && ev.includes('D') && ev.includes('9')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}3-${S}2)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}1-${S}3)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}2-${S}1)`
+        };
+      }
+
+      // Dd0 / D0
+      if (ev.startsWith('DD') || (ev.startsWith('D') && (ev.endsWith('0') || ev.includes('D0')))) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}1-${S}2)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}2-${S}3)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}3-${S}1)`
+        };
+      }
+
+      // Dd6
+      if (ev.startsWith('DD') && ev.includes('6')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}2-${S}1)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}3-${S}2)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}1-${S}3)`
+        };
+      }
+
+      // YNyn0 / Yy0
+      if (ev.includes('Y') && (ev.includes('0') || ev.includes('AUTO') || ev.includes('NA0'))) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}1-${S}0)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}2-${S}0)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}3-${S}0)`
+        };
+      }
+
+      // YNyn6 / Yy6
+      if (ev.includes('Y') && ev.includes('6')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}0-${S}1)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}0-${S}2)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}0-${S}3)`
+        };
+      }
+
+      // Fallback for Delta primary
+      if (ev.startsWith('D')) {
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}1-${S}0)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}2-${S}0)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}3-${S}0)`
+        };
+      }
+
+      // Default Star-Star / Wye fallback
+      return {
+        phA: `Phase A (${P}1-${P}0 : ${S}1-${S}0)`,
+        phB: `Phase B (${P}2-${P}0 : ${S}2-${S}0)`,
+        phC: `Phase C (${P}3-${P}0 : ${S}3-${S}0)`
+      };
+    }
+
+    function renderTapTable(r, hvRated, lvRated, tvRated, vectorGroup, is3W, isAuto) {
+      const tbody = document.getElementById('ttr-table-body');
+      tbody.innerHTML = '';
+
+      // Update Phase Column Headers based on Vector Group
+      const conn = getPhaseRatioConnections(vectorGroup, currentWindingView);
+      const thA = document.getElementById('th-phase-a');
+      const thB = document.getElementById('th-phase-b');
+      const thC = document.getElementById('th-phase-c');
+      if (thA) thA.textContent = conn.phA;
+      if (thB) thB.textContent = conn.phB;
+      if (thC) thC.textContent = conn.phC;
+
+      const facRecord = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial, currentSerial));
+
+      const getTapVolt = (facVal, fallbackVal) => {
+        if (facVal && !isNaN(parseFloat(facVal))) {
+          return parseFloat(facVal);
+        }
+        return fallbackVal;
+      };
+
+      const maxHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Max_HV, hvRated * 1000 * 1.05) : (hvRated * 1000 * 1.05);
+      const maxLvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Max_LV, lvRated * 1000) : (lvRated * 1000);
+
+      const cenHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Cen_HV, hvRated * 1000) : (hvRated * 1000);
+      const cenLvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Cen_LV, lvRated * 1000) : (lvRated * 1000);
+
+      const minHvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Min_HV, hvRated * 1000 * 0.95) : (hvRated * 1000 * 0.95);
+      const minLvV = facRecord ? getTapVolt(facRecord.TurnRatio_HL1_Tap_Min_LV, lvRated * 1000) : (lvRated * 1000);
+
+      const maxCalcRatio = calculateTheoreticalRatio(maxHvV / 1000, maxLvV / 1000, vectorGroup, isAuto);
+      const cenCalcRatio = calculateTheoreticalRatio(cenHvV / 1000, cenLvV / 1000, vectorGroup, isAuto);
+      const minCalcRatio = calculateTheoreticalRatio(minHvV / 1000, minLvV / 1000, vectorGroup, isAuto);
+
+      // Define Tap Points (Max, Center/Nominal, Min, and any specific tap records)
+      const taps = [
+        {
+          name: 'Tap Max (+)',
+          hvVolt: maxHvV.toFixed(0),
+          lvVolt: maxLvV.toFixed(0),
+          calcRatio: maxCalcRatio.toFixed(4),
+          h1_ratio: r.H1_tap_max_ratio, h1_err: r.H1_max_err, h1_phd: r.H1_max_phd,
+          h2_ratio: r.H2_tap_max_ratio, h2_err: r.H2_max_err, h2_phd: r.H2_max_phd,
+          h3_ratio: r.H3_tap_max_ratio, h3_err: r.H3_max_err, h3_phd: r.H3_max_phd,
+        },
+        {
+          name: 'Tap Center',
+          hvVolt: cenHvV.toFixed(0),
+          lvVolt: cenLvV.toFixed(0),
+          calcRatio: cenCalcRatio.toFixed(4),
+          h1_ratio: r.H1_tap_cen_ratio, h1_err: r.H1_cen_err, h1_phd: r.H1_cen_phd,
+          h2_ratio: r.H2_tap_cen_ratio, h2_err: r.H2_cen_err, h2_phd: r.H2_cen_phd,
+          h3_ratio: r.H3_tap_cen_ratio, h3_err: r.H3_cen_err, h3_phd: r.H3_cen_phd,
+        },
+        {
+          name: 'Tap Min (-)',
+          hvVolt: minHvV.toFixed(0),
+          lvVolt: minLvV.toFixed(0),
+          calcRatio: minCalcRatio.toFixed(4),
+          h1_ratio: r.H1_tap_min_ratio, h1_err: r.H1_min_err, h1_phd: r.H1_min_phd,
+          h2_ratio: r.H2_tap_min_ratio, h2_err: r.H2_min_err, h2_phd: r.H2_min_phd,
+          h3_ratio: r.H3_tap_min_ratio, h3_err: r.H3_min_err, h3_phd: r.H3_min_phd,
+        }
+      ];
+
+      // Add discrete Service Tap if available (H1_tap_N1)
+      if (r.H1_tap_N1 && r.H1_ratio1) {
+        taps.push({
+          name: `Tap ${r.H1_tap_N1} (Service)`,
+          hvVolt: (hvRated * 1000).toFixed(0),
+          lvVolt: (lvRated * 1000).toFixed(0),
+          calcRatio: r.H1_tap_rate_N1 || baseCalcRatio.toFixed(4),
+          h1_ratio: r.H1_ratio1, h1_err: r.H1_err1, h1_phd: r.H1_phd1,
+          h2_ratio: r.H2_ratio1, h2_err: r.H2_err1, h2_phd: r.H2_phd1,
+          h3_ratio: r.H3_ratio1, h3_err: r.H3_err1, h3_phd: r.H3_phd1,
+        });
+      }
+
+      let fleetMaxErr = 0;
+      let fleetMaxDev = 0;
+      let fleetMaxPhd = 0;
+
+      const chartTapLabels = [];
+      const chartErrPhA = [];
+      const chartErrPhB = [];
+      const chartErrPhC = [];
+      const chartMeasRatio = [];
+      const chartCalcRatio = [];
+
+      taps.forEach(t => {
+        const errs = [parseFloat(t.h1_err), parseFloat(t.h2_err), parseFloat(t.h3_err)].filter(x => !isNaN(x));
+        const ratios = [parseFloat(t.h1_ratio), parseFloat(t.h2_ratio), parseFloat(t.h3_ratio)].filter(x => !isNaN(x));
+        const phds = [parseFloat(t.h1_phd), parseFloat(t.h2_phd), parseFloat(t.h3_phd)].filter(x => !isNaN(x));
+
+        let maxErr = errs.length > 0 ? Math.max(...errs.map(Math.abs)) : null;
+        let phDev = null;
+        if (ratios.length === 3) {
+          const maxR = Math.max(...ratios);
+          const minR = Math.min(...ratios);
+          if (minR > 0) phDev = ((maxR - minR) / minR) * 100;
+        }
+
+        if (maxErr !== null && maxErr > fleetMaxErr) fleetMaxErr = maxErr;
+        if (phDev !== null && phDev > fleetMaxDev) fleetMaxDev = phDev;
+        if (phds.length > 0) {
+          const mPhd = Math.max(...phds.map(Math.abs));
+          if (mPhd > fleetMaxPhd) fleetMaxPhd = mPhd;
+        }
+
+        // Add to charts data
+        if (errs.length > 0 || ratios.length > 0) {
+          chartTapLabels.push(t.name);
+          chartErrPhA.push(!isNaN(parseFloat(t.h1_err)) ? parseFloat(t.h1_err) : 0);
+          chartErrPhB.push(!isNaN(parseFloat(t.h2_err)) ? parseFloat(t.h2_err) : 0);
+          chartErrPhC.push(!isNaN(parseFloat(t.h3_err)) ? parseFloat(t.h3_err) : 0);
+
+          const avgMeas = ratios.length > 0 ? (ratios.reduce((a, b) => a + b, 0) / ratios.length) : parseFloat(t.calcRatio);
+          chartMeasRatio.push(avgMeas);
+          chartCalcRatio.push(parseFloat(t.calcRatio));
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="tap-col">${t.name}</td>
+          <td>${t.hvVolt}</td>
+          <td>${t.lvVolt}</td>
+          <td class="bold-val">${t.calcRatio}</td>
+          <td>${formatVal(t.h1_ratio)}</td>
+          <td>${formatErr(t.h1_err)}</td>
+          <td>${formatVal(t.h1_phd, 2)}&deg;</td>
+          <td>${formatVal(t.h2_ratio)}</td>
+          <td>${formatErr(t.h2_err)}</td>
+          <td>${formatVal(t.h2_phd, 2)}&deg;</td>
+          <td>${formatVal(t.h3_ratio)}</td>
+          <td>${formatErr(t.h3_err)}</td>
+          <td>${formatVal(t.h3_phd, 2)}&deg;</td>
+          <td style="font-weight: 700;">${maxErr !== null ? `${maxErr.toFixed(2)}%` : '-'}</td>
+          <td>${phDev !== null ? `${phDev.toFixed(2)}%` : '-'}</td>
+          <td>${maxErr !== null ? getErrorBadge(maxErr) : '<span class="status-badge status-na">N/A</span>'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Update KPI Header Values
+      if (r.MAXERR && !isNaN(parseFloat(r.MAXERR))) {
+        fleetMaxErr = parseFloat(r.MAXERR);
+      }
+      if (r.MAXDEV && !isNaN(parseFloat(r.MAXDEV))) {
+        fleetMaxDev = parseFloat(r.MAXDEV);
+      }
+
+      document.getElementById('kpi-max-error').textContent = `${fleetMaxErr.toFixed(2)}%`;
+      document.getElementById('kpi-max-dev').textContent = `${fleetMaxDev.toFixed(2)}%`;
+      document.getElementById('kpi-max-phd').textContent = `${fleetMaxPhd.toFixed(2)}°`;
+
+      const kpiStatus = document.getElementById('kpi-overall-status');
+      const kpiScore = document.getElementById('kpi-overall-score');
+      if (fleetMaxErr <= 0.50) {
+        kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
+        kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
+      } else if (fleetMaxErr <= 1.00) {
+        kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
+        kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
+      } else {
+        kpiStatus.innerHTML = '<span class="status-badge status-fail">ACTION REQUIRED</span>';
+        kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
+      }
+
+      // Render Charts
+      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio);
+    }
+
+    function renderCharts(labels, phA, phB, phC, measRatio, calcRatio) {
+      // Custom Plugin to draw +-0.50% Limit Lines & Acceptable Tolerance Band
+      const ratioLimitLinesPlugin = {
+        id: 'ratioLimitLines',
+        beforeDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+
+          // 1. Shaded Acceptable Band (-0.5% to +0.5%)
+          const yTopLimit = y.getPixelForValue(0.50);
+          const yBotLimit = y.getPixelForValue(-0.50);
+          if (yTopLimit !== undefined && yBotLimit !== undefined) {
+            const bandTop = Math.max(top, Math.min(yTopLimit, yBotLimit));
+            const bandHeight = Math.abs(yBotLimit - yTopLimit);
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.04)'; // Light green tint
+            ctx.fillRect(left, bandTop, width, bandHeight);
+          }
+          ctx.restore();
+        },
+        afterDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left, width, height }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+
+          const drawLimit = (val, label, color, isDashed = true) => {
+            const yPos = y.getPixelForValue(val);
+            if (yPos >= top && yPos <= bottom) {
+              ctx.beginPath();
+              if (isDashed) {
+                ctx.setLineDash([5, 4]);
+              } else {
+                ctx.setLineDash([]);
+              }
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 1.5;
+              ctx.moveTo(left, yPos);
+              ctx.lineTo(right, yPos);
+              ctx.stroke();
+
+              // Draw Label Box / Text
+              ctx.setLineDash([]);
+              ctx.fillStyle = color;
+              ctx.font = 'bold 8.5px Inter, sans-serif';
+              ctx.textAlign = 'right';
+              ctx.fillText(label, right - 6, yPos - 3);
+            }
+          };
+
+          // Upper Limit +0.50%
+          drawLimit(0.50, '+0.50% Limit (IEEE)', '#dc2626', true);
+
+          // Lower Limit -0.50%
+          drawLimit(-0.50, '-0.50% Limit (IEEE)', '#dc2626', true);
+
+          // Center Baseline 0.00%
+          drawLimit(0, '', 'rgba(148, 163, 184, 0.5)', false);
+
+          ctx.restore();
+        }
+      };
+
+      // 1. Ratio Error Chart
+      const ctx1 = document.getElementById('ratioErrorChart').getContext('2d');
+      if (ratioErrorChartInstance) ratioErrorChartInstance.destroy();
+
+      ratioErrorChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        plugins: [ratioLimitLinesPlugin],
+        data: {
+          labels: labels.length > 0 ? labels : ['Tap Max', 'Tap Center', 'Tap Min'],
+          datasets: [
+            {
+              label: 'Phase A Error (%)',
+              data: phA.length > 0 ? phA : [0.12, 0.08, 0.15],
+              backgroundColor: 'rgba(59, 130, 246, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              barPercentage: 0.7,
+              categoryPercentage: 0.6
+            },
+            {
+              label: 'Phase B Error (%)',
+              data: phB.length > 0 ? phB : [0.10, 0.09, 0.14],
+              backgroundColor: 'rgba(234, 179, 8, 0.85)',
+              borderColor: '#ca8a04',
+              borderWidth: 1,
+              barPercentage: 0.7,
+              categoryPercentage: 0.6
+            },
+            {
+              label: 'Phase C Error (%)',
+              data: phC.length > 0 ? phC : [0.11, 0.07, 0.16],
+              backgroundColor: 'rgba(239, 68, 68, 0.85)',
+              borderColor: '#dc2626',
+              borderWidth: 1,
+              barPercentage: 0.7,
+              categoryPercentage: 0.6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 6,
+              bottom: 26,
+              left: 4,
+              right: 8
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '% Ratio Error', font: { size: 9 } },
+              ticks: { font: { size: 8 } },
+              suggestedMin: -0.65,
+              suggestedMax: 0.65
+            },
+            x: {
+              ticks: {
+                font: { size: 7.5, weight: '600' },
+                padding: 4,
+                maxRotation: 0,
+                autoSkip: false
+              }
+            }
+          }
+        }
+      });
+
+      // 2. Ratio Profile Chart (Line / Bar)
+      const ctx2 = document.getElementById('ratioProfileChart').getContext('2d');
+      if (ratioProfileChartInstance) ratioProfileChartInstance.destroy();
+
+      ratioProfileChartInstance = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: labels.length > 0 ? labels : ['Tap Max', 'Tap Center', 'Tap Min'],
+          datasets: [
+            {
+              label: 'Measured Ratio (Avg)',
+              data: measRatio.length > 0 ? measRatio : [9.05, 9.03, 8.13],
+              borderColor: '#4f46e5',
+              backgroundColor: 'rgba(79, 70, 229, 0.12)',
+              borderWidth: 2,
+              tension: 0.15,
+              fill: false,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointBackgroundColor: '#4f46e5',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 1.5
+            },
+            {
+              label: 'Calculated Nameplate Ratio',
+              data: calcRatio.length > 0 ? calcRatio : [9.04, 9.03, 8.12],
+              borderColor: '#dc2626',
+              backgroundColor: 'rgba(220, 38, 38, 0.05)',
+              borderDash: [5, 4],
+              borderWidth: 1.8,
+              tension: 0.15,
+              fill: false,
+              pointRadius: 4.5,
+              pointHoverRadius: 6,
+              pointStyle: 'rectRot',
+              pointBackgroundColor: '#dc2626',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 1.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 6,
+              bottom: 26,
+              left: 4,
+              right: 8
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 9 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  const m = measRatio[idx];
+                  const c = calcRatio[idx];
+                  if (ctx.datasetIndex === 0) {
+                    const diff = (c && c > 0 && m !== undefined) ? (((m - c) / c) * 100).toFixed(2) : '0.00';
+                    const sign = parseFloat(diff) > 0 ? '+' : '';
+                    return `Measured: ${m !== undefined ? m.toFixed(4) : '-'} (Err: ${sign}${diff}%)`;
+                  } else {
+                    return `Calculated: ${c !== undefined ? c.toFixed(4) : '-'}`;
+                  }
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: 'Voltage Ratio', font: { size: 9 } },
+              ticks: { font: { size: 8 } }
+            },
+            x: {
+              ticks: {
+                font: { size: 7.5, weight: '600' },
+                padding: 4,
+                maxRotation: 0,
+                autoSkip: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function switchWindingView(mode) {
+      currentWindingView = mode;
+      document.querySelectorAll('.winding-tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (window.event && window.event.target) window.event.target.classList.add('active');
+
+      const titleEl = document.getElementById('ratio-table-title');
+      if (mode === 'HL') {
+        titleEl.textContent = '4. Voltage Ratio & Ratio Error Measurements (Primary - Secondary: HV - LV)';
+      } else if (mode === 'HT') {
+        titleEl.textContent = '4. Voltage Ratio & Ratio Error Measurements (Primary - Tertiary: HV - TV)';
+      } else if (mode === 'LT') {
+        titleEl.textContent = '4. Voltage Ratio & Ratio Error Measurements (Secondary - Tertiary: LV - TV)';
+      }
+
+      if (currentRecord) {
+        renderRatioReport(currentRecord);
+      }
+    }
+
+    // Toggle Dark / Light Theme
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('tr-dashboard-theme', target);
+      updateThemeIcon(target);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (!icon) return;
+      if (theme === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+      } else {
+        icon.className = 'fa-solid fa-moon';
+      }
+    }
+
+    // Capture JPG Image of report
+    function captureReportJPG() {
+      const element = document.getElementById('report-content');
+      if (!element) return;
+
+      const serial = currentSerial || 'Transformer';
+      html2canvas(element, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `GPSC_Ratio_Report_${serial}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      }).catch(err => {
+        console.error("Capture failed:", err);
+      });
+    }
+  </script>
+</body>
+</html>

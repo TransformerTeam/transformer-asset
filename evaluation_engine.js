@@ -86,36 +86,36 @@ function buildPtStructure(item) {
   const hvWindingSub = {
     sub: 'HV Winding', full: 100, subWeight: (isAuto ? 40 : (is3Winding ? 30 : 45)),
     methods: [
-      { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-      { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-      { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
-      { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '2024-06-22', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-      { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-      { name: 'Power Factor', subText: hvPfSubText, defaultDate: '2024-06-20', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
-      { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 10, mWorst: '-' },
-      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 10, mWorst: '-' }
+      { name: 'Exciting Current', subText: 'IEEE C57.152 / CIGRE TB 761', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+      { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+      { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '-', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
+      { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+      { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+      { name: 'Power Factor', subText: hvPfSubText, defaultDate: '-', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
+      { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' }
     ]
   };
 
   const lvWindingSub = {
     sub: 'LV Winding', full: 100, subWeight: (isAuto ? 10 : (is3Winding ? 30 : 45)),
     methods: isAuto ? [
-      { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 100, mWorst: 100 }
+      { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
     ] : [
-      { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
-      { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
-      { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 3, mWorst: '20' },
-      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 20, mWorst: '-' }
+      { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+      { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '-', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
+      { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 5, maxScore: 3, mWorst: '20' },
+      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 20, mWorst: '-' }
     ]
   };
 
   const tvWindingSub = {
     sub: 'TV Winding', full: 100, subWeight: (isAuto ? 40 : 30),
     methods: [
-      { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '2024-06-20', mWeight: 5, maxScore: 5, mWorst: '25' },
-      { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '2024-06-20', mWeight: 4, maxScore: 25, mWorst: '-' },
-      { name: 'Capacitance (%Error from FAT/Oldest)', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '2024-06-20', mWeight: 3, maxScore: 25, mWorst: '-' },
-      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '2025-06-03', mWeight: 3, maxScore: 25, mWorst: '-' }
+      { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '25' },
+      { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '-', mWeight: 4, maxScore: 25, mWorst: '-' },
+      { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 3, maxScore: 25, mWorst: '-' },
+      { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 25, mWorst: '-' }
     ]
   };
 
@@ -123,7 +123,7 @@ function buildPtStructure(item) {
     {
       sub: 'Magnetic Core', full: 100, subWeight: 10,
       methods: [
-        { name: 'Insulation Resistance (MOhm)', defaultDate: '2025-06-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+        { name: 'Insulation Resistance (MOhm)', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
       ]
     },
     hvWindingSub,
@@ -141,7 +141,7 @@ function buildPtStructure(item) {
         {
           sub: 'Overall Inspection', full: 100, subWeight: 100,
           methods: [
-            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         }
       ]
@@ -159,7 +159,7 @@ function buildPtStructure(item) {
             { 
               name: 'Dissolve Gas Analysis (DGA)', 
               subText: dgaSubText, 
-              defaultDate: '2025-09-15', 
+              defaultDate: '-', 
               mWeight: 5, 
               maxScore: 100, 
               mWorst: '-' 
@@ -169,25 +169,25 @@ function buildPtStructure(item) {
         {
           sub: 'Dielectric Breakdown & Water Content', full: 100, subWeight: 25, weight: 5,
           methods: [
-            { name: 'Dielectric Breakdown', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Water Content', defaultDate: '2025-09-15', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Dielectric Breakdown', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Water Content', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Oil Properties, Paper Aging, Corrosive Sulfur', full: 100, subWeight: 50, weight: 10,
           methods: [
-            { name: 'Power Factor at 25 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Power Factor at 100 °C', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'IFT', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Acidity', defaultDate: '2025-09-15', mWeight: 3, maxScore: 10, mWorst: '-' },
-            { name: 'Oil Conductivity', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
-            { name: 'Color Number', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
-            { name: 'Inhibitor', defaultDate: '2025-09-15', mWeight: 2, maxScore: 5, mWorst: '-' },
-            { name: 'Furan [2-FAL]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
-            { name: 'Estimated DP [Furan]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 15, mWorst: '-' },
-            { name: 'Sludge condition', defaultDate: '2025-09-15', mWeight: 3, maxScore: 5, mWorst: '-' },
-            { name: 'Corrosive Sulfur', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' },
-            { name: 'Passivator [Irgamet 39]', defaultDate: '2025-09-15', mWeight: 5, maxScore: 5, mWorst: '-' }
+            { name: 'Power Factor at 25 °C', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Power Factor at 100 °C', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'IFT', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Acidity', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
+            { name: 'Oil Conductivity', defaultDate: '-', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Color Number', defaultDate: '-', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Inhibitor', defaultDate: '-', mWeight: 2, maxScore: 5, mWorst: '-' },
+            { name: 'Furan [2-FAL]', defaultDate: '-', mWeight: 5, maxScore: 15, mWorst: '-' },
+            { name: 'Estimated DP [Furan]', defaultDate: '-', mWeight: 5, maxScore: 15, mWorst: '-' },
+            { name: 'Sludge condition', defaultDate: '-', mWeight: 3, maxScore: 5, mWorst: '-' },
+            { name: 'Corrosive Sulfur', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '-' },
+            { name: 'Passivator [Irgamet 39]', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '-' }
           ]
         }
       ]
@@ -198,14 +198,14 @@ function buildPtStructure(item) {
         {
           sub: 'OLTC Inspection', full: 100, subWeight: 100,
           methods: [
-            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
         {
           sub: 'OLTC Oil', full: 100, subWeight: 100,
           methods: [
-            { name: 'Breakdown Voltage (kV)', defaultDate: '2025-09-15', mWeight: 4, maxScore: 23.5294, mWorst: '-' },
-            { name: 'Water Content (ppm)', defaultDate: '2025-09-15', mWeight: 5, maxScore: 29.4118, mWorst: '-' }
+            { name: 'Breakdown Voltage (kV)', defaultDate: '-', mWeight: 4, maxScore: 23.5294, mWorst: '-' },
+            { name: 'Water Content (ppm)', defaultDate: '-', mWeight: 5, maxScore: 29.4118, mWorst: '-' }
           ]
         }
       ]
@@ -216,28 +216,28 @@ function buildPtStructure(item) {
         {
           sub: 'Bushing Inspection', full: 100, subWeight: 100,
           methods: [
-            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
         {
           sub: 'Phase A', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase B', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase C', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         }
       ]
@@ -248,28 +248,28 @@ function buildPtStructure(item) {
         {
           sub: 'Arrester Inspection', full: 100, subWeight: 100,
           methods: [
-            { name: 'Visual Inspection', defaultDate: '2026-04-03', mWeight: 5, maxScore: 100, mWorst: 100 }
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
           ]
         },
         {
           sub: 'Phase A', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase B', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase C', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '2024-06-20', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         }
       ]
@@ -440,10 +440,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const h2 = parseFloat(latestExciting.H2CENTER || latestExciting.H2MAX || latestExciting.H2MIN);
       const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
 
-      let score = 5;
-      let patternName = 'H-L-H';
-
       if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
+        let patternName = 'H-L-H';
         if (h1 > h2 && h3 > h2) {
           patternName = 'H-L-H';
         } else if (h2 > h1 && h2 > h3) {
@@ -457,6 +455,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         }
 
         const outerDiff = (Math.abs(h1 - h3) / Math.max(h1, h3)) * 100;
+        let score = 5;
         if (outerDiff <= 5.0 && (h2 <= h1 && h2 <= h3)) {
           score = 5;
         } else if (outerDiff <= 10.0 && (h2 <= h1 && h2 <= h3)) {
@@ -468,18 +467,15 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         } else {
           score = 1;
         }
+
+        const valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA<br>Pattern: ${patternName}`;
+        let recStr = '-';
+        if (score === 3) recStr = 'Core demagnetization recommended (IEEE C57.152 / CIGRE TB 761)';
+        else if (score === 2) recStr = 'Check core grounding & perform FRA (IEEE C57.152 / CIGRE TB 761)';
+        else if (score === 1) recStr = 'Investigate turn short / core damage immediately (IEEE C57.152 / CIGRE TB 761)';
+
+        return { value: valStr, testDate: date, ratingScore: score, recommendation: recStr };
       }
-
-      let valStr = (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0) ?
-        `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA<br>Pattern: ${patternName}` :
-        `Pattern Normal<br>Pattern: ${patternName}`;
-
-      let recStr = '-';
-      if (score === 3) recStr = 'Core demagnetization recommended (IEEE C57.152 / CIGRE TB 761)';
-      else if (score === 2) recStr = 'Check core grounding & perform FRA (IEEE C57.152 / CIGRE TB 761)';
-      else if (score === 1) recStr = 'Investigate turn short / core damage immediately (IEEE C57.152 / CIGRE TB 761)';
-
-      return { value: valStr, testDate: date, ratingScore: score, recommendation: recStr };
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
@@ -503,15 +499,19 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (parts.length === 0) {
         if (!isNaN(tap1Dev)) {
           parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
-        } else if (latestSingleShort.Single_Phase_Result && latestSingleShort.Single_Phase_Result !== '-') {
+        } else if (latestSingleShort.Single_Phase_Result && latestSingleShort.Single_Phase_Result !== '-' && !isNaN(parseFloat(latestSingleShort.Single_Phase_Result))) {
           const resNum = parseFloat(latestSingleShort.Single_Phase_Result);
-          parts.push(`%Dev: ${isNaN(resNum) ? latestSingleShort.Single_Phase_Result : resNum.toFixed(2)}%`);
+          parts.push(`%Dev: ${resNum.toFixed(2)}%`);
         }
       }
 
-      const val = parts.join(', ') || '%Dev: 0.5%';
       const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestSingleShort.Single_Phase_Result)].filter(v => !isNaN(v));
-      const worstDev = validDevs.length > 0 ? Math.max(...validDevs.map(Math.abs)) : 0.5;
+      if (parts.length === 0 || validDevs.length === 0) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      const val = parts.join(', ');
+      const worstDev = Math.max(...validDevs.map(Math.abs));
       const score = worstDev <= 3.0 ? 5 : (worstDev <= 5.0 ? 3 : 1);
       return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 1-phase winding impedance (IEEE C57.152)' };
     }
@@ -537,15 +537,19 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (parts.length === 0) {
         if (!isNaN(tap1Dev)) {
           parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
-        } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-') {
+        } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-' && !isNaN(parseFloat(latestThreeShort.Short_Circuit_Impedance_Result))) {
           const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
-          parts.push(`%Dev: ${isNaN(resNum) ? latestThreeShort.Short_Circuit_Impedance_Result : resNum.toFixed(2)}%`);
+          parts.push(`%Dev: ${resNum.toFixed(2)}%`);
         }
       }
 
-      const val = parts.join(', ') || '%Dev: 0.5%';
       const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
-      const worstDev = validDevs.length > 0 ? Math.max(...validDevs.map(Math.abs)) : 0.5;
+      if (parts.length === 0 || validDevs.length === 0) {
+        return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+      }
+
+      const val = parts.join(', ');
+      const worstDev = Math.max(...validDevs.map(Math.abs));
       const score = worstDev <= 3.0 ? 5 : (worstDev <= 5.0 ? 3 : 1);
       return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Inspect 3-phase impedance (IEEE C57.152)' };
     }
@@ -557,11 +561,87 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestRatio = (typeof ratioCsvData !== 'undefined') ? findLatestRecord(ratioCsvData, serialVal) : null;
     if (latestRatio) {
       const date = latestRatio.date || latestRatio.Date;
-      const err = latestRatio.MAXERR || latestRatio.H1_cen_err || latestRatio.Turn_Ratio_Result || '0.05';
-      const numErr = Math.abs(parseFloat(err));
-      const val = `%Dev: ${isNaN(numErr) ? err : numErr.toFixed(2)}%`;
-      const score = isNaN(numErr) ? 5 : (numErr <= 0.5 ? 5 : (numErr <= 1.0 ? 3 : 1));
-      return { value: val, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check turn ratio / tap changer (IEEE C57.152)' };
+
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+      const noWinding = parseInt(item.NO_WINDING || (trInfoItem && trInfoItem.NO_WINDING) || item.noWinding || '2', 10);
+      const tvRated = parseFloat(item.LV2_RATED || (trInfoItem && trInfoItem.LV2_RATED) || '0');
+      const vectorGroup = String(item.VECTOR_GROUP || (trInfoItem && trInfoItem.VECTOR_GROUP) || item.vectorGroup || '').toUpperCase();
+      const isAuto = vectorGroup.includes('AUTO') || vectorGroup.includes('NA0') || vectorGroup.includes('YNA');
+      const is3W = !isAuto && (noWinding === 3 || tvRated > 0 || /\([a-z0-9]+\)/i.test(vectorGroup) || /(d11d11|d11d1|yn0d|yn0y|yn11d)/i.test(vectorGroup));
+
+      const getPhaseMaxErr = (...vals) => {
+        const valid = vals.map(v => parseFloat(v)).filter(v => !isNaN(v));
+        if (valid.length === 0) return null;
+        return Math.max(...valid.map(Math.abs));
+      };
+
+      const maxErrMax = getPhaseMaxErr(latestRatio.H1_max_err, latestRatio.H2_max_err, latestRatio.H3_max_err);
+      const maxErrCen = getPhaseMaxErr(latestRatio.H1_cen_err, latestRatio.H2_cen_err, latestRatio.H3_cen_err);
+      const maxErrMin = getPhaseMaxErr(latestRatio.H1_min_err, latestRatio.H2_min_err, latestRatio.H3_min_err);
+
+      // For 3-winding TV tap data (from H1_err1, H2_err1, H3_err1 when H-Y service tap is present)
+      const isHyValid = latestRatio.H1_ratio1 && latestRatio.H1_ratio1 !== '-' && !isNaN(parseFloat(latestRatio.H1_ratio1)) && parseFloat(latestRatio.H1_ratio1) > 0;
+      const hasHyData = isHyValid && latestRatio.H1_tap_N1 && latestRatio.H1_tap_N1 !== '-';
+      const maxErrTv = hasHyData ? getPhaseMaxErr(latestRatio.H1_err1, latestRatio.H2_err1, latestRatio.H3_err1) : getPhaseMaxErr(latestRatio.HT_H1_cen_err, latestRatio.HT_H2_cen_err, latestRatio.HT_H3_cen_err);
+
+      // Overall worst error across all tested points
+      let allTestedErrs = [maxErrMax, maxErrCen, maxErrMin, maxErrTv].filter(x => x !== null);
+      if (allTestedErrs.length === 0 && latestRatio.MAXERR && !isNaN(parseFloat(latestRatio.MAXERR))) {
+        allTestedErrs.push(Math.abs(parseFloat(latestRatio.MAXERR)));
+      }
+
+      if (allTestedErrs.length > 0) {
+        const worstErr = Math.max(...allTestedErrs);
+        const score = worstErr <= 0.50 ? 5 : (worstErr <= 1.00 ? 3 : 1);
+        let val = '';
+
+        if (is3W) {
+          // 3-Winding: Separate into HV:LV and HV:TV
+          let hvLvParts = [];
+          if (maxErrMax !== null) hvLvParts.push(`Max: ${maxErrMax.toFixed(2)}%`);
+          if (maxErrCen !== null) hvLvParts.push(`Cen: ${maxErrCen.toFixed(2)}%`);
+          if (maxErrMin !== null) hvLvParts.push(`Min: ${maxErrMin.toFixed(2)}%`);
+          if (hvLvParts.length === 0 && maxErrCen === null && worstErr !== null) {
+            hvLvParts.push(`Cen: ${worstErr.toFixed(2)}%`);
+          }
+
+          let hvTvParts = [];
+          if (maxErrTv !== null) {
+            hvTvParts.push(`Cen: ${maxErrTv.toFixed(2)}%`);
+          }
+
+          const hvLvStr = `HV:LV (${hvLvParts.join(', ')})`;
+          const hvTvStr = hvTvParts.length > 0 ? `HV:TV (${hvTvParts.join(', ')})` : 'HV:TV (Cen: -)';
+          val = `${hvLvStr}<br>${hvTvStr}`;
+        } else {
+          // 2-Winding / Auto Transformer: Show all tested Taps
+          let tapParts = [];
+          if (maxErrMax !== null) tapParts.push(`Max: ${maxErrMax.toFixed(2)}%`);
+          if (maxErrCen !== null) tapParts.push(`Cen: ${maxErrCen.toFixed(2)}%`);
+          if (maxErrMin !== null) tapParts.push(`Min: ${maxErrMin.toFixed(2)}%`);
+
+          // Check if discrete service tap exists (e.g. Tap 1)
+          if (latestRatio.H1_tap_N1 && latestRatio.H1_tap_N1 !== '-' && latestRatio.H1_ratio1 && latestRatio.H1_ratio1 !== '-') {
+            const sErr = getPhaseMaxErr(latestRatio.H1_err1, latestRatio.H2_err1, latestRatio.H3_err1);
+            if (sErr !== null) {
+              tapParts.push(`Tap ${latestRatio.H1_tap_N1}: ${sErr.toFixed(2)}%`);
+            }
+          }
+
+          if (tapParts.length > 0) {
+            val = `Tap (${tapParts.join(', ')})`;
+          } else {
+            val = `%Dev: ${worstErr.toFixed(2)}%`;
+          }
+        }
+
+        return {
+          value: val,
+          testDate: date,
+          ratingScore: score,
+          recommendation: score >= 4 ? '-' : 'Check turn ratio / tap changer (IEEE C57.152: %Dev ≤ 0.5%)'
+        };
+      }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
@@ -1099,7 +1179,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         rawPi = getValidVal('T_PI', 't_pi', 'TV_PI');
       } else {
         windingKey = 'HV';
-        rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI', 'L_PI', 'l_pi', 'T_PI');
+        rawPi = getValidVal('H_PI', 'h_pi', 'HV_PI');
       }
 
       if (commentUpper.includes(windingKey)) {
@@ -1113,17 +1193,25 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       else if (windingKey === 'LV' && (commentUpper.includes('LV CANNOT TEST') || commentUpper.includes('LV ไม่สามารถ'))) isCannotTest = true;
       else if (windingKey === 'TV' && (commentUpper.includes('NO TERTIARY') || commentUpper.includes('TV CANNOT TEST') || commentUpper.includes('TV ไม่สามารถ'))) isCannotTest = true;
 
-      // Fallback calculation from 10m/1m resistance if explicit PI not given
+      // Fallback calculation from 10m/1m resistance if explicit PI not given for the target winding
       if (!rawPi && !isCannotTest) {
-        const h10 = parseFloat(latestPi.H_10);
-        const h1 = parseFloat(latestPi.H_1);
-        if (!isNaN(h10) && !isNaN(h1) && h1 > 0) {
-          rawPi = (h10 / h1).toFixed(4);
-        } else {
+        if (windingKey === 'HV') {
+          const h10 = parseFloat(latestPi.H_10);
+          const h1 = parseFloat(latestPi.H_1);
+          if (!isNaN(h10) && !isNaN(h1) && h1 > 0) {
+            rawPi = (h10 / h1).toFixed(4);
+          }
+        } else if (windingKey === 'LV') {
           const l10 = parseFloat(latestPi.L_10);
           const l1 = parseFloat(latestPi.L_1);
           if (!isNaN(l10) && !isNaN(l1) && l1 > 0) {
             rawPi = (l10 / l1).toFixed(4);
+          }
+        } else if (windingKey === 'TV') {
+          const t10 = parseFloat(latestPi.T_10);
+          const t1 = parseFloat(latestPi.T_1);
+          if (!isNaN(t10) && !isNaN(t1) && t1 > 0) {
+            rawPi = (t10 / t1).toFixed(4);
           }
         }
       }
@@ -1402,21 +1490,107 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   }
 
   // 12. Bushing (BushingPFData.csv)
-  if (ptLower.includes('bushing') || nameLower.includes('bushing')) {
+  if (ptLower.includes('bushing') || subLower.includes('bushing') || nameLower.includes('bushing')) {
     const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, serialVal) : null;
     if (latestBush) {
       const date = latestBush.Date || latestBush.date;
-      return { value: '%PF C1: 0.32%, Cap C1: 345 pF', testDate: date, ratingScore: 4, recommendation: '-' };
+      
+      let pfKey = 'bushing_h1_pf_20c';
+      let altPfKey = 'bushing_h1_pf_tan';
+      let capKey = 'bushing_h1_c1';
+      let chgKey = 'maxbch1_change';
+      let phaseLabel = 'H1';
+
+      if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
+        pfKey = 'bushing_h2_pf_20c';
+        altPfKey = 'bushing_h2_pf_tan';
+        capKey = 'bushing_h2_c1';
+        chgKey = 'maxbch2_change';
+        phaseLabel = 'H2';
+      } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
+        pfKey = 'bushing_h3_pf_20c';
+        altPfKey = 'bushing_h3_pf_tan';
+        capKey = 'bushing_h3_c1';
+        chgKey = 'maxbch3_change';
+        phaseLabel = 'H3';
+      }
+
+      if (nameLower.includes('power factor') || nameLower.includes('pf')) {
+        const rawPf = latestBush[pfKey] !== undefined && latestBush[pfKey] !== '-' ? latestBush[pfKey] : latestBush[altPfKey];
+        if (rawPf !== undefined && rawPf !== null && rawPf !== '-' && rawPf !== 'N/A' && String(rawPf).trim() !== '') {
+          const pfNum = parseFloat(rawPf);
+          if (!isNaN(pfNum) && pfNum > 0) {
+            const score = pfNum <= 0.5 ? 5 : (pfNum <= 0.7 ? 4 : (pfNum <= 1.0 ? 3 : (pfNum <= 1.5 ? 2 : 1)));
+            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Bushing Power Factor (IEEE C57.152: Normal ≤ 0.5%)`;
+            return { value: `${pfNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
+          }
+        }
+      } else if (nameLower.includes('capacitance') || nameLower.includes('cap')) {
+        const rawChg = latestBush[chgKey];
+        const rawCap = latestBush[capKey];
+        const chgNum = (rawChg !== undefined && rawChg !== null && rawChg !== '-' && rawChg !== 'N/A') ? parseFloat(rawChg) : NaN;
+        const capNum = (rawCap !== undefined && rawCap !== null && rawCap !== '-' && rawCap !== 'N/A') ? parseFloat(rawCap) : NaN;
+
+        if (!isNaN(chgNum)) {
+          const absChg = Math.abs(chgNum);
+          const score = absChg <= 1.0 ? 5 : (absChg <= 3.0 ? 4 : (absChg <= 5.0 ? 3 : (absChg <= 7.0 ? 2 : 1)));
+          const rec = score >= 4 ? '-' : `Check ${phaseLabel} Bushing Capacitance Change (IEEE C57.152: ≤ 5%)`;
+          return { value: `%Dev: ${chgNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
+        } else if (!isNaN(capNum) && capNum > 0) {
+          return { value: `C1: ${capNum.toFixed(1)} pF`, testDate: date, ratingScore: 5, recommendation: '-' };
+        }
+      }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
 
   // 13. Surge Arrester (SurgePFData.csv)
-  if (ptLower.includes('arrester') || nameLower.includes('surge arrester') || nameLower.includes('leakage current') || nameLower.includes('watt loss')) {
+  if (ptLower.includes('arrester') || subLower.includes('arrester') || nameLower.includes('surge') || nameLower.includes('arrester')) {
     const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, serialVal) : null;
     if (latestSurge) {
       const date = latestSurge.Date || latestSurge.date;
-      return { value: 'IR > 1000 MΩ, Current < 0.5 mA', testDate: date, ratingScore: 5, recommendation: '-' };
+
+      let curKey = 'h1_current';
+      let altCurKey = 'maxma1';
+      let wKey = 'h1_watt_loss';
+      let altWKey = 'maxw1';
+      let phaseLabel = 'Phase A';
+
+      if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
+        curKey = 'h2_current';
+        altCurKey = 'maxma2';
+        wKey = 'h2_watt_loss';
+        altWKey = 'maxw2';
+        phaseLabel = 'Phase B';
+      } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
+        curKey = 'h3_current';
+        altCurKey = 'maxma3';
+        wKey = 'h3_watt_loss';
+        altWKey = 'maxw3';
+        phaseLabel = 'Phase C';
+      }
+
+      if (nameLower.includes('leakage current') || nameLower.includes('current')) {
+        const rawCur = latestSurge[curKey] !== undefined && latestSurge[curKey] !== '-' ? latestSurge[curKey] : latestSurge[altCurKey];
+        if (rawCur !== undefined && rawCur !== null && rawCur !== '-' && rawCur !== 'N/A' && String(rawCur).trim() !== '') {
+          const curNum = parseFloat(rawCur);
+          if (!isNaN(curNum) && curNum > 0) {
+            const score = curNum <= 0.5 ? 5 : (curNum <= 1.0 ? 4 : (curNum <= 2.0 ? 3 : 1));
+            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Arrester Leakage Current`;
+            return { value: `${curNum.toFixed(2)} mA`, testDate: date, ratingScore: score, recommendation: rec };
+          }
+        }
+      } else if (nameLower.includes('watt loss') || nameLower.includes('watt')) {
+        const rawW = latestSurge[wKey] !== undefined && latestSurge[wKey] !== '-' ? latestSurge[wKey] : latestSurge[altWKey];
+        if (rawW !== undefined && rawW !== null && rawW !== '-' && rawW !== 'N/A' && String(rawW).trim() !== '') {
+          const wNum = parseFloat(rawW);
+          if (!isNaN(wNum) && wNum > 0) {
+            const score = wNum <= 50 ? 5 : (wNum <= 100 ? 4 : (wNum <= 200 ? 3 : 1));
+            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Arrester Watt Loss`;
+            return { value: `${wNum.toFixed(2)} W`, testDate: date, ratingScore: score, recommendation: rec };
+          }
+        }
+      }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }

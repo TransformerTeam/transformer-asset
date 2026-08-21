@@ -360,6 +360,57 @@
             </table>
           </div>
           
+          <!-- On-Load Tap Changer (OLTC) Information Card -->
+          <div class="excel-card" id="card-oltc-info">
+            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #ffffff; display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fa-solid fa-gears" style="margin-right: 6px;"></i> On-Load Tap Changer (OLTC) Information</span>
+            </div>
+            <table class="excel-table info-table">
+              <tbody>
+                <tr>
+                  <td>OLTC Manufacture</td>
+                  <td id="ex-oltc-mfg">-</td>
+                </tr>
+                <tr>
+                  <td>OLTC Model Type</td>
+                  <td id="ex-oltc-model">-</td>
+                </tr>
+                <tr>
+                  <td>OLTC Model Year</td>
+                  <td id="ex-oltc-year">-</td>
+                </tr>
+                <tr>
+                  <td>OLTC Serial No.</td>
+                  <td id="ex-oltc-serial">-</td>
+                </tr>
+                <tr>
+                  <td>Motor Drive Unit</td>
+                  <td id="ex-oltc-motor">-</td>
+                </tr>
+                <tr>
+                  <td>Counter Operated</td>
+                  <td id="ex-oltc-counter">-</td>
+                </tr>
+                <tr>
+                  <td>Tap Positions</td>
+                  <td id="ex-oltc-taps">-</td>
+                </tr>
+                <tr>
+                  <td>Transition Resistor</td>
+                  <td id="ex-oltc-resistor">-</td>
+                </tr>
+                <tr>
+                  <td>Maintenance Interval</td>
+                  <td id="ex-oltc-maint-spec">-</td>
+                </tr>
+                <tr>
+                  <td>Last Inspection / Next Due</td>
+                  <td id="ex-oltc-schedule">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
           <!-- Recommendation -->
           <div class="excel-card">
             <div class="excel-card-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #38bdf8; display: flex; align-items: center; gap: 6px;">
@@ -684,6 +735,7 @@
   <!-- Data & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js?v=20260810_v3"></script>
+  <script src="oltc_data.js"></script>
   <script src="evaluation_criteria.js"></script>
   <script src="evaluation_engine.js?v=20260816_v1"></script>
   <script src="assessment.js?v=20260816_v1"></script>

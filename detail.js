@@ -514,6 +514,40 @@ function openDetail(no) {
     }
   }
 
+  // Populate OLTC Information Card from OLTC_DATA
+  const oltcMatch = (typeof OLTC_DATA !== 'undefined' && Array.isArray(OLTC_DATA)) ? OLTC_DATA.find(x => {
+    const s1 = String(x.parentSerialNo || '').trim().toLowerCase();
+    const s2 = String(item.serial || item.SERIAL_NUMBER || '').trim().toLowerCase();
+    const kks1 = String(x.kksNo || '').trim().toLowerCase();
+    const kks2 = String(item.name || item.EQUIPMENT_NAME || '').trim().toLowerCase();
+    return (s1 && s2 && (s1 === s2 || s1.includes(s2) || s2.includes(s1))) ||
+           (kks1 && kks2 && (kks1 === kks2 || kks1.includes(kks2) || kks2.includes(kks1)));
+  }) : null;
+
+  if (oltcMatch) {
+    setElTxt('ex-oltc-mfg', oltcMatch.oltcManufacturer || '-');
+    setElTxt('ex-oltc-model', oltcMatch.oltcModelType || '-');
+    setElTxt('ex-oltc-year', oltcMatch.oltcModelYear || '-');
+    setElTxt('ex-oltc-serial', oltcMatch.oltcSerialNo || '-');
+    setElTxt('ex-oltc-motor', oltcMatch.motorDrive || '-');
+    setElTxt('ex-oltc-counter', oltcMatch.counterOperated ? Number(oltcMatch.counterOperated).toLocaleString() : '-');
+    setElTxt('ex-oltc-taps', oltcMatch.tapNo ? `${oltcMatch.tapNo} Taps` : '-');
+    setElTxt('ex-oltc-resistor', oltcMatch.transitionResistorOhm ? `${oltcMatch.transitionResistorOhm} Ω` : '-');
+    setElTxt('ex-oltc-maint-spec', oltcMatch.maintenanceTime || '-');
+    setElTxt('ex-oltc-schedule', (oltcMatch.lastInspection || oltcMatch.nextDue) ? `${oltcMatch.lastInspection || '-'} / ${oltcMatch.nextDue || '-'}` : '-');
+  } else {
+    setElTxt('ex-oltc-mfg', '-');
+    setElTxt('ex-oltc-model', '-');
+    setElTxt('ex-oltc-year', '-');
+    setElTxt('ex-oltc-serial', '-');
+    setElTxt('ex-oltc-motor', '-');
+    setElTxt('ex-oltc-counter', '-');
+    setElTxt('ex-oltc-taps', '-');
+    setElTxt('ex-oltc-resistor', '-');
+    setElTxt('ex-oltc-maint-spec', '-');
+    setElTxt('ex-oltc-schedule', '-');
+  }
+
   // Sync with Evaluation Report Engine
   if (typeof computeHI === 'function') {
     try {
@@ -1106,21 +1140,36 @@ function openDetail(no) {
         <td class="ex-status-good">0.35% (Good)</td>
       </tr>
       <tr>
-        <td>Transformer Turn Ratio</td>
+        <td>
+          Transformer Turn Ratio
+          <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+            <i class="fa-solid fa-file-invoice"></i>
+          </a>
+        </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: <= 0.5% Dev</td>
         ${getIndicatorCell(ap.ratioPolarity)}
         <td class="ex-status-good">< 0.5% Dev</td>
       </tr>
       <tr>
-        <td>Exciting Current</td>
+        <td>
+          Exciting Current
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+            <i class="fa-solid fa-file-invoice"></i>
+          </a>
+        </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>EGAT Vectors</td>
         ${getIndicatorCell(ap.excitingCurrent)}
         <td class="ex-status-good">Normal Pattern</td>
       </tr>
       <tr>
-        <td>Winding Resistance</td>
+        <td>
+          Winding Resistance
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+            <i class="fa-solid fa-file-invoice"></i>
+          </a>
+        </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: <= 5% Dev</td>
         ${getIndicatorCell(ap.windingResistance)}

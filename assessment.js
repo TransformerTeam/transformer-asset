@@ -157,8 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
                        document.getElementById('eval-transformer-select') !== null;
   if (!isStandalone) {
     initAssessment();
+    setupListeners();
   }
-  setupListeners();
 });
 
 // Start CSV fetch immediately
@@ -513,7 +513,10 @@ function setupListeners() {
   }
   
   // Export
-  document.getElementById('btn-export-report').addEventListener('click', exportReport);
+  const btnExportReport = document.getElementById('btn-export-report');
+  if (btnExportReport) {
+    btnExportReport.addEventListener('click', exportReport);
+  }
   
   // Export PPTX
   const btnExportPptx = document.getElementById('btn-export-pptx');
@@ -981,36 +984,54 @@ function plotMapMarkers() {
 }
 
 function renderParamHeatmapChart() {
-  // Count Q and U for each parameter category
+  // Count Critical (C), Warning (W), Monitoring (M) for each parameter category (scores 4 & 5 excluded)
   const paramNames = ['Visual', 'Insul. Resistance', 'Power Factor', 'Exciting Current', 
     'Ratio & Polarity', 'Winding Resist.', 'Short Circuit', 'DGA', 'Water Content',
-    'Dielectric', 'Conductivity', 'IFT', 'PF 100Â°C', 'Corrosive Sulfur'];
+    'Dielectric', 'Conductivity', 'IFT', 'PF 100°C', 'Corrosive Sulfur'];
   
-  const qCounts = new Array(paramNames.length).fill(0);
-  const uCounts = new Array(paramNames.length).fill(0);
+  const cCounts = new Array(paramNames.length).fill(0);
+  const wCounts = new Array(paramNames.length).fill(0);
+  const mCounts = new Array(paramNames.length).fill(0);
   
   filteredAssessment.forEach(item => {
+    const getCategory = (v) => {
+      if (!v || v === 'N/A' || v === '-' || v === 'None') return null;
+      const s = String(v).trim().toUpperCase();
+      if (s === 'C' || s === 'U' || s === 'CRITICAL' || s === 'UNACCEPTABLE' || s === 'POOR' || s === '1') return 'C';
+      if (s === 'W' || s === 'WARNING' || s === '2') return 'W';
+      if (s === 'M' || s === 'Q' || s === 'MONITORING' || s === 'MONITOR' || s === 'QUESTIONABLE' || s === '3') return 'M';
+      // Score 4 and 5 (A / Acceptable / Good / Normal) are NOT included in the graph
+      return null;
+    };
+
+    const sc1 = getCategory(item.activePart.shortCircuit1P);
+    const sc3 = getCategory(item.activePart.shortCircuit3P);
+    let scVal = null;
+    if (sc1 === 'C' || sc3 === 'C') scVal = 'C';
+    else if (sc1 === 'W' || sc3 === 'W') scVal = 'W';
+    else if (sc1 === 'M' || sc3 === 'M') scVal = 'M';
+
     const params = [
-      item.visualInspection,
-      item.activePart.insulationResistance,
-      item.activePart.insulationPowerFactor,
-      item.activePart.excitingCurrent,
-      item.activePart.ratioPolarity,
-      item.activePart.windingResistance,
-      item.activePart.shortCircuit1P === 'U' || item.activePart.shortCircuit3P === 'U' ? 'U' :
-        item.activePart.shortCircuit1P === 'Q' || item.activePart.shortCircuit3P === 'Q' ? 'Q' : 'A',
-      item.mainTankOil.dga,
-      item.mainTankOil.waterContent,
-      item.mainTankOil.dielectricBreakdown,
-      item.mainTankOil.conductivity,
-      item.mainTankOil.ift,
-      item.mainTankOil.pf100,
-      item.mainTankOil.corrosiveSulfur
+      getCategory(item.visualInspection),
+      getCategory(item.activePart.insulationResistance),
+      getCategory(item.activePart.insulationPowerFactor),
+      getCategory(item.activePart.excitingCurrent),
+      getCategory(item.activePart.ratioPolarity),
+      getCategory(item.activePart.windingResistance),
+      scVal,
+      getCategory(item.mainTankOil.dga),
+      getCategory(item.mainTankOil.waterContent),
+      getCategory(item.mainTankOil.dielectricBreakdown),
+      getCategory(item.mainTankOil.conductivity),
+      getCategory(item.mainTankOil.ift),
+      getCategory(item.mainTankOil.pf100),
+      getCategory(item.mainTankOil.corrosiveSulfur)
     ];
     
-    params.forEach((v, i) => {
-      if (v === 'Q') qCounts[i]++;
-      if (v === 'U') uCounts[i]++;
+    params.forEach((cat, i) => {
+      if (cat === 'C') cCounts[i]++;
+      else if (cat === 'W') wCounts[i]++;
+      else if (cat === 'M') mCounts[i]++;
     });
   });
   
@@ -1019,12 +1040,13 @@ function renderParamHeatmapChart() {
   // Prepare data for sorting
   const dataList = paramNames.map((name, i) => ({
     name: name,
-    u: uCounts[i],
-    q: qCounts[i],
-    total: uCounts[i] + qCounts[i]
+    c: cCounts[i],
+    w: wCounts[i],
+    m: mCounts[i],
+    total: cCounts[i] + wCounts[i] + mCounts[i]
   }));
   
-  // Sort descending by total alerts
+  // Sort descending by total alerts (C + W + M)
   dataList.sort((a, b) => b.total - a.total);
   
   // Filter out parameters with zero alerts to keep chart clean.
@@ -1036,8 +1058,9 @@ function renderParamHeatmapChart() {
   
   const opts = {
     series: [
-      { name: 'Unacceptable (U)', data: chartData.map(d => d.u) },
-      { name: 'Questionable (Q)', data: chartData.map(d => d.q) }
+      { name: 'Critical (C)', data: chartData.map(d => d.c) },
+      { name: 'Warning (W)', data: chartData.map(d => d.w) },
+      { name: 'Monitoring (M)', data: chartData.map(d => d.m) }
     ],
     chart: { 
       type: 'bar', 
@@ -1070,7 +1093,7 @@ function renderParamHeatmapChart() {
         borderRadius: 4
       }
     },
-    colors: ['#ef4444', '#eab308'],
+    colors: ['#ef4444', '#f97316', '#eab308'],
     xaxis: {
       categories: chartData.map(d => d.name),
       labels: { style: { fontSize: '9px' } }
@@ -1194,9 +1217,9 @@ function renderParamIndicator(value) {
   }
   const v = String(value).trim().toUpperCase();
   if (v === 'A') return '<span class="param-indicator param-A">A</span>';
-  if (v === 'Q') return '<span class="param-indicator param-Q">Q</span>';
+  if (v === 'M' || v === 'Q') return '<span class="param-indicator param-M">M</span>';
   if (v === 'W') return '<span class="param-indicator param-W">W</span>';
-  if (v === 'U') return '<span class="param-indicator param-U">U</span>';
+  if (v === 'C' || v === 'U') return '<span class="param-indicator param-C">C</span>';
   return `<span class="param-indicator param-NA">${v}</span>`;
 }
 
@@ -1204,9 +1227,9 @@ function getWorstParam(values) {
   if (!values || values.length === 0) return 'N/A';
   const clean = values.map(v => String(v).trim().toUpperCase()).filter(v => v && v !== 'N/A' && v !== '-');
   if (clean.length === 0) return 'N/A';
-  if (clean.includes('U')) return 'U';
+  if (clean.includes('C') || clean.includes('U')) return 'C';
   if (clean.includes('W')) return 'W';
-  if (clean.includes('Q')) return 'Q';
+  if (clean.includes('M') || clean.includes('Q')) return 'M';
   if (clean.includes('A')) return 'A';
   return 'N/A';
 }
@@ -1423,6 +1446,40 @@ function openDetail(no) {
   setElTxt('ex-info-service', item.serviceType || (trInfo ? trInfo.Service_Type : null) || '-');
   setElTxt('ex-info-year', serviceAgeYears !== '-' ? `${serviceAgeYears} Years` : '-');
   setElTxt('ex-info-vector', (trInfo ? trInfo.VECTOR_GROUP : null) || 'Dyn1');
+  
+  // Populate OLTC Information Card from OLTC_DATA
+  const oltcMatch = (typeof OLTC_DATA !== 'undefined' && Array.isArray(OLTC_DATA)) ? OLTC_DATA.find(x => {
+    const s1 = String(x.parentSerialNo || '').trim().toLowerCase();
+    const s2 = String(item.serial || item.SERIAL_NUMBER || '').trim().toLowerCase();
+    const kks1 = String(x.kksNo || '').trim().toLowerCase();
+    const kks2 = String(item.name || item.EQUIPMENT_NAME || '').trim().toLowerCase();
+    return (s1 && s2 && (s1 === s2 || s1.includes(s2) || s2.includes(s1))) ||
+           (kks1 && kks2 && (kks1 === kks2 || kks1.includes(kks2) || kks2.includes(kks1)));
+  }) : null;
+
+  if (oltcMatch) {
+    setElTxt('ex-oltc-mfg', oltcMatch.oltcManufacturer || '-');
+    setElTxt('ex-oltc-model', oltcMatch.oltcModelType || '-');
+    setElTxt('ex-oltc-year', oltcMatch.oltcModelYear || '-');
+    setElTxt('ex-oltc-serial', oltcMatch.oltcSerialNo || '-');
+    setElTxt('ex-oltc-motor', oltcMatch.motorDrive || '-');
+    setElTxt('ex-oltc-counter', oltcMatch.counterOperated ? Number(oltcMatch.counterOperated).toLocaleString() : '-');
+    setElTxt('ex-oltc-taps', oltcMatch.tapNo ? `${oltcMatch.tapNo} Taps` : '-');
+    setElTxt('ex-oltc-resistor', oltcMatch.transitionResistorOhm ? `${oltcMatch.transitionResistorOhm} Ω` : '-');
+    setElTxt('ex-oltc-maint-spec', oltcMatch.maintenanceTime || '-');
+    setElTxt('ex-oltc-schedule', (oltcMatch.lastInspection || oltcMatch.nextDue) ? `${oltcMatch.lastInspection || '-'} / ${oltcMatch.nextDue || '-'}` : '-');
+  } else {
+    setElTxt('ex-oltc-mfg', '-');
+    setElTxt('ex-oltc-model', '-');
+    setElTxt('ex-oltc-year', '-');
+    setElTxt('ex-oltc-serial', '-');
+    setElTxt('ex-oltc-motor', '-');
+    setElTxt('ex-oltc-counter', '-');
+    setElTxt('ex-oltc-taps', '-');
+    setElTxt('ex-oltc-resistor', '-');
+    setElTxt('ex-oltc-maint-spec', '-');
+    setElTxt('ex-oltc-schedule', '-');
+  }
   
   // Visual Inspection from VisualData.csv
   const visRec = findLatestRecord(visualCsvData, item.serial);
@@ -1938,19 +1995,34 @@ function openDetail(no) {
       <td class="${getStatusClass(wPfValNum <= 1.0 ? 'A' : 'Q')}" colspan="3">${wPfValStr} (${wPfValNum <= 1.0 ? 'Good' : 'Warning'})</td>
     </tr>
     <tr>
-      <td>Transformer Turn Ratio</td>
+      <td>
+        Transformer Turn Ratio
+        <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+          <i class="fa-solid fa-file-invoice"></i>
+        </a>
+      </td>
       <td><span style="${piDateStyle}">${ratioDateDisp}</span></td>
       <td>IEEE C57.152: <= 0.5% Dev</td>
       <td class="ex-status-good" colspan="3">${ratioValStr}</td>
     </tr>
     <tr>
-      <td>Exciting Current</td>
+      <td>
+        Exciting Current
+        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+          <i class="fa-solid fa-file-invoice"></i>
+        </a>
+      </td>
       <td><span style="${piDateStyle}">${exDateDisp}</span></td>
       <td>EGAT Vectors</td>
       <td class="ex-status-good" colspan="3">${exValStr}</td>
     </tr>
     <tr>
-      <td>Winding Resistance</td>
+      <td>
+        Winding Resistance
+        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+          <i class="fa-solid fa-file-invoice"></i>
+        </a>
+      </td>
       <td><span style="${piDateStyle}">${wDateDisp}</span></td>
       <td>IEEE C57.152: <= 5% Dev</td>
       <td class="ex-status-good" colspan="3">${wValStr}</td>

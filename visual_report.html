@@ -245,6 +245,12 @@
       border: 1px solid #fde047;
     }
 
+    .status-abnormal {
+      background-color: #ffedd5;
+      color: #ea580c;
+      border: 1px solid #fed7aa;
+    }
+
     .status-unacceptable {
       background-color: #fee2e2;
       color: #b91c1c;
@@ -367,7 +373,7 @@
         <tr>
           <th>Serial No.</th>
           <td style="font-weight: 700; color: #1e3a8a;" id="meta-serial">-</td>
-          <th>Power Rating (kVA)</th>
+          <th>Power Rating (MVA)</th>
           <td style="font-weight: 700; color: #1e3a8a;" id="meta-power">-</td>
         </tr>
         <tr>
@@ -444,7 +450,13 @@
       </tbody>
     </table>
 
-    <!-- 2. Porcelain Condition Checking -->
+    <!-- 2. Visual Summary -->
+    <div class="section-banner" id="visual-summary-banner">• Visual Summary</div>
+    <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 8px 12px; font-size: 9.5px; line-height: 1.5; background-color: #fff7ed; color: #9a3412; margin-bottom: 6px; border-radius: 3px;">
+      • Visual Summary loading...
+    </div>
+
+    <!-- 3. Porcelain Condition Checking -->
     <div class="section-banner">• Porcelain Condition Checking</div>
     <table class="report-table">
       <thead>
@@ -723,6 +735,75 @@
       }
     });
 
+    function formatDateToDdMmmYyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === 'N/A' || dateStr === 'null') return '-';
+      const str = String(dateStr).trim();
+      if (!str || str === '-') return '-';
+
+      if (/^\d{4}$/.test(str)) return str;
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthMap = {
+        'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'may': 4, 'jun': 5,
+        'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+      };
+
+      const ddMmmYyyyMatch = str.match(/^(\d{1,2})[-\/\s]([A-Za-z]{3,9})[-\/\s](\d{2,4})$/);
+      if (ddMmmYyyyMatch) {
+        const day = String(parseInt(ddMmmYyyyMatch[1], 10)).padStart(2, '0');
+        const mStr = ddMmmYyyyMatch[2].substring(0, 3).toLowerCase();
+        let yr = parseInt(ddMmmYyyyMatch[3], 10);
+        if (yr < 100) yr += 2000;
+        const mIdx = monthMap[mStr];
+        if (mIdx !== undefined) {
+          return `${day}-${months[mIdx]}-${yr}`;
+        }
+      }
+
+      const mmmDdYyyyMatch = str.match(/^([A-Za-z]{3,9})[-\/\s](\d{1,2})[-\/\s](\d{2,4})$/);
+      if (mmmDdYyyyMatch) {
+        const mStr = mmmDdYyyyMatch[1].substring(0, 3).toLowerCase();
+        const day = String(parseInt(mmmDdYyyyMatch[2], 10)).padStart(2, '0');
+        let yr = parseInt(mmmDdYyyyMatch[3], 10);
+        if (yr < 100) yr += 2000;
+        const mIdx = monthMap[mStr];
+        if (mIdx !== undefined) {
+          return `${day}-${months[mIdx]}-${yr}`;
+        }
+      }
+
+      const yyyyMmDdMatch = str.match(/^(\d{4})[-\/\s](\d{1,2})[-\/\s](\d{1,2})/);
+      if (yyyyMmDdMatch) {
+        const yr = parseInt(yyyyMmDdMatch[1], 10);
+        const mIdx = parseInt(yyyyMmDdMatch[2], 10) - 1;
+        const day = String(parseInt(yyyyMmDdMatch[3], 10)).padStart(2, '0');
+        if (mIdx >= 0 && mIdx < 12) {
+          return `${day}-${months[mIdx]}-${yr}`;
+        }
+      }
+
+      const mmDdYyyyMatch = str.match(/^(\d{1,2})[-\/\s](\d{1,2})[-\/\s](\d{2,4})/);
+      if (mmDdYyyyMatch) {
+        let mIdx = parseInt(mmDdYyyyMatch[1], 10) - 1;
+        let day = parseInt(mmDdYyyyMatch[2], 10);
+        let yr = parseInt(mmDdYyyyMatch[3], 10);
+        if (yr < 100) yr += 2000;
+        if (mIdx >= 0 && mIdx < 12) {
+          return `${String(day).padStart(2, '0')}-${months[mIdx]}-${yr}`;
+        }
+      }
+
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
+
+      return str;
+    }
+
     function parseCSV(text) {
       if (text.startsWith('\ufeff')) {
         text = text.substring(1);
@@ -735,14 +816,16 @@
       for (let i = 1; i < lines.length; i++) {
         if (!lines[i].trim()) continue;
         const row = parseCSVRow(lines[i]);
-        if (row.length >= headers.length - 10) {
+        if (row.length >= 2) {
           const obj = {};
           headers.forEach((h, idx) => {
             obj[h] = row[idx] ? row[idx].trim().replace(/^"|"$/g, '') : '';
           });
-          obj.serial = obj.Serial_no || obj.Serial_No || obj.serial;
+          obj.serial = obj.Serial_no || obj.Serial_No || obj.serial || obj['Serial No'];
           obj.date = obj.Date || obj.date;
-          results.push(obj);
+          if (obj.serial) {
+            results.push(obj);
+          }
         }
       }
       return results;
@@ -769,89 +852,75 @@
 
     function populateTransformerSelect() {
       const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
       selectEl.innerHTML = '';
       
-      const uniqueSerials = [...new Set(visualDataList.map(item => item.serial))].filter(Boolean);
-      
-      uniqueSerials.forEach(serial => {
-        let displayName = serial;
-        if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-          const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
-          if (meta) displayName = `${meta.name} (${serial})`;
+      const addedSerials = new Set();
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta['Serial No.'];
+          if (s && !addedSerials.has(s)) {
+            addedSerials.add(s);
+            const opt = document.createElement('option');
+            opt.value = s;
+            const name = meta.name || meta['Equipment Name'] || s;
+            opt.textContent = `${name} (${s})`;
+            selectEl.appendChild(opt);
+          }
+        });
+      }
+
+      visualDataList.forEach(item => {
+        if (item.serial && !addedSerials.has(item.serial)) {
+          addedSerials.add(item.serial);
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = item.serial;
+          selectEl.appendChild(opt);
         }
-        const opt = document.createElement('option');
-        opt.value = serial;
-        opt.textContent = displayName;
-        selectEl.appendChild(opt);
       });
     }
 
-    function getBadgeHTML(resultStr) {
-      if (!resultStr || resultStr === '-' || resultStr.toLowerCase() === 'n/a' || resultStr.toLowerCase() === 'not available') {
-        return `<span class="status-badge status-na">Not Available</span>`;
-      }
-      const val = resultStr.trim();
-      const valLower = val.toLowerCase();
-
-      // Check Abnormal / Unacceptable / Critical first!
-      if (val === 'U' || valLower.includes('abnormal') || valLower.includes('unacceptable') || valLower.includes('critical') || valLower.includes('action')) {
-        return `<span class="status-badge status-unacceptable">${valLower.includes('abnormal') ? 'Abnormal' : 'Unacceptable'}</span>`;
-      }
-      if (val === 'Q' || valLower.includes('questionable') || valLower.includes('warning') || valLower.includes('monitor') || valLower.includes('fair')) {
-        return `<span class="status-badge status-questionable">${valLower.includes('monitor') ? 'Monitor' : 'Questionable'}</span>`;
-      }
-      if (val === 'A' || valLower === 'normal' || valLower.includes('good') || valLower.startsWith('normal')) {
-        return `<span class="status-badge status-normal">Normal</span>`;
-      }
-      return `<span class="status-badge status-normal">${val}</span>`;
-    }
-
-    function renderTableRows(tableId, itemsConfig, record) {
-      const tbody = document.getElementById(tableId);
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      itemsConfig.forEach(cfg => {
-        const condVal = (record[cfg.resKey] !== undefined && record[cfg.resKey] !== null && String(record[cfg.resKey]).trim() !== '') ? record[cfg.resKey].trim() : 'Normal';
-        const remVal = record[cfg.remKey] || '-';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="font-weight: 500;">${cfg.label}</td>
-          <td style="text-align: center;">${cfg.unit ? (condVal !== '-' ? `${condVal} ${cfg.unit}` : '-') : getBadgeHTML(condVal)}</td>
-          <td>${remVal}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
     }
 
     function loadReportBySerial(serial) {
-      let items = visualDataList.filter(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
-      if (!items || items.length === 0) {
-        const numOnly = serial.replace(/\D/g, '');
-        if (numOnly) {
-          items = visualDataList.filter(x => x.serial && x.serial.includes(numOnly));
-        }
+      let items = visualDataList.filter(x => matchSerial(x.serial, serial));
+      if (items && items.length > 0) {
+        items.sort((a, b) => new Date(b.date) - new Date(a.date));
       }
-
-      if (!items || items.length === 0) {
-        alert(`No Visual Inspection records found for Serial: ${serial}`);
-        return;
-      }
-
-      items.sort((a, b) => new Date(b.date) - new Date(a.date));
-      const r = items[0];
+      const r = (items && items.length > 0) ? items[0] : {};
 
       // Standard Header Metadata Binding
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const meta = HEALTH_INDEX_DATA.find(x => x.serial === serial || x.serial.startsWith(serial) || serial.startsWith(x.serial));
+        const meta = HEALTH_INDEX_DATA.find(x => {
+          const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
+          return matchSerial(s, serial);
+        });
         if (meta) {
-          document.getElementById('meta-name').textContent = meta.name || r.serial || serial;
-          document.getElementById('meta-serial').textContent = meta.serial || r.serial || serial;
-          document.getElementById('meta-manufacture').textContent = meta.manufacture || r.COMP2 || 'TIRATHAI';
-          document.getElementById('meta-site').textContent = meta.site || '-';
-          document.getElementById('meta-power').textContent = meta.ratedPower ? Number(meta.ratedPower).toLocaleString() : '-';
-          document.getElementById('meta-voltage').textContent = meta.ratedVoltage ? `${meta.ratedVoltage}` : '-';
-          document.getElementById('meta-service').textContent = meta.serviceType || '-';
+          const name = meta.name || meta['Equipment Name'] || r.serial || serial;
+          const sNo = meta.serial || meta['Serial No'] || r.serial || serial;
+          const manuf = meta.manufacture || meta['Manufacture'] || r.COMP2 || 'TIRATHAI';
+          const site = meta.site || meta['SITE'] || '-';
+          const power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
+          const voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
+          const service = meta.serviceType || meta['Service Type'] || '-';
+
+          document.getElementById('meta-name').textContent = name;
+          document.getElementById('meta-serial').textContent = sNo;
+          document.getElementById('meta-manufacture').textContent = manuf;
+          document.getElementById('meta-site').textContent = site;
+          document.getElementById('meta-power').textContent = (power && power !== '-') ? Number(power).toLocaleString() : '-';
+          document.getElementById('meta-voltage').textContent = voltage;
+          document.getElementById('meta-service').textContent = service;
         } else {
           document.getElementById('meta-name').textContent = r.serial || serial;
           document.getElementById('meta-serial').textContent = r.serial || serial;
@@ -873,7 +942,7 @@
       document.getElementById('inst-wnd-lv').textContent = r.Winding_temp_LV ? `${r.Winding_temp_LV} °C` : '-';
       document.getElementById('inst-wnd-lv-max').textContent = r.Winding_temp_LV_max ? `${r.Winding_temp_LV_max} °C` : '-';
       document.getElementById('inst-tap').textContent = r.Service_tap || '-';
-      document.getElementById('inst-cal-date').textContent = r.Calibration_Date || '-';
+      document.getElementById('inst-cal-date').textContent = formatDateToDdMmmYyyy(r.Calibration_Date);
 
       // Load Data Record
       document.getElementById('load-active-power').textContent = r.Active_power || '-';
@@ -882,7 +951,133 @@
       document.getElementById('load-voltage').textContent = r.Voltage_kV || r.Voltage || '-';
       document.getElementById('load-real-power').textContent = r.Real_power || '-';
 
-      // 2. Porcelain Condition Checking
+      // 2. Visual Summary (Abnormal Findings Summary)
+      const allInspectionConfigs = [
+        // Porcelain
+        { label: 'HV bushing', resKey: 'HVB_result', remKey: 'HVB_remark' },
+        { label: 'Neutral bushing (HV Side)', resKey: 'NBH_result', remKey: 'NBH_remark' },
+        { label: 'LV bushing', resKey: 'LVB_result', remKey: 'LVB_remark' },
+        { label: 'Neutral bushing (LV Side)', resKey: 'NBL_result', remKey: 'NBL_remark' },
+        { label: 'Lightning & Surge Arrester', resKey: 'SA_result', remKey: 'SA_remark' },
+        // Leakage
+        { label: 'Maintank', resKey: 'Maintank_result', remKey: 'Maintank_remark' },
+        { label: 'Conservator tank', resKey: 'Conservator_result', remKey: 'Conservator_remark' },
+        { label: 'Radiator', resKey: 'Radiator_result', remKey: 'Radiator_remark' },
+        { label: 'HV bushing', resKey: 'HV_bushing_result', remKey: 'HV_bushing_remark' },
+        { label: 'Neutral bushing', resKey: 'NB_result', remKey: 'NB_remark' },
+        { label: 'LV bushing', resKey: 'LV_bushing_result', remKey: 'LV_bushing_remark' },
+        { label: 'Pipe line', resKey: 'Pipe_line_result', remKey: 'Pipe_line_remark' },
+        { label: 'Inlet/outlet & sampling valve', resKey: 'Sampling_valve_result', remKey: 'Sampling_valve_remark' },
+        { label: 'Isolate valve', resKey: 'Isolate_valve_result', remKey: 'Isolate_valve_remark' },
+        { label: 'Drain & filtering valve', resKey: 'Drain_valve_result', remKey: 'Drain_valve_remark' },
+        { label: 'Radiator valve', resKey: 'Radiator_valve_result', remKey: 'Radiator_valve_remark' },
+        { label: 'BCT terminal / box', resKey: 'BCT_terminal_result', remKey: 'BCT_terminal_remark' },
+        { label: 'Buchholz relay', resKey: 'Buchholz1_relay_result', remKey: 'Buchholz1_relay_remark' },
+        { label: 'Pressure relief', resKey: 'Pressure_relief_result', remKey: 'Pressure_relief_remark' },
+        // Oil level
+        { label: 'Oil level for Main tank', resKey: 'Oil_level_M_result', remKey: 'Oil_level_M_remark' },
+        { label: 'Oil level for OLTC tank', resKey: 'Oil_level_O_result', remKey: 'Oil_level_O_remark' },
+        // Temp
+        { label: 'Oil temperature indicator', resKey: 'Oil_temp_indicator_result', remKey: 'Oil_temp_indicator_remark' },
+        { label: 'Oil temperature switch', resKey: 'Oil_temp_sw_result', remKey: 'Oil_temp_sw_remark' },
+        { label: 'HV Winding temperature indicator', resKey: 'HVW_temp_indicator_result', remKey: 'HVW_temp_indicator_remark' },
+        { label: 'HV Winding temperature switch', resKey: 'HVW_temp_sw_result', remKey: 'HVW_temp_sw_remark' },
+        { label: 'LV Winding temperature indicator', resKey: 'LVW_temp_indicator_result', remKey: 'LVW_temp_indicator_remark' },
+        { label: 'LV Winding temperature switch', resKey: 'LVW_temp_sw_result', remKey: 'LVW_temp_sw_remark' },
+        // Self protection
+        { label: 'Buchholz relay', resKey: 'Buchholz2_relay_result', remKey: 'Buchholz2_relay_remark' },
+        { label: 'Pressure relief device', resKey: 'Pressure_relief_device_result', remKey: 'Pressure_relief_device_remark' },
+        { label: 'Sudden pressure device', resKey: 'Suddent_pressure_device_result', remKey: 'Suddent_pressure_device_remark' },
+        { label: 'Rapid pressure device', resKey: 'Rapid_pressure_device_result', remKey: 'Rapid_pressure_device_remark' },
+        { label: 'Rubber bag detector', resKey: 'Rubber_bag_detector_result', remKey: 'Rubber_bag_detector_remark' },
+        { label: 'OLTC Oil surge relay', resKey: 'OLTC_Oil_surge_relay_result', remKey: 'OLTC_Oil_surge_relay_remark' },
+        { label: 'OLTC Pressure relief device', resKey: 'OLTC_Pressure_relief_device_result', remKey: 'OLTC_Pressure_relief_device_remark' },
+        { label: 'OLTC Oil Filter pressure', resKey: 'OLTC_Oil_Filter_pressure_result', remKey: 'OLTC_Oil_Filter_pressure_remark' },
+        // Surface painting
+        { label: 'Surface painting Main Tank', resKey: 'Surface_painting_Main_Tank_result', remKey: 'Surface_painting_Main_Tank_remark' },
+        { label: 'Surface painting Radiator fins', resKey: 'Surface_painting_Radiator_fins_result', remKey: 'Surface_painting_Radiator_fins_remark' },
+        // Foundation
+        { label: 'Foundation condition', resKey: 'Foundation_condition_result', remKey: 'Foundation_condition_remark' },
+        // Earthing
+        { label: 'Transformer Earthing connection', resKey: 'Transfomer_Earthing_connection_result', remKey: 'Transfomer_Earthing_connection_remark' },
+        { label: 'Fence Earthing connection', resKey: 'Fence_Earthing_connection_result', remKey: 'Fence_Earthing_connection_remark' },
+        { label: 'Neutral Ground Resistance (NGR)', resKey: 'NGR_result', remKey: 'NGR_remark' },
+        { label: 'NGR Resistance measurement [Ohm]', resKey: 'NGR_resistance_ohm', remKey: 'NGR_resistance_ohm_remark' },
+        { label: 'Ground Resistance measurement [Ohm]', resKey: 'GND_resistance_Ohm', remKey: 'GND_resistance_Ohm_remark' },
+        // Breather
+        { label: 'Main Conservator Tank', resKey: 'Main_Conservator_Tank_result', remKey: 'Main_Conservator_Tank_remark' },
+        { label: 'OLTC Tank', resKey: 'OLTC_Tank_result', remKey: 'OLTC_Tank_remark' },
+        { label: 'LV Bushing terminals box', resKey: 'LV_Bushing_terminals_box_result', remKey: 'LV_Bushing_terminals_box_remark' },
+        // Terminal box
+        { label: 'Physical condition', resKey: 'Physical1_condition_result', remKey: 'Physical1_condition_remark' },
+        { label: 'Terminal and wiring / cable', resKey: 'Terminal_and_wiring_and_cable_result', remKey: 'Terminal_and_wiring_and_cable_remark' },
+        // Bolt & nut
+        { label: 'Bolt / nut connection', resKey: 'Bolt_and_nut_connection_result', remKey: 'Bolt_and_nut_connection_remark' },
+        // Cooling system
+        { label: 'Cooling fans', resKey: 'Cooling_fans_result', remKey: 'Cooling_fans_remark' },
+        { label: 'Cooling fans panel', resKey: 'Cooling_fans_panel_result', remKey: 'Cooling_fans_panel_remark' },
+        { label: 'Operation test cooling fans', resKey: 'Operation_test_cooling_fans_result', remKey: 'Operation_test_cooling_fans_remark' },
+        { label: 'Condition of cooling pump', resKey: 'Condition_of_cooling_pump_result', remKey: 'Condition_of_cooling_pump_remark' },
+        { label: 'Operation test cooling pump', resKey: 'Operation_test_cooling_pump_result', remKey: 'Operation_test_cooling_pump_remark' },
+        // OLTC
+        { label: 'Condition of OLTC Panel', resKey: 'Condition_of_OLTC_Panel_result', remKey: 'Condition_of_OLTC_Panel_remark' },
+        { label: 'Operation counter', resKey: 'Operation_counter', remKey: 'Operation_counter_remark' },
+        { label: 'Inspection for Motor drive unit', resKey: 'Inspection_for_Motor_drive_unit', remKey: 'Inspection_for_Motor_drive_unit_remark' },
+        { label: 'Proper step-by-step operation', resKey: 'Proper_step_by_step_operation', remKey: 'Proper_step_by_step_operation_remark' },
+        { label: 'Proper operation of hand crank', resKey: 'Proper_operation_of_hand_crank', remKey: 'Proper_operation_of_hand_crank_remark' },
+        { label: 'Proper hand crank interlock', resKey: 'Proper_hand_crank_interlock', remKey: 'Proper_hand_crank_interlock_remark' },
+        { label: 'Indication and counter operation', resKey: 'Indication_and_counter_operation_result', remKey: 'Indication_and_counter_operation_remark' },
+        { label: 'Oil filter unit operation test and record pressure', resKey: 'Oil_filter_unit_operation_test_and_record_pressure_result', remKey: 'Oil_filter_unit_operation_test_and_record_pressure_remark' },
+        // Local control
+        { label: 'Physical condition', resKey: 'Physical2_condition_result', remKey: 'Physical2_condition_remark' },
+        { label: 'Check all alarm annunciator', resKey: 'Check_all_alarm_annunciator_result', remKey: 'Check_all_alarm_annunciator_remark' },
+        { label: 'Lamp test', resKey: 'Lamp_test_result', remKey: 'Lamp_test_remark' },
+        { label: 'Condition space heater', resKey: 'Condition_space_heater_result', remKey: 'Condition_space_heater_remark' },
+        { label: 'Condition of lighting', resKey: 'Condition_of_lighting_result', remKey: 'Condition_of_lighting_remark' }
+      ];
+
+      const abnormalFindings = [];
+      const seenLabels = new Set();
+
+      allInspectionConfigs.forEach(item => {
+        const rawRes = r[item.resKey] ? r[item.resKey].trim() : '';
+        const rawRem = r[item.remKey] ? r[item.remKey].trim() : '';
+
+        const isResAbnormal = rawRes.toLowerCase().includes('abnormal') || rawRes === 'U' || rawRes.toLowerCase() === 'unacceptable';
+        const isRemAbnormal = rawRem.toLowerCase().includes('abnormal') || rawRem.toLowerCase().includes('oil leak');
+
+        if (isResAbnormal || isRemAbnormal) {
+          let detailText = rawRem;
+          if (!detailText || detailText === '-' || detailText.toLowerCase() === 'n/a') {
+            detailText = rawRes;
+          }
+          const itemKey = `${item.label}:${detailText}`;
+          if (!seenLabels.has(itemKey)) {
+            seenLabels.add(itemKey);
+            abnormalFindings.push({
+              label: item.label,
+              detail: detailText
+            });
+          }
+        }
+      });
+
+      const summaryBox = document.getElementById('visual-summary-box');
+      if (summaryBox) {
+        if (abnormalFindings.length > 0) {
+          summaryBox.style.backgroundColor = '#fff7ed';
+          summaryBox.style.borderColor = '#fed7aa';
+          summaryBox.style.color = '#9a3412';
+          summaryBox.innerHTML = abnormalFindings.map(f => `• <strong>${f.label}</strong>: ${f.detail}`).join('<br>');
+        } else {
+          summaryBox.style.backgroundColor = '#f0fdf4';
+          summaryBox.style.borderColor = '#bbf7d0';
+          summaryBox.style.color = '#166534';
+          summaryBox.innerHTML = '• <strong>Normal</strong>: All visual inspection items are in satisfactory condition with no abnormal defects reported.';
+        }
+      }
+
+      // 3. Porcelain Condition Checking
       renderTableRows('tbl-porcelain', [
         { label: 'HV bushing', resKey: 'HVB_result', remKey: 'HVB_remark' },
         { label: 'Neutral bushing (HV Side)', resKey: 'NBH_result', remKey: 'NBH_remark' },
@@ -1064,7 +1259,7 @@
       const comp2 = r.COMP2 || 'GPSC';
       const tester = r.Tested_by || '-';
       const witness = r.Witnessed_by || '-';
-      const dateStr = r.date || '-';
+      const dateStr = formatDateToDdMmmYyyy(r.date);
 
       document.getElementById('resp-company-tested').textContent = comp1;
       document.getElementById('resp-company-reviewed').textContent = '-';
@@ -1077,6 +1272,47 @@
       document.getElementById('resp-date-tested').textContent = dateStr;
       document.getElementById('resp-date-reviewed').textContent = '-';
       document.getElementById('resp-date-approved').textContent = dateStr;
+    }
+
+    function renderTableRows(tbodyId, rowConfigs, dataObj) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      rowConfigs.forEach(item => {
+        const rawRes = dataObj ? dataObj[item.resKey] : '';
+        const rawRem = dataObj ? dataObj[item.remKey] : '';
+
+        let resVal = rawRes ? rawRes.trim() : '-';
+        let remVal = rawRem ? rawRem.trim() : '-';
+
+        if (item.unit && resVal !== '-' && !resVal.includes(item.unit)) {
+          resVal = `${resVal} ${item.unit}`;
+        }
+
+        let badgeClass = 'status-na';
+        const lowerRes = resVal.toLowerCase();
+
+        if (lowerRes.includes('abnormal')) {
+          badgeClass = 'status-abnormal';
+        } else if (lowerRes.includes('normal') || lowerRes.includes('good') || lowerRes.includes('pass') || lowerRes.includes('satisfactory') || lowerRes === 'a') {
+          badgeClass = 'status-normal';
+        } else if (lowerRes.includes('leak') || lowerRes.includes('fail') || lowerRes.includes('unacceptable') || lowerRes === 'u') {
+          badgeClass = 'status-unacceptable';
+        } else if (lowerRes.includes('questionable') || lowerRes.includes('monitor') || lowerRes.includes('alert') || lowerRes === 'q') {
+          badgeClass = 'status-questionable';
+        } else if (lowerRes === '-' || lowerRes === 'n/a' || lowerRes.includes('not available')) {
+          badgeClass = 'status-na';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.label}</td>
+          <td style="text-align: center;"><span class="status-badge ${badgeClass}">${resVal}</span></td>
+          <td>${remVal}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     function toggleTheme() {
@@ -1103,7 +1339,8 @@
         backgroundColor: '#ffffff'
       }).then(canvas => {
         const link = document.createElement('a');
-        const serial = document.getElementById('hdr-serial').textContent || 'Report';
+        const serialEl = document.getElementById('meta-serial');
+        const serial = serialEl ? serialEl.textContent.trim() : 'Report';
         link.download = `Visual_Inspection_Report_${serial}.jpg`;
         link.href = canvas.toDataURL('image/jpeg', 0.95);
         link.click();
