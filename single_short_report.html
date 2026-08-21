@@ -185,7 +185,7 @@
       width: 100%;
       background: #ffffff;
       color: #000000;
-      font-size: 10px;
+      font-size: 10.5px;
       line-height: 1.4;
     }
 
@@ -199,159 +199,102 @@
       margin-bottom: 14px;
     }
 
-    .header-logo-container {
+    .report-title-container {
       display: flex;
-      align-items: center;
-      gap: 16px;
+      flex-direction: column;
     }
 
-    .gpsc-logo-svg {
-      height: 44px;
-      width: auto;
-    }
-
-    .header-title-box h1 {
-      font-size: 14px;
+    .report-title {
+      font-size: 18px;
       font-weight: 800;
-      color: #1e3a8a;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 2px;
+      color: var(--report-primary);
+      letter-spacing: 0.3px;
     }
 
-    .header-title-box h2 {
+    .report-subtitle {
+      font-size: 11px;
+      color: var(--report-accent);
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .logo-container img {
+      height: 48px;
+      object-fit: contain;
+    }
+
+    /* Section Titles */
+    .section-title {
       font-size: 11px;
       font-weight: 700;
-      color: #0f172a;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-bottom: 3px;
-    }
-
-    .header-title-box p {
-      font-size: 9px;
-      font-weight: 600;
-      color: #64748b;
-    }
-
-    .header-meta {
-      text-align: right;
-      font-size: 9px;
-      color: #334155;
-    }
-
-    .header-meta .meta-row {
-      margin-bottom: 3px;
-    }
-
-    .header-meta strong {
-      color: #0f172a;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-pass {
-      background-color: #dcfce7;
-      color: #15803d;
-      border: 1px solid #86efac;
-    }
-
-    .status-fair {
-      background-color: #fef9c3;
-      color: #a16207;
-      border: 1px solid #fde047;
-    }
-
-    .status-fail {
-      background-color: #fee2e2;
-      color: #b91c1c;
-      border: 1px solid #fca5a5;
-    }
-
-    .status-na {
-      background-color: #f1f5f9;
-      color: #64748b;
-      border: 1px solid #cbd5e1;
-    }
-
-    /* Section Banners */
-    .part-banner {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      color: #ffffff;
-      padding: 6px 12px;
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
+      color: var(--report-primary);
+      background: #e2e8f0;
+      padding: 4px 8px;
+      border-left: 4px solid var(--report-primary);
       margin-top: 14px;
       margin-bottom: 8px;
-      border-radius: 3px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .part-banner-subtitle {
+    .badge-info {
       font-size: 8.5px;
-      font-weight: 400;
-      opacity: 0.9;
+      font-weight: 600;
+      background: #cbd5e1;
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: #1e293b;
     }
 
-    /* Tables */
+    /* Grid Splits */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    /* Standard Tables */
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-size: 9.5px;
     }
 
     .report-table th, .report-table td {
       border: 1px solid #cbd5e1;
-      padding: 5px 7px;
+      padding: 4px 6px;
       text-align: left;
     }
 
-    .report-table th {
-      background-color: #f8fafc;
-      color: #1e293b;
+    .info-table td.lbl {
+      width: 25%;
       font-weight: 600;
-      text-transform: uppercase;
-      font-size: 8.5px;
-      letter-spacing: 0.2px;
-    }
-
-    .report-table td.lbl {
-      width: 18%;
       background-color: #f8fafc;
-      font-weight: 600;
       color: #334155;
     }
 
-    .report-table td.val {
-      width: 32%;
+    .info-table td.val {
+      width: 25%;
+      font-weight: 500;
       color: #0f172a;
     }
 
-    /* Test Data Table */
+    /* Data Table */
     .data-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       font-size: 9px;
       text-align: center;
     }
 
     .data-table th, .data-table td {
       border: 1px solid #cbd5e1;
-      padding: 4px 6px;
+      padding: 4px 5px;
     }
 
     .data-table thead th {
@@ -386,6 +329,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
+      margin-top: 10px;
       margin-bottom: 12px;
     }
 
@@ -394,20 +338,16 @@
       border: 1px solid #e2e8f0;
       border-left: 4px solid #1e3a8a;
       border-radius: 4px;
-      padding: 8px 12px;
+      padding: 8px 10px;
       text-align: center;
     }
-
-    .kpi-card.kpi-pass { border-left-color: #16a34a; }
-    .kpi-card.kpi-fair { border-left-color: #ca8a04; }
-    .kpi-card.kpi-fail { border-left-color: #dc2626; }
 
     .kpi-label {
       font-size: 8px;
       font-weight: 700;
       color: #64748b;
       text-transform: uppercase;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .kpi-value {
@@ -422,13 +362,48 @@
       margin-top: 2px;
     }
 
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pass, .status-good {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .status-fair {
+      background-color: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fde047;
+    }
+
+    .status-fail, .status-critical {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .status-na {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+
     /* Charts Container */
     .charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .chart-box {
@@ -456,13 +431,13 @@
       width: 100%;
     }
 
-    /* Standards & Criteria Box */
+    /* Criteria & Standards Box */
     .criteria-container {
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
       gap: 12px;
       margin-top: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .criteria-box {
@@ -488,55 +463,33 @@
       font-size: 8px;
       margin-top: 4px;
       color: #0f172a;
+      line-height: 1.4;
     }
 
-    /* Assessment Box */
-    .assessment-box {
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 10px 14px;
-      margin-top: 12px;
-      margin-bottom: 14px;
-      background: #ffffff;
-    }
-
-    .assessment-title {
-      font-size: 10px;
-      font-weight: 700;
-      color: #1e3a8a;
-      margin-bottom: 4px;
-    }
-
-    .assessment-desc {
-      font-size: 9px;
-      line-height: 1.45;
-      color: #334155;
-    }
-
-    /* Signatures Table */
+    /* Sign-off & Verification Table */
     .response-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 6px;
-      margin-bottom: 16px;
+      margin-top: 12px;
+      margin-bottom: 14px;
       font-size: 9.5px;
     }
 
     .response-table th, .response-table td {
       border: 1px solid #cbd5e1;
       text-align: center;
-      padding: 6px;
+      padding: 5px;
     }
 
     .response-table th {
       background-color: #1e3a8a;
       color: #ffffff;
       font-weight: 600;
-      width: 33.33%;
+      padding: 6px;
     }
 
     .response-table .sig-cell {
-      height: 48px;
+      height: 45px;
       background-color: #ffffff;
     }
 
@@ -559,11 +512,7 @@
       .chart-box {
         break-inside: avoid;
       }
-      .part-banner {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-      .data-table thead th {
+      .section-title, .data-table thead th, .response-table th {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -575,20 +524,30 @@
   <!-- Top Control Bar -->
   <div class="control-panel">
     <div class="selector-group">
-      <label for="serial-select" class="selector-label">
-        <i class="fa-solid fa-bolt"></i> Transformer:
+      <label for="transformer-select" class="selector-label">
+        <i class="fa-solid fa-bolt text-indigo-400"></i> Transformer:
       </label>
-      <select id="serial-select" class="search-select" onchange="onSelectTransformer(this.value)">
-        <option value="">Loading transformers...</option>
+      <select id="transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <!-- Dynamically populated -->
+      </select>
+
+      <label for="test-date-select" class="selector-label" style="margin-left: 8px;">
+        <i class="fa-solid fa-calendar-day"></i> Test Date:
+      </label>
+      <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
+        <!-- Dynamically populated -->
       </select>
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">Theme</span>
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
       </button>
-      <button class="btn btn-primary" onclick="window.print()" title="Print / Export to PDF">
-        <i class="fa-solid fa-print"></i> Print Report
+      <button class="btn btn-secondary" onclick="captureReportJPG()" title="Capture JPG Image">
+        <i class="fa-solid fa-camera"></i> Capture
+      </button>
+      <button class="btn btn-primary" onclick="window.print()" title="Print or Save PDF">
+        <i class="fa-solid fa-print"></i> Print / PDF
       </button>
       <a href="assessment.html" class="btn btn-secondary" title="Back to Diagnostics Assessment">
         <i class="fa-solid fa-arrow-left"></i> Assessment
@@ -596,254 +555,134 @@
     </div>
   </div>
 
-  <!-- Report Sheet Preview Layout (A4 Style) -->
+  <!-- Printable / Exportable Report Wrapper -->
   <div class="report-wrapper" id="report-content">
     <div class="report-sheet">
 
-      <!-- Document Header -->
+      <!-- Header Section -->
       <div class="report-header">
-        <div class="header-logo-container">
-          <!-- GPSC SVG Logo -->
-          <svg class="gpsc-logo-svg" viewBox="0 0 160 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="160" height="44" rx="4" fill="#1e3a8a"/>
-            <text x="12" y="28" font-family="'Inter', sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="1.5">GPSC</text>
-            <text x="76" y="22" font-family="'Inter', sans-serif" font-weight="600" font-size="8" fill="#38bdf8" letter-spacing="0.5">TRANSFORMER ASSET</text>
-            <text x="76" y="32" font-family="'Inter', sans-serif" font-weight="500" font-size="7" fill="#cbd5e1" letter-spacing="0.3">MANAGEMENT SYSTEM</text>
-          </svg>
-
-          <div class="header-title-box">
-            <h1>Transformer Diagnostic Assessment Report</h1>
-            <h2>Single Phase Short Circuit Impedance Test</h2>
-            <p>Std. IEEE C57.152 / IEEE C57.12.90 / IEC 60076-5</p>
-          </div>
+        <div class="report-title-container">
+          <div class="report-title">SINGLE PHASE SHORT CIRCUIT IMPEDANCE REPORT</div>
+          <div class="report-subtitle">Std. IEEE C57.152 / IEEE C57.12.90 / IEC 60076-5</div>
         </div>
-
-        <div class="header-meta">
-          <div class="meta-row"><strong>Report No:</strong> <span id="rep-no">SC-2026-001</span></div>
-          <div class="meta-row"><strong>Test Date:</strong> <span id="rep-date">-</span></div>
-          <div class="meta-row"><strong>Status:</strong> <span id="rep-badge" class="status-badge status-pass">NORMAL</span></div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
         </div>
       </div>
 
-      <!-- Part 1: Equipment & Transformer Information -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-transformer"></i> 1. Equipment &amp; Transformer Information</span>
-        <span class="part-banner-subtitle">Nameplate Specifications</span>
+      <!-- 1. Equipment Identification -->
+      <div class="section-title">
+        <span>1. Transformer Identification &amp; Rating Information</span>
+        <span class="badge-info" id="info-header-id">EMM-TR-F-004, Rev.1</span>
       </div>
-
-      <table class="report-table">
-        <tbody>
-          <tr>
-            <td class="lbl">Serial Number:</td>
-            <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
-            <td class="lbl">Substation / Plant:</td>
-            <td class="val" id="info-substation">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Feeder / Bay:</td>
-            <td class="val" id="info-feeder">-</td>
-            <td class="lbl">Manufacturer:</td>
-            <td class="val" id="info-mfg">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Rated Power (MVA):</td>
-            <td class="val" id="info-mva">-</td>
-            <td class="lbl">Voltage Ratio (kV):</td>
-            <td class="val" id="info-voltage">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Vector Group:</td>
-            <td class="val" id="info-vector">-</td>
-            <td class="lbl">Tap Changer Type:</td>
-            <td class="val" id="info-tap">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Cooling Class:</td>
-            <td class="val" id="info-cooling">-</td>
-            <td class="lbl">Manufacturing Year:</td>
-            <td class="val" id="info-year">-</td>
-          </tr>
-        </tbody>
+      <table class="report-table info-table">
+        <tr>
+          <td class="lbl">Equipment Name:</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Substation / Site:</td>
+          <td class="val" id="info-site">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Rated Power:</td>
+          <td class="val" id="info-power">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Voltage Ratings:</td>
+          <td class="val" id="info-voltage">-</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap">-</td>
+        </tr>
       </table>
 
-      <!-- Part 2: Environmental & Test Conditions -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-temperature-half"></i> 2. Environmental &amp; Test Conditions</span>
-        <span class="part-banner-subtitle">On-site Measurements</span>
+      <!-- 2. Test Environment & Instrument -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">2. Test Instrument &amp; Apparatus</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Test Set / Model:</td>
+              <td class="val" id="info-instrument">Omicron TESTRANO 600</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 6.6</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">3. Environmental &amp; Thermal Conditions</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
       </div>
 
-      <table class="report-table">
-        <tbody>
-          <tr>
-            <td class="lbl">Ambient Temp (°C):</td>
-            <td class="val" id="info-amb-temp">-</td>
-            <td class="lbl">Top Oil Temp (°C):</td>
-            <td class="val" id="info-oil-temp">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Winding Temp (°C):</td>
-            <td class="val" id="info-wind-temp">-</td>
-            <td class="lbl">Relative Humidity (%):</td>
-            <td class="val" id="info-humidity">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Test Instrument:</td>
-            <td class="val" id="info-instrument">-</td>
-            <td class="lbl">Instrument S/N &amp; Cal:</td>
-            <td class="val" id="info-inst-serial">-</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Part 3: Executive Summary & Standards -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-chart-line"></i> 3. Executive Summary &amp; Standards Criteria</span>
-        <span class="part-banner-subtitle">IEEE C57.152 Cl. 6.6 / IEC 60076-5</span>
-      </div>
-
+      <!-- Summary KPI Row -->
       <div class="kpi-row">
-        <div class="kpi-card kpi-pass" id="kpi-card-dev">
+        <div class="kpi-card" id="kpi-card-dev">
           <div class="kpi-label">Max Phase-to-Phase Dev</div>
           <div class="kpi-value" id="kpi-max-dev">0.00%</div>
           <div class="kpi-sub">Limit: &le; 2.00% (IEEE)</div>
         </div>
-
         <div class="kpi-card" id="kpi-card-fat">
           <div class="kpi-label">Max Factory / FAT Dev</div>
           <div class="kpi-value" id="kpi-fat-dev">-</div>
           <div class="kpi-sub">Limit: &le; 3.00% (IEEE)</div>
         </div>
-
-        <div class="kpi-card" id="kpi-card-status">
-          <div class="kpi-label">Impedance Health Status</div>
-          <div class="kpi-value" id="kpi-overall-status">NORMAL</div>
-          <div class="kpi-sub" id="kpi-overall-score">Score: 5 / 5</div>
-        </div>
-
         <div class="kpi-card">
           <div class="kpi-label">Critical Tap Position</div>
           <div class="kpi-value" id="kpi-crit-tap" style="font-size: 13px;">Tap Center</div>
           <div class="kpi-sub">Highest Variance</div>
         </div>
-      </div>
-
-      <div class="criteria-container">
-        <div class="criteria-box">
-          <div class="criteria-title">Standards &amp; Mathematical Formulation (IEEE C57.152 Cl. 6.6)</div>
-          <div style="font-size: 9px; line-height: 1.45; color: #334155;">
-            <strong>1. Measured Impedance:</strong> Single-phase equivalent impedance is calculated by applying single-phase AC voltage and measuring current with secondary short-circuited: 
-            <div class="formula-text">Z_k = V_k / I_k (&Omega;)</div>
-            <strong>2. Phase-to-Phase Deviation:</strong> Maximum percentage deviation among 3 phases at identical tap connection:
-            <div class="formula-text">% Dev = ((Z_max - Z_min) / Z_avg) &times; 100%</div>
-            <strong>3. Factory / Baseline Deviation:</strong> Difference from FAT baseline:
-            <div class="formula-text">% FAT Dev = (|Z_measured - Z_factory| / Z_factory) &times; 100%</div>
-          </div>
-        </div>
-
-        <div class="criteria-box">
-          <div class="criteria-title">IEEE C57.152 Diagnostic Criteria</div>
-          <table style="width: 100%; border-collapse: collapse; font-size: 8.5px; margin-top: 4px;">
-            <tbody>
-              <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 3px 4px; font-weight: 600; color: #16a34a;"><span class="status-badge status-pass">PASS</span> &le; 2.00%</td>
-                <td style="padding: 3px 4px; color: #475569;">Normal. Winding geometry is rigid &amp; intact.</td>
-              </tr>
-              <tr style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 3px 4px; font-weight: 600; color: #ca8a04;"><span class="status-badge status-fair">FAIR</span> 2.01% - 3.00%</td>
-                <td style="padding: 3px 4px; color: #475569;">Questionable. Slight radial/axial expansion.</td>
-              </tr>
-              <tr>
-                <td style="padding: 3px 4px; font-weight: 600; color: #dc2626;"><span class="status-badge status-fail">FAIL</span> &gt; 3.00%</td>
-                <td style="padding: 3px 4px; color: #475569;">Action required. Significant winding deformation.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="kpi-card" id="kpi-card-status">
+          <div class="kpi-label">Overall Evaluation</div>
+          <div class="kpi-value" id="kpi-overall-status"><span class="status-badge status-pass">NORMAL</span></div>
+          <div class="kpi-sub" id="kpi-overall-score">Score: 5 / 5</div>
         </div>
       </div>
 
-      <!-- Part 4: Measurement Data Tables -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-table-list"></i> 4. Measurement Data &amp; Diagnostic Tables</span>
-        <span class="part-banner-subtitle">HV : LV Winding Configuration</span>
+      <!-- 4. Single Phase Short Circuit Impedance Test Results Section -->
+      <div id="short-tables-container">
+        <!-- Dynamic Short Circuit Tables rendered via JavaScript -->
       </div>
 
-      <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 4px; margin-bottom: 4px;">
-        4.1 High Voltage to Low Voltage (HV:LV) Single Phase Short Circuit Impedance
-      </div>
-
-      <table class="data-table" id="short-table-hl">
-        <thead>
-          <tr>
-            <th rowspan="2" style="width: 14%;">Tap Position</th>
-            <th colspan="3" class="th-phase-a">Phase A (H1-H0 / 1U-1N)</th>
-            <th colspan="3" class="th-phase-b">Phase B (H2-H0 / 1V-1N)</th>
-            <th colspan="3" class="th-phase-c">Phase C (H3-H0 / 1W-1N)</th>
-            <th rowspan="2" style="width: 10%;">% Phase-to-Phase Dev</th>
-            <th rowspan="2" style="width: 9%;">FAT Z (&Omega;)</th>
-            <th rowspan="2" style="width: 8%;">Status</th>
-          </tr>
-          <tr>
-            <th class="sub-th" style="width: 7%;">Volt (V)</th>
-            <th class="sub-th" style="width: 7%;">Curr (A)</th>
-            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-            <th class="sub-th" style="width: 7%;">Volt (V)</th>
-            <th class="sub-th" style="width: 7%;">Curr (A)</th>
-            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-            <th class="sub-th" style="width: 7%;">Volt (V)</th>
-            <th class="sub-th" style="width: 7%;">Curr (A)</th>
-            <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-          </tr>
-        </thead>
-        <tbody id="short-table-hl-body">
-          <!-- Populated by JavaScript -->
-        </tbody>
-      </table>
-
-      <!-- Tertiary / HV:TV Table (conditionally shown if TV data exists) -->
-      <div id="section-tv-container" style="display: none;">
-        <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 8px; margin-bottom: 4px;">
-          4.2 High Voltage to Tertiary Voltage (HV:TV) Single Phase Short Circuit Impedance
-        </div>
-        <table class="data-table" id="short-table-ht">
-          <thead>
-            <tr>
-              <th rowspan="2" style="width: 14%;">Tap Position</th>
-              <th colspan="3" class="th-phase-a">Phase A (H1-H0 / 1U-1N)</th>
-              <th colspan="3" class="th-phase-b">Phase B (H2-H0 / 1V-1N)</th>
-              <th colspan="3" class="th-phase-c">Phase C (H3-H0 / 1W-1N)</th>
-              <th rowspan="2" style="width: 10%;">% Phase-to-Phase Dev</th>
-              <th rowspan="2" style="width: 9%;">FAT Z (&Omega;)</th>
-              <th rowspan="2" style="width: 8%;">Status</th>
-            </tr>
-            <tr>
-              <th class="sub-th" style="width: 7%;">Volt (V)</th>
-              <th class="sub-th" style="width: 7%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-              <th class="sub-th" style="width: 7%;">Volt (V)</th>
-              <th class="sub-th" style="width: 7%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-              <th class="sub-th" style="width: 7%;">Volt (V)</th>
-              <th class="sub-th" style="width: 7%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8%;">Z (&Omega;)</th>
-            </tr>
-          </thead>
-          <tbody id="short-table-ht-body">
-            <!-- Populated by JavaScript -->
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Part 5: Visual Analytics & Charts -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-chart-pie"></i> 5. Diagnostic Visual Analytics &amp; Deviation Profile</span>
-        <span class="part-banner-subtitle">Phase Symmetry &amp; Impedance Trends</span>
-      </div>
-
+      <!-- Diagnostic Visual Charts Grid -->
       <div class="charts-grid">
         <div class="chart-box">
           <div class="chart-title">
-            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> Phase-to-Phase Deviation (% Dev)</span>
-            <span style="color: #64748b; font-size: 8.5px;">Limit: &le; 2.00%</span>
+            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> % Phase-to-Phase Deviation vs. Tap Position</span>
+            <span style="color: #64748b; font-size: 8.5px;">Standard Threshold: &le; 2.00%</span>
           </div>
           <div class="chart-container">
             <canvas id="devChart"></canvas>
@@ -861,32 +700,75 @@
         </div>
       </div>
 
-      <!-- Part 6: Diagnostic Assessment & Engineering Summary -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-clipboard-check"></i> 6. Diagnostic Assessment &amp; Engineering Recommendations</span>
-        <span class="part-banner-subtitle">IEEE C57.152 Asset Health Evaluation</span>
-      </div>
+      <!-- Standards, Mathematical Formulas & Evaluation Criteria -->
+      <div class="criteria-container">
+        <div class="criteria-box">
+          <div class="criteria-title">Standards &amp; Mathematical Formulation (IEEE C57.152 Cl. 6.6)</div>
+          <div style="font-size: 9px; line-height: 1.45; color: #334155;">
+            <strong>1. Measured Impedance:</strong> Calculated by applying single-phase AC voltage with secondary short-circuited:
+            <div class="formula-text">Z_k = V_k / I_k (&Omega;)</div>
+            <strong>2. Phase-to-Phase Deviation:</strong> Maximum difference among 3 phases at any tap connection:
+            <div class="formula-text">% Dev = ((Z_max - Z_min) / Z_avg) &times; 100%</div>
+            <strong>3. Factory / Baseline Deviation:</strong> Difference from FAT baseline:
+            <div class="formula-text">% FAT Dev = (|Z_measured - Z_factory| / Z_factory) &times; 100%</div>
+          </div>
+        </div>
 
-      <div class="assessment-box">
-        <div class="assessment-title" id="eval-title">Diagnostic Conclusion: NORMAL CONDITION</div>
-        <div class="assessment-desc" id="eval-desc">
-          Single phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap connections. 
-          Phase-to-phase deviations are well within the IEEE C57.152 standard limit (&le; 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.
+        <div class="criteria-box">
+          <div class="criteria-title">Health Index &amp; Assessment Severity Matrix</div>
+          <table style="width: 100%; font-size: 8.5px; border-collapse: collapse; margin-top: 4px;">
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <th style="text-align: left; padding: 2px;">Condition</th>
+              <th style="text-align: center; padding: 2px;">% Deviation</th>
+              <th style="text-align: center; padding: 2px;">Score</th>
+              <th style="text-align: right; padding: 2px;">Action</th>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-good">Good / Normal</span></td>
+              <td style="text-align: center;">&le; 2.00%</td>
+              <td style="text-align: center; font-weight: bold;">5</td>
+              <td style="text-align: right; color: #166534;">Routine Operation</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-fair">Questionable</span></td>
+              <td style="text-align: center;">2.01% - 3.00%</td>
+              <td style="text-align: center; font-weight: bold;">3 - 4</td>
+              <td style="text-align: right; color: #854d0e;">Investigate / SFRA</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;"><span class="status-badge status-critical">Abnormal / Critical</span></td>
+              <td style="text-align: center;">&gt; 3.00%</td>
+              <td style="text-align: center; font-weight: bold;">1 - 2</td>
+              <td style="text-align: right; color: #991b1b;">Immediate Inspection</td>
+            </tr>
+          </table>
         </div>
       </div>
 
-      <!-- Part 7: Signatures & Engineering Approval Block (3 Columns) -->
-      <div class="part-banner">
-        <span><i class="fa-solid fa-file-signature"></i> 7. Signatures &amp; Engineering Approval</span>
-        <span class="part-banner-subtitle">GPSC Transformer Diagnostic Sign-off</span>
-      </div>
+      <!-- 5. Engineering Assessment & Recommendations -->
+      <div class="section-title">5. Engineering Assessment &amp; Recommendations</div>
+      <table class="report-table info-table" style="margin-bottom: 12px;">
+        <tr>
+          <td class="lbl" style="width: 18%;">Diagnostic Summary:</td>
+          <td class="val" colspan="3" id="diag-summary" style="font-weight: 500; color: #0f172a;">
+            The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is within the IEEE C57.152 allowable limit (≤ 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Recommendation:</td>
+          <td class="val" colspan="3" id="diag-recommendation" style="font-weight: 600; color: #166534;">
+            Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.
+          </td>
+        </tr>
+      </table>
 
-      <table class="response-table">
+      <!-- Sign-off & Verification Block -->
+      <table class="report-table response-table">
         <thead>
           <tr>
-            <th>Tested By</th>
-            <th>Reviewed By</th>
-            <th>Approved By</th>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
@@ -896,19 +778,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td style="font-weight: 600; color: #1e293b;" id="resp-name-tested"></td>
-            <td style="font-weight: 600; color: #1e293b;" id="resp-name-reviewed"></td>
-            <td style="font-weight: 600; color: #1e293b;" id="resp-name-approved"></td>
+            <td class="val" id="resp-name-tested"></td>
+            <td class="val" id="resp-name-reviewed"></td>
+            <td class="val" id="resp-name-approved"></td>
           </tr>
           <tr>
-            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
-            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
-            <td style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td style="font-size: 8.5px;" id="resp-date-tested"></td>
-            <td style="font-size: 8.5px;" id="resp-date-reviewed"></td>
-            <td style="font-size: 8.5px;" id="resp-date-approved"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
           </tr>
         </tbody>
       </table>
@@ -968,10 +850,10 @@
         console.warn("Could not load TestData/TRInfoData.csv via fetch:", err);
       }
 
-      // Populate Dropdown
+      // Populate Dropdowns
       populateDropdown();
 
-      // Read URL query parameters (?serial=...)
+      // Read URL query parameters
       const urlParams = new URLSearchParams(window.location.search);
       let serial = urlParams.get('serial');
       const name = urlParams.get('name');
@@ -995,7 +877,7 @@
       }
 
       if (serial) {
-        loadReport(serial);
+        switchTransformer(serial);
       }
     });
 
@@ -1055,7 +937,7 @@
     }
 
     function populateDropdown() {
-      const sel = document.getElementById('serial-select');
+      const sel = document.getElementById('transformer-select');
       sel.innerHTML = '';
 
       const serialMap = new Map();
@@ -1092,12 +974,47 @@
       });
     }
 
-    function onSelectTransformer(serial) {
+    function switchTransformer(serial) {
       if (!serial) return;
+      currentSerial = serial;
+      const sel = document.getElementById('transformer-select');
+      if (sel) sel.value = serial;
+
+      // Update URL without reload
       const url = new URL(window.location.href);
       url.searchParams.set('serial', serial);
       window.history.replaceState({}, '', url);
-      loadReport(serial);
+
+      // Populate Test Date Selector
+      const matchingRecords = singleShortDataList.filter(x => matchSerial(x.serial || x.Serial_No, serial));
+      const dateSel = document.getElementById('test-date-select');
+      dateSel.innerHTML = '';
+
+      if (matchingRecords.length > 0) {
+        matchingRecords.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = formatDate(r.Date) || `Test #${idx + 1}`;
+          dateSel.appendChild(opt);
+        });
+        currentRecord = matchingRecords[0];
+      } else {
+        const opt = document.createElement('option');
+        opt.value = 0;
+        opt.textContent = 'No Test Data';
+        dateSel.appendChild(opt);
+        currentRecord = {};
+      }
+
+      renderReportContent();
+    }
+
+    function switchTestDate(idx) {
+      const matchingRecords = singleShortDataList.filter(x => matchSerial(x.serial || x.Serial_No, currentSerial));
+      if (matchingRecords[idx]) {
+        currentRecord = matchingRecords[idx];
+        renderReportContent();
+      }
     }
 
     function formatDate(dStr) {
@@ -1134,11 +1051,6 @@
       return parseFloat(v).toFixed(dec);
     }
 
-    function formatDev(v) {
-      if (v === undefined || v === null || v === '' || v === '-' || isNaN(parseFloat(v))) return '-';
-      return `${parseFloat(v).toFixed(2)}%`;
-    }
-
     function getDevBadge(devVal) {
       if (devVal === undefined || devVal === null || devVal === '' || devVal === '-' || isNaN(parseFloat(devVal))) {
         return '<span class="status-badge status-na">-</span>';
@@ -1153,14 +1065,47 @@
       }
     }
 
-    function loadReport(serial) {
-      currentSerial = serial;
-      const sel = document.getElementById('serial-select');
-      if (sel) sel.value = serial;
+    function getPhaseRatioConnections(vectorGroup, mode = 'HL') {
+      const v = String(vectorGroup || '').toUpperCase().trim();
+      const P = 'H';
+      const S = mode === 'HT' ? 'T' : 'X';
 
-      // Find record in singleShortDataList
-      let rec = singleShortDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
-      currentRecord = rec || {};
+      // Dyn Vector Groups (Dyn1, Dyn11, Dyn5, Dyn7)
+      if (v.startsWith('D') && (v.includes('YN') || v.includes('Y'))) {
+        if (v.includes('11')) {
+          return {
+            phA: `Phase A (${P}1-${P}2 : ${S}1-${S}0)`,
+            phB: `Phase B (${P}2-${P}3 : ${S}2-${S}0)`,
+            phC: `Phase C (${P}3-${P}1 : ${S}3-${S}0)`
+          };
+        }
+        return {
+          phA: `Phase A (${P}1-${P}2 : ${S}2-${S}0)`,
+          phB: `Phase B (${P}2-${P}3 : ${S}3-${S}0)`,
+          phC: `Phase C (${P}3-${P}1 : ${S}1-${S}0)`
+        };
+      }
+
+      // YNd Vector Groups (YNd1, YNd11)
+      if ((v.startsWith('Y') || v.startsWith('YN')) && v.includes('D')) {
+        return {
+          phA: `Phase A (${P}1-${P}0 : ${S}1-${S}2)`,
+          phB: `Phase B (${P}2-${P}0 : ${S}2-${S}3)`,
+          phC: `Phase C (${P}3-${P}0 : ${S}3-${S}1)`
+        };
+      }
+
+      // Default Star-Star / Wye fallback
+      return {
+        phA: `Phase A (${P}1-${P}0 : ${S}1-${S}0)`,
+        phB: `Phase B (${P}2-${P}0 : ${S}2-${S}0)`,
+        phC: `Phase C (${P}3-${P}0 : ${S}3-${S}0)`
+      };
+    }
+
+    function renderReportContent() {
+      const r = currentRecord || {};
+      const serial = currentSerial;
 
       // Find Metadata in HEALTH_INDEX_DATA
       let meta = (typeof HEALTH_INDEX_DATA !== 'undefined') ? HEALTH_INDEX_DATA.find(x => matchSerial(x.serial, serial)) : null;
@@ -1171,18 +1116,14 @@
       // Find TRInfoData
       let trInfoRec = trInfoDataList.find(x => matchSerial(x.serial || x.Serial_No, serial));
 
-      // 1. Header Information
-      document.getElementById('rep-no').textContent = rec && rec.Test_No && rec.Test_No !== '-' ? rec.Test_No : `SC-${serial}`;
-      const dtStr = rec && rec.Date ? formatDate(rec.Date) : (meta && meta.last_inspection ? formatDate(meta.last_inspection) : '-');
-      document.getElementById('rep-date').textContent = dtStr || '-';
-
-      // Equipment Info
+      // 1. Equipment Identification Info
+      document.getElementById('info-eq-name').textContent = (meta && meta.name) || (trInfoRec && trInfoRec.FEEDER) || '-';
+      document.getElementById('info-site').textContent = (meta && meta.substation) || (trInfoRec && trInfoRec.SUBSTATION) || '-';
       document.getElementById('info-serial').textContent = serial;
-      document.getElementById('info-substation').textContent = (meta && meta.substation) || (trInfoRec && trInfoRec.SUBSTATION) || '-';
-      document.getElementById('info-feeder').textContent = (meta && meta.name) || (trInfoRec && trInfoRec.FEEDER) || '-';
-      document.getElementById('info-mfg').textContent = (meta && meta.manufacturer) || (trInfoRec && trInfoRec.MANUFACTURER) || (facRec && facRec.Model_Type) || '-';
-      document.getElementById('info-mva').textContent = (meta && meta.capacity) || (trInfoRec && trInfoRec.RATED_POWER) || (facRec && facRec.Power_Rated) || '-';
-      
+
+      const powerVal = (meta && meta.capacity) || (trInfoRec && trInfoRec.RATED_POWER) || (facRec && facRec.Power_Rated) || '-';
+      document.getElementById('info-power').textContent = powerVal ? (String(powerVal).toUpperCase().includes('MVA') ? powerVal : `${powerVal} MVA`) : '-';
+
       const hvKv = (trInfoRec && trInfoRec.HV_RATED) || (facRec && facRec.HV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[0] : '');
       const lvKv = (trInfoRec && trInfoRec.LV_RATED) || (facRec && facRec.LV_Rated) || (meta && meta.voltage ? meta.voltage.split('/')[1] : '');
       const tvKv = (trInfoRec && trInfoRec.LV2_RATED);
@@ -1194,31 +1135,31 @@
 
       const vector = (trInfoRec && trInfoRec.VECTOR_GROUP) || (meta && meta.vector_group) || '-';
       document.getElementById('info-vector').textContent = vector;
+      const noWinding = (trInfoRec && trInfoRec.NO_WINDING) || (meta && meta.no_winding) || 2;
+      document.getElementById('info-winding').textContent = `${noWinding} Windings`;
       const tapType = (trInfoRec && trInfoRec.TAP_CHANGER_TYPE) || (meta && meta.tap_changer) || 'DETC';
       document.getElementById('info-tap').textContent = tapType;
-      document.getElementById('info-cooling').textContent = (trInfoRec && trInfoRec.COOLING_TYPE) || (meta && meta.cooling) || 'ONAN/ONAF';
-      document.getElementById('info-year').textContent = (trInfoRec && trInfoRec.MANUFACTURING_DATE ? trInfoRec.MANUFACTURING_DATE.split(' ')[0] : '') || (facRec && facRec.Test_Date ? facRec.Test_Date.split('-')[0] : '-') || '-';
 
-      // Test Condition Info
-      document.getElementById('info-amb-temp').textContent = (rec && rec.Ambient_Temp && rec.Ambient_Temp !== '-') ? rec.Ambient_Temp : '-';
-      document.getElementById('info-oil-temp').textContent = (rec && rec.Oil_Temp && rec.Oil_Temp !== '-') ? rec.Oil_Temp : '-';
-      document.getElementById('info-wind-temp').textContent = (rec && rec.Winding_Temp && rec.Winding_Temp !== '-') ? rec.Winding_Temp : '-';
-      document.getElementById('info-humidity').textContent = (rec && rec.Humidity && rec.Humidity !== '-') ? `${rec.Humidity}%` : '-';
-      document.getElementById('info-instrument').textContent = (rec && rec.Test_Instrument && rec.Test_Instrument !== '-') ? rec.Test_Instrument : 'TESTRANO 600';
-      const instSer = rec && rec.Instrument_Serial_No && rec.Instrument_Serial_No !== '-' ? rec.Instrument_Serial_No : '-';
-      const calDt = rec && rec.Calibration_Date && rec.Calibration_Date !== '-' ? formatDate(rec.Calibration_Date) : '';
-      document.getElementById('info-inst-serial').textContent = calDt ? `${instSer} (Cal: ${calDt})` : instSer;
+      // 2. Test Environment & Instrument
+      document.getElementById('info-instrument').textContent = (r && r.Test_Instrument && r.Test_Instrument !== '-') ? r.Test_Instrument : 'Omicron TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = (r && r.Instrument_Serial_No && r.Instrument_Serial_No !== '-') ? r.Instrument_Serial_No : '-';
+      document.getElementById('info-instrument-calib').textContent = (r && r.Calibration_Date && r.Calibration_Date !== '-') ? formatDate(r.Calibration_Date) : '-';
 
-      // 2. Render Tables & Compute KPI
-      renderTablesAndCharts(rec, facRec, vector);
+      document.getElementById('env-ambient').textContent = (r && r.Ambient_Temp && r.Ambient_Temp !== '-') ? `${r.Ambient_Temp} °C` : '- °C';
+      document.getElementById('env-oil').textContent = (r && r.Oil_Temp && r.Oil_Temp !== '-') ? `${r.Oil_Temp} °C` : '- °C';
+      document.getElementById('env-winding').textContent = (r && r.Winding_Temp && r.Winding_Temp !== '-') ? `${r.Winding_Temp} °C` : '- °C';
+      document.getElementById('env-humidity').textContent = (r && r.Humidity && r.Humidity !== '-') ? `${r.Humidity}%` : '-%';
 
-      // 3. Signatures
-      populateSignatures(rec, trInfoRec);
+      // 3. Render Tables & Diagnostic Charts
+      renderShortCircuitTables(r, facRec, vector, noWinding, tapType);
+
+      // 4. Populate Signatures
+      populateSignatures(r, trInfoRec);
     }
 
-    function renderTablesAndCharts(r, facRec, vectorGroup) {
-      const hlBody = document.getElementById('short-table-hl-body');
-      hlBody.innerHTML = '';
+    function renderShortCircuitTables(r, facRec, vectorGroup, noWinding, tapType) {
+      const container = document.getElementById('short-tables-container');
+      container.innerHTML = '';
 
       const chartLabels = [];
       const chartDevs = [];
@@ -1226,10 +1167,10 @@
       const chartZB = [];
       const chartZC = [];
 
-      let maxDev = 0;
+      let fleetMaxDev = 0;
+      let fleetMaxFatDev = 0;
       let critTap = 'Tap Center';
 
-      // Helper to compute impedance Z = V / I if not explicitly provided
       const getZ = (zVal, vVal, iVal) => {
         if (zVal && !isNaN(parseFloat(zVal)) && parseFloat(zVal) > 0) return parseFloat(zVal);
         if (vVal && iVal && !isNaN(parseFloat(vVal)) && !isNaN(parseFloat(iVal)) && parseFloat(iVal) > 0) {
@@ -1238,7 +1179,6 @@
         return null;
       };
 
-      // Helper to calculate % dev = ((max - min) / avg) * 100
       const calcDev = (zA, zB, zC, preDev) => {
         if (preDev && !isNaN(parseFloat(preDev))) return parseFloat(preDev);
         if (zA !== null && zB !== null && zC !== null) {
@@ -1251,12 +1191,47 @@
         return null;
       };
 
-      // Factory FAT Z lookup
+      // 1. Table 4.1: HV:LV Winding
+      const connHL = getPhaseRatioConnections(vectorGroup, 'HL');
+      const hlTableBox = document.createElement('div');
+      hlTableBox.innerHTML = `
+        <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 4px; margin-bottom: 4px;">
+          4.1 High Voltage to Low Voltage (HV:LV) Single Phase Short Circuit Impedance
+        </div>
+        <table class="data-table" id="short-table-hl">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 15%;">Tap Position</th>
+              <th colspan="3" class="th-phase-a">${connHL.phA}</th>
+              <th colspan="3" class="th-phase-b">${connHL.phB}</th>
+              <th colspan="3" class="th-phase-c">${connHL.phC}</th>
+              <th rowspan="2" style="width: 10%;">% Phase Dev</th>
+              <th rowspan="2" style="width: 9%;">FAT Z (Ω)</th>
+              <th rowspan="2" style="width: 8%;">Status</th>
+            </tr>
+            <tr>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+              <th class="sub-th" style="width: 7%;">Volt (V)</th>
+              <th class="sub-th" style="width: 7%;">Curr (A)</th>
+              <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+            </tr>
+          </thead>
+          <tbody id="short-table-hl-body"></tbody>
+        </table>
+      `;
+      container.appendChild(hlTableBox);
+
+      const hlBody = hlTableBox.querySelector('#short-table-hl-body');
+
       const fatZMax = facRec ? (facRec.ShortZ_X_Max || null) : null;
       const fatZCen = facRec ? (facRec.ShortZ_X_Cen || null) : null;
       const fatZMin = facRec ? (facRec.ShortZ_X_Min || null) : null;
 
-      // Construct HL Tap Rows
       const hlTaps = [
         {
           name: 'Tap Max (+)',
@@ -1284,7 +1259,7 @@
         }
       ];
 
-      // Discrete Service Tap 1 if available
+      // Discrete Service Tap 1
       if (r && r.HV_Tap1 && r.HV_Tap1 !== '-' && r.HV_A_Tap1_Z && r.HV_A_Tap1_Z !== '-') {
         hlTaps.push({
           name: `Tap ${r.HV_Tap1} (Service)`,
@@ -1296,7 +1271,7 @@
         });
       }
 
-      // Discrete Service Tap 2 if available
+      // Discrete Service Tap 2
       if (r && r.HV_Tap2 && r.HV_Tap2 !== '-' && r.HV_A_Tap2_Z && r.HV_A_Tap2_Z !== '-') {
         hlTaps.push({
           name: `Tap ${r.HV_Tap2}`,
@@ -1308,11 +1283,10 @@
         });
       }
 
-      // Populate HL Rows
       hlTaps.forEach(t => {
         const d = calcDev(t.zA, t.zB, t.zC, t.preDev);
-        if (d !== null && d > maxDev) {
-          maxDev = d;
+        if (d !== null && d > fleetMaxDev) {
+          fleetMaxDev = d;
           critTap = t.name;
         }
 
@@ -1343,19 +1317,49 @@
         hlBody.appendChild(tr);
       });
 
-      // Check for Tertiary Data (TV)
+      // 2. Table 4.2: HV:TV (Tertiary) if present
       const hasTvData = r && (
         (r.TV_A_Voltage_Max && r.TV_A_Voltage_Max !== '-') ||
         (r.TV_A_Voltage_Cen && r.TV_A_Voltage_Cen !== '-') ||
         (r.TV_A_Z_Cen && r.TV_A_Z_Cen !== '-')
       );
 
-      const tvSection = document.getElementById('section-tv-container');
       if (hasTvData) {
-        tvSection.style.display = 'block';
-        const htBody = document.getElementById('short-table-ht-body');
-        htBody.innerHTML = '';
+        const connHT = getPhaseRatioConnections(vectorGroup, 'HT');
+        const htTableBox = document.createElement('div');
+        htTableBox.innerHTML = `
+          <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 8px; margin-bottom: 4px;">
+            4.2 High Voltage to Tertiary Voltage (HV:TV) Single Phase Short Circuit Impedance
+          </div>
+          <table class="data-table" id="short-table-ht">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width: 15%;">Tap Position</th>
+                <th colspan="3" class="th-phase-a">${connHT.phA}</th>
+                <th colspan="3" class="th-phase-b">${connHT.phB}</th>
+                <th colspan="3" class="th-phase-c">${connHT.phC}</th>
+                <th rowspan="2" style="width: 10%;">% Phase Dev</th>
+                <th rowspan="2" style="width: 9%;">FAT Z (Ω)</th>
+                <th rowspan="2" style="width: 8%;">Status</th>
+              </tr>
+              <tr>
+                <th class="sub-th" style="width: 7%;">Volt (V)</th>
+                <th class="sub-th" style="width: 7%;">Curr (A)</th>
+                <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+                <th class="sub-th" style="width: 7%;">Volt (V)</th>
+                <th class="sub-th" style="width: 7%;">Curr (A)</th>
+                <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+                <th class="sub-th" style="width: 7%;">Volt (V)</th>
+                <th class="sub-th" style="width: 7%;">Curr (A)</th>
+                <th class="sub-th" style="width: 8%;">Z (Ω)</th>
+              </tr>
+            </thead>
+            <tbody id="short-table-ht-body"></tbody>
+          </table>
+        `;
+        container.appendChild(htTableBox);
 
+        const htBody = htTableBox.querySelector('#short-table-ht-body');
         const htTaps = [
           {
             name: 'Tap Max (+)',
@@ -1385,8 +1389,8 @@
 
         htTaps.forEach(t => {
           const d = calcDev(t.zA, t.zB, t.zC, t.preDev);
-          if (d !== null && d > maxDev) {
-            maxDev = d;
+          if (d !== null && d > fleetMaxDev) {
+            fleetMaxDev = d;
             critTap = `${t.name} (HT)`;
           }
 
@@ -1408,60 +1412,40 @@
           `;
           htBody.appendChild(tr);
         });
-      } else {
-        tvSection.style.display = 'none';
       }
 
-      // Check if Single_Phase_Result exists in CSV
+      // Check Single_Phase_Result if present
       if (r && r.Single_Phase_Result && !isNaN(parseFloat(r.Single_Phase_Result))) {
-        maxDev = parseFloat(r.Single_Phase_Result);
+        fleetMaxDev = parseFloat(r.Single_Phase_Result);
       }
 
-      // Update KPI Header & Badges
-      document.getElementById('kpi-max-dev').textContent = `${maxDev.toFixed(2)}%`;
+      // Update KPI Header Values
+      document.getElementById('kpi-max-dev').textContent = `${fleetMaxDev.toFixed(2)}%`;
       document.getElementById('kpi-crit-tap').textContent = critTap;
 
       const kpiStatus = document.getElementById('kpi-overall-status');
       const kpiScore = document.getElementById('kpi-overall-score');
-      const repBadge = document.getElementById('rep-badge');
-      const evalTitle = document.getElementById('eval-title');
-      const evalDesc = document.getElementById('eval-desc');
-      const kpiCardDev = document.getElementById('kpi-card-dev');
-      const kpiCardStatus = document.getElementById('kpi-card-status');
+      const diagSummary = document.getElementById('diag-summary');
+      const diagRec = document.getElementById('diag-recommendation');
 
-      if (maxDev <= 2.00) {
-        kpiStatus.textContent = 'NORMAL';
+      if (fleetMaxDev <= 2.00) {
+        kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
         kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
-        repBadge.className = 'status-badge status-pass';
-        repBadge.textContent = 'NORMAL';
-        kpiCardDev.className = 'kpi-card kpi-pass';
-        kpiCardStatus.className = 'kpi-card kpi-pass';
-
-        evalTitle.textContent = 'Diagnostic Conclusion: NORMAL (Rigid & Intact Winding)';
-        evalTitle.style.color = '#15803d';
-        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (within standard limit ≤ 2.00%). Single-phase impedance measurements confirm high electromagnetic symmetry across all active parts with no indication of mechanical winding deformation, radial buckling, or axial displacement.`;
-      } else if (maxDev <= 3.00) {
-        kpiStatus.textContent = 'MONITOR';
+        diagSummary.textContent = `The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.`;
+        diagRec.textContent = 'Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.';
+        diagRec.style.color = '#166534';
+      } else if (fleetMaxDev <= 3.00) {
+        kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
         kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
-        repBadge.className = 'status-badge status-fair';
-        repBadge.textContent = 'MONITOR';
-        kpiCardDev.className = 'kpi-card kpi-fair';
-        kpiCardStatus.className = 'kpi-card kpi-fair';
-
-        evalTitle.textContent = 'Diagnostic Conclusion: MONITOR / QUESTIONABLE';
-        evalTitle.style.color = '#a16207';
-        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (exceeds normal limit 2.00% but ≤ 3.00%). Slight asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 2.00% but ≤ 3.00%). Slight impedance asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+        diagRec.textContent = 'Schedule follow-up SFRA testing and monitor during next planned outage.';
+        diagRec.style.color = '#854d0e';
       } else {
-        kpiStatus.textContent = 'ACTION REQUIRED';
+        kpiStatus.innerHTML = '<span class="status-badge status-fail">ACTION REQUIRED</span>';
         kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
-        repBadge.className = 'status-badge status-fail';
-        repBadge.textContent = 'ACTION REQUIRED';
-        kpiCardDev.className = 'kpi-card kpi-fail';
-        kpiCardStatus.className = 'kpi-card kpi-fail';
-
-        evalTitle.textContent = 'Diagnostic Conclusion: ACTION REQUIRED (Significant Asymmetry)';
-        evalTitle.style.color = '#b91c1c';
-        evalDesc.textContent = `Maximum phase-to-phase impedance deviation is ${maxDev.toFixed(2)}% (exceeds IEEE limit > 3.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
+        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds IEEE limit > 3.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
+        diagRec.textContent = 'Immediate investigation required: Perform comprehensive SFRA analysis and internal inspection before energization.';
+        diagRec.style.color = '#991b1b';
       }
 
       // Render Charts
@@ -1480,7 +1464,6 @@
       const ctx1 = document.getElementById('devChart').getContext('2d');
       if (devChartInstance) devChartInstance.destroy();
 
-      // Custom Plugin to draw 2.00% Limit Line
       const devLimitLinesPlugin = {
         id: 'devLimitLines',
         beforeDraw: (chart) => {
@@ -1488,7 +1471,7 @@
           if (!y) return;
           ctx.save();
 
-          // Acceptable Band 0 to 2%
+          // Shaded Acceptable Band (0 to 2%)
           const yTopLimit = y.getPixelForValue(2.00);
           const yZero = y.getPixelForValue(0);
           if (yTopLimit !== undefined && yZero !== undefined) {
@@ -1674,15 +1657,34 @@
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
-      const text = document.getElementById('theme-text');
-      if (!icon || !text) return;
+      if (!icon) return;
       if (theme === 'dark') {
         icon.className = 'fa-solid fa-sun';
-        text.textContent = 'Light Mode';
       } else {
         icon.className = 'fa-solid fa-moon';
-        text.textContent = 'Dark Mode';
       }
+    }
+
+    function captureReportJPG() {
+      const reportElement = document.getElementById('report-content');
+      if (!reportElement) return;
+
+      const opt = {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      };
+
+      html2canvas(reportElement, opt).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Single_Short_Report_${currentSerial || 'Report'}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      }).catch(err => {
+        console.error('Error capturing report:', err);
+        alert('Could not generate JPG capture. Please use the Print button instead.');
+      });
     }
   </script>
 </body>
