@@ -924,7 +924,7 @@
         <div class="chart-box">
           <div class="chart-title">
             <span><i class="fa-solid fa-chart-bar text-sky-600"></i> Measured vs. Calculated Ratio Profile</span>
-            <span style="color: #64748b; font-size: 8.5px;" id="chart-ratio-vector-label">Dyn11 Winding Ratio</span>
+            <span style="color: #64748b; font-size: 8.5px;" id="chart-ratio-vector-label">Winding Ratio Profile</span>
           </div>
           <div class="chart-container">
             <canvas id="ratioProfileChart"></canvas>
@@ -1939,7 +1939,7 @@
       }
 
       // Render Charts
-      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio);
+      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio, vectorGroup);
     }
 
     function formatVal(v, dec = 4) {
@@ -2330,10 +2330,17 @@
       }
 
       // Render Charts
-      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio);
+      renderCharts(chartTapLabels, chartErrPhA, chartErrPhB, chartErrPhC, chartMeasRatio, chartCalcRatio, vectorGroup);
     }
 
-    function renderCharts(labels, phA, phB, phC, measRatio, calcRatio) {
+    function renderCharts(labels, phA, phB, phC, measRatio, calcRatio, vectorGroup = '') {
+      // Dynamic Vector Group label for Ratio Profile Chart
+      const vectorLabel = document.getElementById('chart-ratio-vector-label');
+      if (vectorLabel) {
+        const v = String(vectorGroup || '').trim();
+        vectorLabel.textContent = v ? `${v} Winding Ratio` : 'Winding Ratio Profile';
+      }
+
       // Custom Plugin to draw +-0.50% Limit Lines & Acceptable Tolerance Band
       const ratioLimitLinesPlugin = {
         id: 'ratioLimitLines',
