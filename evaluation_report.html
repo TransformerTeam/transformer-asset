@@ -1749,13 +1749,13 @@
 
       // Populate Signatures / Approval
       const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, item.serial || item.SERIAL_NUMBER || item.Name) : null;
-      const tester = (trInfoItem && (trInfoItem.TESTED_BY || trInfoItem.Tested_by)) || item.Tested_by || item.Name1 || item.NAME1 || 'Mr. Nattapong M.';
-      const reviewer = (trInfoItem && (trInfoItem.WITNESSED_BY || trInfoItem.Witnessed_by)) || item.Witnessed_by || item.Name2 || item.NAME2 || 'Mr. Pornpong S.';
-      const approver = (trInfoItem && (trInfoItem.APPROVED_BY || trInfoItem.Approved_by)) || item.Approved_by || item.Name3 || item.NAME3 || 'Mr. Somchai K.';
+      const tester = (trInfoItem && (trInfoItem.TESTED_BY || trInfoItem.Tested_by)) || item.Tested_by || item.Name1 || item.NAME1 || '-';
+      const reviewer = (trInfoItem && (trInfoItem.WITNESSED_BY || trInfoItem.Witnessed_by)) || item.Witnessed_by || item.Name2 || item.NAME2 || item.reviewed_name || '-';
+      const approver = (trInfoItem && (trInfoItem.APPROVED_BY || trInfoItem.Approved_by)) || item.Approved_by || item.Name3 || item.NAME3 || item.approved_name || '-';
 
-      const compTested = (trInfoItem && trInfoItem.COMP1) || item.COMP1 || 'Hitachi Energy';
-      const compReviewed = (trInfoItem && trInfoItem.COMP2) || item.COMP2 || 'GPSC';
-      const compApproved = 'GPSC Asset Management';
+      const compTested = (trInfoItem && (trInfoItem.COMP1 || trInfoItem.comp1)) || item.COMP1 || item.comp1 || '-';
+      const compReviewed = (trInfoItem && (trInfoItem.COMP2 || trInfoItem.comp2)) || item.COMP2 || item.comp2 || '-';
+      const compApproved = (trInfoItem && (trInfoItem.COMP3 || trInfoItem.comp3)) || item.COMP3 || item.comp3 || '-';
 
       const dateStr = item.testDate || item.date || item.Date || '';
       const formattedDateStr = (dateStr && dateStr !== '-') ? (typeof formatDate === 'function' ? formatDate(dateStr) : dateStr) : '-';

@@ -1250,16 +1250,17 @@
       }
 
       // 19. SIGNATURES / APPROVAL
-      const comp1 = r.COMP1 || 'TIS Engineering and Service Co.,Ltd.';
-      const comp2 = r.COMP2 || 'GPSC';
-      const tester = r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1 || 'Mr. Nattapong M.';
-      const witness = r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || 'Mr. Pornpong S.';
-      const approver = r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || 'Mr. Somchai K.';
+      const comp1 = r.COMP1 || r.comp1 || '-';
+      const comp2 = r.COMP2 || r.comp2 || '-';
+      const comp3 = r.COMP3 || r.comp3 || '-';
+      const tester = r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1 || '-';
+      const witness = r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name || '-';
+      const approver = r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name || '-';
       const dateStr = formatDateToDdMmmYyyy(r.date);
 
-      document.getElementById('resp-company-tested').textContent = comp1 || 'Hitachi Energy';
-      document.getElementById('resp-company-reviewed').textContent = comp2 || 'GPSC';
-      document.getElementById('resp-company-approved').textContent = 'GPSC Asset Management';
+      document.getElementById('resp-company-tested').textContent = comp1;
+      document.getElementById('resp-company-reviewed').textContent = comp2;
+      document.getElementById('resp-company-approved').textContent = comp3;
 
       document.getElementById('resp-name-tested').textContent = tester;
       document.getElementById('resp-name-reviewed').textContent = witness;

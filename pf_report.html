@@ -1227,13 +1227,13 @@
 
       // Signatures block
       const dateStr = formatDate(pfItem.date);
-      document.getElementById('resp-name-tested').textContent = pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || 'Mr. Nattapong M.';
-      document.getElementById('resp-name-reviewed').textContent = pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || 'Mr. Pornpong S.';
-      document.getElementById('resp-name-approved').textContent = pfItem.Name3 || pfItem.NAME3 || 'Mr. Somchai K.';
+      document.getElementById('resp-name-tested').textContent = pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || pfItem.Tested_by || '-';
+      document.getElementById('resp-name-reviewed').textContent = pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || pfItem.reviewed_name || pfItem.Witnessed_by || '-';
+      document.getElementById('resp-name-approved').textContent = pfItem.Name3 || pfItem.NAME3 || pfItem.approved_name || pfItem.Approved_by || '-';
 
-      document.getElementById('resp-comp-tested').textContent = pfItem.COMP1 || 'Hitachi Energy';
-      document.getElementById('resp-comp-reviewed').textContent = pfItem.COMP2 || 'GPSC';
-      document.getElementById('resp-comp-approved').textContent = 'GPSC Asset Management';
+      document.getElementById('resp-comp-tested').textContent = pfItem.COMP1 || pfItem.comp1 || '-';
+      document.getElementById('resp-comp-reviewed').textContent = pfItem.COMP2 || pfItem.comp2 || '-';
+      document.getElementById('resp-comp-approved').textContent = pfItem.COMP3 || pfItem.comp3 || '-';
 
       document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
       document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';

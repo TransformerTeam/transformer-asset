@@ -1491,13 +1491,13 @@
       };
 
       const setSig = (prefix) => {
-        const compTested = cleanSigVal(curr.COMP1, 'Hitachi Energy');
-        const compRev = cleanSigVal(curr.COMP_REV || curr.COMP2, 'GPSC');
-        const compApp = cleanSigVal(curr.COMP3, 'GPSC Asset Management');
+        const compTested = cleanSigVal(curr.COMP1 || curr.comp1, '-');
+        const compRev = cleanSigVal(curr.COMP_REV || curr.COMP2 || curr.comp2, '-');
+        const compApp = cleanSigVal(curr.COMP3 || curr.comp3, '-');
 
-        const nameTested = cleanSigVal(curr.Name1 || curr.test_name, 'Mr. Aekapong Klamchang');
-        const nameRev = cleanSigVal(curr.Name_Rev || curr.witness_name || curr.Name2, 'Mr. Pornpong S.');
-        const nameApp = cleanSigVal(curr.Name3 || curr.approved_name, 'Mr. Somchai K.');
+        const nameTested = cleanSigVal(curr.Name1 || curr.NAME1 || curr.test_name || curr.Tested_by, '-');
+        const nameRev = cleanSigVal(curr.Name_Rev || curr.witness_name || curr.Name2 || curr.NAME2 || curr.Witnessed_by, '-');
+        const nameApp = cleanSigVal(curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by, '-');
 
         const dtStr = formatDate(curr.date);
         const dtTested = (dtStr && dtStr !== '-') ? `Date: ${dtStr}` : 'Date: -';

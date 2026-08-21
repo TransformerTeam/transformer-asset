@@ -1133,13 +1133,13 @@
         document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
 
         const dateStr = formatReportDate(latest.date);
-        document.getElementById('resp-name-tested').textContent = latest.test_name || latest.Name1 || latest.NAME1 || 'Mr. Nattapong M.';
-        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || latest.Name2 || latest.NAME2 || 'Mr. Pornpong S.';
-        document.getElementById('resp-name-approved').textContent = latest.Name3 || latest.NAME3 || 'Mr. Somchai K.';
+        document.getElementById('resp-name-tested').textContent = latest.test_name || latest.Name1 || latest.NAME1 || latest.Tested_by || '-';
+        document.getElementById('resp-name-reviewed').textContent = latest.witness_name || latest.Name2 || latest.NAME2 || latest.reviewed_name || latest.Witnessed_by || '-';
+        document.getElementById('resp-name-approved').textContent = latest.Name3 || latest.NAME3 || latest.approved_name || latest.Approved_by || '-';
 
-        document.getElementById('resp-comp-tested').textContent = latest.COMP1 || 'Hitachi Energy';
-        document.getElementById('resp-comp-reviewed').textContent = latest.COMP2 || 'GPSC';
-        document.getElementById('resp-comp-approved').textContent = 'GPSC Asset Management';
+        document.getElementById('resp-comp-tested').textContent = latest.COMP1 || latest.comp1 || '-';
+        document.getElementById('resp-comp-reviewed').textContent = latest.COMP2 || latest.comp2 || '-';
+        document.getElementById('resp-comp-approved').textContent = latest.COMP3 || latest.comp3 || '-';
 
         document.getElementById('resp-date-tested').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
         document.getElementById('resp-date-reviewed').textContent = (dateStr && dateStr !== '-') ? `Date: ${dateStr}` : 'Date: -';
