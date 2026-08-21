@@ -1662,6 +1662,7 @@
       setElHref('link-visual', `visual_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-pi', `pi_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-ratio', `ratio_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-single-short', `single_short_report.html?serial=${encodeURIComponent(serialVal)}`);
 
       // 0. Header Information
       setElText('eval-report-id', `TR-EVAL-${serialVal}`);
@@ -2345,7 +2346,16 @@
         };
       }
 
-      // Methods without a dedicated report form (e.g. Exciting Current, Short Circuit, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
+      // 8. Single Phase Short Circuit Impedance
+      if (nameLower.includes('single phase short circuit') || nameLower.includes('single phase impedance') || (nameLower.includes('short circuit') && !nameLower.includes('three'))) {
+        return {
+          url: `single_short_report.html?serial=${s}`,
+          title: 'Open Single Phase Short Circuit Impedance Test Report',
+          icon: 'fa-solid fa-bolt'
+        };
+      }
+
+      // Methods without a dedicated report form (e.g. Exciting Current, Three Phase Short Circuit, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
       return null;
     }
 

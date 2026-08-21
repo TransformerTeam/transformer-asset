@@ -2027,6 +2027,17 @@ function openDetail(no) {
       <td>IEEE C57.152: <= 5% Dev</td>
       <td class="ex-status-good" colspan="3">${wValStr}</td>
     </tr>
+    <tr>
+      <td>
+        Single Phase Short Circuit Impedance
+        <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
+          <i class="fa-solid fa-file-invoice"></i>
+        </a>
+      </td>
+      <td><span style="${piDateStyle}">${formatDgaDate(item.dateToAssess)}</span></td>
+      <td>IEEE C57.152: <= 2.0% Dev</td>
+      <td class="ex-status-good" colspan="3">< 2.0% Dev (Normal)</td>
+    </tr>
   `;
 
   // Special Tests
