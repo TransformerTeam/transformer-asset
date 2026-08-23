@@ -2365,6 +2365,15 @@
         };
       }
 
+      // 10. Dynamic Resistance Measurement (DRM / OLTC)
+      if (nameLower.includes('dynamic resistance') || nameLower.includes('drm') || nameLower.includes('dynamic winding resistance') || (ptLower.includes('oltc') && nameLower.includes('dynamic'))) {
+        return {
+          url: `drm_report.html?serial=${s}`,
+          title: 'Open Dynamic Resistance Measurement (DRM) Report',
+          icon: 'fa-solid fa-file-lines'
+        };
+      }
+
       // Methods without a dedicated report form (e.g. Exciting Current, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
       return null;
     }

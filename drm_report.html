@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Resistance Measurement (DRM) Report - OLTC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --header-bg: #1e3a8a;
+      --header-text: #ffffff;
+      --pass-bg: #dcfce7;
+      --pass-text: #166534;
+      --pass-border: #86efac;
+      --fair-bg: #fef9c3;
+      --fair-text: #854d0e;
+      --fair-border: #fde047;
+      --fail-bg: #fee2e2;
+      --fail-text: #991b1b;
+      --fail-border: #fca5a5;
+    }
+
+    body.dark {
+      --bg-page: #0b0f17;
+      --bg-card: #12161f;
+      --border-color: #262f3f;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --header-bg: #172554;
+      --header-text: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.4;
+      font-size: 13px;
+      padding-bottom: 40px;
+    }
+
+    .top-bar {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .top-bar-left, .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    body.dark .btn:hover {
+      background-color: #1e293b;
+      border-color: #334155;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+      color: #ffffff;
+    }
+
+    .select-input {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .report-container {
+      max-width: 1020px;
+      margin: 20px auto;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+      padding: 24px;
+    }
+
+    .report-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .report-header-left h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .report-header-left p {
+      font-size: 11px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .report-header-right {
+      text-align: right;
+    }
+
+    .report-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 4px;
+    }
+
+    .section-title span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-info {
+      font-size: 10px;
+      font-weight: 600;
+      background-color: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    body.dark .badge-info {
+      background-color: #312e81;
+      color: #c7d2fe;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .info-table th, .info-table td {
+      border: 1px solid var(--border-color);
+      padding: 5px 8px;
+    }
+
+    .info-table th {
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 32%;
+      text-align: left;
+    }
+
+    body.dark .info-table th {
+      background-color: #1e293b;
+      color: #94a3b8;
+    }
+
+    .info-table td {
+      font-weight: 500;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 12px 0 16px 0;
+    }
+
+    .kpi-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    body.dark .kpi-card {
+      background: #171f2e;
+    }
+
+    .kpi-title {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid var(--border-color);
+      padding: 5px 6px;
+    }
+
+    .data-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
+    .data-table thead tr:nth-child(2) th {
+      background-color: #2563eb;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .data-table tbody tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    body.dark .data-table tbody tr:nth-child(even) {
+      background-color: #161e2e;
+    }
+
+    .data-table tbody tr:hover {
+      background-color: #eff6ff;
+    }
+
+    body.dark .data-table tbody tr:hover {
+      background-color: #1e293b;
+    }
+
+    .tap-col {
+      font-weight: 600;
+      text-align: left;
+      padding-left: 8px !important;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pass {
+      background-color: var(--pass-bg);
+      color: var(--pass-text);
+      border: 1px solid var(--pass-border);
+    }
+
+    .status-fair {
+      background-color: var(--fair-bg);
+      color: var(--fair-text);
+      border: 1px solid var(--fair-border);
+    }
+
+    .status-fail {
+      background-color: var(--fail-bg);
+      color: var(--fail-text);
+      border: 1px solid var(--fail-border);
+    }
+
+    .waveform-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .waveform-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .waveform-legend {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .chart-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .chart-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .assessment-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .assessment-table th, .assessment-table td {
+      border: 1px solid var(--border-color);
+      padding: 6px 10px;
+    }
+
+    .assessment-table th {
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 15%;
+      text-align: left;
+    }
+
+    body.dark .assessment-table th {
+      background-color: #1e293b;
+      color: #94a3b8;
+    }
+
+    .assessment-table td {
+      width: 85%;
+      line-height: 1.5;
+    }
+
+    .sig-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .sig-table th, .sig-table td {
+      border: 1px solid var(--border-color);
+      padding: 6px 8px;
+    }
+
+    .sig-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      width: 33.33%;
+    }
+
+    .sig-space {
+      height: 52px;
+      vertical-align: bottom;
+      padding-bottom: 6px;
+    }
+
+    @media print {
+      body { background: #ffffff !important; padding: 0; }
+      .top-bar { display: none !important; }
+      .report-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <a href="assessment.html" class="btn"><i class="fa-solid fa-arrow-left"></i> Back to Assessment</a>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Select Transformer:</span>
+        <select id="serial-select" class="select-input" onchange="onSerialChange(this.value)">
+        </select>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="btn" onclick="toggleDarkMode()"><i class="fa-solid fa-moon" id="dark-icon"></i> Theme</button>
+      <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+    </div>
+  </div>
+
+  <!-- A4 Report Canvas -->
+  <div class="report-container" id="report-canvas">
+    
+    <!-- Report Header -->
+    <div class="report-header">
+      <div class="report-header-left">
+        <h1><i class="fa-solid fa-wave-square"></i> DYNAMIC RESISTANCE MEASUREMENT (DRM) REPORT</h1>
+        <p>ON-LOAD TAP CHANGER (OLTC) SWITCHING DYNAMICS & TIMING ANALYSIS</p>
+      </div>
+      <div class="report-header-right">
+        <div class="report-badge">IEEE Std C57.152 / CIGRE WG A2.34</div>
+        <div style="font-size: 10px; opacity: 0.85; margin-top: 4px;" id="header-test-date">Test Date: 2025-03-20</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Equipment Identification & OLTC Specifications -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-bolt"></i> 1. Equipment & On-Load Tap Changer (OLTC) Specifications</span>
+      <span class="badge-info">OLTC Resistor Type</span>
+    </div>
+    <div class="info-grid">
+      <table class="info-table">
+        <tr><th>Equipment Name</th><td id="info-equip">14100-TR-003</td></tr>
+        <tr><th>Serial Number</th><td id="info-serial" style="font-weight: 700; color: var(--primary);">PP0084B01</td></tr>
+        <tr><th>Substation / Site</th><td id="info-site">CUP-1 (Rayong)</td></tr>
+        <tr><th>Rated Power / Voltage</th><td id="info-rating">25 MVA | 115 / 22 kV</td></tr>
+        <tr><th>Vector Group</th><td id="info-vector">Dyn1</td></tr>
+      </table>
+
+      <table class="info-table">
+        <tr><th>OLTC Manufacturer</th><td id="info-oltc-mfg" style="font-weight: 700;">Maschinenfabrik Reinhausen (MR)</td></tr>
+        <tr><th>OLTC Model & Type</th><td id="info-oltc-model">V III 200D-123/76-10 19 3W</td></tr>
+        <tr><th>OLTC Serial / Motor Drive</th><td id="info-oltc-serial">1012608 | Motor: ED100S</td></tr>
+        <tr><th>Operations Counter</th><td id="info-oltc-counter" style="font-weight: 700; color: #1e3a8a;">58,148 Operations</td></tr>
+        <tr><th>Transition Resistor (R<sub>tr</sub>)</th><td id="info-oltc-resistor" style="font-weight: 700; color: #166534;">6.54 Ω (Nameplate) | 17 Taps</td></tr>
+      </table>
+    </div>
+
+    <!-- Section 2 & 3: Test Instrument & Environmental Conditions -->
+    <div class="info-grid" style="margin-bottom: 8px;">
+      <div>
+        <div class="section-title" style="margin-top: 4px;">
+          <span><i class="fa-solid fa-microchip"></i> 2. Test Instrument</span>
+        </div>
+        <table class="info-table">
+          <tr><th>Apparatus / Instrument</th><td id="info-instrument">OMICRON TESTRANO 600</td></tr>
+          <tr><th>Instrument S/N</th><td id="info-inst-sn">SN-TR600-8982</td></tr>
+          <tr><th>Test Current / Mode</th><td>10.0 A DC (High Accuracy Constant Current)</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="section-title" style="margin-top: 4px;">
+          <span><i class="fa-solid fa-temperature-half"></i> 3. Environmental Conditions</span>
+        </div>
+        <table class="info-table">
+          <tr><th>Ambient / Humidity</th><td id="info-env">28.5 °C | 62 %RH</td></tr>
+          <tr><th>OLTC Compartment Oil Temp</th><td>42.0 °C</td></tr>
+          <tr><th>Standard Reference</th><td>IEEE C57.152-2013 Cl. 6.8 & CIGRE A2.34</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- KPI Summary Highlight Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title"><i class="fa-solid fa-stopwatch text-indigo-500"></i> Max Switching Time (t<sub>sw</sub>)</div>
+        <div class="kpi-value" id="kpi-max-time" style="color: #1e3a8a;">46.2 ms</div>
+        <div class="kpi-sub">Limit: 30.0 – 70.0 ms (Normal)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><i class="fa-solid fa-chart-line text-emerald-500"></i> Max Current Ripple (%)</div>
+        <div class="kpi-value" id="kpi-max-ripple" style="color: #166534;">13.4 %</div>
+        <div class="kpi-sub">Tolerance: &le; 20.0 % (Pass)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><i class="fa-solid fa-calculator text-blue-500"></i> Transition Resistor (R<sub>tr</sub>)</div>
+        <div class="kpi-value" id="kpi-rtr-dev" style="color: #0f172a;">6.58 Ω <span style="font-size: 12px; color: #166534;">(+0.61%)</span></div>
+        <div class="kpi-sub">Tolerance: &le; 10.0% vs Nameplate</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><i class="fa-solid fa-shield-halved text-purple-500"></i> Discontinuity / Bounce</div>
+        <div class="kpi-value" id="kpi-bounce" style="color: #166534;">0.00 ms</div>
+        <div class="kpi-sub">Strict Limit: 0 ms (No Open Circuit)</div>
+      </div>
+    </div>
+
+    <!-- Section 4: DRM Dynamic Switching Waveform Visualizer -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-chart-area"></i> 4. Dynamic Switching Waveform Analysis (Current vs. Time)</span>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 11px; font-weight: 500;">Select Tap Step:</span>
+        <select id="waveform-tap-select" class="select-input" style="padding: 2px 8px; font-size: 11px;" onchange="updateWaveformChart(this.value)">
+          <option value="8_9">Tap 8 → Tap 9 (Raise)</option>
+          <option value="9_10" selected>Tap 9 → Tap 10 (Raise - Critical Tap)</option>
+          <option value="10_11">Tap 10 → Tap 11 (Raise)</option>
+          <option value="10_9">Tap 10 → Tap 9 (Lower)</option>
+          <option value="9_8">Tap 9 → Tap 8 (Lower)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="waveform-card">
+      <div class="waveform-header">
+        <div style="font-size: 11.5px; font-weight: 600;" id="waveform-header-label">
+          Switching Event Profile: Tap 9 → Tap 10 (Raise Direction) | Transition Time: 46.2 ms
+        </div>
+        <div class="waveform-legend">
+          <div class="legend-item"><span class="legend-dot" style="background-color: #3b82f6;"></span> Phase A</div>
+          <div class="legend-item"><span class="legend-dot" style="background-color: #eab308;"></span> Phase B</div>
+          <div class="legend-item"><span class="legend-dot" style="background-color: #f97316;"></span> Phase C</div>
+        </div>
+      </div>
+      <div style="height: 190px; width: 100%;">
+        <canvas id="drmWaveformChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Section 5: DRM Measurement Tables -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-table-list"></i> 5. Dynamic Switching Time & Transition Resistor Measurement</span>
+      <span class="badge-info">Raise (1 → 17) & Lower (17 → 1)</span>
+    </div>
+
+    <!-- Table 5.1: Raise Direction -->
+    <div style="font-size: 11.5px; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; display: flex; justify-content: space-between;">
+      <span>5.1 Raise Direction Tap Switching Sequence (1 → 17)</span>
+      <span style="font-size: 10.5px; font-weight: 600; color: var(--text-muted);">Standard: IEEE C57.152 Cl. 6.8</span>
+    </div>
+    <table class="data-table" id="table-raise">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width: 14%;">Tap Transition</th>
+          <th colspan="3">Switching Time t<sub>sw</sub> (ms)</th>
+          <th rowspan="2" style="width: 11%;">Sync Diff<br>Δt (ms)</th>
+          <th rowspan="2" style="width: 12%;">Measured R<sub>tr</sub><br>(Ω)</th>
+          <th rowspan="2" style="width: 11%;">Current<br>Ripple (%)</th>
+          <th rowspan="2" style="width: 12%;">Discontinuity<br>/ Bounce (ms)</th>
+          <th rowspan="2" style="width: 10%;">Status</th>
+        </tr>
+        <tr>
+          <th style="width: 10%;">Phase A</th>
+          <th style="width: 10%;">Phase B</th>
+          <th style="width: 10%;">Phase C</th>
+        </tr>
+      </thead>
+      <tbody id="table-raise-body">
+      </tbody>
+    </table>
+
+    <!-- Table 5.2: Lower Direction -->
+    <div style="font-size: 11.5px; font-weight: 700; color: #1e3a8a; margin-top: 10px; margin-bottom: 4px; display: flex; justify-content: space-between;">
+      <span>5.2 Lower Direction Tap Switching Sequence (17 → 1)</span>
+      <span style="font-size: 10.5px; font-weight: 600; color: var(--text-muted);">Standard: IEEE C57.152 Cl. 6.8</span>
+    </div>
+    <table class="data-table" id="table-lower">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width: 14%;">Tap Transition</th>
+          <th colspan="3">Switching Time t<sub>sw</sub> (ms)</th>
+          <th rowspan="2" style="width: 11%;">Sync Diff<br>Δt (ms)</th>
+          <th rowspan="2" style="width: 12%;">Measured R<sub>tr</sub><br>(Ω)</th>
+          <th rowspan="2" style="width: 11%;">Current<br>Ripple (%)</th>
+          <th rowspan="2" style="width: 12%;">Discontinuity<br>/ Bounce (ms)</th>
+          <th rowspan="2" style="width: 10%;">Status</th>
+        </tr>
+        <tr>
+          <th style="width: 10%;">Phase A</th>
+          <th style="width: 10%;">Phase B</th>
+          <th style="width: 10%;">Phase C</th>
+        </tr>
+      </thead>
+      <tbody id="table-lower-body">
+      </tbody>
+    </table>
+
+    <!-- Dual Diagnostic Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">
+          <span><i class="fa-solid fa-chart-column"></i> Switching Time vs. Tap Transition</span>
+          <span style="font-size: 10px; color: var(--text-muted);">Tolerance: 30 - 70 ms</span>
+        </div>
+        <div style="height: 180px; width: 100%;">
+          <canvas id="timeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <span><i class="fa-solid fa-chart-line"></i> Transition Resistor (R<sub>tr</sub>) & Ripple (%) Profile</span>
+          <span style="font-size: 10px; color: var(--text-muted);">R<sub>tr</sub> Nameplate: 6.54 Ω</span>
+        </div>
+        <div style="height: 180px; width: 100%;">
+          <canvas id="rippleChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Criteria Reference Table -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-book-bookmark"></i> 6. OLTC DRM Diagnostic Assessment Criteria (IEEE C57.152 & CIGRE WG A2.34)</span>
+    </div>
+    <table class="data-table" style="margin-bottom: 12px; font-size: 10.5px;">
+      <thead>
+        <tr>
+          <th style="width: 22%;">Diagnostic Parameter</th>
+          <th style="width: 26%;">Normal / Good (Score 5)</th>
+          <th style="width: 26%;">Monitor / Fair (Score 3 - 4)</th>
+          <th style="width: 26%;">Action / Critical (Score 1 - 2)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Switching Time (t<sub>sw</sub>)</td>
+          <td style="color: #166534; font-weight: 600;">30.0 – 70.0 ms (Fast & Crisp)</td>
+          <td style="color: #854d0e; font-weight: 600;">70.1 – 90.0 ms (Spring Fatigue)</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; 90.0 ms or &lt; 25.0 ms (Mechanism Jam)</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Contact Discontinuity / Open</td>
+          <td style="color: #166534; font-weight: 600;">0.00 ms (Seamless Continuity)</td>
+          <td style="color: #854d0e; font-weight: 600;">Contact chatter &le; 1.0 ms</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; 1.0 ms (Diverter Open / Arcing Risk)</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Transition Resistor (R<sub>tr</sub>) Dev</td>
+          <td style="color: #166534; font-weight: 600;">&le; &plusmn;10.0% vs Nameplate</td>
+          <td style="color: #854d0e; font-weight: 600;">&plusmn;10.1% – &plusmn;20.0% (Resistor Thermal Drift)</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; &plusmn;20.0% or Open Resistor Wire</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">3-Phase Synchronicity (Δt)</td>
+          <td style="color: #166534; font-weight: 600;">&le; 5.0 ms Difference</td>
+          <td style="color: #854d0e; font-weight: 600;">5.1 – 10.0 ms Difference</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; 10.0 ms (Severe Phase Asynchrony)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 7: Engineering Assessment & Recommendation -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-clipboard-check"></i> 7. Engineering Assessment & Recommendations</span>
+    </div>
+    <table class="assessment-table">
+      <tr>
+        <th>Diagnostic Summary</th>
+        <td id="diag-summary">
+          Dynamic Resistance Measurement (DRM) of the On-Load Tap Changer (OLTC Type: <strong>V III 200D</strong>) was performed across all 17 tap positions in both Raise (1 → 17) and Lower (17 → 1) operational directions. 
+          The measured switching times range between <strong>43.8 ms and 47.1 ms</strong> (well within the IEEE standard window of 30.0 - 70.0 ms). 
+          No circuit discontinuities, micro-bounces, or contact interruptions were detected (Discontinuity = 0.00 ms). 
+          The transition resistors measured <strong>6.52 Ω – 6.61 Ω</strong> (deviation +0.61% vs. 6.54 Ω nameplate baseline, within ±10% limit). 
+          All three phases exhibit high synchronicity (Δt ≤ 1.8 ms), indicating proper energy accumulator spring operation and excellent contact integrity.
+        </td>
+      </tr>
+      <tr>
+        <th>OLTC Condition Rating</th>
+        <td>
+          <span class="status-badge status-pass" style="font-size: 11px;">NORMAL (HEALTHY)</span>
+          <span style="margin-left: 10px; font-weight: 600; color: #166534;">Score: 5 / 5 (IEEE C57.152 & CIGRE A2.34)</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Corrective Action & Plan</th>
+        <td id="diag-rec" style="font-weight: 600; color: #166534;">
+          OLTC switching mechanism and diverter contacts are in sound mechanical and electrical condition. Maintain standard Preventive Maintenance (PM) and perform DGA/Oil dielectric breakdown screening on the diverter tank per routine schedule. Next planned DRM assessment due in 2029 (or after 80,000 operations).
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section 8: Signatures & Approval -->
+    <div class="section-title">
+      <span><i class="fa-solid fa-signature"></i> 8. Signatures & Approval</span>
+    </div>
+    <table class="sig-table">
+      <thead>
+        <tr>
+          <th>Tested By</th>
+          <th>Reviewed By</th>
+          <th>Approved By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sig-space">
+            <div style="font-weight: 700;" id="sig-tester">Mr. Jirasak S.</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Testing Engineer (GPSC)</div>
+          </td>
+          <td class="sig-space">
+            <div style="font-weight: 700;" id="sig-reviewer">Mr. Suchat M.</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Senior Electrical Engineer</div>
+          </td>
+          <td class="sig-space">
+            <div style="font-weight: 700;" id="sig-approver">Dr. Chaiwat P.</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Asset Manager / Division Head</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+
+  <script>
+    const MOCK_OLTC_DATA = {
+      "PP0084B01": {
+        equipName: "14100-TR-003",
+        serial: "PP0084B01",
+        site: "CUP-1 (Rayong)",
+        rating: "25 MVA | 115 / 22 kV",
+        vector: "Dyn1",
+        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
+        oltcModel: "V III 200D-123/76-10 19 3W",
+        oltcSerial: "1012608",
+        motorDrive: "ED100S",
+        counter: "58,148",
+        totalTaps: 17,
+        rtrNameplate: 6.54,
+        testDate: "2025-03-20",
+        instrument: "OMICRON TESTRANO 600",
+        instSN: "SN-TR600-8982",
+        tester: "Mr. Jirasak S.",
+        reviewer: "Mr. Suchat M.",
+        baseTime: 45.2,
+        baseRtr: 6.58,
+        baseRipple: 13.4,
+        status: "NORMAL",
+        score: 5
+      },
+      "PP0102B01": {
+        equipName: "14100-TR-004",
+        serial: "PP0102B01",
+        site: "CUP-1 (Rayong)",
+        rating: "25 MVA | 115 / 22 kV",
+        vector: "Dyn1",
+        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
+        oltcModel: "V III 200D-123/76-10 19 3W",
+        oltcSerial: "1016766",
+        motorDrive: "ED100S",
+        counter: "80,505",
+        totalTaps: 17,
+        rtrNameplate: 6.54,
+        testDate: "2025-03-22",
+        instrument: "OMICRON TESTRANO 600",
+        instSN: "SN-TR600-8982",
+        tester: "Mr. Jirasak S.",
+        reviewer: "Mr. Suchat M.",
+        baseTime: 46.8,
+        baseRtr: 6.60,
+        baseRipple: 14.1,
+        status: "NORMAL",
+        score: 5
+      },
+      "510049": {
+        equipName: "31-90-CPPB-XF-KT2A",
+        serial: "510049",
+        site: "SITE3 (GSPP2&3)",
+        rating: "50 MVA | 115 / 22 kV",
+        vector: "YNa0(d1)",
+        oltcMfg: "ABB",
+        oltcModel: "UCGRT 650/600",
+        oltcSerial: "1ZSC8710413",
+        motorDrive: "BUE2",
+        counter: "4,837",
+        totalTaps: 21,
+        rtrNameplate: 5.10,
+        testDate: "2025-02-06",
+        instrument: "TESTRANO 600 / Vanguard",
+        instSN: "SN-TR600-4412",
+        tester: "Mr. Jirasak S.",
+        reviewer: "Mr. Suchat M.",
+        baseTime: 48.5,
+        baseRtr: 5.18,
+        baseRipple: 12.2,
+        status: "NORMAL",
+        score: 5
+      },
+      "PTE 1689/03": {
+        equipName: "31-90-CPPB-XF-KT6A",
+        serial: "PTE 1689/03",
+        site: "SITE3 (GSPP2&3)",
+        rating: "40 MVA | 115 / 22 kV",
+        vector: "YNa0(d1)",
+        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
+        oltcModel: "3XMI802 170/D",
+        oltcSerial: "196370",
+        motorDrive: "MA7",
+        counter: "23,340",
+        totalTaps: 21,
+        rtrNameplate: 8.40,
+        testDate: "2025-01-26",
+        instrument: "OMICRON TESTRANO 600",
+        instSN: "SN-TR600-8982",
+        tester: "Mr. Jirasak S.",
+        reviewer: "Mr. Suchat M.",
+        baseTime: 44.1,
+        baseRtr: 8.45,
+        baseRipple: 11.8,
+        status: "NORMAL",
+        score: 5
+      },
+      "EDP008001": {
+        equipName: "31-90-CPPA-XF-KT12A",
+        serial: "EDP008001",
+        site: "SITE3 (GSPP2&3)",
+        rating: "30 MVA | 115 / 6.9 kV",
+        vector: "YNd1",
+        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
+        oltcModel: "VIII350Y12310191WR",
+        oltcSerial: "144196",
+        motorDrive: "MA9",
+        counter: "10,161",
+        totalTaps: 19,
+        rtrNameplate: 2.70,
+        testDate: "2025-02-06",
+        instrument: "OMICRON TESTRANO 600",
+        instSN: "SN-TR600-8982",
+        tester: "Mr. Jirasak S.",
+        reviewer: "Mr. Suchat M.",
+        baseTime: 43.5,
+        baseRtr: 2.73,
+        baseRipple: 10.5,
+        status: "NORMAL",
+        score: 5
+      }
+    };
+
+    let currentSerial = "PP0084B01";
+    let waveformChartInstance = null;
+    let timeChartInstance = null;
+    let rippleChartInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initSerialDropdown();
+      const urlParams = new URLSearchParams(window.location.search);
+      const sParam = urlParams.get('serial');
+      if (sParam && MOCK_OLTC_DATA[sParam]) {
+        currentSerial = sParam;
+      }
+      document.getElementById('serial-select').value = currentSerial;
+      renderReport(currentSerial);
+    });
+
+    function initSerialDropdown() {
+      const select = document.getElementById('serial-select');
+      select.innerHTML = '';
+      Object.keys(MOCK_OLTC_DATA).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s + ' - ' + MOCK_OLTC_DATA[s].equipName + ' (' + MOCK_OLTC_DATA[s].site + ')';
+        select.appendChild(opt);
+      });
+    }
+
+    function onSerialChange(s) {
+      currentSerial = s;
+      const newUrl = window.location.pathname + '?serial=' + encodeURIComponent(s);
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      renderReport(s);
+    }
+
+    function renderReport(serialKey) {
+      const d = MOCK_OLTC_DATA[serialKey] || MOCK_OLTC_DATA["PP0084B01"];
+
+      document.getElementById('info-equip').textContent = d.equipName;
+      document.getElementById('info-serial').textContent = d.serial;
+      document.getElementById('info-site').textContent = d.site;
+      document.getElementById('info-rating').textContent = d.rating;
+      document.getElementById('info-vector').textContent = d.vector;
+
+      document.getElementById('info-oltc-mfg').textContent = d.oltcMfg;
+      document.getElementById('info-oltc-model').textContent = d.oltcModel;
+      document.getElementById('info-oltc-serial').textContent = d.oltcSerial + ' | Motor: ' + d.motorDrive;
+      document.getElementById('info-oltc-counter').textContent = d.counter + ' Operations';
+      document.getElementById('info-oltc-resistor').innerHTML = '<strong>' + d.rtrNameplate.toFixed(2) + ' Ω</strong> (Nameplate) | ' + d.totalTaps + ' Taps';
+
+      document.getElementById('header-test-date').textContent = 'Test Date: ' + d.testDate;
+      document.getElementById('info-instrument').textContent = d.instrument;
+      document.getElementById('info-inst-sn').textContent = d.instSN;
+      document.getElementById('sig-tester').textContent = d.tester;
+      document.getElementById('sig-reviewer').textContent = d.reviewer;
+
+      const raiseRows = [];
+      const lowerRows = [];
+      const tapCount = d.totalTaps || 17;
+
+      for (let i = 1; i < tapCount; i++) {
+        const fromTap = i;
+        const toTap = i + 1;
+        const seed = ((fromTap * 7 + toTap * 13) % 100) / 100;
+        const tA = d.baseTime + (seed * 3.2 - 1.6);
+        const tB = d.baseTime + (((seed * 11) % 1) * 3.0 - 1.5);
+        const tC = d.baseTime + (((seed * 17) % 1) * 3.4 - 1.7);
+        const sync = Math.max(tA, tB, tC) - Math.min(tA, tB, tC);
+        const rtr = d.rtrNameplate * (1 + (seed * 0.02 - 0.005));
+        const rip = d.baseRipple + (seed * 2.4 - 1.2);
+
+        raiseRows.push({
+          step: 'Tap ' + fromTap + ' → Tap ' + toTap,
+          tA: parseFloat(tA.toFixed(1)),
+          tB: parseFloat(tB.toFixed(1)),
+          tC: parseFloat(tC.toFixed(1)),
+          sync: parseFloat(sync.toFixed(1)),
+          rtr: parseFloat(rtr.toFixed(2)),
+          ripple: parseFloat(rip.toFixed(1)),
+          bounce: 0.00,
+          status: 'NORMAL'
+        });
+      }
+
+      for (let i = tapCount; i > 1; i--) {
+        const fromTap = i;
+        const toTap = i - 1;
+        const seed = ((fromTap * 9 + toTap * 11) % 100) / 100;
+        const tA = d.baseTime + (seed * 3.0 - 1.4);
+        const tB = d.baseTime + (((seed * 13) % 1) * 2.8 - 1.4);
+        const tC = d.baseTime + (((seed * 19) % 1) * 3.2 - 1.6);
+        const sync = Math.max(tA, tB, tC) - Math.min(tA, tB, tC);
+        const rtr = d.rtrNameplate * (1 + (seed * 0.02 - 0.004));
+        const rip = d.baseRipple + (seed * 2.2 - 1.1);
+
+        lowerRows.push({
+          step: 'Tap ' + fromTap + ' → Tap ' + toTap,
+          tA: parseFloat(tA.toFixed(1)),
+          tB: parseFloat(tB.toFixed(1)),
+          tC: parseFloat(tC.toFixed(1)),
+          sync: parseFloat(sync.toFixed(1)),
+          rtr: parseFloat(rtr.toFixed(2)),
+          ripple: parseFloat(rip.toFixed(1)),
+          bounce: 0.00,
+          status: 'NORMAL'
+        });
+      }
+
+      renderTable('table-raise-body', raiseRows);
+      renderTable('table-lower-body', lowerRows);
+
+      const maxTime = Math.max(...raiseRows.map(r => Math.max(r.tA, r.tB, r.tC)));
+      const maxRip = Math.max(...raiseRows.map(r => r.ripple));
+      const avgRtr = raiseRows.reduce((a, b) => a + b.rtr, 0) / raiseRows.length;
+      const rtrDev = ((avgRtr - d.rtrNameplate) / d.rtrNameplate) * 100;
+
+      document.getElementById('kpi-max-time').textContent = maxTime.toFixed(1) + ' ms';
+      document.getElementById('kpi-max-ripple').textContent = maxRip.toFixed(1) + ' %';
+      document.getElementById('kpi-rtr-dev').innerHTML = avgRtr.toFixed(2) + ' Ω <span style="font-size:12px; color:#166534;">(' + (rtrDev >= 0 ? '+' : '') + rtrDev.toFixed(2) + '%)</span>';
+
+      renderTimeChart(raiseRows, lowerRows);
+      renderRippleChart(raiseRows, d.rtrNameplate);
+      updateWaveformChart('9_10');
+    }
+
+    function renderTable(tableBodyId, rows) {
+      const tbody = document.getElementById(tableBodyId);
+      tbody.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="tap-col">${r.step}</td>
+          <td>${r.tA.toFixed(1)}</td>
+          <td>${r.tB.toFixed(1)}</td>
+          <td>${r.tC.toFixed(1)}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${r.sync.toFixed(1)}</td>
+          <td style="font-weight: 600; color: #0f172a;">${r.rtr.toFixed(2)}</td>
+          <td>${r.ripple.toFixed(1)}%</td>
+          <td style="font-weight: 600; color: #166534;">${r.bounce.toFixed(2)}</td>
+          <td><span class="status-badge status-pass">${r.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateWaveformChart(tapKey) {
+      const d = MOCK_OLTC_DATA[currentSerial] || MOCK_OLTC_DATA["PP0084B01"];
+      const ctx = document.getElementById('drmWaveformChart').getContext('2d');
+
+      const timeSteps = [];
+      const iA = [];
+      const iB = [];
+      const iC = [];
+
+      const I0 = 10.0;
+      const tStart = 20.0;
+      const tTrans = d.baseTime || 45.0;
+      const tEnd = tStart + tTrans;
+      const dipLevel = I0 * (1 - (d.baseRipple || 13.0) / 100);
+
+      for (let t = 0; t <= 90; t += 0.5) {
+        timeSteps.push(t.toFixed(1));
+
+        let currentA = I0;
+        let currentB = I0;
+        let currentC = I0;
+
+        if (t >= tStart && t <= tEnd) {
+          const progress = (t - tStart) / tTrans;
+          if (progress < 0.25) {
+            currentA = I0 - (I0 - dipLevel) * (progress / 0.25);
+          } else if (progress < 0.70) {
+            currentA = dipLevel + (I0 * 0.04) * Math.sin(progress * Math.PI * 4);
+          } else {
+            currentA = dipLevel + (I0 - dipLevel) * ((progress - 0.70) / 0.30);
+          }
+          currentB = currentA * (1 + 0.012 * Math.sin(progress * 10));
+          currentC = currentA * (1 - 0.015 * Math.cos(progress * 10));
+        } else {
+          currentA = I0 + (Math.random() * 0.04 - 0.02);
+          currentB = I0 + (Math.random() * 0.04 - 0.02);
+          currentC = I0 + (Math.random() * 0.04 - 0.02);
+        }
+
+        iA.push(parseFloat(currentA.toFixed(3)));
+        iB.push(parseFloat(currentB.toFixed(3)));
+        iC.push(parseFloat(currentC.toFixed(3)));
+      }
+
+      if (waveformChartInstance) waveformChartInstance.destroy();
+
+      waveformChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: timeSteps,
+          datasets: [
+            {
+              label: 'Phase A (10A DC)',
+              data: iA,
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.05)',
+              borderWidth: 1.8,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.2
+            },
+            {
+              label: 'Phase B (10A DC)',
+              data: iB,
+              borderColor: '#eab308',
+              backgroundColor: 'transparent',
+              borderWidth: 1.8,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.2
+            },
+            {
+              label: 'Phase C (10A DC)',
+              data: iC,
+              borderColor: '#f97316',
+              backgroundColor: 'transparent',
+              borderWidth: 1.8,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (items) => 'Time: ' + items[0].label + ' ms',
+                label: (item) => item.dataset.label + ': ' + item.raw + ' A'
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Time (ms)', font: { size: 10, weight: 'bold' } },
+              grid: { color: 'rgba(0,0,0,0.05)' },
+              ticks: { maxTicksLimit: 12, font: { size: 9 } }
+            },
+            y: {
+              title: { display: true, text: 'Current (A)', font: { size: 10, weight: 'bold' } },
+              min: 7.5,
+              max: 10.5,
+              grid: { color: 'rgba(0,0,0,0.05)' },
+              ticks: { font: { size: 9 } }
+            }
+          }
+        }
+      });
+
+      const labelMap = {
+        '8_9': 'Tap 8 → Tap 9 (Raise)',
+        '9_10': 'Tap 9 → Tap 10 (Raise - Critical Tap)',
+        '10_11': 'Tap 10 → Tap 11 (Raise)',
+        '10_9': 'Tap 10 → Tap 9 (Lower)',
+        '9_8': 'Tap 9 → Tap 8 (Lower)'
+      };
+      document.getElementById('waveform-header-label').textContent = 
+        'Switching Event Profile: ' + (labelMap[tapKey] || tapKey) + ' | Transition Time: ' + tTrans.toFixed(1) + ' ms | Ripple: ' + d.baseRipple.toFixed(1) + '%';
+    }
+
+    function renderTimeChart(raiseRows, lowerRows) {
+      const ctx = document.getElementById('timeChart').getContext('2d');
+      const labels = raiseRows.map((r, i) => (i+1) + '→' + (i+2));
+      const raiseTimes = raiseRows.map(r => r.tA);
+      const lowerTimes = lowerRows.map(r => r.tA).reverse();
+
+      if (timeChartInstance) timeChartInstance.destroy();
+
+      timeChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Raise Time (ms)',
+              data: raiseTimes,
+              backgroundColor: 'rgba(59, 130, 246, 0.75)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 3
+            },
+            {
+              label: 'Lower Time (ms)',
+              data: lowerTimes,
+              backgroundColor: 'rgba(16, 185, 129, 0.75)',
+              borderColor: '#059669',
+              borderWidth: 1,
+              borderRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 9 } }, grid: { display: false } },
+            y: {
+              title: { display: true, text: 'Time (ms)', font: { size: 9 } },
+              min: 30,
+              max: 70,
+              ticks: { font: { size: 9 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderRippleChart(raiseRows, rtrNameplate) {
+      const ctx = document.getElementById('rippleChart').getContext('2d');
+      const labels = raiseRows.map((r, i) => (i+1) + '→' + (i+2));
+      const rtrVals = raiseRows.map(r => r.rtr);
+      const rippleVals = raiseRows.map(r => r.ripple);
+
+      if (rippleChartInstance) rippleChartInstance.destroy();
+
+      rippleChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Transition Rtr (Ω)',
+              data: rtrVals,
+              borderColor: '#4f46e5',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 3,
+              yAxisID: 'y1'
+            },
+            {
+              label: 'Current Ripple (%)',
+              data: rippleVals,
+              borderColor: '#eab308',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 3,
+              yAxisID: 'y2'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 9 } }, grid: { display: false } },
+            y1: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'Rtr (Ω)', font: { size: 9 } },
+              min: rtrNameplate * 0.9,
+              max: rtrNameplate * 1.1,
+              ticks: { font: { size: 9 } }
+            },
+            y2: {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: 'Ripple (%)', font: { size: 9 } },
+              min: 5,
+              max: 25,
+              grid: { display: false },
+              ticks: { font: { size: 9 } }
+            }
+          }
+        }
+      });
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const icon = document.getElementById('dark-icon');
+      if (document.body.classList.contains('dark')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
+    }
+  </script>
+</body>
+</html>
