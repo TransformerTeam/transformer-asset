@@ -855,7 +855,7 @@
       <div class="charts-grid">
         <div class="chart-box">
           <div class="chart-title">
-            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> % Impedance Deviation vs. Tap Position</span>
+            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> % Impedance Deviation vs. Tap Position (vs. Z Nameplate FAT)</span>
             <span style="color: #64748b; font-size: 8.5px;">Standard Threshold: &le; 3.00%</span>
           </div>
           <div class="chart-container">
@@ -881,9 +881,9 @@
           <div style="font-size: 8.5px; line-height: 1.45; color: #334155;">
             <strong>1. Measured Phase Impedance:</strong> Calculated by applying 3-phase AC voltage with secondary winding short-circuited:
             <div class="formula-text">Z_k = V_k / I_k (&Omega;) &nbsp;|&nbsp; Z_avg = (Z_A + Z_B + Z_C) / 3</div>
-            <strong>2. Measured % Impedance (%Z Calc):</strong> Converted to % impedance base at rated MVA and rated voltage.
-            <strong>3. % Impedance Deviation (% Dev):</strong> Percentage variance relative to factory nameplate baseline %Z:
-            <div class="formula-text">% Dev = |(%Z_meas - %Z_nameplate) / %Z_nameplate| &times; 100% &nbsp;(Tolerance &le; 3.00%)</div>
+            <strong>2. Measured % Impedance (%Z Calc):</strong> Converted to percentage impedance base at rated MVA and rated voltage.
+            <strong>3. % Deviation vs. Z Nameplate (FAT):</strong> Percentage variation relative to factory acceptance test (FAT) baseline:
+            <div class="formula-text">% Dev = |(%Z_meas - %Z_FAT) / %Z_FAT| &times; 100% &nbsp;(Tolerance &le; 3.00%)</div>
           </div>
         </div>
 
@@ -1511,35 +1511,85 @@
         return null;
       };
 
+      const getFatZ = (fMeta, row, tapKey, windingMode = 'HL') => {
+        // 1. FactoryData.csv check
+        if (fMeta) {
+          const candidateCols = [
+            `ShortZ_Y_${tapKey}`,
+            `ShortZ_X_${tapKey}`,
+            `ShortZ_HV_${tapKey}`
+          ];
+          for (let c of candidateCols) {
+            const v = fMeta[c];
+            if (v && !isNaN(parseFloat(v)) && parseFloat(v) > 0) {
+              return parseFloat(v);
+            }
+          }
+          if (tapKey === 'Cen') {
+            if (fMeta.IMPEDANCE_MIDDLE_TAP && !isNaN(parseFloat(fMeta.IMPEDANCE_MIDDLE_TAP)) && parseFloat(fMeta.IMPEDANCE_MIDDLE_TAP) > 0) {
+              return parseFloat(fMeta.IMPEDANCE_MIDDLE_TAP);
+            }
+            if (fMeta.Impedance && !isNaN(parseFloat(fMeta.Impedance)) && parseFloat(fMeta.Impedance) > 0) {
+              return parseFloat(fMeta.Impedance);
+            }
+          }
+        }
+
+        // 2. ThreeShortData.csv check
+        if (row) {
+          if (row.Z_Name_Plate_No1 && !isNaN(parseFloat(row.Z_Name_Plate_No1)) && parseFloat(row.Z_Name_Plate_No1) > 0) {
+            return parseFloat(row.Z_Name_Plate_No1);
+          }
+          if (row.Z_Name_Plate_No2 && !isNaN(parseFloat(row.Z_Name_Plate_No2)) && parseFloat(row.Z_Name_Plate_No2) > 0) {
+            return parseFloat(row.Z_Name_Plate_No2);
+          }
+        }
+
+        // 3. Back-calculate from Measured %Z and %Dev if both are present in row
+        const zMeas = row ? parseFloat(row[`HV_${tapKey}_Z_Cal`]) : null;
+        const dev = row ? parseFloat(row[`HV_${tapKey}_Dev`]) : null;
+        if (zMeas && !isNaN(zMeas) && dev !== null && !isNaN(dev) && dev < 100) {
+          const c1 = zMeas / (1 + dev / 100);
+          const c2 = zMeas / (1 - dev / 100);
+          const diff1 = Math.abs(c1 - Math.round(c1 * 100) / 100);
+          const diff2 = Math.abs(c2 - Math.round(c2 * 100) / 100);
+          const best = diff1 <= diff2 ? Math.round(c1 * 100) / 100 : Math.round(c2 * 100) / 100;
+          return parseFloat(best.toFixed(2));
+        }
+
+        return null;
+      };
+
       // 1. Table 4.1: HV:LV Three Phase Short Circuit Winding
       const connHL = getPhaseRatioConnections(vectorGroup, 'HL');
       const hlTableBox = document.createElement('div');
       hlTableBox.innerHTML = `
         <div class="section-title" style="margin-bottom: 6px;">
           <span>4.1 High Voltage to Low Voltage (HV:LV) Three Phase Short Circuit Impedance</span>
-          <span class="badge-info">Tolerance: &le; 3.00% (IEEE C57.152)</span>
+          <span class="badge-info">Tolerance: &le; 3.00% vs Z Nameplate (FAT)</span>
         </div>
         <table class="data-table" id="short-table-hl" style="margin-bottom: 12px;">
           <thead>
             <tr>
-              <th rowspan="2" style="width: 14%;">Tap Position</th>
+              <th rowspan="2" style="width: 13%;">Tap Position</th>
               <th colspan="3">${connHL.phA}</th>
               <th colspan="3">${connHL.phB}</th>
               <th colspan="3">${connHL.phC}</th>
-              <th rowspan="2" style="width: 9%;">%Z Calc</th>
-              <th rowspan="2" style="width: 9%;">% Deviation</th>
-              <th rowspan="2" style="width: 8%;">Status</th>
+              <th rowspan="2" style="width: 8.5%;">%Z Nameplate<br>(FAT)</th>
+              <th rowspan="2" style="width: 8.5%;">%Z Calc<br>(Meas)</th>
+              <th rowspan="2" style="width: 8.5%;">% Deviation<br>(&le; 3.00%)</th>
+              <th rowspan="2" style="width: 7.5%;">Status</th>
             </tr>
             <tr>
-              <th style="width: 7.5%;">Volt (V)</th>
-              <th style="width: 7.5%;">Curr (A)</th>
-              <th style="width: 8%;">Z (Ω)</th>
-              <th style="width: 7.5%;">Volt (V)</th>
-              <th style="width: 7.5%;">Curr (A)</th>
-              <th style="width: 8%;">Z (Ω)</th>
-              <th style="width: 7.5%;">Volt (V)</th>
-              <th style="width: 7.5%;">Curr (A)</th>
-              <th style="width: 8%;">Z (Ω)</th>
+              <th style="width: 6.5%;">Volt (V)</th>
+              <th style="width: 6.5%;">Curr (A)</th>
+              <th style="width: 7.5%;">Z (Ω)</th>
+              <th style="width: 6.5%;">Volt (V)</th>
+              <th style="width: 6.5%;">Curr (A)</th>
+              <th style="width: 7.5%;">Z (Ω)</th>
+              <th style="width: 6.5%;">Volt (V)</th>
+              <th style="width: 6.5%;">Curr (A)</th>
+              <th style="width: 7.5%;">Z (Ω)</th>
             </tr>
           </thead>
           <tbody id="short-table-hl-body"></tbody>
@@ -1555,6 +1605,7 @@
           vA: r ? r.HV_A_Voltage_Max : null, iA: r ? r.HV_A_Current_Max : null, zA: getZ(r ? r.HV_A_Z_Max : null, r ? r.HV_A_Voltage_Max : null, r ? r.HV_A_Current_Max : null),
           vB: r ? r.HV_B_Voltage_Max : null, iB: r ? r.HV_B_Current_Max : null, zB: getZ(r ? r.HV_B_Z_Max : null, r ? r.HV_B_Voltage_Max : null, r ? r.HV_B_Current_Max : null),
           vC: r ? r.HV_C_Voltage_Max : null, iC: r ? r.HV_C_Current_Max : null, zC: getZ(r ? r.HV_C_Z_Max : null, r ? r.HV_C_Voltage_Max : null, r ? r.HV_C_Current_Max : null),
+          fatZ: getFatZ(facMeta, r, 'Max', 'HL'),
           pctZ: r ? r.HV_Max_Z_Cal : null,
           dev: r ? r.HV_Max_Dev : null
         },
@@ -1563,6 +1614,7 @@
           vA: r ? r.HV_A_Voltage_Cen : null, iA: r ? r.HV_A_Current_Cen : null, zA: getZ(r ? r.HV_A_Z_Cen : null, r ? r.HV_A_Voltage_Cen : null, r ? r.HV_A_Current_Cen : null),
           vB: r ? r.HV_B_Voltage_Cen : null, iB: r ? r.HV_B_Current_Cen : null, zB: getZ(r ? r.HV_B_Z_Cen : null, r ? r.HV_B_Voltage_Cen : null, r ? r.HV_B_Current_Cen : null),
           vC: r ? r.HV_C_Voltage_Cen : null, iC: r ? r.HV_C_Current_Cen : null, zC: getZ(r ? r.HV_C_Z_Cen : null, r ? r.HV_C_Voltage_Cen : null, r ? r.HV_C_Current_Cen : null),
+          fatZ: getFatZ(facMeta, r, 'Cen', 'HL'),
           pctZ: r ? r.HV_Cen_Z_Cal : null,
           dev: r ? r.HV_Cen_Dev : null
         },
@@ -1571,6 +1623,7 @@
           vA: r ? r.HV_A_Voltage_Min : null, iA: r ? r.HV_A_Current_Min : null, zA: getZ(r ? r.HV_A_Z_Min : null, r ? r.HV_A_Voltage_Min : null, r ? r.HV_A_Current_Min : null),
           vB: r ? r.HV_B_Voltage_Min : null, iB: r ? r.HV_B_Current_Min : null, zB: getZ(r ? r.HV_B_Z_Min : null, r ? r.HV_B_Voltage_Min : null, r ? r.HV_B_Current_Min : null),
           vC: r ? r.HV_C_Voltage_Min : null, iC: r ? r.HV_C_Current_Min : null, zC: getZ(r ? r.HV_C_Z_Min : null, r ? r.HV_C_Voltage_Min : null, r ? r.HV_C_Current_Min : null),
+          fatZ: getFatZ(facMeta, r, 'Min', 'HL'),
           pctZ: r ? r.HV_Min_Z_Cal : null,
           dev: r ? r.HV_Min_Dev : null
         }
@@ -1584,6 +1637,7 @@
           vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
           vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
           vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
+          fatZ: getFatZ(facMeta, r, 'Tap1', 'HL'),
           pctZ: r.HV_Tap1_Z_Cal,
           dev: r.HV_Tap1_Dev
         });
@@ -1597,13 +1651,19 @@
           vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
           vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
           vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
+          fatZ: getFatZ(facMeta, r, 'Tap2', 'HL'),
           pctZ: r.HV_Tap2_Z_Cal,
           dev: r.HV_Tap2_Dev
         });
       }
 
       hlTaps.forEach(t => {
+        // If dev is not directly present, calculate from pctZ and fatZ
         let d = (t.dev !== null && t.dev !== undefined && t.dev !== '' && !isNaN(parseFloat(t.dev))) ? parseFloat(t.dev) : null;
+        if (d === null && t.pctZ && !isNaN(parseFloat(t.pctZ)) && t.fatZ && t.fatZ > 0) {
+          d = (Math.abs(parseFloat(t.pctZ) - t.fatZ) / t.fatZ) * 100;
+        }
+
         const hasData = (t.zA !== null || (t.pctZ && t.pctZ !== '-') || d !== null);
         if (!hasData) return;
 
@@ -1635,6 +1695,7 @@
           <td>${formatVal(t.vC, 2)}</td>
           <td>${formatVal(t.iC, 3)}</td>
           <td style="font-weight: 600; color: #0f172a;">${formatVal(t.zC, 4)}</td>
+          <td style="font-weight: 600; color: #334155; background-color: #f8fafc;">${t.fatZ !== null ? `${t.fatZ.toFixed(2)}%` : '-'}</td>
           <td style="font-weight: 600; color: #1e3a8a;">${t.pctZ && !isNaN(parseFloat(t.pctZ)) ? `${parseFloat(t.pctZ).toFixed(4)}%` : '-'}</td>
           <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
           <td>${getDevBadge(d)}</td>
@@ -1655,29 +1716,30 @@
         htTableBox.innerHTML = `
           <div class="section-title" style="margin-top: 10px; margin-bottom: 6px;">
             <span>4.2 High Voltage to Tertiary Voltage (HV:TV) Three Phase Short Circuit Impedance</span>
-            <span class="badge-info">Tolerance: &le; 3.00% (IEEE C57.152)</span>
+            <span class="badge-info">Tolerance: &le; 3.00% vs Z Nameplate (FAT)</span>
           </div>
           <table class="data-table" id="short-table-ht" style="margin-bottom: 12px;">
             <thead>
               <tr>
-                <th rowspan="2" style="width: 14%;">Tap Position</th>
+                <th rowspan="2" style="width: 13%;">Tap Position</th>
                 <th colspan="3">${connHT.phA}</th>
                 <th colspan="3">${connHT.phB}</th>
                 <th colspan="3">${connHT.phC}</th>
-                <th rowspan="2" style="width: 9%;">%Z Calc</th>
-                <th rowspan="2" style="width: 9%;">% Deviation</th>
-                <th rowspan="2" style="width: 8%;">Status</th>
+                <th rowspan="2" style="width: 8.5%;">%Z Nameplate<br>(FAT)</th>
+                <th rowspan="2" style="width: 8.5%;">%Z Calc<br>(Meas)</th>
+                <th rowspan="2" style="width: 8.5%;">% Deviation<br>(&le; 3.00%)</th>
+                <th rowspan="2" style="width: 7.5%;">Status</th>
               </tr>
               <tr>
-                <th style="width: 7.5%;">Volt (V)</th>
-                <th style="width: 7.5%;">Curr (A)</th>
-                <th style="width: 8%;">Z (Ω)</th>
-                <th style="width: 7.5%;">Volt (V)</th>
-                <th style="width: 7.5%;">Curr (A)</th>
-                <th style="width: 8%;">Z (Ω)</th>
-                <th style="width: 7.5%;">Volt (V)</th>
-                <th style="width: 7.5%;">Curr (A)</th>
-                <th style="width: 8%;">Z (Ω)</th>
+                <th style="width: 6.5%;">Volt (V)</th>
+                <th style="width: 6.5%;">Curr (A)</th>
+                <th style="width: 7.5%;">Z (Ω)</th>
+                <th style="width: 6.5%;">Volt (V)</th>
+                <th style="width: 6.5%;">Curr (A)</th>
+                <th style="width: 7.5%;">Z (Ω)</th>
+                <th style="width: 6.5%;">Volt (V)</th>
+                <th style="width: 6.5%;">Curr (A)</th>
+                <th style="width: 7.5%;">Z (Ω)</th>
               </tr>
             </thead>
             <tbody id="short-table-ht-body"></tbody>
@@ -1692,6 +1754,7 @@
             vA: r.TV_A_Voltage_Max, iA: r.TV_A_Current_Max, zA: getZ(r.TV_A_Z_Max, r.TV_A_Voltage_Max, r.TV_A_Current_Max),
             vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
             vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
+            fatZ: getFatZ(facMeta, r, 'Max', 'HT'),
             pctZ: r.TV_Max_Z_Cal,
             dev: r.TV_Max_Dev
           },
@@ -1700,6 +1763,7 @@
             vA: r.TV_A_Voltage_Cen, iA: r.TV_A_Current_Cen, zA: getZ(r.TV_A_Z_Cen, r.TV_A_Voltage_Cen, r.TV_A_Current_Cen),
             vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
             vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
+            fatZ: getFatZ(facMeta, r, 'Cen', 'HT'),
             pctZ: r.TV_Cen_Z_Cal,
             dev: r.TV_Cen_Dev
           },
@@ -1708,6 +1772,7 @@
             vA: r.TV_A_Voltage_Min, iA: r.TV_A_Current_Min, zA: getZ(r.TV_A_Z_Min, r.TV_A_Voltage_Min, r.TV_A_Current_Min),
             vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
             vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
+            fatZ: getFatZ(facMeta, r, 'Min', 'HT'),
             pctZ: r.TV_Min_Z_Cal,
             dev: r.TV_Min_Dev
           }
@@ -1715,6 +1780,10 @@
 
         htTaps.forEach(t => {
           let d = (t.dev !== null && t.dev !== undefined && t.dev !== '' && !isNaN(parseFloat(t.dev))) ? parseFloat(t.dev) : null;
+          if (d === null && t.pctZ && !isNaN(parseFloat(t.pctZ)) && t.fatZ && t.fatZ > 0) {
+            d = (Math.abs(parseFloat(t.pctZ) - t.fatZ) / t.fatZ) * 100;
+          }
+
           const hasData = (t.zA !== null || (t.pctZ && t.pctZ !== '-') || d !== null);
           if (!hasData) return;
 
@@ -1738,6 +1807,7 @@
             <td>${formatVal(t.vC, 2)}</td>
             <td>${formatVal(t.iC, 3)}</td>
             <td style="font-weight: 600; color: #0f172a;">${formatVal(t.zC, 4)}</td>
+            <td style="font-weight: 600; color: #334155; background-color: #f8fafc;">${t.fatZ !== null ? `${t.fatZ.toFixed(2)}%` : '-'}</td>
             <td style="font-weight: 600; color: #1e3a8a;">${t.pctZ && !isNaN(parseFloat(t.pctZ)) ? `${parseFloat(t.pctZ).toFixed(4)}%` : '-'}</td>
             <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
             <td>${getDevBadge(d)}</td>
@@ -1778,19 +1848,19 @@
       if (fleetMaxDev <= 3.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
         kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
-        diagSummary.textContent = `The three-phase short circuit impedance measurements demonstrate excellent agreement with factory nameplate baseline data. The maximum % deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 3.00%), confirming that the winding structure, core clamping, and geometry are mechanically sound without evidence of radial deformation, axial displacement, or loose clamping structures.`;
+        diagSummary.textContent = `The three-phase short circuit impedance measurements demonstrate excellent agreement with the Factory Acceptance Test (FAT Nameplate %Z) baseline data. The maximum % deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 3.00%), confirming that the winding structure, core clamping, and geometry are mechanically sound without evidence of radial deformation, axial displacement, or loose clamping structures.`;
         diagRec.textContent = 'Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.';
         diagRec.style.color = '#166534';
       } else if (fleetMaxDev <= 5.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
         kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
-        diagSummary.textContent = `The maximum % deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 3.00% but ≤ 5.00% at ${critTap}). Slight impedance drift detected relative to factory baseline data. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+        diagSummary.textContent = `The maximum % deviation against FAT baseline is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 3.00% but ≤ 5.00% at ${critTap}). Slight impedance drift detected relative to factory baseline data. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
         diagRec.textContent = 'Schedule follow-up SFRA testing and monitor during next planned outage.';
         diagRec.style.color = '#854d0e';
       } else {
         kpiStatus.innerHTML = '<span class="status-badge status-fail">ACTION REQUIRED</span>';
         kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
-        diagSummary.textContent = `The maximum % deviation is ${fleetMaxDev.toFixed(2)}% (exceeds IEEE limit > 5.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit mechanical stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
+        diagSummary.textContent = `The maximum % deviation against FAT baseline is ${fleetMaxDev.toFixed(2)}% (exceeds IEEE limit > 5.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit mechanical stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
         diagRec.textContent = 'Immediate investigation required: Perform comprehensive SFRA analysis and internal inspection before energization.';
         diagRec.style.color = '#991b1b';
       }
