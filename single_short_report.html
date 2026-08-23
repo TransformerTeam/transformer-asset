@@ -826,7 +826,7 @@
         <div class="kpi-card" id="kpi-card-dev">
           <div class="kpi-label">Max Phase-to-Phase Dev</div>
           <div class="kpi-value" id="kpi-max-dev">0.00%</div>
-          <div class="kpi-sub">Limit: &le; 2.00% (IEEE)</div>
+          <div class="kpi-sub">Limit: &le; 3.00% (IEEE)</div>
         </div>
         <div class="kpi-card" id="kpi-card-tested-taps">
           <div class="kpi-label">Tested Tap Positions</div>
@@ -855,7 +855,7 @@
         <div class="chart-box">
           <div class="chart-title">
             <span><i class="fa-solid fa-chart-bar text-sky-600"></i> % Phase-to-Phase Deviation vs. Tap Position</span>
-            <span style="color: #64748b; font-size: 8.5px;">Standard Threshold: &le; 2.00%</span>
+            <span style="color: #64748b; font-size: 8.5px;">Standard Threshold: &le; 3.00%</span>
           </div>
           <div class="chart-container">
             <canvas id="devChart"></canvas>
@@ -881,7 +881,7 @@
             <strong>1. Measured Phase Impedance:</strong> Calculated by applying single-phase AC voltage with secondary short-circuited:
             <div class="formula-text">Z_k = V_k / I_k (&Omega;)</div>
             <strong>2. Phase-to-Phase Symmetry Deviation:</strong> Maximum variance among 3 phases at any tap connection:
-            <div class="formula-text">% Dev = ((Z_max - Z_min) / Z_avg) &times; 100% &nbsp;(Limit &le; 2.00%)</div>
+            <div class="formula-text">% Dev = ((Z_max - Z_min) / Z_avg) &times; 100% &nbsp;(Limit &le; 3.00%)</div>
             <strong>3. Baseline Evaluation:</strong> Single-phase impedance tests reflect per-phase magnetic return paths and are evaluated by <strong>3-phase symmetry</strong> and historical field baselines (not direct comparison to 3-phase factory nameplate values).
           </div>
         </div>
@@ -897,19 +897,19 @@
             </tr>
             <tr>
               <td style="padding: 2px;"><span class="status-badge status-good">Good / Normal</span></td>
-              <td style="text-align: center;">&le; 2.00%</td>
+              <td style="text-align: center;">&le; 3.00%</td>
               <td style="text-align: center; font-weight: bold;">5</td>
               <td style="text-align: right; color: #166534;">Routine Operation</td>
             </tr>
             <tr>
               <td style="padding: 2px;"><span class="status-badge status-fair">Questionable</span></td>
-              <td style="text-align: center;">2.01% - 3.00%</td>
+              <td style="text-align: center;">3.01% - 5.00%</td>
               <td style="text-align: center; font-weight: bold;">3 - 4</td>
               <td style="text-align: right; color: #854d0e;">Investigate / SFRA</td>
             </tr>
             <tr>
               <td style="padding: 2px;"><span class="status-badge status-critical">Abnormal / Critical</span></td>
-              <td style="text-align: center;">&gt; 3.00%</td>
+              <td style="text-align: center;">&gt; 5.00%</td>
               <td style="text-align: center; font-weight: bold;">1 - 2</td>
               <td style="text-align: right; color: #991b1b;">Immediate Inspection</td>
             </tr>
@@ -926,7 +926,7 @@
         <tr>
           <td class="lbl" style="width: 18%;">Diagnostic Summary:</td>
           <td class="val" colspan="3" id="diag-summary" style="font-weight: 500; color: #0f172a;">
-            The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is within the IEEE C57.152 allowable limit (≤ 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.
+            The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is within the IEEE C57.152 allowable limit (≤ 3.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.
           </td>
         </tr>
         <tr>
@@ -1479,9 +1479,9 @@
         return '<span class="status-badge status-na">-</span>';
       }
       const val = Math.abs(parseFloat(devVal));
-      if (val <= 2.00) {
+      if (val <= 3.00) {
         return '<span class="status-badge status-pass">PASS</span>';
-      } else if (val <= 3.00) {
+      } else if (val <= 5.00) {
         return '<span class="status-badge status-fair">FAIR</span>';
       } else {
         return '<span class="status-badge status-fail">FAIL</span>';
@@ -1529,7 +1529,7 @@
       hlTableBox.innerHTML = `
         <div class="section-title" style="margin-bottom: 6px;">
           <span>4.1 High Voltage to Low Voltage (HV:LV) Single Phase Short Circuit Impedance</span>
-          <span class="badge-info">Tolerance: &le; 2.00% (IEEE C57.152)</span>
+          <span class="badge-info">Tolerance: &le; 3.00% (IEEE C57.152)</span>
         </div>
         <table class="data-table" id="short-table-hl" style="margin-bottom: 12px;">
           <thead>
@@ -1658,7 +1658,7 @@
         htTableBox.innerHTML = `
           <div class="section-title" style="margin-top: 10px; margin-bottom: 6px;">
             <span>4.2 High Voltage to Tertiary Voltage (HV:TV) Single Phase Short Circuit Impedance</span>
-            <span class="badge-info">Tolerance: &le; 2.00% (IEEE C57.152)</span>
+            <span class="badge-info">Tolerance: &le; 3.00% (IEEE C57.152)</span>
           </div>
           <table class="data-table" id="short-table-ht" style="margin-bottom: 12px;">
             <thead>
@@ -1773,22 +1773,22 @@
       const diagSummary = document.getElementById('diag-summary');
       const diagRec = document.getElementById('diag-recommendation');
 
-      if (fleetMaxDev <= 2.00) {
+      if (fleetMaxDev <= 3.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
         kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
-        diagSummary.textContent = `The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 2.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.`;
+        diagSummary.textContent = `The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 3.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.`;
         diagRec.textContent = 'Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.';
         diagRec.style.color = '#166534';
-      } else if (fleetMaxDev <= 3.00) {
+      } else if (fleetMaxDev <= 5.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
         kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
-        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 2.00% but ≤ 3.00%). Slight impedance asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 3.00% but ≤ 5.00%). Slight impedance asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
         diagRec.textContent = 'Schedule follow-up SFRA testing and monitor during next planned outage.';
         diagRec.style.color = '#854d0e';
       } else {
         kpiStatus.innerHTML = '<span class="status-badge status-fail">ACTION REQUIRED</span>';
         kpiScore.textContent = 'Score: 1 - 2 / 5 (Abnormal)';
-        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds IEEE limit > 3.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
+        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds IEEE limit > 5.00%). Significant impedance variation indicates potential winding displacement, loose clamping, or severe short circuit stress. Immediate SFRA investigation and internal inspection are strongly recommended.`;
         diagRec.textContent = 'Immediate investigation required: Perform comprehensive SFRA analysis and internal inspection before energization.';
         diagRec.style.color = '#991b1b';
       }
@@ -1815,8 +1815,8 @@
           if (!y) return;
           ctx.save();
 
-          // Shaded Acceptable Band (0 to 2%)
-          const yTopLimit = y.getPixelForValue(2.00);
+          // Shaded Acceptable Band (0 to 3%)
+          const yTopLimit = y.getPixelForValue(3.00);
           const yZero = y.getPixelForValue(0);
           if (yTopLimit !== undefined && yZero !== undefined) {
             const bandTop = Math.max(top, Math.min(yTopLimit, yZero));
@@ -1850,8 +1850,8 @@
             }
           };
 
-          drawLimit(2.00, '+2.00% Limit (IEEE)', '#dc2626');
-          drawLimit(3.00, '+3.00% Max Threshold', '#ea580c');
+          drawLimit(3.00, '+3.00% Limit (IEEE)', '#dc2626');
+          drawLimit(5.00, '+5.00% Max Threshold', '#ea580c');
           ctx.restore();
         }
       };
@@ -1865,8 +1865,8 @@
             {
               label: 'Phase-to-Phase Dev (%)',
               data: devs.length > 0 ? devs : [0.85, 0.62, 0.94],
-              backgroundColor: devs.map(v => v <= 2.0 ? 'rgba(37, 99, 235, 0.85)' : (v <= 3.0 ? 'rgba(234, 179, 8, 0.85)' : 'rgba(239, 68, 68, 0.85)')),
-              borderColor: devs.map(v => v <= 2.0 ? '#1d4ed8' : (v <= 3.0 ? '#ca8a04' : '#dc2626')),
+              backgroundColor: devs.map(v => v <= 3.0 ? 'rgba(37, 99, 235, 0.85)' : (v <= 5.0 ? 'rgba(234, 179, 8, 0.85)' : 'rgba(239, 68, 68, 0.85)')),
+              borderColor: devs.map(v => v <= 3.0 ? '#1d4ed8' : (v <= 5.0 ? '#ca8a04' : '#dc2626')),
               borderWidth: 1,
               barPercentage: 0.55
             }
