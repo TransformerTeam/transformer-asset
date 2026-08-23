@@ -1584,26 +1584,27 @@
         }
       ];
 
-      // Discrete Service Tap 1
-      if (r && r.HV_Tap1 && r.HV_Tap1 !== '-' && r.HV_A_Tap1_Z && r.HV_A_Tap1_Z !== '-') {
-        hlTaps.push({
-          name: `Tap ${r.HV_Tap1} (Service)`,
-          vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
-          vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
-          vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
-          preDev: r.HV_Tap1_Dev
-        });
-      }
-
-      // Discrete Service Tap 2
-      if (r && r.HV_Tap2 && r.HV_Tap2 !== '-' && r.HV_A_Tap2_Z && r.HV_A_Tap2_Z !== '-') {
-        hlTaps.push({
-          name: `Tap ${r.HV_Tap2}`,
-          vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
-          vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
-          vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
-          preDev: r.HV_Tap2_Dev
-        });
+      // For 2-Winding Transformers (!is3W): if Tap1 exists, keep it in Table 4.1
+      // For 3-Winding Transformers (is3W): Tap1 is the HV:TV test, so move it to Table 4.2
+      if (!is3W) {
+        if (r && r.HV_Tap1 && r.HV_Tap1 !== '-' && r.HV_A_Tap1_Z && r.HV_A_Tap1_Z !== '-') {
+          hlTaps.push({
+            name: `Tap ${r.HV_Tap1} (Service)`,
+            vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
+            vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
+            vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
+            preDev: r.HV_Tap1_Dev
+          });
+        }
+        if (r && r.HV_Tap2 && r.HV_Tap2 !== '-' && r.HV_A_Tap2_Z && r.HV_A_Tap2_Z !== '-') {
+          hlTaps.push({
+            name: `Tap ${r.HV_Tap2}`,
+            vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
+            vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
+            vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
+            preDev: r.HV_Tap2_Dev
+          });
+        }
       }
 
       hlTaps.forEach(t => {
@@ -1645,14 +1646,20 @@
         hlBody.appendChild(tr);
       });
 
-      // 2. Table 4.2: HV:TV (Tertiary) if present
-      const hasTvData = r && (
+      // 2. Table 4.2: HV:TV (Tertiary) if explicit TV data or 3-Winding with Tap1 data
+      const hasTvExplicitData = r && (
         (r.TV_A_Voltage_Max && r.TV_A_Voltage_Max !== '-') ||
         (r.TV_A_Voltage_Cen && r.TV_A_Voltage_Cen !== '-') ||
         (r.TV_A_Z_Cen && r.TV_A_Z_Cen !== '-')
       );
 
-      if (hasTvData) {
+      const has3WTap1Data = is3W && r && (
+        (r.HV_Tap1 && r.HV_Tap1 !== '-') ||
+        (r.HV_A_Tap1_Voltage && r.HV_A_Tap1_Voltage !== '-') ||
+        (r.HV_A_Tap1_Z && r.HV_A_Tap1_Z !== '-')
+      );
+
+      if (hasTvExplicitData || has3WTap1Data) {
         const connHT = getPhaseRatioConnections(vectorGroup, 'HT');
         const htTableBox = document.createElement('div');
         htTableBox.innerHTML = `
@@ -1688,41 +1695,65 @@
         container.appendChild(htTableBox);
 
         const htBody = htTableBox.querySelector('#short-table-ht-body');
-        const htTaps = [
-          {
-            name: 'Tap Max (+)',
-            vA: r.TV_A_Voltage_Max, iA: r.TV_A_Current_Max, zA: getZ(r.TV_A_Z_Max, r.TV_A_Voltage_Max, r.TV_A_Current_Max),
-            vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
-            vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
-            preDev: r.TV_Max_Dev
-          },
-          {
-            name: 'Tap Center',
-            vA: r.TV_A_Voltage_Cen, iA: r.TV_A_Current_Cen, zA: getZ(r.TV_A_Z_Cen, r.TV_A_Voltage_Cen, r.TV_A_Current_Cen),
-            vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
-            vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
-            preDev: r.TV_Cen_Dev
-          },
-          {
-            name: 'Tap Min (-)',
-            vA: r.TV_A_Voltage_Min, iA: r.TV_A_Current_Min, zA: getZ(r.TV_A_Z_Min, r.TV_A_Voltage_Min, r.TV_A_Current_Min),
-            vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
-            vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
-            preDev: r.TV_Min_Dev
+        const htTaps = [];
+
+        if (hasTvExplicitData) {
+          htTaps.push(
+            {
+              name: 'Tap Max (+)',
+              vA: r.TV_A_Voltage_Max, iA: r.TV_A_Current_Max, zA: getZ(r.TV_A_Z_Max, r.TV_A_Voltage_Max, r.TV_A_Current_Max),
+              vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
+              vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
+              preDev: r.TV_Max_Dev
+            },
+            {
+              name: 'Tap Center',
+              vA: r.TV_A_Voltage_Cen, iA: r.TV_A_Current_Cen, zA: getZ(r.TV_A_Z_Cen, r.TV_A_Voltage_Cen, r.TV_A_Current_Cen),
+              vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
+              vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
+              preDev: r.TV_Cen_Dev
+            },
+            {
+              name: 'Tap Min (-)',
+              vA: r.TV_A_Voltage_Min, iA: r.TV_A_Current_Min, zA: getZ(r.TV_A_Z_Min, r.TV_A_Voltage_Min, r.TV_A_Current_Min),
+              vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
+              vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
+              preDev: r.TV_Min_Dev
+            }
+          );
+        } else if (has3WTap1Data) {
+          const tapLabel1 = r.HV_Tap1 && r.HV_Tap1 !== '-' && !isNaN(parseFloat(r.HV_Tap1)) ? `Tap ${r.HV_Tap1} (HT)` : 'Tap Center (HT)';
+          htTaps.push({
+            name: tapLabel1,
+            vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
+            vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
+            vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
+            preDev: r.HV_Tap1_Dev
+          });
+
+          if (r.HV_Tap2 || r.HV_A_Tap2_Voltage || r.HV_A_Tap2_Z) {
+            const tapLabel2 = r.HV_Tap2 && r.HV_Tap2 !== '-' ? `Tap ${r.HV_Tap2} (HT)` : 'Tap 2 (HT)';
+            htTaps.push({
+              name: tapLabel2,
+              vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
+              vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
+              vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
+              preDev: r.HV_Tap2_Dev
+            });
           }
-        ];
+        }
 
         htTaps.forEach(t => {
           const d = calcDev(t.zA, t.zB, t.zC, t.preDev);
           const hasData = (t.zA !== null || t.preDev !== null);
           if (hasData) {
             totalTestedTaps++;
-            testedTapNames.push(`${t.name} (HT)`);
+            testedTapNames.push(t.name);
           }
 
           if (d !== null && d > fleetMaxDev) {
             fleetMaxDev = d;
-            critTap = `${t.name} (HT)`;
+            critTap = t.name;
           }
 
           const tr = document.createElement('tr');
@@ -1776,13 +1807,13 @@
       if (fleetMaxDev <= 3.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
         kpiScore.textContent = 'Score: 5 / 5 (IEEE C57.152)';
-        diagSummary.textContent = `The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested tap positions. The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 3.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.`;
+        diagSummary.textContent = `The single-phase short circuit impedance measurements demonstrate excellent phase symmetry across all tested winding pairs (HV:LV and HV:TV). The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (within IEEE C57.152 standard limit ≤ 3.00%), confirming that the winding structure and magnetic core geometry are mechanically sound with no evidence of radial deformation, axial displacement, or loose clamping structures.`;
         diagRec.textContent = 'Maintain normal operating condition. Next scheduled testing per routine Preventive Maintenance (PM) cycle.';
         diagRec.style.color = '#166534';
       } else if (fleetMaxDev <= 5.00) {
         kpiStatus.innerHTML = '<span class="status-badge status-fair">MONITOR</span>';
         kpiScore.textContent = 'Score: 3 - 4 / 5 (Questionable)';
-        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 3.00% but ≤ 5.00%). Slight impedance asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
+        diagSummary.textContent = `The maximum phase-to-phase deviation is ${fleetMaxDev.toFixed(2)}% (exceeds normal limit 3.00% but ≤ 5.00% at ${critTap}). Slight impedance asymmetry detected at ${critTap}. Recommend periodic monitoring and cross-verifying with SFRA (Sweep Frequency Response Analysis) or Winding Resistance diagnostic tests.`;
         diagRec.textContent = 'Schedule follow-up SFRA testing and monitor during next planned outage.';
         diagRec.style.color = '#854d0e';
       } else {
