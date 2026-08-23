@@ -1224,9 +1224,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (isNaN(numPi) || numPi <= 0) return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
 
       let score = 5;
-      if (numPi < 1.00) score = 1;
-      else if (numPi < 1.25) score = 2;
-      else if (numPi < 1.50) score = 3;
+      if (numPi <= 1.00) score = 1;
+      else if (numPi < 1.10) score = 2;
+      else if (numPi < 1.25) score = 3;
       else if (numPi < 2.00) score = 4;
       else score = 5;
 
