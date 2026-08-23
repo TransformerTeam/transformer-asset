@@ -1964,8 +1964,8 @@ function openDetail(no) {
     <tr>
       <td>
         Insulation Resistance & PI
-        <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${piDateDisp}</span></td>
@@ -1975,8 +1975,8 @@ function openDetail(no) {
     <tr>
       <td>
         Core to Ground
-        <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${piDateDisp}</span></td>
@@ -1986,8 +1986,8 @@ function openDetail(no) {
     <tr>
       <td>
         Insulation Power Factor
-        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${wPfDateDisp}</span></td>
@@ -1997,8 +1997,8 @@ function openDetail(no) {
     <tr>
       <td>
         Transformer Turn Ratio
-        <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${ratioDateDisp}</span></td>
@@ -2008,8 +2008,8 @@ function openDetail(no) {
     <tr>
       <td>
         Exciting Current
-        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${exDateDisp}</span></td>
@@ -2019,8 +2019,8 @@ function openDetail(no) {
     <tr>
       <td>
         Winding Resistance
-        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${wDateDisp}</span></td>
@@ -2030,13 +2030,13 @@ function openDetail(no) {
     <tr>
       <td>
         Single Phase Short Circuit Impedance
-        <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-          <i class="fa-solid fa-file-invoice"></i>
+        <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="margin-left: 6px;">
+          <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>
       <td><span style="${piDateStyle}">${formatDgaDate(item.dateToAssess)}</span></td>
-      <td>IEEE C57.152: <= 2.0% Dev</td>
-      <td class="ex-status-good" colspan="3">< 2.0% Dev (Normal)</td>
+      <td>IEEE C57.152: <= 3.0% Dev</td>
+      <td class="ex-status-good" colspan="3">< 3.0% Dev (Normal)</td>
     </tr>
   `;
 
@@ -2513,7 +2513,7 @@ function renderParamGrid(containerId, params) {
         <div class="param-value-container">
           ${valHtml}
           <a href="pi_report.html?serial=${currentActiveItem.serial}" target="_blank" class="btn-report-link" title="Open Insulation Resistance & PI Report">
-            <i class="fa-solid fa-file-invoice"></i>
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </div>
       `;
@@ -2522,7 +2522,7 @@ function renderParamGrid(containerId, params) {
         <div class="param-value-container">
           ${valHtml}
           <a href="pf_report.html?serial=${currentActiveItem.serial}" target="_blank" class="btn-report-link" title="Open Insulation Power Factor Report">
-            <i class="fa-solid fa-file-invoice"></i>
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </div>
       `;
@@ -2531,7 +2531,7 @@ function renderParamGrid(containerId, params) {
         <div class="param-value-container">
           ${valHtml}
           <a href="dga_report.html?serial=${currentActiveItem.serial}" target="_blank" class="btn-report-link" title="Open DGA (Main Tank Analysis) Report">
-            <i class="fa-solid fa-file-invoice"></i>
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </div>
       `;

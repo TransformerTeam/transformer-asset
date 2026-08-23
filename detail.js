@@ -1097,8 +1097,8 @@ function openDetail(no) {
       <tr>
         <td>
           Insulation Resistance & PI
-          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td>${getWindingDateSpan(piDate)}</td>
@@ -1109,8 +1109,8 @@ function openDetail(no) {
       <tr>
         <td>
           Core to Ground
-          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
@@ -1130,8 +1130,8 @@ function openDetail(no) {
       <tr>
         <td>
           Insulation Power Factor
-          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
@@ -1142,8 +1142,8 @@ function openDetail(no) {
       <tr>
         <td>
           Transformer Turn Ratio
-          <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
@@ -1154,8 +1154,8 @@ function openDetail(no) {
       <tr>
         <td>
           Exciting Current
-          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
@@ -1166,8 +1166,8 @@ function openDetail(no) {
       <tr>
         <td>
           Winding Resistance
-          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
@@ -1178,14 +1178,14 @@ function openDetail(no) {
       <tr>
         <td>
           Single Phase Short Circuit Impedance
-          <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="color: #38bdf8; font-size: 0.8rem; margin-left: 6px; display: inline-flex; align-items: center;">
-            <i class="fa-solid fa-file-invoice"></i>
+          <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="margin-left: 6px;">
+            <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
         <td><span>${item.dateToAssess}</span></td>
-        <td>IEEE C57.152: <= 2.0% Dev</td>
+        <td>IEEE C57.152: <= 3.0% Dev</td>
         ${getIndicatorCell(ap.shortCircuit1P || 'A')}
-        <td class="ex-status-good">< 2.0% Dev</td>
+        <td class="ex-status-good">< 3.0% Dev</td>
       </tr>
     `;
   }

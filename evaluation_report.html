@@ -1015,34 +1015,35 @@
       background: #e2e8f0;
     }
 
-    /* Test Method Inline Report Link */
+    /* Test Method Inline Report Link (Rounded Blue Pill Icon) */
     .method-report-link {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      justify-content: center;
       margin-left: 5px;
-      padding: 1px 5px;
-      font-size: 0.52rem;
+      padding: 1.5px 5px;
+      font-size: 0.60rem;
       font-weight: 600;
       color: #2563eb;
-      background: rgba(37, 99, 235, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.25);
-      border-radius: 3px;
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      border-radius: 5px;
       text-decoration: none;
       vertical-align: middle;
       transition: all 0.15s ease;
-      line-height: 1.1;
+      line-height: 1;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.08);
       white-space: nowrap;
     }
     .method-report-link:hover {
       background: #2563eb;
       color: #ffffff;
       border-color: #2563eb;
-      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
       transform: translateY(-1px);
     }
     .method-report-link i {
-      font-size: 0.50rem;
+      font-size: 0.58rem;
     }
 
     /* Signatures Table */
@@ -2287,7 +2288,7 @@
         return {
           url: `visual_report.html?serial=${s}`,
           title: 'Open Visual Inspection Report',
-          icon: 'fa-solid fa-eye'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2297,7 +2298,7 @@
         return {
           url: `pi_report.html?serial=${s}`,
           title: 'Open Insulation Resistance & PI Report',
-          icon: 'fa-solid fa-file-invoice'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2306,7 +2307,7 @@
         return {
           url: `dga_report.html?serial=${s}`,
           title: 'Open Dissolved Gas Analysis (DGA) Report',
-          icon: 'fa-solid fa-fire-flame-curved'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2315,7 +2316,7 @@
         return {
           url: `bushing_pf_report.html?serial=${s}`,
           title: 'Open Bushing Insulation Power Factor Report',
-          icon: 'fa-solid fa-bolt'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2324,7 +2325,7 @@
         return {
           url: `oil_report.html?serial=${s}`,
           title: 'Open Insulating Oil Test Report',
-          icon: 'fa-solid fa-droplet'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2333,7 +2334,7 @@
         return {
           url: `pf_report.html?serial=${s}`,
           title: 'Open Electrical & Power Factor Test Report',
-          icon: 'fa-solid fa-chart-line'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2342,7 +2343,7 @@
         return {
           url: `ratio_report.html?serial=${s}`,
           title: 'Open Voltage Ratio & Turn Ratio (TTR) Test Report',
-          icon: 'fa-solid fa-arrows-split-up-and-left'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
@@ -2351,7 +2352,7 @@
         return {
           url: `single_short_report.html?serial=${s}`,
           title: 'Open Single Phase Short Circuit Impedance Test Report',
-          icon: 'fa-solid fa-bolt'
+          icon: 'fa-solid fa-file-lines'
         };
       }
 
