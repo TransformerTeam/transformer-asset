@@ -2356,7 +2356,16 @@
         };
       }
 
-      // Methods without a dedicated report form (e.g. Exciting Current, Three Phase Short Circuit, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
+      // 9. Three Phase Short Circuit Impedance
+      if (nameLower.includes('three phase short circuit') || nameLower.includes('three phase impedance') || nameLower.includes('3-phase short circuit') || nameLower.includes('three short')) {
+        return {
+          url: `three_short_report.html?serial=${s}`,
+          title: 'Open Three Phase Short Circuit Impedance Test Report',
+          icon: 'fa-solid fa-file-lines'
+        };
+      }
+
+      // Methods without a dedicated report form (e.g. Exciting Current, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
       return null;
     }
 
