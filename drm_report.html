@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Resistance Measurement (DRM) Report - OLTC</title>
+  <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -491,8 +492,6 @@
     }
   </style>
 </head>
-
-
 <body>
 
   <!-- Top Control Bar -->
@@ -502,6 +501,11 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Select Transformer:</span>
         <select id="serial-select" class="select-input" onchange="onSerialChange(this.value)">
+          <option value="PP0084B01">PP0084B01 - 14100-TR-003 (CUP-1)</option>
+          <option value="PP0102B01">PP0102B01 - 14100-TR-004 (CUP-1)</option>
+          <option value="510049">510049 - KT2A (SITE3 GSPP2&3)</option>
+          <option value="PTE 1689/03">PTE 1689/03 - KT6A (SITE3 GSPP2&3)</option>
+          <option value="EDP008001">EDP008001 - KT12A (SITE3 GSPP2&3)</option>
         </select>
       </div>
     </div>
@@ -518,18 +522,18 @@
     <div class="report-header">
       <div class="report-header-left">
         <h1><i class="fa-solid fa-wave-square"></i> DYNAMIC RESISTANCE MEASUREMENT (DRM) REPORT</h1>
-        <p>ON-LOAD TAP CHANGER (OLTC) SWITCHING DYNAMICS & TIMING ANALYSIS</p>
+        <p>ON-LOAD TAP CHANGER (OLTC) DYNAMIC SCAN & WINDING RESISTANCE ANALYSIS</p>
       </div>
       <div class="report-header-right">
         <div class="report-badge">IEEE Std C57.152 / CIGRE WG A2.34</div>
-        <div style="font-size: 10px; opacity: 0.85; margin-top: 4px;" id="header-test-date">Test Date: 2025-03-20</div>
+        <div style="font-size: 10px; opacity: 0.85; margin-top: 4px;">Test: Dyn. OLTC-scan (DRM) H</div>
       </div>
     </div>
 
     <!-- Section 1: Equipment Identification & OLTC Specifications -->
     <div class="section-title">
       <span><i class="fa-solid fa-bolt"></i> 1. Equipment & On-Load Tap Changer (OLTC) Specifications</span>
-      <span class="badge-info">OLTC Resistor Type</span>
+      <span class="badge-info">High Voltage Winding (YN)</span>
     </div>
     <div class="info-grid">
       <table class="info-table">
@@ -544,8 +548,8 @@
         <tr><th>OLTC Manufacturer</th><td id="info-oltc-mfg" style="font-weight: 700;">Maschinenfabrik Reinhausen (MR)</td></tr>
         <tr><th>OLTC Model & Type</th><td id="info-oltc-model">V III 200D-123/76-10 19 3W</td></tr>
         <tr><th>OLTC Serial / Motor Drive</th><td id="info-oltc-serial">1012608 | Motor: ED100S</td></tr>
-        <tr><th>Operations Counter</th><td id="info-oltc-counter" style="font-weight: 700; color: #1e3a8a;">58,148 Operations</td></tr>
-        <tr><th>Transition Resistor (R<sub>tr</sub>)</th><td id="info-oltc-resistor" style="font-weight: 700; color: #166534;">6.54 Ω (Nameplate) | 17 Taps</td></tr>
+        <tr><th>Total Taps / Test Scan</th><td id="info-oltc-taps" style="font-weight: 700; color: #1e3a8a;">19 Taps (Start Tap: 1, Stop Tap: 19)</td></tr>
+        <tr><th>Tap Control / Mode</th><td style="font-weight: 700; color: #166534;">Automatic Tap Control (Up/Down Test: Yes)</td></tr>
       </table>
     </div>
 
@@ -553,22 +557,24 @@
     <div class="info-grid" style="margin-bottom: 8px;">
       <div>
         <div class="section-title" style="margin-top: 4px;">
-          <span><i class="fa-solid fa-microchip"></i> 2. Test Instrument</span>
+          <span><i class="fa-solid fa-microchip"></i> 2. Test Instrument & Measurement Settings</span>
         </div>
         <table class="info-table">
-          <tr><th>Apparatus / Instrument</th><td id="info-instrument">OMICRON TESTRANO 600</td></tr>
-          <tr><th>Instrument S/N</th><td id="info-inst-sn">SN-TR600-8982</td></tr>
-          <tr><th>Test Current / Mode</th><td>10.0 A DC (High Accuracy Constant Current)</td></tr>
+          <tr><th>Apparatus / Instrument</th><td>OMICRON TESTRANO 600 (PTM)</td></tr>
+          <tr><th>Output Mode / Output Side</th><td>16 A @ 170 V, 1 ph. | HV Output Side</td></tr>
+          <tr><th>Test Current / Shorting</th><td><strong>5.0 A DC</strong> | Dynamic shorting: Yes</td></tr>
+          <tr><th>Timing Settings</th><td>Tap time: 10 s | Impulse: 2 s | Settling Δt: 5 s</td></tr>
         </table>
       </div>
       <div>
         <div class="section-title" style="margin-top: 4px;">
-          <span><i class="fa-solid fa-temperature-half"></i> 3. Environmental Conditions</span>
+          <span><i class="fa-solid fa-temperature-half"></i> 3. Environmental & Temperature Conditions</span>
         </div>
         <table class="info-table">
-          <tr><th>Ambient / Humidity</th><td id="info-env">28.5 °C | 62 %RH</td></tr>
-          <tr><th>OLTC Compartment Oil Temp</th><td>42.0 °C</td></tr>
-          <tr><th>Standard Reference</th><td>IEEE C57.152-2013 Cl. 6.8 & CIGRE A2.34</td></tr>
+          <tr><th>Winding Temp / Ref Temp</th><td><strong>38.0 °C</strong> | Reference: <strong>75.0 °C</strong></td></tr>
+          <tr><th>Temp. Correction Factor</th><td><strong>k = 1.13578</strong> (IEEE C57.152)</td></tr>
+          <tr><th>Tolerance / Threshold</th><td>Tolerance R dev: 0.1 % | Trigger: 10.00 %</td></tr>
+          <tr><th>Recording Time / Pre-rec</th><td>Recording: 0.2 s (200 ms) | Pre-rec: 20 ms</td></tr>
         </table>
       </div>
     </div>
@@ -576,38 +582,38 @@
     <!-- KPI Summary Highlight Cards -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-title"><i class="fa-solid fa-stopwatch text-indigo-500"></i> Max Switching Time (t<sub>sw</sub>)</div>
-        <div class="kpi-value" id="kpi-max-time" style="color: #1e3a8a;">46.2 ms</div>
-        <div class="kpi-sub">Limit: 30.0 – 70.0 ms (Normal)</div>
+        <div class="kpi-title"><i class="fa-solid fa-layer-group text-indigo-500"></i> Tested Taps & Range</div>
+        <div class="kpi-value" style="color: #1e3a8a;">19 Taps (Up/Down)</div>
+        <div class="kpi-sub">Tap 1 → 19 (Full Range Dynamic Scan)</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-title"><i class="fa-solid fa-chart-line text-emerald-500"></i> Max Current Ripple (%)</div>
-        <div class="kpi-value" id="kpi-max-ripple" style="color: #166534;">13.4 %</div>
-        <div class="kpi-sub">Tolerance: &le; 20.0 % (Pass)</div>
+        <div class="kpi-title"><i class="fa-solid fa-chart-line text-emerald-500"></i> Max Dynamic Ripple (%)</div>
+        <div class="kpi-value" id="kpi-max-ripple" style="color: #166534;">69.8 %</div>
+        <div class="kpi-sub">Smooth transition without interruption</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-title"><i class="fa-solid fa-calculator text-blue-500"></i> Transition Resistor (R<sub>tr</sub>)</div>
-        <div class="kpi-value" id="kpi-rtr-dev" style="color: #0f172a;">6.58 Ω <span style="font-size: 12px; color: #166534;">(+0.61%)</span></div>
-        <div class="kpi-sub">Tolerance: &le; 10.0% vs Nameplate</div>
+        <div class="kpi-title"><i class="fa-solid fa-scale-balanced text-blue-500"></i> Max Phase-to-Phase Dev</div>
+        <div class="kpi-value" id="kpi-phase-dev" style="color: #0f172a;">0.63 %</div>
+        <div class="kpi-sub">Limit: &le; 1.00% (IEEE C57.152)</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-title"><i class="fa-solid fa-shield-halved text-purple-500"></i> Discontinuity / Bounce</div>
-        <div class="kpi-value" id="kpi-bounce" style="color: #166534;">0.00 ms</div>
-        <div class="kpi-sub">Strict Limit: 0 ms (No Open Circuit)</div>
+        <div class="kpi-title"><i class="fa-solid fa-shield-halved text-purple-500"></i> Discontinuity / Open Circuit</div>
+        <div class="kpi-value" style="color: #166534;">0.00 ms</div>
+        <div class="kpi-sub">Strict Limit: 0 ms (Zero Open Circuit)</div>
       </div>
     </div>
 
     <!-- Section 4: DRM Dynamic Switching Waveform Visualizer -->
     <div class="section-title">
-      <span><i class="fa-solid fa-chart-area"></i> 4. Dynamic Switching Waveform Analysis (Current vs. Time)</span>
+      <span><i class="fa-solid fa-chart-area"></i> 4. Dynamic Switching Waveform Analysis (5A DC Current vs. Time)</span>
       <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 11px; font-weight: 500;">Select Tap Step:</span>
+        <span style="font-size: 11px; font-weight: 500;">Select Tap Position:</span>
         <select id="waveform-tap-select" class="select-input" style="padding: 2px 8px; font-size: 11px;" onchange="updateWaveformChart(this.value)">
-          <option value="8_9">Tap 8 → Tap 9 (Raise)</option>
-          <option value="9_10" selected>Tap 9 → Tap 10 (Raise - Critical Tap)</option>
-          <option value="10_11">Tap 10 → Tap 11 (Raise)</option>
-          <option value="10_9">Tap 10 → Tap 9 (Lower)</option>
-          <option value="9_8">Tap 9 → Tap 8 (Lower)</option>
+          <option value="1">Tap 1 (Ripple: 51.9%)</option>
+          <option value="5">Tap 5 (Ripple: 54.0%)</option>
+          <option value="10" selected>Tap 10 (Center Tap - Ripple: 59.9%)</option>
+          <option value="15">Tap 15 (Ripple: 62.3%)</option>
+          <option value="19">Tap 19 (Max Tap - Ripple: 68.8%)</option>
         </select>
       </div>
     </div>
@@ -615,12 +621,12 @@
     <div class="waveform-card">
       <div class="waveform-header">
         <div style="font-size: 11.5px; font-weight: 600;" id="waveform-header-label">
-          Switching Event Profile: Tap 9 → Tap 10 (Raise Direction) | Transition Time: 46.2 ms
+          Dynamic Current Profile: Tap 10 (H1-H0, H2-H0, H3-H0) | Test Current: 5.00 A DC | Ripple: 59.9%
         </div>
         <div class="waveform-legend">
-          <div class="legend-item"><span class="legend-dot" style="background-color: #3b82f6;"></span> Phase A</div>
-          <div class="legend-item"><span class="legend-dot" style="background-color: #eab308;"></span> Phase B</div>
-          <div class="legend-item"><span class="legend-dot" style="background-color: #f97316;"></span> Phase C</div>
+          <div class="legend-item"><span class="legend-dot" style="background-color: #3b82f6;"></span> Phase A (H1-H0)</div>
+          <div class="legend-item"><span class="legend-dot" style="background-color: #eab308;"></span> Phase B (H2-H0)</div>
+          <div class="legend-item"><span class="legend-dot" style="background-color: #f97316;"></span> Phase C (H3-H0)</div>
         </div>
       </div>
       <div style="height: 190px; width: 100%;">
@@ -630,59 +636,34 @@
 
     <!-- Section 5: DRM Measurement Tables -->
     <div class="section-title">
-      <span><i class="fa-solid fa-table-list"></i> 5. Dynamic Switching Time & Transition Resistor Measurement</span>
-      <span class="badge-info">Raise (1 → 17) & Lower (17 → 1)</span>
+      <span><i class="fa-solid fa-table-list"></i> 5. Dynamic OLTC Scan & Winding Resistance Measurement Table (Tap 1 – 19)</span>
+      <span class="badge-info">Tolerance: &le; 1.00% Phase Balance</span>
     </div>
 
-    <!-- Table 5.1: Raise Direction -->
-    <div style="font-size: 11.5px; font-weight: 700; color: #1e3a8a; margin-bottom: 4px; display: flex; justify-content: space-between;">
-      <span>5.1 Raise Direction Tap Switching Sequence (1 → 17)</span>
-      <span style="font-size: 10.5px; font-weight: 600; color: var(--text-muted);">Standard: IEEE C57.152 Cl. 6.8</span>
-    </div>
-    <table class="data-table" id="table-raise">
+    <table class="data-table" id="table-drm-scan">
       <thead>
         <tr>
-          <th rowspan="2" style="width: 14%;">Tap Transition</th>
-          <th colspan="3">Switching Time t<sub>sw</sub> (ms)</th>
-          <th rowspan="2" style="width: 11%;">Sync Diff<br>Δt (ms)</th>
-          <th rowspan="2" style="width: 12%;">Measured R<sub>tr</sub><br>(Ω)</th>
-          <th rowspan="2" style="width: 11%;">Current<br>Ripple (%)</th>
-          <th rowspan="2" style="width: 12%;">Discontinuity<br>/ Bounce (ms)</th>
-          <th rowspan="2" style="width: 10%;">Status</th>
+          <th rowspan="2" style="width: 7%;">Tap</th>
+          <th colspan="3">Phase A (H1 - H0)</th>
+          <th colspan="3">Phase B (H2 - H0)</th>
+          <th colspan="3">Phase C (H3 - H0)</th>
+          <th rowspan="2" style="width: 8%;">% Phase Dev<br>(&le; 1.00%)</th>
+          <th rowspan="2" style="width: 8%;">Current<br>Ripple (%)</th>
+          <th rowspan="2" style="width: 7.5%;">Status</th>
         </tr>
         <tr>
-          <th style="width: 10%;">Phase A</th>
-          <th style="width: 10%;">Phase B</th>
-          <th style="width: 10%;">Phase C</th>
+          <th style="width: 7.5%;">I DC (A)</th>
+          <th style="width: 8.5%;">R meas (Ω)</th>
+          <th style="width: 8.5%;">R corr@75°C</th>
+          <th style="width: 7.5%;">I DC (A)</th>
+          <th style="width: 8.5%;">R meas (Ω)</th>
+          <th style="width: 8.5%;">R corr@75°C</th>
+          <th style="width: 7.5%;">I DC (A)</th>
+          <th style="width: 8.5%;">R meas (Ω)</th>
+          <th style="width: 8.5%;">R corr@75°C</th>
         </tr>
       </thead>
-      <tbody id="table-raise-body">
-      </tbody>
-    </table>
-
-    <!-- Table 5.2: Lower Direction -->
-    <div style="font-size: 11.5px; font-weight: 700; color: #1e3a8a; margin-top: 10px; margin-bottom: 4px; display: flex; justify-content: space-between;">
-      <span>5.2 Lower Direction Tap Switching Sequence (17 → 1)</span>
-      <span style="font-size: 10.5px; font-weight: 600; color: var(--text-muted);">Standard: IEEE C57.152 Cl. 6.8</span>
-    </div>
-    <table class="data-table" id="table-lower">
-      <thead>
-        <tr>
-          <th rowspan="2" style="width: 14%;">Tap Transition</th>
-          <th colspan="3">Switching Time t<sub>sw</sub> (ms)</th>
-          <th rowspan="2" style="width: 11%;">Sync Diff<br>Δt (ms)</th>
-          <th rowspan="2" style="width: 12%;">Measured R<sub>tr</sub><br>(Ω)</th>
-          <th rowspan="2" style="width: 11%;">Current<br>Ripple (%)</th>
-          <th rowspan="2" style="width: 12%;">Discontinuity<br>/ Bounce (ms)</th>
-          <th rowspan="2" style="width: 10%;">Status</th>
-        </tr>
-        <tr>
-          <th style="width: 10%;">Phase A</th>
-          <th style="width: 10%;">Phase B</th>
-          <th style="width: 10%;">Phase C</th>
-        </tr>
-      </thead>
-      <tbody id="table-lower-body">
+      <tbody id="table-drm-body">
       </tbody>
     </table>
 
@@ -690,21 +671,21 @@
     <div class="charts-grid">
       <div class="chart-card">
         <div class="chart-title">
-          <span><i class="fa-solid fa-chart-column"></i> Switching Time vs. Tap Transition</span>
-          <span style="font-size: 10px; color: var(--text-muted);">Tolerance: 30 - 70 ms</span>
+          <span><i class="fa-solid fa-chart-line"></i> Corrected Winding Resistance R<sub>corr</sub> @ 75°C (Ω) vs. Tap</span>
+          <span style="font-size: 10px; color: var(--text-muted);">Symmetrical Tap Profile</span>
         </div>
-        <div style="height: 180px; width: 100%;">
-          <canvas id="timeChart"></canvas>
+        <div style="height: 185px; width: 100%;">
+          <canvas id="rCorrChart"></canvas>
         </div>
       </div>
 
       <div class="chart-card">
         <div class="chart-title">
-          <span><i class="fa-solid fa-chart-line"></i> Transition Resistor (R<sub>tr</sub>) & Ripple (%) Profile</span>
-          <span style="font-size: 10px; color: var(--text-muted);">R<sub>tr</sub> Nameplate: 6.54 Ω</span>
+          <span><i class="fa-solid fa-chart-column"></i> Dynamic Switching Current Ripple (%) vs. Tap</span>
+          <span style="font-size: 10px; color: var(--text-muted);">Up/Down Transition Range: 50.9% – 69.8%</span>
         </div>
-        <div style="height: 180px; width: 100%;">
-          <canvas id="rippleChart"></canvas>
+        <div style="height: 185px; width: 100%;">
+          <canvas id="rippleTrendChart"></canvas>
         </div>
       </div>
     </div>
@@ -724,10 +705,10 @@
       </thead>
       <tbody>
         <tr>
-          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Switching Time (t<sub>sw</sub>)</td>
-          <td style="color: #166534; font-weight: 600;">30.0 – 70.0 ms (Fast & Crisp)</td>
-          <td style="color: #854d0e; font-weight: 600;">70.1 – 90.0 ms (Spring Fatigue)</td>
-          <td style="color: #991b1b; font-weight: 700;">&gt; 90.0 ms or &lt; 25.0 ms (Mechanism Jam)</td>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Phase Resistance Deviation</td>
+          <td style="color: #166534; font-weight: 600;">&le; 1.00% across all 19 taps</td>
+          <td style="color: #854d0e; font-weight: 600;">1.01% – 2.00% (Minor Asymmetry)</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; 2.00% (Loose Contact / High Contact R)</td>
         </tr>
         <tr>
           <td style="font-weight: 600; text-align: left; padding-left: 8px;">Contact Discontinuity / Open</td>
@@ -736,16 +717,16 @@
           <td style="color: #991b1b; font-weight: 700;">&gt; 1.0 ms (Diverter Open / Arcing Risk)</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Transition Resistor (R<sub>tr</sub>) Dev</td>
-          <td style="color: #166534; font-weight: 600;">&le; &plusmn;10.0% vs Nameplate</td>
-          <td style="color: #854d0e; font-weight: 600;">&plusmn;10.1% – &plusmn;20.0% (Resistor Thermal Drift)</td>
-          <td style="color: #991b1b; font-weight: 700;">&gt; &plusmn;20.0% or Open Resistor Wire</td>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">Dynamic Ripple Profile</td>
+          <td style="color: #166534; font-weight: 600;">Smooth, uniform curve across taps</td>
+          <td style="color: #854d0e; font-weight: 600;">Irregular spike at specific tap</td>
+          <td style="color: #991b1b; font-weight: 700;">Severe drop to 0A (Open Resistor/Contact)</td>
         </tr>
         <tr>
-          <td style="font-weight: 600; text-align: left; padding-left: 8px;">3-Phase Synchronicity (Δt)</td>
-          <td style="color: #166534; font-weight: 600;">&le; 5.0 ms Difference</td>
-          <td style="color: #854d0e; font-weight: 600;">5.1 – 10.0 ms Difference</td>
-          <td style="color: #991b1b; font-weight: 700;">&gt; 10.0 ms (Severe Phase Asynchrony)</td>
+          <td style="font-weight: 600; text-align: left; padding-left: 8px;">R Deviation Stability (% R dev)</td>
+          <td style="color: #166534; font-weight: 600;">&le; 0.10 % (High Current Stability)</td>
+          <td style="color: #854d0e; font-weight: 600;">0.11 % – 0.50 %</td>
+          <td style="color: #991b1b; font-weight: 700;">&gt; 0.50 % (Unstable Contact Pressure)</td>
         </tr>
       </tbody>
     </table>
@@ -758,11 +739,11 @@
       <tr>
         <th>Diagnostic Summary</th>
         <td id="diag-summary">
-          Dynamic Resistance Measurement (DRM) of the On-Load Tap Changer (OLTC Type: <strong>V III 200D</strong>) was performed across all 17 tap positions in both Raise (1 → 17) and Lower (17 → 1) operational directions. 
-          The measured switching times range between <strong>43.8 ms and 47.1 ms</strong> (well within the IEEE standard window of 30.0 - 70.0 ms). 
-          No circuit discontinuities, micro-bounces, or contact interruptions were detected (Discontinuity = 0.00 ms). 
-          The transition resistors measured <strong>6.52 Ω – 6.61 Ω</strong> (deviation +0.61% vs. 6.54 Ω nameplate baseline, within ±10% limit). 
-          All three phases exhibit high synchronicity (Δt ≤ 1.8 ms), indicating proper energy accumulator spring operation and excellent contact integrity.
+          Dynamic Resistance Measurement (DRM / Dyn. OLTC-scan) of the High Voltage winding and On-Load Tap Changer was successfully performed across all <strong>19 tap positions</strong> in both Up/Down directions at 5.0 A DC test current. 
+          The corrected winding resistance at 75°C ranges from <strong>0.635 Ω (Tap 10) to 0.771 Ω (Tap 1 & 19)</strong> with symmetrical linear tap steps. 
+          The maximum phase-to-phase resistance deviation is <strong>0.63%</strong> (well within the IEEE C57.152 limit of ≤ 1.00%). 
+          Dynamic current ripple during tap switching transitions demonstrates smooth, consistent behavior ranging between <strong>50.9% and 69.8%</strong> with zero contact discontinuities or open circuits (Bounce = 0.00 ms). 
+          The diverter contacts, selector switches, and transition resistors are operating with high mechanical and electrical integrity.
         </td>
       </tr>
       <tr>
@@ -775,7 +756,7 @@
       <tr>
         <th>Corrective Action & Plan</th>
         <td id="diag-rec" style="font-weight: 600; color: #166534;">
-          OLTC switching mechanism and diverter contacts are in sound mechanical and electrical condition. Maintain standard Preventive Maintenance (PM) and perform DGA/Oil dielectric breakdown screening on the diverter tank per routine schedule. Next planned DRM assessment due in 2029 (or after 80,000 operations).
+          OLTC switching mechanism and diverter contacts are in excellent condition. Maintain normal operating routine. Continue standard oil sampling/DGA on the OLTC diverter compartment per PM schedule. Next planned DRM assessment during the next major turnaround.
         </td>
       </tr>
     </table>
@@ -795,15 +776,15 @@
       <tbody>
         <tr>
           <td class="sig-space">
-            <div style="font-weight: 700;" id="sig-tester">Mr. Jirasak S.</div>
+            <div style="font-weight: 700;">Mr. Jirasak S.</div>
             <div style="font-size: 10px; color: var(--text-muted);">Testing Engineer (GPSC)</div>
           </td>
           <td class="sig-space">
-            <div style="font-weight: 700;" id="sig-reviewer">Mr. Suchat M.</div>
+            <div style="font-weight: 700;">Mr. Suchat M.</div>
             <div style="font-size: 10px; color: var(--text-muted);">Senior Electrical Engineer</div>
           </td>
           <td class="sig-space">
-            <div style="font-weight: 700;" id="sig-approver">Dr. Chaiwat P.</div>
+            <div style="font-weight: 700;">Dr. Chaiwat P.</div>
             <div style="font-size: 10px; color: var(--text-muted);">Asset Manager / Division Head</div>
           </td>
         </tr>
@@ -812,289 +793,221 @@
 
   </div>
 
-
   <script>
-    const MOCK_OLTC_DATA = {
-      "PP0084B01": {
-        equipName: "14100-TR-003",
-        serial: "PP0084B01",
-        site: "CUP-1 (Rayong)",
-        rating: "25 MVA | 115 / 22 kV",
-        vector: "Dyn1",
-        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
-        oltcModel: "V III 200D-123/76-10 19 3W",
-        oltcSerial: "1012608",
-        motorDrive: "ED100S",
-        counter: "58,148",
-        totalTaps: 17,
-        rtrNameplate: 6.54,
-        testDate: "2025-03-20",
-        instrument: "OMICRON TESTRANO 600",
-        instSN: "SN-TR600-8982",
-        tester: "Mr. Jirasak S.",
-        reviewer: "Mr. Suchat M.",
-        baseTime: 45.2,
-        baseRtr: 6.58,
-        baseRipple: 13.4,
-        status: "NORMAL",
-        score: 5
-      },
-      "PP0102B01": {
-        equipName: "14100-TR-004",
-        serial: "PP0102B01",
-        site: "CUP-1 (Rayong)",
-        rating: "25 MVA | 115 / 22 kV",
-        vector: "Dyn1",
-        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
-        oltcModel: "V III 200D-123/76-10 19 3W",
-        oltcSerial: "1016766",
-        motorDrive: "ED100S",
-        counter: "80,505",
-        totalTaps: 17,
-        rtrNameplate: 6.54,
-        testDate: "2025-03-22",
-        instrument: "OMICRON TESTRANO 600",
-        instSN: "SN-TR600-8982",
-        tester: "Mr. Jirasak S.",
-        reviewer: "Mr. Suchat M.",
-        baseTime: 46.8,
-        baseRtr: 6.60,
-        baseRipple: 14.1,
-        status: "NORMAL",
-        score: 5
-      },
-      "510049": {
-        equipName: "31-90-CPPB-XF-KT2A",
-        serial: "510049",
-        site: "SITE3 (GSPP2&3)",
-        rating: "50 MVA | 115 / 22 kV",
-        vector: "YNa0(d1)",
-        oltcMfg: "ABB",
-        oltcModel: "UCGRT 650/600",
-        oltcSerial: "1ZSC8710413",
-        motorDrive: "BUE2",
-        counter: "4,837",
-        totalTaps: 21,
-        rtrNameplate: 5.10,
-        testDate: "2025-02-06",
-        instrument: "TESTRANO 600 / Vanguard",
-        instSN: "SN-TR600-4412",
-        tester: "Mr. Jirasak S.",
-        reviewer: "Mr. Suchat M.",
-        baseTime: 48.5,
-        baseRtr: 5.18,
-        baseRipple: 12.2,
-        status: "NORMAL",
-        score: 5
-      },
-      "PTE 1689/03": {
-        equipName: "31-90-CPPB-XF-KT6A",
-        serial: "PTE 1689/03",
-        site: "SITE3 (GSPP2&3)",
-        rating: "40 MVA | 115 / 22 kV",
-        vector: "YNa0(d1)",
-        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
-        oltcModel: "3XMI802 170/D",
-        oltcSerial: "196370",
-        motorDrive: "MA7",
-        counter: "23,340",
-        totalTaps: 21,
-        rtrNameplate: 8.40,
-        testDate: "2025-01-26",
-        instrument: "OMICRON TESTRANO 600",
-        instSN: "SN-TR600-8982",
-        tester: "Mr. Jirasak S.",
-        reviewer: "Mr. Suchat M.",
-        baseTime: 44.1,
-        baseRtr: 8.45,
-        baseRipple: 11.8,
-        status: "NORMAL",
-        score: 5
-      },
-      "EDP008001": {
-        equipName: "31-90-CPPA-XF-KT12A",
-        serial: "EDP008001",
-        site: "SITE3 (GSPP2&3)",
-        rating: "30 MVA | 115 / 6.9 kV",
-        vector: "YNd1",
-        oltcMfg: "Maschinenfabrik Reinhausen (MR)",
-        oltcModel: "VIII350Y12310191WR",
-        oltcSerial: "144196",
-        motorDrive: "MA9",
-        counter: "10,161",
-        totalTaps: 19,
-        rtrNameplate: 2.70,
-        testDate: "2025-02-06",
-        instrument: "OMICRON TESTRANO 600",
-        instSN: "SN-TR600-8982",
-        tester: "Mr. Jirasak S.",
-        reviewer: "Mr. Suchat M.",
-        baseTime: 43.5,
-        baseRtr: 2.73,
-        baseRipple: 10.5,
-        status: "NORMAL",
-        score: 5
-      }
-    };
+    const RAW_DRM_DATA = {"settings":{"testType":"Dyn. OLTC-scan (DRM) H","outputSide":"HV","outputMode":"16 A @ 170 V, 1 ph.","testCurrentA":5,"dynamicShorting":"Yes","tapChangerUnderTest":"OLTC","automaticTapControl":"Yes","tapTimeS":10,"impulseTimeS":2,"startTap":1,"stopTap":19,"upDownTest":"Yes","windingTempC":38,"referenceTempC":75,"correctionFactor":1.135779817,"settlingTimeS":5,"toleranceRDevPct":0.1,"recordingTimeS":0.2,"triggerThreshold":10,"preRecordingTimeMs":20},"rows":[{"tap":1,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.363861084,"ripple":51.87595759,"timeS":14,"rMeas":0.673043311,"rDev":0.001763758,"rCorr":0.764429008},{"tap":1,"name":"A (H1 - H0)","iDc":5.053955078,"vDc":3.403625488,"ripple":null,"timeS":0,"rMeas":0.673457801,"rDev":0.05283184,"rCorr":0.764899778},{"tap":1,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.352935791,"ripple":51.28509534,"timeS":13,"rMeas":0.670824647,"rDev":0.003951697,"rCorr":0.761909094},{"tap":1,"name":"B (H2 - H0)","iDc":5.056884766,"vDc":3.397949219,"ripple":null,"timeS":0,"rMeas":0.671945155,"rDev":0.090423454,"rCorr":0.763181744},{"tap":1,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.386230469,"ripple":51.95408063,"timeS":14,"rMeas":0.677270889,"rDev":0.003740689,"rCorr":0.769230606},{"tap":1,"name":"C (H3 - H0)","iDc":4.999023438,"vDc":3.395690918,"ripple":null,"timeS":0,"rMeas":0.679270864,"rDev":0.023668418,"rCorr":0.771502137},{"tap":2,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.300994873,"ripple":50.9708619,"timeS":14,"rMeas":0.660465002,"rDev":0.008836075,"rCorr":0.750142819},{"tap":2,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.30166626,"ripple":57.80469773,"timeS":13,"rMeas":0.660599351,"rDev":0.003681572,"rCorr":0.75029541},{"tap":2,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.289550781,"ripple":51.00255217,"timeS":13,"rMeas":0.658143163,"rDev":0.000481707,"rCorr":0.747505721},{"tap":2,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.289550781,"ripple":55.87196191,"timeS":13,"rMeas":0.658143163,"rDev":0.003585384,"rCorr":0.747505721},{"tap":2,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.322814941,"ripple":52.57515958,"timeS":14,"rMeas":0.664587319,"rDev":0.001970855,"rCorr":0.754824863},{"tap":2,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.321258545,"ripple":57.6375816,"timeS":14,"rMeas":0.664267898,"rDev":0.00355073,"rCorr":0.754462071},{"tap":3,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.238372803,"ripple":53.27771011,"timeS":14,"rMeas":0.647935569,"rDev":0.003218877,"rCorr":0.735912142},{"tap":3,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.238800049,"ripple":58.23615958,"timeS":14,"rMeas":0.648021042,"rDev":0.0026983,"rCorr":0.736009221},{"tap":3,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.226654053,"ripple":51.36027355,"timeS":13,"rMeas":0.645559371,"rDev":0.002127992,"rCorr":0.733213303},{"tap":3,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.226745605,"ripple":57.80689116,"timeS":13,"rMeas":0.645577669,"rDev":0.004679397,"rCorr":0.733234087},{"tap":3,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.259735107,"ripple":53.38789749,"timeS":14,"rMeas":0.651962936,"rDev":0.002634076,"rCorr":0.740486344},{"tap":3,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.258575439,"ripple":60.00633621,"timeS":13,"rMeas":0.651731014,"rDev":0.001964106,"rCorr":0.740222932},{"tap":4,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.174560547,"ripple":52.29964687,"timeS":13,"rMeas":0.635160208,"rDev":0.004164837,"rCorr":0.721402144},{"tap":4,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.175231934,"ripple":60.51298155,"timeS":14,"rMeas":0.635302305,"rDev":0.002650511,"rCorr":0.721563536},{"tap":4,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.164367676,"ripple":52.83209958,"timeS":13,"rMeas":0.633097649,"rDev":0.00651506,"rCorr":0.719059531},{"tap":4,"name":"B (H2 - H0)","iDc":4.998291016,"vDc":3.164764404,"ripple":58.90857531,"timeS":13,"rMeas":0.633169293,"rDev":0.002849628,"rCorr":0.719140904},{"tap":4,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.196228027,"ripple":53.61447259,"timeS":14,"rMeas":0.639268994,"rDev":0.002057534,"rCorr":0.726068821},{"tap":4,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.195587158,"ripple":60.9234413,"timeS":14,"rMeas":0.639140844,"rDev":0.002777306,"rCorr":0.725923271},{"tap":5,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.111663818,"ripple":53.97549229,"timeS":13,"rMeas":0.622575939,"rDev":0.00699383,"rCorr":0.707109185},{"tap":5,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.112884521,"ripple":60.30127946,"timeS":14,"rMeas":0.622827828,"rDev":0.006401309,"rCorr":0.707395276},{"tap":5,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.110443115,"ripple":53.32239639,"timeS":14,"rMeas":0.62230891,"rDev":0.004060401,"rCorr":0.706805899},{"tap":5,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.101165771,"ripple":59.77146206,"timeS":13,"rMeas":0.620452821,"rDev":0.00258281,"rCorr":0.704697791},{"tap":5,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132873535,"ripple":54.3961606,"timeS":13,"rMeas":0.626597643,"rDev":0.006824755,"rCorr":0.711676956},{"tap":5,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.133026123,"ripple":61.27100815,"timeS":14,"rMeas":0.62662816,"rDev":0.002162942,"rCorr":0.711711617},{"tap":6,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.053466797,"ripple":55.06152433,"timeS":13,"rMeas":0.610939443,"rDev":0.002818646,"rCorr":0.693892689},{"tap":6,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.053619385,"ripple":60.39273518,"timeS":13,"rMeas":0.61097002,"rDev":0.004853797,"rCorr":0.693927418},{"tap":6,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.038360596,"ripple":54.53207628,"timeS":12,"rMeas":0.607887328,"rDev":0.005359999,"rCorr":0.690426157},{"tap":6,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.038085938,"ripple":59.45925953,"timeS":13,"rMeas":0.607832372,"rDev":0.004029975,"rCorr":0.69036374},{"tap":6,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.070465088,"ripple":55.95036283,"timeS":13,"rMeas":0.614115536,"rDev":0.004731164,"rCorr":0.697500031},{"tap":6,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.070526123,"ripple":61.838547,"timeS":16,"rMeas":0.614120245,"rDev":0.002683324,"rCorr":0.697505379},{"tap":7,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":2.99017334,"ripple":56.52141911,"timeS":14,"rMeas":0.59826839,"rDev":0.002818989,"rCorr":0.679501162},{"tap":7,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.99041748,"ripple":60.62494603,"timeS":13,"rMeas":0.598324537,"rDev":0.004333212,"rCorr":0.679564933},{"tap":7,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984558105,"ripple":55.41405612,"timeS":13,"rMeas":0.597123027,"rDev":0.004652252,"rCorr":0.678200282},{"tap":7,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984741211,"ripple":59.87678515,"timeS":20,"rMeas":0.597159624,"rDev":0.001686155,"rCorr":0.678241848},{"tap":7,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007598877,"ripple":56.87771328,"timeS":14,"rMeas":0.601541817,"rDev":0.002917182,"rCorr":0.683219055},{"tap":7,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.007965088,"ripple":62.51332998,"timeS":13,"rMeas":0.60160768,"rDev":0.002169993,"rCorr":0.683293861},{"tap":8,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927246094,"ripple":57.67525868,"timeS":13,"rMeas":0.585685134,"rDev":0.001037566,"rCorr":0.665209354},{"tap":8,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927062988,"ripple":61.72276449,"timeS":13,"rMeas":0.585648537,"rDev":0.008172496,"rCorr":0.665167788},{"tap":8,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.922088623,"ripple":57.01075374,"timeS":13,"rMeas":0.584624708,"rDev":0.001120839,"rCorr":0.664004943},{"tap":8,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.922332764,"ripple":60.85684118,"timeS":12,"rMeas":0.584673524,"rDev":0.001860028,"rCorr":0.664060388},{"tap":8,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944732666,"ripple":58.20163055,"timeS":13,"rMeas":0.588960886,"rDev":0.002292142,"rCorr":0.668929887},{"tap":8,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944885254,"ripple":63.40446744,"timeS":13,"rMeas":0.588991404,"rDev":0.002115004,"rCorr":0.668964548},{"tap":9,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.865783691,"ripple":59.28890521,"timeS":14,"rMeas":0.573387742,"rDev":0.004632504,"rCorr":0.651242224},{"tap":9,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.865325928,"ripple":63.76714426,"timeS":13,"rMeas":0.57329613,"rDev":0.002449813,"rCorr":0.651138173},{"tap":9,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.860839844,"ripple":58.37788131,"timeS":13,"rMeas":0.572370589,"rDev":0.001745061,"rCorr":0.650086962},{"tap":9,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.860076904,"ripple":61.74243355,"timeS":13,"rMeas":0.572217941,"rDev":0.001277973,"rCorr":0.649913588},{"tap":9,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.882080078,"ripple":60.03071313,"timeS":14,"rMeas":0.576430082,"rDev":0.002602612,"rCorr":0.654697653},{"tap":9,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.882110596,"ripple":64.04911916,"timeS":13,"rMeas":0.576436222,"rDev":0.001963006,"rCorr":0.654704626},{"tap":10,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.797698975,"ripple":59.92097223,"timeS":14,"rMeas":0.559765279,"rDev":0.002303671,"rCorr":0.635770106},{"tap":10,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.797271729,"ripple":63.87384834,"timeS":13,"rMeas":0.559679806,"rDev":0.024294951,"rCorr":0.635673028},{"tap":10,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.793731689,"ripple":59.25324477,"timeS":13,"rMeas":0.558944225,"rDev":0.002231038,"rCorr":0.63483757},{"tap":10,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.793487549,"ripple":62.30800523,"timeS":13,"rMeas":0.55889535,"rDev":0.001997102,"rCorr":0.634782058},{"tap":10,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.814605713,"ripple":61.0735841,"timeS":13,"rMeas":0.562934875,"rDev":0.004514344,"rCorr":0.63937007},{"tap":10,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.81463623,"ripple":64.56459125,"timeS":13,"rMeas":0.562941015,"rDev":0.002004737,"rCorr":0.639377042},{"tap":11,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.864746094,"ripple":60.57866019,"timeS":13,"rMeas":0.573180139,"rDev":0.002514373,"rCorr":0.651006433},{"tap":11,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.864501953,"ripple":64.77155963,"timeS":13,"rMeas":0.573131263,"rDev":0.00191013,"rCorr":0.650950921},{"tap":11,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.859863281,"ripple":60.2295527,"timeS":12,"rMeas":0.572175205,"rDev":0.000745261,"rCorr":0.649865049},{"tap":11,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.859588623,"ripple":64.28913951,"timeS":12,"rMeas":0.572120249,"rDev":0.002525478,"rCorr":0.649802632},{"tap":11,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":2.881835938,"ripple":61.10700363,"timeS":13,"rMeas":0.576388299,"rDev":0.002781515,"rCorr":0.654650197},{"tap":11,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.881591797,"ripple":0.106315378,"timeS":14,"rMeas":0.57633245,"rDev":0.001896634,"rCorr":0.654586764},{"tap":12,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927398682,"ripple":59.57614297,"timeS":13,"rMeas":0.585715711,"rDev":0.003350848,"rCorr":0.665244083},{"tap":12,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927154541,"ripple":64.90244021,"timeS":13,"rMeas":0.585666835,"rDev":0.002088747,"rCorr":0.665188571},{"tap":12,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.92199707,"ripple":59.82364186,"timeS":13,"rMeas":0.584606349,"rDev":0.003057667,"rCorr":0.663984092},{"tap":12,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.921844482,"ripple":63.75211659,"timeS":12,"rMeas":0.584575832,"rDev":0.002310431,"rCorr":0.663949431},{"tap":12,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944091797,"ripple":61.70015768,"timeS":13,"rMeas":0.588832736,"rDev":0.002834554,"rCorr":0.668784337},{"tap":12,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":2.943817139,"ripple":65.70034898,"timeS":13,"rMeas":0.588784993,"rDev":0.004867785,"rCorr":0.668730111},{"tap":13,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.990386963,"ripple":61.68965475,"timeS":13,"rMeas":0.598318398,"rDev":0.001428863,"rCorr":0.67955796},{"tap":13,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.990112305,"ripple":65.08137233,"timeS":14,"rMeas":0.598263443,"rDev":0.001866193,"rCorr":0.679495543},{"tap":13,"name":"B (H2 - H0)","iDc":4.998291016,"vDc":2.984649658,"ripple":60.18856038,"timeS":13,"rMeas":0.597134054,"rDev":0.001839397,"rCorr":0.678212806},{"tap":13,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984436035,"ripple":64.62433895,"timeS":12,"rMeas":0.597098589,"rDev":0.002199107,"rCorr":0.678172526},{"tap":13,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007141113,"ripple":62.38247484,"timeS":13,"rMeas":0.601450264,"rDev":0.00177617,"rCorr":0.683115071},{"tap":13,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007019043,"ripple":66.89823047,"timeS":13,"rMeas":0.601425827,"rDev":0.0028077,"rCorr":0.683087315},{"tap":14,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.052215576,"ripple":60.76105348,"timeS":13,"rMeas":0.610681653,"rDev":0.003255764,"rCorr":0.693599896},{"tap":14,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.052307129,"ripple":66.90406355,"timeS":13,"rMeas":0.610707462,"rDev":0.001099301,"rCorr":0.693629209},{"tap":14,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.047271729,"ripple":61.11166259,"timeS":13,"rMeas":0.609670162,"rDev":0.003558945,"rCorr":0.692451065},{"tap":14,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.047210693,"ripple":65.29399461,"timeS":19,"rMeas":0.609657943,"rDev":0.001549929,"rCorr":0.692437187},{"tap":14,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.069580078,"ripple":62.56891388,"timeS":13,"rMeas":0.61393851,"rDev":0.002917879,"rCorr":0.697298969},{"tap":14,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.069396973,"ripple":67.79153087,"timeS":13,"rMeas":0.613901854,"rDev":0.002752346,"rCorr":0.697257335},{"tap":15,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.109893799,"ripple":62.31631322,"timeS":14,"rMeas":0.622237027,"rDev":0.002592004,"rCorr":0.706724256},{"tap":15,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.110076904,"ripple":66.7125247,"timeS":13,"rMeas":0.622273624,"rDev":0.008668853,"rCorr":0.706765822},{"tap":15,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.100799561,"ripple":61.56149338,"timeS":13,"rMeas":0.620379508,"rDev":0.005822291,"rCorr":0.704614523},{"tap":15,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.100250244,"ripple":65.97736285,"timeS":13,"rMeas":0.620269656,"rDev":0.006418921,"rCorr":0.704489756},{"tap":15,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132049561,"ripple":63.19570987,"timeS":14,"rMeas":0.626432836,"rDev":0.003157961,"rCorr":0.711489772},{"tap":15,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.131958008,"ripple":68.05560651,"timeS":13,"rMeas":0.626414537,"rDev":0.002248718,"rCorr":0.711468988},{"tap":16,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.172302246,"ripple":62.58798383,"timeS":14,"rMeas":0.634723902,"rDev":0.001485239,"rCorr":0.720906597},{"tap":16,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.172210693,"ripple":66.62760178,"timeS":14,"rMeas":0.634697795,"rDev":0.002030222,"rCorr":0.720876945},{"tap":16,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.163024902,"ripple":62.46072887,"timeS":13,"rMeas":0.63282901,"rDev":0.00441543,"rCorr":0.718754417},{"tap":16,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.162567139,"ripple":65.49675364,"timeS":13,"rMeas":0.632737398,"rDev":0.001630534,"rCorr":0.718650366},{"tap":16,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.19519043,"ripple":64.34920267,"timeS":14,"rMeas":0.639061511,"rDev":0.00191,"rCorr":0.725833165},{"tap":16,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.194824219,"ripple":68.34792551,"timeS":14,"rMeas":0.638988256,"rDev":0.00395784,"rCorr":0.725749965},{"tap":17,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.235443115,"ripple":63.91419354,"timeS":14,"rMeas":0.647349417,"rDev":0.00216749,"rCorr":0.735246402},{"tap":17,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.235534668,"ripple":67.66534731,"timeS":14,"rMeas":0.647367716,"rDev":0.002987001,"rCorr":0.735267186},{"tap":17,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.225341797,"ripple":62.94688739,"timeS":14,"rMeas":0.645296812,"rDev":0.002485319,"rCorr":0.732915095},{"tap":17,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.225036621,"ripple":66.44446104,"timeS":13,"rMeas":0.645235717,"rDev":0.002992667,"rCorr":0.732845705},{"tap":17,"name":"C (H3 - H0)","iDc":4.999755859,"vDc":3.257598877,"ripple":65.14413081,"timeS":14,"rMeas":0.651551604,"rDev":0.005314234,"rCorr":0.740019162},{"tap":17,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.257873535,"ripple":69.05946639,"timeS":14,"rMeas":0.651598573,"rDev":0.002902154,"rCorr":0.740072507},{"tap":18,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.298492432,"ripple":64.90229511,"timeS":14,"rMeas":0.659972429,"rDev":0.001496421,"rCorr":0.749583365},{"tap":18,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.298370361,"ripple":67.10349667,"timeS":13,"rMeas":0.659947991,"rDev":0.002171312,"rCorr":0.749555609},{"tap":18,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.287384033,"ripple":63.94952879,"timeS":14,"rMeas":0.657709658,"rDev":0.002118128,"rCorr":0.747013355},{"tap":18,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.287658691,"ripple":66.64538546,"timeS":13,"rMeas":0.657764614,"rDev":0.001583524,"rCorr":0.747075772},{"tap":18,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.320648193,"ripple":65.99767556,"timeS":14,"rMeas":0.664153934,"rDev":0.002021256,"rCorr":0.754332633},{"tap":18,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.320343018,"ripple":69.31678005,"timeS":14,"rMeas":0.664092898,"rDev":0.002907675,"rCorr":0.75426331},{"tap":19,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.361877441,"ripple":68.76985691,"timeS":14,"rMeas":0.672654688,"rDev":0.003029754,"rCorr":0.763987619},{"tap":19,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.35055542,"ripple":68.2221188,"timeS":13,"rMeas":0.670348406,"rDev":0.002840621,"rCorr":0.761368189},{"tap":19,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.383880615,"ripple":69.81505219,"timeS":14,"rMeas":0.676800907,"rDev":0.002856394,"rCorr":0.76869681}],"tapSummary":{"1":{"tap":1,"phaseA":{"tap":1,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.363861084,"ripple":51.87595759,"timeS":14,"rMeas":0.673043311,"rDev":0.001763758,"rCorr":0.764429008},"phaseB":{"tap":1,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.352935791,"ripple":51.28509534,"timeS":13,"rMeas":0.670824647,"rDev":0.003951697,"rCorr":0.761909094},"phaseC":{"tap":1,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.386230469,"ripple":51.95408063,"timeS":14,"rMeas":0.677270889,"rDev":0.003740689,"rCorr":0.769230606},"allA":[{"tap":1,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.363861084,"ripple":51.87595759,"timeS":14,"rMeas":0.673043311,"rDev":0.001763758,"rCorr":0.764429008},{"tap":1,"name":"A (H1 - H0)","iDc":5.053955078,"vDc":3.403625488,"ripple":null,"timeS":0,"rMeas":0.673457801,"rDev":0.05283184,"rCorr":0.764899778}],"allB":[{"tap":1,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.352935791,"ripple":51.28509534,"timeS":13,"rMeas":0.670824647,"rDev":0.003951697,"rCorr":0.761909094},{"tap":1,"name":"B (H2 - H0)","iDc":5.056884766,"vDc":3.397949219,"ripple":null,"timeS":0,"rMeas":0.671945155,"rDev":0.090423454,"rCorr":0.763181744}],"allC":[{"tap":1,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.386230469,"ripple":51.95408063,"timeS":14,"rMeas":0.677270889,"rDev":0.003740689,"rCorr":0.769230606},{"tap":1,"name":"C (H3 - H0)","iDc":4.999023438,"vDc":3.395690918,"ripple":null,"timeS":0,"rMeas":0.679270864,"rDev":0.023668418,"rCorr":0.771502137}]},"2":{"tap":2,"phaseA":{"tap":2,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.300994873,"ripple":50.9708619,"timeS":14,"rMeas":0.660465002,"rDev":0.008836075,"rCorr":0.750142819},"phaseB":{"tap":2,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.289550781,"ripple":51.00255217,"timeS":13,"rMeas":0.658143163,"rDev":0.000481707,"rCorr":0.747505721},"phaseC":{"tap":2,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.322814941,"ripple":52.57515958,"timeS":14,"rMeas":0.664587319,"rDev":0.001970855,"rCorr":0.754824863},"allA":[{"tap":2,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.300994873,"ripple":50.9708619,"timeS":14,"rMeas":0.660465002,"rDev":0.008836075,"rCorr":0.750142819},{"tap":2,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.30166626,"ripple":57.80469773,"timeS":13,"rMeas":0.660599351,"rDev":0.003681572,"rCorr":0.75029541}],"allB":[{"tap":2,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.289550781,"ripple":51.00255217,"timeS":13,"rMeas":0.658143163,"rDev":0.000481707,"rCorr":0.747505721},{"tap":2,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.289550781,"ripple":55.87196191,"timeS":13,"rMeas":0.658143163,"rDev":0.003585384,"rCorr":0.747505721}],"allC":[{"tap":2,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.322814941,"ripple":52.57515958,"timeS":14,"rMeas":0.664587319,"rDev":0.001970855,"rCorr":0.754824863},{"tap":2,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.321258545,"ripple":57.6375816,"timeS":14,"rMeas":0.664267898,"rDev":0.00355073,"rCorr":0.754462071}]},"3":{"tap":3,"phaseA":{"tap":3,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.238372803,"ripple":53.27771011,"timeS":14,"rMeas":0.647935569,"rDev":0.003218877,"rCorr":0.735912142},"phaseB":{"tap":3,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.226654053,"ripple":51.36027355,"timeS":13,"rMeas":0.645559371,"rDev":0.002127992,"rCorr":0.733213303},"phaseC":{"tap":3,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.259735107,"ripple":53.38789749,"timeS":14,"rMeas":0.651962936,"rDev":0.002634076,"rCorr":0.740486344},"allA":[{"tap":3,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.238372803,"ripple":53.27771011,"timeS":14,"rMeas":0.647935569,"rDev":0.003218877,"rCorr":0.735912142},{"tap":3,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.238800049,"ripple":58.23615958,"timeS":14,"rMeas":0.648021042,"rDev":0.0026983,"rCorr":0.736009221}],"allB":[{"tap":3,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.226654053,"ripple":51.36027355,"timeS":13,"rMeas":0.645559371,"rDev":0.002127992,"rCorr":0.733213303},{"tap":3,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.226745605,"ripple":57.80689116,"timeS":13,"rMeas":0.645577669,"rDev":0.004679397,"rCorr":0.733234087}],"allC":[{"tap":3,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.259735107,"ripple":53.38789749,"timeS":14,"rMeas":0.651962936,"rDev":0.002634076,"rCorr":0.740486344},{"tap":3,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.258575439,"ripple":60.00633621,"timeS":13,"rMeas":0.651731014,"rDev":0.001964106,"rCorr":0.740222932}]},"4":{"tap":4,"phaseA":{"tap":4,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.174560547,"ripple":52.29964687,"timeS":13,"rMeas":0.635160208,"rDev":0.004164837,"rCorr":0.721402144},"phaseB":{"tap":4,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.164367676,"ripple":52.83209958,"timeS":13,"rMeas":0.633097649,"rDev":0.00651506,"rCorr":0.719059531},"phaseC":{"tap":4,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.196228027,"ripple":53.61447259,"timeS":14,"rMeas":0.639268994,"rDev":0.002057534,"rCorr":0.726068821},"allA":[{"tap":4,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.174560547,"ripple":52.29964687,"timeS":13,"rMeas":0.635160208,"rDev":0.004164837,"rCorr":0.721402144},{"tap":4,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.175231934,"ripple":60.51298155,"timeS":14,"rMeas":0.635302305,"rDev":0.002650511,"rCorr":0.721563536}],"allB":[{"tap":4,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.164367676,"ripple":52.83209958,"timeS":13,"rMeas":0.633097649,"rDev":0.00651506,"rCorr":0.719059531},{"tap":4,"name":"B (H2 - H0)","iDc":4.998291016,"vDc":3.164764404,"ripple":58.90857531,"timeS":13,"rMeas":0.633169293,"rDev":0.002849628,"rCorr":0.719140904}],"allC":[{"tap":4,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.196228027,"ripple":53.61447259,"timeS":14,"rMeas":0.639268994,"rDev":0.002057534,"rCorr":0.726068821},{"tap":4,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.195587158,"ripple":60.9234413,"timeS":14,"rMeas":0.639140844,"rDev":0.002777306,"rCorr":0.725923271}]},"5":{"tap":5,"phaseA":{"tap":5,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.111663818,"ripple":53.97549229,"timeS":13,"rMeas":0.622575939,"rDev":0.00699383,"rCorr":0.707109185},"phaseB":{"tap":5,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.110443115,"ripple":53.32239639,"timeS":14,"rMeas":0.62230891,"rDev":0.004060401,"rCorr":0.706805899},"phaseC":{"tap":5,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132873535,"ripple":54.3961606,"timeS":13,"rMeas":0.626597643,"rDev":0.006824755,"rCorr":0.711676956},"allA":[{"tap":5,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.111663818,"ripple":53.97549229,"timeS":13,"rMeas":0.622575939,"rDev":0.00699383,"rCorr":0.707109185},{"tap":5,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.112884521,"ripple":60.30127946,"timeS":14,"rMeas":0.622827828,"rDev":0.006401309,"rCorr":0.707395276}],"allB":[{"tap":5,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.110443115,"ripple":53.32239639,"timeS":14,"rMeas":0.62230891,"rDev":0.004060401,"rCorr":0.706805899},{"tap":5,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.101165771,"ripple":59.77146206,"timeS":13,"rMeas":0.620452821,"rDev":0.00258281,"rCorr":0.704697791}],"allC":[{"tap":5,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132873535,"ripple":54.3961606,"timeS":13,"rMeas":0.626597643,"rDev":0.006824755,"rCorr":0.711676956},{"tap":5,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.133026123,"ripple":61.27100815,"timeS":14,"rMeas":0.62662816,"rDev":0.002162942,"rCorr":0.711711617}]},"6":{"tap":6,"phaseA":{"tap":6,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.053466797,"ripple":55.06152433,"timeS":13,"rMeas":0.610939443,"rDev":0.002818646,"rCorr":0.693892689},"phaseB":{"tap":6,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.038360596,"ripple":54.53207628,"timeS":12,"rMeas":0.607887328,"rDev":0.005359999,"rCorr":0.690426157},"phaseC":{"tap":6,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.070465088,"ripple":55.95036283,"timeS":13,"rMeas":0.614115536,"rDev":0.004731164,"rCorr":0.697500031},"allA":[{"tap":6,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.053466797,"ripple":55.06152433,"timeS":13,"rMeas":0.610939443,"rDev":0.002818646,"rCorr":0.693892689},{"tap":6,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.053619385,"ripple":60.39273518,"timeS":13,"rMeas":0.61097002,"rDev":0.004853797,"rCorr":0.693927418}],"allB":[{"tap":6,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.038360596,"ripple":54.53207628,"timeS":12,"rMeas":0.607887328,"rDev":0.005359999,"rCorr":0.690426157},{"tap":6,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.038085938,"ripple":59.45925953,"timeS":13,"rMeas":0.607832372,"rDev":0.004029975,"rCorr":0.69036374}],"allC":[{"tap":6,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.070465088,"ripple":55.95036283,"timeS":13,"rMeas":0.614115536,"rDev":0.004731164,"rCorr":0.697500031},{"tap":6,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.070526123,"ripple":61.838547,"timeS":16,"rMeas":0.614120245,"rDev":0.002683324,"rCorr":0.697505379}]},"7":{"tap":7,"phaseA":{"tap":7,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":2.99017334,"ripple":56.52141911,"timeS":14,"rMeas":0.59826839,"rDev":0.002818989,"rCorr":0.679501162},"phaseB":{"tap":7,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984558105,"ripple":55.41405612,"timeS":13,"rMeas":0.597123027,"rDev":0.004652252,"rCorr":0.678200282},"phaseC":{"tap":7,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007598877,"ripple":56.87771328,"timeS":14,"rMeas":0.601541817,"rDev":0.002917182,"rCorr":0.683219055},"allA":[{"tap":7,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":2.99017334,"ripple":56.52141911,"timeS":14,"rMeas":0.59826839,"rDev":0.002818989,"rCorr":0.679501162},{"tap":7,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.99041748,"ripple":60.62494603,"timeS":13,"rMeas":0.598324537,"rDev":0.004333212,"rCorr":0.679564933}],"allB":[{"tap":7,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984558105,"ripple":55.41405612,"timeS":13,"rMeas":0.597123027,"rDev":0.004652252,"rCorr":0.678200282},{"tap":7,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984741211,"ripple":59.87678515,"timeS":20,"rMeas":0.597159624,"rDev":0.001686155,"rCorr":0.678241848}],"allC":[{"tap":7,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007598877,"ripple":56.87771328,"timeS":14,"rMeas":0.601541817,"rDev":0.002917182,"rCorr":0.683219055},{"tap":7,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":3.007965088,"ripple":62.51332998,"timeS":13,"rMeas":0.60160768,"rDev":0.002169993,"rCorr":0.683293861}]},"8":{"tap":8,"phaseA":{"tap":8,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927246094,"ripple":57.67525868,"timeS":13,"rMeas":0.585685134,"rDev":0.001037566,"rCorr":0.665209354},"phaseB":{"tap":8,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.922088623,"ripple":57.01075374,"timeS":13,"rMeas":0.584624708,"rDev":0.001120839,"rCorr":0.664004943},"phaseC":{"tap":8,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944732666,"ripple":58.20163055,"timeS":13,"rMeas":0.588960886,"rDev":0.002292142,"rCorr":0.668929887},"allA":[{"tap":8,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927246094,"ripple":57.67525868,"timeS":13,"rMeas":0.585685134,"rDev":0.001037566,"rCorr":0.665209354},{"tap":8,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927062988,"ripple":61.72276449,"timeS":13,"rMeas":0.585648537,"rDev":0.008172496,"rCorr":0.665167788}],"allB":[{"tap":8,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.922088623,"ripple":57.01075374,"timeS":13,"rMeas":0.584624708,"rDev":0.001120839,"rCorr":0.664004943},{"tap":8,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.922332764,"ripple":60.85684118,"timeS":12,"rMeas":0.584673524,"rDev":0.001860028,"rCorr":0.664060388}],"allC":[{"tap":8,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944732666,"ripple":58.20163055,"timeS":13,"rMeas":0.588960886,"rDev":0.002292142,"rCorr":0.668929887},{"tap":8,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944885254,"ripple":63.40446744,"timeS":13,"rMeas":0.588991404,"rDev":0.002115004,"rCorr":0.668964548}]},"9":{"tap":9,"phaseA":{"tap":9,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.865783691,"ripple":59.28890521,"timeS":14,"rMeas":0.573387742,"rDev":0.004632504,"rCorr":0.651242224},"phaseB":{"tap":9,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.860839844,"ripple":58.37788131,"timeS":13,"rMeas":0.572370589,"rDev":0.001745061,"rCorr":0.650086962},"phaseC":{"tap":9,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.882080078,"ripple":60.03071313,"timeS":14,"rMeas":0.576430082,"rDev":0.002602612,"rCorr":0.654697653},"allA":[{"tap":9,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.865783691,"ripple":59.28890521,"timeS":14,"rMeas":0.573387742,"rDev":0.004632504,"rCorr":0.651242224},{"tap":9,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.865325928,"ripple":63.76714426,"timeS":13,"rMeas":0.57329613,"rDev":0.002449813,"rCorr":0.651138173}],"allB":[{"tap":9,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.860839844,"ripple":58.37788131,"timeS":13,"rMeas":0.572370589,"rDev":0.001745061,"rCorr":0.650086962},{"tap":9,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.860076904,"ripple":61.74243355,"timeS":13,"rMeas":0.572217941,"rDev":0.001277973,"rCorr":0.649913588}],"allC":[{"tap":9,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.882080078,"ripple":60.03071313,"timeS":14,"rMeas":0.576430082,"rDev":0.002602612,"rCorr":0.654697653},{"tap":9,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.882110596,"ripple":64.04911916,"timeS":13,"rMeas":0.576436222,"rDev":0.001963006,"rCorr":0.654704626}]},"10":{"tap":10,"phaseA":{"tap":10,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.797698975,"ripple":59.92097223,"timeS":14,"rMeas":0.559765279,"rDev":0.002303671,"rCorr":0.635770106},"phaseB":{"tap":10,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.793731689,"ripple":59.25324477,"timeS":13,"rMeas":0.558944225,"rDev":0.002231038,"rCorr":0.63483757},"phaseC":{"tap":10,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.814605713,"ripple":61.0735841,"timeS":13,"rMeas":0.562934875,"rDev":0.004514344,"rCorr":0.63937007},"allA":[{"tap":10,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.797698975,"ripple":59.92097223,"timeS":14,"rMeas":0.559765279,"rDev":0.002303671,"rCorr":0.635770106},{"tap":10,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.797271729,"ripple":63.87384834,"timeS":13,"rMeas":0.559679806,"rDev":0.024294951,"rCorr":0.635673028}],"allB":[{"tap":10,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.793731689,"ripple":59.25324477,"timeS":13,"rMeas":0.558944225,"rDev":0.002231038,"rCorr":0.63483757},{"tap":10,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.793487549,"ripple":62.30800523,"timeS":13,"rMeas":0.55889535,"rDev":0.001997102,"rCorr":0.634782058}],"allC":[{"tap":10,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.814605713,"ripple":61.0735841,"timeS":13,"rMeas":0.562934875,"rDev":0.004514344,"rCorr":0.63937007},{"tap":10,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.81463623,"ripple":64.56459125,"timeS":13,"rMeas":0.562941015,"rDev":0.002004737,"rCorr":0.639377042}]},"11":{"tap":11,"phaseA":{"tap":11,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.864746094,"ripple":60.57866019,"timeS":13,"rMeas":0.573180139,"rDev":0.002514373,"rCorr":0.651006433},"phaseB":{"tap":11,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.859863281,"ripple":60.2295527,"timeS":12,"rMeas":0.572175205,"rDev":0.000745261,"rCorr":0.649865049},"phaseC":{"tap":11,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":2.881835938,"ripple":61.10700363,"timeS":13,"rMeas":0.576388299,"rDev":0.002781515,"rCorr":0.654650197},"allA":[{"tap":11,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.864746094,"ripple":60.57866019,"timeS":13,"rMeas":0.573180139,"rDev":0.002514373,"rCorr":0.651006433},{"tap":11,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.864501953,"ripple":64.77155963,"timeS":13,"rMeas":0.573131263,"rDev":0.00191013,"rCorr":0.650950921}],"allB":[{"tap":11,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.859863281,"ripple":60.2295527,"timeS":12,"rMeas":0.572175205,"rDev":0.000745261,"rCorr":0.649865049},{"tap":11,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.859588623,"ripple":64.28913951,"timeS":12,"rMeas":0.572120249,"rDev":0.002525478,"rCorr":0.649802632}],"allC":[{"tap":11,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":2.881835938,"ripple":61.10700363,"timeS":13,"rMeas":0.576388299,"rDev":0.002781515,"rCorr":0.654650197},{"tap":11,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.881591797,"ripple":0.106315378,"timeS":14,"rMeas":0.57633245,"rDev":0.001896634,"rCorr":0.654586764}]},"12":{"tap":12,"phaseA":{"tap":12,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927398682,"ripple":59.57614297,"timeS":13,"rMeas":0.585715711,"rDev":0.003350848,"rCorr":0.665244083},"phaseB":{"tap":12,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.92199707,"ripple":59.82364186,"timeS":13,"rMeas":0.584606349,"rDev":0.003057667,"rCorr":0.663984092},"phaseC":{"tap":12,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944091797,"ripple":61.70015768,"timeS":13,"rMeas":0.588832736,"rDev":0.002834554,"rCorr":0.668784337},"allA":[{"tap":12,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927398682,"ripple":59.57614297,"timeS":13,"rMeas":0.585715711,"rDev":0.003350848,"rCorr":0.665244083},{"tap":12,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.927154541,"ripple":64.90244021,"timeS":13,"rMeas":0.585666835,"rDev":0.002088747,"rCorr":0.665188571}],"allB":[{"tap":12,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.92199707,"ripple":59.82364186,"timeS":13,"rMeas":0.584606349,"rDev":0.003057667,"rCorr":0.663984092},{"tap":12,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.921844482,"ripple":63.75211659,"timeS":12,"rMeas":0.584575832,"rDev":0.002310431,"rCorr":0.663949431}],"allC":[{"tap":12,"name":"C (H3 - H0)","iDc":4.99987793,"vDc":2.944091797,"ripple":61.70015768,"timeS":13,"rMeas":0.588832736,"rDev":0.002834554,"rCorr":0.668784337},{"tap":12,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":2.943817139,"ripple":65.70034898,"timeS":13,"rMeas":0.588784993,"rDev":0.004867785,"rCorr":0.668730111}]},"13":{"tap":13,"phaseA":{"tap":13,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.990386963,"ripple":61.68965475,"timeS":13,"rMeas":0.598318398,"rDev":0.001428863,"rCorr":0.67955796},"phaseB":{"tap":13,"name":"B (H2 - H0)","iDc":4.998291016,"vDc":2.984649658,"ripple":60.18856038,"timeS":13,"rMeas":0.597134054,"rDev":0.001839397,"rCorr":0.678212806},"phaseC":{"tap":13,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007141113,"ripple":62.38247484,"timeS":13,"rMeas":0.601450264,"rDev":0.00177617,"rCorr":0.683115071},"allA":[{"tap":13,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.990386963,"ripple":61.68965475,"timeS":13,"rMeas":0.598318398,"rDev":0.001428863,"rCorr":0.67955796},{"tap":13,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":2.990112305,"ripple":65.08137233,"timeS":14,"rMeas":0.598263443,"rDev":0.001866193,"rCorr":0.679495543}],"allB":[{"tap":13,"name":"B (H2 - H0)","iDc":4.998291016,"vDc":2.984649658,"ripple":60.18856038,"timeS":13,"rMeas":0.597134054,"rDev":0.001839397,"rCorr":0.678212806},{"tap":13,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":2.984436035,"ripple":64.62433895,"timeS":12,"rMeas":0.597098589,"rDev":0.002199107,"rCorr":0.678172526}],"allC":[{"tap":13,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007141113,"ripple":62.38247484,"timeS":13,"rMeas":0.601450264,"rDev":0.00177617,"rCorr":0.683115071},{"tap":13,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.007019043,"ripple":66.89823047,"timeS":13,"rMeas":0.601425827,"rDev":0.0028077,"rCorr":0.683087315}]},"14":{"tap":14,"phaseA":{"tap":14,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.052215576,"ripple":60.76105348,"timeS":13,"rMeas":0.610681653,"rDev":0.003255764,"rCorr":0.693599896},"phaseB":{"tap":14,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.047271729,"ripple":61.11166259,"timeS":13,"rMeas":0.609670162,"rDev":0.003558945,"rCorr":0.692451065},"phaseC":{"tap":14,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.069580078,"ripple":62.56891388,"timeS":13,"rMeas":0.61393851,"rDev":0.002917879,"rCorr":0.697298969},"allA":[{"tap":14,"name":"A (H1 - H0)","iDc":4.998046875,"vDc":3.052215576,"ripple":60.76105348,"timeS":13,"rMeas":0.610681653,"rDev":0.003255764,"rCorr":0.693599896},{"tap":14,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.052307129,"ripple":66.90406355,"timeS":13,"rMeas":0.610707462,"rDev":0.001099301,"rCorr":0.693629209}],"allB":[{"tap":14,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.047271729,"ripple":61.11166259,"timeS":13,"rMeas":0.609670162,"rDev":0.003558945,"rCorr":0.692451065},{"tap":14,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.047210693,"ripple":65.29399461,"timeS":19,"rMeas":0.609657943,"rDev":0.001549929,"rCorr":0.692437187}],"allC":[{"tap":14,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.069580078,"ripple":62.56891388,"timeS":13,"rMeas":0.61393851,"rDev":0.002917879,"rCorr":0.697298969},{"tap":14,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.069396973,"ripple":67.79153087,"timeS":13,"rMeas":0.613901854,"rDev":0.002752346,"rCorr":0.697257335}]},"15":{"tap":15,"phaseA":{"tap":15,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.109893799,"ripple":62.31631322,"timeS":14,"rMeas":0.622237027,"rDev":0.002592004,"rCorr":0.706724256},"phaseB":{"tap":15,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.100799561,"ripple":61.56149338,"timeS":13,"rMeas":0.620379508,"rDev":0.005822291,"rCorr":0.704614523},"phaseC":{"tap":15,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132049561,"ripple":63.19570987,"timeS":14,"rMeas":0.626432836,"rDev":0.003157961,"rCorr":0.711489772},"allA":[{"tap":15,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.109893799,"ripple":62.31631322,"timeS":14,"rMeas":0.622237027,"rDev":0.002592004,"rCorr":0.706724256},{"tap":15,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.110076904,"ripple":66.7125247,"timeS":13,"rMeas":0.622273624,"rDev":0.008668853,"rCorr":0.706765822}],"allB":[{"tap":15,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.100799561,"ripple":61.56149338,"timeS":13,"rMeas":0.620379508,"rDev":0.005822291,"rCorr":0.704614523},{"tap":15,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.100250244,"ripple":65.97736285,"timeS":13,"rMeas":0.620269656,"rDev":0.006418921,"rCorr":0.704489756}],"allC":[{"tap":15,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.132049561,"ripple":63.19570987,"timeS":14,"rMeas":0.626432836,"rDev":0.003157961,"rCorr":0.711489772},{"tap":15,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.131958008,"ripple":68.05560651,"timeS":13,"rMeas":0.626414537,"rDev":0.002248718,"rCorr":0.711468988}]},"16":{"tap":16,"phaseA":{"tap":16,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.172302246,"ripple":62.58798383,"timeS":14,"rMeas":0.634723902,"rDev":0.001485239,"rCorr":0.720906597},"phaseB":{"tap":16,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.163024902,"ripple":62.46072887,"timeS":13,"rMeas":0.63282901,"rDev":0.00441543,"rCorr":0.718754417},"phaseC":{"tap":16,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.19519043,"ripple":64.34920267,"timeS":14,"rMeas":0.639061511,"rDev":0.00191,"rCorr":0.725833165},"allA":[{"tap":16,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.172302246,"ripple":62.58798383,"timeS":14,"rMeas":0.634723902,"rDev":0.001485239,"rCorr":0.720906597},{"tap":16,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.172210693,"ripple":66.62760178,"timeS":14,"rMeas":0.634697795,"rDev":0.002030222,"rCorr":0.720876945}],"allB":[{"tap":16,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.163024902,"ripple":62.46072887,"timeS":13,"rMeas":0.63282901,"rDev":0.00441543,"rCorr":0.718754417},{"tap":16,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.162567139,"ripple":65.49675364,"timeS":13,"rMeas":0.632737398,"rDev":0.001630534,"rCorr":0.718650366}],"allC":[{"tap":16,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.19519043,"ripple":64.34920267,"timeS":14,"rMeas":0.639061511,"rDev":0.00191,"rCorr":0.725833165},{"tap":16,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.194824219,"ripple":68.34792551,"timeS":14,"rMeas":0.638988256,"rDev":0.00395784,"rCorr":0.725749965}]},"17":{"tap":17,"phaseA":{"tap":17,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.235443115,"ripple":63.91419354,"timeS":14,"rMeas":0.647349417,"rDev":0.00216749,"rCorr":0.735246402},"phaseB":{"tap":17,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.225341797,"ripple":62.94688739,"timeS":14,"rMeas":0.645296812,"rDev":0.002485319,"rCorr":0.732915095},"phaseC":{"tap":17,"name":"C (H3 - H0)","iDc":4.999755859,"vDc":3.257598877,"ripple":65.14413081,"timeS":14,"rMeas":0.651551604,"rDev":0.005314234,"rCorr":0.740019162},"allA":[{"tap":17,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.235443115,"ripple":63.91419354,"timeS":14,"rMeas":0.647349417,"rDev":0.00216749,"rCorr":0.735246402},{"tap":17,"name":"A (H1 - H0)","iDc":4.99798584,"vDc":3.235534668,"ripple":67.66534731,"timeS":14,"rMeas":0.647367716,"rDev":0.002987001,"rCorr":0.735267186}],"allB":[{"tap":17,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.225341797,"ripple":62.94688739,"timeS":14,"rMeas":0.645296812,"rDev":0.002485319,"rCorr":0.732915095},{"tap":17,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.225036621,"ripple":66.44446104,"timeS":13,"rMeas":0.645235717,"rDev":0.002992667,"rCorr":0.732845705}],"allC":[{"tap":17,"name":"C (H3 - H0)","iDc":4.999755859,"vDc":3.257598877,"ripple":65.14413081,"timeS":14,"rMeas":0.651551604,"rDev":0.005314234,"rCorr":0.740019162},{"tap":17,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.257873535,"ripple":69.05946639,"timeS":14,"rMeas":0.651598573,"rDev":0.002902154,"rCorr":0.740072507}]},"18":{"tap":18,"phaseA":{"tap":18,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.298492432,"ripple":64.90229511,"timeS":14,"rMeas":0.659972429,"rDev":0.001496421,"rCorr":0.749583365},"phaseB":{"tap":18,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.287384033,"ripple":63.94952879,"timeS":14,"rMeas":0.657709658,"rDev":0.002118128,"rCorr":0.747013355},"phaseC":{"tap":18,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.320648193,"ripple":65.99767556,"timeS":14,"rMeas":0.664153934,"rDev":0.002021256,"rCorr":0.754332633},"allA":[{"tap":18,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.298492432,"ripple":64.90229511,"timeS":14,"rMeas":0.659972429,"rDev":0.001496421,"rCorr":0.749583365},{"tap":18,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.298370361,"ripple":67.10349667,"timeS":13,"rMeas":0.659947991,"rDev":0.002171312,"rCorr":0.749555609}],"allB":[{"tap":18,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.287384033,"ripple":63.94952879,"timeS":14,"rMeas":0.657709658,"rDev":0.002118128,"rCorr":0.747013355},{"tap":18,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.287658691,"ripple":66.64538546,"timeS":13,"rMeas":0.657764614,"rDev":0.001583524,"rCorr":0.747075772}],"allC":[{"tap":18,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.320648193,"ripple":65.99767556,"timeS":14,"rMeas":0.664153934,"rDev":0.002021256,"rCorr":0.754332633},{"tap":18,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.320343018,"ripple":69.31678005,"timeS":14,"rMeas":0.664092898,"rDev":0.002907675,"rCorr":0.75426331}]},"19":{"tap":19,"phaseA":{"tap":19,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.361877441,"ripple":68.76985691,"timeS":14,"rMeas":0.672654688,"rDev":0.003029754,"rCorr":0.763987619},"phaseB":{"tap":19,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.35055542,"ripple":68.2221188,"timeS":13,"rMeas":0.670348406,"rDev":0.002840621,"rCorr":0.761368189},"phaseC":{"tap":19,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.383880615,"ripple":69.81505219,"timeS":14,"rMeas":0.676800907,"rDev":0.002856394,"rCorr":0.76869681},"allA":[{"tap":19,"name":"A (H1 - H0)","iDc":4.997924805,"vDc":3.361877441,"ripple":68.76985691,"timeS":14,"rMeas":0.672654688,"rDev":0.003029754,"rCorr":0.763987619}],"allB":[{"tap":19,"name":"B (H2 - H0)","iDc":4.99822998,"vDc":3.35055542,"ripple":68.2221188,"timeS":13,"rMeas":0.670348406,"rDev":0.002840621,"rCorr":0.761368189}],"allC":[{"tap":19,"name":"C (H3 - H0)","iDc":4.999816895,"vDc":3.383880615,"ripple":69.81505219,"timeS":14,"rMeas":0.676800907,"rDev":0.002856394,"rCorr":0.76869681}]}}};
 
-    let currentSerial = "PP0084B01";
     let waveformChartInstance = null;
-    let timeChartInstance = null;
+    let rCorrChartInstance = null;
     let rippleChartInstance = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      initSerialDropdown();
-      const urlParams = new URLSearchParams(window.location.search);
-      const sParam = urlParams.get('serial');
-      if (sParam && MOCK_OLTC_DATA[sParam]) {
-        currentSerial = sParam;
-      }
-      document.getElementById('serial-select').value = currentSerial;
-      renderReport(currentSerial);
+      renderReport();
     });
 
-    function initSerialDropdown() {
-      const select = document.getElementById('serial-select');
-      select.innerHTML = '';
-      Object.keys(MOCK_OLTC_DATA).forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = s + ' - ' + MOCK_OLTC_DATA[s].equipName + ' (' + MOCK_OLTC_DATA[s].site + ')';
-        select.appendChild(opt);
-      });
+    function onSerialChange(val) {
+      document.getElementById('info-serial').textContent = val;
     }
 
-    function onSerialChange(s) {
-      currentSerial = s;
-      const newUrl = window.location.pathname + '?serial=' + encodeURIComponent(s);
-      window.history.pushState({ path: newUrl }, '', newUrl);
-      renderReport(s);
-    }
-
-    function renderReport(serialKey) {
-      const d = MOCK_OLTC_DATA[serialKey] || MOCK_OLTC_DATA["PP0084B01"];
-
-      document.getElementById('info-equip').textContent = d.equipName;
-      document.getElementById('info-serial').textContent = d.serial;
-      document.getElementById('info-site').textContent = d.site;
-      document.getElementById('info-rating').textContent = d.rating;
-      document.getElementById('info-vector').textContent = d.vector;
-
-      document.getElementById('info-oltc-mfg').textContent = d.oltcMfg;
-      document.getElementById('info-oltc-model').textContent = d.oltcModel;
-      document.getElementById('info-oltc-serial').textContent = d.oltcSerial + ' | Motor: ' + d.motorDrive;
-      document.getElementById('info-oltc-counter').textContent = d.counter + ' Operations';
-      document.getElementById('info-oltc-resistor').innerHTML = '<strong>' + d.rtrNameplate.toFixed(2) + ' Ω</strong> (Nameplate) | ' + d.totalTaps + ' Taps';
-
-      document.getElementById('header-test-date').textContent = 'Test Date: ' + d.testDate;
-      document.getElementById('info-instrument').textContent = d.instrument;
-      document.getElementById('info-inst-sn').textContent = d.instSN;
-      document.getElementById('sig-tester').textContent = d.tester;
-      document.getElementById('sig-reviewer').textContent = d.reviewer;
-
-      const raiseRows = [];
-      const lowerRows = [];
-      const tapCount = d.totalTaps || 17;
-
-      for (let i = 1; i < tapCount; i++) {
-        const fromTap = i;
-        const toTap = i + 1;
-        const seed = ((fromTap * 7 + toTap * 13) % 100) / 100;
-        const tA = d.baseTime + (seed * 3.2 - 1.6);
-        const tB = d.baseTime + (((seed * 11) % 1) * 3.0 - 1.5);
-        const tC = d.baseTime + (((seed * 17) % 1) * 3.4 - 1.7);
-        const sync = Math.max(tA, tB, tC) - Math.min(tA, tB, tC);
-        const rtr = d.rtrNameplate * (1 + (seed * 0.02 - 0.005));
-        const rip = d.baseRipple + (seed * 2.4 - 1.2);
-
-        raiseRows.push({
-          step: 'Tap ' + fromTap + ' → Tap ' + toTap,
-          tA: parseFloat(tA.toFixed(1)),
-          tB: parseFloat(tB.toFixed(1)),
-          tC: parseFloat(tC.toFixed(1)),
-          sync: parseFloat(sync.toFixed(1)),
-          rtr: parseFloat(rtr.toFixed(2)),
-          ripple: parseFloat(rip.toFixed(1)),
-          bounce: 0.00,
-          status: 'NORMAL'
-        });
-      }
-
-      for (let i = tapCount; i > 1; i--) {
-        const fromTap = i;
-        const toTap = i - 1;
-        const seed = ((fromTap * 9 + toTap * 11) % 100) / 100;
-        const tA = d.baseTime + (seed * 3.0 - 1.4);
-        const tB = d.baseTime + (((seed * 13) % 1) * 2.8 - 1.4);
-        const tC = d.baseTime + (((seed * 19) % 1) * 3.2 - 1.6);
-        const sync = Math.max(tA, tB, tC) - Math.min(tA, tB, tC);
-        const rtr = d.rtrNameplate * (1 + (seed * 0.02 - 0.004));
-        const rip = d.baseRipple + (seed * 2.2 - 1.1);
-
-        lowerRows.push({
-          step: 'Tap ' + fromTap + ' → Tap ' + toTap,
-          tA: parseFloat(tA.toFixed(1)),
-          tB: parseFloat(tB.toFixed(1)),
-          tC: parseFloat(tC.toFixed(1)),
-          sync: parseFloat(sync.toFixed(1)),
-          rtr: parseFloat(rtr.toFixed(2)),
-          ripple: parseFloat(rip.toFixed(1)),
-          bounce: 0.00,
-          status: 'NORMAL'
-        });
-      }
-
-      renderTable('table-raise-body', raiseRows);
-      renderTable('table-lower-body', lowerRows);
-
-      const maxTime = Math.max(...raiseRows.map(r => Math.max(r.tA, r.tB, r.tC)));
-      const maxRip = Math.max(...raiseRows.map(r => r.ripple));
-      const avgRtr = raiseRows.reduce((a, b) => a + b.rtr, 0) / raiseRows.length;
-      const rtrDev = ((avgRtr - d.rtrNameplate) / d.rtrNameplate) * 100;
-
-      document.getElementById('kpi-max-time').textContent = maxTime.toFixed(1) + ' ms';
-      document.getElementById('kpi-max-ripple').textContent = maxRip.toFixed(1) + ' %';
-      document.getElementById('kpi-rtr-dev').innerHTML = avgRtr.toFixed(2) + ' Ω <span style="font-size:12px; color:#166534;">(' + (rtrDev >= 0 ? '+' : '') + rtrDev.toFixed(2) + '%)</span>';
-
-      renderTimeChart(raiseRows, lowerRows);
-      renderRippleChart(raiseRows, d.rtrNameplate);
-      updateWaveformChart('9_10');
-    }
-
-    function renderTable(tableBodyId, rows) {
-      const tbody = document.getElementById(tableBodyId);
+    function renderReport() {
+      const summary = RAW_DRM_DATA.tapSummary;
+      const tbody = document.getElementById('table-drm-body');
       tbody.innerHTML = '';
-      rows.forEach(r => {
+
+      const labels = [];
+      const dataA = [];
+      const dataB = [];
+      const dataC = [];
+      const rippleA = [];
+      const rippleB = [];
+      const rippleC = [];
+
+      let maxDevFleet = 0;
+      let maxRippleFleet = 0;
+
+      for (let t = 1; t <= 19; t++) {
+        const item = summary[t];
+        const pA = item.phaseA;
+        const pB = item.phaseB;
+        const pC = item.phaseC;
+
+        const rA = pA ? pA.rCorr : 0;
+        const rB = pB ? pB.rCorr : 0;
+        const rC = pC ? pC.rCorr : 0;
+
+        // Phase deviation %: (max - min) / avg * 100
+        const vals = [rA, rB, rC].filter(v => v > 0);
+        let dev = 0;
+        if (vals.length === 3) {
+          const avg = (rA + rB + rC) / 3;
+          dev = ((Math.max(rA, rB, rC) - Math.min(rA, rB, rC)) / avg) * 100;
+        }
+
+        if (dev > maxDevFleet) maxDevFleet = dev;
+
+        const ripVal = pA && pA.ripple ? pA.ripple : (pB && pB.ripple ? pB.ripple : 0);
+        if (ripVal > maxRippleFleet) maxRippleFleet = ripVal;
+
+        labels.push('Tap ' + t);
+        dataA.push(parseFloat(rA.toFixed(4)));
+        dataB.push(parseFloat(rB.toFixed(4)));
+        dataC.push(parseFloat(rC.toFixed(4)));
+
+        rippleA.push(pA && pA.ripple ? parseFloat(pA.ripple.toFixed(1)) : 0);
+        rippleB.push(pB && pB.ripple ? parseFloat(pB.ripple.toFixed(1)) : 0);
+        rippleC.push(pC && pC.ripple ? parseFloat(pC.ripple.toFixed(1)) : 0);
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="tap-col">${r.step}</td>
-          <td>${r.tA.toFixed(1)}</td>
-          <td>${r.tB.toFixed(1)}</td>
-          <td>${r.tC.toFixed(1)}</td>
-          <td style="font-weight: 600; color: #1e3a8a;">${r.sync.toFixed(1)}</td>
-          <td style="font-weight: 600; color: #0f172a;">${r.rtr.toFixed(2)}</td>
-          <td>${r.ripple.toFixed(1)}%</td>
-          <td style="font-weight: 600; color: #166534;">${r.bounce.toFixed(2)}</td>
-          <td><span class="status-badge status-pass">${r.status}</span></td>
+          <td class="tap-col">Tap ${t}</td>
+          <td>${pA ? pA.iDc.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #0f172a;">${pA ? pA.rMeas.toFixed(4) : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${pA ? pA.rCorr.toFixed(4) : '-'}</td>
+          <td>${pB ? pB.iDc.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #0f172a;">${pB ? pB.rMeas.toFixed(4) : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${pB ? pB.rCorr.toFixed(4) : '-'}</td>
+          <td>${pC ? pC.iDc.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #0f172a;">${pC ? pC.rMeas.toFixed(4) : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${pC ? pC.rCorr.toFixed(4) : '-'}</td>
+          <td style="font-weight: 700;">${dev.toFixed(2)}%</td>
+          <td style="font-weight: 600; color: #166534;">${ripVal ? ripVal.toFixed(1) + '%' : '-'}</td>
+          <td><span class="status-badge status-pass">PASS</span></td>
         `;
         tbody.appendChild(tr);
+      }
+
+      document.getElementById('kpi-phase-dev').textContent = maxDevFleet.toFixed(2) + ' %';
+      document.getElementById('kpi-max-ripple').textContent = maxRippleFleet.toFixed(1) + ' %';
+
+      renderCharts(labels, dataA, dataB, dataC, rippleA, rippleB, rippleC);
+      updateWaveformChart(10);
+    }
+
+    function renderCharts(labels, dataA, dataB, dataC, rippleA, rippleB, rippleC) {
+      // 1. R corr Chart
+      const ctx1 = document.getElementById('rCorrChart').getContext('2d');
+      if (rCorrChartInstance) rCorrChartInstance.destroy();
+
+      rCorrChartInstance = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Phase A (H1-H0)',
+              data: dataA,
+              borderColor: '#3b82f6',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 3
+            },
+            {
+              label: 'Phase B (H2-H0)',
+              data: dataB,
+              borderColor: '#eab308',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 3
+            },
+            {
+              label: 'Phase C (H3-H0)',
+              data: dataC,
+              borderColor: '#f97316',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8 } }, grid: { display: false } },
+            y: {
+              title: { display: true, text: 'Rcorr @ 75°C (Ω)', font: { size: 9 } },
+              min: 0.60,
+              max: 0.80,
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+
+      // 2. Ripple Chart
+      const ctx2 = document.getElementById('rippleTrendChart').getContext('2d');
+      if (rippleChartInstance) rippleChartInstance.destroy();
+
+      rippleChartInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Phase A Ripple (%)',
+              data: rippleA,
+              backgroundColor: 'rgba(59, 130, 246, 0.75)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 3
+            },
+            {
+              label: 'Phase B Ripple (%)',
+              data: rippleB,
+              backgroundColor: 'rgba(234, 179, 8, 0.75)',
+              borderColor: '#ca8a04',
+              borderWidth: 1,
+              borderRadius: 3
+            },
+            {
+              label: 'Phase C Ripple (%)',
+              data: rippleC,
+              backgroundColor: 'rgba(249, 115, 22, 0.75)',
+              borderColor: '#ea580c',
+              borderWidth: 1,
+              borderRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8 } }, grid: { display: false } },
+            y: {
+              title: { display: true, text: 'Current Ripple (%)', font: { size: 9 } },
+              min: 40,
+              max: 80,
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
       });
     }
 
-    function updateWaveformChart(tapKey) {
-      const d = MOCK_OLTC_DATA[currentSerial] || MOCK_OLTC_DATA["PP0084B01"];
+    function updateWaveformChart(tapNum) {
+      const tap = parseInt(tapNum);
+      const summary = RAW_DRM_DATA.tapSummary[tap];
       const ctx = document.getElementById('drmWaveformChart').getContext('2d');
+
+      const pA = summary ? summary.phaseA : null;
+      const ripPct = pA && pA.ripple ? pA.ripple : 55.0;
 
       const timeSteps = [];
       const iA = [];
       const iB = [];
       const iC = [];
 
-      const I0 = 10.0;
+      const I0 = 5.0; // 5A DC test current
       const tStart = 20.0;
-      const tTrans = d.baseTime || 45.0;
+      const tTrans = 45.0;
       const tEnd = tStart + tTrans;
-      const dipLevel = I0 * (1 - (d.baseRipple || 13.0) / 100);
+      const dipLevel = I0 * (1 - ripPct / 100);
 
       for (let t = 0; t <= 90; t += 0.5) {
         timeSteps.push(t.toFixed(1));
@@ -1108,16 +1021,16 @@
           if (progress < 0.25) {
             currentA = I0 - (I0 - dipLevel) * (progress / 0.25);
           } else if (progress < 0.70) {
-            currentA = dipLevel + (I0 * 0.04) * Math.sin(progress * Math.PI * 4);
+            currentA = dipLevel + (I0 * 0.05) * Math.sin(progress * Math.PI * 4);
           } else {
             currentA = dipLevel + (I0 - dipLevel) * ((progress - 0.70) / 0.30);
           }
-          currentB = currentA * (1 + 0.012 * Math.sin(progress * 10));
-          currentC = currentA * (1 - 0.015 * Math.cos(progress * 10));
+          currentB = currentA * (1 + 0.015 * Math.sin(progress * 8));
+          currentC = currentA * (1 - 0.012 * Math.cos(progress * 8));
         } else {
-          currentA = I0 + (Math.random() * 0.04 - 0.02);
-          currentB = I0 + (Math.random() * 0.04 - 0.02);
-          currentC = I0 + (Math.random() * 0.04 - 0.02);
+          currentA = I0 + (Math.random() * 0.02 - 0.01);
+          currentB = I0 + (Math.random() * 0.02 - 0.01);
+          currentC = I0 + (Math.random() * 0.02 - 0.01);
         }
 
         iA.push(parseFloat(currentA.toFixed(3)));
@@ -1133,7 +1046,7 @@
           labels: timeSteps,
           datasets: [
             {
-              label: 'Phase A (10A DC)',
+              label: 'Phase A (5A DC)',
               data: iA,
               borderColor: '#3b82f6',
               backgroundColor: 'rgba(59, 130, 246, 0.05)',
@@ -1143,7 +1056,7 @@
               tension: 0.2
             },
             {
-              label: 'Phase B (10A DC)',
+              label: 'Phase B (5A DC)',
               data: iB,
               borderColor: '#eab308',
               backgroundColor: 'transparent',
@@ -1153,7 +1066,7 @@
               tension: 0.2
             },
             {
-              label: 'Phase C (10A DC)',
+              label: 'Phase C (5A DC)',
               data: iC,
               borderColor: '#f97316',
               backgroundColor: 'transparent',
@@ -1185,8 +1098,8 @@
             },
             y: {
               title: { display: true, text: 'Current (A)', font: { size: 10, weight: 'bold' } },
-              min: 7.5,
-              max: 10.5,
+              min: 1.0,
+              max: 5.5,
               grid: { color: 'rgba(0,0,0,0.05)' },
               ticks: { font: { size: 9 } }
             }
@@ -1194,128 +1107,8 @@
         }
       });
 
-      const labelMap = {
-        '8_9': 'Tap 8 → Tap 9 (Raise)',
-        '9_10': 'Tap 9 → Tap 10 (Raise - Critical Tap)',
-        '10_11': 'Tap 10 → Tap 11 (Raise)',
-        '10_9': 'Tap 10 → Tap 9 (Lower)',
-        '9_8': 'Tap 9 → Tap 8 (Lower)'
-      };
       document.getElementById('waveform-header-label').textContent = 
-        'Switching Event Profile: ' + (labelMap[tapKey] || tapKey) + ' | Transition Time: ' + tTrans.toFixed(1) + ' ms | Ripple: ' + d.baseRipple.toFixed(1) + '%';
-    }
-
-    function renderTimeChart(raiseRows, lowerRows) {
-      const ctx = document.getElementById('timeChart').getContext('2d');
-      const labels = raiseRows.map((r, i) => (i+1) + '→' + (i+2));
-      const raiseTimes = raiseRows.map(r => r.tA);
-      const lowerTimes = lowerRows.map(r => r.tA).reverse();
-
-      if (timeChartInstance) timeChartInstance.destroy();
-
-      timeChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Raise Time (ms)',
-              data: raiseTimes,
-              backgroundColor: 'rgba(59, 130, 246, 0.75)',
-              borderColor: '#2563eb',
-              borderWidth: 1,
-              borderRadius: 3
-            },
-            {
-              label: 'Lower Time (ms)',
-              data: lowerTimes,
-              backgroundColor: 'rgba(16, 185, 129, 0.75)',
-              borderColor: '#059669',
-              borderWidth: 1,
-              borderRadius: 3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
-          },
-          scales: {
-            x: { ticks: { font: { size: 9 } }, grid: { display: false } },
-            y: {
-              title: { display: true, text: 'Time (ms)', font: { size: 9 } },
-              min: 30,
-              max: 70,
-              ticks: { font: { size: 9 } }
-            }
-          }
-        }
-      });
-    }
-
-    function renderRippleChart(raiseRows, rtrNameplate) {
-      const ctx = document.getElementById('rippleChart').getContext('2d');
-      const labels = raiseRows.map((r, i) => (i+1) + '→' + (i+2));
-      const rtrVals = raiseRows.map(r => r.rtr);
-      const rippleVals = raiseRows.map(r => r.ripple);
-
-      if (rippleChartInstance) rippleChartInstance.destroy();
-
-      rippleChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Transition Rtr (Ω)',
-              data: rtrVals,
-              borderColor: '#4f46e5',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              pointRadius: 3,
-              yAxisID: 'y1'
-            },
-            {
-              label: 'Current Ripple (%)',
-              data: rippleVals,
-              borderColor: '#eab308',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              pointRadius: 3,
-              yAxisID: 'y2'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } }
-          },
-          scales: {
-            x: { ticks: { font: { size: 9 } }, grid: { display: false } },
-            y1: {
-              type: 'linear',
-              position: 'left',
-              title: { display: true, text: 'Rtr (Ω)', font: { size: 9 } },
-              min: rtrNameplate * 0.9,
-              max: rtrNameplate * 1.1,
-              ticks: { font: { size: 9 } }
-            },
-            y2: {
-              type: 'linear',
-              position: 'right',
-              title: { display: true, text: 'Ripple (%)', font: { size: 9 } },
-              min: 5,
-              max: 25,
-              grid: { display: false },
-              ticks: { font: { size: 9 } }
-            }
-          }
-        }
-      });
+        'Dynamic Current Profile: Tap ' + tap + ' (H1-H0, H2-H0, H3-H0) | Test Current: 5.00 A DC | Measured Ripple: ' + ripPct.toFixed(1) + '%';
     }
 
     function toggleDarkMode() {
