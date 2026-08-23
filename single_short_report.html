@@ -300,20 +300,29 @@
     }
 
     .data-table thead th {
-      background-color: #1e3a8a;
+      background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 600;
       font-size: 8.5px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .data-table thead th.sub-th {
-      background-color: #2563eb;
+      background-color: var(--report-primary);
+      color: #ffffff;
       font-size: 8px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
-    .data-table thead th.th-phase-a { background-color: #1d4ed8; }
-    .data-table thead th.th-phase-b { background-color: #b45309; }
-    .data-table thead th.th-phase-c { background-color: #b91c1c; }
+    .data-table thead th.th-group,
+    .data-table thead th.th-phase-a,
+    .data-table thead th.th-phase-b,
+    .data-table thead th.th-phase-c {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
 
     .data-table tbody tr:nth-child(even) {
       background-color: #f8fafc;
@@ -1526,22 +1535,22 @@
           <thead>
             <tr>
               <th rowspan="2" style="width: 16%;">Tap Position</th>
-              <th colspan="3" class="th-phase-a">${connHL.phA}</th>
-              <th colspan="3" class="th-phase-b">${connHL.phB}</th>
-              <th colspan="3" class="th-phase-c">${connHL.phC}</th>
+              <th colspan="3">${connHL.phA}</th>
+              <th colspan="3">${connHL.phB}</th>
+              <th colspan="3">${connHL.phC}</th>
               <th rowspan="2" style="width: 11%;">% Phase Dev</th>
               <th rowspan="2" style="width: 9%;">Status</th>
             </tr>
             <tr>
-              <th class="sub-th" style="width: 8%;">Volt (V)</th>
-              <th class="sub-th" style="width: 8%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
-              <th class="sub-th" style="width: 8%;">Volt (V)</th>
-              <th class="sub-th" style="width: 8%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
-              <th class="sub-th" style="width: 8%;">Volt (V)</th>
-              <th class="sub-th" style="width: 8%;">Curr (A)</th>
-              <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
+              <th style="width: 8%;">Volt (V)</th>
+              <th style="width: 8%;">Curr (A)</th>
+              <th style="width: 8.5%;">Z (Ω)</th>
+              <th style="width: 8%;">Volt (V)</th>
+              <th style="width: 8%;">Curr (A)</th>
+              <th style="width: 8.5%;">Z (Ω)</th>
+              <th style="width: 8%;">Volt (V)</th>
+              <th style="width: 8%;">Curr (A)</th>
+              <th style="width: 8.5%;">Z (Ω)</th>
             </tr>
           </thead>
           <tbody id="short-table-hl-body"></tbody>
@@ -1655,22 +1664,22 @@
             <thead>
               <tr>
                 <th rowspan="2" style="width: 16%;">Tap Position</th>
-                <th colspan="3" class="th-phase-a">${connHT.phA}</th>
-                <th colspan="3" class="th-phase-b">${connHT.phB}</th>
-                <th colspan="3" class="th-phase-c">${connHT.phC}</th>
+                <th colspan="3">${connHT.phA}</th>
+                <th colspan="3">${connHT.phB}</th>
+                <th colspan="3">${connHT.phC}</th>
                 <th rowspan="2" style="width: 11%;">% Phase Dev</th>
                 <th rowspan="2" style="width: 9%;">Status</th>
               </tr>
               <tr>
-                <th class="sub-th" style="width: 8%;">Volt (V)</th>
-                <th class="sub-th" style="width: 8%;">Curr (A)</th>
-                <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
-                <th class="sub-th" style="width: 8%;">Volt (V)</th>
-                <th class="sub-th" style="width: 8%;">Curr (A)</th>
-                <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
-                <th class="sub-th" style="width: 8%;">Volt (V)</th>
-                <th class="sub-th" style="width: 8%;">Curr (A)</th>
-                <th class="sub-th" style="width: 8.5%;">Z (Ω)</th>
+                <th style="width: 8%;">Volt (V)</th>
+                <th style="width: 8%;">Curr (A)</th>
+                <th style="width: 8.5%;">Z (Ω)</th>
+                <th style="width: 8%;">Volt (V)</th>
+                <th style="width: 8%;">Curr (A)</th>
+                <th style="width: 8.5%;">Z (Ω)</th>
+                <th style="width: 8%;">Volt (V)</th>
+                <th style="width: 8%;">Curr (A)</th>
+                <th style="width: 8.5%;">Z (Ω)</th>
               </tr>
             </thead>
             <tbody id="short-table-ht-body"></tbody>
