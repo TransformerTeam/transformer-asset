@@ -885,37 +885,37 @@
         </tr>
       </table>
 
-      <!-- 8. Signatures & Approval -->
+      <!-- 7. Signatures & Approval -->
       <div class="section-title">
         <span>7. SIGNATURES &amp; APPROVAL</span>
       </div>
       <table class="response-table">
         <thead>
           <tr>
-            <th>Tested By</th>
-            <th>Reviewed By</th>
-            <th>Approved By</th>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="sig-cell">
-              <div id="resp-name-tested" style="font-weight: 700;">-</div>
-              <div id="resp-comp-tested" style="font-size: 9.5px; color: #64748b;">-</div>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-tested" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-tested" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
             </td>
-            <td class="sig-cell">
-              <div id="resp-name-reviewed" style="font-weight: 700;">-</div>
-              <div id="resp-comp-reviewed" style="font-size: 9.5px; color: #64748b;">-</div>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-reviewed" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-reviewed" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
             </td>
-            <td class="sig-cell">
-              <div id="resp-name-approved" style="font-weight: 700;">-</div>
-              <div id="resp-comp-approved" style="font-size: 9.5px; color: #64748b;">-</div>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-approved" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-approved" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
             </td>
           </tr>
           <tr>
-            <td id="resp-date-tested" style="font-size: 9.5px; color: #475569;">Date: -</td>
-            <td id="resp-date-reviewed" style="font-size: 9.5px; color: #475569;">Date: -</td>
-            <td id="resp-date-approved" style="font-size: 9.5px; color: #475569;">Date: -</td>
+            <td id="resp-date-tested" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
+            <td id="resp-date-reviewed" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
+            <td id="resp-date-approved" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
           </tr>
         </tbody>
       </table>
@@ -1540,19 +1540,29 @@
     }
 
     function populateSignatures(rec) {
-      const clean = (v) => (!v || v === '-' || v === 'null') ? '' : v;
-      document.getElementById('resp-name-tested').textContent = clean(rec.NAME1 || rec.Name1) || 'Mr. Jirasak S.';
-      document.getElementById('resp-name-reviewed').textContent = clean(rec.NAME2 || rec.Name2) || 'Mr. Suchat M.';
-      document.getElementById('resp-name-approved').textContent = 'Dr. Chaiwat P.';
+      const clean = (v) => (!v || v === '-' || v === 'null') ? '' : String(v).trim();
+      
+      const testedName = clean(rec.NAME1 || rec.Name1) || 'Mr.Jirasak S.';
+      const reviewedName = clean(rec.NAME2 || rec.Name2) || 'Mr. Suchat M.';
+      const approvedName = clean(rec.NAME3 || rec.Name3) || 'Dr. Chaiwat P.';
 
-      document.getElementById('resp-comp-tested').textContent = clean(rec.COMP1 || rec.Comp1) || 'GPSC';
-      document.getElementById('resp-comp-reviewed').textContent = clean(rec.COMP2 || rec.Comp2) || 'GPSC';
-      document.getElementById('resp-comp-approved').textContent = 'GPSC Division Head';
+      const testedComp = clean(rec.COMP1 || rec.Comp1) || 'GPSC';
+      const reviewedComp = clean(rec.COMP2 || rec.Comp2) || 'GPSC';
+      const approvedComp = clean(rec.COMP3 || rec.Comp3) || 'GPSC Division Head';
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
+
+      document.getElementById('resp-comp-tested').textContent = testedComp;
+      document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
+      document.getElementById('resp-comp-approved').textContent = approvedComp;
 
       const dStr = formatDate_ddMmmyyyy(rec.DATE || rec.Date || rec.date);
-      document.getElementById('resp-date-tested').textContent = dStr !== '-' ? 'Date: ' + dStr : 'Date: -';
-      document.getElementById('resp-date-reviewed').textContent = dStr !== '-' ? 'Date: ' + dStr : 'Date: -';
-      document.getElementById('resp-date-approved').textContent = dStr !== '-' ? 'Date: ' + dStr : 'Date: -';
+      const finalDate = (dStr && dStr !== '-') ? `Date: ${dStr}` : 'Date: -';
+      document.getElementById('resp-date-tested').textContent = finalDate;
+      document.getElementById('resp-date-reviewed').textContent = finalDate;
+      document.getElementById('resp-date-approved').textContent = finalDate;
     }
 
     function toggleTheme() {

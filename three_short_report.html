@@ -938,38 +938,37 @@
         </tr>
       </table>
 
-      <!-- Signatures & Approval Block -->
-      <div class="section-title" style="margin-top: 14px; margin-bottom: 6px;">
-        <span>Signatures &amp; Approval</span>
+      <!-- 7. Signatures & Approval -->
+      <div class="section-title">
+        <span>7. SIGNATURES &amp; APPROVAL</span>
       </div>
       <table class="report-table response-table">
         <thead>
           <tr>
-            <th style="width: 33.3%;">Tested By</th>
-            <th style="width: 33.3%;">Reviewed By</th>
-            <th style="width: 33.4%;">Approved By</th>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-tested" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-tested" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
+            </td>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-reviewed" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-reviewed" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
+            </td>
+            <td style="padding: 10px 8px;">
+              <div id="resp-name-approved" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-approved" style="font-size: 9.5px; color: #64748b; margin-top: 3px;">-</div>
+            </td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested"></td>
-            <td class="val" id="resp-name-reviewed"></td>
-            <td class="val" id="resp-name-approved"></td>
-          </tr>
-          <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
-          </tr>
-          <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
+            <td id="resp-date-tested" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
+            <td id="resp-date-reviewed" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
+            <td id="resp-date-approved" style="font-size: 9.5px; color: #64748b; padding: 6px;">Date: -</td>
           </tr>
         </tbody>
       </table>
@@ -2243,17 +2242,26 @@
       };
 
       const r = rec || {};
-      document.getElementById('resp-name-tested').textContent = cleanSig(r.Name1 || r.NAME1 || r.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.Name2 || r.NAME2 || r.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(r.Name3 || r.NAME3 || r.Approved_by);
+      const testedName = cleanSig(r.Name1 || r.NAME1 || r.Tested_by) || 'Mr.Jirasak S.';
+      const reviewedName = cleanSig(r.Name2 || r.NAME2 || r.Witnessed_by) || 'Mr. Suchat M.';
+      const approvedName = cleanSig(r.Name3 || r.NAME3 || r.Approved_by) || 'Dr. Chaiwat P.';
 
-      document.getElementById('resp-comp-tested').textContent = cleanSig(r.COMP1 || r.comp1);
-      document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
-      document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
+      const testedComp = cleanSig(r.COMP1 || r.comp1) || 'GPSC';
+      const reviewedComp = cleanSig(r.COMP2 || r.comp2) || 'GPSC';
+      const approvedComp = cleanSig(r.COMP3 || r.comp3) || 'GPSC Division Head';
 
-      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
+
+      document.getElementById('resp-comp-tested').textContent = testedComp;
+      document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
+      document.getElementById('resp-comp-approved').textContent = approvedComp;
+
+      const dStr = cleanDate(r.date || r.Date || r.DATE) || (cleanDate(currentRecord ? currentRecord.date : '') || 'Date: -');
+      document.getElementById('resp-date-tested').textContent = dStr;
+      document.getElementById('resp-date-reviewed').textContent = dStr;
+      document.getElementById('resp-date-approved').textContent = dStr;
     }
 
     function toggleTheme() {
