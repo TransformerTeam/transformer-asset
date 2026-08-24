@@ -162,7 +162,7 @@
       color: #ffffff;
     }
 
-    /* Report Paper Styling (A4 Landscape / Portrait friendly) */
+    /* Report Paper Styling */
     .report-wrapper {
       width: 100%;
       max-width: 980px;
@@ -222,17 +222,19 @@
 
     /* Section Titles */
     .section-title {
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       color: #ffffff;
       background-color: var(--report-primary);
       padding: 4px 10px;
-      margin-top: 12px;
-      margin-bottom: 6px;
-      border-radius: 4px;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      border-radius: 3px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .section-title span.badge-info {
@@ -241,6 +243,15 @@
       background: rgba(255, 255, 255, 0.2);
       padding: 2px 8px;
       border-radius: 3px;
+      text-transform: none;
+    }
+
+    /* Grid Splits for Section 2 & 3 */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 4px;
     }
 
     /* Tables */
@@ -258,8 +269,8 @@
     }
 
     .info-table td.lbl {
-      background-color: #f1f5f9;
-      font-weight: 600;
+      background-color: #f8fafc;
+      font-weight: 700;
       color: #334155;
       width: 16%;
     }
@@ -307,8 +318,8 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
 
     .kpi-card {
@@ -377,7 +388,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .chart-box {
@@ -399,7 +410,7 @@
 
     .chart-container {
       position: relative;
-      height: 180px;
+      height: 175px;
       width: 100%;
     }
 
@@ -408,8 +419,8 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
 
     .criteria-box {
@@ -444,7 +455,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 10.5px;
-      margin-top: 10px;
+      margin-top: 8px;
       text-align: center;
     }
 
@@ -462,7 +473,7 @@
     }
 
     table.response-table td.sig-cell {
-      height: 48px;
+      height: 46px;
       vertical-align: bottom;
       padding-bottom: 4px;
       background-color: #ffffff;
@@ -624,64 +635,85 @@
         </div>
       </div>
 
-      <!-- 1. Equipment Identification -->
+      <!-- 1. Transformer Identification & Rating Information (Preserved 1-3 format) -->
       <div class="section-title">
-        <span>1. Transformer Identification &amp; Rating Information</span>
-        <span class="badge-info" id="info-header-id">EMM-TR-F-005, Rev.1</span>
+        <span>1. TRANSFORMER IDENTIFICATION &amp; RATING INFORMATION</span>
+        <span class="badge-info" id="info-header-id">EMM-TR-F-007, Rev.1</span>
       </div>
       <table class="report-table info-table">
         <tr>
-          <td class="lbl">Equipment Name</td>
-          <td class="val" id="info-equip-name">-</td>
-          <td class="lbl">Substation / Site</td>
-          <td class="val" id="info-substation">-</td>
+          <td class="lbl">Equipment Name:</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Substation / Site:</td>
+          <td class="val" id="info-site">-</td>
         </tr>
         <tr>
-          <td class="lbl">Serial Number</td>
-          <td class="val" id="info-serial-no" style="font-weight: 700; color: #1e3a8a;">-</td>
-          <td class="lbl">Manufacturer</td>
-          <td class="val" id="info-manufacturer">-</td>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Rated Power:</td>
+          <td class="val" id="info-power">-</td>
         </tr>
         <tr>
-          <td class="lbl">Rated Power (MVA)</td>
-          <td class="val" id="info-rated-mva">-</td>
-          <td class="lbl">Rated Voltage (kV)</td>
-          <td class="val" id="info-rated-kv">-</td>
+          <td class="lbl">Voltage Ratings:</td>
+          <td class="val" id="info-voltage">-</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
         </tr>
         <tr>
-          <td class="lbl">Vector Group</td>
-          <td class="val" id="info-vector-group">-</td>
-          <td class="lbl">Service / Core Type</td>
-          <td class="val" id="info-core-type">3-Phase 3-Leg Core Form</td>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap">-</td>
         </tr>
       </table>
 
-      <!-- 2. Test Environment & Apparatus -->
-      <div class="section-title">
-        <span>2. Test Apparatus &amp; Environmental Conditions</span>
+      <!-- 2 & 3. Test Instrument & Environmental Conditions (Preserved Split Grid) -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">2. TEST INSTRUMENT &amp; APPARATUS</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Test Set / Model:</td>
+              <td class="val" id="info-instrument">Omicron TESTRANO 600</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 6.4</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">3. ENVIRONMENTAL &amp; THERMAL CONDITIONS</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
       </div>
-      <table class="report-table info-table">
-        <tr>
-          <td class="lbl">Test Instrument</td>
-          <td class="val" id="env-instrument">OMICRON TESTRANO 600</td>
-          <td class="lbl">Instrument S/N &amp; Cal</td>
-          <td class="val" id="env-inst-serial">-</td>
-        </tr>
-        <tr>
-          <td class="lbl">Test Voltage (kV)</td>
-          <td class="val" id="env-test-voltage" style="font-weight: 700; color: #1e3a8a;">10.0 kV</td>
-          <td class="lbl">Ambient / Humidity</td>
-          <td class="val" id="env-ambient-hum">-</td>
-        </tr>
-        <tr>
-          <td class="lbl">Oil / Winding Temp</td>
-          <td class="val" id="env-oil-temp">-</td>
-          <td class="lbl">Excitation Mode</td>
-          <td class="val">Single-Phase Line-to-Ground / Neutral</td>
-        </tr>
-      </table>
 
-      <!-- 3. KPI Highlights Summary -->
+      <!-- KPI Highlights Summary -->
       <div class="kpi-row">
         <div class="kpi-card">
           <div class="kpi-label"><i class="fa-solid fa-dna text-indigo-500"></i> Exciting Pattern</div>
@@ -707,7 +739,7 @@
 
       <!-- 4. Exciting Current Test Measurement Tables -->
       <div class="section-title">
-        <span>3. High Voltage Winding Exciting Current Measurement (H1, H2, H3)</span>
+        <span>4. HIGH VOLTAGE WINDING EXCITING CURRENT MEASUREMENT (H1, H2, H3)</span>
         <span class="badge-info" id="badge-tap-info">Tap Max / Center / Min</span>
       </div>
 
@@ -742,7 +774,7 @@
       <!-- Special / Tertiary Winding Table (Rendered only if LV/TV data exists) -->
       <div id="section-lv-tv" style="display: none;">
         <div class="section-title" style="margin-top: 10px;">
-          <span>4. Low Voltage / Tertiary Exciting Current Measurement</span>
+          <span>5. LOW VOLTAGE / TERTIARY EXCITING CURRENT MEASUREMENT</span>
         </div>
         <table class="data-table" id="table-lv-tv">
           <thead>
@@ -805,24 +837,24 @@
 
       <!-- 7. Engineering Assessment & Recommendation -->
       <div class="section-title">
-        <span>5. Engineering Assessment &amp; Recommendations</span>
+        <span>6. ENGINEERING ASSESSMENT &amp; RECOMMENDATIONS</span>
       </div>
       <table class="report-table info-table" style="margin-bottom: 8px;">
         <tr>
-          <td class="lbl" style="width: 18%;">Diagnostic Summary</td>
+          <td class="lbl" style="width: 18%;">Diagnostic Summary:</td>
           <td class="val" style="width: 82%;" id="diag-summary-text">
             Exciting current measurements on High Voltage windings show the characteristic <strong>H-L-H pattern</strong> across tested tap positions with outer phase difference well within standard limits. No turn-to-turn short circuits or magnetic core anomalies detected.
           </td>
         </tr>
         <tr>
-          <td class="lbl">Condition Rating</td>
+          <td class="lbl">Condition Rating:</td>
           <td class="val" id="diag-rating-text">
             <span class="status-badge status-pass">NORMAL / GOOD</span>
             <span style="font-weight: 600; color: #166534; margin-left: 8px;">Health Index Score: 5 / 5</span>
           </td>
         </tr>
         <tr>
-          <td class="lbl">Recommendation</td>
+          <td class="lbl">Recommendation:</td>
           <td class="val" id="diag-rec-text" style="font-weight: 600; color: #166534;">
             Active part and core/winding magnetic properties are in sound condition. Maintain standard Preventive Maintenance schedule.
           </td>
@@ -831,7 +863,7 @@
 
       <!-- 8. Signatures & Approval -->
       <div class="section-title">
-        <span>6. Signatures &amp; Approval</span>
+        <span>7. SIGNATURES &amp; APPROVAL</span>
       </div>
       <table class="response-table">
         <thead>
@@ -875,6 +907,14 @@
     let patternChartInstance = null;
     let trendChartInstance = null;
 
+    // Robust serial matching helper
+    function matchSerial(a, b) {
+      if (!a || !b) return false;
+      const cleanA = String(a).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const cleanB = String(b).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      return cleanA === cleanB;
+    }
+
     // Helper to parse CSV properly
     function parseCSV(text) {
       const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim().length > 0);
@@ -910,16 +950,45 @@
     }
 
     // Helper to format dates
-    function formatDate_ddMmmyyyy(dStr) {
-      if (!dStr || dStr === '-' || dStr === 'null' || dStr === '0000-00-00') return '-';
-      const clean = dStr.split(' ')[0];
-      const parts = clean.split('-');
-      if (parts.length !== 3) return clean;
-      const yr = parts[0];
-      const mIdx = parseInt(parts[1], 10) - 1;
-      const day = parseInt(parts[2], 10);
-      const mNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${day} ${mNames[mIdx] || parts[1]} ${yr}`;
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === 'None' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      const ymdMatch = cleanStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (ymdMatch) {
+        const y = parseInt(ymdMatch[1], 10);
+        const m = parseInt(ymdMatch[2], 10) - 1;
+        const d = parseInt(ymdMatch[3], 10);
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dmyTextMatch = cleanStr.match(/^(\d{1,2})[-/]([A-Za-z]{3,4})[-/](\d{2,4})$/);
+      if (dmyTextMatch) {
+        const d = parseInt(dmyTextMatch[1], 10);
+        const mStr = dmyTextMatch[2].substring(0, 3).toLowerCase();
+        let y = parseInt(dmyTextMatch[3], 10);
+        if (y < 100) {
+          y = y >= 50 ? 1900 + y : 2000 + y;
+        }
+        const mIdx = months.findIndex(m => m.toLowerCase() === mStr);
+        if (mIdx !== -1) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[mIdx]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+      return cleanStr;
     }
 
     // Load Data on Startup
@@ -968,9 +1037,9 @@
       const uniqueSerials = [...new Set(excitingCsvData.map(r => r.SERIAL_NUMBER || r.Serial_No).filter(Boolean))];
       
       uniqueSerials.forEach(sn => {
-        const info = trInfoCsvData.find(t => (t.Serial_No || t.SERIAL_NUMBER) === sn) || {};
-        const equipName = info.Equipment_Name || info.Equipment_name || sn;
-        const site = info.Site || info.SITE || '';
+        const info = trInfoCsvData.find(t => matchSerial(t.Serial_No || t.SERIAL_NUMBER, sn)) || {};
+        const equipName = info.Equipment_Name || info.Equipment_name || info.LOCAL_EQUIPMENT_CODE || info.DEVICE_CODE || sn;
+        const site = info.Site || info.SITE || info.SUBSTATION || '';
         const opt = document.createElement('option');
         opt.value = sn;
         opt.textContent = `${sn} - ${equipName} ${site ? '(' + site + ')' : ''}`;
@@ -994,7 +1063,7 @@
       currentSerial = serial;
 
       // Find all records for this serial
-      const records = excitingCsvData.filter(r => (r.SERIAL_NUMBER || r.Serial_No) === serial);
+      const records = excitingCsvData.filter(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, serial));
       if (records.length === 0) {
         alert('No Exciting Current test data found for Serial: ' + serial);
         return;
@@ -1016,30 +1085,97 @@
       }
       dateSelect.value = currentRecord.DATE || currentRecord.Date || currentRecord.date;
 
-      const trInfo = trInfoCsvData.find(t => (t.Serial_No || t.SERIAL_NUMBER) === serial) || {};
-      const factoryRec = factoryCsvData.find(f => (f.Serial_No || f.SERIAL_NUMBER) === serial) || {};
+      const trInfo = trInfoCsvData.find(t => matchSerial(t.Serial_No || t.SERIAL_NUMBER, serial)) || {};
+      const factoryRec = factoryCsvData.find(f => matchSerial(f.Serial_No || f.SERIAL_NUMBER, serial)) || {};
 
       renderReport(currentRecord, trInfo, factoryRec, records);
     }
 
     function renderReport(rec, info, fac, allRecords) {
-      // 1. Info table
-      document.getElementById('info-equip-name').textContent = info.Equipment_Name || info.Equipment_name || '-';
-      document.getElementById('info-substation').textContent = info.Site || info.SITE || '-';
-      document.getElementById('info-serial-no').textContent = rec.SERIAL_NUMBER || rec.Serial_No || currentSerial;
-      document.getElementById('info-manufacturer').textContent = info.Manufacturer || '-';
-      document.getElementById('info-rated-mva').textContent = info.Power_Rated || info.Power_Rating || '-';
-      document.getElementById('info-rated-kv').textContent = info.HV_Rated && info.LV_Rated ? `${info.HV_Rated} / ${info.LV_Rated} kV` : (info.Voltage_Rated || '-');
-      document.getElementById('info-vector-group').textContent = info.Vector_Group || info.Vector || '-';
+      const serial = currentSerial;
 
-      // 2. Test Environment
-      document.getElementById('env-instrument').textContent = rec.TESTINS || 'TESTRANO 600';
-      document.getElementById('env-inst-serial').textContent = [rec.INSSERIAL, rec.INSCAL ? 'Cal: ' + formatDate_ddMmmyyyy(rec.INSCAL) : ''].filter(Boolean).join(' | ') || '-';
-      document.getElementById('env-test-voltage').textContent = rec.TEST_VOLTAGE && rec.TEST_VOLTAGE !== '-' ? (parseFloat(rec.TEST_VOLTAGE) >= 1000 ? (parseFloat(rec.TEST_VOLTAGE)/1000) + ' kV' : rec.TEST_VOLTAGE + ' V') : '10.0 kV';
-      document.getElementById('env-ambient-hum').textContent = `${rec.AMBIENT && rec.AMBIENT !== '-' ? rec.AMBIENT + ' °C' : '30 °C'} | ${rec.HUMIDITY && rec.HUMIDITY !== '-' ? rec.HUMIDITY + ' %' : '60 %'}`;
-      document.getElementById('env-oil-temp').textContent = `Oil: ${rec.OILTEMP && rec.OILTEMP !== '-' ? rec.OILTEMP + ' °C' : '35 °C'} | Wdg: ${rec.WINDINGTEMP && rec.WINDINGTEMP !== '-' ? rec.WINDINGTEMP + ' °C' : '35 °C'}`;
+      // 1. Resolve Identification Metadata (Exact Match with Section 1)
+      let name = '-';
+      let site = '-';
+      let power = '-';
+      let hvRated = 115;
+      let lvRated = 22;
+      let tvRated = null;
+      let vectorGroup = 'Dyn1';
+      let tapType = 'OLTC1';
+      let noWinding = 2;
 
-      // 3. Populate Measurements
+      // Check TRinfo2
+      if (info) {
+        if (info.Equipment_Name && info.Equipment_Name !== '-') name = info.Equipment_Name;
+        else if (info.LOCAL_EQUIPMENT_CODE && info.LOCAL_EQUIPMENT_CODE !== '-') name = info.LOCAL_EQUIPMENT_CODE;
+        else if (info.DEVICE_CODE && info.DEVICE_CODE !== '-') name = info.DEVICE_CODE;
+
+        if (info.Site && info.Site !== '-') site = info.Site;
+        else if (info.SUBSTATION && info.SUBSTATION !== '-') site = info.SUBSTATION;
+
+        if (info.Power_Rated && info.Power_Rated !== '-') {
+          const pr = parseFloat(info.Power_Rated);
+          power = (!isNaN(pr) && pr >= 1000) ? `${(pr / 1000).toFixed(0)} MVA` : `${info.Power_Rated} MVA`;
+        } else if (info.POWER_RATING && info.POWER_RATING !== '-') {
+          const pr = parseFloat(info.POWER_RATING);
+          power = (!isNaN(pr) && pr >= 1000) ? `${(pr / 1000).toFixed(0)} MVA` : `${info.POWER_RATING} MVA`;
+        }
+
+        if (info.HV_Rated && info.HV_Rated !== '-') hvRated = parseFloat(info.HV_Rated) || hvRated;
+        else if (info.HV_RATED && info.HV_RATED !== '-') hvRated = parseFloat(info.HV_RATED) || hvRated;
+
+        if (info.LV_Rated && info.LV_Rated !== '-') lvRated = parseFloat(info.LV_Rated) || lvRated;
+        else if (info.LV_RATED && info.LV_RATED !== '-') lvRated = parseFloat(info.LV_RATED) || lvRated;
+
+        if (info.LV2_RATED && info.LV2_RATED !== '-') tvRated = parseFloat(info.LV2_RATED);
+
+        if (info.Vector_Group && info.Vector_Group !== '-') vectorGroup = info.Vector_Group;
+        else if (info.VECTOR_GROUP && info.VECTOR_GROUP !== '-') vectorGroup = info.VECTOR_GROUP;
+
+        if (info.TAP_CHANGER_TYPE && info.TAP_CHANGER_TYPE !== '-') tapType = info.TAP_CHANGER_TYPE;
+        else if (info.Tap_Changer && info.Tap_Changer !== '-') tapType = info.Tap_Changer;
+
+        if (info.NO_WINDING && info.NO_WINDING !== '-') noWinding = parseInt(info.NO_WINDING, 10) || 2;
+      }
+
+      // Check FactoryData fallback
+      if (fac) {
+        if (site === '-' && fac.Site && fac.Site !== '-') site = fac.Site;
+        if (power === '-' && fac.Power_Rated && fac.Power_Rated !== '-') power = `${fac.Power_Rated} MVA`;
+        if (fac.HV_Rated) hvRated = parseFloat(fac.HV_Rated) || hvRated;
+        if (fac.LV_Rated) lvRated = parseFloat(fac.LV_Rated) || lvRated;
+        if (fac.TV_Rated && fac.TV_Rated !== 'None' && fac.TV_Rated !== '-') tvRated = parseFloat(fac.TV_Rated);
+      }
+
+      const voltageStr = tvRated ? `${hvRated} / ${lvRated} / ${tvRated} kV` : `${hvRated} / ${lvRated} kV`;
+      const isAuto = String(vectorGroup).toLowerCase().includes('auto') || String(name).toLowerCase().includes('auto');
+      let windingCountStr = '2 Windings';
+      if (isAuto) windingCountStr = 'Auto-Transformer (2 + Tertiary)';
+      else if (noWinding === 3 || (tvRated !== null && tvRated > 0)) windingCountStr = '3 Windings';
+
+      // Section 1 DOM
+      document.getElementById('info-header-id').textContent = 'EMM-TR-F-007, Rev.1';
+      document.getElementById('info-eq-name').textContent = name;
+      document.getElementById('info-site').textContent = site;
+      document.getElementById('info-serial').textContent = serial;
+      document.getElementById('info-power').textContent = power;
+      document.getElementById('info-voltage').textContent = voltageStr;
+      document.getElementById('info-vector').textContent = vectorGroup;
+      document.getElementById('info-winding').textContent = windingCountStr;
+      document.getElementById('info-tap').textContent = tapType;
+
+      // Section 2 & 3 DOM
+      document.getElementById('info-instrument').textContent = rec.TESTINS && rec.TESTINS !== '-' ? rec.TESTINS : 'TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = rec.INSSERIAL && rec.INSSERIAL !== '-' ? rec.INSSERIAL : 'DA193X';
+      document.getElementById('info-instrument-calib').textContent = rec.INSCAL && rec.INSCAL !== '-' ? formatDate_ddMmmyyyy(rec.INSCAL) : '15-Dec-2025';
+
+      document.getElementById('env-ambient').textContent = rec.AMBIENT && rec.AMBIENT !== '-' ? `${rec.AMBIENT} °C` : '- °C';
+      document.getElementById('env-oil').textContent = rec.OILTEMP && rec.OILTEMP !== '-' ? `${rec.OILTEMP} °C` : '- °C';
+      document.getElementById('env-winding').textContent = rec.WINDINGTEMP && rec.WINDINGTEMP !== '-' ? `${rec.WINDINGTEMP} °C` : '- °C';
+      document.getElementById('env-humidity').textContent = rec.HUMIDITY && rec.HUMIDITY !== '-' ? `${rec.HUMIDITY}%` : '-%';
+
+      // 4. Populate Measurements Table
       const tbody = document.getElementById('table-exciting-body');
       tbody.innerHTML = '';
 
