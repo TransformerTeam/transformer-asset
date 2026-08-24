@@ -719,7 +719,7 @@
       <div class="report-header">
         <div class="report-title-container">
           <div class="report-title">INSULATION POWER FACTOR &amp; CAPACITANCE REPORT</div>
-          <div class="report-subtitle">Std. C57.152-2013</div>
+          <div class="report-subtitle">Std. IEEE C57.152-2013</div>
         </div>
         <div class="logo-container">
           <img src="GPSC_logo_ART.png" alt="GPSC Logo">
@@ -727,15 +727,16 @@
       </div>
 
       <!-- 1. Transformer Identification Section -->
+      <!-- 1. Transformer Identification Section -->
       <div class="section-title">
-        <span>1. Transformer Identification</span>
+        <span>1. Transformer Identification &amp; Rating Information</span>
         <span class="badge-info">EMM-TR-F-008, Rev.1</span>
       </div>
       <table class="report-table info-table">
         <tr>
           <td class="lbl">Equipment Name:</td>
           <td class="val" id="info-eq-name">-</td>
-          <td class="lbl">Site / Substation:</td>
+          <td class="lbl">Substation / Site:</td>
           <td class="val" id="info-site">-</td>
         </tr>
         <tr>
@@ -745,72 +746,76 @@
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
-          <td class="lbl">Manufacturer:</td>
-          <td class="val" id="info-mfg">-</td>
-          <td class="lbl">Rated Voltage:</td>
+          <td class="lbl">Voltage Ratings:</td>
           <td class="val" id="info-voltage">-</td>
-        </tr>
-        <tr>
           <td class="lbl">Vector Group:</td>
           <td class="val" id="info-vector">-</td>
-          <td class="lbl">Winding Config:</td>
-          <td class="val" id="info-winding">-</td>
         </tr>
         <tr>
-          <td class="lbl">Fluid / Oil Type:</td>
-          <td class="val" id="info-fluid">-</td>
-          <td class="lbl">Application / Service:</td>
-          <td class="val" id="info-service">-</td>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap-changer">-</td>
         </tr>
       </table>
 
-      <!-- 2. Test Information & Environment Section -->
-      <div class="section-title">
-        <span>2. Test Information &amp; Environment</span>
-      </div>
+      <!-- 2. Test Instrument & Apparatus & 3. Environmental & Thermal Conditions -->
       <div class="row-split">
-        <table class="report-table info-table">
-          <tr>
-            <td class="lbl" style="width: 40%;">Test Instrument:</td>
-            <td class="val" style="width: 60%;" id="info-instrument">Omicron TESTRANO 600</td>
-          </tr>
-          <tr>
-            <td class="lbl">Instrument Serial:</td>
-            <td class="val" id="info-instrument-serial">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Calibration Date:</td>
-            <td class="val" id="info-instrument-calib">-</td>
-          </tr>
-        </table>
-
-        <table class="report-table info-table">
-          <tr>
-            <td class="lbl" style="width: 40%;">Ambient Temp:</td>
-            <td class="val" style="width: 60%;" id="env-ambient">- °C</td>
-          </tr>
-          <tr>
-            <td class="lbl">Top Oil / Winding Temp:</td>
-            <td class="val"><span id="env-oil">-</span> °C / <span id="env-winding">-</span> °C</td>
-          </tr>
-          <tr>
-            <td class="lbl">Relative Humidity:</td>
-            <td class="val" id="env-humidity">-%</td>
-          </tr>
-        </table>
+        <div>
+          <div class="section-title">2. Test Instrument &amp; Apparatus</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Test Set / Model:</td>
+              <td class="val" id="info-instrument">Omicron TESTRANO 600</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 6.3</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div class="section-title">3. Environmental &amp; Thermal Conditions</div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
       </div>
 
-      <!-- 3. Factory & Nameplate Reference (Capacitance in pF) -->
+      <!-- 4. Factory & Nameplate Reference (Capacitance in pF) -->
       <div class="section-title">
-        <span>3. Factory &amp; Nameplate Reference (Capacitance in pF)</span>
+        <span>4. Factory &amp; Nameplate Reference (Capacitance in pF)</span>
       </div>
       <div id="fac-table-container">
         <!-- Dynamic Factory Reference Table rendered via JavaScript -->
       </div>
 
-      <!-- 4. Insulation Power Factor & Capacitance Test Results Section -->
+      <!-- 5. Insulation Power Factor & Capacitance Test Results Section -->
       <div class="section-title">
-        <span>4. Insulation Power Factor &amp; Capacitance Test Results</span>
+        <span>5. Insulation Power Factor &amp; Capacitance Test Results</span>
       </div>
       <div id="pf-tables-container">
         <!-- Dynamic Tables for Primary, Secondary, Tertiary Windings rendered via JavaScript -->
@@ -843,17 +848,17 @@
       <div class="section-title no-print" style="margin-top: 10px;">
         <span>Historical Trending Analysis</span>
       </div>
-      <div class="trending-panel no-print">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-weight: 600; font-size: 10px; color: var(--text-sub);">Measurement Trend vs. Service History</span>
+      <div class="trending-panel no-print" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 8px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
+          <span style="font-weight: 700; font-size: 11px; color: #1e3a8a;"><i class="fa-solid fa-chart-line"></i> Measurement Trend vs. Service History</span>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 9.5px; color: var(--text-sub);">Insulation Mode:</span>
-            <select id="trend-winding-select" style="background: rgba(0,0,0,0.3); color: var(--text-main); border: 1px solid var(--border-dark); padding: 4px 8px; border-radius: 4px; font-size: 9.5px; outline: none;" onchange="updateTrendChart()">
+            <span style="font-size: 10.5px; font-weight: 600; color: #334155;">Insulation Mode:</span>
+            <select id="trend-winding-select" style="background: #f8fafc; color: #0f172a; border: 1.5px solid #94a3b8; font-weight: 600; padding: 3px 10px; border-radius: 4px; font-size: 10.5px; outline: none; cursor: pointer;" onchange="updateTrendChart()">
               <!-- Options populated dynamically -->
             </select>
           </div>
         </div>
-        <div id="trend-chart" style="min-height: 160px;"></div>
+        <div id="trend-chart" style="min-height: 180px;"></div>
       </div>
 
       <!-- 6. Standards, Mathematical Formulation & Evaluation Criteria -->
@@ -926,16 +931,16 @@
         </tr>
       </table>
 
-      <!-- 8. Signatures / Verification Section -->
+      <!-- 8. SIGNATURE & APPROVAL -->
       <div class="section-title">
-        <span>8. Test Verification &amp; Authorization</span>
+        <span>8. SIGNATURE &amp; APPROVAL</span>
       </div>
       <table class="response-table">
         <thead>
           <tr>
-            <th style="width: 33.3%;">Tested By (Field Engineer)</th>
-            <th style="width: 33.3%;">Witnessed By (Substation Lead)</th>
-            <th style="width: 33.4%;">Approved By (Engineering Specialist)</th>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
           </tr>
         </thead>
         <tbody>
@@ -945,19 +950,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested" style="font-weight: 700;">-</td>
-            <td class="val" id="resp-name-reviewed" style="font-weight: 700;">-</td>
-            <td class="val" id="resp-name-approved" style="font-weight: 700;">-</td>
+            <td class="val" id="resp-name-tested" style="font-weight: 700; height: 18px; vertical-align: middle;">-</td>
+            <td class="val" id="resp-name-reviewed" style="font-weight: 700; height: 18px; vertical-align: middle;">-</td>
+            <td class="val" id="resp-name-approved" style="font-weight: 700; height: 18px; vertical-align: middle;"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
+            <td class="val" style="font-size: 8.5px; color: #475569; height: 16px; vertical-align: middle;" id="resp-comp-tested">-</td>
+            <td class="val" style="font-size: 8.5px; color: #475569; height: 16px; vertical-align: middle;" id="resp-comp-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px; color: #475569; height: 16px; vertical-align: middle;" id="resp-comp-approved"></td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">-</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">-</td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">-</td>
+            <td class="val" style="font-size: 8.5px; height: 16px; vertical-align: middle;" id="resp-date-tested">-</td>
+            <td class="val" style="font-size: 8.5px; height: 16px; vertical-align: middle;" id="resp-date-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px; height: 16px; vertical-align: middle;" id="resp-date-approved">-</td>
           </tr>
         </tbody>
       </table>
@@ -1086,9 +1091,10 @@
       '4710345': { name: '33BBT10 (CTG3C UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
       '4710347': { name: 'SPARE 50 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '50 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
       '4710350': { name: 'SPARE 63.5 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '63.5 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
-      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
-      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
-      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' }
+      'PP0084B01': { name: '14100-TR-003', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' }
     };
 
     // Robust CSV Parser supporting quotes and trim
@@ -1164,10 +1170,18 @@
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
           const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
-          const n = meta['Equipment Name'] || meta.name || s;
+          let n = meta['Equipment Name'] || meta.name || s;
+          let site = meta.SITE || meta.site || meta.substation || '';
+          if (!n || n === s) {
+            const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+            if (extraKey) {
+              if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+              if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+            }
+          }
           if (s && !addedSerials.has(s.toUpperCase())) {
             addedSerials.add(s.toUpperCase());
-            allItems.push({ serial: s, name: n });
+            allItems.push({ serial: s, name: n, site: site });
           }
         });
       }
@@ -1178,14 +1192,30 @@
         if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
           addedSerials.add(s.toUpperCase());
           let n = s;
-          const extra = EXTRA_TR_METADATA[s];
-          if (extra && extra.name) n = extra.name;
-          allItems.push({ serial: s, name: n });
+          let site = item.Site || item.site || item.SITE || '';
+          const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+          if (extraKey) {
+            if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+            if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+          }
+          allItems.push({ serial: s, name: n, site: site });
         }
       });
 
-      // Sort alphabetically by name
-      allItems.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+      // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
+      allItems.sort((a, b) => {
+        const siteA = (a.site || '').trim();
+        const siteB = (b.site || '').trim();
+        const siteComp = siteA.localeCompare(siteB, undefined, { numeric: true, sensitivity: 'base' });
+        if (siteComp !== 0) return siteComp;
+
+        const nameA = (a.name || a.serial || '').trim();
+        const nameB = (b.name || b.serial || '').trim();
+        const nameComp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        if (nameComp !== 0) return nameComp;
+
+        return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+      });
 
       allItems.forEach(item => {
         const opt = document.createElement('option');
@@ -1453,6 +1483,7 @@
         if (extra.lv) lvRated = extra.lv;
         if (extra.tv) tvRated = extra.tv;
         if (extra.vector) vectorGroup = extra.vector;
+        if (extra.tap) tapType = extra.tap;
         if (extra.fluid) fluid = extra.fluid;
         if (extra.service) service = extra.service;
       }
@@ -1487,8 +1518,9 @@
         windingCountStr = '3 Windings';
       }
       document.getElementById('info-winding').textContent = windingCountStr;
-      document.getElementById('info-fluid').textContent = fluid;
-      document.getElementById('info-service').textContent = service;
+      if (document.getElementById('info-tap-changer')) {
+        document.getElementById('info-tap-changer').textContent = tapType || '-';
+      }
 
       // 2. Populate Test Environment & Apparatus
       const r = record || {};
@@ -1497,8 +1529,8 @@
       document.getElementById('info-instrument-calib').textContent = r.date_calibation && r.date_calibation !== '-' ? formatDate_ddMmmyyyy(r.date_calibation) : '-';
 
       document.getElementById('env-ambient').textContent = r.ambient_temp && r.ambient_temp !== '-' ? `${r.ambient_temp} °C` : '- °C';
-      document.getElementById('env-oil').textContent = r.oil_temp && r.oil_temp !== '-' ? r.oil_temp : '-';
-      document.getElementById('env-winding').textContent = r.winding_temp && r.winding_temp !== '-' ? r.winding_temp : '-';
+      document.getElementById('env-oil').textContent = r.oil_temp && r.oil_temp !== '-' ? `${r.oil_temp} °C` : '- °C';
+      document.getElementById('env-winding').textContent = r.winding_temp && r.winding_temp !== '-' ? `${r.winding_temp} °C` : '- °C';
       document.getElementById('env-humidity').textContent = r.humidity && r.humidity !== '-' ? `${r.humidity}%` : '-%';
 
       // 3. Render Factory Reference Capacitance Table
@@ -2286,9 +2318,9 @@
         capValues.push(isNaN(capVal) ? null : capVal);
       });
 
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      const textColor = isDark ? '#f1f5f9' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+      const textColor = '#0f172a';
+      const labelColor = '#334155';
+      const gridColor = '#e2e8f0';
 
       const options = {
         series: [
@@ -2296,33 +2328,67 @@
           { name: 'Capacitance (pF)', type: 'line', data: capValues }
         ],
         chart: {
-          height: 160,
+          height: 180,
           type: 'line',
           toolbar: { show: false },
-          background: 'transparent'
+          background: '#ffffff',
+          fontFamily: 'Inter, sans-serif'
         },
         stroke: { width: [2.5, 2.5], curve: 'straight' },
-        colors: ['#ef4444', '#3b82f6'],
-        markers: { size: 5, strokeWidth: 2, hover: { size: 7 } },
+        colors: ['#dc2626', '#2563eb'],
+        markers: { size: 5, strokeWidth: 2, strokeColors: '#ffffff', hover: { size: 7 } },
         xaxis: {
           categories: dates,
-          labels: { style: { colors: textColor, fontSize: '9px' } },
-          axisBorder: { show: false },
-          axisTicks: { show: false }
+          labels: { 
+            style: { colors: labelColor, fontSize: '9.5px', fontWeight: 600 } 
+          },
+          axisBorder: { show: true, color: '#cbd5e1' },
+          axisTicks: { show: true, color: '#cbd5e1' }
         },
         yaxis: [
           {
-            title: { text: 'Power Factor (%)', style: { color: '#ef4444', fontSize: '10px', fontWeight: 600 } },
-            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: val => val ? val.toFixed(3) + '%' : '' }
+            title: { 
+              text: 'Power Factor (%)', 
+              style: { color: '#dc2626', fontSize: '10.5px', fontWeight: 700 } 
+            },
+            labels: { 
+              style: { colors: '#dc2626', fontSize: '9.5px', fontWeight: 600 }, 
+              formatter: val => (val !== null && val !== undefined && !isNaN(val)) ? val.toFixed(3) + '%' : '' 
+            }
           },
           {
             opposite: true,
-            title: { text: 'Capacitance (pF)', style: { color: '#3b82f6', fontSize: '10px', fontWeight: 600 } },
-            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: val => val ? val.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '' }
+            title: { 
+              text: 'Capacitance (pF)', 
+              style: { color: '#2563eb', fontSize: '10.5px', fontWeight: 700 } 
+            },
+            labels: { 
+              style: { colors: '#2563eb', fontSize: '9.5px', fontWeight: 600 }, 
+              formatter: val => (val !== null && val !== undefined && !isNaN(val)) ? val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '' 
+            }
           }
         ],
-        grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
-        legend: { labels: { colors: textColor }, fontSize: '10px', position: 'top' }
+        grid: { borderColor: gridColor, strokeDashArray: 3, yaxis: { lines: { show: true } } },
+        legend: { 
+          labels: { colors: textColor }, 
+          fontSize: '11px', 
+          fontWeight: 600,
+          position: 'top',
+          horizontalAlign: 'center',
+          itemMargin: { horizontal: 12, vertical: 4 }
+        },
+        tooltip: {
+          theme: 'light',
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: (val, opts) => {
+              if (val === null || val === undefined || isNaN(val)) return '-';
+              if (opts.seriesIndex === 0) return val.toFixed(3) + '%';
+              return val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' pF';
+            }
+          }
+        }
       };
 
       const chartContainer = document.getElementById('trend-chart');
@@ -2335,9 +2401,9 @@
 
     function populateSignatures(r) {
       const cleanSig = (v) => {
-        if (!v) return '-';
+        if (!v) return '';
         const s = String(v).trim();
-        return (s === '-' || s === 'null' || s === 'undefined' || s === '') ? '-' : s;
+        return (s === '-' || s === 'null' || s === 'undefined' || s === '') ? '' : s;
       };
 
       document.getElementById('resp-name-tested').textContent   = cleanSig(r.test_name || r.Name1 || r.Tested_by);
@@ -2348,7 +2414,7 @@
       document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
       document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
 
-      const dStr = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : '-';
+      const dStr = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : '';
       document.getElementById('resp-date-tested').textContent   = dStr;
       document.getElementById('resp-date-reviewed').textContent = dStr;
       document.getElementById('resp-date-approved').textContent = dStr;

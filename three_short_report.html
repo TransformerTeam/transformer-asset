@@ -1088,14 +1088,36 @@
       return result;
     }
 
+    const EXTRA_TR_METADATA = {
+      '57005': { name: 'CTG2A&2B GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '90 MVA', hv: 118, lv: 11.5, tv: 11.5, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57011': { name: 'STG1C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57012': { name: 'STG2C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '4710343': { name: '31BBT10 (CTG3A UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710344': { name: '32BBT10 (CTG3B UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710345': { name: '33BBT10 (CTG3C UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710347': { name: 'SPARE 50 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '50 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      '4710350': { name: 'SPARE 63.5 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '63.5 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      'PP0084B01': { name: '14100-TR-003', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' }
+    };
+
     function matchSerial(s1, s2) {
       if (!s1 || !s2) return false;
-      const a = String(s1).trim().toLowerCase();
-      const b = String(s2).trim().toLowerCase();
-      if (a === b) return true;
-      const numA = a.replace(/[^a-z0-9]/g, '');
-      const numB = b.replace(/[^a-z0-9]/g, '');
-      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
+      const str1 = String(s1).trim();
+      const str2 = String(s2).trim();
+      if (str1.toLowerCase() === str2.toLowerCase()) return true;
+      const c1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const c2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (!c1 || !c2) return false;
+      if (c1 === c2) return true;
+      if (c1.length >= 4 && c2.length >= 4) {
+        if (c1.startsWith(c2) || c2.startsWith(c1) || c1.endsWith(c2) || c2.endsWith(c1)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     function populateDropdown() {
@@ -1104,18 +1126,24 @@
       selectEl.innerHTML = '';
 
       const addedSerials = new Set();
+      const allItems = [];
 
       // 1. From HEALTH_INDEX_DATA
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
           const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
-          const n = meta['Equipment Name'] || meta.name || s;
+          let n = meta['Equipment Name'] || meta.name || s;
+          let site = meta.SITE || meta.site || meta.substation || '';
+          if (!n || n === s) {
+            const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+            if (extraKey) {
+              if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+              if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+            }
+          }
           if (s && !addedSerials.has(s.toUpperCase())) {
             addedSerials.add(s.toUpperCase());
-            const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = `${n} (${s})`;
-            selectEl.appendChild(opt);
+            allItems.push({ serial: s, name: n, site: site });
           }
         });
       }
@@ -1125,11 +1153,37 @@
         const s = item.serial || item.Serial_No;
         if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
           addedSerials.add(s.toUpperCase());
-          const opt = document.createElement('option');
-          opt.value = s;
-          opt.textContent = s;
-          selectEl.appendChild(opt);
+          let n = s;
+          let site = item.Site || item.site || item.SITE || '';
+          const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+          if (extraKey) {
+            if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+            if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+          }
+          allItems.push({ serial: s, name: n, site: site });
         }
+      });
+
+      // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
+      allItems.sort((a, b) => {
+        const siteA = (a.site || '').trim();
+        const siteB = (b.site || '').trim();
+        const siteComp = siteA.localeCompare(siteB, undefined, { numeric: true, sensitivity: 'base' });
+        if (siteComp !== 0) return siteComp;
+
+        const nameA = (a.name || a.serial || '').trim();
+        const nameB = (b.name || b.serial || '').trim();
+        const nameComp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        if (nameComp !== 0) return nameComp;
+
+        return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      allItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.serial;
+        opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+        selectEl.appendChild(opt);
       });
     }
 

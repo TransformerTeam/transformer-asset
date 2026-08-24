@@ -763,7 +763,7 @@
       <!-- 1. Equipment Identification -->
       <div class="section-title">
         <span>1. Transformer Identification &amp; Rating Information</span>
-        <span class="badge-info" id="info-header-id">EMM-TR-F-004, Rev.1</span>
+        <span class="badge-info" id="info-header-id">EMM-TR-F-007, Rev.1</span>
       </div>
       <table class="report-table info-table">
         <tr>
@@ -1190,10 +1190,18 @@
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
           const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
-          const n = meta['Equipment Name'] || meta.name || s;
+          let n = meta['Equipment Name'] || meta.name || s;
+          let site = meta.SITE || meta.site || meta.substation || '';
+          if (!n || n === s) {
+            const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+            if (extraKey) {
+              if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+              if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+            }
+          }
           if (s && !addedSerials.has(s.toUpperCase())) {
             addedSerials.add(s.toUpperCase());
-            allItems.push({ serial: s, name: n });
+            allItems.push({ serial: s, name: n, site: site });
           }
         });
       }
@@ -1204,14 +1212,30 @@
         if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
           addedSerials.add(s.toUpperCase());
           let n = s;
-          const extra = EXTRA_TR_METADATA[s];
-          if (extra && extra.name) n = extra.name;
-          allItems.push({ serial: s, name: n });
+          let site = item.Site || item.site || item.SITE || '';
+          const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+          if (extraKey) {
+            if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+            if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+          }
+          allItems.push({ serial: s, name: n, site: site });
         }
       });
 
-      // Sort alphabetically by name
-      allItems.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+      // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
+      allItems.sort((a, b) => {
+        const siteA = (a.site || '').trim();
+        const siteB = (b.site || '').trim();
+        const siteComp = siteA.localeCompare(siteB, undefined, { numeric: true, sensitivity: 'base' });
+        if (siteComp !== 0) return siteComp;
+
+        const nameA = (a.name || a.serial || '').trim();
+        const nameB = (b.name || b.serial || '').trim();
+        const nameComp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        if (nameComp !== 0) return nameComp;
+
+        return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+      });
 
       allItems.forEach(item => {
         const opt = document.createElement('option');
@@ -1499,7 +1523,7 @@
                    isAuto;
 
       // Populate Identification Table
-      document.getElementById('info-header-id').textContent = 'EMM-TR-F-004, Rev.1';
+      document.getElementById('info-header-id').textContent = 'EMM-TR-F-007, Rev.1';
       document.getElementById('info-eq-name').textContent = name;
       document.getElementById('info-site').textContent = site;
       document.getElementById('info-serial').textContent = serial;

@@ -609,79 +609,79 @@
         </div>
       </div>
 
-      <!-- Equipment Details -->
+      <!-- 1. Equipment Identification -->
+      <div class="section-title">
+        <span>1. Transformer Identification &amp; Rating Information</span>
+        <span class="badge-info" id="info-header-id">EMM-TR-F-009, Rev.1</span>
+      </div>
       <table class="report-table info-table">
         <tr>
-          <td class="lbl">Equipment Name</td>
+          <td class="lbl">Equipment Name:</td>
           <td class="val" id="info-eq-name">-</td>
-          <td class="lbl">Site</td>
+          <td class="lbl">Substation / Site:</td>
           <td class="val" id="info-site">-</td>
         </tr>
         <tr>
-          <td class="lbl">Serial No.</td>
-          <td class="val" id="info-serial">-</td>
-          <td class="lbl">Power Rating (MVA)</td>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Rated Power:</td>
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
-          <td class="lbl">Manufacture</td>
-          <td class="val" id="info-mfg">-</td>
-          <td class="lbl">Voltage Rating (kV)</td>
+          <td class="lbl">Voltage Ratings:</td>
           <td class="val" id="info-voltage">-</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
         </tr>
         <tr>
-          <td class="lbl">Fluid Type</td>
-          <td class="val" id="info-fluid">-</td>
-          <td class="lbl">Service Type</td>
-          <td class="val" id="info-service-type">-</td>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap">-</td>
         </tr>
       </table>
 
-      <!-- Test Info & Environment Side by Side -->
+      <!-- 2. Test Environment & Instrument -->
       <div class="row-split">
         <div>
-          <div class="section-title">Test Information</div>
-          <table class="report-table">
+          <div class="section-title">2. Test Instrument &amp; Apparatus</div>
+          <table class="report-table info-table">
             <tr>
-              <td style="width: 40%; font-weight:700;">Date of Test</td>
-              <td id="info-test-date">-</td>
+              <td class="lbl">Test Set / Model:</td>
+              <td class="val" id="info-instrument">Omicron TESTRANO 600</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Test Instrument</td>
-              <td id="info-instrument">-</td>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">-</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Serial Number</td>
-              <td id="info-instrument-serial">-</td>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Calibration Date</td>
-              <td id="info-instrument-calib">-</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Work Order / Tag</td>
-              <td id="info-wo">-</td>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 7.2</td>
             </tr>
           </table>
         </div>
         <div>
-          <div class="section-title">Environment</div>
-          <table class="report-table">
+          <div class="section-title">3. Environmental &amp; Thermal Conditions</div>
+          <table class="report-table info-table">
             <tr>
-              <td style="width: 40%; font-weight:700;">Ambient Temp.</td>
-              <td><span id="env-ambient">-</span> °C</td>
+              <td class="lbl">Ambient Temp:</td>
+              <td class="val"><span id="env-ambient">-</span> °C</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Oil Temp.</td>
-              <td><span id="env-oil">-</span> °C</td>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val"><span id="env-oil">-</span> °C</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Winding Temp.</td>
-              <td><span id="env-winding">-</span> °C</td>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val"><span id="env-winding">-</span> °C</td>
             </tr>
             <tr>
-              <td style="font-weight:700;">Humidity.</td>
-              <td><span id="env-humidity">-</span> %</td>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val"><span id="env-humidity">-</span> %</td>
             </tr>
           </table>
         </div>
@@ -1097,15 +1097,17 @@
         if (lv2Rated && lv2Rated !== '-' && lv2Rated !== '') voltStr += ' / ' + lv2Rated;
       } else if (item && item.ratedVoltage) {
         voltStr = item.ratedVoltage;
-      }
+      if (voltStr && !voltStr.includes('kV') && voltStr !== '-') voltStr += ' kV';
       document.getElementById('info-voltage').textContent = voltStr;
 
-      // Fluid Type (TYPE_OF_INSULATION in TRInfo)
-      const fluidVal = trInfo ? (trInfo.TYPE_OF_INSULATION && isNaN(trInfo.TYPE_OF_INSULATION) ? trInfo.TYPE_OF_INSULATION : (trInfo.WINDING_INSULATION && isNaN(trInfo.WINDING_INSULATION) ? trInfo.WINDING_INSULATION : 'Mineral oil')) : (item ? (item.fluid || 'Mineral oil') : 'Mineral oil');
-      document.getElementById('info-fluid').textContent = fluidVal;
+      const vectorVal = trInfo ? (trInfo.VECTOR_GROUP || '-') : (item ? (item.vectorGroup || '-') : '-');
+      if (document.getElementById('info-vector')) document.getElementById('info-vector').textContent = vectorVal;
 
-      // Service Type (from HealthIndexSum.csv)
-      document.getElementById('info-service-type').textContent = item ? (item.serviceType || '-') : (trInfo ? (trInfo.Service_Type || '-') : '-');
+      const windingVal = trInfo ? (parseInt(trInfo.NO_WINDING, 10) === 3 ? '3 Windings' : '2 Windings') : '2 Windings';
+      if (document.getElementById('info-winding')) document.getElementById('info-winding').textContent = windingVal;
+
+      const tapVal = trInfo ? (trInfo.TAP_CHANGER_TYPE || '-') : (item ? (item.tap_changer || '-') : '-');
+      if (document.getElementById('info-tap')) document.getElementById('info-tap').textContent = tapVal;
 
       // Filter BushingInfo records
       const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No, serial));
@@ -1119,18 +1121,16 @@
       const latest = pfRecords.length > 0 ? pfRecords[0] : null;
 
       if (latest) {
-        document.getElementById('info-test-date').textContent = formatReportDate(latest.date);
-        document.getElementById('info-instrument').textContent = latest.test_instrument || '-';
-        document.getElementById('info-instrument-serial').textContent = latest.serial_instrument || '-';
-        document.getElementById('info-instrument-calib').textContent = formatReportDate(latest.date_calibation);
-        document.getElementById('info-wo').textContent = latest.test_NO || '-';
-        document.getElementById('env-ambient').textContent = latest.ambient_temp || '-';
-        document.getElementById('env-oil').textContent = latest.oil_temp || '-';
-        document.getElementById('env-winding').textContent = latest.winding_temp || '-';
-        document.getElementById('env-humidity').textContent = latest.humidity || '-';
+        if (document.getElementById('info-instrument')) document.getElementById('info-instrument').textContent = latest.test_instrument || 'Omicron TESTRANO 600';
+        if (document.getElementById('info-instrument-serial')) document.getElementById('info-instrument-serial').textContent = latest.serial_instrument || '-';
+        if (document.getElementById('info-instrument-calib')) document.getElementById('info-instrument-calib').textContent = formatReportDate(latest.date_calibation);
+        if (document.getElementById('env-ambient')) document.getElementById('env-ambient').textContent = latest.ambient_temp || '-';
+        if (document.getElementById('env-oil')) document.getElementById('env-oil').textContent = latest.oil_temp || '-';
+        if (document.getElementById('env-winding')) document.getElementById('env-winding').textContent = latest.winding_temp || '-';
+        if (document.getElementById('env-humidity')) document.getElementById('env-humidity').textContent = latest.humidity || '-';
 
-        document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
-        document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
+        if (document.getElementById('c1-volt')) document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
+        if (document.getElementById('c2-volt')) document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
 
         // Signatures (Dynamic values; if missing leave blank)
         const cleanSig = (v) => {
