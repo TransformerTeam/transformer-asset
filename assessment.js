@@ -2008,7 +2008,7 @@ function openDetail(no) {
     <tr>
       <td>
         Exciting Current
-        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current / PF Report" style="margin-left: 6px;">
+        <a href="exciting_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current Test Report" style="margin-left: 6px;">
           <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>

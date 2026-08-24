@@ -2375,7 +2375,16 @@
         };
       }
 
-      // Methods without a dedicated report form (e.g. Exciting Current, Winding Resistance, Capacitance, individual oil parameters, etc.) return null
+      // 11. Exciting Current
+      if (nameLower.includes('exciting current') || nameLower.includes('excitation current') || nameLower === 'exciting') {
+        return {
+          url: `exciting_report.html?serial=${s}`,
+          title: 'Open Exciting Current Test Report',
+          icon: 'fa-solid fa-file-lines'
+        };
+      }
+
+      // Methods without a dedicated report form (e.g. Winding Resistance, Capacitance, individual oil parameters, etc.) return null
       return null;
     }
 
