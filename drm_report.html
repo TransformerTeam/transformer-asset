@@ -501,11 +501,15 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Select Transformer:</span>
         <select id="serial-select" class="select-input" onchange="onSerialChange(this.value)">
-          <option value="PP0084B01">PP0084B01 - 14100-TR-003 (CUP-1)</option>
-          <option value="PP0102B01">PP0102B01 - 14100-TR-004 (CUP-1)</option>
-          <option value="510049">510049 - KT2A (SITE3 GSPP2&3)</option>
-          <option value="PTE 1689/03">PTE 1689/03 - KT6A (SITE3 GSPP2&3)</option>
-          <option value="EDP008001">EDP008001 - KT12A (SITE3 GSPP2&3)</option>
+          <optgroup label="Site: CUP-1">
+            <option value="PP0084B01" selected>14100-TR-003 (PP0084B01)</option>
+            <option value="PP0102B01">14100-TR-004 (PP0102B01)</option>
+          </optgroup>
+          <optgroup label="Site: SITE3 (GSPP2&3)">
+            <option value="510049">KT2A (510049)</option>
+            <option value="PTE 1689/03">KT6A (PTE 1689/03)</option>
+            <option value="EDP008001">KT12A (EDP008001)</option>
+          </optgroup>
         </select>
       </div>
     </div>

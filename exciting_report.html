@@ -121,6 +121,30 @@
       border-color: var(--primary);
     }
 
+    .search-select optgroup {
+      font-weight: 700;
+      color: #818cf8;
+      background-color: #12161f;
+      padding: 4px 0;
+    }
+
+    .search-select option {
+      font-weight: 500;
+      color: #ffffff;
+      background-color: #12161f;
+      padding: 3px 8px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      color: #1e3a8a;
+      background-color: #f1f5f9;
+    }
+
+    [data-theme="light"] .search-select option {
+      color: #0f172a;
+      background-color: #ffffff;
+    }
+
     .btn-group {
       display: flex;
       align-items: center;
@@ -1036,14 +1060,50 @@
       // Get unique serials from excitingCsvData
       const uniqueSerials = [...new Set(excitingCsvData.map(r => r.SERIAL_NUMBER || r.Serial_No).filter(Boolean))];
       
+      const allItems = [];
       uniqueSerials.forEach(sn => {
         const info = trInfoCsvData.find(t => matchSerial(t.Serial_No || t.SERIAL_NUMBER, sn)) || {};
         const equipName = info.Equipment_Name || info.Equipment_name || info.LOCAL_EQUIPMENT_CODE || info.DEVICE_CODE || sn;
-        const site = info.Site || info.SITE || info.SUBSTATION || '';
-        const opt = document.createElement('option');
-        opt.value = sn;
-        opt.textContent = `${sn} - ${equipName} ${site ? '(' + site + ')' : ''}`;
-        select.appendChild(opt);
+        const site = (info.Site || info.SITE || info.SUBSTATION || 'Other').trim();
+        allItems.push({ serial: sn, name: equipName, site: site });
+      });
+
+      // Group by SITE
+      const siteGroups = {};
+      allItems.forEach(item => {
+        const s = item.site || 'Other';
+        if (!siteGroups[s]) siteGroups[s] = [];
+        siteGroups[s].push(item);
+      });
+
+      // Sort site names alphabetically, placing 'Other' at the end
+      const sortedSites = Object.keys(siteGroups).sort((a, b) => {
+        if (a === 'Other') return 1;
+        if (b === 'Other') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sortedSites.forEach(siteName => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `Site: ${siteName}`;
+
+        // Sort items inside each site: primarily by Name, secondarily by Serial
+        const items = siteGroups[siteName].sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          const comp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          if (comp !== 0) return comp;
+          return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        items.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = u.serial;
+          opt.textContent = (u.name && u.name !== u.serial) ? `${u.name} (${u.serial})` : u.serial;
+          optgroup.appendChild(opt);
+        });
+
+        select.appendChild(optgroup);
       });
     }
 
