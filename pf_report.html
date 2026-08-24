@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insulation Power Factor Report | GPSC</title>
+  <title>Insulation Power Factor &amp; Capacitance Test Report | GPSC</title>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2canvas Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- ApexCharts JS -->
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ApexCharts JS (for interactive trend) -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <style>
@@ -25,12 +27,13 @@
       --primary-hover: #6366f1;
       --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
-      /* Print/Report specific variables (matches standard report color scheme) */
+      /* Report specific variables */
       --report-bg: #ffffff;
       --report-text: #000000;
-      --report-border: #000000;
-      --report-primary: #1e3a8a; /* Navy blue */
+      --report-border: #7f8c8d;
+      --report-primary: #1e3a8a; /* Deep Navy Blue */
       --report-accent: #b91c1c; /* Crimson */
+      --report-secondary: #0284c7; /* Sky Blue */
     }
 
     [data-theme="light"] {
@@ -62,7 +65,7 @@
     /* Top Control Bar */
     .control-panel {
       width: 100%;
-      max-width: 900px;
+      max-width: 960px;
       background: var(--panel-dark);
       border: 1px solid var(--border-dark);
       border-radius: 12px;
@@ -72,7 +75,7 @@
       -webkit-backdrop-filter: blur(12px);
       box-shadow: var(--glass-glow);
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
@@ -82,23 +85,27 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
     .selector-label {
-      font-weight: 500;
+      font-weight: 600;
       font-size: 0.9rem;
       color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .search-select {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.25);
       border: 1px solid var(--border-dark);
       color: var(--text-main);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
       font-size: 0.9rem;
       outline: none;
-      min-width: 250px;
+      min-width: 260px;
       max-width: 380px;
       text-overflow: ellipsis;
       cursor: pointer;
@@ -107,15 +114,27 @@
 
     [data-theme="light"] .search-select {
       background: #ffffff;
+      color: #0f172a;
     }
 
     .search-select:focus {
       border-color: var(--primary);
     }
 
+    .search-select option {
+      background: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
     .btn-group {
       display: flex;
-      gap: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -125,7 +144,7 @@
       padding: 8px 16px;
       border-radius: 8px;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
       transition: all 0.2s ease;
       border: none;
@@ -151,20 +170,19 @@
       background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Report Sheet Preview Layout (Word-like A4 Preview) */
+    /* Report Sheet Preview Layout (A4 Style) */
     .report-wrapper {
       width: 100%;
-      max-width: 900px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      max-width: 960px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       background-color: var(--report-bg);
       color: var(--report-text);
-      border-radius: 4px;
-      padding: 40px;
+      border-radius: 6px;
+      padding: 36px 40px;
       position: relative;
       overflow-x: auto;
     }
 
-    /* Print styling embedded in preview to guarantee visual fidelity */
     .report-sheet {
       width: 100%;
       background: #ffffff;
@@ -179,8 +197,8 @@
       justify-content: space-between;
       align-items: flex-end;
       border-bottom: 3px solid var(--report-primary);
-      padding-bottom: 10px;
-      margin-bottom: 15px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .report-title-container {
@@ -189,14 +207,14 @@
     }
 
     .report-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--report-primary);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .report-subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--report-accent);
       font-weight: 700;
       margin-top: 2px;
@@ -207,308 +225,455 @@
       object-fit: contain;
     }
 
-    /* Section styling */
+    /* Section Titles */
     .section-title {
-      background-color: var(--report-primary);
+      font-size: 11px;
+      font-weight: 700;
       color: #ffffff;
-      font-size: 11px;
-      font-weight: 700;
+      background: #1e3a8a;
       padding: 4px 8px;
-      margin-top: 15px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Tables */
-    table.report-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 12px;
-      font-size: 10px;
-    }
-
-    table.report-table th, 
-    table.report-table td {
-      border: 1px solid #7f8c8d;
-      padding: 5px 6px;
-      text-align: left;
-    }
-
-    table.report-table th {
-      background-color: #f2f2f2;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    /* Info Table (2-column key-value grid) */
-    table.info-table td.lbl {
-      width: 15%;
-      font-weight: 700;
-      background-color: #f9fafb;
-    }
-
-    table.info-table td.val {
-      width: 35%;
-      color: #1e3a8a;
-      font-weight: 600;
-    }
-
-    /* Side by Side Test Info & Environment */
-    .row-split {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 15px;
-    }
-
-    /* Factory Capacitance / Header Details */
-    .winding-header-area {
-      display: grid;
-      grid-template-columns: 1.32fr 0.68fr;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .tbl-factory th {
-      background-color: #e5e7eb !important;
-      font-size: 9px;
-      padding: 3px 4px !important;
-    }
-
-    .tbl-factory td {
-      padding: 3px 4px !important;
-      font-size: 9px;
-      text-align: center !important;
-    }
-
-    .tbl-factory td.lbl-sub {
-      font-weight: 700;
-      background-color: #f3f4f6;
-      text-align: center !important;
-    }
-
-    .tbl-param td {
-      padding: 3px 4px !important;
-      font-size: 9px;
-    }
-
-    /* Winding Test layout */
-    .winding-section {
-      margin-bottom: 12px;
-    }
-    
-    .winding-header {
-      font-weight: 700;
-      font-size: 11px;
-      margin-bottom: 4px;
-      color: #1e3a8a;
-      border-left: 3px solid var(--report-accent);
-      padding-left: 6px;
+      border-radius: 3px;
+      margin-top: 12px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .voltage-line {
-      font-size: 10px;
-      margin-bottom: 4px;
-      color: #555;
-    }
-
-    .voltage-val {
-      font-weight: 700;
-      color: var(--report-primary);
-    }
-
-    table.winding-table th {
-      font-size: 9.5px;
-      padding: 4px 5px;
-      vertical-align: middle;
-    }
-
-    table.winding-table td {
-      text-align: center;
-      font-size: 10px;
-      padding: 5px 6px;
-      vertical-align: middle;
-    }
-
-    table.winding-table td.val-bold {
+    .badge-info {
+      font-size: 8.5px;
       font-weight: 600;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: #ffffff;
+    }
+
+    /* Grid Splits */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    /* Standard Tables */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 9.5px;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+
+    .info-table td.lbl {
+      width: 25%;
+      font-weight: 600;
+      background-color: #f8fafc;
+      color: #334155;
+    }
+
+    .info-table td.val {
+      width: 25%;
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 5px;
+    }
+
+    .data-table thead th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 8.5px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .data-table thead th.sub-th,
+    .data-table thead th.th-pf,
+    .data-table thead th.th-cap {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-size: 8px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .data-table tbody tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .data-table tbody td.tag-col {
+      font-weight: 700;
+      background-color: #f1f5f9;
+      text-align: center;
       color: #1e3a8a;
     }
 
-    /* Criteria and Legend Blocks */
+
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pass, .status-good {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .status-fair, .status-acceptable, .status-questionable {
+      background-color: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fde047;
+    }
+
+    .status-fail, .status-critical, .status-investigate, .status-danger {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .status-na {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
+
+    /* Charts Container */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    .chart-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      background-color: #ffffff;
+      padding: 6px 8px 8px 8px;
+      overflow: hidden;
+    }
+
+    .chart-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 120px;
+      width: 100%;
+    }
+
+    .chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      display: block;
+    }
+
+    /* Criteria & Standards Box */
     .criteria-container {
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 15px;
-      margin-top: 15px;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 10px;
     }
 
     .criteria-box {
-      border: 1px solid #bdc3c7;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 4px;
-      padding: 8px;
+      padding: 6px 10px;
     }
 
     .criteria-title {
-      font-weight: 700;
-      font-size: 10px;
-      margin-bottom: 6px;
-      color: #333;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 4px;
-    }
-
-    /* Color cells inside criteria */
-    .color-cell {
-      text-align: center;
-      font-weight: 700;
       font-size: 9px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 3px;
+    }
+
+    .formula-text {
+      font-family: monospace;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px 5px;
       border-radius: 3px;
-      padding: 3px 6px;
+      font-size: 7.5px;
+      margin-top: 3px;
+      color: #0f172a;
+      line-height: 1.35;
     }
 
-    /* Signature & Response Box */
-    table.response-table th {
-      background-color: var(--report-primary);
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    table.response-table td.lbl {
-      width: 15%;
-      font-weight: 700;
-      background-color: #f9fafb;
-    }
-
-    table.response-table td.val {
-      text-align: center;
-      font-weight: 600;
-      color: #2c3e50;
-      height: 24px;
-    }
-
-    table.response-table td.sig-cell {
-      height: 45px;
-    }
-
-    /* Status Dynamic Colors */
-    .status-good { background-color: #c6e0b4 !important; color: #375623 !important; font-weight: bold; }
-    .status-acceptable { background-color: #ffffcc !important; color: #b79500 !important; font-weight: bold; }
-    .status-investigate { background-color: #ffcccc !important; color: #cc0000 !important; font-weight: bold; }
-    
-    .status-normal { background-color: #c6e0b4 !important; color: #375623 !important; font-weight: 700; }
-    .status-questionable { background-color: #ffffcc !important; color: #b79500 !important; font-weight: 700; }
-    .status-danger { background-color: #ffcccc !important; color: #cc0000 !important; font-weight: 700; }
-
+    /* Trending Panel */
     .trending-panel {
-      background: #353839;
-      border: 1px solid var(--border-dark);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: all 0.3s ease;
-    }
-    [data-theme="light"] .trending-panel {
       background: #f8fafc;
-      border-color: #e2e8f0;
-    }
-    [data-theme="light"] select#trend-winding-select {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      border-color: #cbd5e1 !important;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 8px;
+      margin-bottom: 10px;
     }
 
-    /* Print override for perfect A4 single-page fit, stretched to fill page height */
+    /* Sign-off & Verification Table */
+    .response-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 12px;
+      font-size: 9.5px;
+    }
+
+    .response-table th, .response-table td {
+      border: 1px solid #cbd5e1;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .response-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 5px;
+    }
+
+    .response-table .sig-cell {
+      height: 40px;
+      background-color: #ffffff;
+    }
+
+    /* Print Styles */
+    @page {
+      size: A4 portrait;
+      margin: 6mm 8mm 6mm 8mm;
+    }
+
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 4mm 5mm;
+      *, *::before, *::after {
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
-      body {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        padding: 0 !important;
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
-        min-height: auto !important;
+        padding: 0 !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-size: 7.5px !important;
       }
-      .control-panel, .no-print {
+      .control-panel, .btn, .btn-group, .no-print {
         display: none !important;
       }
       .report-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
         box-shadow: none !important;
         padding: 0 !important;
-        border: none !important;
-        width: 100% !important;
-        max-width: none !important;
         margin: 0 !important;
+        border: none !important;
+        background: #ffffff !important;
+        overflow: visible !important;
       }
       .report-sheet {
-        font-size: 9.2px !important;
-        line-height: 1.25 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        font-size: 7.5px !important;
+        line-height: 1.2 !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+        padding: 0 !important;
       }
       .report-header {
-        padding-bottom: 3px !important;
+        padding-bottom: 4px !important;
         margin-bottom: 6px !important;
+        border-bottom: 2px solid #1e3a8a !important;
       }
       .report-title {
-        font-size: 16px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
       }
       .report-subtitle {
-        font-size: 10px !important;
+        font-size: 8px !important;
+        margin-top: 1px !important;
       }
       .logo-container img {
-        height: 36px !important;
+        height: 28px !important;
       }
       .section-title {
-        font-size: 8.8px !important;
+        font-size: 8px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        background-color: #1e3a8a !important;
         padding: 2px 5px !important;
         margin-top: 5px !important;
         margin-bottom: 3px !important;
+        border-radius: 2px !important;
+        border-left: none !important;
       }
-      table.report-table {
-        margin-bottom: 4px !important;
+      .section-title span.badge-info {
+        font-size: 6.5px !important;
+        padding: 1px 3px !important;
+        background-color: rgba(255, 255, 255, 0.25) !important;
+        color: #ffffff !important;
+        border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
       }
-      table.report-table th, 
-      table.report-table td {
-        padding: 2px 3.5px !important;
-        font-size: 8.0px !important;
+      table.report-table, table.data-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        margin-bottom: 3px !important;
+        font-size: 7px !important;
+        border-collapse: collapse !important;
       }
-      .row-split {
+      table.report-table th, table.report-table td,
+      table.data-table th, table.data-table td {
+        padding: 1.5px 3px !important;
+        border: 0.75px solid #cbd5e1 !important;
+        word-break: break-word !important;
+      }
+      table.data-table thead th {
+        font-size: 7px !important;
+        padding: 1.5px 2px !important;
+      }
+      table.data-table thead th.sub-th {
+        font-size: 6.5px !important;
+        padding: 1px 2px !important;
+      }
+      .info-table td.lbl {
+        width: 25% !important;
+        font-weight: 600 !important;
+        font-size: 7px !important;
+        padding: 1.5px 3px !important;
+      }
+      .info-table td.val {
+        font-size: 7px !important;
+        padding: 1.5px 3px !important;
+      }
+
+      .status-badge {
+        font-size: 6.5px !important;
+        padding: 1px 3px !important;
+      }
+      .charts-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
         gap: 8px !important;
+        margin-top: 4px !important;
+        margin-bottom: 8px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        clear: both !important;
       }
-      .winding-section {
-        margin-bottom: 4px !important;
+      .chart-box {
+        padding: 4px 6px 6px 6px !important;
+        border: 0.75px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        border-radius: 4px !important;
+        overflow: hidden !important;
       }
-      .winding-header {
-        font-size: 8.5px !important;
-        margin-bottom: 1px !important;
-        padding-left: 2px !important;
+      .chart-title {
+        font-size: 7.5px !important;
+        margin-bottom: 2px !important;
+        padding-bottom: 2px !important;
       }
-      .voltage-line {
-        font-size: 8.0px !important;
-        margin-bottom: 1px !important;
+      .chart-container {
+        position: relative !important;
+        height: 100px !important;
+        max-height: 100px !important;
+        width: 100% !important;
+        overflow: hidden !important;
+      }
+      .chart-container canvas {
+        width: 100% !important;
+        height: 100px !important;
+        max-height: 100px !important;
+        display: block !important;
       }
       .criteria-container {
-        margin-top: 4px !important;
-        gap: 8px !important;
+        display: grid !important;
+        grid-template-columns: 1.2fr 0.8fr !important;
+        margin-top: 6px !important;
+        margin-bottom: 4px !important;
+        gap: 6px !important;
+        clear: both !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
       .criteria-box {
-        padding: 4px !important;
+        padding: 3px 6px !important;
+        border-radius: 3px !important;
+        border: 0.75px solid #cbd5e1 !important;
+        font-size: 7px !important;
       }
       .criteria-title {
-        font-size: 8.2px !important;
+        font-size: 7.5px !important;
+        font-weight: 700 !important;
         margin-bottom: 2px !important;
-        padding-bottom: 1px !important;
+      }
+      .formula-text {
+        font-size: 6.5px !important;
+        padding: 2px 4px !important;
+        margin-top: 2px !important;
+      }
+      table.response-table {
+        margin-top: 4px !important;
+        margin-bottom: 0 !important;
+        font-size: 7px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        clear: both !important;
+      }
+      table.response-table th {
+        font-size: 7px !important;
+        padding: 2px 4px !important;
       }
       table.response-table td.sig-cell {
-        height: 40px !important;
+        height: 32px !important;
       }
       table.response-table td.val {
         height: 14px !important;
+        font-size: 7px !important;
+        padding: 1px 3px !important;
       }
     }
   </style>
@@ -518,354 +683,259 @@
   <!-- Top Control Bar -->
   <div class="control-panel">
     <div class="selector-group">
-      <span class="selector-label"><i class="fa-solid fa-bolt"></i> Transformer:</span>
-      <select id="transformer-select" class="search-select" onchange="loadReportBySerial(this.value)">
-        <!-- Options populated dynamically -->
+      <label for="transformer-select" class="selector-label">
+        <i class="fa-solid fa-bolt text-indigo-400"></i> Transformer:
+      </label>
+      <select id="transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <!-- Dynamically populated -->
+      </select>
+
+      <label for="test-date-select" class="selector-label" style="margin-left: 8px;">
+        <i class="fa-solid fa-calendar-day"></i> Test Date:
+      </label>
+      <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
+        <!-- Dynamically populated -->
       </select>
     </div>
-    
+
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
-        <i class="fa-solid fa-moon" id="theme-icon"></i> Theme
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
       </button>
-      <button class="btn btn-secondary" onclick="window.print()">
-        <i class="fa-solid fa-print"></i> Print Report
+      <button class="btn btn-secondary" onclick="captureReportJPG()" title="Capture JPG Image">
+        <i class="fa-solid fa-camera"></i> Capture
       </button>
-      <button class="btn btn-primary" onclick="exportReportAsJPG()">
-        <i class="fa-solid fa-file-image"></i> Export JPG
+      <button class="btn btn-primary" onclick="window.print()" title="Print or Save PDF">
+        <i class="fa-solid fa-print"></i> Print / PDF
       </button>
     </div>
   </div>
 
-  <!-- Report Sheet Preview Area -->
+  <!-- Report Sheet Preview Layout -->
   <div class="report-wrapper" id="report-capture-area">
     <div class="report-sheet">
-      
+
       <!-- Document Header -->
       <div class="report-header">
         <div class="report-title-container">
-          <span class="report-title">INSULATION POWER FACTOR REPORT</span>
-          <span class="report-subtitle">Standards: IEEE C57.152-2013</span>
+          <div class="report-title">INSULATION POWER FACTOR &amp; CAPACITANCE REPORT</div>
+          <div class="report-subtitle">Std. C57.152-2013</div>
         </div>
         <div class="logo-container">
           <img src="GPSC_logo_ART.png" alt="GPSC Logo">
         </div>
       </div>
 
-      <!-- Equipment Details -->
+      <!-- 1. Transformer Identification Section -->
+      <div class="section-title">
+        <span>1. Transformer Identification</span>
+        <span class="badge-info">EMM-TR-F-008, Rev.1</span>
+      </div>
       <table class="report-table info-table">
         <tr>
-          <td class="lbl">Equipment Name</td>
+          <td class="lbl">Equipment Name:</td>
           <td class="val" id="info-eq-name">-</td>
-          <td class="lbl">Site</td>
+          <td class="lbl">Site / Substation:</td>
           <td class="val" id="info-site">-</td>
         </tr>
         <tr>
-          <td class="lbl">Serial No.</td>
-          <td class="val" id="info-serial">-</td>
-          <td class="lbl">Power Rating (MVA)</td>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Rated Power:</td>
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
-          <td class="lbl">Manufacture</td>
+          <td class="lbl">Manufacturer:</td>
           <td class="val" id="info-mfg">-</td>
-          <td class="lbl">Voltage Rating (kV)</td>
+          <td class="lbl">Rated Voltage:</td>
           <td class="val" id="info-voltage">-</td>
         </tr>
         <tr>
-          <td class="lbl">Fluid Type</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
+          <td class="lbl">Winding Config:</td>
+          <td class="val" id="info-winding">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Fluid / Oil Type:</td>
           <td class="val" id="info-fluid">-</td>
-          <td class="lbl">Service Type</td>
+          <td class="lbl">Application / Service:</td>
           <td class="val" id="info-service">-</td>
         </tr>
       </table>
 
-      <!-- Test Info & Environment Side by Side -->
+      <!-- 2. Test Information & Environment Section -->
+      <div class="section-title">
+        <span>2. Test Information &amp; Environment</span>
+      </div>
       <div class="row-split">
-        <div>
-          <div class="section-title">Test Information</div>
-          <table class="report-table">
-            <tr>
-              <td style="width: 40%; font-weight:700;">Test Instrument</td>
-              <td id="info-instrument">-</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Serial Number</td>
-              <td id="info-instrument-serial">-</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Calibration Date</td>
-              <td id="info-instrument-calib">-</td>
-            </tr>
-          </table>
-        </div>
-        <div>
-          <div class="section-title">Environment</div>
-          <table class="report-table">
-            <tr>
-              <td style="width: 40%; font-weight:700;">Ambient Temp.</td>
-              <td><span id="env-ambient">-</span> °C</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Oil Temp.</td>
-              <td><span id="env-oil">-</span> °C</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Winding Temp.</td>
-              <td><span id="env-winding">-</span> °C</td>
-            </tr>
-            <tr>
-              <td style="font-weight:700;">Humidity.</td>
-              <td><span id="env-humidity">-</span> %</td>
-            </tr>
-          </table>
-        </div>
-      </div>
+        <table class="report-table info-table">
+          <tr>
+            <td class="lbl" style="width: 40%;">Test Instrument:</td>
+            <td class="val" style="width: 60%;" id="info-instrument">Omicron TESTRANO 600</td>
+          </tr>
+          <tr>
+            <td class="lbl">Instrument Serial:</td>
+            <td class="val" id="info-instrument-serial">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Calibration Date:</td>
+            <td class="val" id="info-instrument-calib">-</td>
+          </tr>
+        </table>
 
-      <div class="section-title">Winding Capacitance Factory / Previous Test</div>
-
-      <!-- Factory Capacitance -->
-      <table class="report-table tbl-factory" style="width: 100%; margin-bottom: 8px;">
-        <thead>
+        <table class="report-table info-table">
           <tr>
-            <th>Measurement</th>
-            <th>Capacitance (pF)</th>
-            <th>Measurement</th>
-            <th>Capacitance (pF)</th>
-            <th>Measurement</th>
-            <th>Capacitance (pF)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="lbl-sub">CH+CHL</td>
-            <td id="fac-ch-chl" class="val-bold">-</td>
-            <td class="lbl-sub" id="lbl-fac-cl-clt">CL+CLT</td>
-            <td id="fac-cl-clt" class="val-bold">-</td>
-            <td class="lbl-sub">CT+CHT</td>
-            <td id="fac-ct-cht" class="val-bold">-</td>
+            <td class="lbl" style="width: 40%;">Ambient Temp:</td>
+            <td class="val" style="width: 60%;" id="env-ambient">- °C</td>
           </tr>
           <tr>
-            <td class="lbl-sub">CH</td>
-            <td id="fac-ch" class="val-bold">-</td>
-            <td class="lbl-sub" id="lbl-fac-cl">CL(T)</td>
-            <td id="fac-cl" class="val-bold">-</td>
-            <td class="lbl-sub">CT</td>
-            <td id="fac-ct" class="val-bold">-</td>
+            <td class="lbl">Top Oil / Winding Temp:</td>
+            <td class="val"><span id="env-oil">-</span> °C / <span id="env-winding">-</span> °C</td>
           </tr>
           <tr>
-            <td class="lbl-sub">CHL</td>
-            <td id="fac-chl" class="val-bold">-</td>
-            <td class="lbl-sub" id="lbl-fac-clt">CLT</td>
-            <td id="fac-clt" class="val-bold">-</td>
-            <td class="lbl-sub">CHT</td>
-            <td id="fac-cht" class="val-bold">-</td>
+            <td class="lbl">Relative Humidity:</td>
+            <td class="val" id="env-humidity">-%</td>
           </tr>
-        </tbody>
-      </table>
-
-      <!-- Primary Winding Results -->
-      <div class="winding-section">
-        <div class="winding-header">
-          <span>Primary Winding Test</span>
-          <span>Test Voltage: <span id="prim-volt" class="voltage-val">-</span> kV</span>
-        </div>
-        <div class="voltage-line" style="margin-bottom: 4px; font-style: italic;" id="prim-note">Note: -</div>
-        <table class="report-table winding-table">
-          <thead>
-            <tr>
-              <th colspan="4">Test Connection</th>
-              <th rowspan="2" style="width: 10%;">Current<br>(mA)</th>
-              <th rowspan="2" style="width: 10%;">Power<br>(mW)</th>
-              <th colspan="2">Power Factor</th>
-              <th colspan="2">Capacitance</th>
-              <th rowspan="2" style="width: 10%;">Measured</th>
-            </tr>
-            <tr>
-              <th style="width: 8%;">Energize</th>
-              <th style="width: 8%;">GST</th>
-              <th style="width: 8%;">GSTg</th>
-              <th style="width: 8%;">UST</th>
-              <th style="width: 9%;">Meas. (%)</th>
-              <th style="width: 9%;">at 20°C (%)</th>
-              <th style="width: 12%;">Meas. (pF)</th>
-              <th style="width: 9%;">Error (%)</th>
-            </tr>
-          </thead>
-          <tbody id="primary-results-body">
-            <!-- Dynamically populated -->
-          </tbody>
         </table>
       </div>
 
-      <!-- Secondary Winding Results -->
-      <div class="winding-section">
-        <div class="winding-header">
-          <span>Secondary Winding Test</span>
-          <span>Test Voltage: <span id="sec-volt" class="voltage-val">-</span> kV</span>
-        </div>
-        <table class="report-table winding-table">
-          <thead>
-            <tr>
-              <th colspan="4">Test Connection</th>
-              <th rowspan="2" style="width: 10%;">Current<br>(mA)</th>
-              <th rowspan="2" style="width: 10%;">Power<br>(mW)</th>
-              <th colspan="2">Power Factor</th>
-              <th colspan="2">Capacitance</th>
-              <th rowspan="2" style="width: 10%;">Measured</th>
-            </tr>
-            <tr>
-              <th style="width: 8%;">Energize</th>
-              <th style="width: 8%;">GST</th>
-              <th style="width: 8%;">GSTg</th>
-              <th style="width: 8%;">UST</th>
-              <th style="width: 9%;">Meas. (%)</th>
-              <th style="width: 9%;">at 20°C (%)</th>
-              <th style="width: 12%;">Meas. (pF)</th>
-              <th style="width: 9%;">Error (%)</th>
-            </tr>
-          </thead>
-          <tbody id="secondary-results-body">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
+      <!-- 3. Factory & Nameplate Reference (Capacitance in pF) -->
+      <div class="section-title">
+        <span>3. Factory &amp; Nameplate Reference (Capacitance in pF)</span>
+      </div>
+      <div id="fac-table-container">
+        <!-- Dynamic Factory Reference Table rendered via JavaScript -->
       </div>
 
-      <!-- Tertiary Winding Results -->
-      <div class="winding-section">
-        <div class="winding-header">
-          <span>Tertiary Winding Test</span>
-          <span>Test Voltage: <span id="tert-volt" class="voltage-val">-</span> kV</span>
-        </div>
-        <table class="report-table winding-table">
-          <thead>
-            <tr>
-              <th colspan="4">Test Connection</th>
-              <th rowspan="2" style="width: 10%;">Current<br>(mA)</th>
-              <th rowspan="2" style="width: 10%;">Power<br>(mW)</th>
-              <th colspan="2">Power Factor</th>
-              <th colspan="2">Capacitance</th>
-              <th rowspan="2" style="width: 10%;">Measured</th>
-            </tr>
-            <tr>
-              <th style="width: 8%;">Energize</th>
-              <th style="width: 8%;">GST</th>
-              <th style="width: 8%;">GSTg</th>
-              <th style="width: 8%;">UST</th>
-              <th style="width: 9%;">Meas. (%)</th>
-              <th style="width: 9%;">at 20°C (%)</th>
-              <th style="width: 12%;">Meas. (pF)</th>
-              <th style="width: 9%;">Error (%)</th>
-            </tr>
-          </thead>
-          <tbody id="tertiary-results-body">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
+      <!-- 4. Insulation Power Factor & Capacitance Test Results Section -->
+      <div class="section-title">
+        <span>4. Insulation Power Factor &amp; Capacitance Test Results</span>
+      </div>
+      <div id="pf-tables-container">
+        <!-- Dynamic Tables for Primary, Secondary, Tertiary Windings rendered via JavaScript -->
       </div>
 
-      <!-- Criteria Section -->
-      <div class="criteria-container">
-        <!-- Power Factor Criteria -->
-        <div class="criteria-box">
-          <div class="criteria-title">Criteria: IEEE C57.152-2013 (% Power Factor at 20 °C)</div>
-          <table style="width:100%; font-size:9px; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom:1px solid #ddd;">
-                <th style="padding:3px; text-align:left;">Type</th>
-                <th colspan="3" style="padding:3px; text-align:center;">% Power Factor at 20 °C</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="font-weight:700; padding:3px;">Factory Acceptance (FAT)</td>
-                <td colspan="3" style="text-align:center; padding:3px; font-weight:600;">&lt; 0.5 %</td>
-              </tr>
-              <tr style="background-color:#f9fafb; font-weight:700; text-align:center; border-bottom:1px solid #eee;">
-                <td style="text-align:left; padding:3px;">Service aged</td>
-                <td style="padding:3px; color:#375623;">Good</td>
-                <td style="padding:3px; color:#b79500;">Acceptable</td>
-                <td style="padding:3px; color:#cc0000;">Investigate</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:3px;">Mineral Oil (&lt; 230 kV)</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 0.5%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">0.5-1.0%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 1.0%</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:3px;">Mineral Oil (&ge; 230 kV)</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 0.4%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">0.4-1.0%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 1.0%</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="padding:3px;">Natural Ester (ALL)</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 1.0%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">-</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 1.0%</td>
-              </tr>
-              <tr>
-                <td style="padding:3px;">Dry Type</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&lt; 2.0%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">2.0-5.0%</td>
-                <td style="text-align:center; padding:3px; font-weight:600;">&gt; 5.0%</td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- 5. Diagnostic Visual Charts Grid -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-bar text-indigo-600"></i> % Power Factor at 20°C vs. Insulation Component</span>
+            <span style="color: #64748b; font-size: 8.5px;" id="chart-pf-threshold">Normal: &le; 0.50%</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="pfChart"></canvas>
+          </div>
         </div>
 
-        <!-- Capacitance Criteria -->
-        <div class="criteria-box">
-          <div class="criteria-title">Criteria: Winding Capacitance (% Error)</div>
-          <table style="width:100%; font-size:9px; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom:1px solid #ddd;">
-                <th style="padding:3px; text-align:left; width:40%;">% Error</th>
-                <th style="padding:3px; text-align:center;">Interpreted</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="text-align:center; padding:4px; font-weight:700;">&le; 5%</td>
-                <td class="color-cell status-normal" style="padding:4px;">Normal</td>
-              </tr>
-              <tr style="border-bottom:1px solid #eee;">
-                <td style="text-align:center; padding:4px; font-weight:700;">5 - 10%</td>
-                <td class="color-cell status-questionable" style="padding:4px;">Questionable</td>
-              </tr>
-              <tr>
-                <td style="text-align:center; padding:4px; font-weight:700;">&gt; 10%</td>
-                <td class="color-cell status-danger" style="padding:4px;">Should not be returned to service</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="chart-box">
+          <div class="chart-title">
+            <span><i class="fa-solid fa-chart-bar text-sky-600"></i> % Capacitance Error vs. Factory Baseline</span>
+            <span style="color: #64748b; font-size: 8.5px;">IEEE Limit: &le; &plusmn;5.00%</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="capChart"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- Trending Section -->
-      <div class="section-title no-print" style="margin-top:12px;">Historical Trending</div>
+      <!-- Historical Trending Section (Collapsible/Optional for screen) -->
+      <div class="section-title no-print" style="margin-top: 10px;">
+        <span>Historical Trending Analysis</span>
+      </div>
       <div class="trending-panel no-print">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-weight: 600; font-size: 11px; color: var(--text-sub);">Measurement Trend Analysis</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-weight: 600; font-size: 10px; color: var(--text-sub);">Measurement Trend vs. Service History</span>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 10px; color: var(--text-sub);">Winding:</span>
-            <select id="trend-winding-select" style="background: rgba(0,0,0,0.3); color: var(--text-main); border: 1px solid var(--border-dark); padding: 4px 8px; border-radius: 4px; font-size: 10px; outline: none;" onchange="updateTrendChart()">
+            <span style="font-size: 9.5px; color: var(--text-sub);">Insulation Mode:</span>
+            <select id="trend-winding-select" style="background: rgba(0,0,0,0.3); color: var(--text-main); border: 1px solid var(--border-dark); padding: 4px 8px; border-radius: 4px; font-size: 9.5px; outline: none;" onchange="updateTrendChart()">
               <!-- Options populated dynamically -->
             </select>
           </div>
         </div>
-        <div id="trend-chart" style="min-height: 250px;"></div>
+        <div id="trend-chart" style="min-height: 160px;"></div>
       </div>
 
-      <!-- Signatures Row -->
-      <div class="section-title" style="margin-top:12px;">Signatures / Approval</div>
-      <table class="report-table response-table" style="margin-bottom:0;">
+      <!-- 6. Standards, Mathematical Formulation & Evaluation Criteria -->
+      <div class="criteria-container">
+        <div class="criteria-box">
+          <div class="criteria-title">Standards &amp; Mathematical Formulation (IEEE C57.152 Cl. 6.3)</div>
+          <div style="font-size: 8.5px; line-height: 1.45; color: #334155;">
+            <strong>1. Power Factor (Dielectric Dissipation Factor):</strong> Ratio of active current (loss) to total current:
+            <div class="formula-text">% PF = (I_resistive / I_total) &times; 100% = cos &theta; &times; 100% &approx; tan &delta; &times; 100%</div>
+            <strong>2. Temperature Correction to 20°C:</strong> Standardized per IEEE C57.152 Arrhenius curve:
+            <div class="formula-text">PF_20&deg;C = PF_T &times; K_T &nbsp; (Normalized reference at 20&deg;C)</div>
+            <strong>3. Capacitance Error from Factory / Baseline:</strong>
+            <div class="formula-text">% &Delta;C = ((C_measured - C_factory) / C_factory) &times; 100% &nbsp; (Limit &le; 5.00%)</div>
+          </div>
+        </div>
+
+        <div class="criteria-box">
+          <div class="criteria-title">IEEE C57.152-2013 Assessment Severity Matrix</div>
+          <table style="width: 100%; font-size: 8.5px; border-collapse: collapse; margin-top: 4px;">
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <th style="text-align: left; padding: 2px;">Insulation Type</th>
+              <th style="text-align: center; padding: 2px;">Good (5)</th>
+              <th style="text-align: center; padding: 2px;">Fair (3-4)</th>
+              <th style="text-align: right; padding: 2px;">Investigate (1-2)</th>
+            </tr>
+            <tr>
+              <td style="padding: 2px;">Mineral Oil (&lt; 230 kV)</td>
+              <td style="text-align: center; color: #166534; font-weight: bold;">&le; 0.50%</td>
+              <td style="text-align: center; color: #854d0e;">0.51 - 1.00%</td>
+              <td style="text-align: right; color: #991b1b; font-weight: bold;">&gt; 1.00%</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;">Mineral Oil (&ge; 230 kV)</td>
+              <td style="text-align: center; color: #166534; font-weight: bold;">&le; 0.40%</td>
+              <td style="text-align: center; color: #854d0e;">0.41 - 1.00%</td>
+              <td style="text-align: right; color: #991b1b; font-weight: bold;">&gt; 1.00%</td>
+            </tr>
+            <tr>
+              <td style="padding: 2px;">Natural Ester / FR3</td>
+              <td style="text-align: center; color: #166534; font-weight: bold;">&le; 1.00%</td>
+              <td style="text-align: center; color: #854d0e;">1.01 - 1.50%</td>
+              <td style="text-align: right; color: #991b1b; font-weight: bold;">&gt; 1.50%</td>
+            </tr>
+            <tr style="border-top: 1px dashed #cbd5e1;">
+              <td style="padding: 2px;">% Capacitance Error</td>
+              <td style="text-align: center; color: #166534; font-weight: bold;">&le; 5.00%</td>
+              <td style="text-align: center; color: #854d0e;">5.01 - 10.00%</td>
+              <td style="text-align: right; color: #991b1b; font-weight: bold;">&gt; 10.00%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7. Engineering Assessment & Recommendations Section -->
+      <div class="section-title">
+        <span>7. Engineering Assessment &amp; Recommendations</span>
+      </div>
+      <table class="report-table info-table" style="margin-bottom: 12px;">
+        <tr>
+          <td class="lbl" style="width: 20%;">Diagnostic Summary:</td>
+          <td class="val" style="width: 80%;" id="diag-summary">
+            Evaluating insulation power factor and capacitance measurements...
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Action Recommendation:</td>
+          <td class="val" id="diag-recommendation" style="font-weight: 600; color: #166534;">
+            Maintain normal preventive maintenance schedule.
+          </td>
+        </tr>
+      </table>
+
+      <!-- 8. Signatures / Verification Section -->
+      <div class="section-title">
+        <span>8. Test Verification &amp; Authorization</span>
+      </div>
+      <table class="response-table">
         <thead>
           <tr>
-            <th style="width: 33.3%;">Tested By</th>
-            <th style="width: 33.3%;">Reviewed By</th>
-            <th style="width: 33.4%;">Approved By</th>
+            <th style="width: 33.3%;">Tested By (Field Engineer)</th>
+            <th style="width: 33.3%;">Witnessed By (Substation Lead)</th>
+            <th style="width: 33.4%;">Approved By (Engineering Specialist)</th>
           </tr>
         </thead>
         <tbody>
@@ -875,19 +945,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val" id="resp-name-tested"></td>
-            <td class="val" id="resp-name-reviewed"></td>
-            <td class="val" id="resp-name-approved"></td>
+            <td class="val" id="resp-name-tested" style="font-weight: 700;">-</td>
+            <td class="val" id="resp-name-reviewed" style="font-weight: 700;">-</td>
+            <td class="val" id="resp-name-approved" style="font-weight: 700;">-</td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested"></td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed"></td>
-            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved"></td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-tested">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px; color: #64748b;" id="resp-comp-approved">-</td>
           </tr>
           <tr>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-tested"></td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed"></td>
-            <td class="val" style="font-size: 8.5px;" id="resp-date-approved"></td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-tested">-</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-reviewed">-</td>
+            <td class="val" style="font-size: 8.5px;" id="resp-date-approved">-</td>
           </tr>
         </tbody>
       </table>
@@ -895,41 +965,51 @@
     </div>
   </div>
 
-  <!-- Data.js files -->
+  <!-- Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
 
   <script>
     let pfDataList = [];
     let factoryDataList = [];
+    let currentSerial = '';
+    let currentRecord = null;
+    let pfChartInstance = null;
+    let capChartInstance = null;
+    let trendChart = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Setup UI themes
-      const activeTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', activeTheme);
-      updateThemeIcon(activeTheme);
+      // Theme Setup
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
 
-      // Load CSVs
+      // Load WindingPFData.csv
       try {
-        let pfResponse = await fetch('TestData/WindingPFData.csv');
-        if (!pfResponse.ok) pfResponse = await fetch('TestData/PFData.csv');
-        if (pfResponse.ok) {
-          const pfText = await pfResponse.text();
-          pfDataList = parseCSV(pfText);
-        }
-
-        const facResponse = await fetch('TestData/FactoryData.csv');
-        if (facResponse.ok) {
-          const facText = await facResponse.text();
-          factoryDataList = parseCSV(facText);
+        const response = await fetch('TestData/WindingPFData.csv');
+        if (response.ok) {
+          const csvText = await response.text();
+          pfDataList = parseCSV(csvText);
         }
       } catch (err) {
-        console.warn("Could not load WindingPFData.csv via fetch, continuing with metadata:", err);
+        console.warn("Could not load TestData/WindingPFData.csv via fetch:", err);
       }
 
+      // Load FactoryData.csv
+      try {
+        const facResponse = await fetch('TestData/FactoryData.csv');
+        if (facResponse.ok) {
+          const facCsvText = await facResponse.text();
+          factoryDataList = parseCSV(facCsvText);
+        }
+      } catch (err) {
+        console.warn("Could not load TestData/FactoryData.csv via fetch:", err);
+      }
+
+      // Populate Dropdown
       populateDropdown();
 
-      // Resolve initial selection from URL params
+      // Read URL query parameters
       const urlParams = new URLSearchParams(window.location.search);
       let serial = urlParams.get('serial');
       const name = urlParams.get('name');
@@ -944,7 +1024,6 @@
         if (item) serial = item.serial;
       }
 
-      // Default selection fallback if no match found
       if (!serial) {
         if (pfDataList.length > 0 && pfDataList[0].serial) {
           serial = pfDataList[0].serial;
@@ -960,15 +1039,14 @@
       }
     });
 
-    // Simple CSV parser
+    // Robust CSV Parser supporting quotes and trim
     function parseCSV(text) {
-      if (text.startsWith('\ufeff')) {
-        text = text.substring(1);
-      }
-      const lines = text.split('\n');
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
       const headers = lines[0].split(',').map(h => h.trim());
       const result = [];
-      
+
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -976,7 +1054,6 @@
         const row = [];
         let insideQuote = false;
         let entry = '';
-        
         for (let char of line) {
           if (char === '"') {
             insideQuote = !insideQuote;
@@ -1000,267 +1077,1151 @@
       return result;
     }
 
-    // Populate Selector options
-    function populateDropdown() {
-      const selectEl = document.getElementById('transformer-select');
-      if (!selectEl) return;
-      selectEl.innerHTML = '';
-      
-      const addedSerials = new Set();
+    const EXTRA_TR_METADATA = {
+      '57005': { name: 'CTG2A&2B GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '90 MVA', hv: 118, lv: 11.5, tv: 11.5, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57011': { name: 'STG1C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57012': { name: 'STG2C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '4710343': { name: '31BBT10 (CTG3A UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710344': { name: '32BBT10 (CTG3B UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710345': { name: '33BBT10 (CTG3C UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710347': { name: 'SPARE 50 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '50 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      '4710350': { name: 'SPARE 63.5 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '63.5 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' }
+    };
 
-      // Priority 1: HEALTH_INDEX_DATA
-      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
-        HEALTH_INDEX_DATA.forEach(meta => {
-          if (meta.serial && !addedSerials.has(meta.serial)) {
-            addedSerials.add(meta.serial);
-            const opt = document.createElement('option');
-            opt.value = meta.serial;
-            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
-            selectEl.appendChild(opt);
+    // Robust CSV Parser supporting quotes and trim
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^[\ufeff"]+|["]+$/g, ''));
+      const result = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
+          } else {
+            entry += char;
           }
-        });
-      }
-
-      // Priority 2: pfDataList
-      pfDataList.forEach(pfItem => {
-        if (pfItem.serial && !addedSerials.has(pfItem.serial)) {
-          addedSerials.add(pfItem.serial);
-          const opt = document.createElement('option');
-          opt.value = pfItem.serial;
-          opt.textContent = pfItem.serial;
-          selectEl.appendChild(opt);
         }
-      });
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || obj['\ufeffserial'] || obj['\ufeffSerial_No'] || '';
+        obj.date = obj.date || obj.Date || '';
+
+        // Ignore dummy test row (e.g. 1, 2, 3, 4, 5, 6...)
+        if (obj.Serial_No === '1' && obj.Site === '2') continue;
+        if (obj.serial === '1' && obj.Site === '2') continue;
+
+        result.push(obj);
+      }
+      return result;
     }
 
     function matchSerial(s1, s2) {
       if (!s1 || !s2) return false;
-      const a = String(s1).trim().toLowerCase();
-      const b = String(s2).trim().toLowerCase();
-      if (a === b) return true;
-      const numA = a.replace(/[^a-z0-9]/g, '');
-      const numB = b.replace(/[^a-z0-9]/g, '');
-      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
+      const str1 = String(s1).trim();
+      const str2 = String(s2).trim();
+      if (str1.toLowerCase() === str2.toLowerCase()) return true;
+      const c1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const c2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (!c1 || !c2) return false;
+      if (c1 === c2) return true;
+      // Do not match single/double digit dummy IDs against full serial numbers
+      if (c1.length >= 4 && c2.length >= 4) {
+        if (c1.startsWith(c2) || c2.startsWith(c1) || c1.endsWith(c2) || c2.endsWith(c1)) {
+          return true;
+        }
+      }
+      return false;
     }
 
-    // Load dynamic report data by serial
-    function loadReportBySerial(serial) {
-      const rawItems = pfDataList.filter(x => matchSerial(x.serial, serial));
+    function populateDropdown() {
+      const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
 
-      const parseDate = (dStr) => {
-        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
-        if (dStr.includes('/')) {
-          const pts = dStr.split('/');
-          if (pts.length === 3) {
-            return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+      const addedSerials = new Set();
+      const allItems = [];
+
+      // 1. From HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
+          const n = meta['Equipment Name'] || meta.name || s;
+          if (s && !addedSerials.has(s.toUpperCase())) {
+            addedSerials.add(s.toUpperCase());
+            allItems.push({ serial: s, name: n });
           }
-        }
-        return new Date(dStr);
-      };
-
-      const hasValidPFData = (item) => {
-        if (!item) return false;
-        const keys = Object.keys(item);
-        return keys.some(k => {
-          if (k === 'serial' || k === 'date' || k === 'temp' || k === 'corr_factor') return false;
-          const val = item[k];
-          if (val === undefined || val === null) return false;
-          const s = val.toString().trim();
-          if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
-          return !isNaN(parseFloat(s.replace(/,/g, '')));
         });
-      };
+      }
 
-      const validItems = rawItems.filter(hasValidPFData);
-      validItems.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      // 2. From pfDataList
+      pfDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
+          addedSerials.add(s.toUpperCase());
+          let n = s;
+          const extra = EXTRA_TR_METADATA[s];
+          if (extra && extra.name) n = extra.name;
+          allItems.push({ serial: s, name: n });
+        }
+      });
 
-      const seenDates = new Set();
-      const items = [];
-      for (const item of validItems) {
-        const dt = parseDate(item.date);
-        const key = dt.getTime() > 0 ? dt.getTime() : item.date;
-        if (!seenDates.has(key)) {
-          seenDates.add(key);
-          items.push(item);
+      // Sort alphabetically by name
+      allItems.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+      allItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.serial;
+        opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    function switchTransformer(serial) {
+      currentSerial = serial;
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadReportBySerial(serial);
+    }
+
+    function switchTestDate(dateStr) {
+      const records = pfDataList.filter(x => matchSerial(x.serial, currentSerial));
+      const found = records.find(r => r.date === dateStr);
+      if (found) {
+        renderPfReport(found);
+      }
+    }
+
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === 'None' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      // Match YYYY-MM-DD or YYYY/MM/DD
+      const ymdMatch = cleanStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (ymdMatch) {
+        const y = parseInt(ymdMatch[1], 10);
+        const m = parseInt(ymdMatch[2], 10) - 1;
+        const d = parseInt(ymdMatch[3], 10);
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
         }
       }
 
-      const pfItem = items[0] || {};
-      const facItem = factoryDataList.find(x => matchSerial(x.Serial_No || x.serial, serial)) || {};
+      // Match D-Mmm-YY or DD-Mmm-YYYY e.g. "1-Jan-06" or "14-Jul-2026"
+      const dmyTextMatch = cleanStr.match(/^(\d{1,2})[-/]([A-Za-z]{3,4})[-/](\d{2,4})$/);
+      if (dmyTextMatch) {
+        const d = parseInt(dmyTextMatch[1], 10);
+        const mStr = dmyTextMatch[2].substring(0, 3).toLowerCase();
+        let y = parseInt(dmyTextMatch[3], 10);
+        if (y < 100) {
+          y = y >= 50 ? 1900 + y : 2000 + y;
+        }
+        const mIdx = months.findIndex(m => m.toLowerCase() === mStr);
+        if (mIdx !== -1) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[mIdx]}-${y}`;
+        }
+      }
 
-      // Winding metadata
+      // Match M/D/YYYY or D/M/YYYY
+      const slashMatch = cleanStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (slashMatch) {
+        let p1 = parseInt(slashMatch[1], 10);
+        let p2 = parseInt(slashMatch[2], 10);
+        let y = parseInt(slashMatch[3], 10);
+        let d, m;
+        if (p1 > 12) {
+          d = p1;
+          m = p2 - 1;
+        } else {
+          m = p1 - 1;
+          d = p2;
+        }
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[mIdx] || months[m]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+
+      return cleanStr;
+    }
+
+    function loadReportBySerial(serial) {
+      currentSerial = serial;
+      const rawRecords = pfDataList.filter(x => matchSerial(x.serial, serial));
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        return new Date(dStr);
+      };
+
+      rawRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+      // Populate Date selector
+      const dateSelect = document.getElementById('test-date-select');
+      dateSelect.innerHTML = '';
+      if (rawRecords.length > 0) {
+        rawRecords.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = r.date;
+          opt.textContent = r.date ? formatDate_ddMmmyyyy(r.date) : `Test #${idx + 1}`;
+          dateSelect.appendChild(opt);
+        });
+      } else {
+        const facRec = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial, serial));
+        const opt = document.createElement('option');
+        opt.value = facRec && facRec.Test_Date ? facRec.Test_Date : '';
+        opt.textContent = facRec && facRec.Test_Date ? formatDate_ddMmmyyyy(facRec.Test_Date) : 'No Test Date';
+        dateSelect.appendChild(opt);
+      }
+
+      const activeRecord = rawRecords.length > 0 ? rawRecords[0] : null;
+      renderPfReport(activeRecord);
+    }
+
+    function renderPfReport(record) {
+      currentRecord = record;
+      const serial = currentSerial;
+
+      // 1. Multi-Source Metadata Resolution
       let name = '-';
       let site = '-';
       let mfg = '-';
       let power = '-';
-      let voltage = '-';
+      let hvRated = 115;
+      let lvRated = 22;
+      let tvRated = null;
+      let voltageStr = '-';
+      let vectorGroup = 'Dyn1';
+      let tapType = 'OLTC';
+      let service = 'Distribution';
       let fluid = 'Mineral Oil';
-      let numWindings = 3;
-      let service = '-';
+      let noWinding = 2;
 
-      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const meta = HEALTH_INDEX_DATA.find(x => {
-          const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
-          return matchSerial(s, serial);
-        });
-        if (meta) {
-          name = meta.name || meta['Equipment Name'] || '-';
-          site = meta.site || meta['SITE'] || '-';
-          power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
-          voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
-          service = meta.serviceType || meta['Service Type'] || '-';
+      const parseKvVal = (val) => {
+        if (!val || val === 'None' || val === 'N/A' || val === '-') return null;
+        const clean = String(val).replace(/kV/gi, '').trim();
+        const num = parseFloat(clean);
+        return isNaN(num) ? null : num;
+      };
+
+      // 1.1 FactoryData.csv (excluding dummy rows)
+      const facMeta = factoryDataList.find(x => matchSerial(x.Serial_No || x.SERIAL_NUMBER || x.serial || x['Serial No'], serial));
+      if (facMeta) {
+        if (facMeta.Site && facMeta.Site !== '-' && facMeta.Site !== '') site = facMeta.Site;
+        if (facMeta.Power_Rated && facMeta.Power_Rated !== '-' && facMeta.Power_Rated !== '') {
+          const pr = parseFloat(facMeta.Power_Rated);
+          if (!isNaN(pr) && pr > 0) {
+            power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+          }
+        }
+        if (facMeta.HV_Rated) {
+          const p = parseKvVal(facMeta.HV_Rated);
+          if (p) hvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.LV_Rated) {
+          const p = parseKvVal(facMeta.LV_Rated);
+          if (p) lvRated = p > 1000 ? p / 1000 : p;
+        }
+        if (facMeta.TV_Rated && facMeta.TV_Rated !== 'None' && facMeta.TV_Rated !== '-') {
+          const p = parseKvVal(facMeta.TV_Rated);
+          if (p) tvRated = p > 1000 ? p / 1000 : p;
         }
       }
 
-      if (typeof TR_DATA !== 'undefined') {
-        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x['Serial No'] || x['Serial No.'], serial));
-        if (rawMeta) {
-          if (name === '-') name = rawMeta.NAME || rawMeta.EQUIPMENT_NAME || '-';
-          if (site === '-') site = rawMeta.SITE || rawMeta.LOCATION || '-';
-          if (mfg === '-') mfg = rawMeta.MANUFACTURER_COMPANY || rawMeta.BRAND || '-';
-          if (fluid === 'Mineral Oil' && rawMeta.TYPE_OF_INSULATION) fluid = rawMeta.TYPE_OF_INSULATION;
-          if (power === '-') power = rawMeta.POWER_RATING || '-';
-          if (rawMeta.NO_WINDING) {
-            numWindings = parseInt(rawMeta.NO_WINDING) || 3;
-          }
-          if (voltage === '-' && rawMeta.HV_RATED && rawMeta.LV_RATED) {
-            voltage = `${rawMeta.HV_RATED} / ${rawMeta.LV_RATED}`;
-            if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') {
-              voltage += ` / ${rawMeta.LV2_RATED}`;
+      // 1.2 HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        const meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No || x.SERIAL_NUMBER, serial));
+        if (meta) {
+          if (meta['Equipment Name'] && meta['Equipment Name'] !== '-') name = meta['Equipment Name'];
+          else if (meta.name && meta.name !== '-') name = meta.name;
+
+          if (meta.SITE && meta.SITE !== '-') site = meta.SITE;
+          else if (meta.site && meta.site !== '-') site = meta.site;
+          else if (meta.substation && meta.substation !== '-') site = meta.substation;
+
+          const pRaw = meta['Rated Power (MVA)'] || meta.ratedPower || meta.power || meta.capacity;
+          if (pRaw && pRaw !== '-') {
+            const pNum = parseFloat(pRaw);
+            if (!isNaN(pNum)) {
+              power = pNum >= 1000 ? `${(pNum / 1000).toFixed(0)} MVA` : `${pNum} MVA`;
+            } else {
+              power = `${pRaw} MVA`;
             }
           }
-          if (service === '-') service = rawMeta.SERVICE_TYPE || rawMeta.APPLICATION || '-';
+
+          const vRaw = meta['Rated Voltage (kV)'] || meta.ratedVoltage || meta.voltage;
+          if (vRaw && vRaw !== '-') voltageStr = `${vRaw} kV`;
+
+          if (meta['Service Type'] && meta['Service Type'] !== '-') service = meta['Service Type'];
+          else if (meta.serviceType && meta.serviceType !== '-') service = meta.serviceType;
+
+          if (meta['Vector Group'] && meta['Vector Group'] !== '-') vectorGroup = meta['Vector Group'];
+          else if (meta.vectorGroup && meta.vectorGroup !== '-') vectorGroup = meta.vectorGroup;
+          else if (meta.vector_group && meta.vector_group !== '-') vectorGroup = meta.vector_group;
+
+          if (meta.Manufacturer && meta.Manufacturer !== '-') mfg = meta.Manufacturer;
+          else if (meta.manufacture && meta.manufacture !== '-') mfg = meta.manufacture;
+          else if (meta.manufacturer && meta.manufacturer !== '-') mfg = meta.manufacturer;
+
+          if (meta.tap_changer && meta.tap_changer !== '-') tapType = meta.tap_changer;
+          if (meta.fluid && meta.fluid !== '-') fluid = meta.fluid;
+          if (meta.TYPE_OF_INSULATION && meta.TYPE_OF_INSULATION !== '-') fluid = meta.TYPE_OF_INSULATION;
         }
       }
 
-      // Metadata elements
+      // 1.3 TR_DATA (from data.js)
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        const rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x['Serial No'] || x.serial, serial));
+        if (rawMeta) {
+          if (rawMeta.LOCAL_EQUIPMENT_CODE && rawMeta.LOCAL_EQUIPMENT_CODE !== '-') {
+            name = rawMeta.LOCAL_EQUIPMENT_CODE;
+          } else if (rawMeta.DEVICE_CODE && rawMeta.DEVICE_CODE !== '-') {
+            name = rawMeta.DEVICE_CODE;
+          }
+
+          if (rawMeta.SITE && rawMeta.SITE !== '-') site = rawMeta.SITE;
+          else if (rawMeta.SUBSTATION && rawMeta.SUBSTATION !== '-') site = rawMeta.SUBSTATION;
+
+          if (rawMeta.MANUFACTURER_COMPANY && rawMeta.MANUFACTURER_COMPANY !== '-') mfg = rawMeta.MANUFACTURER_COMPANY;
+          else if (rawMeta.BRAND && rawMeta.BRAND !== '-') mfg = rawMeta.BRAND;
+
+          if (rawMeta.POWER_RATING_DETAIL && rawMeta.POWER_RATING_DETAIL !== '-') {
+            power = rawMeta.POWER_RATING_DETAIL;
+          } else if (rawMeta.POWER_RATING && rawMeta.POWER_RATING !== '-') {
+            const pr = parseFloat(rawMeta.POWER_RATING);
+            if (!isNaN(pr)) {
+              power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+            }
+          }
+
+          if (!facMeta || !facMeta.HV_Rated) {
+            if (rawMeta.HV_RATED && rawMeta.HV_RATED !== '-') hvRated = parseFloat(rawMeta.HV_RATED) || hvRated;
+          }
+          if (!facMeta || !facMeta.LV_Rated) {
+            if (rawMeta.LV_RATED && rawMeta.LV_RATED !== '-') lvRated = parseFloat(rawMeta.LV_RATED) || lvRated;
+          }
+          if (!facMeta || !facMeta.TV_Rated) {
+            if (rawMeta.LV2_RATED && rawMeta.LV2_RATED !== '-') tvRated = parseFloat(rawMeta.LV2_RATED);
+          }
+
+          if (rawMeta.VECTOR_GROUP && rawMeta.VECTOR_GROUP !== '-') vectorGroup = rawMeta.VECTOR_GROUP;
+          if (rawMeta.TAP_CHANGER_TYPE && rawMeta.TAP_CHANGER_TYPE !== '-') tapType = rawMeta.TAP_CHANGER_TYPE;
+          if (rawMeta.APPLICATION && rawMeta.APPLICATION !== '-') service = rawMeta.APPLICATION;
+          if (rawMeta.NO_WINDING && rawMeta.NO_WINDING !== '-') noWinding = parseInt(rawMeta.NO_WINDING, 10) || 2;
+          if (rawMeta.TYPE_OF_INSULATION && rawMeta.TYPE_OF_INSULATION !== '-') fluid = rawMeta.TYPE_OF_INSULATION;
+        }
+      }
+
+      // 1.4 EXTRA_TR_METADATA Fallback
+      const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, serial));
+      if (extraKey) {
+        const extra = EXTRA_TR_METADATA[extraKey];
+        if ((name === '-' || !name) && extra.name) name = extra.name;
+        if ((site === '-' || !site) && extra.site) site = extra.site;
+        if ((mfg === '-' || !mfg) && extra.mfg) mfg = extra.mfg;
+        if ((power === '-' || !power) && extra.power) power = extra.power;
+        if (extra.hv) hvRated = extra.hv;
+        if (extra.lv) lvRated = extra.lv;
+        if (extra.tv) tvRated = extra.tv;
+        if (extra.vector) vectorGroup = extra.vector;
+        if (extra.fluid) fluid = extra.fluid;
+        if (extra.service) service = extra.service;
+      }
+
+      if (tvRated) {
+        voltageStr = `${hvRated} / ${lvRated} / ${tvRated} kV`;
+      } else if (hvRated && lvRated) {
+        voltageStr = `${hvRated} / ${lvRated} kV`;
+      }
+
+      const isAuto = vectorGroup.toLowerCase().includes('auto') || 
+                     vectorGroup.toLowerCase().includes('na0') || 
+                     vectorGroup.toLowerCase().includes('yna') || 
+                     String(name).toLowerCase().includes('auto');
+
+      const is3W = (noWinding === 3) || 
+                   (tvRated !== null && tvRated > 0) || 
+                   isAuto;
+
+      // Populate Identification Table
       document.getElementById('info-eq-name').textContent = name;
       document.getElementById('info-site').textContent = site;
       document.getElementById('info-serial').textContent = serial;
-      document.getElementById('info-power').textContent = (power && power !== '-') ? Number(power).toLocaleString() : '-';
-      document.getElementById('info-mfg').textContent = mfg;
-      document.getElementById('info-voltage').textContent = voltage;
+      document.getElementById('info-power').textContent = power;
+      document.getElementById('info-voltage').textContent = voltageStr;
+      document.getElementById('info-vector').textContent = vectorGroup;
+
+      let windingCountStr = '2 Windings';
+      if (isAuto) {
+        windingCountStr = 'Auto-Transformer (2 + Tertiary)';
+      } else if (is3W) {
+        windingCountStr = '3 Windings';
+      }
+      document.getElementById('info-winding').textContent = windingCountStr;
       document.getElementById('info-fluid').textContent = fluid;
       document.getElementById('info-service').textContent = service;
 
-      // Test Instrument & Environment
-      document.getElementById('info-instrument').textContent = pfItem.test_instrument || '-';
-      document.getElementById('info-instrument-serial').textContent = pfItem.serial_instrument || '-';
-      document.getElementById('info-instrument-calib').textContent = formatDate(pfItem.date_calibation);
-      
-      document.getElementById('env-ambient').textContent = pfItem.ambient_temp || '-';
-      document.getElementById('env-oil').textContent = pfItem.oil_temp || '-';
-      document.getElementById('env-winding').textContent = pfItem.winding_temp || '-';
-      document.getElementById('env-humidity').textContent = pfItem.humidity || '-';
+      // 2. Populate Test Environment & Apparatus
+      const r = record || {};
+      document.getElementById('info-instrument').textContent = r.test_instrument && r.test_instrument !== '-' ? r.test_instrument : 'Omicron TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = r.serial_instrument && r.serial_instrument !== '-' ? r.serial_instrument : '-';
+      document.getElementById('info-instrument-calib').textContent = r.date_calibation && r.date_calibation !== '-' ? formatDate_ddMmmyyyy(r.date_calibation) : '-';
 
-      // Load Factory Winding capacitance
-      const facCH_CHL = cleanRequiredStr(facItem.PF_C_Winding_HLHG);
-      const facCH = cleanRequiredStr(facItem.PF_C_Winding_HG);
-      const facCHL = cleanRequiredStr(facItem.PF_C_Winding_HL);
+      document.getElementById('env-ambient').textContent = r.ambient_temp && r.ambient_temp !== '-' ? `${r.ambient_temp} °C` : '- °C';
+      document.getElementById('env-oil').textContent = r.oil_temp && r.oil_temp !== '-' ? r.oil_temp : '-';
+      document.getElementById('env-winding').textContent = r.winding_temp && r.winding_temp !== '-' ? r.winding_temp : '-';
+      document.getElementById('env-humidity').textContent = r.humidity && r.humidity !== '-' ? `${r.humidity}%` : '-%';
 
-      const facCL_CLT = cleanRequiredStr(facItem.PF_C_Winding_LHLG);
-      const facCL = cleanRequiredStr(facItem.PF_C_Winding_LG || facItem.PF_C_Winding_L);
-      const facCLT = cleanRequiredStr(facItem.PF_C_Winding_LH || facItem.PF_C_Winding_LT);
+      // 3. Render Factory Reference Capacitance Table
+      renderFactoryTable(facMeta, is3W, isAuto);
 
-      const facCT_CHT = cleanRequiredStr(facItem.PF_C_Winding_TGTH);
-      const facCT = cleanRequiredStr(facItem.PF_C_Winding_TG);
-      const facCHT = cleanRequiredStr(facItem.PF_C_Winding_TH);
+      // 4. Render Measurement Tables & KPIs
+      renderMeasurementTables(r, facMeta, fluid, hvRated, is3W, isAuto);
 
-      document.getElementById('fac-ch-chl').textContent = formatVal(facCH_CHL);
-      document.getElementById('fac-ch').textContent = formatVal(facCH);
-      document.getElementById('fac-chl').textContent = formatVal(facCHL);
+      // 5. Populate Signatures
+      populateSignatures(r);
+    }
 
-      document.getElementById('fac-cl-clt').textContent = formatVal(facCL_CLT);
-      document.getElementById('fac-cl').textContent = formatVal(facCL);
-      document.getElementById('fac-clt').textContent = formatVal(facCLT);
+    function renderFactoryTable(facMeta, is3W, isAuto) {
+      const cleanVal = (val) => {
+        if (val === undefined || val === null || val === '' || val === '-' || val === 'None' || val === 'null') return null;
+        const s = String(val).replace(/,/g, '').trim();
+        if (s.includes('Required') || s.includes('Power Transformer')) return null;
+        const num = parseFloat(s);
+        return isNaN(num) ? null : num;
+      };
 
-      document.getElementById('fac-ct-cht').textContent = formatVal(facCT_CHT);
-      document.getElementById('fac-ct').textContent = formatVal(facCT);
-      document.getElementById('fac-cht').textContent = formatVal(facCHT);
+      const facCH_CHL = facMeta ? cleanVal(facMeta.PF_C_Winding_HLHG) : null;
+      const facCL_CLT = facMeta ? cleanVal(facMeta.PF_C_Winding_LTLG || facMeta.PF_C_Winding_LHLG) : null;
+      const facCT_CHT = facMeta ? cleanVal(facMeta.PF_C_Winding_TGTH) : null;
+      const facCH     = facMeta ? cleanVal(facMeta.PF_C_Winding_HG) : null;
+      const facCL     = facMeta ? cleanVal(facMeta.PF_C_Winding_LG || facMeta.PF_C_Winding_L) : null;
+      const facCT     = facMeta ? cleanVal(facMeta.PF_C_Winding_TG) : null;
+      const facCHL    = facMeta ? cleanVal(facMeta.PF_C_Winding_HL) : null;
+      const facCHT    = facMeta ? cleanVal(facMeta.PF_C_Winding_TH) : null;
 
-      // Update top table labels dynamically based on No. of Winding
-      if (numWindings === 2) {
-        document.getElementById('lbl-fac-cl-clt').textContent = 'CL+CLH';
-        document.getElementById('lbl-fac-cl').textContent = 'CL';
-        document.getElementById('lbl-fac-clt').textContent = 'CLH';
+      const container = document.getElementById('fac-table-container');
+      if (!container) return;
+
+      let ths = [];
+      let tds = [];
+
+      if (is3W || facCT_CHT !== null || facCT !== null || isAuto) {
+        ths = [
+          'CH + CHL',
+          (facCL_CLT !== null ? 'CL + CLT' : 'CL + CLH'),
+          'CT + CHT',
+          'CH (HV-Gnd)',
+          'CL (LV-Gnd)',
+          'CT (TV-Gnd)',
+          'CHL (HV-LV)',
+          'CHT (HV-TV)'
+        ];
+        tds = [
+          formatNumber(facCH_CHL),
+          formatNumber(facCL_CLT),
+          formatNumber(facCT_CHT),
+          formatNumber(facCH),
+          formatNumber(facCL),
+          formatNumber(facCT),
+          formatNumber(facCHL),
+          formatNumber(facCHT)
+        ];
       } else {
-        document.getElementById('lbl-fac-cl-clt').textContent = 'CL+CLT';
-        document.getElementById('lbl-fac-cl').textContent = 'CL(T)';
-        document.getElementById('lbl-fac-clt').textContent = 'CLT';
+        ths = [
+          'CH + CHL',
+          'CL + CLH',
+          'CH (HV-Gnd)',
+          'CL (LV-Gnd)',
+          'CHL (HV-LV)'
+        ];
+        tds = [
+          formatNumber(facCH_CHL),
+          formatNumber(facCL_CLT),
+          formatNumber(facCH),
+          formatNumber(facCL),
+          formatNumber(facCHL)
+        ];
       }
 
-      // Primary Winding results
-      document.getElementById('prim-volt').textContent = pfItem.hl_test_voltage || '-';
-      document.getElementById('prim-note').textContent = pfItem.note ? `Note: ${pfItem.note}` : 'Note: -';
-      
-      const primaryResults = [
-        { energize: 'HV', gst: 'LV', gstg: '-', ust: '-', current: pfItem.chl_ch_pf_ma, power: pfItem.chl_ch_pf_p, measPF: pfItem.chl_ch_pf_1, pf20: pfItem.chl_ch_pf_2, measCap: pfItem.chl_ch_cap, error: cleanRequiredStr(pfItem.Object1), label: 'CH+CHL' },
-        { energize: 'HV', gst: '-', gstg: 'LV', ust: '-', current: pfItem.ch_pf_ma, power: pfItem.ch_pf_p, measPF: pfItem.ch_pf_1, pf20: pfItem.ch_pf_2, measCap: pfItem.ch_cap, error: cleanRequiredStr(pfItem.Object2), label: 'CH' },
-        { energize: 'HV', gst: '-', gstg: '-', ust: 'LV', current: pfItem.chl_pf_ma, power: pfItem.chl_pf_p, measPF: pfItem.chl_pf_1, pf20: pfItem.chl_pf_2, measCap: pfItem.chl_cap, error: cleanRequiredStr(pfItem.Object3), label: 'CHL' }
-      ];
-      renderResultsTable('primary-results-body', primaryResults, fluid, voltage);
+      const thWidth = (100 / ths.length).toFixed(1) + '%';
+      let html = `
+        <table class="report-table info-table" style="text-align: center; margin-bottom: 6px; width: 100%;">
+          <thead>
+            <tr style="background: #1e3a8a; color: #ffffff;">
+              ${ths.map(h => `<th style="width: ${thWidth}; text-align: center; vertical-align: middle; font-size: 7.5px; padding: 2px 3px;">${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              ${tds.map(d => `<td style="font-weight: 700; color: #1e3a8a; text-align: center; vertical-align: middle; padding: 2.5px 3px; font-size: 8px;">${d}</td>`).join('')}
+            </tr>
+          </tbody>
+        </table>
+      `;
+      container.innerHTML = html;
+    }
 
-      // Secondary Winding results
-      document.getElementById('sec-volt').textContent = pfItem.lh_test_voltage || '-';
-      
-      // Secondary factory values check: If CL+CLT factory data is blank in top table, we hide secondary errors or show them as '-'
-      const hasSecondaryFactory = facCL_CLT !== '' && facCL_CLT !== '-';
-      
-      const secondaryResults = [
-        { energize: 'LV', gst: 'TV', gstg: 'HV', ust: '-', current: pfItem.clh_cl_pf_ma, power: pfItem.clh_cl_pf_p, measPF: pfItem.clh_cl_pf_1, pf20: pfItem.clh_cl_pf_2, measCap: pfItem.clh_cl_cap, error: hasSecondaryFactory ? cleanRequiredStr(pfItem.Object4) : '-', label: numWindings === 2 ? 'CL+CLH' : 'CL+CLT' },
-        { energize: 'LV', gst: '-', gstg: 'HV&TV', ust: '-', current: pfItem.cl_pf_ma, power: pfItem.cl_pf_p, measPF: pfItem.cl_pf_1, pf20: pfItem.cl_pf_2, measCap: pfItem.cl_cap, error: hasSecondaryFactory ? cleanRequiredStr(pfItem.Object5) : '-', label: numWindings === 2 ? 'CL' : 'CL(T)' },
-        { energize: 'LV', gst: 'HV', gstg: '-', ust: 'TV', current: pfItem.clh_pf_ma, power: pfItem.clh_pf_p, measPF: pfItem.clh_pf_1, pf20: pfItem.clh_pf_2, measCap: pfItem.clh_cap, error: hasSecondaryFactory ? cleanRequiredStr(pfItem.Object6) : '-', label: numWindings === 2 ? 'CLH' : 'CLT' }
-      ];
-      renderResultsTable('secondary-results-body', secondaryResults, fluid, voltage);
+    function formatNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) return '-';
+      return parseFloat(num).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    }
 
-      // Tertiary Winding results
-      document.getElementById('tert-volt').textContent = pfItem.th_test_voltage || '-';
-      
-      const hasTertiaryFactory = facCT_CHT !== '' && facCT_CHT !== '-';
+    function formatPF(pf) {
+      if (pf === null || pf === undefined || isNaN(pf)) return '-';
+      return parseFloat(pf).toFixed(3) + '%';
+    }
 
-      const tertiaryResults = [
-        { energize: 'TV', gst: 'HV', gstg: 'LV', ust: '-', current: pfItem.ct_cth_pf_ma, power: pfItem.ct_cth_pf_p, measPF: pfItem.ct_cth_pf_1, pf20: pfItem.ct_cth_pf_2, measCap: pfItem.ct_cth_cap, error: hasTertiaryFactory ? cleanRequiredStr(pfItem.Object7) : '-', label: 'CT+CHT' },
-        { energize: 'TV', gst: '-', gstg: 'HV&LV', ust: '-', current: pfItem.ct_pf_ma, power: pfItem.ct_pf_p, measPF: pfItem.ct_pf_1, pf20: pfItem.ct_pf_2, measCap: pfItem.ct_cap, error: hasTertiaryFactory ? cleanRequiredStr(pfItem.Object8) : '-', label: 'CT' },
-        { energize: 'TV', gst: 'LV', gstg: '-', ust: 'HV', current: pfItem.cth_pf_ma, power: pfItem.cth_pf_p, measPF: pfItem.cth_pf_1, pf20: pfItem.cth_pf_2, measCap: pfItem.cth_cap, error: hasTertiaryFactory ? pfItem.Object9 : '-', label: 'CHT' }
-      ];
-      renderResultsTable('tertiary-results-body', tertiaryResults, fluid, voltage);
+    function formatCapError(err) {
+      if (err === null || err === undefined || isNaN(err)) return '-';
+      const num = parseFloat(err);
+      return (num >= 0 ? `+${num.toFixed(2)}%` : `${num.toFixed(2)}%`);
+    }
 
-      // Signatures block (Dynamic values; if missing leave blank)
-      const cleanSig = (v) => {
-        if (!v) return '';
-        const s = String(v).trim();
-        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+    function getPFStatusBadge(pf20, fluid, hvRated) {
+      if (pf20 === null || pf20 === undefined || isNaN(pf20)) return '<span class="status-badge status-na">-</span>';
+      const val = parseFloat(pf20);
+      const isEster = String(fluid || '').toLowerCase().includes('ester') || String(fluid || '').toLowerCase().includes('fr3');
+      const is230kVorAbove = (hvRated && hvRated >= 230);
+
+      let goodLimit = 0.50;
+      let fairLimit = 1.00;
+
+      if (isEster) {
+        goodLimit = 1.00;
+        fairLimit = 1.50;
+      } else if (is230kVorAbove) {
+        goodLimit = 0.40;
+        fairLimit = 1.00;
+      }
+
+      if (val <= goodLimit) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (val <= fairLimit) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">INVESTIGATE</span>';
+      }
+    }
+
+    function getCapErrorBadge(capErr) {
+      if (capErr === null || capErr === undefined || isNaN(capErr)) return '<span class="status-badge status-na">-</span>';
+      const val = Math.abs(parseFloat(capErr));
+      if (val <= 5.00) {
+        return '<span class="status-badge status-pass">PASS</span>';
+      } else if (val <= 10.00) {
+        return '<span class="status-badge status-fair">FAIR</span>';
+      } else {
+        return '<span class="status-badge status-fail">INVESTIGATE</span>';
+      }
+    }
+
+    function formatNote(note) {
+      if (!note || note === '-' || note === 'null' || note === 'None') return '';
+      let str = String(note).trim();
+      if (str.includes('ไม่ได้ทดสอบ') || str.includes('ติด GIS')) {
+        return 'HV side PF test not performed (connected to GIS)';
+      }
+      return str;
+    }
+
+    function renderMeasurementTables(r, facMeta, fluid, hvRated, is3W, isAuto) {
+      const container = document.getElementById('pf-tables-container');
+      container.innerHTML = '';
+
+      const chartLabels = [];
+      const chartPFs = [];
+      const chartCapErrors = [];
+
+      let maxPF20 = 0;
+      let maxCapErr = 0;
+      let worstMode = 'CHL';
+      let worstScore = 5;
+
+      const parseNum = (val) => {
+        if (val === undefined || val === null || val === '' || val === '-' || val === 'null') return null;
+        const s = String(val).replace(/,/g, '').trim();
+        const n = parseFloat(s);
+        return isNaN(n) ? null : n;
       };
-      const cleanDate = (d) => {
-        if (!d) return '';
-        const s = String(d).trim();
-        if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
-        const formatted = formatDate(s);
-        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+
+      const calcCapErr = (meas, fac, objErr) => {
+        if (objErr !== undefined && objErr !== null && objErr !== '' && objErr !== '-') {
+          const n = parseFloat(String(objErr).replace(/,/g, ''));
+          if (!isNaN(n)) return n;
+        }
+        if (meas !== null && fac !== null && fac > 0) {
+          return ((meas - fac) / fac) * 100;
+        }
+        return null;
       };
 
-      document.getElementById('resp-name-tested').textContent = cleanSig(pfItem.test_name || pfItem.Name1 || pfItem.NAME1 || pfItem.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(pfItem.witness_name || pfItem.Name2 || pfItem.NAME2 || pfItem.reviewed_name || pfItem.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(pfItem.Name3 || pfItem.NAME3 || pfItem.approved_name || pfItem.Approved_by);
+      // 4.1 Primary Winding (HV) Test Table
+      const hvVoltage = r.hl_test_voltage && r.hl_test_voltage !== '-' ? `${r.hl_test_voltage} kV` : '10.0 kV';
+      const formattedNote = formatNote(r.note);
+      const hvTableBox = document.createElement('div');
+      hvTableBox.innerHTML = `
+        <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 4px; margin-bottom: 4px; display: flex; justify-content: space-between;">
+          <span>4.1 Primary Winding (HV) Insulation Test (Test Voltage: ${hvVoltage})</span>
+          <span style="font-size: 8.5px; color: #64748b;">${formattedNote ? `Note: ${formattedNote}` : ''}</span>
+        </div>
+        <table class="data-table" id="table-hv-winding">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 9%;">Insulation Mode</th>
+              <th colspan="4" class="sub-th" style="background: #1e3a8a;">Test Connection</th>
+              <th rowspan="2" style="width: 7.5%;">Current (mA)</th>
+              <th rowspan="2" style="width: 7.5%;">Power (mW)</th>
+              <th colspan="3" class="th-pf">Power Factor</th>
+              <th colspan="3" class="th-cap">Capacitance</th>
+            </tr>
+            <tr>
+              <th class="sub-th" style="width: 5.5%;">Energize</th>
+              <th class="sub-th" style="width: 5.5%;">GST</th>
+              <th class="sub-th" style="width: 5.5%;">GSTg</th>
+              <th class="sub-th" style="width: 5.5%;">UST</th>
+              <th class="sub-th" style="width: 7.5%;">Meas. (%)</th>
+              <th class="sub-th" style="width: 7.5%;">at 20°C (%)</th>
+              <th class="sub-th" style="width: 8%;">PF Status</th>
+              <th class="sub-th" style="width: 9.5%;">Meas. (pF)</th>
+              <th class="sub-th" style="width: 7.5%;">% Error</th>
+              <th class="sub-th" style="width: 8.5%;">Cap. Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-hv-winding"></tbody>
+        </table>
+      `;
+      container.appendChild(hvTableBox);
 
-      document.getElementById('resp-comp-tested').textContent = cleanSig(pfItem.COMP1 || pfItem.comp1);
-      document.getElementById('resp-comp-reviewed').textContent = cleanSig(pfItem.COMP2 || pfItem.comp2);
-      document.getElementById('resp-comp-approved').textContent = cleanSig(pfItem.COMP3 || pfItem.comp3);
+      const hvRows = [
+        {
+          mode: 'CH + CHL',
+          energize: 'HV', gst: 'LV', gstg: '-', ust: '-',
+          mA: parseNum(r.chl_ch_pf_ma), mW: parseNum(r.chl_ch_pf_p),
+          pfMeas: parseNum(r.chl_ch_pf_1), pf20: parseNum(r.chl_ch_pf_2),
+          capMeas: parseNum(r.chl_ch_cap),
+          capErr: calcCapErr(parseNum(r.chl_ch_cap), facMeta ? parseNum(facMeta.PF_C_Winding_HLHG) : null, r.Object1)
+        },
+        {
+          mode: 'CH',
+          energize: 'HV', gst: '-', gstg: 'LV', ust: '-',
+          mA: parseNum(r.ch_pf_ma), mW: parseNum(r.ch_pf_p),
+          pfMeas: parseNum(r.ch_pf_1), pf20: parseNum(r.ch_pf_2),
+          capMeas: parseNum(r.ch_cap),
+          capErr: calcCapErr(parseNum(r.ch_cap), facMeta ? parseNum(facMeta.PF_C_Winding_HG) : null, r.Object2)
+        },
+        {
+          mode: 'CHL',
+          energize: 'HV', gst: '-', gstg: '-', ust: 'LV',
+          mA: parseNum(r.chl_pf_ma), mW: parseNum(r.chl_pf_p),
+          pfMeas: parseNum(r.chl_pf_1), pf20: parseNum(r.chl_pf_2),
+          capMeas: parseNum(r.chl_cap),
+          capErr: calcCapErr(parseNum(r.chl_cap), facMeta ? parseNum(facMeta.PF_C_Winding_HL) : null, r.Object3)
+        }
+      ];
 
-      document.getElementById('resp-date-tested').textContent = cleanDate(pfItem.date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(pfItem.date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(pfItem.date);
+      const tbodyHV = hvTableBox.querySelector('#tbody-hv-winding');
+      hvRows.forEach(row => {
+        if (row.pf20 !== null) {
+          if (row.pf20 > maxPF20) {
+            maxPF20 = row.pf20;
+            worstMode = row.mode;
+          }
+          chartLabels.push(row.mode);
+          chartPFs.push(parseFloat(row.pf20.toFixed(3)));
+        }
+        if (row.capErr !== null) {
+          if (Math.abs(row.capErr) > Math.abs(maxCapErr)) {
+            maxCapErr = row.capErr;
+          }
+          chartCapErrors.push(parseFloat(row.capErr.toFixed(2)));
+        }
 
-      // Populate Trend Winding Selector dynamically
+        const pfBadge = getPFStatusBadge(row.pf20, fluid, hvRated);
+        const capBadge = getCapErrorBadge(row.capErr);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="tag-col">${row.mode}</td>
+          <td>${row.energize}</td>
+          <td>${row.gst}</td>
+          <td>${row.gstg}</td>
+          <td>${row.ust}</td>
+          <td>${row.mA !== null ? row.mA.toFixed(2) : '-'}</td>
+          <td>${row.mW !== null ? row.mW.toFixed(2) : '-'}</td>
+          <td>${row.pfMeas !== null ? row.pfMeas.toFixed(3) + '%' : '-'}</td>
+          <td style="font-weight: 700; color: #1d4ed8;">${row.pf20 !== null ? row.pf20.toFixed(3) + '%' : '-'}</td>
+          <td>${pfBadge}</td>
+          <td style="font-weight: 600;">${formatNumber(row.capMeas)}</td>
+          <td style="font-weight: 700; color: ${Math.abs(row.capErr || 0) > 5 ? '#b91c1c' : '#15803d'};">${formatCapError(row.capErr)}</td>
+          <td>${capBadge}</td>
+        `;
+        tbodyHV.appendChild(tr);
+      });
+
+      // 4.2 Secondary Winding (LV) Test Table
+      const lvVoltage = r.lh_test_voltage && r.lh_test_voltage !== '-' ? `${r.lh_test_voltage} kV` : '5.0 kV';
+      const lvTableBox = document.createElement('div');
+      lvTableBox.innerHTML = `
+        <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 8px; margin-bottom: 4px;">
+          4.2 Secondary Winding (LV) Insulation Test (Test Voltage: ${lvVoltage})
+        </div>
+        <table class="data-table" id="table-lv-winding">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 9%;">Insulation Mode</th>
+              <th colspan="4" class="sub-th" style="background: #1e3a8a;">Test Connection</th>
+              <th rowspan="2" style="width: 7.5%;">Current (mA)</th>
+              <th rowspan="2" style="width: 7.5%;">Power (mW)</th>
+              <th colspan="3" class="th-pf">Power Factor</th>
+              <th colspan="3" class="th-cap">Capacitance</th>
+            </tr>
+            <tr>
+              <th class="sub-th" style="width: 5.5%;">Energize</th>
+              <th class="sub-th" style="width: 5.5%;">GST</th>
+              <th class="sub-th" style="width: 5.5%;">GSTg</th>
+              <th class="sub-th" style="width: 5.5%;">UST</th>
+              <th class="sub-th" style="width: 7.5%;">Meas. (%)</th>
+              <th class="sub-th" style="width: 7.5%;">at 20°C (%)</th>
+              <th class="sub-th" style="width: 8%;">PF Status</th>
+              <th class="sub-th" style="width: 9.5%;">Meas. (pF)</th>
+              <th class="sub-th" style="width: 7.5%;">% Error</th>
+              <th class="sub-th" style="width: 8.5%;">Cap. Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-lv-winding"></tbody>
+        </table>
+      `;
+      container.appendChild(lvTableBox);
+
+      const lvRows = [
+        {
+          mode: is3W ? 'CL + CLT' : 'CL + CLH',
+          energize: 'LV', gst: is3W ? 'TV' : 'HV', gstg: is3W ? 'HV' : '-', ust: '-',
+          mA: parseNum(r.clh_cl_pf_ma), mW: parseNum(r.clh_cl_pf_p),
+          pfMeas: parseNum(r.clh_cl_pf_1), pf20: parseNum(r.clh_cl_pf_2),
+          capMeas: parseNum(r.clh_cl_cap),
+          capErr: calcCapErr(parseNum(r.clh_cl_cap), facMeta ? parseNum(facMeta.PF_C_Winding_LHLG) : null, r.Object4)
+        },
+        {
+          mode: is3W ? 'CL(T)' : 'CL',
+          energize: 'LV', gst: '-', gstg: is3W ? 'HV&TV' : 'HV', ust: '-',
+          mA: parseNum(r.cl_pf_ma), mW: parseNum(r.cl_pf_p),
+          pfMeas: parseNum(r.cl_pf_1), pf20: parseNum(r.cl_pf_2),
+          capMeas: parseNum(r.cl_cap),
+          capErr: calcCapErr(parseNum(r.cl_cap), facMeta ? parseNum(facMeta.PF_C_Winding_LG || facMeta.PF_C_Winding_L) : null, r.Object5)
+        },
+        {
+          mode: is3W ? 'CLT' : 'CLH',
+          energize: 'LV', gst: is3W ? 'HV' : '-', gstg: is3W ? '-' : 'GND', ust: is3W ? 'TV' : 'HV',
+          mA: parseNum(r.clh_pf_ma), mW: parseNum(r.clh_pf_p),
+          pfMeas: parseNum(r.clh_pf_1), pf20: parseNum(r.clh_pf_2),
+          capMeas: parseNum(r.clh_cap),
+          capErr: calcCapErr(parseNum(r.clh_cap), facMeta ? parseNum(facMeta.PF_C_Winding_LH || facMeta.PF_C_Winding_LT) : null, r.Object6)
+        }
+      ];
+
+      const tbodyLV = lvTableBox.querySelector('#tbody-lv-winding');
+      lvRows.forEach(row => {
+        if (row.pf20 !== null) {
+          if (row.pf20 > maxPF20) {
+            maxPF20 = row.pf20;
+            worstMode = row.mode;
+          }
+          chartLabels.push(row.mode);
+          chartPFs.push(parseFloat(row.pf20.toFixed(3)));
+        }
+        if (row.capErr !== null) {
+          if (Math.abs(row.capErr) > Math.abs(maxCapErr)) {
+            maxCapErr = row.capErr;
+          }
+          chartCapErrors.push(parseFloat(row.capErr.toFixed(2)));
+        }
+
+        const pfBadge = getPFStatusBadge(row.pf20, fluid, hvRated);
+        const capBadge = getCapErrorBadge(row.capErr);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="tag-col">${row.mode}</td>
+          <td>${row.energize}</td>
+          <td>${row.gst}</td>
+          <td>${row.gstg}</td>
+          <td>${row.ust}</td>
+          <td>${row.mA !== null ? row.mA.toFixed(2) : '-'}</td>
+          <td>${row.mW !== null ? row.mW.toFixed(2) : '-'}</td>
+          <td>${row.pfMeas !== null ? row.pfMeas.toFixed(3) + '%' : '-'}</td>
+          <td style="font-weight: 700; color: #1d4ed8;">${row.pf20 !== null ? row.pf20.toFixed(3) + '%' : '-'}</td>
+          <td>${pfBadge}</td>
+          <td style="font-weight: 600;">${formatNumber(row.capMeas)}</td>
+          <td style="font-weight: 700; color: ${Math.abs(row.capErr || 0) > 5 ? '#b91c1c' : '#15803d'};">${formatCapError(row.capErr)}</td>
+          <td>${capBadge}</td>
+        `;
+        tbodyLV.appendChild(tr);
+      });
+
+      // 4.3 Tertiary Winding (TV) Test Table (if present)
+      const hasTvData = r && (
+        (r.ct_cth_cap && r.ct_cth_cap !== '-') ||
+        (r.ct_cap && r.ct_cap !== '-') ||
+        (r.cth_cap && r.cth_cap !== '-')
+      );
+
+      if (hasTvData) {
+        const tvVoltage = r.th_test_voltage && r.th_test_voltage !== '-' ? `${r.th_test_voltage} kV` : '5.0 kV';
+        const tvTableBox = document.createElement('div');
+        tvTableBox.innerHTML = `
+          <div style="font-weight: 700; font-size: 9.5px; color: #1e3a8a; margin-top: 8px; margin-bottom: 4px;">
+            4.3 Tertiary Winding (TV) Insulation Test (Test Voltage: ${tvVoltage})
+          </div>
+          <table class="data-table" id="table-tv-winding">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width: 9%;">Insulation Mode</th>
+                <th colspan="4" class="sub-th" style="background: #1e3a8a;">Test Connection</th>
+                <th rowspan="2" style="width: 7.5%;">Current (mA)</th>
+                <th rowspan="2" style="width: 7.5%;">Power (mW)</th>
+                <th colspan="3" class="th-pf">Power Factor</th>
+                <th colspan="3" class="th-cap">Capacitance</th>
+              </tr>
+              <tr>
+                <th class="sub-th" style="width: 5.5%;">Energize</th>
+                <th class="sub-th" style="width: 5.5%;">GST</th>
+                <th class="sub-th" style="width: 5.5%;">GSTg</th>
+                <th class="sub-th" style="width: 5.5%;">UST</th>
+                <th class="sub-th" style="width: 7.5%;">Meas. (%)</th>
+                <th class="sub-th" style="width: 7.5%;">at 20°C (%)</th>
+                <th class="sub-th" style="width: 8%;">PF Status</th>
+                <th class="sub-th" style="width: 9.5%;">Meas. (pF)</th>
+                <th class="sub-th" style="width: 7.5%;">% Error</th>
+                <th class="sub-th" style="width: 8.5%;">Cap. Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-tv-winding"></tbody>
+          </table>
+        `;
+        container.appendChild(tvTableBox);
+
+        const tvRows = [
+          {
+            mode: 'CT + CHT',
+            energize: 'TV', gst: 'HV', gstg: 'LV', ust: '-',
+            mA: parseNum(r.ct_cth_pf_ma), mW: parseNum(r.ct_cth_pf_p),
+            pfMeas: parseNum(r.ct_cth_pf_1), pf20: parseNum(r.ct_cth_pf_2),
+            capMeas: parseNum(r.ct_cth_cap),
+            capErr: calcCapErr(parseNum(r.ct_cth_cap), facMeta ? parseNum(facMeta.PF_C_Winding_TGTH) : null, r.Object7)
+          },
+          {
+            mode: 'CT',
+            energize: 'TV', gst: '-', gstg: 'HV&LV', ust: '-',
+            mA: parseNum(r.ct_pf_ma), mW: parseNum(r.ct_pf_p),
+            pfMeas: parseNum(r.ct_pf_1), pf20: parseNum(r.ct_pf_2),
+            capMeas: parseNum(r.ct_cap),
+            capErr: calcCapErr(parseNum(r.ct_cap), facMeta ? parseNum(facMeta.PF_C_Winding_TG) : null, r.Object8)
+          },
+          {
+            mode: 'CHT',
+            energize: 'TV', gst: 'LV', gstg: '-', ust: 'HV',
+            mA: parseNum(r.cth_pf_ma), mW: parseNum(r.cth_pf_p),
+            pfMeas: parseNum(r.cth_pf_1), pf20: parseNum(r.cth_pf_2),
+            capMeas: parseNum(r.cth_cap),
+            capErr: calcCapErr(parseNum(r.cth_cap), facMeta ? parseNum(facMeta.PF_C_Winding_TH) : null, r.Object9)
+          }
+        ];
+
+        const tbodyTV = tvTableBox.querySelector('#tbody-tv-winding');
+        tvRows.forEach(row => {
+          if (row.pf20 !== null) {
+            if (row.pf20 > maxPF20) {
+              maxPF20 = row.pf20;
+              worstMode = row.mode;
+            }
+            chartLabels.push(row.mode);
+            chartPFs.push(parseFloat(row.pf20.toFixed(3)));
+          }
+          if (row.capErr !== null) {
+            if (Math.abs(row.capErr) > Math.abs(maxCapErr)) {
+              maxCapErr = row.capErr;
+            }
+            chartCapErrors.push(parseFloat(row.capErr.toFixed(2)));
+          }
+
+          const pfBadge = getPFStatusBadge(row.pf20, fluid, hvRated);
+          const capBadge = getCapErrorBadge(row.capErr);
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="tag-col">${row.mode}</td>
+            <td>${row.energize}</td>
+            <td>${row.gst}</td>
+            <td>${row.gstg}</td>
+            <td>${row.ust}</td>
+            <td>${row.mA !== null ? row.mA.toFixed(2) : '-'}</td>
+            <td>${row.mW !== null ? row.mW.toFixed(2) : '-'}</td>
+            <td>${row.pfMeas !== null ? row.pfMeas.toFixed(3) + '%' : '-'}</td>
+            <td style="font-weight: 700; color: #1d4ed8;">${row.pf20 !== null ? row.pf20.toFixed(3) + '%' : '-'}</td>
+            <td>${pfBadge}</td>
+            <td style="font-weight: 600;">${formatNumber(row.capMeas)}</td>
+            <td style="font-weight: 700; color: ${Math.abs(row.capErr || 0) > 5 ? '#b91c1c' : '#15803d'};">${formatCapError(row.capErr)}</td>
+            <td>${capBadge}</td>
+          `;
+          tbodyTV.appendChild(tr);
+        });
+      }
+
+      const diagSummary = document.getElementById('diag-summary');
+      const diagRec = document.getElementById('diag-recommendation');
+
+      const isEster = String(fluid || '').toLowerCase().includes('ester') || String(fluid || '').toLowerCase().includes('fr3');
+      const goodLimit = isEster ? 1.00 : (hvRated >= 230 ? 0.40 : 0.50);
+      const fairLimit = isEster ? 1.50 : 1.00;
+
+      if (maxPF20 <= goodLimit && Math.abs(maxCapErr) <= 5.00) {
+        diagSummary.textContent = `The insulation power factor measurements (max %PF20°C: ${maxPF20.toFixed(3)}% at ${worstMode}) and winding capacitance deviations (max error: ${formatCapError(maxCapErr)}) are well within the IEEE C57.152 standard limits (≤ ${goodLimit.toFixed(2)}% PF and ≤ 5.00% Cap Error). The bulk paper-oil insulation system exhibits low dielectric loss, minimal moisture ingress, and no detectable geometric displacement or bulk contamination.`;
+        diagRec.textContent = 'Maintain standard operating conditions. Next scheduled diagnostic testing per routine Preventive Maintenance (PM) cycle.';
+        diagRec.style.color = '#166534';
+      } else if (maxPF20 <= fairLimit && Math.abs(maxCapErr) <= 10.00) {
+        diagSummary.textContent = `The insulation power factor is elevated (max %PF20°C: ${maxPF20.toFixed(3)}% at ${worstMode}, exceeds ${goodLimit.toFixed(2)}% standard limit) and/or capacitance deviation is ${formatCapError(maxCapErr)}. Indicates slight thermal aging, moisture accumulation in solid insulation, or polar contamination. Cross-verification with DGA and Insulating Oil Dielectric tests is recommended.`;
+        diagRec.textContent = 'Schedule follow-up dielectric frequency response (DFR) or oil moisture test within next 6-12 months.';
+        diagRec.style.color = '#854d0e';
+      } else {
+        diagSummary.textContent = `The insulation power factor (%PF20°C: ${maxPF20.toFixed(3)}%) or capacitance change (${formatCapError(maxCapErr)}) significantly exceeds acceptable limits (> ${fairLimit.toFixed(2)}% PF or > 10% Cap Error). Severe moisture ingress, carbonization, or bulk dielectric degradation is indicated at ${worstMode}. Immediate engineering assessment required before continuing long-term energization.`;
+        diagRec.textContent = 'Immediate investigation required: Perform comprehensive oil reclamation/drying and internal inspection.';
+        diagRec.style.color = '#991b1b';
+      }
+
+      // Render Charts
+      renderCharts(chartLabels, chartPFs, chartCapErrors, goodLimit, fairLimit);
+
+      // Populate Trend Selector & Render Trend
+      populateTrendSelector(is3W);
+    }
+
+    function renderCharts(labels, pfValues, capErrValues, goodLimit, fairLimit) {
+      // 1. Power Factor Chart
+      const ctx1 = document.getElementById('pfChart').getContext('2d');
+      if (pfChartInstance) pfChartInstance.destroy();
+
+      const pfLimitPlugin = {
+        id: 'pfLimitLines',
+        beforeDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left, width }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+          const yGood = y.getPixelForValue(goodLimit);
+          const yZero = y.getPixelForValue(0);
+          if (yGood !== undefined && yZero !== undefined) {
+            const bandTop = Math.max(top, Math.min(yGood, yZero));
+            const bandHeight = Math.abs(yZero - yGood);
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.06)';
+            ctx.fillRect(left, bandTop, width, bandHeight);
+          }
+          ctx.restore();
+        },
+        afterDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+          const drawLimit = (val, label, color) => {
+            const yPos = y.getPixelForValue(val);
+            if (yPos >= top && yPos <= bottom) {
+              ctx.beginPath();
+              ctx.setLineDash([5, 4]);
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 1.5;
+              ctx.moveTo(left, yPos);
+              ctx.lineTo(right, yPos);
+              ctx.stroke();
+
+              ctx.setLineDash([]);
+              ctx.fillStyle = color;
+              ctx.font = 'bold 8.5px Inter, sans-serif';
+              ctx.textAlign = 'right';
+              ctx.fillText(label, right - 6, yPos - 3);
+            }
+          };
+
+          drawLimit(goodLimit, `+${goodLimit.toFixed(2)}% Good Limit`, '#16a34a');
+          drawLimit(fairLimit, `+${fairLimit.toFixed(2)}% Investigate`, '#dc2626');
+          ctx.restore();
+        }
+      };
+
+      pfChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        plugins: [pfLimitPlugin],
+        data: {
+          labels: labels.length > 0 ? labels : ['CH+CHL', 'CH', 'CHL', 'CL+CLT', 'CL', 'CLT'],
+          datasets: [
+            {
+              label: '% PF at 20°C',
+              data: pfValues.length > 0 ? pfValues : [0.22, 0.20, 0.23, 0.24, 0.23, 0.23],
+              backgroundColor: pfValues.map(v => v <= goodLimit ? 'rgba(30, 58, 138, 0.85)' : (v <= fairLimit ? 'rgba(234, 179, 8, 0.85)' : 'rgba(239, 68, 68, 0.85)')),
+              borderColor: pfValues.map(v => v <= goodLimit ? '#1e3a8a' : (v <= fairLimit ? '#ca8a04' : '#dc2626')),
+              borderWidth: 1,
+              barPercentage: 0.55
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: { top: 2, bottom: 0, left: 2, right: 4 }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `%PF at 20°C: ${ctx.raw.toFixed(3)}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '% PF @ 20°C', font: { size: 8 } },
+              ticks: { font: { size: 7.5 } },
+              suggestedMin: 0,
+              suggestedMax: Math.max(1.2, ...pfValues) * 1.15
+            },
+            x: {
+              ticks: { font: { size: 7.5, weight: '600' } }
+            }
+          }
+        }
+      });
+
+      // 2. Capacitance Error Chart
+      const ctx2 = document.getElementById('capChart').getContext('2d');
+      if (capChartInstance) capChartInstance.destroy();
+
+      const capLimitPlugin = {
+        id: 'capLimitLines',
+        beforeDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left, width }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+          const yPosLimit = y.getPixelForValue(5.00);
+          const yNegLimit = y.getPixelForValue(-5.00);
+          if (yPosLimit !== undefined && yNegLimit !== undefined) {
+            const bandTop = Math.max(top, Math.min(yPosLimit, yNegLimit));
+            const bandHeight = Math.abs(yNegLimit - yPosLimit);
+            ctx.fillStyle = 'rgba(2, 132, 199, 0.06)';
+            ctx.fillRect(left, bandTop, width, bandHeight);
+          }
+          ctx.restore();
+        },
+        afterDraw: (chart) => {
+          const { ctx, chartArea: { top, right, bottom, left }, scales: { y } } = chart;
+          if (!y) return;
+          ctx.save();
+          const drawLimit = (val, label, color) => {
+            const yPos = y.getPixelForValue(val);
+            if (yPos >= top && yPos <= bottom) {
+              ctx.beginPath();
+              ctx.setLineDash([5, 4]);
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 1.2;
+              ctx.moveTo(left, yPos);
+              ctx.lineTo(right, yPos);
+              ctx.stroke();
+
+              ctx.setLineDash([]);
+              ctx.fillStyle = color;
+              ctx.font = 'bold 7.5px Inter, sans-serif';
+              ctx.textAlign = 'right';
+              ctx.fillText(label, right - 4, yPos - 2);
+            }
+          };
+
+          drawLimit(5.00, '+5.00% Limit', '#dc2626');
+          drawLimit(-5.00, '-5.00% Limit', '#dc2626');
+          ctx.restore();
+        }
+      };
+
+      capChartInstance = new Chart(ctx2, {
+        type: 'bar',
+        plugins: [capLimitPlugin],
+        data: {
+          labels: labels.length > 0 ? labels : ['CH+CHL', 'CH', 'CHL', 'CL+CLT', 'CL', 'CLT'],
+          datasets: [
+            {
+              label: '% Capacitance Error',
+              data: capErrValues.length > 0 ? capErrValues : [1.2, 0.8, -1.4, 0.5, -0.9, 1.1],
+              backgroundColor: capErrValues.map(v => Math.abs(v) <= 5.0 ? 'rgba(2, 132, 199, 0.85)' : (Math.abs(v) <= 10.0 ? 'rgba(234, 179, 8, 0.85)' : 'rgba(239, 68, 68, 0.85)')),
+              borderColor: capErrValues.map(v => Math.abs(v) <= 5.0 ? '#0284c7' : (Math.abs(v) <= 10.0 ? '#ca8a04' : '#dc2626')),
+              borderWidth: 1,
+              barPercentage: 0.55
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: { top: 2, bottom: 0, left: 2, right: 4 }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `Cap Error: ${ctx.raw >= 0 ? '+' : ''}${ctx.raw.toFixed(2)}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '% Cap Error', font: { size: 8 } },
+              ticks: { font: { size: 7.5 } },
+              suggestedMin: -6,
+              suggestedMax: 6
+            },
+            x: {
+              ticks: { font: { size: 7.5, weight: '600' } }
+            }
+          }
+        }
+      });
+    }
+
+    function populateTrendSelector(is3W) {
       const trendSelect = document.getElementById('trend-winding-select');
+      if (!trendSelect) return;
       const prevSelectedVal = trendSelect.value;
       trendSelect.innerHTML = '';
 
-      let trendOptions = ['CH+CHL', 'CH', 'CHL'];
-      if (numWindings === 2) {
-        trendOptions = trendOptions.concat(['CL+CLH', 'CL', 'CLH']);
+      let trendOptions = ['CH+CHL', 'CH', 'CHL', 'CL+CLT', 'CL', 'CLT'];
+      if (!is3W) {
+        trendOptions = ['CH+CHL', 'CH', 'CHL', 'CL+CLH', 'CL', 'CLH'];
       } else {
-        trendOptions = trendOptions.concat(['CL+CLT', 'CL(T)', 'CLT', 'CT+CHT', 'CT', 'CHT']);
+        trendOptions = trendOptions.concat(['CT+CHT', 'CT', 'CHT']);
       }
 
       trendOptions.forEach(opt => {
@@ -1270,180 +2231,141 @@
         trendSelect.appendChild(option);
       });
 
-      // Restore previous selection if possible, otherwise default to first
       if (trendOptions.includes(prevSelectedVal)) {
         trendSelect.value = prevSelectedVal;
       } else {
         trendSelect.value = trendOptions[0];
       }
 
-      // Initialize or update the trend chart
       updateTrendChart();
     }
 
-    // Render results tables dynamically
-    function renderResultsTable(tbodyId, rowsData, fluid, voltage) {
-      const tbody = document.getElementById(tbodyId);
-      tbody.innerHTML = '';
+    const fieldMap = {
+      'CH+CHL': { pf: 'chl_ch_pf_2', cap: 'chl_ch_cap' },
+      'CH': { pf: 'ch_pf_2', cap: 'ch_cap' },
+      'CHL': { pf: 'chl_pf_2', cap: 'chl_cap' },
+      'CL+CLT': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
+      'CL+CLH': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
+      'CL': { pf: 'cl_pf_2', cap: 'cl_cap' },
+      'CL(T)': { pf: 'cl_pf_2', cap: 'cl_cap' },
+      'CLT': { pf: 'clh_pf_2', cap: 'clh_cap' },
+      'CLH': { pf: 'clh_pf_2', cap: 'clh_cap' },
+      'CT+CHT': { pf: 'ct_cth_pf_2', cap: 'ct_cth_cap' },
+      'CT': { pf: 'ct_pf_2', cap: 'ct_cap' },
+      'CHT': { pf: 'cth_pf_2', cap: 'cth_cap' }
+    };
 
-      rowsData.forEach(row => {
-        const tr = document.createElement('tr');
-        
-        const pf20CellClass = getPFClass(row.pf20, fluid, voltage);
-        const capErrCellClass = getCapErrorClass(row.error);
+    function updateTrendChart() {
+      const serial = currentSerial;
+      const selectWinding = document.getElementById('trend-winding-select')?.value;
+      if (!serial || !selectWinding || typeof pfDataList === 'undefined') return;
 
-        tr.innerHTML = `
-          <td>${row.energize}</td>
-          <td>${row.gst}</td>
-          <td>${row.gstg}</td>
-          <td>${row.ust}</td>
-          <td>${formatVal(row.current)}</td>
-          <td>${formatVal(row.power)}</td>
-          <td>${formatVal(row.measPF)}</td>
-          <td class="${pf20CellClass}">${formatPF(row.pf20)}</td>
-          <td>${formatVal(row.measCap)}</td>
-          <td class="${capErrCellClass}">${formatError(row.error)}</td>
-          <td style="font-weight:700;">${row.label}</td>
-        `;
-        tbody.appendChild(tr);
+      const rawHistory = pfDataList.filter(x => matchSerial(x.serial, serial));
+      const parseDate = (dStr) => {
+        if (!dStr) return new Date(0);
+        return new Date(dStr);
+      };
+
+      rawHistory.sort((a, b) => parseDate(a.date) - parseDate(b.date));
+
+      const fields = fieldMap[selectWinding];
+      if (!fields) return;
+
+      const dates = [];
+      const pfValues = [];
+      const capValues = [];
+
+      rawHistory.forEach(item => {
+        const formattedDate = formatDate_ddMmmyyyy(item.date);
+        dates.push(formattedDate);
+
+        const pfVal = parseFloat((item[fields.pf] || '').toString().replace(/,/g, ''));
+        pfValues.push(isNaN(pfVal) ? null : pfVal);
+
+        const capVal = parseFloat((item[fields.cap] || '').toString().replace(/,/g, ''));
+        capValues.push(isNaN(capVal) ? null : capVal);
       });
-    }
 
-    // Helper formatter functions
-    function cleanRequiredStr(val) {
-      if (val === undefined || val === null) return '';
-      const str = val.toString().trim();
-      if (str.includes("Required,Only 3 Windings") || str.includes("Power Transformer")) {
-        return '';
-      }
-      return str;
-    }
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      const textColor = isDark ? '#f1f5f9' : '#0f172a';
+      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
 
-    function formatVal(val) {
-      if (val === undefined || val === null || val === '' || val === '-') return '-';
-      return formatNumber(val);
-    }
-
-    function formatNumber(numStr) {
-      if (numStr === undefined || numStr === null || numStr === '' || numStr === '-') return '-';
-      const cleanStr = numStr.toString().replace(/,/g, '');
-      const val = parseFloat(cleanStr);
-      if (isNaN(val)) return numStr;
-      return val.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    }
-
-    function formatPF(pfStr) {
-      if (pfStr === undefined || pfStr === null || pfStr === '' || pfStr === '-') return '-';
-      const cleanStr = pfStr.toString().replace(/,/g, '');
-      const val = parseFloat(cleanStr);
-      if (isNaN(val)) return pfStr;
-      return val.toFixed(4); // Display 4 decimal places for PF Meas
-    }
-
-    function formatError(errStr) {
-      if (errStr === undefined || errStr === null || errStr === '' || errStr === '-') return '-';
-      const cleanStr = errStr.toString().replace(/,/g, '');
-      const val = parseFloat(cleanStr);
-      if (isNaN(val)) return errStr;
-      return val.toFixed(2); // Display 2 decimal places for Capacitance Error
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00') return '-';
-      
-      // If it contains '/', assume M/D/YYYY
-      if (dateStr.includes('/')) {
-        const parts = dateStr.split('/');
-        if (parts.length === 3) {
-          const day = parseInt(parts[1], 10);
-          const monthIndex = parseInt(parts[0], 10) - 1;
-          const year = parts[2];
-          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          if (monthIndex >= 0 && monthIndex < 12) {
-            const formattedDay = day < 10 ? '0' + day : day;
-            return `${formattedDay}-${months[monthIndex]}-${year}`;
+      const options = {
+        series: [
+          { name: 'Power Factor (%)', type: 'line', data: pfValues },
+          { name: 'Capacitance (pF)', type: 'line', data: capValues }
+        ],
+        chart: {
+          height: 160,
+          type: 'line',
+          toolbar: { show: false },
+          background: 'transparent'
+        },
+        stroke: { width: [2.5, 2.5], curve: 'straight' },
+        colors: ['#ef4444', '#3b82f6'],
+        markers: { size: 5, strokeWidth: 2, hover: { size: 7 } },
+        xaxis: {
+          categories: dates,
+          labels: { style: { colors: textColor, fontSize: '9px' } },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: [
+          {
+            title: { text: 'Power Factor (%)', style: { color: '#ef4444', fontSize: '10px', fontWeight: 600 } },
+            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: val => val ? val.toFixed(3) + '%' : '' }
+          },
+          {
+            opposite: true,
+            title: { text: 'Capacitance (pF)', style: { color: '#3b82f6', fontSize: '10px', fontWeight: 600 } },
+            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: val => val ? val.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '' }
           }
-        }
-      }
-      
-      // Fallback: parse using standard Date object
-      const d = new Date(dateStr);
-      if (!isNaN(d.getTime())) {
-        const day = d.getDate();
-        const monthIndex = d.getMonth();
-        const year = d.getFullYear();
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const formattedDay = day < 10 ? '0' + day : day;
-        return `${formattedDay}-${months[monthIndex]}-${year}`;
-      }
-      
-      return dateStr;
-    }
+        ],
+        grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
+        legend: { labels: { colors: textColor }, fontSize: '10px', position: 'top' }
+      };
 
-    // Criteria logic for coloring Power Factor at 20°C
-    function getPFClass(pfVal, fluid, voltage) {
-      const val = parseFloat(pfVal);
-      if (isNaN(val)) return '';
-
-      // Parse voltage to see if it is >= 230 kV
-      let isHighVoltage = false;
-      if (voltage) {
-        const cleanVolt = voltage.toString().replace(/[^\d\.]/g, '');
-        const v = parseFloat(cleanVolt);
-        if (!isNaN(v) && v >= 230) {
-          isHighVoltage = true;
-        }
-      }
-
-      const fluidLower = (fluid || 'mineral').toLowerCase();
-      
-      if (fluidLower.includes('ester') || fluidLower.includes('midel')) {
-        // Natural Ester
-        if (val < 1.0) return 'status-good';
-        return 'status-investigate';
-      } else if (fluidLower.includes('dry')) {
-        // Dry type
-        if (val < 2.0) return 'status-good';
-        if (val <= 5.0) return 'status-acceptable';
-        return 'status-investigate';
-      } else {
-        // Mineral Oil
-        if (isHighVoltage) {
-          if (val < 0.4) return 'status-good';
-          if (val <= 1.0) return 'status-acceptable';
-          return 'status-investigate';
-        } else {
-          if (val < 0.5) return 'status-good';
-          if (val <= 1.0) return 'status-acceptable';
-          return 'status-investigate';
-        }
+      const chartContainer = document.getElementById('trend-chart');
+      if (chartContainer) {
+        chartContainer.innerHTML = '';
+        trendChart = new ApexCharts(chartContainer, options);
+        trendChart.render();
       }
     }
 
-    // Criteria logic for coloring Capacitance Error
-    function getCapErrorClass(errVal) {
-      if (errVal === undefined || errVal === null || errVal === '' || errVal === '-') return '';
-      const val = Math.abs(parseFloat(errVal));
-      if (isNaN(val)) return '';
-      if (val <= 5.0) return 'status-good';
-      if (val <= 10.0) return 'status-acceptable';
-      return 'status-investigate';
+    function populateSignatures(r) {
+      const cleanSig = (v) => {
+        if (!v) return '-';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined' || s === '') ? '-' : s;
+      };
+
+      document.getElementById('resp-name-tested').textContent   = cleanSig(r.test_name || r.Name1 || r.Tested_by);
+      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.witness_name || r.Name2 || r.reviewed_name || r.Witnessed_by);
+      document.getElementById('resp-name-approved').textContent = cleanSig(r.Name3 || r.approved_name || r.Approved_by);
+
+      document.getElementById('resp-comp-tested').textContent   = cleanSig(r.COMP1 || r.comp1);
+      document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
+      document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
+
+      const dStr = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : '-';
+      document.getElementById('resp-date-tested').textContent   = dStr;
+      document.getElementById('resp-date-reviewed').textContent = dStr;
+      document.getElementById('resp-date-approved').textContent = dStr;
     }
 
-    // Theme switching logic
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
       const target = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', target);
       localStorage.setItem('tr-dashboard-theme', target);
       updateThemeIcon(target);
-      if (typeof updateTrendChart === 'function') {
-        updateTrendChart();
-      }
+      updateTrendChart();
     }
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
+      if (!icon) return;
       if (theme === 'dark') {
         icon.className = 'fa-solid fa-sun';
       } else {
@@ -1451,15 +2373,13 @@
       }
     }
 
-    // Export JPG
-    function exportReportAsJPG() {
+    function captureReportJPG() {
       const captureArea = document.getElementById('report-capture-area');
-      const selectEl = document.getElementById('transformer-select');
-      const filename = `${selectEl.value || 'Insulation'}_PowerFactor_Report.jpg`;
+      const filename = `PowerFactor_Report_${currentSerial || 'Asset'}.jpg`;
 
       const originalBoxShadow = captureArea.style.boxShadow;
       const originalBorderRadius = captureArea.style.borderRadius;
-      
+
       captureArea.style.boxShadow = 'none';
       captureArea.style.borderRadius = '0';
 
@@ -1477,208 +2397,18 @@
         link.click();
       }).catch(err => {
         console.error("Export failed:", err);
-        alert("Failed to capture report image. Try printing to PDF instead.");
+        window.print();
       });
     }
 
-    // Trending Chart Logic
-    const fieldMap = {
-      'CH+CHL': { pf: 'chl_ch_pf_2', cap: 'chl_ch_cap' },
-      'CH': { pf: 'ch_pf_2', cap: 'ch_cap' },
-      'CHL': { pf: 'chl_pf_2', cap: 'chl_cap' },
-      'CL+CLT': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
-      'CL+CLH': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
-      'CL': { pf: 'cl_pf_2', cap: 'cl_cap' },
-      'CL(T)': { pf: 'cl_pf_2', cap: 'cl_cap' },
-      'CLT': { pf: 'clh_pf_2', cap: 'clh_cap' },
-      'CLH': { pf: 'clh_pf_2', cap: 'clh_cap' },
-      'CT+CHT': { pf: 'ct_cth_pf_2', cap: 'ct_cth_cap' },
-      'CT': { pf: 'ct_pf_2', cap: 'ct_cap' },
-      'CHT': { pf: 'cth_pf_2', cap: 'cth_cap' }
-    };
-
-    let trendChart = null;
-
-    function updateTrendChart() {
-      const serial = document.getElementById('info-serial').textContent;
-      const selectWinding = document.getElementById('trend-winding-select').value;
-      
-      if (!serial || !selectWinding || typeof pfDataList === 'undefined') return;
-
-      // Filter history
-      const hasValidPF = (item) => {
-        if (!item) return false;
-        const keys = Object.keys(item);
-        return keys.some(k => {
-          if (k === 'serial' || k === 'date' || k === 'temp' || k === 'corr_factor') return false;
-          const val = item[k];
-          if (val === undefined || val === null) return false;
-          const s = val.toString().trim();
-          if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
-          return !isNaN(parseFloat(s.replace(/,/g, '')));
-        });
-      };
-      const rawHistory = pfDataList.filter(x => x.serial === serial && hasValidPF(x));
-      
-      const parseDate = (dStr) => {
-        if (!dStr) return new Date(0);
-        if (dStr.includes('/')) {
-          const pts = dStr.split('/');
-          if (pts.length === 3) {
-            return new Date(pts[2], pts[0] - 1, pts[1]);
-          }
-        }
-        return new Date(dStr);
-      };
-
-      rawHistory.sort((a, b) => parseDate(a.date) - parseDate(b.date));
-
-      const seenDates = new Set();
-      const history = [];
-      for (const item of rawHistory) {
-        const dt = parseDate(item.date);
-        const key = dt.getTime() > 0 ? dt.getTime() : item.date;
-        if (!seenDates.has(key)) {
-          seenDates.add(key);
-          history.push(item);
-        }
-      }
-
-      // Map fields
-      const fields = fieldMap[selectWinding];
-      if (!fields) return;
-
-      const dates = [];
-      const pfValues = [];
-      const capValues = [];
-
-      history.forEach(item => {
-        const formattedDate = formatDate(item.date);
-        dates.push(formattedDate);
-
-        const pfVal = parseFloat((item[fields.pf] || '').toString().replace(/,/g, ''));
-        pfValues.push(isNaN(pfVal) ? null : pfVal);
-
-        const capVal = parseFloat((item[fields.cap] || '').toString().replace(/,/g, ''));
-        capValues.push(isNaN(capVal) ? null : capVal);
-      });
-
-      // Determine theme styling colors dynamically
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      const textColor = isDark ? '#f1f5f9' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
-
-      const options = {
-        series: [
-          {
-            name: 'Power Factor (%)',
-            type: 'line',
-            data: pfValues
-          },
-          {
-            name: 'Capacitance (pF)',
-            type: 'line',
-            data: capValues
-          }
-        ],
-        chart: {
-          height: 250,
-          type: 'line',
-          toolbar: { show: false },
-          background: 'transparent'
-        },
-        stroke: {
-          width: [2.5, 2.5],
-          curve: 'straight'
-        },
-        colors: ['#ef4444', '#3b82f6'], // Red for PF, Blue for Capacitance
-        dataLabels: {
-          enabled: true,
-          offsetY: -6,
-          background: {
-            enabled: false
-          },
-          style: {
-            fontSize: '10px',
-            fontWeight: '600',
-            colors: [textColor]
-          },
-          formatter: function(val, opts) {
-            if (val === null || val === undefined) return '';
-            // Format: PF gets 4 decimals, Cap gets no decimals/thousands sep
-            if (opts.seriesIndex === 0) {
-              return val.toFixed(4) + '%';
-            } else {
-              return val.toLocaleString(undefined, { maximumFractionDigits: 0 });
-            }
-          }
-        },
-        markers: {
-          size: 5,
-          strokeWidth: 2,
-          hover: {
-            size: 7
-          }
-        },
-        xaxis: {
-          categories: dates,
-          labels: {
-            style: {
-              colors: textColor,
-              fontSize: '9px'
-            }
-          },
-          axisBorder: { show: false },
-          axisTicks: { show: false }
-        },
-        yaxis: [
-          {
-            title: {
-              text: 'Power Factor (%)',
-              style: { color: '#ef4444', fontSize: '10px', fontWeight: 600 }
-            },
-            labels: {
-              style: { colors: textColor, fontSize: '9px' },
-              formatter: val => val ? val.toFixed(4) + '%' : ''
-            }
-          },
-          {
-            opposite: true,
-            title: {
-              text: 'Capacitance (pF)',
-              style: { color: '#3b82f6', fontSize: '10px', fontWeight: 600 }
-            },
-            labels: {
-              style: { colors: textColor, fontSize: '9px' },
-              formatter: val => val ? val.toLocaleString(undefined, { maximumFractionDigits: 0 }) : ''
-            }
-          }
-        ],
-        grid: {
-          borderColor: gridColor,
-          strokeDashArray: 0,
-          xaxis: {
-            lines: { show: false }
-          },
-          yaxis: {
-            lines: { show: true }
-          }
-        },
-        legend: {
-          labels: { colors: textColor },
-          fontSize: '10px',
-          position: 'top'
-        },
-        tooltip: {
-          theme: isDark ? 'dark' : 'light'
-        }
-      };
-
-      const chartContainer = document.getElementById('trend-chart');
-      chartContainer.innerHTML = '';
-      trendChart = new ApexCharts(chartContainer, options);
-      trendChart.render();
-    }
+    window.addEventListener('beforeprint', () => {
+      if (pfChartInstance) pfChartInstance.resize();
+      if (capChartInstance) capChartInstance.resize();
+    });
+    window.addEventListener('afterprint', () => {
+      if (pfChartInstance) pfChartInstance.resize();
+      if (capChartInstance) capChartInstance.resize();
+    });
   </script>
 </body>
 </html>

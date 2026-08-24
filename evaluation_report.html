@@ -2311,11 +2311,11 @@
         };
       }
 
-      // 4. Bushing Power Factor / Bushing Insulation
+      // 4. Bushing Power Factor / Bushing Insulation & Capacitance
       if (ptLower.includes('bushing') && (nameLower.includes('power factor') || nameLower.includes('pf') || nameLower.includes('capacitance') || nameLower.includes('bushing'))) {
         return {
           url: `bushing_pf_report.html?serial=${s}`,
-          title: 'Open Bushing Insulation Power Factor Report',
+          title: 'Open Bushing Insulation Power Factor & Capacitance Report',
           icon: 'fa-solid fa-file-lines'
         };
       }
@@ -2329,11 +2329,12 @@
         };
       }
 
-      // 6. Winding / Active Part Power Factor
-      if (nameLower === 'power factor' || nameLower === 'insulation power factor' || nameLower === 'overall power factor') {
+      // 6. Winding / Active Part Power Factor & Capacitance
+      if (nameLower === 'power factor' || nameLower === 'insulation power factor' || nameLower === 'overall power factor' ||
+          nameLower === 'capacitance' || (nameLower.includes('capacitance') && !ptLower.includes('bushing') && !ptLower.includes('surge') && !ptLower.includes('arrester'))) {
         return {
           url: `pf_report.html?serial=${s}`,
-          title: 'Open Electrical & Power Factor Test Report',
+          title: 'Open Insulation Power Factor & Capacitance Test Report',
           icon: 'fa-solid fa-file-lines'
         };
       }

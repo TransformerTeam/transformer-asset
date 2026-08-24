@@ -421,25 +421,33 @@
       border: 1px solid #e2e8f0;
       border-radius: 4px;
       background-color: #ffffff;
-      padding: 10px;
+      padding: 6px 8px 8px 8px;
+      overflow: hidden;
     }
 
     .chart-title {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
       color: #1e3a8a;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 4px;
+      padding-bottom: 3px;
     }
 
     .chart-container {
       position: relative;
-      height: 190px;
+      height: 120px;
       width: 100%;
+    }
+
+    .chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      display: block;
     }
 
     /* Criteria & Standards Box */
@@ -629,34 +637,42 @@
       .charts-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 10px !important;
-        margin-top: 8px !important;
-        margin-bottom: 14px !important;
+        gap: 8px !important;
+        margin-top: 6px !important;
+        margin-bottom: 12px !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+        clear: both !important;
       }
       .chart-box {
-        padding: 6px 8px 14px 8px !important;
+        padding: 5px 8px 8px 8px !important;
         border: 0.75px solid #e2e8f0 !important;
         box-shadow: none !important;
         border-radius: 4px !important;
-        overflow: visible !important;
+        overflow: hidden !important;
       }
       .chart-title {
-        font-size: 8.5px !important;
-        margin-bottom: 4px !important;
+        font-size: 8px !important;
+        margin-bottom: 3px !important;
+        padding-bottom: 2px !important;
       }
       .chart-container {
         position: relative !important;
-        height: 155px !important;
-        max-height: 155px !important;
+        height: 115px !important;
+        max-height: 115px !important;
         width: 100% !important;
-        padding-bottom: 6px !important;
+      }
+      .chart-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 115px !important;
+        display: block !important;
       }
       .criteria-container {
-        margin-top: 14px !important;
-        margin-bottom: 8px !important;
-        gap: 8px !important;
+        margin-top: 8px !important;
+        margin-bottom: 6px !important;
+        gap: 6px !important;
+        clear: both !important;
       }
       .criteria-box {
         padding: 6px 10px !important;
@@ -1088,14 +1104,78 @@
       return result;
     }
 
+    const EXTRA_TR_METADATA = {
+      '57005': { name: 'CTG2A&2B GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '90 MVA', hv: 118, lv: 11.5, tv: 11.5, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57011': { name: 'STG1C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57012': { name: 'STG2C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '4710343': { name: '31BBT10 (CTG3A UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710344': { name: '32BBT10 (CTG3B UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710345': { name: '33BBT10 (CTG3C UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710347': { name: 'SPARE 50 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '50 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      '4710350': { name: 'SPARE 63.5 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '63.5 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', service: 'Distribution', fluid: 'Mineral Oil' }
+    };
+
+    function parseCSV(text) {
+      if (text.startsWith('\ufeff')) text = text.substring(1);
+      const lines = text.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^[\ufeff"]+|["]+$/g, ''));
+      const result = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || obj['\ufeffserial'] || obj['\ufeffSerial_No'] || '';
+        obj.date = obj.date || obj.Date || '';
+
+        // Ignore dummy test row (e.g. 1, 2, 3, 4, 5, 6...)
+        if (obj.Serial_No === '1' && obj.Site === '2') continue;
+        if (obj.serial === '1' && obj.Site === '2') continue;
+
+        result.push(obj);
+      }
+      return result;
+    }
+
     function matchSerial(s1, s2) {
       if (!s1 || !s2) return false;
-      const a = String(s1).trim().toLowerCase();
-      const b = String(s2).trim().toLowerCase();
-      if (a === b) return true;
-      const numA = a.replace(/[^a-z0-9]/g, '');
-      const numB = b.replace(/[^a-z0-9]/g, '');
-      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
+      const str1 = String(s1).trim();
+      const str2 = String(s2).trim();
+      if (str1.toLowerCase() === str2.toLowerCase()) return true;
+      const c1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const c2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (!c1 || !c2) return false;
+      if (c1 === c2) return true;
+      // Do not match single/double digit dummy IDs against full serial numbers
+      if (c1.length >= 4 && c2.length >= 4) {
+        if (c1.startsWith(c2) || c2.startsWith(c1) || c1.endsWith(c2) || c2.endsWith(c1)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     function populateDropdown() {
@@ -1104,6 +1184,7 @@
       selectEl.innerHTML = '';
 
       const addedSerials = new Set();
+      const allItems = [];
 
       // 1. From HEALTH_INDEX_DATA
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
@@ -1112,10 +1193,7 @@
           const n = meta['Equipment Name'] || meta.name || s;
           if (s && !addedSerials.has(s.toUpperCase())) {
             addedSerials.add(s.toUpperCase());
-            const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = `${n} (${s})`;
-            selectEl.appendChild(opt);
+            allItems.push({ serial: s, name: n });
           }
         });
       }
@@ -1125,11 +1203,21 @@
         const s = item.serial || item.Serial_No;
         if (s && s !== '-' && !addedSerials.has(s.toUpperCase())) {
           addedSerials.add(s.toUpperCase());
-          const opt = document.createElement('option');
-          opt.value = s;
-          opt.textContent = s;
-          selectEl.appendChild(opt);
+          let n = s;
+          const extra = EXTRA_TR_METADATA[s];
+          if (extra && extra.name) n = extra.name;
+          allItems.push({ serial: s, name: n });
         }
+      });
+
+      // Sort alphabetically by name
+      allItems.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+      allItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.serial;
+        opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+        selectEl.appendChild(opt);
       });
     }
 
@@ -1373,6 +1461,21 @@
           if (rawMeta.APPLICATION && rawMeta.APPLICATION !== '-') service = rawMeta.APPLICATION;
           if (rawMeta.NO_WINDING && rawMeta.NO_WINDING !== '-') noWinding = parseInt(rawMeta.NO_WINDING, 10) || 2;
         }
+      }
+
+      // 1.4 EXTRA_TR_METADATA Fallback
+      const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, serial));
+      if (extraKey) {
+        const extra = EXTRA_TR_METADATA[extraKey];
+        if ((name === '-' || !name) && extra.name) name = extra.name;
+        if ((site === '-' || !site) && extra.site) site = extra.site;
+        if ((mfg === '-' || !mfg) && extra.mfg) mfg = extra.mfg;
+        if ((power === '-' || !power) && extra.power) power = extra.power;
+        if (extra.hv) hvRated = extra.hv;
+        if (extra.lv) lvRated = extra.lv;
+        if (extra.tv) tvRated = extra.tv;
+        if (extra.vector) vectorGroup = extra.vector;
+        if (extra.service) service = extra.service;
       }
 
       if (tvRated) {
