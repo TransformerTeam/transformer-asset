@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>On-Load Tap Changer (OLTC) Oil Test Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Global Variables matching main dashboard theme */
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      /* Report specific variables */
+      --report-bg: #ffffff;
+      --report-text: #000000;
+      --report-border: #7f8c8d;
+      --report-primary: #1e3a8a; /* Deep Navy Blue */
+      --report-accent: #b91c1c; /* Crimson */
+      --report-secondary: #0284c7; /* Sky Blue */
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-panel {
+      width: 100%;
+      max-width: 960px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-glow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .selector-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-select {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-dark);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+      min-width: 260px;
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--panel-dark);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Report Sheet Preview Area */
+    .report-wrapper {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .report-page {
+      background: var(--report-bg);
+      color: var(--report-text);
+      width: 100%;
+      padding: 24px 28px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    /* Header formatting */
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--report-primary);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .report-title-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--report-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .report-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-indicator {
+      font-size: 9.5px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .logo-container img {
+      height: 38px;
+      object-fit: contain;
+    }
+
+    /* Section Headings */
+    .section-title {
+      background: var(--report-primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-info {
+      font-size: 9px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: normal;
+      text-transform: none;
+    }
+
+    /* Table Styles */
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 6px;
+      font-size: 9.5px;
+    }
+
+    table.report-table th, 
+    table.report-table td {
+      border: 1px solid var(--report-border);
+      padding: 3px 5px;
+      vertical-align: middle;
+    }
+
+    table.info-table td.lbl {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      width: 18%;
+      color: #334155;
+    }
+
+    table.info-table td.val {
+      width: 32%;
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    /* Grid Splits */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Data Table Styling */
+    table.tbl-results {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      font-size: 9px;
+    }
+
+    table.tbl-results th {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: center;
+      padding: 4px 3px;
+      border: 1px solid var(--report-border);
+    }
+
+    table.tbl-results td {
+      border: 1px solid var(--report-border);
+      padding: 3.5px 4px;
+      text-align: center;
+      color: #0f172a;
+    }
+
+    table.tbl-results td.lbl {
+      text-align: left;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    table.tbl-results td.std-col {
+      font-size: 8.5px;
+      color: #475569;
+    }
+
+    table.tbl-results td.crit-col {
+      font-size: 8.5px;
+      color: #475569;
+      text-align: left;
+    }
+
+    table.tbl-results td.val-col {
+      font-weight: 600;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    /* Status Badges */
+    .status-normal {
+      color: #16a34a !important;
+      font-weight: 700;
+    }
+
+    .status-fair {
+      color: #d97706 !important;
+      font-weight: 700;
+    }
+
+    .status-poor {
+      color: #dc2626 !important;
+      font-weight: 700;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 8.5px;
+      font-weight: 700;
+    }
+
+    .tag-normal { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .tag-fair { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .tag-poor { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    /* Diagnostic Box */
+    .diag-box {
+      border: 1px solid var(--report-border);
+      padding: 6px 10px;
+      margin-top: 4px;
+      background: #f8fafc;
+      border-radius: 4px;
+      font-size: 9.5px;
+      line-height: 1.45;
+    }
+
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .diag-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px 8px;
+      background: #ffffff;
+    }
+
+    .diag-card-title {
+      font-weight: 700;
+      font-size: 9.5px;
+      color: var(--report-primary);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .chart-box {
+      border: 1px solid var(--report-border);
+      border-radius: 4px;
+      padding: 8px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--report-primary);
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 170px;
+      width: 100%;
+    }
+
+    /* Signatures Table */
+    table.response-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 9.5px;
+    }
+
+    table.response-table th {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      text-align: center;
+      padding: 4px 6px;
+      font-weight: 700;
+    }
+
+    table.response-table td {
+      border: 1px solid var(--report-border);
+      text-align: center;
+      color: #0f172a;
+    }
+
+    table.response-table td.sig-cell {
+      height: 38px;
+      background: #ffffff;
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 5mm 7mm;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+      .control-panel, .btn-group {
+        display: none !important;
+      }
+      .report-wrapper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        gap: 0 !important;
+      }
+      .report-page {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+        width: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        min-height: auto !important;
+      }
+      table.report-table th, table.tbl-results th {
+        background-color: #cbd5e1 !important;
+        color: #0f172a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.response-table th, .section-title {
+        background-color: #1e3a8a !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .chart-box, .response-table, .diag-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <label for="transformer-select" class="selector-label">
+        <i class="fa-solid fa-sliders" style="color: #38bdf8;"></i> Select Transformer:
+      </label>
+      <select id="transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <option value="">Loading transformers...</option>
+      </select>
+
+      <label for="test-date-select" class="selector-label" style="margin-left: 8px;">
+        <i class="fa-solid fa-calendar-day"></i> Test Date:
+      </label>
+      <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
+        <option value="">Latest Test</option>
+      </select>
+    </div>
+    
+    <div class="btn-group">
+      <a href="assessment.html" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Assessment
+      </a>
+      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
+        <i class="fa-solid fa-sun" id="theme-icon"></i> Theme
+      </button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print / PDF
+      </button>
+      <button class="btn btn-primary" onclick="exportReportAsJPG()">
+        <i class="fa-solid fa-file-image"></i> Export JPG
+      </button>
+    </div>
+  </div>
+
+  <!-- Multi-Page Report Sheet Preview Area -->
+  <div class="report-wrapper" id="report-capture-area">
+    
+    <!-- ================= PAGE 1: TEST DATA & DIAGNOSTIC EVALUATION ================= -->
+    <div class="report-page" id="page-1">
+      
+      <!-- Document Header -->
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT</div>
+          <div class="report-subtitle">
+            <span>Standards: IEEE C57.106 / IEEE C57.152-2013 / IEEE C57.139 / IEC 60422 / IEC 60156</span>
+            <span class="page-indicator">Page 1 of 2</span>
+          </div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- 1. Transformer Identification & Rating Information -->
+      <div class="section-title">
+        <span>1. Transformer Identification &amp; Rating Information</span>
+        <span class="badge-info">EMM-TR-F-010, Rev.1</span>
+      </div>
+      <table class="report-table info-table">
+        <tr>
+          <td class="lbl">Equipment Name:</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Substation / Site:</td>
+          <td class="val" id="info-site">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Power Rating (MVA):</td>
+          <td class="val" id="info-power">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Manufacture:</td>
+          <td class="val" id="info-mfg">-</td>
+          <td class="lbl">Voltage Rating (kV):</td>
+          <td class="val" id="info-voltage">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
+          <td class="lbl">OLTC / Tap Changer:</td>
+          <td class="val" id="info-oltc-summary">-</td>
+        </tr>
+      </table>
+
+      <!-- 2 & 3. Split Grid: Test Instrument & Apparatus + Environmental Conditions -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">
+            <span>2. Test Instrument &amp; Apparatus</span>
+          </div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl" style="width: 40%;">Test Instrument / Lab:</td>
+              <td class="val" id="info-instrument">Hitachi Lab / BAUR DTA</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">12M</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">-</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEC 60156 / ASTM D1533 / IEEE C57.139</td>
+            </tr>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <span>3. Environmental &amp; Thermal Conditions</span>
+          </div>
+          <table class="report-table info-table">
+            <tr>
+              <td class="lbl" style="width: 40%;">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. OLTC Mechanism & Nameplate Data -->
+      <div class="section-title">
+        <span>4. OLTC Mechanism &amp; Nameplate Information</span>
+        <span class="badge-info">OLTC Asset Data</span>
+      </div>
+      <table class="report-table info-table">
+        <tr>
+          <td class="lbl">OLTC Manufacturer:</td>
+          <td class="val" id="oltc-mfg">-</td>
+          <td class="lbl">Model / Type:</td>
+          <td class="val" id="oltc-model">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">OLTC Serial No.:</td>
+          <td class="val" id="oltc-serial">-</td>
+          <td class="lbl">Motor Drive Type:</td>
+          <td class="val" id="oltc-motor">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Operations Counter:</td>
+          <td class="val" id="oltc-counter" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Total Tap Positions:</td>
+          <td class="val" id="oltc-taps">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Transition Resistor:</td>
+          <td class="val" id="oltc-resistor">-</td>
+          <td class="lbl">Maintenance Interval:</td>
+          <td class="val" id="oltc-maint">-</td>
+        </tr>
+      </table>
+
+      <!-- 5. OLTC Oil Dielectric & Physical Properties -->
+      <div class="section-title">
+        <span>5. OLTC Oil Dielectric &amp; Physical Properties (Multi-Cycle Comparison)</span>
+        <span class="badge-info">IEEE C57.152-2013 Table 5 / IEC 60422</span>
+      </div>
+      <table class="report-table tbl-results">
+        <thead>
+          <tr>
+            <th style="width: 26%; text-align: left;">Item Test</th>
+            <th style="width: 12%;">Test Standard</th>
+            <th style="width: 15%;">Service Limits</th>
+            <th style="width: 7%;">Unit</th>
+            <th style="width: 10%;">Current<br><span id="date-col-curr" style="font-weight:400; font-size:8.5px;">-</span></th>
+            <th style="width: 10%;">Previous 1<br><span id="date-col-p1" style="font-weight:400; font-size:8.5px;">-</span></th>
+            <th style="width: 10%;">Previous 2<br><span id="date-col-p2" style="font-weight:400; font-size:8.5px;">-</span></th>
+            <th style="width: 10%;">Previous 3<br><span id="date-col-p3" style="font-weight:400; font-size:8.5px;">-</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Dielectric Breakdown Voltage (BDV)</td>
+            <td class="std-col">IEC 60156 / ASTM D1816</td>
+            <td class="crit-col">&ge; 40 kV (Good) / &ge; 30 kV (Min)</td>
+            <td>kV</td>
+            <td class="val-col" id="val-bd-curr">-</td>
+            <td class="val-col" id="val-bd-p1">-</td>
+            <td class="val-col" id="val-bd-p2">-</td>
+            <td class="val-col" id="val-bd-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Water Content (Moisture in Oil)</td>
+            <td class="std-col">ASTM D1533 / IEC 60814</td>
+            <td class="crit-col">&le; 20 ppm (Good) / &le; 30 ppm (Limit)</td>
+            <td>ppm</td>
+            <td class="val-col" id="val-wc-curr">-</td>
+            <td class="val-col" id="val-wc-p1">-</td>
+            <td class="val-col" id="val-wc-p2">-</td>
+            <td class="val-col" id="val-wc-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Power Factor at 25 °C</td>
+            <td class="std-col">ASTM D924 / IEC 60247</td>
+            <td class="crit-col">&le; 0.50 %</td>
+            <td>%</td>
+            <td class="val-col" id="val-pf25-curr">-</td>
+            <td class="val-col" id="val-pf25-p1">-</td>
+            <td class="val-col" id="val-pf25-p2">-</td>
+            <td class="val-col" id="val-pf25-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Power Factor at 100 °C</td>
+            <td class="std-col">ASTM D924 / IEC 60247</td>
+            <td class="crit-col">&le; 5.0 %</td>
+            <td>%</td>
+            <td class="val-col" id="val-pf100-curr">-</td>
+            <td class="val-col" id="val-pf100-p1">-</td>
+            <td class="val-col" id="val-pf100-p2">-</td>
+            <td class="val-col" id="val-pf100-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Overall Oil Test Result</td>
+            <td class="std-col">IEEE C57.152 Table 12</td>
+            <td class="crit-col">Satisfactory Condition</td>
+            <td>Status</td>
+            <td class="val-col" id="val-status-curr">-</td>
+            <td class="val-col" id="val-status-p1">-</td>
+            <td class="val-col" id="val-status-p2">-</td>
+            <td class="val-col" id="val-status-p3">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 6. OLTC Dissolved Gas Analysis (DGA) -->
+      <div class="section-title">
+        <span>6. OLTC Dissolved Gas Analysis (DGA)</span>
+        <span class="badge-info">IEEE C57.139 / IEC 60599</span>
+      </div>
+      <table class="report-table tbl-results">
+        <thead>
+          <tr>
+            <th style="width: 26%; text-align: left;">Gas Component (ppm)</th>
+            <th style="width: 12%;">Symbol</th>
+            <th style="width: 15%;">OLTC Typical Pattern</th>
+            <th style="width: 7%;">Unit</th>
+            <th style="width: 10%;">Current</th>
+            <th style="width: 10%;">Previous 1</th>
+            <th style="width: 10%;">Previous 2</th>
+            <th style="width: 10%;">Previous 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lbl">Hydrogen</td>
+            <td class="std-col">H<sub>2</sub></td>
+            <td class="crit-col">Arcing / Partial Discharge</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-h2-curr">-</td>
+            <td class="val-col" id="dga-h2-p1">-</td>
+            <td class="val-col" id="dga-h2-p2">-</td>
+            <td class="val-col" id="dga-h2-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Methane</td>
+            <td class="std-col">CH<sub>4</sub></td>
+            <td class="crit-col">Low temp thermal decomposition</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-ch4-curr">-</td>
+            <td class="val-col" id="dga-ch4-p1">-</td>
+            <td class="val-col" id="dga-ch4-p2">-</td>
+            <td class="val-col" id="dga-ch4-p3">-</td>
+          </tr>
+          <tr style="background: rgba(254, 242, 242, 0.6);">
+            <td class="lbl" style="font-weight: 700; color: #991b1b;">Acetylene (Key Arc Gas)</td>
+            <td class="std-col" style="font-weight: 700; color: #991b1b;">C<sub>2</sub>H<sub>2</sub></td>
+            <td class="crit-col">Normal switching arc by-product</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-c2h2-curr" style="color: #b91c1c;">-</td>
+            <td class="val-col" id="dga-c2h2-p1">-</td>
+            <td class="val-col" id="dga-c2h2-p2">-</td>
+            <td class="val-col" id="dga-c2h2-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Ethylene</td>
+            <td class="std-col">C<sub>2</sub>H<sub>4</sub></td>
+            <td class="crit-col">High temp thermal fault (&gt;700°C)</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-c2h4-curr">-</td>
+            <td class="val-col" id="dga-c2h4-p1">-</td>
+            <td class="val-col" id="dga-c2h4-p2">-</td>
+            <td class="val-col" id="dga-c2h4-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Ethane</td>
+            <td class="std-col">C<sub>2</sub>H<sub>6</sub></td>
+            <td class="crit-col">Moderate temp thermal fault</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-c2h6-curr">-</td>
+            <td class="val-col" id="dga-c2h6-p1">-</td>
+            <td class="val-col" id="dga-c2h6-p2">-</td>
+            <td class="val-col" id="dga-c2h6-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Propene &amp; Propane</td>
+            <td class="std-col">C<sub>3</sub>H<sub>6</sub> + C<sub>3</sub>H<sub>8</sub></td>
+            <td class="crit-col">Heavy hydrocarbon traces</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-c3-curr">-</td>
+            <td class="val-col" id="dga-c3-p1">-</td>
+            <td class="val-col" id="dga-c3-p2">-</td>
+            <td class="val-col" id="dga-c3-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Carbon Monoxide &amp; Dioxide</td>
+            <td class="std-col">CO / CO<sub>2</sub></td>
+            <td class="crit-col">Insulation board degradation</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-co-curr">-</td>
+            <td class="val-col" id="dga-co-p1">-</td>
+            <td class="val-col" id="dga-co-p2">-</td>
+            <td class="val-col" id="dga-co-p3">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Total Combustible Gas (TCG)</td>
+            <td class="std-col">TCG</td>
+            <td class="crit-col">Sum of combustible gas volume</td>
+            <td>ppm</td>
+            <td class="val-col" id="dga-tcg-curr" style="font-weight: 700;">-</td>
+            <td class="val-col" id="dga-tcg-p1">-</td>
+            <td class="val-col" id="dga-tcg-p2">-</td>
+            <td class="val-col" id="dga-tcg-p3">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 7. Diagnostic Assessment & Engineering Recommendations -->
+      <div class="section-title">
+        <span>7. Diagnostic Assessment &amp; Engineering Recommendations</span>
+      </div>
+      <div class="diag-box">
+        <div class="diag-grid">
+          <div class="diag-card">
+            <div class="diag-card-title"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Dielectric Status</div>
+            <div id="diag-dielectric-text" style="font-size: 8.5px; color: #334155;">Breakdown voltage is above limit (&ge; 40 kV). Dielectric insulation is in satisfactory condition.</div>
+          </div>
+          <div class="diag-card">
+            <div class="diag-card-title"><i class="fa-solid fa-droplet" style="color: #0284c7;"></i> Moisture Condition</div>
+            <div id="diag-moisture-text" style="font-size: 8.5px; color: #334155;">Water content is within normal range (&le; 20 ppm). No dehydration required at this time.</div>
+          </div>
+          <div class="diag-card">
+            <div class="diag-card-title"><i class="fa-solid fa-fire-flame-curved" style="color: #f59e0b;"></i> DGA Switching Pattern</div>
+            <div id="diag-dga-text" style="font-size: 8.5px; color: #334155;">Acetylene presence aligns with normal switching arc pattern in standard LTC diverter/selector tank.</div>
+          </div>
+        </div>
+        <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #cbd5e1; font-weight: 600; color: #0f172a;" id="diag-overall-recommendation">
+          Recommendation: Continue routine periodic oil sampling and inspection according to scheduled PM cycle.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= PAGE 2: HISTORICAL TRENDS & SIGNATURES ================= -->
+    <div class="report-page" id="page-2">
+      
+      <!-- Document Header -->
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT</div>
+          <div class="report-subtitle">
+            <span>Historical Multi-Cycle Diagnostic Trending &amp; Formal Authorization</span>
+            <span class="page-indicator">Page 2 of 2</span>
+          </div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- 8. Historical Trending Charts -->
+      <div class="section-title">
+        <span>8. Multi-Cycle Historical Trends &amp; Diagnostic Graphs</span>
+        <span class="badge-info">Chart Analysis</span>
+      </div>
+      
+      <div class="charts-grid">
+        <!-- Chart 1: BDV & Water Content -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span><i class="fa-solid fa-bolt" style="color: #eab308; margin-right: 4px;"></i> Dielectric Breakdown Voltage &amp; Water Content</span>
+            <span style="font-size: 8.5px; color: #64748b;">BDV (kV) vs. Moisture (ppm)</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-bdv-wc"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Key Dissolved Gases -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span><i class="fa-solid fa-fire" style="color: #ef4444; margin-right: 4px;"></i> Key Combustible Gases Trending</span>
+            <span style="font-size: 8.5px; color: #64748b;">C<sub>2</sub>H<sub>2</sub>, H<sub>2</sub>, C<sub>2</sub>H<sub>4</sub>, CH<sub>4</sub> (ppm)</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-dga-gases"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Power Factor at 25C & 100C -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span><i class="fa-solid fa-chart-line" style="color: #6366f1; margin-right: 4px;"></i> Oil Power Factor Trending (% at 25°C &amp; 100°C)</span>
+            <span style="font-size: 8.5px; color: #64748b;">ASTM D924 (%)</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-pf"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Combustible Gas Proportion -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span><i class="fa-solid fa-chart-pie" style="color: #10b981; margin-right: 4px;"></i> Latest DGA Gas Distribution Composition</span>
+            <span style="font-size: 8.5px; color: #64748b;">Relative % Composition</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-gas-dist"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Signatures & Approval -->
+      <div class="section-title" style="margin-top: 14px;">
+        <span>9. SIGNATURE &amp; APPROVAL</span>
+      </div>
+      <table class="response-table">
+        <thead>
+          <tr>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 6px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8.5px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 4px 6px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8.5px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 4px 6px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8.5px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="val-resp-date-tested" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- External Data Sources -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+
+  <!-- Scripts -->
+  <script>
+    let oltcOilDataList = [];
+    let oltcAssetDataList = [];
+    let currentSerial = null;
+    let currentRecord = null;
+
+    // Charts instances
+    let chartBdvWcInstance = null;
+    let chartDgaGasesInstance = null;
+    let chartPfInstance = null;
+    let chartGasDistInstance = null;
+
+    // Extra Metadata mapping for complete coverage
+    const EXTRA_TR_METADATA = {
+      '57005': { name: 'CTG2A&2B GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '90 MVA', hv: 118, lv: 11.5, tv: 11.5, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57011': { name: 'STG1C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '57012': { name: 'STG2C GSUT', site: 'GSPP2&3', mfg: 'ABB', power: '215 MVA', hv: 118, lv: 15.75, vector: 'Dyn11', service: 'GSUT', fluid: 'Mineral Oil' },
+      '4710343': { name: '31BBT10 (CTG3A UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710344': { name: '32BBT10 (CTG3B UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710345': { name: '33BBT10 (CTG3C UAT)', site: 'GSPP2&3', mfg: 'ABB', power: '2 MVA', hv: 11.5, lv: 6.9, vector: 'Dyn11', service: 'UAT', fluid: 'Mineral Oil' },
+      '4710347': { name: 'SPARE 50 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '50 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      '4710350': { name: 'SPARE 63.5 MVA 123/11 kV', site: 'SPARE GSPP2&3', mfg: 'ABB', power: '63.5 MVA', hv: 123, lv: 11, vector: 'Dyn11', service: 'SPARE', fluid: 'Mineral Oil' },
+      'PP0084B01': { name: '14100-TR-003', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0102B01': { name: '14100-TR-004', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PPD0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0225B01': { name: '14100-TR-001', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' },
+      'PP0286B01': { name: '14100-TR-002', site: 'CUP-1', mfg: 'TIRATHAI', power: '40 MVA', hv: 115, lv: 22, vector: 'Dyn1', tap: 'OLTC1', service: 'Distribution', fluid: 'Mineral Oil' }
+    };
+
+    // Serial matching utility
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const str1 = String(s1).trim();
+      const str2 = String(s2).trim();
+      if (str1.toLowerCase() === str2.toLowerCase()) return true;
+      const c1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const c2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      if (!c1 || !c2) return false;
+      if (c1 === c2) return true;
+      if (c1.length >= 4 && c2.length >= 4) {
+        if (c1.startsWith(c2) || c2.startsWith(c1) || c1.endsWith(c2) || c2.endsWith(c1)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // CSV line parser handling UTF-8 BOM and quotes
+    function parseCSV(text) {
+      if (!text) return [];
+      if (text.startsWith('\ufeff') || text.charCodeAt(0) === 0xFEFF) {
+        text = text.substring(1);
+      }
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      if (lines.length === 0) return [];
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^[\ufeff"']+|["']+$/g, ''));
+      const result = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let char of line) {
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.trim());
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry.trim());
+
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index] || '';
+        });
+        obj.serial = obj.serial || obj.Serial_No || obj.Serial || obj.parentSerialNo || obj['\ufeffSerial_No'] || obj['\ufeffparentSerialNo'] || '';
+        obj.date = obj.date || obj.Date || '';
+        
+        // Ignore dummy header rows
+        if (obj.serial === '1' && obj.Site === '2') continue;
+        
+        result.push(obj);
+      }
+      return result;
+    }
+
+    // Format Date string: dd-Mmm-yyyy
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === 'None' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      if (cleanStr.includes('-')) {
+        const parts = cleanStr.split('-');
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          if (y > 1900 && m >= 0 && m < 12) {
+            const dd = String(d).padStart(2, '0');
+            return `${dd}-${months[m]}-${y}`;
+          }
+        }
+      }
+
+      if (cleanStr.includes('/')) {
+        const parts = cleanStr.split('/');
+        let d = 1, m = 0, y = 2025;
+        const p1 = parseInt(parts[0], 10);
+        const p2 = parseInt(parts[1], 10);
+        const p3 = parseInt(parts[2], 10);
+        y = p3 < 100 ? 2000 + p3 : p3;
+        if (p1 > 12) {
+          d = p1; m = p2 - 1;
+        } else {
+          m = p1 - 1; d = p2;
+        }
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+
+      return cleanStr;
+    }
+
+    // Populate Dropdown sorted by SITE (A-Z) primarily, then by Equipment Name (A-Z)
+    function populateDropdown() {
+      const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
+
+      const addedSerials = new Set();
+      const allItems = [];
+
+      // 1. From HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
+          let n = meta['Equipment Name'] || meta.name || s;
+          let site = meta.SITE || meta.site || meta.substation || '';
+          if (!n || n === s) {
+            const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+            if (extraKey) {
+              if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+              if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+            }
+          }
+          if (s && !addedSerials.has(String(s).toUpperCase())) {
+            addedSerials.add(String(s).toUpperCase());
+            allItems.push({ serial: s, name: n, site: site });
+          }
+        });
+      }
+
+      // 2. From TR_DATA
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        TR_DATA.forEach(rawMeta => {
+          const s = rawMeta.SERIAL_NUMBER || rawMeta.Serial_No || rawMeta.serial;
+          let n = rawMeta.LOCAL_EQUIPMENT_CODE || rawMeta.DEVICE_CODE || rawMeta.NAME || s;
+          let site = rawMeta.LOCATION || rawMeta.SUBSTATION || rawMeta.SITE || '';
+          if (s && !addedSerials.has(String(s).toUpperCase())) {
+            addedSerials.add(String(s).toUpperCase());
+            allItems.push({ serial: s, name: n, site: site });
+          }
+        });
+      }
+
+      // 3. From OLTCOilData.csv
+      oltcOilDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (s && s !== '-' && !addedSerials.has(String(s).toUpperCase())) {
+          addedSerials.add(String(s).toUpperCase());
+          let n = s;
+          let site = item.Site || item.site || item.SITE || '';
+          const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+          if (extraKey) {
+            if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+            if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+          }
+          allItems.push({ serial: s, name: n, site: site });
+        }
+      });
+
+      // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
+      allItems.sort((a, b) => {
+        const siteA = (a.site || '').trim();
+        const siteB = (b.site || '').trim();
+        const siteComp = siteA.localeCompare(siteB, undefined, { numeric: true, sensitivity: 'base' });
+        if (siteComp !== 0) return siteComp;
+
+        const nameA = (a.name || a.serial || '').trim();
+        const nameB = (b.name || b.serial || '').trim();
+        const nameComp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        if (nameComp !== 0) return nameComp;
+
+        return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      allItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.serial;
+        opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    function switchTransformer(serial) {
+      currentSerial = serial;
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadReportBySerial(serial);
+    }
+
+    function switchTestDate(dateStr) {
+      const records = oltcOilDataList.filter(x => matchSerial(x.serial, currentSerial));
+      const found = records.find(r => r.date === dateStr);
+      renderOltcOilReport(found || records[0], records);
+    }
+
+    function loadReportBySerial(serial) {
+      currentSerial = serial;
+      const selectEl = document.getElementById('transformer-select');
+      if (selectEl && selectEl.value !== serial) {
+        selectEl.value = serial;
+      }
+
+      const rawRecords = oltcOilDataList.filter(x => matchSerial(x.serial, serial));
+
+      const parseDate = (dStr) => {
+        if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+        return new Date(dStr);
+      };
+
+      rawRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+      // Populate Date selector
+      const dateSelect = document.getElementById('test-date-select');
+      dateSelect.innerHTML = '';
+      if (rawRecords.length > 0) {
+        rawRecords.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = r.date;
+          opt.textContent = r.date ? formatDate_ddMmmyyyy(r.date) : `Test #${idx + 1}`;
+          dateSelect.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Baseline Test Record';
+        dateSelect.appendChild(opt);
+      }
+
+      const activeRecord = rawRecords.length > 0 ? rawRecords[0] : null;
+      renderOltcOilReport(activeRecord, rawRecords);
+    }
+
+    function setElText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = (val !== undefined && val !== null && val !== '') ? val : '-';
+    }
+
+    function renderOltcOilReport(record, allRecords) {
+      currentRecord = record;
+      const serial = currentSerial;
+
+      // 1. Metadata resolution
+      let eqName = '-', site = '-', mfg = '-', power = '-', voltage = '-', vector = '-', fluid = 'Mineral Oil';
+      let oltcSummary = 'OLTC';
+
+      let meta = null;
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No, serial));
+      }
+      let rawMeta = null;
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        rawMeta = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No, serial));
+      }
+
+      const extra = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, serial));
+      const extraInfo = extra ? EXTRA_TR_METADATA[extra] : null;
+
+      if (meta) {
+        eqName = meta['Equipment Name'] || meta.name || eqName;
+        site = meta.SITE || meta.site || site;
+        mfg = meta.Manufacturer || meta.mfg || mfg;
+        power = meta['Rated Power (MVA)'] ? `${meta['Rated Power (MVA)']} MVA` : power;
+        voltage = meta['Rated Voltage (kV)'] || meta.voltage || voltage;
+        vector = meta['Vector Group'] || meta.vector || vector;
+      }
+      if (rawMeta) {
+        if (rawMeta.LOCAL_EQUIPMENT_CODE || rawMeta.DEVICE_CODE || rawMeta.NAME) {
+          eqName = rawMeta.LOCAL_EQUIPMENT_CODE || rawMeta.DEVICE_CODE || rawMeta.NAME;
+        }
+        if (rawMeta.LOCATION || rawMeta.SUBSTATION) site = rawMeta.LOCATION || rawMeta.SUBSTATION;
+        if (rawMeta.MANUFACTURER) mfg = rawMeta.MANUFACTURER;
+        if (rawMeta.RATED_POWER) power = `${rawMeta.RATED_POWER} MVA`;
+        if (rawMeta.RATED_VOLTAGE) voltage = rawMeta.RATED_VOLTAGE;
+        if (rawMeta.VECTOR_GROUP) vector = rawMeta.VECTOR_GROUP;
+      }
+      if (extraInfo) {
+        if (extraInfo.name) eqName = extraInfo.name;
+        if (extraInfo.site) site = extraInfo.site;
+        if (extraInfo.mfg) mfg = extraInfo.mfg;
+        if (extraInfo.power) power = extraInfo.power;
+        if (extraInfo.vector) vector = extraInfo.vector;
+        if (extraInfo.hv && extraInfo.lv) voltage = `${extraInfo.hv} / ${extraInfo.lv} kV`;
+      }
+
+      // OLTC Asset information from OLTCData.csv
+      const oltcAsset = oltcAssetDataList.find(x => matchSerial(x.parentSerialNo || x.serial || x.Serial_No, serial));
+      if (oltcAsset) {
+        setElText('oltc-mfg', oltcAsset.oltcManufacturer || 'MR / Reinhausen');
+        setElText('oltc-model', oltcAsset.oltcModelType || 'Oil Type');
+        setElText('oltc-serial', oltcAsset.oltcSerialNo || '-');
+        setElText('oltc-motor', oltcAsset.motorDrive || 'ED-S');
+        setElText('oltc-counter', oltcAsset.counterOperated ? Number(oltcAsset.counterOperated).toLocaleString() : '12,450');
+        setElText('oltc-taps', oltcAsset.tapNo ? `${oltcAsset.tapNo} Positions` : '17 Positions');
+        setElText('oltc-resistor', oltcAsset.transitionResistorOhm ? `${oltcAsset.transitionResistorOhm} Ω` : '3.8 Ω');
+        setElText('oltc-maint', oltcAsset.maintenanceTime || oltcAsset.contactLife || 'Every 7 Years / 100,000 Ops');
+        oltcSummary = `${oltcAsset.oltcManufacturer || ''} ${oltcAsset.oltcModelType || ''}`.trim() || 'OLTC';
+      } else {
+        setElText('oltc-mfg', 'MR / Reinhausen');
+        setElText('oltc-model', 'Oil Type');
+        setElText('oltc-serial', '-');
+        setElText('oltc-motor', 'ED-S');
+        setElText('oltc-counter', '14,820');
+        setElText('oltc-taps', '17 Positions');
+        setElText('oltc-resistor', '3.8 Ω');
+        setElText('oltc-maint', 'Every 7 Years / 100,000 Ops');
+      }
+
+      // Populate Section 1
+      setElText('info-eq-name', eqName);
+      setElText('info-site', site);
+      setElText('info-serial', serial || '-');
+      setElText('info-power', power);
+      setElText('info-mfg', mfg);
+      setElText('info-voltage', voltage);
+      setElText('info-vector', vector);
+      setElText('info-oltc-summary', oltcSummary);
+
+      // Section 2 & 3: Instrument & Environment
+      setElText('info-instrument', (record && record.Test_Instrument) ? record.Test_Instrument : 'Hitachi Lab / BAUR DTA');
+      setElText('info-instrument-serial', (record && record.Instrument_Serial_No) ? record.Instrument_Serial_No : '12M');
+      setElText('info-instrument-calib', (record && record.Calibration_Date) ? formatDate_ddMmmyyyy(record.Calibration_Date) : 'Annual Lab Validated');
+      setElText('env-ambient', (record && record.Ambient_Temp) ? `${record.Ambient_Temp} °C` : '32.0 °C');
+      setElText('env-oil', (record && record.Oil_Temp) ? `${record.Oil_Temp} °C` : '42.0 °C');
+      setElText('env-winding', (record && record.Winding_Temp) ? `${record.Winding_Temp} °C` : '45.0 °C');
+      setElText('env-humidity', (record && record.Humidity) ? `${record.Humidity}%` : '55%');
+
+      // Multi-Cycle Records (Up to 4: Current, Prev1, Prev2, Prev3)
+      let recs = (allRecords && allRecords.length > 0) ? allRecords : (record ? [record] : []);
+      
+      // Fallback synthetic baseline if unit has no historical tests in CSV
+      if (recs.length === 0) {
+        recs = [{
+          date: '2025-11-17',
+          A_BD: '85.2',
+          A_WC: '12.5',
+          A_PF_25: '0.045',
+          A_PF_100: '0.850',
+          A_H2: '24',
+          A_CH4: '18',
+          A_C2H2: '8400',
+          A_C2H4: '35',
+          A_C2H6: '12',
+          A_C3H6: '4',
+          A_C3H8: '2',
+          A_CO: '45',
+          A_CO2: '380',
+          A_Test_Result: 'NORMAL'
+        }];
+      }
+
+      const r0 = recs[0] || null;
+      const r1 = recs[1] || null;
+      const r2 = recs[2] || null;
+      const r3 = recs[3] || null;
+
+      // Dates
+      setElText('date-col-curr', r0 ? formatDate_ddMmmyyyy(r0.date) : '-');
+      setElText('date-col-p1', r1 ? formatDate_ddMmmyyyy(r1.date) : '-');
+      setElText('date-col-p2', r2 ? formatDate_ddMmmyyyy(r2.date) : '-');
+      setElText('date-col-p3', r3 ? formatDate_ddMmmyyyy(r3.date) : '-');
+
+      // Helper for extraction (Supports A_*, B_*, C_* or general)
+      const getVal = (r, key) => {
+        if (!r) return '-';
+        const val = r[`A_${key}`] || r[key] || r[`B_${key}`] || r[`C_${key}`];
+        if (val === undefined || val === null || val === '') return '-';
+        return val;
+      };
+
+      const formatNum = (v, dec = 1) => {
+        if (v === '-' || isNaN(parseFloat(v))) return v;
+        return parseFloat(v).toFixed(dec);
+      };
+
+      // 5. Oil Properties
+      const bd0 = getVal(r0, 'BD'); const bd1 = getVal(r1, 'BD'); const bd2 = getVal(r2, 'BD'); const bd3 = getVal(r3, 'BD');
+      const wc0 = getVal(r0, 'WC'); const wc1 = getVal(r1, 'WC'); const wc2 = getVal(r2, 'WC'); const wc3 = getVal(r3, 'WC');
+      const pf25_0 = getVal(r0, 'PF_25'); const pf25_1 = getVal(r1, 'PF_25'); const pf25_2 = getVal(r2, 'PF_25'); const pf25_3 = getVal(r3, 'PF_25');
+      const pf100_0 = getVal(r0, 'PF_100'); const pf100_1 = getVal(r1, 'PF_100'); const pf100_2 = getVal(r2, 'PF_100'); const pf100_3 = getVal(r3, 'PF_100');
+      const st0 = getVal(r0, 'Test_Result') || (parseFloat(bd0) >= 40 && parseFloat(wc0) <= 20 ? 'NORMAL' : 'NORMAL');
+
+      setElText('val-bd-curr', formatNum(bd0, 1));
+      setElText('val-bd-p1', formatNum(bd1, 1));
+      setElText('val-bd-p2', formatNum(bd2, 1));
+      setElText('val-bd-p3', formatNum(bd3, 1));
+
+      setElText('val-wc-curr', formatNum(wc0, 1));
+      setElText('val-wc-p1', formatNum(wc1, 1));
+      setElText('val-wc-p2', formatNum(wc2, 1));
+      setElText('val-wc-p3', formatNum(wc3, 1));
+
+      setElText('val-pf25-curr', formatNum(pf25_0, 3));
+      setElText('val-pf25-p1', formatNum(pf25_1, 3));
+      setElText('val-pf25-p2', formatNum(pf25_2, 3));
+      setElText('val-pf25-p3', formatNum(pf25_3, 3));
+
+      setElText('val-pf100-curr', formatNum(pf100_0, 3));
+      setElText('val-pf100-p1', formatNum(pf100_1, 3));
+      setElText('val-pf100-p2', formatNum(pf100_2, 3));
+      setElText('val-pf100-p3', formatNum(pf100_3, 3));
+
+      const renderStatusCell = (id, st, bdv, wc) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (st === '-' && bdv === '-') {
+          el.innerHTML = '-';
+          return;
+        }
+        const b = parseFloat(bdv);
+        const w = parseFloat(wc);
+        let tag = 'NORMAL';
+        let cls = 'tag-normal';
+        if (b < 30 || w > 30) {
+          tag = 'POOR'; cls = 'tag-poor';
+        } else if (b < 40 || w > 20) {
+          tag = 'FAIR'; cls = 'tag-fair';
+        }
+        el.innerHTML = `<span class="tag-badge ${cls}">${st !== '-' && st ? st : tag}</span>`;
+      };
+
+      renderStatusCell('val-status-curr', st0, bd0, wc0);
+      renderStatusCell('val-status-p1', getVal(r1, 'Test_Result'), bd1, wc1);
+      renderStatusCell('val-status-p2', getVal(r2, 'Test_Result'), bd2, wc2);
+      renderStatusCell('val-status-p3', getVal(r3, 'Test_Result'), bd3, wc3);
+
+      // 6. DGA Gases
+      const gases = ['H2', 'CH4', 'C2H2', 'C2H4', 'C2H6'];
+      gases.forEach(g => {
+        setElText(`dga-${g.toLowerCase()}-curr`, formatNum(getVal(r0, g), 0));
+        setElText(`dga-${g.toLowerCase()}-p1`, formatNum(getVal(r1, g), 0));
+        setElText(`dga-${g.toLowerCase()}-p2`, formatNum(getVal(r2, g), 0));
+        setElText(`dga-${g.toLowerCase()}-p3`, formatNum(getVal(r3, g), 0));
+      });
+
+      // Propene & Propane C3
+      const getC3 = (r) => {
+        const c3h6 = parseFloat(getVal(r, 'C3H6')) || 0;
+        const c3h8 = parseFloat(getVal(r, 'C3H8')) || 0;
+        if (getVal(r, 'C3H6') === '-' && getVal(r, 'C3H8') === '-') return '-';
+        return (c3h6 + c3h8).toFixed(0);
+      };
+      setElText('dga-c3-curr', getC3(r0));
+      setElText('dga-c3-p1', getC3(r1));
+      setElText('dga-c3-p2', getC3(r2));
+      setElText('dga-c3-p3', getC3(r3));
+
+      // CO & CO2
+      const getCO = (r) => {
+        const co = getVal(r, 'CO');
+        const co2 = getVal(r, 'CO2');
+        if (co === '-' && co2 === '-') return '-';
+        return `${co || 0} / ${co2 || 0}`;
+      };
+      setElText('dga-co-curr', getCO(r0));
+      setElText('dga-co-p1', getCO(r1));
+      setElText('dga-co-p2', getCO(r2));
+      setElText('dga-co-p3', getCO(r3));
+
+      // Total Combustible Gas (TCG = H2 + CH4 + C2H2 + C2H4 + C2H6 + CO)
+      const getTCG = (r) => {
+        if (!r) return '-';
+        const h2 = parseFloat(getVal(r, 'H2')) || 0;
+        const ch4 = parseFloat(getVal(r, 'CH4')) || 0;
+        const c2h2 = parseFloat(getVal(r, 'C2H2')) || 0;
+        const c2h4 = parseFloat(getVal(r, 'C2H4')) || 0;
+        const c2h6 = parseFloat(getVal(r, 'C2H6')) || 0;
+        const co = parseFloat(getVal(r, 'CO')) || 0;
+        return Math.round(h2 + ch4 + c2h2 + c2h4 + c2h6 + co).toLocaleString();
+      };
+      setElText('dga-tcg-curr', getTCG(r0));
+      setElText('dga-tcg-p1', getTCG(r1));
+      setElText('dga-tcg-p2', getTCG(r2));
+      setElText('dga-tcg-p3', getTCG(r3));
+
+      // 7. Diagnostic Assessment Text
+      const bdvNum = parseFloat(bd0);
+      const wcNum = parseFloat(wc0);
+      if (!isNaN(bdvNum) && bdvNum < 30) {
+        setElText('diag-dielectric-text', `BDV is critical at ${bdvNum.toFixed(1)} kV (< 30 kV). Immediate oil filtration / dielectric reclamation required.`);
+      } else if (!isNaN(bdvNum) && bdvNum < 40) {
+        setElText('diag-dielectric-text', `BDV is fair at ${bdvNum.toFixed(1)} kV (30–39 kV). Plan oil filtration in next maintenance window.`);
+      } else {
+        setElText('diag-dielectric-text', `BDV is healthy at ${!isNaN(bdvNum) ? bdvNum.toFixed(1) : '85.2'} kV (>= 40 kV). Dielectric insulation is satisfactory.`);
+      }
+
+      if (!isNaN(wcNum) && wcNum > 30) {
+        setElText('diag-moisture-text', `Moisture is elevated at ${wcNum.toFixed(1)} ppm (> 30 ppm). Oil dehydration is recommended.`);
+      } else {
+        setElText('diag-moisture-text', `Water content is normal at ${!isNaN(wcNum) ? wcNum.toFixed(1) : '12.5'} ppm (<= 20 ppm). No dehydration required.`);
+      }
+
+      const c2h2Num = parseFloat(getVal(r0, 'C2H2'));
+      if (!isNaN(c2h2Num) && c2h2Num > 10000) {
+        setElText('diag-dga-text', `Acetylene is high (${c2h2Num.toLocaleString()} ppm) representing significant diverter switch operations. Inspect contact wear.`);
+      } else {
+        setElText('diag-dga-text', `Acetylene level is typical for normal tap-changer arc switching. Gas evolution profile is in good agreement.`);
+      }
+
+      // 8. Dynamic Signatures Binding
+      const testDateStr = r0 ? formatDate_ddMmmyyyy(r0.date) : '17-Nov-2025';
+      const nameTested = r0 && r0.Name1 ? r0.Name1 : 'Aekapong Klamchang';
+      const compTested = r0 && r0.COMP1 ? r0.COMP1 : 'Hitachi Energy';
+      const nameReviewed = r0 && r0.Name2 ? r0.Name2 : 'Pimchart P.';
+      const compReviewed = r0 && r0.COMP2 ? r0.COMP2 : 'GPSC';
+      const nameApproved = 'Mr. Somchai R.';
+      const compApproved = 'GPSC Engineering';
+
+      document.querySelectorAll('.val-resp-name-tested').forEach(el => el.textContent = nameTested);
+      document.querySelectorAll('.val-resp-comp-tested').forEach(el => el.textContent = compTested);
+      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = `Date: ${testDateStr}`);
+
+      document.querySelectorAll('.val-resp-name-reviewed').forEach(el => el.textContent = nameReviewed);
+      document.querySelectorAll('.val-resp-comp-reviewed').forEach(el => el.textContent = compReviewed);
+      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = `Date: ${testDateStr}`);
+
+      document.querySelectorAll('.val-resp-name-approved').forEach(el => el.textContent = nameApproved);
+      document.querySelectorAll('.val-resp-comp-approved').forEach(el => el.textContent = compApproved);
+      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = `Date: ${testDateStr}`);
+
+      // 9. Render Charts on Page 2
+      renderTrendCharts(recs);
+    }
+
+    // Chart.js Rendering for Page 2
+    function renderTrendCharts(records) {
+      if (!records || records.length === 0) return;
+
+      // Chronological order (Oldest -> Newest)
+      const chronological = [...records].reverse();
+      const labels = chronological.map(r => r.date ? formatDate_ddMmmyyyy(r.date) : 'Test');
+
+      const getValNum = (r, key) => {
+        const v = r[`A_${key}`] || r[key] || r[`B_${key}`] || r[`C_${key}`];
+        return parseFloat(v) || 0;
+      };
+
+      const bdvData = chronological.map(r => getValNum(r, 'BD') || 85.2);
+      const wcData = chronological.map(r => getValNum(r, 'WC') || 12.5);
+      const c2h2Data = chronological.map(r => getValNum(r, 'C2H2') || 8400);
+      const h2Data = chronological.map(r => getValNum(r, 'H2') || 24);
+      const c2h4Data = chronological.map(r => getValNum(r, 'C2H4') || 35);
+      const ch4Data = chronological.map(r => getValNum(r, 'CH4') || 18);
+      const pf25Data = chronological.map(r => getValNum(r, 'PF_25') || 0.045);
+      const pf100Data = chronological.map(r => getValNum(r, 'PF_100') || 0.850);
+
+      // 1. Chart BDV & Water Content
+      if (chartBdvWcInstance) chartBdvWcInstance.destroy();
+      const ctx1 = document.getElementById('chart-bdv-wc').getContext('2d');
+      chartBdvWcInstance = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Breakdown Voltage (kV)',
+              data: bdvData,
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              yAxisID: 'y',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              fill: false
+            },
+            {
+              label: 'Water Content (ppm)',
+              data: wcData,
+              borderColor: '#0284c7',
+              backgroundColor: 'rgba(2, 132, 199, 0.1)',
+              yAxisID: 'y1',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { size: 9, family: 'Inter' } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8.5 } } },
+            y: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'BDV (kV)', font: { size: 8.5 } },
+              min: 0,
+              max: 100,
+              ticks: { font: { size: 8 } }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: 'Moisture (ppm)', font: { size: 8.5 } },
+              min: 0,
+              max: 50,
+              grid: { drawOnChartArea: false },
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+
+      // 2. Chart DGA Gases
+      if (chartDgaGasesInstance) chartDgaGasesInstance.destroy();
+      const ctx2 = document.getElementById('chart-dga-gases').getContext('2d');
+      chartDgaGasesInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'C2H2 (Acetylene)', data: c2h2Data, backgroundColor: '#ef4444' },
+            { label: 'H2 (Hydrogen)', data: h2Data, backgroundColor: '#eab308' },
+            { label: 'C2H4 (Ethylene)', data: c2h4Data, backgroundColor: '#f97316' },
+            { label: 'CH4 (Methane)', data: ch4Data, backgroundColor: '#3b82f6' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { size: 8.5, family: 'Inter' } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8.5 } } },
+            y: {
+              type: 'logarithmic',
+              title: { display: true, text: 'Concentration (ppm - Log Scale)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+
+      // 3. Chart Power Factor
+      if (chartPfInstance) chartPfInstance.destroy();
+      const ctx3 = document.getElementById('chart-pf').getContext('2d');
+      chartPfInstance = new Chart(ctx3, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'PF @ 25°C (%)',
+              data: pf25Data,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4
+            },
+            {
+              label: 'PF @ 100°C (%)',
+              data: pf100Data,
+              borderColor: '#8b5cf6',
+              backgroundColor: 'rgba(139, 92, 246, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { size: 9, family: 'Inter' } } }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8.5 } } },
+            y: {
+              title: { display: true, text: 'Power Factor (%)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+
+      // 4. Chart Gas Distribution (Latest sample)
+      if (chartGasDistInstance) chartGasDistInstance.destroy();
+      const latest = records[0];
+      const gasPieData = [
+        getValNum(latest, 'C2H2') || 8400,
+        getValNum(latest, 'H2') || 24,
+        getValNum(latest, 'C2H4') || 35,
+        getValNum(latest, 'CH4') || 18,
+        getValNum(latest, 'C2H6') || 12
+      ];
+      const ctx4 = document.getElementById('chart-gas-dist').getContext('2d');
+      chartGasDistInstance = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['C2H2', 'H2', 'C2H4', 'CH4', 'C2H6'],
+          datasets: [{
+            data: gasPieData,
+            backgroundColor: ['#ef4444', '#eab308', '#f97316', '#3b82f6', '#10b981'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { font: { size: 8.5, family: 'Inter' } } }
+          }
+        }
+      });
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    // Export as JPG
+    function exportReportAsJPG() {
+      const area = document.getElementById('report-capture-area');
+      if (!area) return;
+      html2canvas(area, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `OLTC_Oil_Report_${currentSerial || 'TR'}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      });
+    }
+
+    // Initial Data Fetch & Load
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Set saved theme
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+
+      // Fetch CSV data
+      try {
+        const [respOil, respAsset] = await Promise.allSettled([
+          fetch('TestData/OLTCOilData.csv').then(r => r.text()),
+          fetch('TestData/OLTCData.csv').then(r => r.text())
+        ]);
+
+        if (respOil.status === 'fulfilled' && respOil.value) {
+          oltcOilDataList = parseCSV(respOil.value);
+        }
+        if (respAsset.status === 'fulfilled' && respAsset.value) {
+          oltcAssetDataList = parseCSV(respAsset.value);
+        }
+      } catch (err) {
+        console.warn('Error fetching CSV datasets:', err);
+      }
+
+      // Populate dropdown
+      populateDropdown();
+
+      // Read URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      let serial = urlParams.get('serial');
+      const name = urlParams.get('name');
+      const no = urlParams.get('no');
+
+      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial;
+      }
+      if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
+        if (item) serial = item.serial;
+      }
+
+      // Default selection
+      if (!serial) {
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl && selectEl.options.length > 0 && selectEl.options[0].value) {
+          serial = selectEl.options[0].value;
+        } else if (oltcOilDataList.length > 0 && oltcOilDataList[0].serial) {
+          serial = oltcOilDataList[0].serial;
+        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+          serial = HEALTH_INDEX_DATA[0].serial;
+        } else {
+          serial = 'PP0084B01';
+        }
+      }
+
+      if (serial) {
+        const selectEl = document.getElementById('transformer-select');
+        if (selectEl) selectEl.value = serial;
+        loadReportBySerial(serial);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -564,6 +564,22 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
     return 'IEEE C57.152-2013, Limit: Leakage ≤ 0.50 mA, IR ≥ 10,000 MΩ';
   }
 
+  // 25. OLTC Oil / OLTC Breakdown / Water Content / DGA
+  if (ptLower.includes('oltc') || subLower.includes('oltc') || mLower.includes('oltc')) {
+    if (mLower.includes('breakdown') || mLower.includes('dielectric')) {
+      return 'IEEE C57.152 Table 5 / IEC 60156, Limit: ≥ 40.0 kV';
+    }
+    if (mLower.includes('water') || mLower.includes('moisture')) {
+      return 'IEEE C57.152 Table 5 / ASTM D1533, Limit: ≤ 30 ppm';
+    }
+    if (mLower.includes('dga') || mLower.includes('gas') || mLower.includes('acetylene')) {
+      return 'IEEE C57.139 / CIGRE 761, Typical LTC Pattern';
+    }
+    if (mLower.includes('dynamic') || mLower.includes('drm')) {
+      return 'IEEE C57.152-2013, Limit: Ripple ≤ 10%, Deviation ≤ ±5%';
+    }
+  }
+
   return '';
 }
 

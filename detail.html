@@ -681,8 +681,13 @@
 
           <!-- OLTC Oil -->
           <div class="excel-card">
-            <div class="excel-card-header">On Load Tap Changer Oil (OLTC1) <span class="card-update-time"
-                id="ex-update-oltc">-</span></div>
+            <div class="excel-card-header">
+              <span>On Load Tap Changer Oil (OLTC1)</span>
+              <a href="#" id="ex-oltc-link" target="_blank" class="btn-report-link" title="Open OLTC Oil Report" style="color: #38bdf8; font-size: 0.85rem;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <span class="card-update-time" id="ex-update-oltc">-</span>
+            </div>
             <table class="excel-table test-table oil-table">
               <thead>
                 <tr>
@@ -856,6 +861,9 @@
 
       const oilLink = document.getElementById('ex-oil-link');
       if (oilLink) oilLink.href = `oil_report.html?serial=${encodeURIComponent(item.serial)}`;
+
+      const oltcLink = document.getElementById('ex-oltc-link');
+      if (oltcLink) oltcLink.href = `oltc_oil_report.html?serial=${encodeURIComponent(item.serial)}`;
 
       // Render detail view
       if (typeof openDetail === 'function') {

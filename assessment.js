@@ -1610,6 +1610,10 @@ function openDetail(no) {
   if (exOilLink) {
     exOilLink.href = `oil_report.html?serial=${item.serial}`;
   }
+  const exOltcLink = document.getElementById('ex-oltc-link');
+  if (exOltcLink) {
+    exOltcLink.href = `oltc_oil_report.html?serial=${item.serial}`;
+  }
   const bushBody = document.getElementById('ex-bushing-rows');
   const bushRec = findLatestRecord(bushingPfCsvData, item.serial) || item.bushRec;
 

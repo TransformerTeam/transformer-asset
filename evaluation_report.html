@@ -1722,6 +1722,7 @@
       setElHref('link-winding', `winding_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-exciting', `exciting_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-drm', `drm_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-oltc-oil', `oltc_oil_report.html?serial=${encodeURIComponent(serialVal)}`);
 
       // 0. Header Information
       setElText('eval-report-id', `TR-EVAL-${serialVal}`);
@@ -2475,10 +2476,20 @@
         nameLower.includes('oil quality') ||
         subLower.includes('dielectric breakdown') ||
         subLower.includes('oil properties') ||
-        subLower.includes('oltc oil') ||
         subLower === 'main tank oil' ||
         subLower === 'insulating oil' ||
         ((ptLower.includes('oil') || ptLower.includes('insulation oil')) && (nameLower.includes('power factor') || nameLower.includes('pf')));
+
+      // 5.1 On-Load Tap Changer (OLTC) Oil Test Report
+      const isOltcOilParam = (subLower.includes('oltc oil') || nameLower.includes('oltc oil') ||
+        (ptLower.includes('oltc') && (nameLower.includes('oil') || nameLower.includes('breakdown') || nameLower.includes('water') || nameLower.includes('dielectric') || nameLower.includes('dga') || nameLower.includes('pf') || nameLower.includes('power factor'))));
+      if (isOltcOilParam) {
+        return {
+          url: `oltc_oil_report.html?serial=${s}`,
+          title: 'Open On-Load Tap Changer (OLTC) Oil Test Report',
+          icon: 'fa-solid fa-file-lines'
+        };
+      }
 
       if (isOilQualityParam && !nameLower.includes('dga') && !nameLower.includes('dissolve gas')) {
         return {
@@ -5141,7 +5152,9 @@
         { id: 'bushing_pf', title: '9. Bushing PF Report', url: 'bushing_pf_report.html', optional: true },
         { id: 'surge', title: '10. Surge Arrester Report', url: 'surge_report.html', optional: true },
         { id: 'dga', title: '11. DGA Report', url: 'dga_report.html' },
-        { id: 'oil', title: '12. Oil Properties Report', url: 'oil_report.html' }
+        { id: 'oil', title: '12. Oil Properties Report', url: 'oil_report.html' },
+        { id: 'oltc_oil', title: '13. OLTC Oil Test Report', url: 'oltc_oil_report.html', optional: true },
+        { id: 'drm', title: '14. Dynamic Resistance (OLTC) Report', url: 'drm_report.html', optional: true }
       ];
 
       try {
