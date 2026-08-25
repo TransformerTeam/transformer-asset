@@ -284,46 +284,7 @@
       min-width: 0;
     }
 
-    /* KPI Summary Container */
-    .kpi-container {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-bottom: 12px;
-    }
 
-    .kpi-card {
-      background: #f8fafc;
-      border: 1px solid var(--report-border);
-      border-radius: 6px;
-      padding: 8px 10px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .kpi-label {
-      font-size: 9px;
-      font-weight: 700;
-      color: #64748b;
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-
-    .kpi-value {
-      font-family: 'Outfit', sans-serif;
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1.2;
-    }
-
-    .kpi-sub {
-      font-size: 8px;
-      color: #94a3b8;
-      margin-top: 2px;
-    }
 
     /* Results Table Styles */
     table.tbl-results {
@@ -678,35 +639,6 @@
               <td class="val" id="env-humidity">-%</td>
             </tr>
           </table>
-        </div>
-      </div>
-
-      <!-- KPI Summary Highlight Cards -->
-      <div class="kpi-container">
-        <div class="kpi-card">
-          <div class="kpi-label">Dielectric Breakdown (BDV)</div>
-          <div class="kpi-value" id="kpi-bdv" style="color: #166534;">-</div>
-          <div class="kpi-sub" id="kpi-bdv-sub">Limit: &ge; 45.0 kV (ASTM D1816)</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Water Content (Moisture)</div>
-          <div class="kpi-value" id="kpi-wc" style="color: #166534;">-</div>
-          <div class="kpi-sub" id="kpi-wc-sub">Limit: &le; 25.0 ppm (ASTM D1533)</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Neutralization No. (Acidity)</div>
-          <div class="kpi-value" id="kpi-ac" style="color: #166534;">-</div>
-          <div class="kpi-sub" id="kpi-ac-sub">Limit: &le; 0.150 mgKOH/g</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Interfacial Tension (IFT)</div>
-          <div class="kpi-value" id="kpi-ift" style="color: #1e3a8a;">-</div>
-          <div class="kpi-sub" id="kpi-ift-sub">Limit: &ge; 25.0 mN/m (ASTM D971)</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Overall Oil Evaluation</div>
-          <div class="kpi-value" id="kpi-overall-status">-</div>
-          <div class="kpi-sub">Dielectric &amp; Chemical Health</div>
         </div>
       </div>
 
@@ -1540,51 +1472,12 @@
       populateRow('sulfur', 'CorrosiveSulfur', curr.Corrosive_Sulfur, prev1.Corrosive_Sulfur, prev2.Corrosive_Sulfur, prev3.Corrosive_Sulfur, 2, false, formatSulfur);
       populateRow('passivator', 'Passivator', curr.Passivator, prev1.Passivator, prev2.Passivator, prev3.Passivator, 1);
 
-      // Populate KPI Highlight Cards
+      // Evaluate Overall Condition
       const bdvVal = parseFloat(curr.BD);
       const wcVal = parseFloat(curr.WC);
       const acVal = parseFloat(curr.Acidity_No);
       const iftVal = parseFloat(curr.IFT);
 
-      const elKpiBdv = document.getElementById('kpi-bdv');
-      const elKpiWc = document.getElementById('kpi-wc');
-      const elKpiAc = document.getElementById('kpi-ac');
-      const elKpiIft = document.getElementById('kpi-ift');
-      const elKpiStatus = document.getElementById('kpi-overall-status');
-
-      if (!isNaN(bdvVal)) {
-        elKpiBdv.textContent = `${bdvVal.toFixed(1)} kV`;
-        const r = checkParam('BDV_2mm')(bdvVal);
-        elKpiBdv.style.color = (r === 'good' ? '#166534' : (r === 'fair' ? '#a16207' : '#b91c1c'));
-      } else {
-        elKpiBdv.textContent = '-';
-      }
-
-      if (!isNaN(wcVal)) {
-        elKpiWc.textContent = `${wcVal.toFixed(1)} ppm`;
-        const r = checkParam('WaterContent')(wcVal);
-        elKpiWc.style.color = (r === 'good' ? '#166534' : (r === 'fair' ? '#a16207' : '#b91c1c'));
-      } else {
-        elKpiWc.textContent = '-';
-      }
-
-      if (!isNaN(acVal)) {
-        elKpiAc.textContent = `${acVal.toFixed(3)} mg`;
-        const r = checkParam('Acidity')(acVal);
-        elKpiAc.style.color = (r === 'good' ? '#166534' : (r === 'fair' ? '#a16207' : '#b91c1c'));
-      } else {
-        elKpiAc.textContent = '-';
-      }
-
-      if (!isNaN(iftVal)) {
-        elKpiIft.textContent = `${iftVal.toFixed(1)} mN/m`;
-        const r = checkParam('IFT')(iftVal);
-        elKpiIft.style.color = (r === 'good' ? '#166534' : (r === 'fair' ? '#a16207' : '#b91c1c'));
-      } else {
-        elKpiIft.textContent = '-';
-      }
-
-      // Evaluate Overall Condition
       let overallRating = 'good';
       if (checkParam('BDV_2mm')(bdvVal) === 'poor' || checkParam('WaterContent')(wcVal) === 'poor' || checkParam('Acidity')(acVal) === 'poor') {
         overallRating = 'poor';
@@ -1593,17 +1486,14 @@
       }
 
       if (overallRating === 'good') {
-        elKpiStatus.innerHTML = '<span class="status-badge status-pass">NORMAL</span>';
         document.getElementById('diag-rating-text').innerHTML = '<span class="status-badge status-pass">NORMAL / GOOD</span> <span style="font-weight:600; color:#166534; margin-left:8px;">Health Index Score: 5 / 5</span>';
         document.getElementById('diag-summary-text').textContent = 'Insulating oil parameters show high dielectric breakdown voltage (> 50 kV), low moisture (< 20 ppm), and minimal acid formation, fully meeting IEEE C57.106 / IEC 60422 standards.';
         document.getElementById('diag-rec-text').textContent = 'Main tank insulating oil is in good serviceable condition with no immediate treatment required. Maintain standard annual oil sampling schedule.';
       } else if (overallRating === 'fair') {
-        elKpiStatus.innerHTML = '<span class="status-badge status-warn">FAIR</span>';
         document.getElementById('diag-rating-text').innerHTML = '<span class="status-badge status-warn">QUESTIONABLE / FAIR</span> <span style="font-weight:600; color:#a16207; margin-left:8px;">Health Index Score: 3 / 5</span>';
         document.getElementById('diag-summary-text').textContent = 'Minor deterioration observed in moisture content or interfacial tension. Dielectric margin remains adequate but requires closer monitoring.';
         document.getElementById('diag-rec-text').textContent = 'Recommend vacuum oil filtration and dehydration during next planned maintenance outage. Perform re-sampling within 6 months.';
       } else {
-        elKpiStatus.innerHTML = '<span class="status-badge status-fail">CRITICAL</span>';
         document.getElementById('diag-rating-text').innerHTML = '<span class="status-badge status-fail">CRITICAL / ACTION REQ.</span> <span style="font-weight:600; color:#b91c1c; margin-left:8px;">Health Index Score: 1 / 5</span>';
         document.getElementById('diag-summary-text').textContent = 'Significant oil degradation detected: High moisture / low breakdown voltage or elevated acidity exceeding IEEE C57.106 service limits.';
         document.getElementById('diag-rec-text').textContent = 'Immediate oil reclamation or complete oil replacement recommended to prevent permanent solid insulation degradation and dielectric failure.';
