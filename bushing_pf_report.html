@@ -1097,6 +1097,7 @@
         if (lv2Rated && lv2Rated !== '-' && lv2Rated !== '') voltStr += ' / ' + lv2Rated;
       } else if (item && item.ratedVoltage) {
         voltStr = item.ratedVoltage;
+      }
       if (voltStr && !voltStr.includes('kV') && voltStr !== '-') voltStr += ' kV';
       document.getElementById('info-voltage').textContent = voltStr;
 
@@ -1146,17 +1147,22 @@
           return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
         };
 
-        document.getElementById('resp-name-tested').textContent = cleanSig(latest.test_name || latest.Name1 || latest.NAME1 || latest.Tested_by);
-        document.getElementById('resp-name-reviewed').textContent = cleanSig(latest.witness_name || latest.Name2 || latest.NAME2 || latest.reviewed_name || latest.Witnessed_by);
-        document.getElementById('resp-name-approved').textContent = cleanSig(latest.Name3 || latest.NAME3 || latest.approved_name || latest.Approved_by);
+        const testedName = cleanSig(latest.test_name || latest.Name1 || latest.NAME1 || latest.Tested_by);
+        const reviewedName = cleanSig(latest.witness_name || latest.Name2 || latest.NAME2 || latest.reviewed_name || latest.Witnessed_by);
+        const approvedName = cleanSig(latest.Name3 || latest.NAME3 || latest.approved_name || latest.Approved_by);
+
+        document.getElementById('resp-name-tested').textContent = testedName;
+        document.getElementById('resp-name-reviewed').textContent = reviewedName;
+        document.getElementById('resp-name-approved').textContent = approvedName;
 
         document.getElementById('resp-comp-tested').textContent = cleanSig(latest.COMP1 || latest.comp1);
         document.getElementById('resp-comp-reviewed').textContent = cleanSig(latest.COMP2 || latest.comp2);
         document.getElementById('resp-comp-approved').textContent = cleanSig(latest.COMP3 || latest.comp3);
 
-        document.getElementById('resp-date-tested').textContent = cleanDate(latest.date);
-        document.getElementById('resp-date-reviewed').textContent = cleanDate(latest.date);
-        document.getElementById('resp-date-approved').textContent = cleanDate(latest.date);
+        const dStr = cleanDate(latest.date || latest.Date || latest.DATE);
+        document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+        document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+        document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
 
         renderC1Table(latest, infoRecords);
         renderC2Table(latest, infoRecords);

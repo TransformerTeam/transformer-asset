@@ -2403,21 +2403,25 @@
       const cleanSig = (v) => {
         if (!v) return '';
         const s = String(v).trim();
-        return (s === '-' || s === 'null' || s === 'undefined' || s === '') ? '' : s;
+        return (s === '-' || s === 'null' || s === 'undefined' || s === '' || s === 'N/A') ? '' : s;
       };
 
-      document.getElementById('resp-name-tested').textContent   = cleanSig(r.test_name || r.Name1 || r.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.witness_name || r.Name2 || r.reviewed_name || r.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(r.Name3 || r.approved_name || r.Approved_by);
+      const testedName   = cleanSig(r.test_name || r.Name1 || r.NAME1 || r.Tested_by);
+      const reviewedName = cleanSig(r.witness_name || r.Name2 || r.NAME2 || r.reviewed_name || r.Witnessed_by);
+      const approvedName = cleanSig(r.Name3 || r.NAME3 || r.approved_name || r.Approved_by);
+
+      document.getElementById('resp-name-tested').textContent   = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
 
       document.getElementById('resp-comp-tested').textContent   = cleanSig(r.COMP1 || r.comp1);
       document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
       document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
 
-      const dStr = (r.date && r.date !== '-') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : '';
-      document.getElementById('resp-date-tested').textContent   = dStr;
-      document.getElementById('resp-date-reviewed').textContent = dStr;
-      document.getElementById('resp-date-approved').textContent = dStr;
+      const dStr = (r.date && r.date !== '-' && r.date !== '0000-00-00') ? `Date: ${formatDate_ddMmmyyyy(r.date)}` : '';
+      document.getElementById('resp-date-tested').textContent   = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
     }
 
     function toggleTheme() {

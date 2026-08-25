@@ -1638,15 +1638,16 @@
     }
 
     function populateSignatures(rec) {
-      const clean = (v) => (!v || v === '-' || v === 'null') ? '' : String(v).trim();
+      const clean = (v) => (!v || v === '-' || v === 'null' || v === 'undefined' || v === 'N/A') ? '' : String(v).trim();
+      const r = rec || {};
 
-      const testedName = clean(rec.NAME1 || rec.Name1) || 'Mr.Jirasak S.';
-      const reviewedName = clean(rec.NAME2 || rec.Name2) || 'Mr. Suchat M.';
-      const approvedName = clean(rec.NAME3 || rec.Name3) || 'Dr. Chaiwat P.';
+      const testedName = clean(r.NAME1 || r.Name1 || r.test_name || r.Tested_by);
+      const reviewedName = clean(r.NAME2 || r.Name2 || r.witness_name || r.reviewed_name || r.Witnessed_by);
+      const approvedName = clean(r.NAME3 || r.Name3 || r.approved_name || r.Approved_by);
 
-      const testedComp = clean(rec.COMP1 || rec.Comp1) || 'GPSC';
-      const reviewedComp = clean(rec.COMP2 || rec.Comp2) || 'GPSC';
-      const approvedComp = clean(rec.COMP3 || rec.Comp3) || 'GPSC Division Head';
+      const testedComp = clean(r.COMP1 || r.Comp1 || r.comp1);
+      const reviewedComp = clean(r.COMP2 || r.Comp2 || r.comp2);
+      const approvedComp = clean(r.COMP3 || r.Comp3 || r.comp3);
 
       document.getElementById('resp-name-tested').textContent = testedName;
       document.getElementById('resp-name-reviewed').textContent = reviewedName;
@@ -1656,11 +1657,12 @@
       document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
       document.getElementById('resp-comp-approved').textContent = approvedComp;
 
-      const dStr = formatDate_ddMmmyyyy(rec.DATE || rec.Date || rec.date);
-      const finalDate = (dStr && dStr !== '-') ? `Date: ${dStr}` : 'Date: -';
-      document.getElementById('resp-date-tested').textContent = finalDate;
-      document.getElementById('resp-date-reviewed').textContent = finalDate;
-      document.getElementById('resp-date-approved').textContent = finalDate;
+      const dStr = formatDate_ddMmmyyyy(r.DATE || r.Date || r.date);
+      const dateVal = (dStr && dStr !== '-') ? `Date: ${dStr}` : '';
+
+      document.getElementById('resp-date-tested').textContent = testedName ? dateVal : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dateVal : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dateVal : '';
     }
 
     function toggleTheme() {

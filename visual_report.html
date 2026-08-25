@@ -1271,17 +1271,22 @@
         return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
       };
 
+      const testedName = cleanSig(r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1);
+      const reviewedName = cleanSig(r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name);
+      const approvedName = cleanSig(r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name);
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
+
       document.getElementById('resp-company-tested').textContent = cleanSig(r.COMP1 || r.comp1);
       document.getElementById('resp-company-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
       document.getElementById('resp-company-approved').textContent = cleanSig(r.COMP3 || r.comp3);
 
-      document.getElementById('resp-name-tested').textContent = cleanSig(r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name);
-      document.getElementById('resp-name-approved').textContent = cleanSig(r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name);
-
-      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
+      const dStr = cleanDate(r.date || r.Date || r.DATE);
+      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
     }
 
     function renderTableRows(tbodyId, rowConfigs, dataObj) {

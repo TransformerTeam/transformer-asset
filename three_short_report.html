@@ -2235,7 +2235,7 @@
       const cleanSig = (v) => {
         if (!v) return '';
         const s = String(v).trim();
-        return (s === '-' || s === 'null' || s === 'undefined') ? '' : s;
+        return (s === '-' || s === 'null' || s === 'undefined' || s === 'N/A') ? '' : s;
       };
 
       const cleanDate = (d) => {
@@ -2247,13 +2247,13 @@
       };
 
       const r = rec || {};
-      const testedName = cleanSig(r.Name1 || r.NAME1 || r.Tested_by) || 'Mr.Jirasak S.';
-      const reviewedName = cleanSig(r.Name2 || r.NAME2 || r.Witnessed_by) || 'Mr. Suchat M.';
-      const approvedName = cleanSig(r.Name3 || r.NAME3 || r.Approved_by) || 'Dr. Chaiwat P.';
+      const testedName = cleanSig(r.Name1 || r.NAME1 || r.Tested_by || r.test_name);
+      const reviewedName = cleanSig(r.Name2 || r.NAME2 || r.Witnessed_by || r.witness_name || r.reviewed_name);
+      const approvedName = cleanSig(r.Name3 || r.NAME3 || r.Approved_by || r.approved_name);
 
-      const testedComp = cleanSig(r.COMP1 || r.comp1) || 'GPSC';
-      const reviewedComp = cleanSig(r.COMP2 || r.comp2) || 'GPSC';
-      const approvedComp = cleanSig(r.COMP3 || r.comp3) || 'GPSC Division Head';
+      const testedComp = cleanSig(r.COMP1 || r.comp1);
+      const reviewedComp = cleanSig(r.COMP2 || r.comp2);
+      const approvedComp = cleanSig(r.COMP3 || r.comp3);
 
       document.getElementById('resp-name-tested').textContent = testedName;
       document.getElementById('resp-name-reviewed').textContent = reviewedName;
@@ -2263,10 +2263,10 @@
       document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
       document.getElementById('resp-comp-approved').textContent = approvedComp;
 
-      const dStr = cleanDate(r.date || r.Date || r.DATE) || (cleanDate(currentRecord ? currentRecord.date : '') || 'Date: -');
-      document.getElementById('resp-date-tested').textContent = dStr;
-      document.getElementById('resp-date-reviewed').textContent = dStr;
-      document.getElementById('resp-date-approved').textContent = dStr;
+      const dStr = cleanDate(r.date || r.Date || r.DATE) || (cleanDate(currentRecord ? currentRecord.date : ''));
+      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
     }
 
     function toggleTheme() {

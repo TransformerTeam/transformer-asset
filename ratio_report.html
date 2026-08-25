@@ -1542,15 +1542,21 @@
         return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
       };
 
-      document.getElementById('resp-name-tested').textContent = cleanSig(r.NAME1 || r.Name1 || r.test_name || r.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(r.NAME2 || r.Name2 || r.witness_name || r.reviewed_name || r.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(r.NAME3 || r.Name3 || r.approved_name || r.Approved_by);
+      const testedName = cleanSig(r.NAME1 || r.Name1 || r.test_name || r.Tested_by);
+      const reviewedName = cleanSig(r.NAME2 || r.Name2 || r.witness_name || r.reviewed_name || r.Witnessed_by);
+      const approvedName = cleanSig(r.NAME3 || r.Name3 || r.approved_name || r.Approved_by);
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
       document.getElementById('resp-comp-tested').textContent = cleanSig(r.COMP1 || r.comp1);
       document.getElementById('resp-comp-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
       document.getElementById('resp-comp-approved').textContent = cleanSig(r.COMP3 || r.comp3);
-      document.getElementById('resp-date-tested').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(r.date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(r.date);
+
+      const dStr = cleanDate(r.date || r.Date || r.DATE);
+      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
 
       // Show / Hide Winding Tabs (Hidden per user specification)
       const tabContainer = document.getElementById('winding-tab-container');

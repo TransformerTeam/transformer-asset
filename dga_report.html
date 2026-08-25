@@ -1500,9 +1500,9 @@
         const nameApp = cleanSigVal(curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by, '');
 
         const dtStr = formatDate(curr.date);
-        const dtTested = (dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
-        const dtRev = (dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
-        const dtApp = (dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
+        const dtTested = (nameTested && dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
+        const dtRev = (nameRev && dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
+        const dtApp = (nameApp && dtStr && dtStr !== '-' && dtStr !== '0000-00-00') ? `Date: ${dtStr}` : '';
 
         document.querySelectorAll(`.${prefix}resp-company-tested, #${prefix}resp-company-tested`).forEach(e => e.textContent = compTested);
         document.querySelectorAll(`.${prefix}resp-company-reviewed, #${prefix}resp-company-reviewed`).forEach(e => e.textContent = compRev);

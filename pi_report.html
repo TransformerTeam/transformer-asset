@@ -1202,17 +1202,22 @@
         return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
       };
 
-      document.getElementById('resp-name-tested').textContent = cleanSig(piItem.test_name || piItem.Name1 || piItem.NAME1 || piItem.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(piItem.witness_name || piItem.Name2 || piItem.NAME2 || piItem.reviewed_name || piItem.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(piItem.Name3 || piItem.NAME3 || piItem.approved_name || piItem.Approved_by);
+      const testedName = cleanSig(piItem.test_name || piItem.Name1 || piItem.NAME1 || piItem.Tested_by);
+      const reviewedName = cleanSig(piItem.witness_name || piItem.Name2 || piItem.NAME2 || piItem.reviewed_name || piItem.Witnessed_by);
+      const approvedName = cleanSig(piItem.Name3 || piItem.NAME3 || piItem.approved_name || piItem.Approved_by);
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
 
       document.getElementById('resp-comp-tested').textContent = cleanSig(piItem.COMP1 || piItem.comp1);
       document.getElementById('resp-comp-reviewed').textContent = cleanSig(piItem.COMP2 || piItem.comp2);
       document.getElementById('resp-comp-approved').textContent = cleanSig(piItem.COMP3 || piItem.comp3);
 
-      document.getElementById('resp-date-tested').textContent = cleanDate(piItem.date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(piItem.date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(piItem.date);
+      const dStr = cleanDate(piItem.date);
+      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
     }
 
     // Helper formatter functions

@@ -1792,9 +1792,9 @@
       const elDateTested = document.getElementById('resp-date-tested');
       const elDateRev = document.getElementById('resp-date-reviewed');
       const elDateApp = document.getElementById('resp-date-approved');
-      if (elDateTested) elDateTested.textContent = dateText;
-      if (elDateRev) elDateRev.textContent = dateText;
-      if (elDateApp) elDateApp.textContent = dateText;
+      if (elDateTested) elDateTested.textContent = tester ? dateText : '';
+      if (elDateRev) elDateRev.textContent = reviewer ? dateText : '';
+      if (elDateApp) elDateApp.textContent = approver ? dateText : '';
     }
 
     // =============================================

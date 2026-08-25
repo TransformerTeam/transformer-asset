@@ -1173,17 +1173,22 @@
         return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
       };
 
-      document.getElementById('resp-name-tested').textContent = cleanSig(curr.Name1 || curr.NAME1 || curr.test_name || curr.Tested_by);
-      document.getElementById('resp-name-reviewed').textContent = cleanSig(curr.Name2 || curr.NAME2 || curr.witness_name || curr.reviewed_name || curr.Witnessed_by);
-      document.getElementById('resp-name-approved').textContent = cleanSig(curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by);
+      const testedName = cleanSig(curr.Name1 || curr.NAME1 || curr.test_name || curr.Tested_by);
+      const reviewedName = cleanSig(curr.Name2 || curr.NAME2 || curr.witness_name || curr.reviewed_name || curr.Witnessed_by);
+      const approvedName = cleanSig(curr.Name3 || curr.NAME3 || curr.approved_name || curr.Approved_by);
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
 
       document.getElementById('resp-comp-tested').textContent = cleanSig(curr.COMP1 || curr.comp1);
       document.getElementById('resp-comp-reviewed').textContent = cleanSig(curr.COMP2 || curr.comp2);
       document.getElementById('resp-comp-approved').textContent = cleanSig(curr.COMP3 || curr.comp3);
 
-      document.getElementById('resp-date-tested').textContent = cleanDate(curr.Date);
-      document.getElementById('resp-date-reviewed').textContent = cleanDate(curr.Date);
-      document.getElementById('resp-date-approved').textContent = cleanDate(curr.Date);
+      const dStr = cleanDate(curr.Date || curr.date || curr.DATE);
+      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
+      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
+      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
 
       // Render Trending Chart
       currentValidItems = items;
