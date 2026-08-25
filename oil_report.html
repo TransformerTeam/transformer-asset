@@ -1577,22 +1577,51 @@
         xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9.5px', fontWeight: 600 } } },
         yaxis: [
           {
+            min: (min) => Math.max(0, Math.min(min || 40, 40)),
             title: { text: 'BDV (kV)', style: { color: '#22c55e', fontSize: '10px', fontWeight: 700 } },
             labels: { style: { colors: textColor, fontSize: '9.5px' }, formatter: (v) => v ? v.toFixed(1) : '' }
           },
           {
+            min: 0,
+            max: (max) => Math.max(max || 30, 30),
             opposite: true,
             title: { text: 'Water Content (ppm)', style: { color: '#0284c7', fontSize: '10px', fontWeight: 700 } },
             labels: { style: { colors: textColor, fontSize: '9.5px' }, formatter: (v) => v ? v.toFixed(1) : '' }
           }
         ],
+        annotations: {
+          yaxis: [
+            {
+              y: 45.0,
+              yAxisIndex: 0,
+              borderColor: '#16a34a',
+              strokeDashArray: 4,
+              label: {
+                borderColor: '#16a34a',
+                style: { color: '#fff', background: '#16a34a', fontSize: '8.5px', fontWeight: 700 },
+                text: 'Limit BDV: ≥ 45.0 kV'
+              }
+            },
+            {
+              y: 25.0,
+              yAxisIndex: 1,
+              borderColor: '#ef4444',
+              strokeDashArray: 4,
+              label: {
+                borderColor: '#ef4444',
+                style: { color: '#fff', background: '#ef4444', fontSize: '8.5px', fontWeight: 700 },
+                text: 'Limit Water: ≤ 25.0 ppm'
+              }
+            }
+          ]
+        },
         grid: { borderColor: gridColor, strokeDashArray: 3 },
         legend: { position: 'top', labels: { colors: textColor }, fontSize: '11px', fontWeight: 600 },
         markers: { size: 4.5, strokeWidth: 2, hover: { size: 6.5 } },
         tooltip: { shared: true, intersect: false, theme: isDark ? 'dark' : 'light' }
       });
 
-      // Helper function for clean single-parameter trend charts
+      // Helper function for clean single-parameter trend charts with Auto Y-scale & Limit Line
       const createSingleParamChart = (chartId, name, dataVals, color, unit, decimals = 2, limitVal = null, limitLabel = '', customYFormatter = null) => {
         const annotations = limitVal !== null ? {
           yaxis: [{
@@ -1607,22 +1636,38 @@
           }]
         } : {};
 
+        // Calculate Y-axis range to guarantee Limit line is fully visible
+        const validNums = dataVals.filter(v => v !== null && !isNaN(v));
+        let yaxisConfig = {
+          labels: {
+            style: { colors: textColor, fontSize: '9px' },
+            formatter: (v) => {
+              if (v === null || v === undefined || isNaN(v)) return '';
+              if (customYFormatter) return customYFormatter(v);
+              return v.toFixed(decimals);
+            }
+          }
+        };
+
+        if (validNums.length > 0 && limitVal !== null) {
+          const dataMin = Math.min(...validNums);
+          const dataMax = Math.max(...validNums);
+          const overallMin = Math.min(dataMin, limitVal);
+          const overallMax = Math.max(dataMax, limitVal);
+          const span = overallMax - overallMin;
+          const pad = span > 0 ? span * 0.2 : (overallMax > 0 ? overallMax * 0.2 : 1);
+
+          yaxisConfig.min = Math.max(0, parseFloat((overallMin - pad).toFixed(decimals)));
+          yaxisConfig.max = parseFloat((overallMax + pad).toFixed(decimals));
+        }
+
         createOrUpdateChart(chartId, {
           chart: { type: 'line', height: 175, toolbar: { show: false }, zoom: { enabled: false } },
           stroke: { width: 3, curve: 'smooth' },
           colors: [color],
           series: [{ name: `${name} (${unit})`, data: dataVals }],
           xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px', fontWeight: 600 } } },
-          yaxis: {
-            labels: {
-              style: { colors: textColor, fontSize: '9px' },
-              formatter: (v) => {
-                if (v === null || v === undefined || isNaN(v)) return '';
-                if (customYFormatter) return customYFormatter(v);
-                return v.toFixed(decimals);
-              }
-            }
-          },
+          yaxis: yaxisConfig,
           grid: { borderColor: gridColor, strokeDashArray: 3 },
           markers: { size: 4.5, strokeWidth: 2, hover: { size: 6.5 } },
           annotations: annotations,
@@ -1641,27 +1686,27 @@
 
       // 2. Power Factor @ 25°C (%)
       const pf25Vals = sorted.map(d => parseFloat(d.PF_25) || null);
-      createSingleParamChart('chart-trend-pf25', 'PF @ 25°C', pf25Vals, '#4f46e5', '%', 3, 0.40, 'Max: 0.40%');
+      createSingleParamChart('chart-trend-pf25', 'PF @ 25°C', pf25Vals, '#4f46e5', '%', 3, 0.40, 'Limit: ≤ 0.40%');
 
       // 3. Power Factor @ 100°C (%)
       const pf100Vals = sorted.map(d => parseFloat(d.PF_100) || null);
-      createSingleParamChart('chart-trend-pf100', 'PF @ 100°C', pf100Vals, '#f59e0b', '%', 3, 4.00, 'Max: 4.00%');
+      createSingleParamChart('chart-trend-pf100', 'PF @ 100°C', pf100Vals, '#f59e0b', '%', 3, 4.00, 'Limit: ≤ 4.00%');
 
       // 4. Interfacial Tension (IFT, mN/m)
       const iftVals = sorted.map(d => parseFloat(d.IFT) || null);
-      createSingleParamChart('chart-trend-ift', 'IFT', iftVals, '#06b6d4', 'mN/m', 1, 25.0, 'Min: 25.0 mN/m');
+      createSingleParamChart('chart-trend-ift', 'IFT', iftVals, '#06b6d4', 'mN/m', 1, 25.0, 'Limit: ≥ 25.0 mN/m');
 
       // 5. Neutralization Number / Acidity (mgKOH/g)
       const acVals = sorted.map(d => parseFloat(d.Acidity_No) || null);
-      createSingleParamChart('chart-trend-acidity', 'Acidity', acVals, '#ef4444', 'mgKOH/g', 3, 0.15, 'Max: 0.15 mg');
+      createSingleParamChart('chart-trend-acidity', 'Acidity', acVals, '#ef4444', 'mgKOH/g', 3, 0.15, 'Limit: ≤ 0.150 mg');
 
       // 6. Oil Conductivity (pS/m)
       const condVals = sorted.map(d => parseFloat(d.Conductivity) || null);
-      createSingleParamChart('chart-trend-conductivity', 'Conductivity', condVals, '#6366f1', 'pS/m', 2, 4.0, 'Max: 4.0 pS/m');
+      createSingleParamChart('chart-trend-conductivity', 'Conductivity', condVals, '#6366f1', 'pS/m', 2, 4.0, 'Limit: ≤ 4.0 pS/m');
 
       // 7. Color Number (Scale)
       const colorVals = sorted.map(d => parseFloat(d.Color_No) || null);
-      createSingleParamChart('chart-trend-color', 'Color No.', colorVals, '#d97706', 'Scale', 1, 2.0, 'Max: 2.0');
+      createSingleParamChart('chart-trend-color', 'Color No.', colorVals, '#d97706', 'Scale', 1, 2.0, 'Limit: ≤ 2.0');
 
       // 8. Inhibitor Content (wt%)
       const inhibVals = sorted.map(d => {
@@ -1669,11 +1714,11 @@
         const p = parseFloat(v);
         return !isNaN(p) ? p : null;
       });
-      createSingleParamChart('chart-trend-inhibitor', 'Inhibitor', inhibVals, '#10b981', 'wt%', 2, 0.10, 'Min: 0.10 wt%');
+      createSingleParamChart('chart-trend-inhibitor', 'Inhibitor', inhibVals, '#10b981', 'wt%', 2, 0.10, 'Limit: ≥ 0.10 wt%');
 
       // 9. Furan 2-FAL (ppb)
       const furanVals = sorted.map(d => parseFloat(d.Furan_Analysis) || null);
-      createSingleParamChart('chart-trend-furan', 'Furan 2-FAL', furanVals, '#d97706', 'ppb', 1, 700, 'Max: 700 ppb');
+      createSingleParamChart('chart-trend-furan', 'Furan 2-FAL', furanVals, '#d97706', 'ppb', 1, 700, 'Limit: ≤ 700 ppb');
 
       // 10. Estimated Degree of Polymerization (DP)
       const dpVals = sorted.map(d => {
@@ -1681,7 +1726,7 @@
         if (!isNaN(fur) && fur > 0) return Math.round(7100 / (8.88 + fur / 1000));
         return null;
       });
-      createSingleParamChart('chart-trend-dp', 'Estimated DP', dpVals, '#10b981', 'DP', 0, 700, 'Warning: 700 DP');
+      createSingleParamChart('chart-trend-dp', 'Estimated DP', dpVals, '#10b981', 'DP', 0, 700, 'Limit: ≥ 700 DP');
 
       // 11. Sludge Condition (wt%)
       const sludgeVals = sorted.map(d => {
@@ -1690,7 +1735,7 @@
         const num = parseFloat(d.Sludge_Condition);
         return !isNaN(num) ? num : null;
       });
-      createSingleParamChart('chart-trend-sludge', 'Sludge', sludgeVals, '#64748b', 'wt%', 3, 0.018, 'Max: 0.018 wt%');
+      createSingleParamChart('chart-trend-sludge', 'Sludge', sludgeVals, '#64748b', 'wt%', 3, 0.018, 'Limit: ≤ 0.018 wt%');
 
       // 12. Corrosive Sulfur (Class)
       const sulfurMap = { '1a': 1, '1b': 2, '2a': 3, '2b': 4, '2c': 5, '2d': 6, '2e': 7, '3a': 8, '3b': 9, '4a': 10, '4b': 11, '4c': 12 };
@@ -1702,11 +1747,11 @@
         const num = parseFloat(key);
         return !isNaN(num) ? num : null;
       });
-      createSingleParamChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurVals, '#dc2626', 'Class', 0, 8, 'Limit: 3a', (v) => revSulfurMap[Math.round(v)] || v);
+      createSingleParamChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurVals, '#dc2626', 'Class', 0, 7, 'Limit: ≤ 2e (Non-corr.)', (v) => revSulfurMap[Math.round(v)] || v);
 
       // 13. Passivator Irgamet 39 (ppm)
       const passVals = sorted.map(d => parseFloat(d.Passivator) || null);
-      createSingleParamChart('chart-trend-passivator', 'Passivator', passVals, '#8b5cf6', 'ppm', 1, 70, 'Min: 70 ppm');
+      createSingleParamChart('chart-trend-passivator', 'Passivator', passVals, '#8b5cf6', 'ppm', 1, 70, 'Limit: ≥ 70 ppm');
     }
 
     // Helper date parsers
