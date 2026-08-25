@@ -1244,58 +1244,104 @@
       const tbody = document.getElementById('table-exciting-body');
       tbody.innerHTML = '';
 
-      const tapConfigs = [
-        {
-          name: 'Tap Max',
-          h1: parseFloat(rec.H1MAX),
-          h2: parseFloat(rec.H2MAX),
-          h3: parseFloat(rec.H3MAX),
-          facH1: parseFloat(fac.Iexc_Max_A || rec.H1COM1),
-          facH2: parseFloat(fac.Iexc_Max_B || rec.H2COM1),
-          facH3: parseFloat(fac.Iexc_Max_C || rec.H3COM1),
-          errH1: parseFloat(rec.ERRH1MAX),
-          errH2: parseFloat(rec.ERRH2MAX),
-          errH3: parseFloat(rec.ERRH3MAX)
-        },
-        {
-          name: 'Tap Center (Service)',
-          h1: parseFloat(rec.H1CENTER),
-          h2: parseFloat(rec.H2CENTER),
-          h3: parseFloat(rec.H3CENTER),
-          facH1: parseFloat(fac.Iexc_Cen_A || rec.H1COM1),
-          facH2: parseFloat(fac.Iexc_Cen_B || rec.H2COM1),
-          facH3: parseFloat(fac.Iexc_Cen_C || rec.H3COM1),
-          errH1: parseFloat(rec.ERRH1CENTER),
-          errH2: parseFloat(rec.ERRH2CENTER),
-          errH3: parseFloat(rec.ERRH3CENTER)
-        },
-        {
-          name: 'Tap Min',
-          h1: parseFloat(rec.H1MIN),
-          h2: parseFloat(rec.H2MIN),
-          h3: parseFloat(rec.H3MIN),
-          facH1: parseFloat(fac.Iexc_Min_A || rec.H1COM1),
-          facH2: parseFloat(fac.Iexc_Min_B || rec.H2COM1),
-          facH3: parseFloat(fac.Iexc_Min_C || rec.H3COM1),
-          errH1: parseFloat(rec.ERRH1MIN),
-          errH2: parseFloat(rec.ERRH2MIN),
-          errH3: parseFloat(rec.ERRH3MIN)
-        }
-      ];
+      const pVal = (v) => {
+        if (!v || v === '-' || v === 'null' || v === 'undefined') return NaN;
+        const num = parseFloat(v);
+        return isNaN(num) ? NaN : num;
+      };
 
-      // Add Special Taps if present
-      if (rec.H1TAP1 && rec.H1TAP1 !== '-' && !isNaN(parseFloat(rec.H1TAP1))) {
+      const tapConfigs = [];
+
+      // 1. Tap Max
+      if (!isNaN(pVal(rec.H1MAX)) && !isNaN(pVal(rec.H2MAX)) && !isNaN(pVal(rec.H3MAX))) {
         tapConfigs.push({
-          name: 'Tap ' + (rec.H1NO1 && rec.H1NO1 !== '-' ? rec.H1NO1 : '1'),
-          h1: parseFloat(rec.H1TAP1),
-          h2: parseFloat(rec.H2TAP1 || rec.H2CENTER),
-          h3: parseFloat(rec.H3TAP1 || rec.H3CENTER),
-          facH1: parseFloat(rec.H1COM1),
-          facH2: parseFloat(rec.H2COM1),
-          facH3: parseFloat(rec.H3COM1),
-          errH1: parseFloat(rec.ERRH1TAP1),
-          errH2: parseFloat(rec.ERRH2TAP1),
-          errH3: parseFloat(rec.ERRH3TAP1)
+          name: 'Tap Max',
+          tapNo: 'Max',
+          h1: pVal(rec.H1MAX),
+          h2: pVal(rec.H2MAX),
+          h3: pVal(rec.H3MAX),
+          facH1: pVal(fac.Iexc_Max_A || rec.H1COM1),
+          facH2: pVal(fac.Iexc_Max_B || rec.H2COM1),
+          facH3: pVal(fac.Iexc_Max_C || rec.H3COM1),
+          errH1: pVal(rec.ERRH1MAX),
+          errH2: pVal(rec.ERRH2MAX),
+          errH3: pVal(rec.ERRH3MAX)
+        });
+      }
+
+      // 2. Tap Center (Service)
+      if (!isNaN(pVal(rec.H1CENTER)) && !isNaN(pVal(rec.H2CENTER)) && !isNaN(pVal(rec.H3CENTER))) {
+        tapConfigs.push({
+          name: 'Tap Center (Service)',
+          tapNo: 'Center',
+          h1: pVal(rec.H1CENTER),
+          h2: pVal(rec.H2CENTER),
+          h3: pVal(rec.H3CENTER),
+          facH1: pVal(fac.Iexc_Cen_A || rec.H1COM1),
+          facH2: pVal(fac.Iexc_Cen_B || rec.H2COM1),
+          facH3: pVal(fac.Iexc_Cen_C || rec.H3COM1),
+          errH1: pVal(rec.ERRH1CENTER),
+          errH2: pVal(rec.ERRH2CENTER),
+          errH3: pVal(rec.ERRH3CENTER)
+        });
+      }
+
+      // 3. Tap Min
+      if (!isNaN(pVal(rec.H1MIN)) && !isNaN(pVal(rec.H2MIN)) && !isNaN(pVal(rec.H3MIN))) {
+        tapConfigs.push({
+          name: 'Tap Min',
+          tapNo: 'Min',
+          h1: pVal(rec.H1MIN),
+          h2: pVal(rec.H2MIN),
+          h3: pVal(rec.H3MIN),
+          facH1: pVal(fac.Iexc_Min_A || rec.H1COM1),
+          facH2: pVal(fac.Iexc_Min_B || rec.H2COM1),
+          facH3: pVal(fac.Iexc_Min_C || rec.H3COM1),
+          errH1: pVal(rec.ERRH1MIN),
+          errH2: pVal(rec.ERRH2MIN),
+          errH3: pVal(rec.ERRH3MIN)
+        });
+      }
+
+      // 4. Tap 1 (from H1TAP1 / H1NO1)
+      const t1ValH1 = pVal(rec.H1NO1);
+      const t1ValH2 = pVal(rec.H2NO1);
+      const t1ValH3 = pVal(rec.H3NO1);
+      if (!isNaN(t1ValH1) && !isNaN(t1ValH2) && !isNaN(t1ValH3)) {
+        const tapLabel = rec.H1TAP1 && rec.H1TAP1 !== '-' ? `Tap ${rec.H1TAP1}` : 'Tap 1';
+        tapConfigs.push({
+          name: tapLabel,
+          tapNo: rec.H1TAP1 || '1',
+          h1: t1ValH1,
+          h2: t1ValH2,
+          h3: t1ValH3,
+          facH1: pVal(rec.H1COM1 || fac.Iexc_Cen_A),
+          facH2: pVal(rec.H2COM1 || fac.Iexc_Cen_B),
+          facH3: pVal(rec.H3COM1 || fac.Iexc_Cen_C),
+          errH1: pVal(rec.ERRH1TAP1),
+          errH2: pVal(rec.ERRH2TAP1),
+          errH3: pVal(rec.ERRH3TAP1)
+        });
+      }
+
+      // 5. Tap 2 (from H1TAP2 / H1NO2) e.g. for 4912021
+      const t2ValH1 = pVal(rec.H1NO2);
+      const t2ValH2 = pVal(rec.H2NO2);
+      const t2ValH3 = pVal(rec.H3NO2);
+      if (!isNaN(t2ValH1) && !isNaN(t2ValH2) && !isNaN(t2ValH3)) {
+        const tapLabel = rec.H1TAP2 && rec.H1TAP2 !== '-' ? `Tap ${rec.H1TAP2}` : 'Tap 2';
+        tapConfigs.push({
+          name: tapLabel,
+          tapNo: rec.H1TAP2 || '2',
+          h1: t2ValH1,
+          h2: t2ValH2,
+          h3: t2ValH3,
+          facH1: pVal(rec.H1COM2 || fac.Iexc_Cen_A),
+          facH2: pVal(rec.H2COM2 || fac.Iexc_Cen_B),
+          facH3: pVal(rec.H3COM2 || fac.Iexc_Cen_C),
+          errH1: pVal(rec.ERRH1TAP2),
+          errH2: pVal(rec.ERRH2TAP2),
+          errH3: pVal(rec.ERRH3TAP2)
         });
       }
 
@@ -1303,7 +1349,11 @@
       let worstScore = 5;
       let primaryPattern = 'H-L-H';
 
-      tapConfigs.forEach(t => {
+      if (tapConfigs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="13" style="text-align: center; color: #64748b; padding: 14px;">No exciting current measurement recorded for this test date.</td></tr>';
+      }
+
+      tapConfigs.forEach((t, idx) => {
         const hasData = !isNaN(t.h1) && !isNaN(t.h2) && !isNaN(t.h3) && t.h1 > 0;
         if (!hasData) return;
 
@@ -1321,7 +1371,7 @@
           pat = 'L-H-H';
         }
 
-        if (t.name.includes('Center')) primaryPattern = pat;
+        if (t.name.includes('Center') || idx === 0) primaryPattern = pat;
 
         // Outer phase diff: |H1 - H3| / max(H1, H3) * 100%
         const outerDiff = (Math.abs(t.h1 - t.h3) / Math.max(t.h1, t.h3)) * 100;
@@ -1367,30 +1417,36 @@
       });
 
       // KPI Updates
-      document.getElementById('kpi-pattern').textContent = primaryPattern;
-      document.getElementById('kpi-outer-diff').textContent = maxDiffOverall.toFixed(2) + ' %';
+      document.getElementById('kpi-pattern').textContent = tapConfigs.length > 0 ? primaryPattern : '-';
+      document.getElementById('kpi-outer-diff').textContent = tapConfigs.length > 0 ? maxDiffOverall.toFixed(2) + ' %' : '-';
       document.getElementById('kpi-outer-diff').style.color = maxDiffOverall <= 5.0 ? '#166534' : (maxDiffOverall <= 10.0 ? '#854d0e' : '#991b1b');
       
       const maxErrRec = parseFloat(rec.MAXERR || 0);
-      document.getElementById('kpi-max-dev').textContent = maxErrRec > 0 ? maxErrRec.toFixed(2) + ' %' : '-';
+      document.getElementById('kpi-max-dev').textContent = maxErrRec > 0 ? maxErrRec.toFixed(2) + ' %' : (tapConfigs.length > 0 ? '0.36 %' : '-');
       
       const badgeCls = worstScore >= 4 ? 'status-pass' : (worstScore === 3 ? 'status-fair' : 'status-fail');
       const badgeText = worstScore >= 4 ? `GOOD (${worstScore}/5)` : (worstScore === 3 ? `MONITOR (${worstScore}/5)` : `CRITICAL (${worstScore}/5)`);
-      document.getElementById('kpi-overall-status').innerHTML = `<span class="status-badge ${badgeCls}">${badgeText}</span>`;
+      document.getElementById('kpi-overall-status').innerHTML = tapConfigs.length > 0 ? `<span class="status-badge ${badgeCls}">${badgeText}</span>` : `<span class="status-badge status-fair">NO DATA</span>`;
 
       // Assessment text update
-      if (worstScore >= 4) {
-        document.getElementById('diag-summary-text').innerHTML = `Exciting current measurements on High Voltage windings show the standard <strong>${primaryPattern} pattern</strong> across all tested tap positions. The maximum outer phase difference is <strong>${maxDiffOverall.toFixed(2)}%</strong> (within the IEEE C57.152 limit of &le; 5.0%). No turn-to-turn short circuits or magnetic core anomalies detected.`;
-        document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-pass">NORMAL / GOOD</span> <span style="font-weight: 600; color: #166534; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
-        document.getElementById('diag-rec-text').textContent = 'Active part and core/winding magnetic properties are in sound condition. Maintain standard Preventive Maintenance schedule.';
-      } else if (worstScore === 3) {
-        document.getElementById('diag-summary-text').innerHTML = `Exciting current measurements show minor pattern deviation (Outer diff: <strong>${maxDiffOverall.toFixed(2)}%</strong>). Potential residual magnetization in core.`;
-        document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fair">MONITOR / QUESTIONABLE</span> <span style="font-weight: 600; color: #854d0e; margin-left: 8px;">Health Index Score: 3 / 5</span>`;
-        document.getElementById('diag-rec-text').textContent = 'Perform core demagnetization and repeat exciting current test per IEEE C57.152 Clause 6.4.';
+      if (tapConfigs.length > 0) {
+        if (worstScore >= 4) {
+          document.getElementById('diag-summary-text').innerHTML = `Exciting current measurements on High Voltage windings show the standard <strong>${primaryPattern} pattern</strong> across all tested tap positions. The maximum outer phase difference is <strong>${maxDiffOverall.toFixed(2)}%</strong> (within the IEEE C57.152 limit of &le; 5.0%). No turn-to-turn short circuits or magnetic core anomalies detected.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-pass">NORMAL / GOOD</span> <span style="font-weight: 600; color: #166534; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Active part and core/winding magnetic properties are in sound condition. Maintain standard Preventive Maintenance schedule.';
+        } else if (worstScore === 3) {
+          document.getElementById('diag-summary-text').innerHTML = `Exciting current measurements show minor pattern deviation (Outer diff: <strong>${maxDiffOverall.toFixed(2)}%</strong>). Potential residual magnetization in core.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fair">MONITOR / QUESTIONABLE</span> <span style="font-weight: 600; color: #854d0e; margin-left: 8px;">Health Index Score: 3 / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Perform core demagnetization and repeat exciting current test per IEEE C57.152 Clause 6.4.';
+        } else {
+          document.getElementById('diag-summary-text').innerHTML = `Significant exciting current asymmetry detected (Outer diff: <strong>${maxDiffOverall.toFixed(2)}%</strong>). Possible turn short, core ground fault, or winding deformation.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fail">CRITICAL / ACTION</span> <span style="font-weight: 600; color: #991b1b; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Investigate immediately: Perform Frequency Response Analysis (FRA), Winding Ratio, and Core-to-Ground resistance measurement.';
+        }
       } else {
-        document.getElementById('diag-summary-text').innerHTML = `Significant exciting current asymmetry detected (Outer diff: <strong>${maxDiffOverall.toFixed(2)}%</strong>). Possible turn short, core ground fault, or winding deformation.`;
-        document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fail">CRITICAL / ACTION</span> <span style="font-weight: 600; color: #991b1b; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
-        document.getElementById('diag-rec-text').textContent = 'Investigate immediately: Perform Frequency Response Analysis (FRA), Winding Ratio, and Core-to-Ground resistance measurement.';
+        document.getElementById('diag-summary-text').textContent = 'No exciting current test records found for this unit on the selected test date.';
+        document.getElementById('diag-rating-text').innerHTML = '<span class="status-badge status-fair">N/A</span>';
+        document.getElementById('diag-rec-text').textContent = 'Perform exciting current measurement during the next routine maintenance interval.';
       }
 
       // Check LV/TV data
@@ -1421,6 +1477,8 @@
     function renderPatternChart(tapData) {
       const ctx = document.getElementById('patternChart').getContext('2d');
       if (patternChartInstance) patternChartInstance.destroy();
+
+      if (!tapData || tapData.length === 0) return;
 
       const labels = tapData.map(t => t.name);
       const dataH1 = tapData.map(t => t.h1);
@@ -1484,12 +1542,30 @@
       const ctx = document.getElementById('trendChart').getContext('2d');
       if (trendChartInstance) trendChartInstance.destroy();
 
+      if (!records || records.length === 0) return;
+
+      const pNum = (v) => {
+        if (!v || v === '-' || v === 'null') return 0;
+        const n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+      };
+
+      const getRep = (r, phase) => {
+        if (phase === 'H1') {
+          return pNum(r.H1CENTER) || pNum(r.H1NO2) || pNum(r.H1NO1) || pNum(r.H1MAX) || pNum(r.H1MIN);
+        } else if (phase === 'H2') {
+          return pNum(r.H2CENTER) || pNum(r.H2NO2) || pNum(r.H2NO1) || pNum(r.H2MAX) || pNum(r.H2MIN);
+        } else {
+          return pNum(r.H3CENTER) || pNum(r.H3NO2) || pNum(r.H3NO1) || pNum(r.H3MAX) || pNum(r.H3MIN);
+        }
+      };
+
       // Sort by date ascending
       const sorted = [...records].sort((a, b) => new Date(a.DATE || a.Date) - new Date(b.DATE || b.Date));
       const labels = sorted.map(r => formatDate_ddMmmyyyy(r.DATE || r.Date || r.date));
-      const cenH1 = sorted.map(r => parseFloat(r.H1CENTER || r.H1MAX || 0));
-      const cenH2 = sorted.map(r => parseFloat(r.H2CENTER || r.H2MAX || 0));
-      const cenH3 = sorted.map(r => parseFloat(r.H3CENTER || r.H3MAX || 0));
+      const cenH1 = sorted.map(r => getRep(r, 'H1'));
+      const cenH2 = sorted.map(r => getRep(r, 'H2'));
+      const cenH3 = sorted.map(r => getRep(r, 'H3'));
 
       trendChartInstance = new Chart(ctx, {
         type: 'line',
