@@ -909,6 +909,7 @@
   <!-- Data.js files -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
+  <script src="assessment.js"></script>
 
   <script>
     let bushingInfoList = [];
@@ -924,18 +925,36 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      // Fetch CSVs
+      // Fetch CSVs independently so one error doesn't abort others
       try {
-        const [infoResp, pfResp, trInfoResp] = await Promise.all([
-          fetch('TestData/BushingInfo.csv'),
-          fetch('TestData/BushingPFData.csv'),
-          fetch('TRInfo.csv').catch(() => fetch('TestData/TRinfo2.csv'))
+        const fetchText = async (url) => {
+          try {
+            const res = await fetch(url);
+            if (res.ok) return await res.text();
+          } catch(e) {}
+          return '';
+        };
+        const [infoText, pfText, trInfoText] = await Promise.all([
+          fetchText('TestData/BushingInfo.csv'),
+          fetchText('TestData/BushingPFData.csv'),
+          fetchText('TRInfo.csv').then(t => t || fetchText('TestData/TRinfo2.csv'))
         ]);
-        if (infoResp && infoResp.ok) bushingInfoList = parseCSV(await infoResp.text());
-        if (pfResp && pfResp.ok) bushingPfDataList = parseCSV(await pfResp.text());
-        if (trInfoResp && trInfoResp.ok) trInfoList = parseCSV(await trInfoResp.text());
+        if (infoText) bushingInfoList = parseCSV(infoText);
+        if (pfText) bushingPfDataList = parseCSV(pfText);
+        if (trInfoText) trInfoList = parseCSV(trInfoText);
       } catch (e) {
-        console.warn('Failed to load Bushing CSV databases', e);
+        console.warn('Fetch error in Bushing report', e);
+      }
+
+      // Also fallback to global arrays if already loaded by assessment.js
+      if ((!bushingInfoList || !bushingInfoList.length) && typeof window.bushingInfoCsvData !== 'undefined' && Array.isArray(window.bushingInfoCsvData)) {
+        bushingInfoList = window.bushingInfoCsvData;
+      }
+      if ((!bushingPfDataList || !bushingPfDataList.length) && typeof window.bushingPfCsvData !== 'undefined' && Array.isArray(window.bushingPfCsvData)) {
+        bushingPfDataList = window.bushingPfCsvData;
+      }
+      if ((!trInfoList || !trInfoList.length) && typeof window.trInfoCsvData !== 'undefined' && Array.isArray(window.trInfoCsvData)) {
+        trInfoList = window.trInfoCsvData;
       }
 
       // Populate Transformer dropdown
@@ -1040,9 +1059,12 @@
 
     function matchSerial(csvSerial, targetSerial) {
       if (!csvSerial || !targetSerial) return false;
-      const a = csvSerial.trim();
-      const b = targetSerial.trim();
-      return a === b || a.includes(b) || b.includes(a);
+      const a = String(csvSerial).trim();
+      const b = String(targetSerial).trim();
+      if (a === b || a.toLowerCase() === b.toLowerCase()) return true;
+      const cleanA = a.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const cleanB = b.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      return (cleanA && cleanB && cleanA === cleanB) || a.includes(b) || b.includes(a);
     }
 
     // ─── Render Report ────────────────────────────────────────────────────────────
@@ -1065,7 +1087,7 @@
         (item && item.name) ? item.name : (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || '-') : '-');
 
       document.getElementById('info-site').textContent =
-        trInfo ? (trInfo.SITE || '-') : (item ? (item.site || '-') : '-');
+        (item && item.site) ? item.site : (trInfo ? (trInfo.SUBSTATION || trInfo.SITE || '-') : '-');
 
       document.getElementById('info-serial').textContent = serial || '-';
 
@@ -1125,10 +1147,10 @@
         if (document.getElementById('info-instrument')) document.getElementById('info-instrument').textContent = latest.test_instrument || 'Omicron TESTRANO 600';
         if (document.getElementById('info-instrument-serial')) document.getElementById('info-instrument-serial').textContent = latest.serial_instrument || '-';
         if (document.getElementById('info-instrument-calib')) document.getElementById('info-instrument-calib').textContent = formatReportDate(latest.date_calibation);
-        if (document.getElementById('env-ambient')) document.getElementById('env-ambient').textContent = latest.ambient_temp || '-';
-        if (document.getElementById('env-oil')) document.getElementById('env-oil').textContent = latest.oil_temp || '-';
-        if (document.getElementById('env-winding')) document.getElementById('env-winding').textContent = latest.winding_temp || '-';
-        if (document.getElementById('env-humidity')) document.getElementById('env-humidity').textContent = latest.humidity || '-';
+        if (document.getElementById('env-ambient')) document.getElementById('env-ambient').textContent = latest.ambient_temp ? `${latest.ambient_temp} °C` : '-';
+        if (document.getElementById('env-oil')) document.getElementById('env-oil').textContent = latest.oil_temp ? `${latest.oil_temp} °C` : '-';
+        if (document.getElementById('env-winding')) document.getElementById('env-winding').textContent = latest.winding_temp ? `${latest.winding_temp} °C` : '-';
+        if (document.getElementById('env-humidity')) document.getElementById('env-humidity').textContent = latest.humidity ? `${latest.humidity} %` : '-';
 
         if (document.getElementById('c1-volt')) document.getElementById('c1-volt').textContent = latest.bushing_c1kv || '10';
         if (document.getElementById('c2-volt')) document.getElementById('c2-volt').textContent = latest.bushing_c2kv || '0.5';
@@ -1169,7 +1191,7 @@
       } else {
         ['bushing-c1-body', 'bushing-c2-body'].forEach(id => {
           document.getElementById(id).innerHTML =
-            `<tr><td colspan="8" style="text-align:center; color:#94a3b8; padding:8px;">No test results found for Serial: ${serial}</td></tr>`;
+            `<tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:8px;">No test results found for Serial: ${serial}</td></tr>`;
         });
       }
 
@@ -1255,17 +1277,10 @@
           return ph === p.npPhase || ph.endsWith(p.npPhase.replace(/[0-9]/g, '').toLowerCase() + p.npPhase.slice(-1));
         });
 
-        const hasNameplate = matchInfo && (
-          parseFloat(matchInfo.Capacitance_C1 || 0) > 0 ||
-          parseFloat(matchInfo.Capacitance_C2 || 0) > 0 ||
-          parseFloat(matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) > 0 ||
-          parseFloat(matchInfo.Meas_PF_C2 || 0) > 0
-        );
-
         // %PF Error calculation vs Nameplate PF
         const npPf = matchInfo ? parseFloat(capType === 'C1' ? (matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) : (matchInfo.Meas_PF_C2 || 0)) : 0;
         let pfErr = '-';
-        if (hasNameplate && npPf > 0 && pf20 > 0) {
+        if (npPf > 0 && pf20 > 0) {
           const errVal = ((pf20 - npPf) / npPf) * 100;
           pfErr = (errVal >= 0 ? '+' : '') + errVal.toFixed(2) + '%';
         }
@@ -1273,7 +1288,7 @@
         // Nameplate capacitance for deviation calc
         const npCap = matchInfo ? parseFloat(capType === 'C1' ? (matchInfo.Capacitance_C1 || 0) : (matchInfo.Capacitance_C2 || 0)) : 0;
         let capDev = '-';
-        if (hasNameplate && npCap > 0 && cap > 0) {
+        if (npCap > 0 && cap > 0) {
           const devVal = ((cap - npCap) / npCap) * 100;
           capDev = (devVal >= 0 ? '+' : '') + devVal.toFixed(2) + '%';
         }
@@ -1281,9 +1296,9 @@
         // PF Status & Cap Status evaluation based on Manufacturer criteria (or IEEE C57.152 fallback)
         const mfg = matchInfo ? (matchInfo.Manufacturer || '') : '';
         const ins = matchInfo ? (matchInfo.Type || matchInfo.Insulation || '') : '';
-        const evalRes = hasNameplate ? getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins) : { pfStatusText: '-', pfStatusCls: '', capStatusText: '-', capStatusCls: '' };
+        const evalRes = getBushingEvaluation(pf20, npPf, cap, npCap, mfg, ins);
 
-        let pf20Str = (hasNameplate && pf20 > 0) ? pf20.toFixed(3) + ' %' : '-';
+        let pf20Str = pf20 > 0 ? pf20.toFixed(3) + ' %' : '-';
         let pfStatusText = evalRes.pfStatusText;
         let pfStatusCls = evalRes.pfStatusCls;
 
@@ -1293,13 +1308,13 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="lbl">${p.label}</td>
-          <td>${(hasNameplate && ma > 0) ? ma.toFixed(3) : '-'}</td>
-          <td>${(hasNameplate && watt > 0) ? watt.toFixed(2) : '-'}</td>
-          <td>${(hasNameplate && pf > 0) ? pf.toFixed(3) + ' %' : '-'}</td>
+          <td>${ma > 0 ? ma.toFixed(3) : '-'}</td>
+          <td>${watt > 0 ? watt.toFixed(2) : '-'}</td>
+          <td>${pf > 0 ? pf.toFixed(3) + ' %' : '-'}</td>
           <td class="val-bold">${pf20Str}</td>
           <td>${pfErr}</td>
           <td class="${pfStatusCls}">${pfStatusText}</td>
-          <td class="val-bold">${(hasNameplate && cap > 0) ? cap.toFixed(1) : '-'}</td>
+          <td class="val-bold">${cap > 0 ? cap.toFixed(1) : '-'}</td>
           <td>${capDev}</td>
           <td class="${capStatusCls}">${capStatusText}</td>
         `;
