@@ -166,17 +166,6 @@
       margin-bottom: 20px;
     }
 
-    .header-logo-group {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .company-logo {
-      height: 48px;
-      object-fit: contain;
-    }
-
     .header-titles h1 {
       font-size: 1.35rem;
       font-weight: 700;
@@ -192,15 +181,9 @@
       margin-top: 2px;
     }
 
-    .header-meta {
-      text-align: right;
-      font-size: 0.8rem;
-      color: #4b5563;
-      line-height: 1.4;
-    }
-
-    .header-meta strong {
-      color: #111827;
+    .logo-container .company-logo {
+      height: 48px;
+      object-fit: contain;
     }
 
     /* Part Banners */
@@ -1232,17 +1215,12 @@
 
     <!-- Header -->
     <div class="report-header">
-      <div class="header-logo-group">
-        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="company-logo" onerror="this.style.display='none'">
-        <div class="header-titles">
-          <h1>GPSC Group Transformer Asset Management</h1>
-          <h2>Comprehensive Diagnostic Evaluation & Criteria Assessment Report</h2>
-        </div>
+      <div class="header-titles">
+        <h1>GPSC Group Transformer Asset Management</h1>
+        <h2>Comprehensive Diagnostic Evaluation & Criteria Assessment Report</h2>
       </div>
-      <div class="header-meta">
-        <div>Assessment Date: <strong id="eval-date">02-Aug-2026</strong></div>
-        <div>Standard: <strong>GPSC / IEEE C57.152</strong></div>
-        <div>Report ID: <strong id="eval-report-id">TR-EVAL-6310537</strong></div>
+      <div class="logo-container">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="company-logo" onerror="this.style.display='none'">
       </div>
     </div>
 
