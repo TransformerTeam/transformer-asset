@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Oil Evaluation Criteria -->
+  <script src="oil_criteria.js"></script>
 
   <style>
     :root {
@@ -2477,6 +2479,151 @@
       return null;
     }
 
+    // Dynamic Standard & Limit Generator for Test Methods
+    function getMethodStandardAndLimit(methodName, item, ptName, subName) {
+      const mLower = String(methodName || '').toLowerCase();
+      const ptLower = String(ptName || '').toLowerCase();
+      const subLower = String(subName || '').toLowerCase();
+
+      // Voltage and fluid type for dynamic criteria
+      let hvVoltage = parseFloat(item.voltage || item.ratedVoltage || item.HV_RATED || item['Rated Voltage (kV)'] || '115');
+      if (isNaN(hvVoltage)) hvVoltage = 115;
+      const fluidType = item.fluid || item.fluidType || item.TYPE_OF_INSULATION || 'Mineral oil';
+      const isEster = String(fluidType).toLowerCase().includes('ester');
+      const vClass = hvVoltage <= 69 ? 1 : (hvVoltage < 230 ? 2 : 3);
+
+      // 1. Dielectric Breakdown
+      if (mLower.includes('dielectric breakdown') || mLower.includes('breakdown voltage')) {
+        const lim = vClass === 1 ? '≥ 45.0 kV' : (vClass === 2 ? '≥ 52.0 kV' : '≥ 55.0 kV');
+        return `ASTM D1816, Limit: ${lim}`;
+      }
+
+      // 2. Water Content
+      if (mLower.includes('water content') || mLower.includes('moisture')) {
+        let lim = '';
+        if (!isEster) {
+          lim = vClass === 1 ? '≤ 30 ppm' : (vClass === 2 ? '≤ 20 ppm' : '≤ 15 ppm');
+        } else {
+          lim = vClass === 1 ? '≤ 300 ppm' : (vClass === 2 ? '≤ 150 ppm' : '≤ 100 ppm');
+        }
+        return `ASTM D1533, Limit: ${lim}`;
+      }
+
+      // 3. Power Factor at 25 °C
+      if (mLower.includes('25') && (mLower.includes('power factor') || mLower.includes('pf'))) {
+        return isEster ? 'ASTM D924, Limit: ≤ 2.00%' : 'ASTM D924, Limit: ≤ 0.40%';
+      }
+
+      // 4. Power Factor at 100 °C
+      if (mLower.includes('100') && (mLower.includes('power factor') || mLower.includes('pf'))) {
+        return isEster ? 'ASTM D924, Limit: ≤ 5.00%' : 'ASTM D924, Limit: ≤ 4.00%';
+      }
+
+      // 5. IFT / Interfacial Tension
+      if (mLower.includes('ift') || mLower.includes('interfacial tension')) {
+        const lim = vClass === 1 ? '≥ 28.0 mN/m' : (vClass === 2 ? '≥ 33.0 mN/m' : '≥ 35.0 mN/m');
+        return `ASTM D971, Limit: ${lim}`;
+      }
+
+      // 6. Acidity / Neutralization Number
+      if (mLower.includes('acidity') || mLower.includes('neutralization')) {
+        const lim = vClass === 1 ? '≤ 0.17 mgKOH/g' : (vClass === 2 ? '≤ 0.12 mgKOH/g' : '≤ 0.07 mgKOH/g');
+        return `ASTM D974, Limit: ${lim}`;
+      }
+
+      // 7. Oil Conductivity
+      if (mLower.includes('conductivity')) {
+        return 'IEC 61620, Limit: ≤ 4.0 pS/m';
+      }
+
+      // 8. Color Number
+      if (mLower.includes('color')) {
+        return 'ASTM D1500, Limit: ≤ 2.0';
+      }
+
+      // 9. Inhibitor
+      if (mLower.includes('inhibitor')) {
+        return 'IEC 60296, Limit: ≥ 0.10 wt%';
+      }
+
+      // 10. Furan [2-FAL]
+      if (mLower.includes('furan')) {
+        return 'ASTM D5837, Limit: ≤ 700 ppb';
+      }
+
+      // 11. Estimated DP
+      if (mLower.includes('estimated dp') || mLower.includes('dp')) {
+        return 'Chendong / IEC, Limit: ≥ 700 DP';
+      }
+
+      // 12. Sludge condition
+      if (mLower.includes('sludge')) {
+        return 'IEC 60422, Limit: ≤ 0.018 wt%';
+      }
+
+      // 13. Corrosive Sulfur
+      if (mLower.includes('corrosive sulfur') || mLower.includes('sulfur')) {
+        return 'DIN 51353, Limit: Non-corr. (≤ 2e)';
+      }
+
+      // 14. Passivator
+      if (mLower.includes('passivator') || mLower.includes('irgamet')) {
+        return 'IEC 60666, Limit: ≥ 70 ppm';
+      }
+
+      // 15. DGA / Dissolved Gas Analysis
+      if (mLower.includes('dga') || mLower.includes('dissolve') || subLower.includes('dga')) {
+        return 'IEEE C57.104-2019, Status: 1 (Normal)';
+      }
+
+      // 16. Visual Inspection
+      if (mLower.includes('visual')) {
+        return 'IEEE C57.152-2013, Normal Condition';
+      }
+
+      // 17. Insulation Resistance & PI
+      if (mLower.includes('insulation resistance') || mLower.includes('pi')) {
+        return 'IEEE C57.152-2013, PI ≥ 1.25, IR ≥ 10,000 MΩ';
+      }
+
+      // 18. Power Factor & Capacitance (Winding / Active Part)
+      if (ptLower.includes('active') && (mLower.includes('power factor') || mLower.includes('pf') || mLower.includes('capacitance'))) {
+        return 'IEEE C57.152-2013, PF ≤ 0.50%, Cap Dev ≤ ±5%';
+      }
+
+      // 19. Turn Ratio
+      if (mLower.includes('turn ratio') || mLower.includes('ratio')) {
+        return 'IEEE C57.152-2013, Ratio Error ≤ ±0.50%';
+      }
+
+      // 20. Exciting Current
+      if (mLower.includes('exciting')) {
+        return 'IEEE C57.152-2013, Phase Diff ≤ 5%';
+      }
+
+      // 21. Winding Resistance
+      if (mLower.includes('winding resistance') || mLower.includes('resistance')) {
+        return 'IEEE C57.152-2013, Phase Dev ≤ 2.0%';
+      }
+
+      // 22. Short Circuit Impedance
+      if (mLower.includes('short circuit') || mLower.includes('impedance')) {
+        return 'IEEE C57.152-2013, Dev from Nameplate ≤ ±3.0%';
+      }
+
+      // 23. Bushing Power Factor
+      if (ptLower.includes('bushing') && (mLower.includes('power factor') || mLower.includes('pf') || mLower.includes('capacitance'))) {
+        return 'IEEE C57.152-2013, PF ≤ 0.50%, Cap Dev ≤ ±5%';
+      }
+
+      // 24. Surge Arrester
+      if (ptLower.includes('arrester') || mLower.includes('arrester') || mLower.includes('surge')) {
+        return 'IEEE C57.152-2013, Leakage ≤ 0.50 mA, IR ≥ 10,000 MΩ';
+      }
+
+      return '';
+    }
+
     function renderPart1Table(item) {
       const tbody = document.getElementById('part1-table-body');
       if (!tbody) return;
@@ -2805,16 +2952,16 @@
               html += `<td class="cell-sub-pt" rowspan="${subRowCount}">${subObj.sub}</td>`;
             }
 
-            // 3. Test Method (First line bold with Report Link, second line regular subtext)
+            // 3. Test Method (First line bold with Report Link, second line regular subtext with dynamic Standard & Limit)
             const repInfo = getReportLinkForMethod(ptObj.pt, subObj.sub, m.name, serialVal);
             const reportLinkHtml = repInfo ? ` <a href="${repInfo.url}" target="_blank" class="method-report-link" title="${repInfo.title}"><i class="${repInfo.icon}"></i></a>` : '';
 
-            let methodDisplayName = `<span style="font-weight: 700; color: #0f172a;">${m.name}</span>${reportLinkHtml}`;
-            const subTextStr = m.subText || (m.name.includes('Insulation Resistance and PI') ? 'IEEE C57.152-2013, PI > 1.25' : '');
-            if (subTextStr) {
-              methodDisplayName += `<br><span style="font-size: 0.54rem; color: #64748b; font-weight: 400; line-height: 1.15; display: inline-block; margin-top: 1px;">${subTextStr}</span>`;
+            const stdLimitStr = getMethodStandardAndLimit(m.name, item, ptObj.pt, subObj.sub) || m.subText || '';
+            let methodDisplayName = `<span style="font-weight: 700; color: #0f172a; font-size: 0.78rem;">${m.name}</span>${reportLinkHtml}`;
+            if (stdLimitStr) {
+              methodDisplayName += `<br><span style="font-size: 0.65rem; color: #64748b; font-weight: 500; line-height: 1.25; display: inline-block; margin-top: 1.5px;">${stdLimitStr}</span>`;
             }
-            html += `<td style="line-height: 1.25; padding: 3px 6px;">${methodDisplayName}</td>`;
+            html += `<td style="line-height: 1.25; padding: 4px 6px;">${methodDisplayName}</td>`;
 
             // 4. Testing Date
             let dateStyle = '';
