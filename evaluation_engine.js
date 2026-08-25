@@ -271,7 +271,7 @@ function buildPtStructure(item) {
         }
       ]
     },
-    // Bushing (Dynamic HV & LV Phase support)
+    // Bushing (Grouped 3 phases into Sub-PT Component)
     {
       pt: 'Bushing', weight: 25,
       subs: hasLvBushing ? [
@@ -282,42 +282,14 @@ function buildPtStructure(item) {
           ]
         },
         {
-          sub: 'HV Phase A', full: 100, subWeight: 16.6667,
+          sub: 'HV Bushing', full: 100, subWeight: 50,
           methods: [
             { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
-          sub: 'HV Phase B', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'HV Phase C', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase A', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase B', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase C', full: 100, subWeight: 16.6667,
+          sub: 'LV Bushing', full: 100, subWeight: 50,
           methods: [
             { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
@@ -331,21 +303,7 @@ function buildPtStructure(item) {
           ]
         },
         {
-          sub: 'Phase A', full: 100, subWeight: 33.3333,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'Phase B', full: 100, subWeight: 33.3333,
-          methods: [
-            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'Phase C', full: 100, subWeight: 33.3333,
+          sub: 'HV Bushing', full: 100, subWeight: 100,
           methods: [
             { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
@@ -353,7 +311,7 @@ function buildPtStructure(item) {
         }
       ]
     },
-    // Arrester (Dynamic HV & LV Phase support)
+    // Arrester (Grouped 3 phases into Sub-PT Component)
     {
       pt: 'Arrester', weight: 5,
       subs: hasLvArrester ? [
@@ -364,42 +322,14 @@ function buildPtStructure(item) {
           ]
         },
         {
-          sub: 'HV Phase A', full: 100, subWeight: 16.6667,
+          sub: 'HV Arrester', full: 100, subWeight: 50,
           methods: [
             { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
-          sub: 'HV Phase B', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'HV Phase C', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase A', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase B', full: 100, subWeight: 16.6667,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'LV Phase C', full: 100, subWeight: 16.6667,
+          sub: 'LV Arrester', full: 100, subWeight: 50,
           methods: [
             { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
@@ -413,21 +343,7 @@ function buildPtStructure(item) {
           ]
         },
         {
-          sub: 'Phase A', full: 100, subWeight: 33.3333,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'Phase B', full: 100, subWeight: 33.3333,
-          methods: [
-            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
-          ]
-        },
-        {
-          sub: 'Phase C', full: 100, subWeight: 33.3333,
+          sub: 'HV Arrester', full: 100, subWeight: 100,
           methods: [
             { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
             { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
@@ -1655,81 +1571,143 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, serialVal) : null;
     if (latestBush) {
       const date = latestBush.Date || latestBush.date;
-      
-      let pfKey = 'bushing_h1_pf_20c';
-      let altPfKey = 'bushing_h1_pf_tan';
-      let capKey = 'bushing_h1_c1';
-      let chgKey = 'maxbch1_change';
-      let phaseLabel = 'HV Bushing Phase A (H1)';
-
-      const isLvPhase = subLower.includes('lv') || subLower.includes('x1') || subLower.includes('x2') || subLower.includes('x3');
-
-      if (isLvPhase) {
-        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('x2')) {
-          pfKey = (latestBush.xbushing_h2_pf_20c && latestBush.xbushing_h2_pf_20c !== '-') ? 'xbushing_h2_pf_20c' : 'bushing_l2_pf_20c';
-          altPfKey = (latestBush.xbushing_h2_pf_tan && latestBush.xbushing_h2_pf_tan !== '-') ? 'xbushing_h2_pf_tan' : 'bushing_l2_pf_tan';
-          capKey = (latestBush.xbushing_h2_c1 && latestBush.xbushing_h2_c1 !== '-') ? 'xbushing_h2_c1' : 'bushing_l2_cap';
-          chgKey = 'maxbch2_change';
-          phaseLabel = 'LV Bushing Phase B (X2)';
-        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('x3')) {
-          pfKey = (latestBush.xbushing_h3_pf_20c && latestBush.xbushing_h3_pf_20c !== '-') ? 'xbushing_h3_pf_20c' : 'bushing_l3_pf_20c';
-          altPfKey = (latestBush.xbushing_h3_pf_tan && latestBush.xbushing_h3_pf_tan !== '-') ? 'xbushing_h3_pf_tan' : 'bushing_l3_pf_tan';
-          capKey = (latestBush.xbushing_h3_c1 && latestBush.xbushing_h3_c1 !== '-') ? 'xbushing_h3_c1' : 'bushing_l3_cap';
-          chgKey = 'maxbch3_change';
-          phaseLabel = 'LV Bushing Phase C (X3)';
-        } else {
-          pfKey = (latestBush.xbushing_h1_pf_20c && latestBush.xbushing_h1_pf_20c !== '-') ? 'xbushing_h1_pf_20c' : 'bushing_l1_pf_20c';
-          altPfKey = (latestBush.xbushing_h1_pf_tan && latestBush.xbushing_h1_pf_tan !== '-') ? 'xbushing_h1_pf_tan' : 'bushing_l1_pf_tan';
-          capKey = (latestBush.xbushing_h1_c1 && latestBush.xbushing_h1_c1 !== '-') ? 'xbushing_h1_c1' : 'bushing_l1_cap';
-          chgKey = 'maxbch1_change';
-          phaseLabel = 'LV Bushing Phase A (X1)';
-        }
-      } else {
-        // HV Bushing
-        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
-          pfKey = 'bushing_h2_pf_20c';
-          altPfKey = 'bushing_h2_pf_tan';
-          capKey = 'bushing_h2_c1';
-          chgKey = 'maxbch2_change';
-          phaseLabel = 'HV Bushing Phase B (H2)';
-        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
-          pfKey = 'bushing_h3_pf_20c';
-          altPfKey = 'bushing_h3_pf_tan';
-          capKey = 'bushing_h3_c1';
-          chgKey = 'maxbch3_change';
-          phaseLabel = 'HV Bushing Phase C (H3)';
-        } else {
-          pfKey = 'bushing_h1_pf_20c';
-          altPfKey = 'bushing_h1_pf_tan';
-          capKey = 'bushing_h1_c1';
-          chgKey = 'maxbch1_change';
-          phaseLabel = 'HV Bushing Phase A (H1)';
-        }
-      }
+      const isLv = subLower.includes('lv') || subLower.includes('x');
 
       if (nameLower.includes('power factor') || nameLower.includes('pf')) {
-        const rawPf = latestBush[pfKey] !== undefined && latestBush[pfKey] !== '-' ? latestBush[pfKey] : latestBush[altPfKey];
-        if (rawPf !== undefined && rawPf !== null && rawPf !== '-' && rawPf !== 'N/A' && String(rawPf).trim() !== '') {
-          const pfNum = parseFloat(rawPf);
-          if (!isNaN(pfNum) && pfNum > 0) {
-            const score = pfNum <= 0.5 ? 5 : (pfNum <= 0.7 ? 4 : (pfNum <= 1.0 ? 3 : (pfNum <= 1.5 ? 2 : 1)));
-            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Power Factor (IEEE C57.152: Normal ≤ 0.5%)`;
-            return { value: `${pfNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
+        if (isLv) {
+          const pfX1 = parseFloat(latestBush.xbushing_h1_pf_20c && latestBush.xbushing_h1_pf_20c !== '-' ? latestBush.xbushing_h1_pf_20c : (latestBush.xbushing_h1_pf_tan && latestBush.xbushing_h1_pf_tan !== '-' ? latestBush.xbushing_h1_pf_tan : latestBush.bushing_l1_pf_20c));
+          const pfX2 = parseFloat(latestBush.xbushing_h2_pf_20c && latestBush.xbushing_h2_pf_20c !== '-' ? latestBush.xbushing_h2_pf_20c : (latestBush.xbushing_h2_pf_tan && latestBush.xbushing_h2_pf_tan !== '-' ? latestBush.xbushing_h2_pf_tan : latestBush.bushing_l2_pf_20c));
+          const pfX3 = parseFloat(latestBush.xbushing_h3_pf_20c && latestBush.xbushing_h3_pf_20c !== '-' ? latestBush.xbushing_h3_pf_20c : (latestBush.xbushing_h3_pf_tan && latestBush.xbushing_h3_pf_tan !== '-' ? latestBush.xbushing_h3_pf_tan : latestBush.bushing_l3_pf_20c));
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(pfX1) && pfX1 > 0) {
+            parts.push(`X1: ${pfX1.toFixed(2)}%`);
+            scores.push(pfX1 <= 0.5 ? 5 : (pfX1 <= 0.7 ? 4 : (pfX1 <= 1.0 ? 3 : (pfX1 <= 1.5 ? 2 : 1))));
+          }
+          if (!isNaN(pfX2) && pfX2 > 0) {
+            parts.push(`X2: ${pfX2.toFixed(2)}%`);
+            scores.push(pfX2 <= 0.5 ? 5 : (pfX2 <= 0.7 ? 4 : (pfX2 <= 1.0 ? 3 : (pfX2 <= 1.5 ? 2 : 1))));
+          }
+          if (!isNaN(pfX3) && pfX3 > 0) {
+            parts.push(`X3: ${pfX3.toFixed(2)}%`);
+            scores.push(pfX3 <= 0.5 ? 5 : (pfX3 <= 0.7 ? 4 : (pfX3 <= 1.0 ? 3 : (pfX3 <= 1.5 ? 2 : 1))));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check LV Bushing Power Factor (IEEE C57.152: Normal ≤ 0.5%)';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
+          }
+        } else {
+          // HV Bushing
+          const pfH1 = parseFloat(latestBush.bushing_h1_pf_20c && latestBush.bushing_h1_pf_20c !== '-' ? latestBush.bushing_h1_pf_20c : latestBush.bushing_h1_pf_tan);
+          const pfH2 = parseFloat(latestBush.bushing_h2_pf_20c && latestBush.bushing_h2_pf_20c !== '-' ? latestBush.bushing_h2_pf_20c : latestBush.bushing_h2_pf_tan);
+          const pfH3 = parseFloat(latestBush.bushing_h3_pf_20c && latestBush.bushing_h3_pf_20c !== '-' ? latestBush.bushing_h3_pf_20c : latestBush.bushing_h3_pf_tan);
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(pfH1) && pfH1 > 0) {
+            parts.push(`H1: ${pfH1.toFixed(2)}%`);
+            scores.push(pfH1 <= 0.5 ? 5 : (pfH1 <= 0.7 ? 4 : (pfH1 <= 1.0 ? 3 : (pfH1 <= 1.5 ? 2 : 1))));
+          }
+          if (!isNaN(pfH2) && pfH2 > 0) {
+            parts.push(`H2: ${pfH2.toFixed(2)}%`);
+            scores.push(pfH2 <= 0.5 ? 5 : (pfH2 <= 0.7 ? 4 : (pfH2 <= 1.0 ? 3 : (pfH2 <= 1.5 ? 2 : 1))));
+          }
+          if (!isNaN(pfH3) && pfH3 > 0) {
+            parts.push(`H3: ${pfH3.toFixed(2)}%`);
+            scores.push(pfH3 <= 0.5 ? 5 : (pfH3 <= 0.7 ? 4 : (pfH3 <= 1.0 ? 3 : (pfH3 <= 1.5 ? 2 : 1))));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check HV Bushing Power Factor (IEEE C57.152: Normal ≤ 0.5%)';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
           }
         }
       } else if (nameLower.includes('capacitance') || nameLower.includes('cap')) {
-        const rawChg = latestBush[chgKey];
-        const rawCap = latestBush[capKey];
-        const chgNum = (rawChg !== undefined && rawChg !== null && rawChg !== '-' && rawChg !== 'N/A') ? parseFloat(rawChg) : NaN;
-        const capNum = (rawCap !== undefined && rawCap !== null && rawCap !== '-' && rawCap !== 'N/A') ? parseFloat(rawCap) : NaN;
+        if (isLv) {
+          const chg1 = parseFloat(latestBush.maxbch1_change);
+          const chg2 = parseFloat(latestBush.maxbch2_change);
+          const chg3 = parseFloat(latestBush.maxbch3_change);
 
-        if (!isNaN(chgNum)) {
-          const absChg = Math.abs(chgNum);
-          const score = absChg <= 1.0 ? 5 : (absChg <= 3.0 ? 4 : (absChg <= 5.0 ? 3 : (absChg <= 7.0 ? 2 : 1)));
-          const rec = score >= 4 ? '-' : `Check ${phaseLabel} Capacitance Change (IEEE C57.152: ≤ 5%)`;
-          return { value: `%Dev: ${chgNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
-        } else if (!isNaN(capNum) && capNum > 0) {
-          return { value: `C1: ${capNum.toFixed(1)} pF`, testDate: date, ratingScore: 5, recommendation: '-' };
+          const cap1 = parseFloat(latestBush.xbushing_h1_c1 && latestBush.xbushing_h1_c1 !== '-' ? latestBush.xbushing_h1_c1 : latestBush.bushing_l1_cap);
+          const cap2 = parseFloat(latestBush.xbushing_h2_c1 && latestBush.xbushing_h2_c1 !== '-' ? latestBush.xbushing_h2_c1 : latestBush.bushing_l2_cap);
+          const cap3 = parseFloat(latestBush.xbushing_h3_c1 && latestBush.xbushing_h3_c1 !== '-' ? latestBush.xbushing_h3_c1 : latestBush.bushing_l3_cap);
+
+          const parts = [];
+          const scores = [];
+          const hasDev = !isNaN(chg1) || !isNaN(chg2) || !isNaN(chg3);
+
+          if (hasDev) {
+            if (!isNaN(chg1)) {
+              parts.push(`X1: ${chg1 >= 0 ? '+' : ''}${chg1.toFixed(2)}%`);
+              const abs = Math.abs(chg1);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (!isNaN(chg2)) {
+              parts.push(`X2: ${chg2 >= 0 ? '+' : ''}${chg2.toFixed(2)}%`);
+              const abs = Math.abs(chg2);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (!isNaN(chg3)) {
+              parts.push(`X3: ${chg3 >= 0 ? '+' : ''}${chg3.toFixed(2)}%`);
+              const abs = Math.abs(chg3);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (parts.length > 0) {
+              const minScore = Math.min(...scores);
+              const rec = minScore >= 4 ? '-' : 'Check LV Bushing Capacitance Change (IEEE C57.152: ≤ 5%)';
+              return { value: `%Dev: ${parts.join(', ')}`, testDate: date, ratingScore: minScore, recommendation: rec };
+            }
+          } else if (!isNaN(cap1) || !isNaN(cap2) || !isNaN(cap3)) {
+            if (!isNaN(cap1) && cap1 > 0) parts.push(`X1: ${cap1.toFixed(1)} pF`);
+            if (!isNaN(cap2) && cap2 > 0) parts.push(`X2: ${cap2.toFixed(1)} pF`);
+            if (!isNaN(cap3) && cap3 > 0) parts.push(`X3: ${cap3.toFixed(1)} pF`);
+            return { value: `C1: ${parts.join(', ')}`, testDate: date, ratingScore: 5, recommendation: '-' };
+          }
+        } else {
+          // HV Bushing
+          const chg1 = parseFloat(latestBush.maxbch1_change);
+          const chg2 = parseFloat(latestBush.maxbch2_change);
+          const chg3 = parseFloat(latestBush.maxbch3_change);
+
+          const cap1 = parseFloat(latestBush.bushing_h1_c1);
+          const cap2 = parseFloat(latestBush.bushing_h2_c1);
+          const cap3 = parseFloat(latestBush.bushing_h3_c1);
+
+          const parts = [];
+          const scores = [];
+          const hasDev = !isNaN(chg1) || !isNaN(chg2) || !isNaN(chg3);
+
+          if (hasDev) {
+            if (!isNaN(chg1)) {
+              parts.push(`H1: ${chg1 >= 0 ? '+' : ''}${chg1.toFixed(2)}%`);
+              const abs = Math.abs(chg1);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (!isNaN(chg2)) {
+              parts.push(`H2: ${chg2 >= 0 ? '+' : ''}${chg2.toFixed(2)}%`);
+              const abs = Math.abs(chg2);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (!isNaN(chg3)) {
+              parts.push(`H3: ${chg3 >= 0 ? '+' : ''}${chg3.toFixed(2)}%`);
+              const abs = Math.abs(chg3);
+              scores.push(abs <= 1.0 ? 5 : (abs <= 3.0 ? 4 : (abs <= 5.0 ? 3 : (abs <= 7.0 ? 2 : 1))));
+            }
+            if (parts.length > 0) {
+              const minScore = Math.min(...scores);
+              const rec = minScore >= 4 ? '-' : 'Check HV Bushing Capacitance Change (IEEE C57.152: ≤ 5%)';
+              return { value: `%Dev: ${parts.join(', ')}`, testDate: date, ratingScore: minScore, recommendation: rec };
+            }
+          } else if (!isNaN(cap1) || !isNaN(cap2) || !isNaN(cap3)) {
+            if (!isNaN(cap1) && cap1 > 0) parts.push(`H1: ${cap1.toFixed(1)} pF`);
+            if (!isNaN(cap2) && cap2 > 0) parts.push(`H2: ${cap2.toFixed(1)} pF`);
+            if (!isNaN(cap3) && cap3 > 0) parts.push(`H3: ${cap3.toFixed(1)} pF`);
+            return { value: `C1: ${parts.join(', ')}`, testDate: date, ratingScore: 5, recommendation: '-' };
+          }
         }
       }
     }
@@ -1741,76 +1719,112 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, serialVal) : null;
     if (latestSurge) {
       const date = latestSurge.Date || latestSurge.date;
-
-      const isLvPhase = subLower.includes('lv') || subLower.includes('x1') || subLower.includes('x2') || subLower.includes('x3');
-
-      let curKey = 'h1_current';
-      let altCurKey = 'maxma1';
-      let wKey = 'h1_watt_loss';
-      let altWKey = 'maxw1';
-      let phaseLabel = 'HV Arrester Phase A (H1)';
-
-      if (isLvPhase) {
-        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('x2')) {
-          curKey = (latestSurge.xh2_current && latestSurge.xh2_current !== '-') ? 'xh2_current' : 'h2_current';
-          altCurKey = curKey;
-          wKey = (latestSurge.xh2_watt_loss && latestSurge.xh2_watt_loss !== '-') ? 'xh2_watt_loss' : 'h2_watt_loss';
-          altWKey = wKey;
-          phaseLabel = 'LV Arrester Phase B (X2)';
-        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('x3')) {
-          curKey = (latestSurge.xh3_current && latestSurge.xh3_current !== '-') ? 'xh3_current' : 'h3_current';
-          altCurKey = curKey;
-          wKey = (latestSurge.xh3_watt_loss && latestSurge.xh3_watt_loss !== '-') ? 'xh3_watt_loss' : 'h3_watt_loss';
-          altWKey = wKey;
-          phaseLabel = 'LV Arrester Phase C (X3)';
-        } else {
-          curKey = (latestSurge.xh1_current && latestSurge.xh1_current !== '-') ? 'xh1_current' : 'h1_current';
-          altCurKey = curKey;
-          wKey = (latestSurge.xh1_watt_loss && latestSurge.xh1_watt_loss !== '-') ? 'xh1_watt_loss' : 'h1_watt_loss';
-          altWKey = wKey;
-          phaseLabel = 'LV Arrester Phase A (X1)';
-        }
-      } else {
-        // HV Arrester
-        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
-          curKey = 'h2_current';
-          altCurKey = 'maxma2';
-          wKey = 'h2_watt_loss';
-          altWKey = 'maxw2';
-          phaseLabel = 'HV Arrester Phase B (H2)';
-        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
-          curKey = 'h3_current';
-          altCurKey = 'maxma3';
-          wKey = 'h3_watt_loss';
-          altWKey = 'maxw3';
-          phaseLabel = 'HV Arrester Phase C (H3)';
-        } else {
-          curKey = 'h1_current';
-          altCurKey = 'maxma1';
-          wKey = 'h1_watt_loss';
-          altWKey = 'maxw1';
-          phaseLabel = 'HV Arrester Phase A (H1)';
-        }
-      }
+      const isLv = subLower.includes('lv') || subLower.includes('x');
 
       if (nameLower.includes('leakage current') || nameLower.includes('current')) {
-        const rawCur = latestSurge[curKey] !== undefined && latestSurge[curKey] !== '-' ? latestSurge[curKey] : latestSurge[altCurKey];
-        if (rawCur !== undefined && rawCur !== null && rawCur !== '-' && rawCur !== 'N/A' && String(rawCur).trim() !== '') {
-          const curNum = parseFloat(rawCur);
-          if (!isNaN(curNum) && curNum > 0) {
-            const score = curNum <= 0.5 ? 5 : (curNum <= 1.0 ? 4 : (curNum <= 2.0 ? 3 : 1));
-            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Arrester Leakage Current`;
-            return { value: `${curNum.toFixed(2)} mA`, testDate: date, ratingScore: score, recommendation: rec };
+        if (isLv) {
+          const cur1 = parseFloat(latestSurge.xh1_current);
+          const cur2 = parseFloat(latestSurge.xh2_current);
+          const cur3 = parseFloat(latestSurge.xh3_current);
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(cur1) && cur1 > 0) {
+            parts.push(`X1: ${cur1.toFixed(2)} mA`);
+            scores.push(cur1 <= 0.5 ? 5 : (cur1 <= 1.0 ? 4 : (cur1 <= 2.0 ? 3 : 1)));
+          }
+          if (!isNaN(cur2) && cur2 > 0) {
+            parts.push(`X2: ${cur2.toFixed(2)} mA`);
+            scores.push(cur2 <= 0.5 ? 5 : (cur2 <= 1.0 ? 4 : (cur2 <= 2.0 ? 3 : 1)));
+          }
+          if (!isNaN(cur3) && cur3 > 0) {
+            parts.push(`X3: ${cur3.toFixed(2)} mA`);
+            scores.push(cur3 <= 0.5 ? 5 : (cur3 <= 1.0 ? 4 : (cur3 <= 2.0 ? 3 : 1)));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check LV Arrester Leakage Current';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
+          }
+        } else {
+          // HV Arrester
+          const cur1 = parseFloat(latestSurge.h1_current && latestSurge.h1_current !== '-' ? latestSurge.h1_current : latestSurge.maxma1);
+          const cur2 = parseFloat(latestSurge.h2_current && latestSurge.h2_current !== '-' ? latestSurge.h2_current : latestSurge.maxma2);
+          const cur3 = parseFloat(latestSurge.h3_current && latestSurge.h3_current !== '-' ? latestSurge.h3_current : latestSurge.maxma3);
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(cur1) && cur1 > 0) {
+            parts.push(`H1: ${cur1.toFixed(2)} mA`);
+            scores.push(cur1 <= 0.5 ? 5 : (cur1 <= 1.0 ? 4 : (cur1 <= 2.0 ? 3 : 1)));
+          }
+          if (!isNaN(cur2) && cur2 > 0) {
+            parts.push(`H2: ${cur2.toFixed(2)} mA`);
+            scores.push(cur2 <= 0.5 ? 5 : (cur2 <= 1.0 ? 4 : (cur2 <= 2.0 ? 3 : 1)));
+          }
+          if (!isNaN(cur3) && cur3 > 0) {
+            parts.push(`H3: ${cur3.toFixed(2)} mA`);
+            scores.push(cur3 <= 0.5 ? 5 : (cur3 <= 1.0 ? 4 : (cur3 <= 2.0 ? 3 : 1)));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check HV Arrester Leakage Current';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
           }
         }
       } else if (nameLower.includes('watt loss') || nameLower.includes('watt')) {
-        const rawW = latestSurge[wKey] !== undefined && latestSurge[wKey] !== '-' ? latestSurge[wKey] : latestSurge[altWKey];
-        if (rawW !== undefined && rawW !== null && rawW !== '-' && rawW !== 'N/A' && String(rawW).trim() !== '') {
-          const wNum = parseFloat(rawW);
-          if (!isNaN(wNum) && wNum > 0) {
-            const score = wNum <= 50 ? 5 : (wNum <= 100 ? 4 : (wNum <= 200 ? 3 : 1));
-            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Arrester Watt Loss`;
-            return { value: `${wNum.toFixed(2)} W`, testDate: date, ratingScore: score, recommendation: rec };
+        if (isLv) {
+          const w1 = parseFloat(latestSurge.xh1_watt_loss);
+          const w2 = parseFloat(latestSurge.xh2_watt_loss);
+          const w3 = parseFloat(latestSurge.xh3_watt_loss);
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(w1) && w1 > 0) {
+            parts.push(`X1: ${w1.toFixed(2)} W`);
+            scores.push(w1 <= 50 ? 5 : (w1 <= 100 ? 4 : (w1 <= 200 ? 3 : 1)));
+          }
+          if (!isNaN(w2) && w2 > 0) {
+            parts.push(`X2: ${w2.toFixed(2)} W`);
+            scores.push(w2 <= 50 ? 5 : (w2 <= 100 ? 4 : (w2 <= 200 ? 3 : 1)));
+          }
+          if (!isNaN(w3) && w3 > 0) {
+            parts.push(`X3: ${w3.toFixed(2)} W`);
+            scores.push(w3 <= 50 ? 5 : (w3 <= 100 ? 4 : (w3 <= 200 ? 3 : 1)));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check LV Arrester Watt Loss';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
+          }
+        } else {
+          // HV Arrester
+          const w1 = parseFloat(latestSurge.h1_watt_loss && latestSurge.h1_watt_loss !== '-' ? latestSurge.h1_watt_loss : latestSurge.maxw1);
+          const w2 = parseFloat(latestSurge.h2_watt_loss && latestSurge.h2_watt_loss !== '-' ? latestSurge.h2_watt_loss : latestSurge.maxw2);
+          const w3 = parseFloat(latestSurge.h3_watt_loss && latestSurge.h3_watt_loss !== '-' ? latestSurge.h3_watt_loss : latestSurge.maxw3);
+
+          const parts = [];
+          const scores = [];
+          if (!isNaN(w1) && w1 > 0) {
+            parts.push(`H1: ${w1.toFixed(2)} W`);
+            scores.push(w1 <= 50 ? 5 : (w1 <= 100 ? 4 : (w1 <= 200 ? 3 : 1)));
+          }
+          if (!isNaN(w2) && w2 > 0) {
+            parts.push(`H2: ${w2.toFixed(2)} W`);
+            scores.push(w2 <= 50 ? 5 : (w2 <= 100 ? 4 : (w2 <= 200 ? 3 : 1)));
+          }
+          if (!isNaN(w3) && w3 > 0) {
+            parts.push(`H3: ${w3.toFixed(2)} W`);
+            scores.push(w3 <= 50 ? 5 : (w3 <= 100 ? 4 : (w3 <= 200 ? 3 : 1)));
+          }
+
+          if (parts.length > 0) {
+            const minScore = Math.min(...scores);
+            const rec = minScore >= 4 ? '-' : 'Check HV Arrester Watt Loss';
+            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
           }
         }
       }
