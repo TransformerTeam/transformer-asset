@@ -1198,13 +1198,13 @@
     </div>
 
     <div class="btn-group">
-      <a id="eval-oil-link" href="oil_report.html" target="_blank" class="btn btn-secondary" title="Open Insulating Oil Quality Test Report" style="text-decoration: none;">
-        <i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> Oil Report
-      </a>
+      <button class="btn btn-primary" onclick="printAllReports()" id="btn-print-all-reports" title="Print All 12 Transformer Diagnostic Reports as Unified PDF" style="background: linear-gradient(135deg, #1e3a8a, #4f46e5); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);">
+        <i class="fa-solid fa-file-pdf"></i> Print All Report
+      </button>
       <button class="btn btn-secondary" onclick="handleRefreshData()" id="refresh-data-btn" title="Refresh & Reload Report Data">
         <i id="refresh-spin-icon" class="fa-solid fa-arrows-rotate"></i> Refresh
       </button>
-      <button class="btn btn-primary" onclick="window.print()">
+      <button class="btn btn-secondary" onclick="window.print()" title="Print this single Evaluation Report">
         <i class="fa-solid fa-print"></i> Print PDF
       </button>
     </div>
@@ -4581,7 +4581,214 @@
         }, 1500);
       }
     }
+
+    // ==========================================
+    // Unified Print All 12 Reports Engine
+    // ==========================================
+    async function printAllReports() {
+      const serial = currentSerial || (document.getElementById('eval-transformer-select') ? document.getElementById('eval-transformer-select').value : '');
+      if (!serial) {
+        alert('กรุณาเลือกหม้อแปลงก่อนพิมพ์รายงาน');
+        return;
+      }
+
+      const modal = document.getElementById('print-all-modal');
+      const bar = document.getElementById('print-all-progress-bar');
+      const statusText = document.getElementById('print-all-status-text');
+
+      if (modal) modal.classList.add('active');
+      if (bar) bar.style.width = '5%';
+
+      const REPORT_DEFS = [
+        { id: 'eval', title: '1. Evaluation Report', isCurrent: true },
+        { id: 'visual', title: '2. Visual Inspection Report', url: 'visual_report.html' },
+        { id: 'pi', title: '3. Insulation Resistance & PI Report', url: 'pi_report.html' },
+        { id: 'pf', title: '4. Overall Power Factor Report', url: 'pf_report.html' },
+        { id: 'exciting', title: '5. Exciting Current Report', url: 'exciting_report.html' },
+        { id: 'ratio', title: '6. Turn Ratio Report', url: 'ratio_report.html' },
+        { id: 'single_short', title: '7. Single-Phase Short Circuit Impedance Report', url: 'single_short_report.html' },
+        { id: 'three_short', title: '8. Three-Phase Short Circuit Impedance Report', url: 'three_short_report.html' },
+        { id: 'bushing_pf', title: '9. Bushing PF Report', url: 'bushing_pf_report.html', optional: true },
+        { id: 'surge', title: '10. Surge Arrester Report', url: 'surge_report.html', optional: true },
+        { id: 'dga', title: '11. DGA Report', url: 'dga_report.html' },
+        { id: 'oil', title: '12. Oil Properties Report', url: 'oil_report.html' }
+      ];
+
+      try {
+        let printIframe = document.getElementById('master-print-frame');
+        if (printIframe) printIframe.remove();
+
+        printIframe = document.createElement('iframe');
+        printIframe.id = 'master-print-frame';
+        printIframe.style.position = 'fixed';
+        printIframe.style.right = '0';
+        printIframe.style.bottom = '0';
+        printIframe.style.width = '0';
+        printIframe.style.height = '0';
+        printIframe.style.border = '0';
+        document.body.appendChild(printIframe);
+
+        const iframeDoc = printIframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(`<!DOCTYPE html><html><head><title>GPSC_Transformer_${serial}_All_Reports</title>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          <style>
+            * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { font-family: 'Inter', sans-serif; background: #ffffff !important; color: #000000 !important; margin: 0; padding: 0; }
+            .control-panel, .btn-group, .no-print, button, .selector-group { display: none !important; }
+            .all-reports-container { width: 100%; display: flex; flex-direction: column; }
+            .report-paper, .report-page, .report-sheet, .report-wrapper > div {
+              box-shadow: none !important;
+              border: none !important;
+              margin: 0 !important;
+              width: 100% !important;
+              max-width: 100% !important;
+              page-break-after: always !important;
+              break-after: page !important;
+              min-height: auto !important;
+            }
+            .report-page:last-child, .report-sheet:last-child {
+              page-break-after: auto !important;
+              break-after: auto !important;
+            }
+            @media print {
+              @page { size: A4 portrait; margin: 5mm 7mm; }
+              body { margin: 0; }
+              .report-paper, .report-page, .report-sheet, .report-wrapper > div {
+                page-break-after: always !important;
+                break-after: page !important;
+              }
+              .report-page:last-child, .report-sheet:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+              }
+            }
+          </style>
+        </head><body><div class="all-reports-container" id="print-container"></div></body></html>`);
+        iframeDoc.close();
+
+        const container = iframeDoc.getElementById('print-container');
+
+        document.querySelectorAll('style, link[rel="stylesheet"]').forEach(node => {
+          iframeDoc.head.appendChild(node.cloneNode(true));
+        });
+
+        // 1. Report 1 (Evaluation Report)
+        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลด: 1. Evaluation Report...`;
+        if (bar) bar.style.width = '8%';
+        const evalPaper = document.getElementById('evaluation-paper');
+        if (evalPaper) {
+          const evalClone = evalPaper.cloneNode(true);
+          evalClone.style.pageBreakAfter = 'always';
+          evalClone.style.breakAfter = 'page';
+          container.appendChild(evalClone);
+        }
+
+        // 2. Reports 2 to 12
+        for (let i = 1; i < REPORT_DEFS.length; i++) {
+          const rep = REPORT_DEFS[i];
+          const stepPct = Math.round(((i + 1) / REPORT_DEFS.length) * 95);
+          if (bar) bar.style.width = `${stepPct}%`;
+          if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลด: ${rep.title}...`;
+
+          await new Promise((resolve) => {
+            const tempIframe = document.createElement('iframe');
+            tempIframe.style.position = 'fixed';
+            tempIframe.style.width = '1200px';
+            tempIframe.style.height = '1600px';
+            tempIframe.style.left = '-9999px';
+            tempIframe.style.top = '0';
+            tempIframe.src = `${rep.url}?serial=${encodeURIComponent(serial)}&t=${Date.now()}`;
+
+            tempIframe.onload = async () => {
+              await new Promise(r => setTimeout(r, 650));
+
+              try {
+                const subDoc = tempIframe.contentWindow.document;
+                
+                subDoc.querySelectorAll('style').forEach(st => {
+                  iframeDoc.head.appendChild(st.cloneNode(true));
+                });
+
+                let hasData = true;
+                const bodyText = subDoc.body.innerText || '';
+                if (rep.optional && (bodyText.includes('No Test Data') || bodyText.includes('No test data') || bodyText.includes('No Data Available'))) {
+                  hasData = false;
+                }
+
+                if (hasData) {
+                  const pages = subDoc.querySelectorAll('.report-page, .report-sheet, .report-paper');
+                  if (pages && pages.length > 0) {
+                    pages.forEach(p => {
+                      const clone = p.cloneNode(true);
+                      clone.style.pageBreakAfter = 'always';
+                      clone.style.breakAfter = 'page';
+                      container.appendChild(clone);
+                    });
+                  } else {
+                    const wrap = subDoc.querySelector('.report-wrapper, #report-capture-area');
+                    if (wrap) {
+                      const clone = wrap.cloneNode(true);
+                      clone.style.pageBreakAfter = 'always';
+                      clone.style.breakAfter = 'page';
+                      container.appendChild(clone);
+                    }
+                  }
+                }
+              } catch (e) {
+                console.warn('Could not extract report:', rep.title, e);
+              }
+
+              tempIframe.remove();
+              resolve();
+            };
+
+            tempIframe.onerror = () => {
+              tempIframe.remove();
+              resolve();
+            };
+
+            document.body.appendChild(tempIframe);
+          });
+        }
+
+        if (bar) bar.style.width = '100%';
+        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> จัดเตรียมรายงานครบถ้วนเรียบร้อยแล้ว!`;
+
+        await new Promise(r => setTimeout(r, 500));
+        if (modal) modal.classList.remove('active');
+
+        printIframe.contentWindow.focus();
+        printIframe.contentWindow.print();
+
+      } catch (err) {
+        console.error('Print All Error:', err);
+        if (modal) modal.classList.remove('active');
+        alert('เกิดข้อผิดพลาดในการรวบรวมรายงาน: ' + err.message);
+      }
+    }
   </script>
+
+  <!-- Print All Loading Modal -->
+  <div id="print-all-modal" class="loading-modal-overlay">
+    <div class="loading-modal-box">
+      <div class="loading-spinner-wrapper">
+        <div class="loading-spinner"></div>
+        <i class="fa-solid fa-file-pdf loading-center-icon"></i>
+      </div>
+      <h3 class="loading-modal-title">กำลังจัดเตรียมชุดรายงานทั้งหมด (12 ฉบับ)</h3>
+      <p class="loading-modal-subtitle">Compiling All Transformer Diagnostic Reports...</p>
+      
+      <div class="loading-progress-track">
+        <div class="loading-progress-bar" id="print-all-progress-bar" style="width: 0%;"></div>
+      </div>
+      
+      <div class="loading-status-text" id="print-all-status-text">
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลดรายงานฉบับที่ 1/12...
+      </div>
+    </div>
+  </div>
 
   <!-- Loading Popup Modal -->
   <div id="refresh-loading-modal" class="loading-modal-overlay">
