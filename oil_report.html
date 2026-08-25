@@ -401,6 +401,20 @@
       margin-bottom: 14px;
     }
 
+    .trend-category-header {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #334155;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border-left: 3px solid var(--report-primary);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .trend-box {
       border: 1px solid var(--report-border);
       border-radius: 6px;
@@ -429,7 +443,7 @@
     }
 
     .trend-title-txt {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: var(--report-primary);
       display: flex;
@@ -866,29 +880,36 @@
         </tbody>
       </table>
 
-      <!-- 5. Historical Trend Analysis Section -->
+      <!-- 5. Historical Trend Analysis Section (ALL Items Included) -->
       <div class="section-title">
         <span>5. Historical Trend Analysis</span>
-        <span class="badge-info">Multi-Year Parameter Tracking</span>
+        <span class="badge-info">Multi-Year Parameter Tracking (All Test Items)</span>
       </div>
       
       <div class="trending-container">
-        <!-- Prominent Main Chart: Dielectric Breakdown (BDV) & Water Content -->
+        
+        <!-- 1. Prominent Main Chart: Dielectric Breakdown (BDV) & Water Content -->
         <div class="trend-box trend-box-full">
           <div class="trend-header-row">
             <div class="trend-title-txt">
               <i class="fa-solid fa-chart-line" style="color:#22c55e;"></i>
               Dielectric Breakdown Voltage (kV) &amp; Moisture in Oil (ppm)
             </div>
-            <div class="trend-stat-badge" id="trend-badge-bdv-wc">Dual-Axis Tracking</div>
+            <div class="trend-stat-badge" id="trend-badge-bdv-wc">Dual-Axis Tracking &bull; ASTM D1816 / ASTM D1533</div>
           </div>
           <div id="chart-trend-bdv-wc" class="chart-render-area" style="height: 220px;"></div>
         </div>
+
+        <!-- Section Category Header: Electrical & Physical Properties -->
+        <div class="trend-category-header">
+          <i class="fa-solid fa-bolt" style="color:#0284c7;"></i>
+          Electrical &amp; Physical Properties Trends
+        </div>
         
-        <!-- Grid of Individual Separate Charts -->
+        <!-- Grid for Category 1 Items -->
         <div class="trend-grid-2col">
           
-          <!-- 1. Power Factor at 25°C -->
+          <!-- Power Factor at 25°C -->
           <div class="trend-box">
             <div class="trend-header-row">
               <div class="trend-title-txt">
@@ -900,7 +921,7 @@
             <div id="chart-trend-pf25" class="chart-render-area" style="height: 180px;"></div>
           </div>
 
-          <!-- 2. Power Factor at 100°C -->
+          <!-- Power Factor at 100°C -->
           <div class="trend-box">
             <div class="trend-header-row">
               <div class="trend-title-txt">
@@ -912,19 +933,7 @@
             <div id="chart-trend-pf100" class="chart-render-area" style="height: 180px;"></div>
           </div>
 
-          <!-- 3. Acidity / Neutralization Number -->
-          <div class="trend-box">
-            <div class="trend-header-row">
-              <div class="trend-title-txt">
-                <i class="fa-solid fa-flask" style="color:#ef4444;"></i>
-                Neutralization Number / Acidity (mgKOH/g)
-              </div>
-              <div class="trend-stat-badge">ASTM D974 &bull; Limit: &le; 0.15 mg</div>
-            </div>
-            <div id="chart-trend-acidity" class="chart-render-area" style="height: 180px;"></div>
-          </div>
-
-          <!-- 4. Interfacial Tension (IFT) -->
+          <!-- Interfacial Tension (IFT) -->
           <div class="trend-box">
             <div class="trend-header-row">
               <div class="trend-title-txt">
@@ -936,43 +945,19 @@
             <div id="chart-trend-ift" class="chart-render-area" style="height: 180px;"></div>
           </div>
 
-          <!-- 5. Furan 2-FAL -->
+          <!-- Acidity / Neutralization Number -->
           <div class="trend-box">
             <div class="trend-header-row">
               <div class="trend-title-txt">
-                <i class="fa-solid fa-book-open" style="color:#d97706;"></i>
-                Furan 2-FAL (ppb)
+                <i class="fa-solid fa-flask" style="color:#ef4444;"></i>
+                Neutralization Number / Acidity (mgKOH/g)
               </div>
-              <div class="trend-stat-badge">ASTM D5837 &bull; Limit: &le; 700 ppb</div>
+              <div class="trend-stat-badge">ASTM D974 &bull; Limit: &le; 0.15 mg</div>
             </div>
-            <div id="chart-trend-furan" class="chart-render-area" style="height: 180px;"></div>
+            <div id="chart-trend-acidity" class="chart-render-area" style="height: 180px;"></div>
           </div>
 
-          <!-- 6. Estimated Degree of Polymerization (DP) -->
-          <div class="trend-box">
-            <div class="trend-header-row">
-              <div class="trend-title-txt">
-                <i class="fa-solid fa-layer-group" style="color:#10b981;"></i>
-                Estimated Degree of Polymerization (DP)
-              </div>
-              <div class="trend-stat-badge">Paper Health &bull; Limit: &ge; 700 DP</div>
-            </div>
-            <div id="chart-trend-dp" class="chart-render-area" style="height: 180px;"></div>
-          </div>
-
-          <!-- 7. Passivator Irgamet 39 -->
-          <div class="trend-box">
-            <div class="trend-header-row">
-              <div class="trend-title-txt">
-                <i class="fa-solid fa-shield-halved" style="color:#8b5cf6;"></i>
-                Passivator [Irgamet 39] (ppm)
-              </div>
-              <div class="trend-stat-badge">IEC 60666 &bull; Limit: &ge; 70 ppm</div>
-            </div>
-            <div id="chart-trend-passivator" class="chart-render-area" style="height: 180px;"></div>
-          </div>
-
-          <!-- 8. Oil Conductivity -->
+          <!-- Oil Conductivity -->
           <div class="trend-box">
             <div class="trend-header-row">
               <div class="trend-title-txt">
@@ -984,7 +969,112 @@
             <div id="chart-trend-conductivity" class="chart-render-area" style="height: 180px;"></div>
           </div>
 
+          <!-- Color Number -->
+          <div class="trend-box">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-palette" style="color:#d97706;"></i>
+                Color Number (ASTM Scale)
+              </div>
+              <div class="trend-stat-badge">ASTM D1500 &bull; Limit: &le; 2.0</div>
+            </div>
+            <div id="chart-trend-color" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+          <!-- Inhibitor Content -->
+          <div class="trend-box" style="grid-column: span 2;">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-shield-virus" style="color:#10b981;"></i>
+                Inhibitor Content (wt%)
+              </div>
+              <div class="trend-stat-badge">IEC 60296 &bull; Limit: &ge; 0.10 wt%</div>
+            </div>
+            <div id="chart-trend-inhibitor" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
         </div>
+
+        <!-- Section Category Header: Solid Insulation (Paper) Aging -->
+        <div class="trend-category-header">
+          <i class="fa-solid fa-book-open" style="color:#d97706;"></i>
+          Solid Insulation (Paper) Aging Trends
+        </div>
+
+        <div class="trend-grid-2col">
+          
+          <!-- Furan 2-FAL -->
+          <div class="trend-box">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-dna" style="color:#d97706;"></i>
+                Furan 2-FAL (ppb)
+              </div>
+              <div class="trend-stat-badge">ASTM D5837 &bull; Limit: &le; 700 ppb</div>
+            </div>
+            <div id="chart-trend-furan" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+          <!-- Estimated Degree of Polymerization (DP) -->
+          <div class="trend-box">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-layer-group" style="color:#10b981;"></i>
+                Estimated Degree of Polymerization (DP)
+              </div>
+              <div class="trend-stat-badge">Paper Health &bull; Limit: &ge; 700 DP</div>
+            </div>
+            <div id="chart-trend-dp" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+          <!-- Sludge Condition -->
+          <div class="trend-box" style="grid-column: span 2;">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-vial-circle-check" style="color:#64748b;"></i>
+                Sludge Condition (wt%)
+              </div>
+              <div class="trend-stat-badge">IEC 60422 &bull; Limit: &le; 0.018 wt%</div>
+            </div>
+            <div id="chart-trend-sludge" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+        </div>
+
+        <!-- Section Category Header: Corrosive Sulfur & Passivator -->
+        <div class="trend-category-header">
+          <i class="fa-solid fa-shield-halved" style="color:#dc2626;"></i>
+          Corrosive Sulfur &amp; Passivator Trends
+        </div>
+
+        <div class="trend-grid-2col">
+          
+          <!-- Corrosive Sulfur -->
+          <div class="trend-box">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-radiation" style="color:#dc2626;"></i>
+                Corrosive Sulfur (DIN 51353 Class)
+              </div>
+              <div class="trend-stat-badge">DIN 51353 &bull; Limit: Non-corrosive (&le; 2e/3a)</div>
+            </div>
+            <div id="chart-trend-sulfur" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+          <!-- Passivator Irgamet 39 -->
+          <div class="trend-box">
+            <div class="trend-header-row">
+              <div class="trend-title-txt">
+                <i class="fa-solid fa-shield-heart" style="color:#8b5cf6;"></i>
+                Passivator [Irgamet 39] (ppm)
+              </div>
+              <div class="trend-stat-badge">IEC 60666 &bull; Limit: &ge; 70 ppm</div>
+            </div>
+            <div id="chart-trend-passivator" class="chart-render-area" style="height: 180px;"></div>
+          </div>
+
+        </div>
+
       </div>
 
       <!-- 6. Assessment Criteria & Thresholds Reference -->
@@ -1522,7 +1612,7 @@
       // Populate Signatures strictly matching standard (no dummy fallback if empty)
       populateSignatures(curr);
 
-      // Render Individual Trend Charts
+      // Render Individual Trend Charts for all items
       renderTrendCharts(currentValidItems, hvVoltage, fluidType);
     }
 
@@ -1559,7 +1649,7 @@
       document.getElementById('resp-date-approved').textContent = approvedName ? dateVal : '';
     }
 
-    // Individual Trend Charts Renderer with Optimal Standalone Legibility
+    // Individual Trend Charts Renderer Covering ALL 14 Item Tests
     function renderTrendCharts(items, hvVoltage = 115, fluidType = 'Mineral oil') {
       if (!items || items.length === 0) return;
 
@@ -1613,7 +1703,7 @@
       });
 
       // Helper function for clean single-parameter trend charts
-      const createSingleParamChart = (chartId, name, dataVals, color, unit, decimals = 2, limitVal = null, limitLabel = '') => {
+      const createSingleParamChart = (chartId, name, dataVals, color, unit, decimals = 2, limitVal = null, limitLabel = '', customYFormatter = null) => {
         const annotations = limitVal !== null ? {
           yaxis: [{
             y: limitVal,
@@ -1636,7 +1726,11 @@
           yaxis: {
             labels: {
               style: { colors: textColor, fontSize: '9px' },
-              formatter: (v) => (v !== null && v !== undefined && !isNaN(v)) ? v.toFixed(decimals) : ''
+              formatter: (v) => {
+                if (v === null || v === undefined || isNaN(v)) return '';
+                if (customYFormatter) return customYFormatter(v);
+                return v.toFixed(decimals);
+              }
             }
           },
           grid: { borderColor: gridColor, strokeDashArray: 3 },
@@ -1644,33 +1738,54 @@
           annotations: annotations,
           tooltip: {
             theme: isDark ? 'dark' : 'light',
-            y: { formatter: (val) => (val !== null && val !== undefined) ? `${val.toFixed(decimals)} ${unit}` : '-' }
+            y: {
+              formatter: (val) => {
+                if (val === null || val === undefined) return '-';
+                if (customYFormatter) return customYFormatter(val);
+                return `${val.toFixed(decimals)} ${unit}`;
+              }
+            }
           }
         });
       };
 
-      // 2. Individual Charts:
-      // Power Factor @ 25°C
+      // 2. Power Factor @ 25°C (%)
       const pf25Vals = sorted.map(d => parseFloat(d.PF_25) || null);
       createSingleParamChart('chart-trend-pf25', 'PF @ 25°C', pf25Vals, '#4f46e5', '%', 3, 0.40, 'Max: 0.40%');
 
-      // Power Factor @ 100°C
+      // 3. Power Factor @ 100°C (%)
       const pf100Vals = sorted.map(d => parseFloat(d.PF_100) || null);
       createSingleParamChart('chart-trend-pf100', 'PF @ 100°C', pf100Vals, '#f59e0b', '%', 3, 4.00, 'Max: 4.00%');
 
-      // Acidity / Neutralization Number
-      const acVals = sorted.map(d => parseFloat(d.Acidity_No) || null);
-      createSingleParamChart('chart-trend-acidity', 'Acidity', acVals, '#ef4444', 'mgKOH/g', 3, 0.15, 'Max: 0.15 mg');
-
-      // Interfacial Tension (IFT)
+      // 4. Interfacial Tension (IFT, mN/m)
       const iftVals = sorted.map(d => parseFloat(d.IFT) || null);
       createSingleParamChart('chart-trend-ift', 'IFT', iftVals, '#06b6d4', 'mN/m', 1, 25.0, 'Min: 25.0 mN/m');
 
-      // Furan 2-FAL
+      // 5. Neutralization Number / Acidity (mgKOH/g)
+      const acVals = sorted.map(d => parseFloat(d.Acidity_No) || null);
+      createSingleParamChart('chart-trend-acidity', 'Acidity', acVals, '#ef4444', 'mgKOH/g', 3, 0.15, 'Max: 0.15 mg');
+
+      // 6. Oil Conductivity (pS/m)
+      const condVals = sorted.map(d => parseFloat(d.Conductivity) || null);
+      createSingleParamChart('chart-trend-conductivity', 'Conductivity', condVals, '#6366f1', 'pS/m', 2, 4.0, 'Max: 4.0 pS/m');
+
+      // 7. Color Number (Scale)
+      const colorVals = sorted.map(d => parseFloat(d.Color_No) || null);
+      createSingleParamChart('chart-trend-color', 'Color No.', colorVals, '#d97706', 'Scale', 1, 2.0, 'Max: 2.0');
+
+      // 8. Inhibitor Content (wt%)
+      const inhibVals = sorted.map(d => {
+        const v = d.Temp ? d.Inhibitor : (d.Inhibitor || d.Passivator);
+        const p = parseFloat(v);
+        return !isNaN(p) ? p : null;
+      });
+      createSingleParamChart('chart-trend-inhibitor', 'Inhibitor', inhibVals, '#10b981', 'wt%', 2, 0.10, 'Min: 0.10 wt%');
+
+      // 9. Furan 2-FAL (ppb)
       const furanVals = sorted.map(d => parseFloat(d.Furan_Analysis) || null);
       createSingleParamChart('chart-trend-furan', 'Furan 2-FAL', furanVals, '#d97706', 'ppb', 1, 700, 'Max: 700 ppb');
 
-      // Estimated Degree of Polymerization (DP)
+      // 10. Estimated Degree of Polymerization (DP)
       const dpVals = sorted.map(d => {
         const fur = parseFloat(d.Furan_Analysis);
         if (!isNaN(fur) && fur > 0) return Math.round(7100 / (8.88 + fur / 1000));
@@ -1678,13 +1793,30 @@
       });
       createSingleParamChart('chart-trend-dp', 'Estimated DP', dpVals, '#10b981', 'DP', 0, 700, 'Warning: 700 DP');
 
-      // Passivator Irgamet 39
+      // 11. Sludge Condition (wt%)
+      const sludgeVals = sorted.map(d => {
+        if (!d.Sludge_Condition) return null;
+        if (typeof d.Sludge_Condition === 'string' && d.Sludge_Condition.toLowerCase().includes('non')) return 0;
+        const num = parseFloat(d.Sludge_Condition);
+        return !isNaN(num) ? num : null;
+      });
+      createSingleParamChart('chart-trend-sludge', 'Sludge', sludgeVals, '#64748b', 'wt%', 3, 0.018, 'Max: 0.018 wt%');
+
+      // 12. Corrosive Sulfur (Class)
+      const sulfurMap = { '1a': 1, '1b': 2, '2a': 3, '2b': 4, '2c': 5, '2d': 6, '2e': 7, '3a': 8, '3b': 9, '4a': 10, '4b': 11, '4c': 12 };
+      const revSulfurMap = { 1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e', 8: '3a', 9: '3b', 10: '4a', 11: '4b', 12: '4c' };
+      const sulfurVals = sorted.map(d => {
+        if (!d.Corrosive_Sulfur) return null;
+        const key = String(d.Corrosive_Sulfur).trim().toLowerCase();
+        if (sulfurMap[key] !== undefined) return sulfurMap[key];
+        const num = parseFloat(key);
+        return !isNaN(num) ? num : null;
+      });
+      createSingleParamChart('chart-trend-sulfur', 'Corrosive Sulfur', sulfurVals, '#dc2626', 'Class', 0, 8, 'Limit: 3a', (v) => revSulfurMap[Math.round(v)] || v);
+
+      // 13. Passivator Irgamet 39 (ppm)
       const passVals = sorted.map(d => parseFloat(d.Passivator) || null);
       createSingleParamChart('chart-trend-passivator', 'Passivator', passVals, '#8b5cf6', 'ppm', 1, 70, 'Min: 70 ppm');
-
-      // Oil Conductivity
-      const condVals = sorted.map(d => parseFloat(d.Conductivity) || null);
-      createSingleParamChart('chart-trend-conductivity', 'Conductivity', condVals, '#6366f1', 'pS/m', 2, 4.0, 'Max: 4.0 pS/m');
     }
 
     // Helper date parsers
