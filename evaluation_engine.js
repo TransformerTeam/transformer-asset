@@ -222,22 +222,22 @@ function buildPtStructure(item) {
         {
           sub: 'Phase A', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase B', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         },
         {
           sub: 'Phase C', full: 100, subWeight: 33.3333,
           methods: [
-            { name: 'Power Factor (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
-            { name: 'Capacitance (%Error from Nameplate)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
           ]
         }
       ]
