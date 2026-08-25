@@ -76,6 +76,49 @@ function buildPtStructure(item) {
   const isAuto = vg.includes('YNA') || vg.includes('AUTO') || mt.includes('AUTO') || app.includes('AUTO') || spec.includes('AUTO');
   const is3Winding = !isAuto && (noWindingStr === '3' || (lv2Rated !== '' && lv2Rated !== '-' && lv2Rated !== '0') || spec.includes('3W'));
 
+  // Check if transformer has LV Bushing data or LV Arrester data (e.g. KT4A)
+  let hasLvBushing = false;
+  let hasLvArrester = false;
+
+  if (typeof bushingPfCsvData !== 'undefined' && Array.isArray(bushingPfCsvData)) {
+    const bushRec = findLatestRecord(bushingPfCsvData, serialVal);
+    if (bushRec) {
+      const hasX1 = (bushRec.xbushing_h1_c1 && bushRec.xbushing_h1_c1 !== '-') ||
+                    (bushRec.xbushing_h1_pf_20c && bushRec.xbushing_h1_pf_20c !== '-') ||
+                    (bushRec.xbushing_h1_pf_tan && bushRec.xbushing_h1_pf_tan !== '-') ||
+                    (bushRec.bushing_l1_cap && bushRec.bushing_l1_cap !== '-') ||
+                    (bushRec.bushing_l1_pf_20c && bushRec.bushing_l1_pf_20c !== '-');
+      if (hasX1) hasLvBushing = true;
+    }
+  }
+  if (!hasLvBushing && typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData)) {
+    const hasLvInfo = bushingInfoCsvData.some(r => {
+      const s = String(r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
+      const pos = String(r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
+      return s === serialVal && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
+    });
+    if (hasLvInfo) hasLvBushing = true;
+  }
+
+  if (typeof surgePfCsvData !== 'undefined' && Array.isArray(surgePfCsvData)) {
+    const surgeRec = findLatestRecord(surgePfCsvData, serialVal);
+    if (surgeRec) {
+      const hasXh1 = (surgeRec.xh1_current && surgeRec.xh1_current !== '-') ||
+                     (surgeRec.xh1_watt_loss && surgeRec.xh1_watt_loss !== '-') ||
+                     (surgeRec.xh1_pf_tan && surgeRec.xh1_pf_tan !== '-') ||
+                     (surgeRec.xh1_pf_20c && surgeRec.xh1_pf_20c !== '-');
+      if (hasXh1) hasLvArrester = true;
+    }
+  }
+  if (!hasLvArrester && typeof surgeInfoCsvData !== 'undefined' && Array.isArray(surgeInfoCsvData)) {
+    const hasLvSurge = surgeInfoCsvData.some(r => {
+      const s = String(r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
+      const pos = String(r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
+      return s === serialVal && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
+    });
+    if (hasLvSurge) hasLvArrester = true;
+  }
+
   let hvPfSubText = 'IEEE C57.152-2013, Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%';
   if (isNaturalEster) {
     hvPfSubText = 'IEEE C57.152-2013, Natural Ester: Normal ≤ 1.0%, Service Limit ≤ 1.5%';
@@ -210,9 +253,59 @@ function buildPtStructure(item) {
         }
       ]
     },
+    // Bushing (Dynamic HV & LV Phase support)
     {
       pt: 'Bushing', weight: 25,
-      subs: [
+      subs: hasLvBushing ? [
+        {
+          sub: 'Bushing Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'HV Phase A', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'HV Phase B', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'HV Phase C', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase A', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase B', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase C', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Power Factor', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Capacitance', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        }
+      ] : [
         {
           sub: 'Bushing Inspection', full: 100, subWeight: 100,
           methods: [
@@ -242,9 +335,59 @@ function buildPtStructure(item) {
         }
       ]
     },
+    // Arrester (Dynamic HV & LV Phase support)
     {
       pt: 'Arrester', weight: 5,
-      subs: [
+      subs: hasLvArrester ? [
+        {
+          sub: 'Arrester Inspection', full: 100, subWeight: 100,
+          methods: [
+            { name: 'Visual Inspection', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
+          ]
+        },
+        {
+          sub: 'HV Phase A', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'HV Phase B', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'HV Phase C', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase A', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase B', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        },
+        {
+          sub: 'LV Phase C', full: 100, subWeight: 16.6667,
+          methods: [
+            { name: 'Leakage Current (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' },
+            { name: 'Watt Loss (%Error from FAT/Oldest)', defaultDate: '-', mWeight: 5, maxScore: 50, mWorst: '-' }
+          ]
+        }
+      ] : [
         {
           sub: 'Arrester Inspection', full: 100, subWeight: 100,
           methods: [
@@ -1499,20 +1642,51 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       let altPfKey = 'bushing_h1_pf_tan';
       let capKey = 'bushing_h1_c1';
       let chgKey = 'maxbch1_change';
-      let phaseLabel = 'H1';
+      let phaseLabel = 'HV Bushing Phase A (H1)';
 
-      if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
-        pfKey = 'bushing_h2_pf_20c';
-        altPfKey = 'bushing_h2_pf_tan';
-        capKey = 'bushing_h2_c1';
-        chgKey = 'maxbch2_change';
-        phaseLabel = 'H2';
-      } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
-        pfKey = 'bushing_h3_pf_20c';
-        altPfKey = 'bushing_h3_pf_tan';
-        capKey = 'bushing_h3_c1';
-        chgKey = 'maxbch3_change';
-        phaseLabel = 'H3';
+      const isLvPhase = subLower.includes('lv') || subLower.includes('x1') || subLower.includes('x2') || subLower.includes('x3');
+
+      if (isLvPhase) {
+        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('x2')) {
+          pfKey = (latestBush.xbushing_h2_pf_20c && latestBush.xbushing_h2_pf_20c !== '-') ? 'xbushing_h2_pf_20c' : 'bushing_l2_pf_20c';
+          altPfKey = (latestBush.xbushing_h2_pf_tan && latestBush.xbushing_h2_pf_tan !== '-') ? 'xbushing_h2_pf_tan' : 'bushing_l2_pf_tan';
+          capKey = (latestBush.xbushing_h2_c1 && latestBush.xbushing_h2_c1 !== '-') ? 'xbushing_h2_c1' : 'bushing_l2_cap';
+          chgKey = 'maxbch2_change';
+          phaseLabel = 'LV Bushing Phase B (X2)';
+        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('x3')) {
+          pfKey = (latestBush.xbushing_h3_pf_20c && latestBush.xbushing_h3_pf_20c !== '-') ? 'xbushing_h3_pf_20c' : 'bushing_l3_pf_20c';
+          altPfKey = (latestBush.xbushing_h3_pf_tan && latestBush.xbushing_h3_pf_tan !== '-') ? 'xbushing_h3_pf_tan' : 'bushing_l3_pf_tan';
+          capKey = (latestBush.xbushing_h3_c1 && latestBush.xbushing_h3_c1 !== '-') ? 'xbushing_h3_c1' : 'bushing_l3_cap';
+          chgKey = 'maxbch3_change';
+          phaseLabel = 'LV Bushing Phase C (X3)';
+        } else {
+          pfKey = (latestBush.xbushing_h1_pf_20c && latestBush.xbushing_h1_pf_20c !== '-') ? 'xbushing_h1_pf_20c' : 'bushing_l1_pf_20c';
+          altPfKey = (latestBush.xbushing_h1_pf_tan && latestBush.xbushing_h1_pf_tan !== '-') ? 'xbushing_h1_pf_tan' : 'bushing_l1_pf_tan';
+          capKey = (latestBush.xbushing_h1_c1 && latestBush.xbushing_h1_c1 !== '-') ? 'xbushing_h1_c1' : 'bushing_l1_cap';
+          chgKey = 'maxbch1_change';
+          phaseLabel = 'LV Bushing Phase A (X1)';
+        }
+      } else {
+        // HV Bushing
+        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
+          pfKey = 'bushing_h2_pf_20c';
+          altPfKey = 'bushing_h2_pf_tan';
+          capKey = 'bushing_h2_c1';
+          chgKey = 'maxbch2_change';
+          phaseLabel = 'HV Bushing Phase B (H2)';
+        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
+          pfKey = 'bushing_h3_pf_20c';
+          altPfKey = 'bushing_h3_pf_tan';
+          capKey = 'bushing_h3_c1';
+          chgKey = 'maxbch3_change';
+          phaseLabel = 'HV Bushing Phase C (H3)';
+        } else {
+          pfKey = 'bushing_h1_pf_20c';
+          altPfKey = 'bushing_h1_pf_tan';
+          capKey = 'bushing_h1_c1';
+          chgKey = 'maxbch1_change';
+          phaseLabel = 'HV Bushing Phase A (H1)';
+        }
       }
 
       if (nameLower.includes('power factor') || nameLower.includes('pf')) {
@@ -1521,7 +1695,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           const pfNum = parseFloat(rawPf);
           if (!isNaN(pfNum) && pfNum > 0) {
             const score = pfNum <= 0.5 ? 5 : (pfNum <= 0.7 ? 4 : (pfNum <= 1.0 ? 3 : (pfNum <= 1.5 ? 2 : 1)));
-            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Bushing Power Factor (IEEE C57.152: Normal ≤ 0.5%)`;
+            const rec = score >= 4 ? '-' : `Check ${phaseLabel} Power Factor (IEEE C57.152: Normal ≤ 0.5%)`;
             return { value: `${pfNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
           }
         }
@@ -1534,7 +1708,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         if (!isNaN(chgNum)) {
           const absChg = Math.abs(chgNum);
           const score = absChg <= 1.0 ? 5 : (absChg <= 3.0 ? 4 : (absChg <= 5.0 ? 3 : (absChg <= 7.0 ? 2 : 1)));
-          const rec = score >= 4 ? '-' : `Check ${phaseLabel} Bushing Capacitance Change (IEEE C57.152: ≤ 5%)`;
+          const rec = score >= 4 ? '-' : `Check ${phaseLabel} Capacitance Change (IEEE C57.152: ≤ 5%)`;
           return { value: `%Dev: ${chgNum.toFixed(2)}%`, testDate: date, ratingScore: score, recommendation: rec };
         } else if (!isNaN(capNum) && capNum > 0) {
           return { value: `C1: ${capNum.toFixed(1)} pF`, testDate: date, ratingScore: 5, recommendation: '-' };
@@ -1550,24 +1724,55 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     if (latestSurge) {
       const date = latestSurge.Date || latestSurge.date;
 
+      const isLvPhase = subLower.includes('lv') || subLower.includes('x1') || subLower.includes('x2') || subLower.includes('x3');
+
       let curKey = 'h1_current';
       let altCurKey = 'maxma1';
       let wKey = 'h1_watt_loss';
       let altWKey = 'maxw1';
-      let phaseLabel = 'Phase A';
+      let phaseLabel = 'HV Arrester Phase A (H1)';
 
-      if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
-        curKey = 'h2_current';
-        altCurKey = 'maxma2';
-        wKey = 'h2_watt_loss';
-        altWKey = 'maxw2';
-        phaseLabel = 'Phase B';
-      } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
-        curKey = 'h3_current';
-        altCurKey = 'maxma3';
-        wKey = 'h3_watt_loss';
-        altWKey = 'maxw3';
-        phaseLabel = 'Phase C';
+      if (isLvPhase) {
+        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('x2')) {
+          curKey = (latestSurge.xh2_current && latestSurge.xh2_current !== '-') ? 'xh2_current' : 'h2_current';
+          altCurKey = curKey;
+          wKey = (latestSurge.xh2_watt_loss && latestSurge.xh2_watt_loss !== '-') ? 'xh2_watt_loss' : 'h2_watt_loss';
+          altWKey = wKey;
+          phaseLabel = 'LV Arrester Phase B (X2)';
+        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('x3')) {
+          curKey = (latestSurge.xh3_current && latestSurge.xh3_current !== '-') ? 'xh3_current' : 'h3_current';
+          altCurKey = curKey;
+          wKey = (latestSurge.xh3_watt_loss && latestSurge.xh3_watt_loss !== '-') ? 'xh3_watt_loss' : 'h3_watt_loss';
+          altWKey = wKey;
+          phaseLabel = 'LV Arrester Phase C (X3)';
+        } else {
+          curKey = (latestSurge.xh1_current && latestSurge.xh1_current !== '-') ? 'xh1_current' : 'h1_current';
+          altCurKey = curKey;
+          wKey = (latestSurge.xh1_watt_loss && latestSurge.xh1_watt_loss !== '-') ? 'xh1_watt_loss' : 'h1_watt_loss';
+          altWKey = wKey;
+          phaseLabel = 'LV Arrester Phase A (X1)';
+        }
+      } else {
+        // HV Arrester
+        if (subLower.includes('phase b') || subLower.includes('phase 2') || subLower.includes('h2')) {
+          curKey = 'h2_current';
+          altCurKey = 'maxma2';
+          wKey = 'h2_watt_loss';
+          altWKey = 'maxw2';
+          phaseLabel = 'HV Arrester Phase B (H2)';
+        } else if (subLower.includes('phase c') || subLower.includes('phase 3') || subLower.includes('h3')) {
+          curKey = 'h3_current';
+          altCurKey = 'maxma3';
+          wKey = 'h3_watt_loss';
+          altWKey = 'maxw3';
+          phaseLabel = 'HV Arrester Phase C (H3)';
+        } else {
+          curKey = 'h1_current';
+          altCurKey = 'maxma1';
+          wKey = 'h1_watt_loss';
+          altWKey = 'maxw1';
+          phaseLabel = 'HV Arrester Phase A (H1)';
+        }
       }
 
       if (nameLower.includes('leakage current') || nameLower.includes('current')) {
