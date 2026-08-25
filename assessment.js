@@ -194,15 +194,15 @@ function loadAllTestDataCSVs() {
   ];
 
   csvFiles.push(
-    { url: 'TestData/VisualData.csv', target: d => visualCsvData = d },
-    { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
-    { url: 'TestData/SurgeInfo.csv', target: d => surgeInfoCsvData = d },
-    { url: 'TestData/SurgePFData.csv', target: d => surgePfCsvData = d },
+    { url: 'TestData/VisualData.csv', target: d => { visualCsvData = d; if (typeof window !== 'undefined') window.visualCsvData = d; } },
+    { url: 'TestData/BushingInfo.csv', target: d => { bushingInfoCsvData = d; if (typeof window !== 'undefined') window.bushingInfoCsvData = d; } },
+    { url: 'TestData/SurgeInfo.csv', target: d => { surgeInfoCsvData = d; if (typeof window !== 'undefined') window.surgeInfoCsvData = d; } },
+    { url: 'TestData/SurgePFData.csv', target: d => { surgePfCsvData = d; if (typeof window !== 'undefined') window.surgePfCsvData = d; } },
     { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; piCsvData = d; if (typeof window !== 'undefined') { window.irPiCsvData = d; window.piCsvData = d; } } },
-    { url: 'TestData/WindingPFData.csv', target: d => windingPfCsvData = d },
-    { url: 'TestData/RatioData.csv', target: d => ratioCsvData = d },
-    { url: 'TestData/ExcitingData.csv', target: d => excitingCsvData = d },
-    { url: 'TestData/WindingData.csv', target: d => windingCsvData = d },
+    { url: 'TestData/WindingPFData.csv', target: d => { windingPfCsvData = d; if (typeof window !== 'undefined') window.windingPfCsvData = d; } },
+    { url: 'TestData/RatioData.csv', target: d => { ratioCsvData = d; if (typeof window !== 'undefined') window.ratioCsvData = d; } },
+    { url: 'TestData/ExcitingData.csv', target: d => { excitingCsvData = d; if (typeof window !== 'undefined') window.excitingCsvData = d; } },
+    { url: 'TestData/WindingData.csv', target: d => { windingCsvData = d; if (typeof window !== 'undefined') window.windingCsvData = d; } },
     { url: 'TestData/SingleShortData.csv', target: d => singleShortCsvData = d },
     { url: 'TestData/ThreeShortData.csv', target: d => threeShortCsvData = d },
     { url: 'TestData/FRAData.csv', target: d => fraCsvData = d },

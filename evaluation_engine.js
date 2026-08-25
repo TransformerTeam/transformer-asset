@@ -80,43 +80,61 @@ function buildPtStructure(item) {
   let hasLvBushing = false;
   let hasLvArrester = false;
 
-  if (typeof bushingPfCsvData !== 'undefined' && Array.isArray(bushingPfCsvData)) {
-    const bushRec = findLatestRecord(bushingPfCsvData, serialVal);
+  const cleanTarget = String(serialVal || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const nameClean = String((item && (item.name || item.EQUIPMENT_NAME || item['Equipment Name'])) || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  const bushSource = (typeof bushingPfCsvData !== 'undefined' && Array.isArray(bushingPfCsvData)) ? bushingPfCsvData : (typeof window !== 'undefined' && window.bushingPfCsvData ? window.bushingPfCsvData : null);
+  if (bushSource) {
+    const bushRec = findLatestRecord(bushSource, serialVal);
     if (bushRec) {
-      const hasX1 = (bushRec.xbushing_h1_c1 && bushRec.xbushing_h1_c1 !== '-') ||
-                    (bushRec.xbushing_h1_pf_20c && bushRec.xbushing_h1_pf_20c !== '-') ||
-                    (bushRec.xbushing_h1_pf_tan && bushRec.xbushing_h1_pf_tan !== '-') ||
-                    (bushRec.bushing_l1_cap && bushRec.bushing_l1_cap !== '-') ||
-                    (bushRec.bushing_l1_pf_20c && bushRec.bushing_l1_pf_20c !== '-');
+      const hasX1 = (bushRec.xbushing_h1_c1 && bushRec.xbushing_h1_c1 !== '-' && bushRec.xbushing_h1_c1 !== '') ||
+                    (bushRec.xbushing_h1_pf_20c && bushRec.xbushing_h1_pf_20c !== '-' && bushRec.xbushing_h1_pf_20c !== '') ||
+                    (bushRec.xbushing_h1_pf_tan && bushRec.xbushing_h1_pf_tan !== '-' && bushRec.xbushing_h1_pf_tan !== '');
       if (hasX1) hasLvBushing = true;
     }
   }
-  if (!hasLvBushing && typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData)) {
-    const hasLvInfo = bushingInfoCsvData.some(r => {
-      const s = String(r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
-      const pos = String(r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
-      return s === serialVal && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
+
+  const bushInfoSource = (typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData)) ? bushingInfoCsvData : (typeof window !== 'undefined' && window.bushingInfoCsvData ? window.bushingInfoCsvData : null);
+  if (!hasLvBushing && bushInfoSource) {
+    const hasLvInfo = bushInfoSource.some(r => {
+      const s = String(r.Parent_Serial_No || r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
+      const cleanS = s.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const pos = String(r.Phase || r.phase || r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
+      const matchesS = (s.toLowerCase() === String(serialVal).toLowerCase()) || (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS)));
+      return matchesS && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
     });
     if (hasLvInfo) hasLvBushing = true;
   }
 
-  if (typeof surgePfCsvData !== 'undefined' && Array.isArray(surgePfCsvData)) {
-    const surgeRec = findLatestRecord(surgePfCsvData, serialVal);
+  const surgeSource = (typeof surgePfCsvData !== 'undefined' && Array.isArray(surgePfCsvData)) ? surgePfCsvData : (typeof window !== 'undefined' && window.surgePfCsvData ? window.surgePfCsvData : null);
+  if (surgeSource) {
+    const surgeRec = findLatestRecord(surgeSource, serialVal);
     if (surgeRec) {
-      const hasXh1 = (surgeRec.xh1_current && surgeRec.xh1_current !== '-') ||
-                     (surgeRec.xh1_watt_loss && surgeRec.xh1_watt_loss !== '-') ||
-                     (surgeRec.xh1_pf_tan && surgeRec.xh1_pf_tan !== '-') ||
-                     (surgeRec.xh1_pf_20c && surgeRec.xh1_pf_20c !== '-');
+      const hasXh1 = (surgeRec.xh1_current && surgeRec.xh1_current !== '-' && surgeRec.xh1_current !== '') ||
+                     (surgeRec.xh1_watt_loss && surgeRec.xh1_watt_loss !== '-' && surgeRec.xh1_watt_loss !== '') ||
+                     (surgeRec.xh1_pf_tan && surgeRec.xh1_pf_tan !== '-' && surgeRec.xh1_pf_tan !== '') ||
+                     (surgeRec.xh1_pf_20c && surgeRec.xh1_pf_20c !== '-' && surgeRec.xh1_pf_20c !== '');
       if (hasXh1) hasLvArrester = true;
     }
   }
-  if (!hasLvArrester && typeof surgeInfoCsvData !== 'undefined' && Array.isArray(surgeInfoCsvData)) {
-    const hasLvSurge = surgeInfoCsvData.some(r => {
-      const s = String(r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
-      const pos = String(r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
-      return s === serialVal && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
+
+  const surgeInfoSource = (typeof surgeInfoCsvData !== 'undefined' && Array.isArray(surgeInfoCsvData)) ? surgeInfoCsvData : (typeof window !== 'undefined' && window.surgeInfoCsvData ? window.surgeInfoCsvData : null);
+  if (!hasLvArrester && surgeInfoSource) {
+    const hasLvSurge = surgeInfoSource.some(r => {
+      const s = String(r.Parent_Serial_No || r.serial || r.Serial_No || r.SERIAL_NUMBER || r.transformer_serial || '').trim();
+      const cleanS = s.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const pos = String(r.Phase || r.phase || r.position || r.Position || r.POS || r.PHASE || '').trim().toUpperCase();
+      const matchesS = (s.toLowerCase() === String(serialVal).toLowerCase()) || (cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS)));
+      return matchesS && (pos.startsWith('X') || pos.startsWith('LV') || pos.startsWith('L'));
     });
     if (hasLvSurge) hasLvArrester = true;
+  }
+
+  // Explicit support for known dual-voltage transformers (e.g. KT4A, KT5A, KT6A, KT7A, PTE 1689/01..04, TIC003, TIC008)
+  const dualVoltagePatterns = ['PTE168901', 'PTE168902', 'PTE168903', 'PTE168904', 'KT4A', 'KT5A', 'KT6A', 'KT7A', 'TP70279703', '510049', '20083122TIC003', '20083122TIC008', 'EDP011601', '512033', '5513053', '54001', 'EDP008001', '508038'];
+  if (dualVoltagePatterns.some(p => cleanTarget.includes(p) || nameClean.includes(p))) {
+    hasLvBushing = true;
+    hasLvArrester = true;
   }
 
   let hvPfSubText = 'IEEE C57.152-2013, Mineral Oil < 230 kV: Normal ≤ 0.5%, Service Limit ≤ 1.0%';
@@ -882,7 +900,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   }
 
   // 8. Power Factor (WindingPFData.csv)
-  if (nameLower === 'power factor' || (nameLower.includes('power factor') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('at 25') && !nameLower.includes('at 100'))) {
+  if ((nameLower === 'power factor' || nameLower.includes('power factor')) && !ptLower.includes('bushing') && !subLower.includes('bushing') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('at 25') && !nameLower.includes('at 100')) {
     const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, serialVal) : null;
     if (latestWindingPf) {
       const date = latestWindingPf.date || latestWindingPf.Date;
@@ -1090,7 +1108,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   }
 
   // 9. Winding Capacitance (%Error from FAT/Oldest) (WindingPFData.csv)
-  if (nameLower.includes('capacitance') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('surge') && !nameLower.includes('arrester')) {
+  if (nameLower.includes('capacitance') && !ptLower.includes('bushing') && !subLower.includes('bushing') && !nameLower.includes('bushing') && !nameLower.includes('oil') && !nameLower.includes('surge') && !nameLower.includes('arrester')) {
     const latestWindingPf = (typeof windingPfCsvData !== 'undefined') ? findLatestRecord(windingPfCsvData, serialVal) : null;
     if (latestWindingPf) {
       const date = latestWindingPf.date || latestWindingPf.Date;
