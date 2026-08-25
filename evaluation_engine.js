@@ -355,6 +355,219 @@ function buildPtStructure(item) {
 }
 
 // ==========================================
+// getMethodStandardAndLimit: Dynamic Standard & Limit Generator for Test Methods
+// ==========================================
+function getMethodStandardAndLimit(methodName, item, ptName, subName) {
+  const mLower = String(methodName || '').toLowerCase();
+  const ptLower = String(ptName || '').toLowerCase();
+  const subLower = String(subName || '').toLowerCase();
+
+  // Voltage and fluid type for dynamic criteria
+  let hvVoltage = parseFloat((item && (item.voltage || item.ratedVoltage || item.HV_RATED || item['Rated Voltage (kV)'])) || '115');
+  if (isNaN(hvVoltage)) hvVoltage = 115;
+  const fluidType = (item && (item.fluid || item.fluidType || item.TYPE_OF_INSULATION)) || 'Mineral oil';
+  const isEster = String(fluidType).toLowerCase().includes('ester');
+  const vClass = hvVoltage <= 69 ? 1 : (hvVoltage < 230 ? 2 : 3);
+
+  // 1. Dielectric Breakdown
+  if (mLower.includes('dielectric breakdown') || mLower.includes('breakdown voltage')) {
+    const lim = vClass === 1 ? '≥ 45.0 kV' : (vClass === 2 ? '≥ 52.0 kV' : '≥ 55.0 kV');
+    return `ASTM D1816, Limit: ${lim}`;
+  }
+
+  // 2. Water Content
+  if (mLower.includes('water content') || mLower.includes('moisture')) {
+    let lim = '';
+    if (!isEster) {
+      lim = vClass === 1 ? '≤ 30 ppm' : (vClass === 2 ? '≤ 20 ppm' : '≤ 15 ppm');
+    } else {
+      lim = vClass === 1 ? '≤ 300 ppm' : (vClass === 2 ? '≤ 150 ppm' : '≤ 100 ppm');
+    }
+    return `ASTM D1533, Limit: ${lim}`;
+  }
+
+  // 3. Power Factor at 25 °C
+  if (mLower.includes('25') && (mLower.includes('power factor') || mLower.includes('pf'))) {
+    return isEster ? 'ASTM D924, Limit: ≤ 2.00%' : 'ASTM D924, Limit: ≤ 0.40%';
+  }
+
+  // 4. Power Factor at 100 °C
+  if (mLower.includes('100') && (mLower.includes('power factor') || mLower.includes('pf'))) {
+    return isEster ? 'ASTM D924, Limit: ≤ 5.00%' : 'ASTM D924, Limit: ≤ 4.00%';
+  }
+
+  // 5. IFT / Interfacial Tension
+  if (mLower.includes('ift') || mLower.includes('interfacial tension')) {
+    const lim = vClass === 1 ? '≥ 28.0 mN/m' : (vClass === 2 ? '≥ 33.0 mN/m' : '≥ 35.0 mN/m');
+    return `ASTM D971, Limit: ${lim}`;
+  }
+
+  // 6. Acidity / Neutralization Number
+  if (mLower.includes('acidity') || mLower.includes('neutralization')) {
+    const lim = vClass === 1 ? '≤ 0.17 mgKOH/g' : (vClass === 2 ? '≤ 0.12 mgKOH/g' : '≤ 0.07 mgKOH/g');
+    return `ASTM D974, Limit: ${lim}`;
+  }
+
+  // 7. Oil Conductivity
+  if (mLower.includes('conductivity')) {
+    return 'IEC 61620, Limit: ≤ 4.0 pS/m';
+  }
+
+  // 8. Color Number
+  if (mLower.includes('color')) {
+    return 'ASTM D1500, Limit: ≤ 2.0';
+  }
+
+  // 9. Inhibitor
+  if (mLower.includes('inhibitor')) {
+    return 'IEC 60296, Limit: ≥ 0.10 wt%';
+  }
+
+  // 10. Furan [2-FAL]
+  if (mLower.includes('furan')) {
+    return 'ASTM D5837, Limit: ≤ 700 ppb';
+  }
+
+  // 11. Estimated DP
+  if (mLower.includes('estimated dp') || mLower.includes('dp')) {
+    return 'Chendong / IEC, Limit: ≥ 700 DP';
+  }
+
+  // 12. Sludge condition
+  if (mLower.includes('sludge')) {
+    return 'IEC 60422, Limit: ≤ 0.018 wt%';
+  }
+
+  // 13. Corrosive Sulfur
+  if (mLower.includes('corrosive sulfur') || mLower.includes('sulfur')) {
+    return 'DIN 51353, Limit: Non-corr. (≤ 2e)';
+  }
+
+  // 14. Passivator
+  if (mLower.includes('passivator') || mLower.includes('irgamet')) {
+    return 'IEC 60666, Limit: ≥ 70 ppm';
+  }
+
+  // 15. DGA / Dissolved Gas Analysis
+  if (mLower.includes('dga') || mLower.includes('dissolve') || subLower.includes('dga')) {
+    return 'IEEE C57.104-2019, Status: 1 (Normal)';
+  }
+
+  // 16. Visual Inspection
+  if (mLower.includes('visual')) {
+    return 'IEEE C57.152-2013, Normal Condition';
+  }
+
+  // 17. Insulation Resistance & PI
+  if (mLower.includes('insulation resistance') || mLower.includes('pi')) {
+    return 'IEEE C57.152-2013, PI ≥ 1.25, IR ≥ 10,000 MΩ';
+  }
+
+  // 18. Power Factor & Capacitance (Winding / Active Part)
+  if (ptLower.includes('active')) {
+    if (mLower.includes('capacitance') || mLower.includes('cap')) {
+      return 'IEEE C57.152-2013, Limit: Cap Dev ≤ ±5.0%';
+    }
+    if (mLower.includes('power factor') || mLower.includes('pf')) {
+      return 'IEEE C57.152-2013, Limit: PF ≤ 0.50%';
+    }
+  }
+
+  // 19. Turn Ratio
+  if (mLower.includes('turn ratio') || mLower.includes('ratio')) {
+    return 'IEEE C57.152-2013, Limit: Ratio Error ≤ ±0.50%';
+  }
+
+  // 20. Exciting Current
+  if (mLower.includes('exciting')) {
+    return 'IEEE C57.152-2013, Limit: Phase Diff ≤ 5%';
+  }
+
+  // 21. Winding Resistance
+  if (mLower.includes('winding resistance') || mLower.includes('resistance')) {
+    return 'IEEE C57.152-2013, Limit: Phase Dev ≤ 2.0%';
+  }
+
+  // 22. Short Circuit Impedance
+  if (mLower.includes('short circuit') || mLower.includes('impedance')) {
+    return 'IEEE C57.152-2013, Limit: Dev from Nameplate ≤ ±3.0%';
+  }
+
+  // 23. Bushing Power Factor & Capacitance (Dynamic per Manufacturer & Insulation Type Criteria)
+  if (ptLower.includes('bushing') || subLower.includes('bushing')) {
+    const isLv = subLower.includes('lv') || subLower.includes('x');
+    const bushInfoSource = (typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData)) ? bushingInfoCsvData : (typeof window !== 'undefined' && window.bushingInfoCsvData ? window.bushingInfoCsvData : null);
+    const serialVal = (item && (item.serial || item.SERIAL_NUMBER || item.Serial_No || item.Serial_no)) || '';
+    
+    let mfg = 'IEEE C57.152-2013';
+    let type = 'OIP';
+
+    if (bushInfoSource && serialVal) {
+      const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const recs = bushInfoSource.filter(r => {
+        const s = String(r.Parent_Serial_No || r.serial || r.Serial_No || '').trim();
+        const cleanS = s.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        return (s.toLowerCase() === String(serialVal).toLowerCase()) || (cleanS && cleanTarget && cleanS === cleanTarget);
+      });
+
+      const filtered = recs.filter(r => {
+        const pos = String(r.Phase || r.phase || '').trim().toUpperCase();
+        if (isLv) {
+          return pos.startsWith('X') || pos.startsWith('LV');
+        } else {
+          return pos.startsWith('H') || (!pos.startsWith('X') && !pos.startsWith('LV'));
+        }
+      });
+
+      const targetRec = filtered.length > 0 ? filtered[0] : (recs.length > 0 ? recs[0] : null);
+      if (targetRec) {
+        mfg = String(targetRec.Manufacturer || targetRec.MANUFACTURER || targetRec.Maker || '').trim();
+        const rawType = String(targetRec.Type || targetRec.Bushing_Type || targetRec.Insulation || '').trim().toUpperCase();
+        type = rawType.includes('RIP') ? 'RIP' : (rawType.includes('RIS') ? 'RIS' : 'OIP');
+      }
+    }
+
+    const mfgUpper = mfg.toUpperCase();
+    const isPf = mLower.includes('power factor') || mLower.includes('pf');
+    const isCap = mLower.includes('capacitance') || mLower.includes('cap');
+
+    if (mfgUpper.includes('ABB')) {
+      if (isPf) return `ABB (${type}), Limit: Error %PF < 75%`;
+      if (isCap) return `ABB (${type}), Limit: Error Cap < 3%`;
+    } else if (mfgUpper.includes('TRENCH')) {
+      if (isPf) return `TRENCH (${type}), Limit: Error %PF 1.5 - Double`;
+      if (isCap) return `TRENCH (${type}), Limit: Error Cap < 10%`;
+    } else if (mfgUpper.includes('PASSONI') || mfgUpper.includes('VILLA')) {
+      if (type === 'RIP') {
+        if (isPf) return `PASSONI VILLA (RIP), Limit: Error %PF < 30%`;
+        if (isCap) return `PASSONI VILLA (RIP), Limit: Error Cap < 1%`;
+      } else {
+        if (isPf) return `PASSONI VILLA (OIP), Limit: Error %PF 1.5 - 2x Nameplate`;
+        if (isCap) return `PASSONI VILLA (OIP), Limit: Error Cap < 5%`;
+      }
+    } else if (mfgUpper.includes('MGC') || mfgUpper.includes('MOSER')) {
+      if (type === 'RIP') {
+        if (isPf) return `MGC (RIP), Limit: %PF < 0.70%`;
+        if (isCap) return `MGC (RIP), Limit: Error Cap < 10%`;
+      } else {
+        if (isPf) return `MGC (OIP), Limit: Error %PF 1.5 - 2x Nameplate`;
+        if (isCap) return `MGC (OIP), Limit: Error Cap < 5%`;
+      }
+    }
+
+    if (isPf) return `IEEE C57.152-2013 (${type}), Limit: Error %PF 1.5 - 2x Nameplate`;
+    if (isCap) return `IEEE C57.152-2013 (${type}), Limit: Error Cap < 5%`;
+  }
+
+  // 24. Surge Arrester
+  if (ptLower.includes('arrester') || mLower.includes('arrester') || mLower.includes('surge')) {
+    return 'IEEE C57.152-2013, Limit: Leakage ≤ 0.50 mA, IR ≥ 10,000 MΩ';
+  }
+
+  return '';
+}
+
+// ==========================================
 // getMeasuredValueForItem: Dynamic CSV query & Scoring
 // ==========================================
 function getMeasuredValueForItem(itemName, item, ptName, subName) {

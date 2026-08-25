@@ -2702,14 +2702,70 @@
         return 'IEEE C57.152-2013, Limit: Dev from Nameplate ≤ ±3.0%';
       }
 
-      // 23. Bushing Power Factor & Capacitance
-      if (ptLower.includes('bushing')) {
-        if (mLower.includes('capacitance') || mLower.includes('cap')) {
-          return 'IEEE C57.152-2013, Limit: Cap Dev ≤ ±5.0%';
+      // 23. Bushing Power Factor & Capacitance (Dynamic per Manufacturer & Insulation Type Criteria)
+      if (ptLower.includes('bushing') || subLower.includes('bushing')) {
+        const isLv = subLower.includes('lv') || subLower.includes('x');
+        const bushInfoSource = (typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData)) ? bushingInfoCsvData : (typeof window !== 'undefined' && window.bushingInfoCsvData ? window.bushingInfoCsvData : null);
+        const serialVal = item.serial || item.SERIAL_NUMBER || item.Serial_No || item.Serial_no || currentSerial || '';
+        
+        let mfg = 'IEEE C57.152-2013';
+        let type = 'OIP';
+
+        if (bushInfoSource && serialVal) {
+          const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
+          const recs = bushInfoSource.filter(r => {
+            const s = String(r.Parent_Serial_No || r.serial || r.Serial_No || '').trim();
+            const cleanS = s.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            return (s.toLowerCase() === String(serialVal).toLowerCase()) || (cleanS && cleanTarget && cleanS === cleanTarget);
+          });
+
+          const filtered = recs.filter(r => {
+            const pos = String(r.Phase || r.phase || '').trim().toUpperCase();
+            if (isLv) {
+              return pos.startsWith('X') || pos.startsWith('LV');
+            } else {
+              return pos.startsWith('H') || (!pos.startsWith('X') && !pos.startsWith('LV'));
+            }
+          });
+
+          const targetRec = filtered.length > 0 ? filtered[0] : (recs.length > 0 ? recs[0] : null);
+          if (targetRec) {
+            mfg = String(targetRec.Manufacturer || targetRec.MANUFACTURER || targetRec.Maker || '').trim();
+            const rawType = String(targetRec.Type || targetRec.Bushing_Type || targetRec.Insulation || '').trim().toUpperCase();
+            type = rawType.includes('RIP') ? 'RIP' : (rawType.includes('RIS') ? 'RIS' : 'OIP');
+          }
         }
-        if (mLower.includes('power factor') || mLower.includes('pf')) {
-          return 'IEEE C57.152-2013, Limit: PF ≤ 0.50%';
+
+        const mfgUpper = mfg.toUpperCase();
+        const isPf = mLower.includes('power factor') || mLower.includes('pf');
+        const isCap = mLower.includes('capacitance') || mLower.includes('cap');
+
+        if (mfgUpper.includes('ABB')) {
+          if (isPf) return `ABB (${type}), Limit: Error %PF < 75%`;
+          if (isCap) return `ABB (${type}), Limit: Error Cap < 3%`;
+        } else if (mfgUpper.includes('TRENCH')) {
+          if (isPf) return `TRENCH (${type}), Limit: Error %PF 1.5 - Double`;
+          if (isCap) return `TRENCH (${type}), Limit: Error Cap < 10%`;
+        } else if (mfgUpper.includes('PASSONI') || mfgUpper.includes('VILLA')) {
+          if (type === 'RIP') {
+            if (isPf) return `PASSONI VILLA (RIP), Limit: Error %PF < 30%`;
+            if (isCap) return `PASSONI VILLA (RIP), Limit: Error Cap < 1%`;
+          } else {
+            if (isPf) return `PASSONI VILLA (OIP), Limit: Error %PF 1.5 - 2x Nameplate`;
+            if (isCap) return `PASSONI VILLA (OIP), Limit: Error Cap < 5%`;
+          }
+        } else if (mfgUpper.includes('MGC') || mfgUpper.includes('MOSER')) {
+          if (type === 'RIP') {
+            if (isPf) return `MGC (RIP), Limit: %PF < 0.70%`;
+            if (isCap) return `MGC (RIP), Limit: Error Cap < 10%`;
+          } else {
+            if (isPf) return `MGC (OIP), Limit: Error %PF 1.5 - 2x Nameplate`;
+            if (isCap) return `MGC (OIP), Limit: Error Cap < 5%`;
+          }
         }
+
+        if (isPf) return `IEEE C57.152-2013 (${type}), Limit: Error %PF 1.5 - 2x Nameplate`;
+        if (isCap) return `IEEE C57.152-2013 (${type}), Limit: Error Cap < 5%`;
       }
 
       // 24. Surge Arrester
