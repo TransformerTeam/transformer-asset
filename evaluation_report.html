@@ -1215,6 +1215,9 @@
     </div>
 
     <div class="btn-group">
+      <a id="eval-oil-link" href="oil_report.html" target="_blank" class="btn btn-secondary" title="Open Insulating Oil Quality Test Report" style="text-decoration: none;">
+        <i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> Oil Report
+      </a>
       <button class="btn btn-secondary" onclick="handleRefreshData()" id="refresh-data-btn" title="Refresh & Reload Report Data">
         <i id="refresh-spin-icon" class="fa-solid fa-arrows-rotate"></i> Refresh
       </button>
@@ -1656,7 +1659,9 @@
       const mfgDateVal = (trInfo && trInfo.MANUFACTURING_DATE) || item.MANUFACTURING_DATE || item.MANUFACTURING_YEAR;
 
       // Update Report Links
+      setElHref('eval-oil-link', `oil_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-detail', `detail.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-oil', `oil_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-pf', `pf_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-bushing', `bushing_pf_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-dga', `dga_report.html?serial=${encodeURIComponent(serialVal)}`);
@@ -1664,6 +1669,10 @@
       setElHref('link-pi', `pi_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-ratio', `ratio_report.html?serial=${encodeURIComponent(serialVal)}`);
       setElHref('link-single-short', `single_short_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-three-short', `three_short_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-winding', `winding_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-exciting', `exciting_report.html?serial=${encodeURIComponent(serialVal)}`);
+      setElHref('link-drm', `drm_report.html?serial=${encodeURIComponent(serialVal)}`);
 
       // 0. Header Information
       setElText('eval-report-id', `TR-EVAL-${serialVal}`);
@@ -2320,8 +2329,32 @@
         };
       }
 
-      // 5. Main Tank Oil / Insulating Oil Summary
-      if (nameLower === 'main tank oil' || nameLower === 'insulating oil' || subLower === 'main tank oil' || subLower === 'insulating oil') {
+      // 5. Main Tank Oil / Insulating Oil & Quality Parameters
+      const isOilQualityParam =
+        nameLower.includes('dielectric breakdown') ||
+        nameLower.includes('water content') ||
+        nameLower.includes('acidity') ||
+        nameLower.includes('ift') ||
+        nameLower.includes('interfacial tension') ||
+        nameLower.includes('furan') ||
+        nameLower.includes('estimated dp') ||
+        nameLower.includes('sludge') ||
+        nameLower.includes('corrosive sulfur') ||
+        nameLower.includes('passivator') ||
+        nameLower.includes('inhibitor') ||
+        nameLower.includes('oil conductivity') ||
+        nameLower.includes('color number') ||
+        nameLower === 'main tank oil' ||
+        nameLower === 'insulating oil' ||
+        nameLower.includes('oil quality') ||
+        subLower.includes('dielectric breakdown') ||
+        subLower.includes('oil properties') ||
+        subLower.includes('oltc oil') ||
+        subLower === 'main tank oil' ||
+        subLower === 'insulating oil' ||
+        ((ptLower.includes('oil') || ptLower.includes('insulation oil')) && (nameLower.includes('power factor') || nameLower.includes('pf')));
+
+      if (isOilQualityParam && !nameLower.includes('dga') && !nameLower.includes('dissolve gas')) {
         return {
           url: `oil_report.html?serial=${s}`,
           title: 'Open Insulating Oil Test Report',
