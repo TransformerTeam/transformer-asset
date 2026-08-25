@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winding Resistance Test Report | GPSC Transformer Asset Management</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #0b0f17;
+      --bg-card: #121824;
+      --bg-card-hover: #182234;
+      --border-color: #26334d;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --primary-rgb: 79, 70, 229;
+      --report-header-bg: #0f172a;
+      --report-primary: #1e3a8a;
+    }
+
+    [data-theme="light"] {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --primary-rgb: 79, 70, 229;
+      --report-header-bg: #1e3a8a;
+      --report-primary: #1e3a8a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding: 16px 20px;
+      min-height: 100vh;
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    .control-panel {
+      max-width: 1000px;
+      margin: 0 auto 12px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .selector-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .selector-label {
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .search-select {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s ease;
+      min-width: 240px;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .search-select:focus {
+      border-color: var(--primary);
+    }
+
+    .search-select optgroup {
+      font-weight: 700;
+      color: #818cf8;
+      background-color: #12161f;
+      padding: 4px 0;
+    }
+
+    .search-select option {
+      font-weight: 500;
+      color: #ffffff;
+      background-color: #12161f;
+      padding: 3px 8px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      color: #1e3a8a;
+      background-color: #f1f5f9;
+    }
+
+    [data-theme="light"] .search-select option {
+      color: #0f172a;
+      background-color: #ffffff;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: 1px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+    }
+
+    /* Report Sheet (A4 Styled Container) */
+    .report-sheet {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      padding: 16px 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Report Header */
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+    }
+
+    .header-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 8px;
+      vertical-align: middle;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .company-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .company-sub {
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .doc-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .doc-sub {
+      font-size: 9px;
+      font-weight: 600;
+      color: #475569;
+      text-align: center;
+      margin-top: 1px;
+    }
+
+    .doc-meta {
+      font-size: 9px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    .doc-meta strong {
+      color: #0f172a;
+    }
+
+    /* Section Bar */
+    .section-title {
+      background: var(--report-primary);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 2px;
+    }
+
+    .section-title span.badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 8.5px;
+      font-weight: 600;
+    }
+
+    /* Grid Split for Sections 2 & 3 */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    /* Standard Report Data Tables */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #cbd5e1;
+      padding: 3px 6px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .report-table th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 9.5px;
+    }
+
+    .report-table td.lbl {
+      font-weight: 600;
+      color: #475569;
+      background-color: #f8fafc;
+      text-align: left;
+      width: 16%;
+      white-space: nowrap;
+    }
+
+    .report-table td.val {
+      color: #0f172a;
+      text-align: left;
+      font-weight: 500;
+      width: 34%;
+    }
+
+    .report-table td.text-left { text-align: left; }
+    .report-table td.text-right { text-align: right; }
+
+    /* KPI Summary Strip */
+    .kpi-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 6px 0;
+    }
+
+    .kpi-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .kpi-value {
+      font-size: 15px;
+      font-weight: 800;
+      margin-top: 1px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .kpi-sub {
+      font-size: 8px;
+      color: #94a3b8;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+
+    /* Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.02em;
+    }
+
+    .status-pass { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .status-fair { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+    .status-fail { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* Charts Container */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .chart-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 8px 10px;
+    }
+
+    .chart-box-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+    }
+
+    /* Criteria Guideline Box */
+    .criteria-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 6px 0;
+      font-size: 8.5px;
+    }
+
+    .criteria-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 4px 6px;
+      background: #f8fafc;
+    }
+
+    .criteria-box.pass { border-left: 3px solid #22c55e; }
+    .criteria-box.fair { border-left: 3px solid #eab308; }
+    .criteria-box.warn { border-left: 3px solid #f97316; }
+    .criteria-box.fail { border-left: 3px solid #ef4444; }
+
+    .criteria-title { font-weight: 700; color: #0f172a; margin-bottom: 1px; }
+    .criteria-desc { color: #64748b; font-size: 8px; line-height: 1.3; }
+
+    /* Signatures Table */
+    table.response-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      text-align: center;
+      background-color: #ffffff;
+    }
+
+    table.response-table th {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 4px 6px;
+      width: 33.33%;
+      border: 1px solid #cbd5e1;
+    }
+
+    table.response-table td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      background-color: #ffffff;
+      text-align: center;
+    }
+
+    table.response-table td.sig-cell {
+      height: 48px;
+      background-color: #ffffff;
+    }
+
+    /* Print Styles */
+    @page {
+      size: A4 portrait;
+      margin: 8mm 8mm 8mm 8mm;
+    }
+
+    @media print {
+      *, *::before, *::after {
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 8px !important;
+      }
+      .control-panel { display: none !important; }
+      .report-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .section-title {
+        background-color: #1e3a8a !important;
+        color: #ffffff !important;
+        padding: 3px 6px !important;
+        font-size: 9px !important;
+        margin-top: 5px !important;
+        margin-bottom: 3px !important;
+      }
+      .report-table th {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+      }
+      .report-table td {
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+      }
+      .kpi-card {
+        padding: 4px 6px !important;
+      }
+      .kpi-label { font-size: 7.5px !important; }
+      .kpi-value { font-size: 13px !important; }
+      .kpi-sub { font-size: 7px !important; }
+      .charts-grid {
+        gap: 8px !important;
+        margin-top: 6px !important;
+        margin-bottom: 8px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .chart-box {
+        padding: 6px 8px !important;
+      }
+      .chart-container {
+        height: 145px !important;
+      }
+      .criteria-container {
+        margin-top: 6px !important;
+        margin-bottom: 6px !important;
+        gap: 6px !important;
+      }
+      .criteria-box {
+        padding: 4px 6px !important;
+      }
+      table.response-table {
+        margin-top: 6px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-panel">
+    <div class="selector-group">
+      <label for="transformer-select" class="selector-label">
+        <i class="fa-solid fa-bolt text-indigo-400"></i> Transformer:
+      </label>
+      <select id="transformer-select" class="search-select" onchange="switchTransformer(this.value)">
+        <!-- Dynamically populated grouped by SITE -->
+      </select>
+
+      <label for="test-date-select" class="selector-label" style="margin-left: 8px;">
+        <i class="fa-solid fa-calendar-day"></i> Test Date:
+      </label>
+      <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
+        <!-- Populated based on test dates -->
+      </select>
+    </div>
+
+    <div class="btn-group">
+      <a href="assessment.html" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Assessment
+      </a>
+      <button class="btn btn-secondary" onclick="toggleTheme()">
+        <i class="fa-solid fa-sun" id="theme-icon"></i> Theme
+      </button>
+      <button class="btn btn-primary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print Report
+      </button>
+    </div>
+  </div>
+
+  <!-- A4 Printable Report Sheet -->
+  <div class="report-sheet">
+    <div class="report-content">
+
+      <!-- Header Block -->
+      <table class="header-table">
+        <tr>
+          <td style="width: 30%;">
+            <div class="logo-container">
+              <div class="logo-badge">G</div>
+              <div>
+                <div class="company-title">GPSC GROUP</div>
+                <div class="company-sub">Global Power Synergy Public Company Limited</div>
+              </div>
+            </div>
+          </td>
+          <td style="width: 44%; text-align: center;">
+            <div class="doc-title">WINDING RESISTANCE TEST REPORT</div>
+            <div class="doc-sub">DIRECT CURRENT (DC) WINDING RESISTANCE & PHASE BALANCE EVALUATION</div>
+          </td>
+          <td style="width: 26%;">
+            <div class="doc-meta">
+              <div>Doc No: <strong>EMM-TR-F-004</strong></div>
+              <div>Standard: <strong>IEEE C57.152 Cl. 6.3</strong></div>
+              <div>Report Date: <strong id="meta-report-date">-</strong></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- 1. Transformer Identification & Rating Information -->
+      <div class="section-title">
+        <span>1. TRANSFORMER IDENTIFICATION &amp; RATING INFORMATION</span>
+        <span class="badge" id="info-header-id">EMM-TR-F-004, Rev.1</span>
+      </div>
+      <table class="report-table">
+        <tr>
+          <td class="lbl">Equipment Name:</td>
+          <td class="val" id="info-eq-name">-</td>
+          <td class="lbl">Substation / Site:</td>
+          <td class="val" id="info-site">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Serial Number:</td>
+          <td class="val" id="info-serial" style="font-weight: 700; color: #1e3a8a;">-</td>
+          <td class="lbl">Rated Power:</td>
+          <td class="val" id="info-mva">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">Voltage Ratings:</td>
+          <td class="val" id="info-voltage">-</td>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
+        </tr>
+        <tr>
+          <td class="lbl">No. of winding:</td>
+          <td class="val" id="info-winding">-</td>
+          <td class="lbl">Tap Changer:</td>
+          <td class="val" id="info-tap">-</td>
+        </tr>
+      </table>
+
+      <!-- 2 & 3. Split Grid: Test Instrument & Apparatus + Environmental Conditions -->
+      <div class="row-split">
+        <div>
+          <div class="section-title">
+            <span>2. TEST INSTRUMENT &amp; APPARATUS</span>
+          </div>
+          <table class="report-table">
+            <tr>
+              <td class="lbl" style="width: 38%;">Test Set / Model:</td>
+              <td class="val" id="info-instrument">TESTRANO 600</td>
+            </tr>
+            <tr>
+              <td class="lbl">Serial Number:</td>
+              <td class="val" id="info-instrument-serial">DA193X</td>
+            </tr>
+            <tr>
+              <td class="lbl">Calibration Date:</td>
+              <td class="val" id="info-instrument-calib">15-Dec-2025</td>
+            </tr>
+            <tr>
+              <td class="lbl">Test Standard:</td>
+              <td class="val">IEEE C57.152-2013 Cl. 6.3 / IEC 60076-1</td>
+            </tr>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <span>3. ENVIRONMENTAL &amp; THERMAL CONDITIONS</span>
+          </div>
+          <table class="report-table">
+            <tr>
+              <td class="lbl" style="width: 38%;">Ambient Temp:</td>
+              <td class="val" id="env-ambient">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Top Oil Temp:</td>
+              <td class="val" id="env-oil">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Winding Temp:</td>
+              <td class="val" id="env-winding">- °C</td>
+            </tr>
+            <tr>
+              <td class="lbl">Relative Humidity:</td>
+              <td class="val" id="env-humidity">-%</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- KPI Summary Highlight Cards -->
+      <div class="kpi-container">
+        <div class="kpi-card">
+          <div class="kpi-label">Max Phase-to-Phase Dev</div>
+          <div class="kpi-value" id="kpi-phase-dev" style="color: #166534;">-</div>
+          <div class="kpi-sub">Limit: &le; 2.00% (IEEE C57.152)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Max Factory / Ref Dev</div>
+          <div class="kpi-value" id="kpi-fac-dev" style="color: #1e3a8a;">-</div>
+          <div class="kpi-sub">Limit: &le; 5.00% (FAT Baseline)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Ref Correction Temp</div>
+          <div class="kpi-value" style="color: #4338ca;">75.0 °C</div>
+          <div class="kpi-sub">IEEE Temp Correction (Copper: 234.5°C)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Overall Evaluation</div>
+          <div class="kpi-value" id="kpi-overall-status">-</div>
+          <div class="kpi-sub">Winding &amp; Contact Integrity</div>
+        </div>
+      </div>
+
+      <!-- 4. High Voltage (HV) Winding Resistance Measurements Table -->
+      <div class="section-title">
+        <span>4. HIGH VOLTAGE (HV) WINDING RESISTANCE MEASUREMENTS &amp; ANALYSIS</span>
+        <span class="badge">Corrected to 75°C Reference</span>
+      </div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width: 14%;">Tap Position</th>
+            <th colspan="3">Measured Resistance (mΩ)</th>
+            <th colspan="3">Corrected Resistance @ 75°C (mΩ)</th>
+            <th colspan="3">Factory Baseline @ 75°C (mΩ)</th>
+            <th rowspan="2" style="width: 8%;">Phase Dev (%)</th>
+            <th rowspan="2" style="width: 8%;">Max Fac Dev (%)</th>
+            <th rowspan="2" style="width: 7%;">Status</th>
+          </tr>
+          <tr>
+            <th style="width: 7.5%;">Phase A</th>
+            <th style="width: 7.5%;">Phase B</th>
+            <th style="width: 7.5%;">Phase C</th>
+            <th style="width: 7.5%;">Phase A</th>
+            <th style="width: 7.5%;">Phase B</th>
+            <th style="width: 7.5%;">Phase C</th>
+            <th style="width: 7.5%;">Phase A</th>
+            <th style="width: 7.5%;">Phase B</th>
+            <th style="width: 7.5%;">Phase C</th>
+          </tr>
+        </thead>
+        <tbody id="table-hv-body">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+
+      <!-- 5. Low Voltage (LV) & Tertiary (TV) Winding Resistance (Conditional) -->
+      <div id="section-lv-tv" style="display: none;">
+        <div class="section-title">
+          <span>5. LOW VOLTAGE (LV) &amp; TERTIARY (TV) WINDING RESISTANCE MEASUREMENTS</span>
+          <span class="badge">Secondary Windings</span>
+        </div>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 18%;">Winding / Terminal</th>
+              <th colspan="3">Measured Resistance (mΩ)</th>
+              <th colspan="3">Corrected Resistance @ 75°C (mΩ)</th>
+              <th colspan="3">Factory Baseline @ 75°C (mΩ)</th>
+              <th rowspan="2" style="width: 9%;">Phase Dev (%)</th>
+              <th rowspan="2" style="width: 9%;">Max Fac Dev (%)</th>
+              <th rowspan="2" style="width: 8%;">Status</th>
+            </tr>
+            <tr>
+              <th style="width: 7%;">Ph A (1)</th>
+              <th style="width: 7%;">Ph B (2)</th>
+              <th style="width: 7%;">Ph C (3)</th>
+              <th style="width: 7%;">Ph A (1)</th>
+              <th style="width: 7%;">Ph B (2)</th>
+              <th style="width: 7%;">Ph C (3)</th>
+              <th style="width: 7%;">Ph A (1)</th>
+              <th style="width: 7%;">Ph B (2)</th>
+              <th style="width: 7%;">Ph C (3)</th>
+            </tr>
+          </thead>
+          <tbody id="table-lv-tv-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6. Graphical Diagnostic Charts -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-box-title">
+            <i class="fa-solid fa-chart-bar text-indigo-600"></i> Phase-to-Phase Resistance Balance (mΩ @ 75°C)
+          </div>
+          <div class="chart-container">
+            <canvas id="balanceChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-box-title">
+            <i class="fa-solid fa-chart-line text-emerald-600"></i> Historical Winding Resistance Trend (mΩ)
+          </div>
+          <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Assessment Criteria & Guidelines -->
+      <div class="criteria-container">
+        <div class="criteria-box pass">
+          <div class="criteria-title text-emerald-800"><i class="fa-solid fa-circle-check"></i> Normal / Pass (&le; 2.0%)</div>
+          <div class="criteria-desc">Phase deviation &le; 2.0% &amp; Factory dev &le; 5.0%. Winding connections &amp; tap selector in excellent state.</div>
+        </div>
+        <div class="criteria-box fair">
+          <div class="criteria-title text-yellow-800"><i class="fa-solid fa-triangle-exclamation"></i> Monitor (2.1 – 3.0%)</div>
+          <div class="criteria-desc">Minor phase imbalance or factory drift (5.1 - 8.0%). Re-verify measurement and monitor during next PM.</div>
+        </div>
+        <div class="criteria-box warn">
+          <div class="criteria-title text-amber-800"><i class="fa-solid fa-circle-exclamation"></i> Questionable (3.1 – 5.0%)</div>
+          <div class="criteria-desc">Elevated contact resistance or loose terminal bolt. Exercise tap changer and repeat DC test.</div>
+        </div>
+        <div class="criteria-box fail">
+          <div class="criteria-title text-red-800"><i class="fa-solid fa-circle-xmark"></i> Critical / Action (&gt; 5.0%)</div>
+          <div class="criteria-desc">Severe contact burning, loose crimp, or broken strand. Immediate inspection and maintenance required.</div>
+        </div>
+      </div>
+
+      <!-- 8. Engineering Assessment & Recommendation -->
+      <div class="section-title">
+        <span>6. ENGINEERING ASSESSMENT &amp; RECOMMENDATION</span>
+      </div>
+      <table class="report-table">
+        <tr>
+          <td class="lbl" style="width: 18%;">Diagnostic Summary:</td>
+          <td class="val" id="diag-summary-text">
+            DC Winding resistance measurements across all phases and tap positions show symmetrical balance with phase deviations within standard limits.
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Condition Rating:</td>
+          <td class="val" id="diag-rating-text">
+            <span class="status-badge status-pass">NORMAL / GOOD</span>
+            <span style="font-weight: 600; color: #166534; margin-left: 8px;">Health Index Score: 5 / 5</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="lbl">Recommendation:</td>
+          <td class="val" id="diag-rec-text" style="font-weight: 600; color: #166534;">
+            Winding coils, conductor joints, and tap changer contacts are in good electrical condition. Maintain standard Preventive Maintenance schedule.
+          </td>
+        </tr>
+      </table>
+
+      <!-- 9. Signatures & Approval -->
+      <div class="section-title">
+        <span>7. SIGNATURES &amp; APPROVAL</span>
+      </div>
+      <table class="response-table">
+        <thead>
+          <tr>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 8px;">
+              <div id="resp-name-tested" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-tested" style="font-size: 9.5px; color: #64748b; margin-top: 2px;">-</div>
+            </td>
+            <td style="padding: 6px 8px;">
+              <div id="resp-name-reviewed" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-reviewed" style="font-size: 9.5px; color: #64748b; margin-top: 2px;">-</div>
+            </td>
+            <td style="padding: 6px 8px;">
+              <div id="resp-name-approved" style="font-weight: 700; font-size: 11px; color: #0f172a;">-</div>
+              <div id="resp-comp-approved" style="font-size: 9.5px; color: #64748b; margin-top: 2px;">-</div>
+            </td>
+          </tr>
+          <tr>
+            <td id="resp-date-tested" style="font-size: 9.5px; color: #64748b; padding: 5px;">Date: -</td>
+            <td id="resp-date-reviewed" style="font-size: 9.5px; color: #64748b; padding: 5px;">Date: -</td>
+            <td id="resp-date-approved" style="font-size: 9.5px; color: #64748b; padding: 5px;">Date: -</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <script>
+    let windingCsvData = [];
+    let factoryCsvData = [];
+    let trInfoCsvData = [];
+    let currentSerial = '';
+    let balanceChartInstance = null;
+    let trendChartInstance = null;
+
+    // Helper to match serials robustly
+    function matchSerial(a, b) {
+      if (!a || !b) return false;
+      const cleanA = String(a).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const cleanB = String(b).trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      return cleanA === cleanB;
+    }
+
+    // Helper to parse CSV properly
+    function parseCSV(text) {
+      const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(l => l.trim().length > 0);
+      if (lines.length === 0) return [];
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^\uFEFF/, ''));
+      const records = [];
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i];
+        let entries = [];
+        let inQuote = false;
+        let token = '';
+        for (let j = 0; j < row.length; j++) {
+          const char = row[j];
+          if (char === '"') {
+            inQuote = !inQuote;
+          } else if (char === ',' && !inQuote) {
+            entries.push(token.trim());
+            token = '';
+          } else {
+            token += char;
+          }
+        }
+        entries.push(token.trim());
+        if (entries.length === headers.length || entries.length > 1) {
+          const obj = {};
+          headers.forEach((h, idx) => {
+            obj[h] = entries[idx] !== undefined ? entries[idx].replace(/^"|"$/g, '').trim() : '';
+          });
+          records.push(obj);
+        }
+      }
+      return records;
+    }
+
+    // Helper for formatting date as DD-Mmm-YYYY
+    function formatDate_ddMmmyyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === '0000-00-00' || dateStr === 'N/A' || dateStr === '') return '-';
+      const cleanStr = String(dateStr).trim().split(' ')[0];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      const ymdMatch = cleanStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (ymdMatch) {
+        const y = parseInt(ymdMatch[1], 10);
+        const m = parseInt(ymdMatch[2], 10) - 1;
+        const d = parseInt(ymdMatch[3], 10);
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dmyMatch = cleanStr.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (dmyMatch) {
+        let p1 = parseInt(dmyMatch[1], 10);
+        let p2 = parseInt(dmyMatch[2], 10);
+        let y = parseInt(dmyMatch[3], 10);
+        let d = p1, m = p2 - 1;
+        if (p1 > 12) { d = p1; m = p2 - 1; }
+        else if (p2 > 12) { d = p2; m = p1 - 1; }
+        if (m >= 0 && m < 12) {
+          const dd = String(d).padStart(2, '0');
+          return `${dd}-${months[m]}-${y}`;
+        }
+      }
+
+      const dt = new Date(cleanStr);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() > 1900) {
+        const dd = String(dt.getDate()).padStart(2, '0');
+        const mmm = months[dt.getMonth()];
+        const yyyy = dt.getFullYear();
+        return `${dd}-${mmm}-${yyyy}`;
+      }
+      return cleanStr;
+    }
+
+    // Startup Initialization
+    window.addEventListener('DOMContentLoaded', async () => {
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      try {
+        const [resWin, resFac, resInfo] = await Promise.all([
+          fetch('TestData/WindingData.csv').then(r => r.text()),
+          fetch('TestData/FactoryData.csv').then(r => r.text()),
+          fetch('TestData/TRinfo2.csv').then(r => r.text())
+        ]);
+
+        windingCsvData = parseCSV(resWin);
+        factoryCsvData = parseCSV(resFac);
+        trInfoCsvData = parseCSV(resInfo);
+
+        initTransformerDropdown();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const sParam = urlParams.get('serial');
+        if (sParam) {
+          currentSerial = sParam;
+        } else if (windingCsvData.length > 0) {
+          currentSerial = windingCsvData[0].SERIAL_NUMBER || windingCsvData[0].Serial_No || 'PP0084B01';
+        }
+
+        const sel = document.getElementById('transformer-select');
+        if (sel) sel.value = currentSerial;
+
+        loadTransformerReport(currentSerial);
+      } catch (err) {
+        console.error('Error initializing Winding Resistance report:', err);
+      }
+    });
+
+    function initTransformerDropdown() {
+      const select = document.getElementById('transformer-select');
+      if (!select) return;
+      select.innerHTML = '';
+
+      const uniqueSerials = [...new Set(windingCsvData.map(r => r.SERIAL_NUMBER || r.Serial_No).filter(Boolean))];
+      const allItems = [];
+
+      uniqueSerials.forEach(sn => {
+        const info = trInfoCsvData.find(t => matchSerial(t.Serial_No || t.SERIAL_NUMBER, sn)) || {};
+        const equipName = info.Equipment_Name || info.Equipment_name || info.LOCAL_EQUIPMENT_CODE || info.DEVICE_CODE || sn;
+        const site = (info.Site || info.SITE || info.SUBSTATION || 'Other').trim();
+        allItems.push({ serial: sn, name: equipName, site: site });
+      });
+
+      // Group by SITE
+      const siteGroups = {};
+      allItems.forEach(item => {
+        const s = item.site || 'Other';
+        if (!siteGroups[s]) siteGroups[s] = [];
+        siteGroups[s].push(item);
+      });
+
+      const sortedSites = Object.keys(siteGroups).sort((a, b) => {
+        if (a === 'Other') return 1;
+        if (b === 'Other') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sortedSites.forEach(siteName => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `Site: ${siteName}`;
+
+        const items = siteGroups[siteName].sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          const comp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          if (comp !== 0) return comp;
+          return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        items.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = u.serial;
+          opt.textContent = (u.name && u.name !== u.serial) ? `${u.name} (${u.serial})` : u.serial;
+          optgroup.appendChild(opt);
+        });
+
+        select.appendChild(optgroup);
+      });
+    }
+
+    function switchTransformer(sn) {
+      currentSerial = sn;
+      const newUrl = window.location.pathname + '?serial=' + encodeURIComponent(sn);
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadTransformerReport(sn);
+    }
+
+    function switchTestDate(selectedDate) {
+      loadTransformerReport(currentSerial, selectedDate);
+    }
+
+    function loadTransformerReport(sn, preferredDate = null) {
+      if (!sn) return;
+
+      const allRecords = windingCsvData.filter(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, sn));
+      if (allRecords.length === 0) {
+        console.warn('No winding resistance records for serial:', sn);
+        return;
+      }
+
+      // Populate Date Dropdown
+      const dateSelect = document.getElementById('test-date-select');
+      dateSelect.innerHTML = '';
+      allRecords.forEach(r => {
+        const rawDate = r.DATE || r.Date || r.date || 'Unknown';
+        const formatted = formatDate_ddMmmyyyy(rawDate);
+        const opt = document.createElement('option');
+        opt.value = rawDate;
+        opt.textContent = formatted;
+        dateSelect.appendChild(opt);
+      });
+
+      let rec = allRecords[0];
+      if (preferredDate) {
+        const matchRec = allRecords.find(r => (r.DATE || r.Date || r.date) === preferredDate);
+        if (matchRec) rec = matchRec;
+      }
+      dateSelect.value = rec.DATE || rec.Date || rec.date;
+
+      const info = trInfoCsvData.find(t => matchSerial(t.Serial_No || t.SERIAL_NUMBER, sn)) || {};
+      const fac = factoryCsvData.find(f => matchSerial(f.Serial_No || f.SERIAL_NUMBER, sn)) || {};
+
+      renderReport(rec, allRecords, info, fac);
+    }
+
+    function renderReport(rec, allRecords, info, fac) {
+      const pVal = (v) => {
+        if (!v || v === '-' || v === 'null' || v === 'undefined' || v === 'NaN') return NaN;
+        const num = parseFloat(v);
+        return isNaN(num) ? NaN : num;
+      };
+
+      const testDateFormatted = formatDate_ddMmmyyyy(rec.DATE || rec.Date || rec.date);
+      document.getElementById('meta-report-date').textContent = testDateFormatted;
+
+      // Section 1 Metadata
+      let name = info.Equipment_Name || info.Equipment_name || info.LOCAL_EQUIPMENT_CODE || info.DEVICE_CODE || currentSerial;
+      let site = info.Site || info.SITE || info.SUBSTATION || (fac.Site || '-');
+      let power = info.Rated_Power || info.MVA || info.POWER_RATING || (fac.Power_Rated ? fac.Power_Rated + ' MVA' : '-');
+      let hvRated = info.HV_Rated || info.HV_RATED || (fac.HV_Rated || '-');
+      let lvRated = info.LV_Rated || info.LV_RATED || (fac.LV_Rated || '-');
+      let tvRated = info.LV2_RATED || info.TV_Rated || (fac.TV_Rated && fac.TV_Rated !== 'None' ? fac.TV_Rated : null);
+      let vectorGroup = info.Vector_Group || info.VECTOR_GROUP || (fac.Vector_Group || 'Dyn1');
+      let tapType = info.TAP_CHANGER_TYPE || info.Tap_Changer || 'OLTC';
+      let noWinding = parseInt(info.NO_WINDING, 10) || (tvRated ? 3 : 2);
+
+      if (power !== '-' && !String(power).includes('MVA')) {
+        const pr = parseFloat(power);
+        power = (!isNaN(pr) && pr >= 1000) ? (pr / 1000).toFixed(0) + ' MVA' : power + ' MVA';
+      }
+
+      const voltageStr = tvRated ? `${hvRated} / ${lvRated} / ${tvRated} kV` : `${hvRated} / ${lvRated} kV`;
+      const isAuto = String(vectorGroup).toLowerCase().includes('auto') || String(name).toLowerCase().includes('auto');
+      let windingCountStr = '2 Windings';
+      if (isAuto) windingCountStr = 'Auto-Transformer (2 + Tertiary)';
+      else if (noWinding === 3 || tvRated) windingCountStr = '3 Windings';
+
+      document.getElementById('info-header-id').textContent = 'EMM-TR-F-004, Rev.1';
+      document.getElementById('info-eq-name').textContent = name;
+      document.getElementById('info-site').textContent = site;
+      document.getElementById('info-serial').textContent = currentSerial;
+      document.getElementById('info-mva').textContent = power;
+      document.getElementById('info-voltage').textContent = voltageStr;
+      document.getElementById('info-vector').textContent = vectorGroup;
+      document.getElementById('info-winding').textContent = windingCountStr;
+      document.getElementById('info-tap').textContent = tapType;
+
+      // Section 2 & 3
+      document.getElementById('info-instrument').textContent = rec.TESTINS && rec.TESTINS !== '-' ? rec.TESTINS : 'TESTRANO 600';
+      document.getElementById('info-instrument-serial').textContent = rec.INSSERIAL && rec.INSSERIAL !== '-' ? rec.INSSERIAL : 'DA193X';
+      document.getElementById('info-instrument-calib').textContent = rec.INSCAL && rec.INSCAL !== '-' ? formatDate_ddMmmyyyy(rec.INSCAL) : '15-Dec-2025';
+
+      document.getElementById('env-ambient').textContent = rec.AMBIENT && rec.AMBIENT !== '-' ? `${rec.AMBIENT} °C` : '- °C';
+      document.getElementById('env-oil').textContent = rec.OILTEMP && rec.OILTEMP !== '-' ? `${rec.OILTEMP} °C` : '- °C';
+      document.getElementById('env-winding').textContent = rec.WINDINGTEMP && rec.WINDINGTEMP !== '-' ? `${rec.WINDINGTEMP} °C` : '- °C';
+      document.getElementById('env-humidity').textContent = rec.HUMIDITY && rec.HUMIDITY !== '-' ? `${rec.HUMIDITY}%` : '-%';
+
+      // Temperature correction factor k to 75°C: k = (234.5 + 75) / (234.5 + Twind)
+      const tw = pVal(rec.WINDINGTEMP) || 30.0;
+      const kFactor = (234.5 + 75.0) / (234.5 + tw);
+
+      // 4. HV Winding Resistance Data Extraction
+      const hvRows = [];
+
+      // Helper to compute corrected R if not in Object column
+      const getCorr = (meas, objVal) => {
+        if (!isNaN(pVal(objVal))) return pVal(objVal);
+        if (!isNaN(pVal(meas))) return pVal(meas) * kFactor;
+        return NaN;
+      };
+
+      // Tap Max
+      if (!isNaN(pVal(rec.H1RMAX)) || !isNaN(pVal(rec.H2RMAX)) || !isNaN(pVal(rec.H3RMAX))) {
+        hvRows.push({
+          name: 'Tap Max',
+          r1: pVal(rec.H1RMAX),
+          r2: pVal(rec.H2RMAX),
+          r3: pVal(rec.H3RMAX),
+          c1: getCorr(rec.H1RMAX, rec.Object1),
+          c2: getCorr(rec.H2RMAX, rec.Object6),
+          c3: getCorr(rec.H3RMAX, rec.Object11),
+          f1: pVal(fac.WindResist_A_Tap_Max || rec.H1COM1),
+          f2: pVal(fac.WindResist_B_Tap_Max || rec.H2COM1),
+          f3: pVal(fac.WindResist_C_Tap_Max || rec.H3COM1),
+          devPh: pVal(rec.DEVMAX),
+          err1: pVal(rec.ERRH1MAX),
+          err2: pVal(rec.ERRH2MAX),
+          err3: pVal(rec.ERRH3MAX)
+        });
+      }
+
+      // Tap Center
+      if (!isNaN(pVal(rec.H1RCENTER)) || !isNaN(pVal(rec.H2RCENTER)) || !isNaN(pVal(rec.H3RCENTER))) {
+        hvRows.push({
+          name: 'Tap Center (Service)',
+          r1: pVal(rec.H1RCENTER),
+          r2: pVal(rec.H2RCENTER),
+          r3: pVal(rec.H3RCENTER),
+          c1: getCorr(rec.H1RCENTER, rec.Object2),
+          c2: getCorr(rec.H2RCENTER, rec.Object7),
+          c3: getCorr(rec.H3RCENTER, rec.Object12),
+          f1: pVal(fac.WindResist_A_Tap_Cen || rec.H1COM1),
+          f2: pVal(fac.WindResist_B_Tap_Cen || rec.H2COM1),
+          f3: pVal(fac.WindResist_C_Tap_Cen || rec.H3COM1),
+          devPh: pVal(rec.DEVCENTER),
+          err1: pVal(rec.ERRH1CEN),
+          err2: pVal(rec.ERRH2CEN),
+          err3: pVal(rec.ERRH3CEN)
+        });
+      }
+
+      // Tap Min
+      if (!isNaN(pVal(rec.H1RMIN)) || !isNaN(pVal(rec.H2RMIN)) || !isNaN(pVal(rec.H3RMIN))) {
+        hvRows.push({
+          name: 'Tap Min',
+          r1: pVal(rec.H1RMIN),
+          r2: pVal(rec.H2RMIN),
+          r3: pVal(rec.H3RMIN),
+          c1: getCorr(rec.H1RMIN, rec.Object3),
+          c2: getCorr(rec.H2RMIN, rec.Object8),
+          c3: getCorr(rec.H3RMIN, rec.Object13),
+          f1: pVal(fac.WindResist_A_Tap_Min || rec.H1COM1),
+          f2: pVal(fac.WindResist_B_Tap_Min || rec.H2COM1),
+          f3: pVal(fac.WindResist_C_Tap_Min || rec.H3COM1),
+          devPh: pVal(rec.DEVMIN),
+          err1: pVal(rec.ERRH1MIN),
+          err2: pVal(rec.ERRH2MIN),
+          err3: pVal(rec.ERRH3MIN)
+        });
+      }
+
+      // Tap 1 (H1TAP1 / H1RNO1)
+      if (!isNaN(pVal(rec.H1RNO1)) || !isNaN(pVal(rec.H2RNO1)) || !isNaN(pVal(rec.H3RNO1))) {
+        const tapLabel = rec.H1TAP1 && rec.H1TAP1 !== '-' ? `Tap ${rec.H1TAP1}` : 'Tap 1';
+        hvRows.push({
+          name: tapLabel,
+          r1: pVal(rec.H1RNO1),
+          r2: pVal(rec.H2RNO1),
+          r3: pVal(rec.H3RNO1),
+          c1: getCorr(rec.H1RNO1, rec.Object4),
+          c2: getCorr(rec.H2RNO1, rec.Object9),
+          c3: getCorr(rec.H3RNO1, rec.Object14),
+          f1: pVal(rec.H1COM1 || fac.WindResist_A_Tap_Cen),
+          f2: pVal(rec.H2COM1 || fac.WindResist_B_Tap_Cen),
+          f3: pVal(rec.H3COM1 || fac.WindResist_C_Tap_Cen),
+          devPh: pVal(rec.DEVTAP1),
+          err1: pVal(rec.ERRH1TAP1),
+          err2: pVal(rec.ERRH2TAP1),
+          err3: pVal(rec.ERRH3TAP1)
+        });
+      }
+
+      // Tap 2 (H1TAP2 / H1RNO2)
+      if (!isNaN(pVal(rec.H1RNO2)) || !isNaN(pVal(rec.H2RNO2)) || !isNaN(pVal(rec.H3RNO2))) {
+        const tapLabel = rec.H1TAP2 && rec.H1TAP2 !== '-' ? `Tap ${rec.H1TAP2}` : 'Tap 2';
+        hvRows.push({
+          name: tapLabel,
+          r1: pVal(rec.H1RNO2),
+          r2: pVal(rec.H2RNO2),
+          r3: pVal(rec.H3RNO2),
+          c1: getCorr(rec.H1RNO2, rec.Object5),
+          c2: getCorr(rec.H2RNO2, rec.Object10),
+          c3: getCorr(rec.H3RNO2, rec.Object15),
+          f1: pVal(rec.H1COM2 || fac.WindResist_A_Tap_Cen),
+          f2: pVal(rec.H2COM2 || fac.WindResist_B_Tap_Cen),
+          f3: pVal(rec.H3COM2 || fac.WindResist_C_Tap_Cen),
+          devPh: pVal(rec.DEVTAP2),
+          err1: pVal(rec.ERRH1TAP2),
+          err2: pVal(rec.ERRH2TAP2),
+          err3: pVal(rec.ERRH3TAP2)
+        });
+      }
+
+      // Render HV Table Body
+      const hvBody = document.getElementById('table-hv-body');
+      hvBody.innerHTML = '';
+
+      let maxPhaseDevOverall = 0;
+      let maxFacDevOverall = 0;
+      let worstScore = 5;
+
+      if (hvRows.length === 0) {
+        hvBody.innerHTML = '<tr><td colspan="13" style="text-align: center; color: #64748b; padding: 12px;">No High Voltage (HV) winding resistance measurements recorded.</td></tr>';
+      }
+
+      hvRows.forEach(row => {
+        // Calculate Phase Deviation if not available
+        let devPh = row.devPh;
+        if (isNaN(devPh) && !isNaN(row.c1) && !isNaN(row.c2) && !isNaN(row.c3)) {
+          const maxR = Math.max(row.c1, row.c2, row.c3);
+          const minR = Math.min(row.c1, row.c2, row.c3);
+          const avgR = (row.c1 + row.c2 + row.c3) / 3;
+          devPh = avgR > 0 ? ((maxR - minR) / avgR) * 100 : 0;
+        }
+        if (!isNaN(devPh) && devPh > maxPhaseDevOverall) maxPhaseDevOverall = devPh;
+
+        // Calculate Factory Devs
+        let maxErr = 0;
+        const calcErr = (c, f, err) => {
+          if (!isNaN(err)) return err;
+          if (!isNaN(c) && !isNaN(f) && f > 0) return (Math.abs(c - f) / f) * 100;
+          return NaN;
+        };
+
+        const e1 = calcErr(row.c1, row.f1, row.err1);
+        const e2 = calcErr(row.c2, row.f2, row.err2);
+        const e3 = calcErr(row.c3, row.f3, row.err3);
+        const errs = [e1, e2, e3].filter(e => !isNaN(e));
+        if (errs.length > 0) {
+          maxErr = Math.max(...errs);
+          if (maxErr > maxFacDevOverall) maxFacDevOverall = maxErr;
+        }
+
+        let score = 5;
+        if ((!isNaN(devPh) && devPh <= 2.0) && (maxErr <= 5.0 || errs.length === 0)) {
+          score = 5;
+        } else if ((!isNaN(devPh) && devPh <= 3.0) && (maxErr <= 8.0)) {
+          score = 4;
+        } else if ((!isNaN(devPh) && devPh <= 5.0)) {
+          score = 3;
+        } else {
+          score = 1;
+        }
+        if (score < worstScore) worstScore = score;
+
+        const badgeCls = score >= 4 ? 'status-pass' : (score === 3 ? 'status-fair' : 'status-fail');
+        const badgeTxt = score >= 4 ? 'PASS' : (score === 3 ? 'FAIR' : 'ACTION');
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="text-left" style="font-weight: 600;">${row.name}</td>
+          <td style="color: #1e3a8a;">${!isNaN(row.r1) ? row.r1.toFixed(2) : '-'}</td>
+          <td style="color: #166534;">${!isNaN(row.r2) ? row.r2.toFixed(2) : '-'}</td>
+          <td style="color: #1e3a8a;">${!isNaN(row.r3) ? row.r3.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${!isNaN(row.c1) ? row.c1.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #166534;">${!isNaN(row.c2) ? row.c2.toFixed(2) : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${!isNaN(row.c3) ? row.c3.toFixed(2) : '-'}</td>
+          <td style="color: #64748b;">${!isNaN(row.f1) ? row.f1.toFixed(2) : '-'}</td>
+          <td style="color: #64748b;">${!isNaN(row.f2) ? row.f2.toFixed(2) : '-'}</td>
+          <td style="color: #64748b;">${!isNaN(row.f3) ? row.f3.toFixed(2) : '-'}</td>
+          <td style="font-weight: 700; color: ${!isNaN(devPh) && devPh <= 2.0 ? '#166534' : (devPh <= 3.0 ? '#854d0e' : '#991b1b')};">${!isNaN(devPh) ? devPh.toFixed(2) + '%' : '-'}</td>
+          <td style="font-weight: 600; color: #475569;">${maxErr > 0 ? maxErr.toFixed(2) + '%' : '-'}</td>
+          <td><span class="status-badge ${badgeCls}">${badgeTxt}</span></td>
+        `;
+        hvBody.appendChild(tr);
+      });
+
+      // 5. LV & TV Winding Data Extraction
+      const secLvTv = document.getElementById('section-lv-tv');
+      const lvTvBody = document.getElementById('table-lv-tv-body');
+      lvTvBody.innerHTML = '';
+
+      const lvRows = [];
+      // LV Winding
+      if (!isNaN(pVal(rec.XR1)) || !isNaN(pVal(rec.XR2)) || !isNaN(pVal(rec.XR3))) {
+        lvRows.push({
+          name: 'LV Winding (X1 - X2 - X3)',
+          r1: pVal(rec.XR1),
+          r2: pVal(rec.XR2),
+          r3: pVal(rec.XR3),
+          c1: getCorr(rec.XR1, rec.Object16),
+          c2: getCorr(rec.XR2, rec.Object17),
+          c3: getCorr(rec.XR3, rec.Object18),
+          f1: pVal(fac.WindResist_LV_A),
+          f2: pVal(fac.WindResist_LV_B),
+          f3: pVal(fac.WindResist_LV_C),
+          devPh: pVal(rec.DEVX),
+          err1: pVal(rec.ERRX1MAX),
+          err2: pVal(rec.ERRX2MAX),
+          err3: pVal(rec.ERRX3MAX)
+        });
+      }
+
+      // TV Winding
+      if (!isNaN(pVal(rec.TR1)) || !isNaN(pVal(rec.TR2)) || !isNaN(pVal(rec.TR3))) {
+        lvRows.push({
+          name: 'Tertiary (TV) Winding (Y1 - Y2 - Y3)',
+          r1: pVal(rec.TR1),
+          r2: pVal(rec.TR2),
+          r3: pVal(rec.TR3),
+          c1: getCorr(rec.TR1, rec.Object19),
+          c2: getCorr(rec.TR2, rec.Object20),
+          c3: getCorr(rec.TR3, rec.Object21),
+          f1: pVal(fac.WindResist_TV_A),
+          f2: pVal(fac.WindResist_TV_B),
+          f3: pVal(fac.WindResist_TV_C),
+          devPh: pVal(rec.DEVT),
+          err1: pVal(rec.ERRY1MAX),
+          err2: pVal(rec.ERRY2MAX),
+          err3: pVal(rec.ERRY3MAX)
+        });
+      }
+
+      if (lvRows.length > 0) {
+        secLvTv.style.display = 'block';
+        lvRows.forEach(row => {
+          let devPh = row.devPh;
+          if (isNaN(devPh) && !isNaN(row.c1) && !isNaN(row.c2) && !isNaN(row.c3)) {
+            const maxR = Math.max(row.c1, row.c2, row.c3);
+            const minR = Math.min(row.c1, row.c2, row.c3);
+            const avgR = (row.c1 + row.c2 + row.c3) / 3;
+            devPh = avgR > 0 ? ((maxR - minR) / avgR) * 100 : 0;
+          }
+          if (!isNaN(devPh) && devPh > maxPhaseDevOverall) maxPhaseDevOverall = devPh;
+
+          let maxErr = 0;
+          const calcErr = (c, f, err) => {
+            if (!isNaN(err)) return err;
+            if (!isNaN(c) && !isNaN(f) && f > 0) return (Math.abs(c - f) / f) * 100;
+            return NaN;
+          };
+          const e1 = calcErr(row.c1, row.f1, row.err1);
+          const e2 = calcErr(row.c2, row.f2, row.err2);
+          const e3 = calcErr(row.c3, row.f3, row.err3);
+          const errs = [e1, e2, e3].filter(e => !isNaN(e));
+          if (errs.length > 0) {
+            maxErr = Math.max(...errs);
+            if (maxErr > maxFacDevOverall) maxFacDevOverall = maxErr;
+          }
+
+          let score = 5;
+          if ((!isNaN(devPh) && devPh <= 2.0) && (maxErr <= 5.0 || errs.length === 0)) {
+            score = 5;
+          } else if ((!isNaN(devPh) && devPh <= 3.0) && (maxErr <= 8.0)) {
+            score = 4;
+          } else if ((!isNaN(devPh) && devPh <= 5.0)) {
+            score = 3;
+          } else {
+            score = 1;
+          }
+          if (score < worstScore) worstScore = score;
+
+          const badgeCls = score >= 4 ? 'status-pass' : (score === 3 ? 'status-fair' : 'status-fail');
+          const badgeTxt = score >= 4 ? 'PASS' : (score === 3 ? 'FAIR' : 'ACTION');
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="text-left" style="font-weight: 600;">${row.name}</td>
+            <td style="color: #1e3a8a;">${!isNaN(row.r1) ? row.r1.toFixed(2) : '-'}</td>
+            <td style="color: #166534;">${!isNaN(row.r2) ? row.r2.toFixed(2) : '-'}</td>
+            <td style="color: #1e3a8a;">${!isNaN(row.r3) ? row.r3.toFixed(2) : '-'}</td>
+            <td style="font-weight: 600; color: #1e3a8a;">${!isNaN(row.c1) ? row.c1.toFixed(2) : '-'}</td>
+            <td style="font-weight: 600; color: #166534;">${!isNaN(row.c2) ? row.c2.toFixed(2) : '-'}</td>
+            <td style="font-weight: 600; color: #1e3a8a;">${!isNaN(row.c3) ? row.c3.toFixed(2) : '-'}</td>
+            <td style="color: #64748b;">${!isNaN(row.f1) ? row.f1.toFixed(2) : '-'}</td>
+            <td style="color: #64748b;">${!isNaN(row.f2) ? row.f2.toFixed(2) : '-'}</td>
+            <td style="color: #64748b;">${!isNaN(row.f3) ? row.f3.toFixed(2) : '-'}</td>
+            <td style="font-weight: 700; color: ${!isNaN(devPh) && devPh <= 2.0 ? '#166534' : (devPh <= 3.0 ? '#854d0e' : '#991b1b')};">${!isNaN(devPh) ? devPh.toFixed(2) + '%' : '-'}</td>
+            <td style="font-weight: 600; color: #475569;">${maxErr > 0 ? maxErr.toFixed(2) + '%' : '-'}</td>
+            <td><span class="status-badge ${badgeCls}">${badgeTxt}</span></td>
+          `;
+          lvTvBody.appendChild(tr);
+        });
+      } else {
+        secLvTv.style.display = 'none';
+      }
+
+      // KPI Updates
+      const totalItems = hvRows.length + lvRows.length;
+      document.getElementById('kpi-phase-dev').textContent = totalItems > 0 ? maxPhaseDevOverall.toFixed(2) + ' %' : '-';
+      document.getElementById('kpi-phase-dev').style.color = maxPhaseDevOverall <= 2.0 ? '#166534' : (maxPhaseDevOverall <= 3.0 ? '#854d0e' : '#991b1b');
+
+      document.getElementById('kpi-fac-dev').textContent = totalItems > 0 && maxFacDevOverall > 0 ? maxFacDevOverall.toFixed(2) + ' %' : (totalItems > 0 ? '< 2.00 %' : '-');
+      document.getElementById('kpi-fac-dev').style.color = maxFacDevOverall <= 5.0 ? '#1e3a8a' : (maxFacDevOverall <= 8.0 ? '#854d0e' : '#991b1b');
+
+      const badgeCls = worstScore >= 4 ? 'status-pass' : (worstScore === 3 ? 'status-fair' : 'status-fail');
+      const badgeText = worstScore >= 4 ? `GOOD (${worstScore}/5)` : (worstScore === 3 ? `MONITOR (${worstScore}/5)` : `ACTION (${worstScore}/5)`);
+      document.getElementById('kpi-overall-status').innerHTML = totalItems > 0 ? `<span class="status-badge ${badgeCls}">${badgeText}</span>` : `<span class="status-badge status-fair">NO DATA</span>`;
+
+      // Section 8 Assessment Text
+      if (totalItems > 0) {
+        if (worstScore >= 4) {
+          document.getElementById('diag-summary-text').innerHTML = `DC Winding resistance measurements across all phases and tap positions show symmetrical balance with max phase deviation of <strong>${maxPhaseDevOverall.toFixed(2)}%</strong> (within IEEE C57.152 limit of &le; 2.00%) and max baseline deviation of <strong>${maxFacDevOverall > 0 ? maxFacDevOverall.toFixed(2) + '%' : '&le; 5.0%'}</strong>. No open strands, loose joints, or tap changer contact anomalies detected.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-pass">NORMAL / GOOD</span> <span style="font-weight: 600; color: #166534; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Winding coils, conductor joints, and tap changer contacts are in good electrical condition. Maintain standard Preventive Maintenance schedule.';
+        } else if (worstScore === 3) {
+          document.getElementById('diag-summary-text').innerHTML = `Winding resistance indicates minor phase imbalance (Max Dev: <strong>${maxPhaseDevOverall.toFixed(2)}%</strong>) or factory baseline drift (<strong>${maxFacDevOverall.toFixed(2)}%</strong>). Potential surface oxidation on tap contacts or terminal loose connection.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fair">MONITOR / QUESTIONABLE</span> <span style="font-weight: 600; color: #854d0e; margin-left: 8px;">Health Index Score: 3 / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Perform tap changer manual cycling (10-20 times across full range), re-tighten external terminal connections, and repeat DC resistance test.';
+        } else {
+          document.getElementById('diag-summary-text').innerHTML = `Significant winding resistance asymmetry or severe contact fault detected (Max Phase Dev: <strong>${maxPhaseDevOverall.toFixed(2)}%</strong>). High risk of hotspot, broken strand, or diverter switch burning.`;
+          document.getElementById('diag-rating-text').innerHTML = `<span class="status-badge status-fail">CRITICAL / ACTION</span> <span style="font-weight: 600; color: #991b1b; margin-left: 8px;">Health Index Score: ${worstScore} / 5</span>`;
+          document.getElementById('diag-rec-text').textContent = 'Investigate immediately: Inspect OLTC diverter switch contacts, perform Dynamic Resistance Measurement (DRM), and check DGA for thermal heating gases (C2H4, CH4).';
+        }
+      } else {
+        document.getElementById('diag-summary-text').textContent = 'No DC winding resistance test records found for this unit on the selected test date.';
+        document.getElementById('diag-rating-text').innerHTML = '<span class="status-badge status-fair">N/A</span>';
+        document.getElementById('diag-rec-text').textContent = 'Perform DC winding resistance test during the next scheduled turnaround / PM.';
+      }
+
+      // Section 9 Signatures
+      populateSignatures(rec);
+
+      // Render Charts
+      const allPlotData = [...hvRows, ...lvRows].filter(r => !isNaN(r.c1) && r.c1 > 0);
+      renderBalanceChart(allPlotData);
+      renderTrendChart(allRecords);
+    }
+
+    function renderBalanceChart(plotData) {
+      const ctx = document.getElementById('balanceChart').getContext('2d');
+      if (balanceChartInstance) balanceChartInstance.destroy();
+
+      if (!plotData || plotData.length === 0) return;
+
+      const labels = plotData.map(d => d.name);
+      const dataA = plotData.map(d => d.c1);
+      const dataB = plotData.map(d => d.c2);
+      const dataC = plotData.map(d => d.c3);
+
+      balanceChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Phase A (mΩ)',
+              data: dataA,
+              backgroundColor: 'rgba(59, 130, 246, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'Phase B (mΩ)',
+              data: dataB,
+              backgroundColor: 'rgba(234, 179, 8, 0.85)',
+              borderColor: '#ca8a04',
+              borderWidth: 1,
+              borderRadius: 4
+            },
+            {
+              label: 'Phase C (mΩ)',
+              data: dataC,
+              backgroundColor: 'rgba(249, 115, 22, 0.85)',
+              borderColor: '#ea580c',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } },
+            tooltip: {
+              callbacks: {
+                label: (c) => `${c.dataset.label}: ${c.raw.toFixed(2)} mΩ`
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8.5, weight: '600' } }, grid: { display: false } },
+            y: {
+              title: { display: true, text: 'Resistance @ 75°C (mΩ)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTrendChart(records) {
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      if (trendChartInstance) trendChartInstance.destroy();
+
+      if (!records || records.length === 0) return;
+
+      const pNum = (v) => {
+        if (!v || v === '-' || v === 'null') return 0;
+        const n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+      };
+
+      const getRep = (r, phase) => {
+        if (phase === 'A') {
+          return pNum(r.H1RCENTER) || pNum(r.H1RNO2) || pNum(r.H1RNO1) || pNum(r.H1RMAX) || pNum(r.H1RMIN) || pNum(r.XR1);
+        } else if (phase === 'B') {
+          return pNum(r.H2RCENTER) || pNum(r.H2RNO2) || pNum(r.H2RNO1) || pNum(r.H2RMAX) || pNum(r.H2RMIN) || pNum(r.XR2);
+        } else {
+          return pNum(r.H3RCENTER) || pNum(r.H3RNO2) || pNum(r.H3RNO1) || pNum(r.H3RMAX) || pNum(r.H3RMIN) || pNum(r.XR3);
+        }
+      };
+
+      const sorted = [...records].sort((a, b) => new Date(a.DATE || a.Date) - new Date(b.DATE || b.Date));
+      const labels = sorted.map(r => formatDate_ddMmmyyyy(r.DATE || r.Date || r.date));
+      const dataA = sorted.map(r => getRep(r, 'A'));
+      const dataB = sorted.map(r => getRep(r, 'B'));
+      const dataC = sorted.map(r => getRep(r, 'C'));
+
+      trendChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Phase A',
+              data: dataA,
+              borderColor: '#3b82f6',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 4
+            },
+            {
+              label: 'Phase B',
+              data: dataB,
+              borderColor: '#eab308',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 4
+            },
+            {
+              label: 'Phase C',
+              data: dataC,
+              borderColor: '#f97316',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 10, font: { size: 9 } } },
+            tooltip: {
+              callbacks: {
+                label: (c) => `${c.dataset.label}: ${c.raw.toFixed(2)} mΩ`
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { font: { size: 8 } }, grid: { display: false } },
+            y: {
+              title: { display: true, text: 'Resistance (mΩ)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 } }
+            }
+          }
+        }
+      });
+    }
+
+    function populateSignatures(rec) {
+      const clean = (v) => (!v || v === '-' || v === 'null') ? '' : String(v).trim();
+
+      const testedName = clean(rec.NAME1 || rec.Name1) || 'Mr.Jirasak S.';
+      const reviewedName = clean(rec.NAME2 || rec.Name2) || 'Mr. Suchat M.';
+      const approvedName = clean(rec.NAME3 || rec.Name3) || 'Dr. Chaiwat P.';
+
+      const testedComp = clean(rec.COMP1 || rec.Comp1) || 'GPSC';
+      const reviewedComp = clean(rec.COMP2 || rec.Comp2) || 'GPSC';
+      const approvedComp = clean(rec.COMP3 || rec.Comp3) || 'GPSC Division Head';
+
+      document.getElementById('resp-name-tested').textContent = testedName;
+      document.getElementById('resp-name-reviewed').textContent = reviewedName;
+      document.getElementById('resp-name-approved').textContent = approvedName;
+
+      document.getElementById('resp-comp-tested').textContent = testedComp;
+      document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
+      document.getElementById('resp-comp-approved').textContent = approvedComp;
+
+      const dStr = formatDate_ddMmmyyyy(rec.DATE || rec.Date || rec.date);
+      const finalDate = (dStr && dStr !== '-') ? `Date: ${dStr}` : 'Date: -';
+      document.getElementById('resp-date-tested').textContent = finalDate;
+      document.getElementById('resp-date-reviewed').textContent = finalDate;
+      document.getElementById('resp-date-approved').textContent = finalDate;
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (!icon) return;
+      if (theme === 'dark') {
+        icon.className = 'fa-solid fa-sun';
+      } else {
+        icon.className = 'fa-solid fa-moon';
+      }
+    }
+  </script>
+</body>
+</html>

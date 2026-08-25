@@ -2019,7 +2019,7 @@ function openDetail(no) {
     <tr>
       <td>
         Winding Resistance
-        <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance / PF Report" style="margin-left: 6px;">
+        <a href="winding_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance Test Report" style="margin-left: 6px;">
           <i class="fa-solid fa-file-lines"></i>
         </a>
       </td>

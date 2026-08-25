@@ -2384,7 +2384,16 @@
         };
       }
 
-      // Methods without a dedicated report form (e.g. Winding Resistance, Capacitance, individual oil parameters, etc.) return null
+      // 12. Winding Resistance (DC Winding Resistance / HV, LV, TV)
+      if (nameLower.includes('winding resistance') || nameLower.includes('winding resist') || nameLower.includes('dc resistance')) {
+        return {
+          url: `winding_report.html?serial=${s}`,
+          title: 'Open Winding Resistance Test Report',
+          icon: 'fa-solid fa-file-lines'
+        };
+      }
+
+      // Methods without a dedicated report form (e.g. Capacitance, individual oil parameters, etc.) return null
       return null;
     }
 
