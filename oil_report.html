@@ -517,12 +517,15 @@
         break-after: page !important;
         min-height: auto !important;
       }
-      .report-page:last-child {
-        page-break-after: auto !important;
-        break-after: auto !important;
-      }
-      th {
+      table.report-table th, table.tbl-results th {
         background-color: #cbd5e1 !important;
+        color: #0f172a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.response-table th {
+        background-color: #1e3a8a !important;
+        color: #ffffff !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
