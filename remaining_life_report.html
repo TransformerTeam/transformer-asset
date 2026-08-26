@@ -711,7 +711,7 @@
             <td style="text-align: center;"><span class="status-badge status-normal">Optimal</span></td>
           </tr>
           <tr>
-            <td><strong>Current Unit Operating Trajectory</strong></td>
+            <td><strong style="color: #2563eb;">Current</strong> (Operating Condition)</td>
             <td style="text-align: center; font-weight: 700;" id="scen-curr-k">-</td>
             <td style="text-align: center; font-weight: 700;" id="scen-curr-300">-</td>
             <td style="text-align: center; font-weight: 700;" id="scen-curr-200">-</td>
@@ -1197,7 +1197,7 @@
         { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
         { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#059669', offsetLevel: 2 },
         { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#ea580c', offsetLevel: 3 },
-        { label: 'Actual Traj', years: rulCurr300, targetYear: yearCurr300, color: '#4f46e5', offsetLevel: 4 },
+        { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4 },
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#1e293b', offsetLevel: 5 }
       ];
 
@@ -1341,13 +1341,13 @@
           labels: years,
           datasets: [
             {
-              label: `Operating Condition (Actual Trajectory, DP₀=${currentDP})`,
+              label: `Current (DP₀=${currentDP})`,
               data: unitDP,
-              borderColor: '#4f46e5',
-              backgroundColor: '#4f46e5',
+              borderColor: '#2563eb',
+              backgroundColor: '#2563eb',
               borderWidth: 2.8,
               pointRadius: (c) => years[c.dataIndex] === 2025 ? 6 : 0,
-              pointBackgroundColor: '#4f46e5',
+              pointBackgroundColor: '#2563eb',
               tension: 0.15
             },
             {
