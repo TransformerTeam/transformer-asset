@@ -382,7 +382,7 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 245px;
+      height: 260px;
     }
 
     /* Technical Formula Box */
@@ -494,7 +494,7 @@
         width: 100% !important;
       }
       .chart-canvas-container {
-        height: 220px !important;
+        height: 235px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
@@ -628,7 +628,7 @@
         </tbody>
       </table>
 
-      <!-- 3. STACKED CHARTS (Dynamic DP0 from Current Transformer, Cut off at 2125) -->
+      <!-- 3. STACKED CHARTS (Dynamic DP0, Callout Intersections at DP = 300, Cut off at 2125) -->
       <div class="charts-container">
         <!-- Chart 1: DP Degradation Curves (2025 to 2125, Dynamic DP0) -->
         <div class="chart-box">
@@ -1192,8 +1192,17 @@
       const elSubtitle = document.getElementById('chart-dp-subtitle');
       if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (CIGRE 761 / SINTEF)`;
 
-      // Render Charts with Dynamic dpVal
-      renderDegradationChart(dpVal, kYearly, currentYear);
+      // Intersections metadata for callout lines
+      const intersections = [
+        { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
+        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#059669', offsetLevel: 2 },
+        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#ea580c', offsetLevel: 3 },
+        { label: 'Actual Traj', years: rulCurr300, targetYear: yearCurr300, color: '#4f46e5', offsetLevel: 4 },
+        { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#1e293b', offsetLevel: 5 }
+      ];
+
+      // Render Charts with Dynamic dpVal and Intersections
+      renderDegradationChart(dpVal, kYearly, currentYear, intersections);
       renderWeibullChart(age, currentYear);
 
       // Signatures
@@ -1227,7 +1236,66 @@
       document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = approvedName ? dateVal : '');
     }
 
-    function renderDegradationChart(currentDP, currentK, baseYear) {
+    // Custom Callout Plugin for DP = 300 Intersections
+    const dp300CalloutPlugin = {
+      id: 'dp300Callouts',
+      afterDatasetsDraw(chart, args, options) {
+        const intersections = options.intersections;
+        if (!intersections || !Array.isArray(intersections)) return;
+
+        const ctx = chart.ctx;
+        const xAxis = chart.scales.x;
+        const yAxis = chart.scales.y;
+
+        const y300 = yAxis.getPixelForValue(300);
+
+        // Sort intersections by targetYear
+        const validIntersections = intersections.filter(item => item.targetYear >= 2025 && item.targetYear <= 2125);
+        validIntersections.sort((a, b) => a.targetYear - b.targetYear);
+
+        validIntersections.forEach((item, idx) => {
+          const xPos = xAxis.getPixelForValue(item.targetYear);
+          if (isNaN(xPos) || xPos < xAxis.left || xPos > xAxis.right) return;
+
+          // Draw Anchor Dot at intersection
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(xPos, y300, 4, 0, Math.PI * 2);
+          ctx.fillStyle = item.color;
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Calculate staggered label position
+          const staggerOffset = 26 + ((idx % 4) * 22);
+          const labelY = y300 - staggerOffset;
+          const elbowX = xPos + 10;
+          const textX = elbowX + 4;
+
+          // Draw Leader Line with Elbow
+          ctx.beginPath();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([]);
+          ctx.moveTo(xPos, y300);
+          ctx.lineTo(elbowX, labelY);
+          ctx.lineTo(textX + 72, labelY);
+          ctx.stroke();
+
+          // Draw Text Label: DP = 300 (~XX yrs)
+          ctx.fillStyle = item.color;
+          ctx.font = 'bold 8.2px "Inter", sans-serif';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(`DP = 300 (~${item.years} yrs)`, textX, labelY - 2);
+
+          ctx.restore();
+        });
+      }
+    };
+
+    function renderDegradationChart(currentDP, currentK, baseYear, intersections = []) {
       const ctx = document.getElementById('chart-dp-degradation');
       if (!ctx) return;
 
@@ -1245,7 +1313,7 @@
       const limit300 = [];
       const limit200 = [];
 
-      const dp0 = currentDP; // Dynamic DP0 starting point per selected transformer
+      const dp0 = currentDP;
       const kNorm = 0.0000310;
       const kHighO2 = 0.0000597;
       const kHighMoist = 0.0000780;
@@ -1255,13 +1323,11 @@
         years.push(y);
         const dt = y - 2025;
 
-        // All scenario curves project dynamically from currentDP at Year 2025
         normalDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kNorm * dt))));
         highO2DP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighO2 * dt))));
         highMoistDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighMoist * dt))));
         severeDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kSevere * dt))));
 
-        // Actual Unit Trajectory
         unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
 
         limit300.push(300);
@@ -1270,6 +1336,7 @@
 
       dpChartInstance = new Chart(ctx, {
         type: 'line',
+        plugins: [dp300CalloutPlugin],
         data: {
           labels: years,
           datasets: [
@@ -1337,6 +1404,12 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 15,
+              right: 15
+            }
+          },
           plugins: {
             legend: {
               position: 'top',
@@ -1345,6 +1418,9 @@
                 font: { size: 8.2, weight: '600' },
                 padding: 5
               }
+            },
+            dp300Callouts: {
+              intersections: intersections
             }
           },
           scales: {
