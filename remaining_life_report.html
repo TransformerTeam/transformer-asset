@@ -49,7 +49,7 @@
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
-      padding: 20px;
+      padding: 16px;
       transition: background-color 0.3s ease, color 0.3s ease;
       min-height: 100vh;
       display: flex;
@@ -60,7 +60,7 @@
     /* Top Control Bar */
     .control-bar {
       width: 100%;
-      max-width: 980px;
+      max-width: 1040px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,7 +69,7 @@
       border: 1px solid var(--border-dark);
       padding: 10px 18px;
       border-radius: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       box-shadow: var(--glass-glow);
     }
 
@@ -102,7 +102,7 @@
       font-weight: 500;
       outline: none;
       cursor: pointer;
-      min-width: 290px;
+      min-width: 300px;
       transition: all 0.2s ease;
     }
 
@@ -163,13 +163,13 @@
       background-color: var(--primary-hover);
     }
 
-    /* Report Wrapper & Pages */
+    /* Report Wrapper & Pages (Full Width Optimization) */
     .report-wrapper {
       width: 100%;
-      max-width: 980px;
+      max-width: 1040px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
     }
 
     .report-page {
@@ -177,7 +177,7 @@
       color: var(--report-text);
       width: 100%;
       border-radius: 8px;
-      padding: 20px 28px;
+      padding: 18px 24px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       font-size: 9px;
       line-height: 1.25;
@@ -191,7 +191,7 @@
       align-items: center;
       border-bottom: 2px solid var(--report-primary);
       padding-bottom: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .report-title-group {
@@ -266,7 +266,7 @@
       font-size: 8.8px;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      margin-top: 6px;
+      margin-top: 5px;
       margin-bottom: 2px;
       border-radius: 2px;
       display: flex;
@@ -331,7 +331,7 @@
     .kpi-card {
       border: 1px solid var(--report-border);
       border-radius: 4px;
-      padding: 5px 8px;
+      padding: 4px 8px;
       background: #f8fafc;
       text-align: center;
     }
@@ -344,7 +344,7 @@
     }
 
     .kpi-val {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: var(--report-primary);
       margin-top: 1px;
@@ -356,19 +356,14 @@
       margin-top: 1px;
     }
 
-    /* Chart Container */
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 4px 0;
-    }
-
-    .chart-box {
+    /* Full-Width Chart Box */
+    .full-chart-box {
       border: 1px solid var(--report-border);
       border-radius: 4px;
-      padding: 6px;
+      padding: 6px 8px;
       background: #ffffff;
+      margin: 4px 0;
+      width: 100%;
     }
 
     .chart-header {
@@ -381,26 +376,29 @@
     }
 
     .chart-title {
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 700;
       color: var(--report-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 185px;
+      height: 200px;
     }
 
-    /* Formula & Technical Explanation Box */
+    /* Formula Box */
     .formula-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-left: 3px solid var(--report-primary);
-      padding: 5px 8px;
+      padding: 4px 8px;
       border-radius: 3px;
       font-size: 8px;
-      line-height: 1.35;
+      line-height: 1.3;
       margin-bottom: 4px;
     }
 
@@ -415,13 +413,13 @@
 
     .formula-math {
       font-family: 'Cambria Math', 'Times New Roman', serif;
-      font-size: 9px;
+      font-size: 8.8px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      padding: 3px 6px;
+      padding: 2px 6px;
       border-radius: 3px;
       display: inline-block;
-      margin: 2px 0;
+      margin: 1px 0;
       color: #1e293b;
     }
 
@@ -453,7 +451,7 @@
       height: 28px;
     }
 
-    /* Print styles */
+    /* Print styles (Full Page Fit) */
     @media print {
       @page {
         size: A4 portrait;
@@ -470,21 +468,26 @@
       .report-wrapper {
         gap: 0 !important;
         max-width: 100% !important;
+        width: 100% !important;
       }
       .report-page {
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 6px 12px !important;
+        padding: 6px 10px !important;
         page-break-after: always !important;
         break-after: page !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         height: auto !important;
+        width: 100% !important;
       }
       .report-page:last-child {
         page-break-after: avoid !important;
         break-after: avoid !important;
+      }
+      .chart-canvas-container {
+        height: 185px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
@@ -515,7 +518,7 @@
   <div class="report-wrapper" id="report-wrapper">
 
     <!-- ==========================================
-         PAGE 1: Executive Assessment, KPI Cards & Degradation Charts
+         PAGE 1: Executive Assessment, KPI Cards & Degradation Chart
          ========================================== -->
     <div class="report-page" id="page-1">
       <!-- Header Section -->
@@ -622,28 +625,14 @@
         </tbody>
       </table>
 
-      <!-- 3. Dual Trend Analysis Charts -->
-      <div class="charts-grid">
-        <!-- Chart 1: DP Degradation Curves -->
-        <div class="chart-box">
-          <div class="chart-header">
-            <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Degradation (DP Curves)</span>
-            <span style="font-size: 7.5px; color: #64748b;">SINTEF / CIGRE 761</span>
-          </div>
-          <div class="chart-canvas-container">
-            <canvas id="chart-dp-degradation"></canvas>
-          </div>
+      <!-- 3. Full-Width Chart: Cellulose Insulation Degradation (DP Curves) -->
+      <div class="full-chart-box">
+        <div class="chart-header">
+          <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
+          <span style="font-size: 8px; color: #64748b; font-weight: 600;">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
         </div>
-
-        <!-- Chart 2: Weibull PoF Curve -->
-        <div class="chart-box">
-          <div class="chart-header">
-            <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
-            <span style="font-size: 7.5px; color: #64748b;">Fleet Risk Curve</span>
-          </div>
-          <div class="chart-canvas-container">
-            <canvas id="chart-weibull-pof"></canvas>
-          </div>
+        <div class="chart-canvas-container">
+          <canvas id="chart-dp-degradation"></canvas>
         </div>
       </div>
 
@@ -724,7 +713,7 @@
     </div>
 
     <!-- ==========================================
-         PAGE 2: Mathematical Models, Scenario Analysis & Strategic Action Plan
+         PAGE 2: Mathematical Models, Weibull PoF Chart & Strategic Action Plan
          ========================================== -->
     <div class="report-page" id="page-2">
       <!-- Header Section -->
@@ -779,41 +768,38 @@
       <!-- 5. Technical Methodology & Standard Formulations -->
       <div class="section-banner">• Technical Methodology &amp; Mathematical Formulation (CIGRE 761 / IEEE C57.152)</div>
       
-      <div class="formula-box">
-        <div class="formula-title"><i class="fa-solid fa-atom"></i> 1. SINTEF Winding Ageing Model (Thermal-Chemical Kinetic Degradation)</div>
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <div>Chain Scissions: <span class="formula-math">η = DP_new · [ A_Oxi · e^(-E_Oxi / RT) + A_Hyd · e^(-E_Hyd / RT) ] · t</span></div>
-          <div>Current DP: <span class="formula-math">DP_t = DP_new / (η + 1)</span></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div class="formula-box">
+          <div class="formula-title"><i class="fa-solid fa-atom"></i> 1. SINTEF Winding Ageing Model</div>
+          <div>Scissions: <span class="formula-math">η = DP₀ · [ A_Oxi · e^(-E_Oxi/RT) + A_Hyd · e^(-E_Hyd/RT) ] · t</span></div>
+          <div>Current DP: <span class="formula-math">DP_t = DP₀ / (η + 1)</span></div>
+          <div style="font-size: 7.5px; color: #475569; margin-top: 1px;">
+            • <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol, <em>DP₀</em> = 1000.
+          </div>
         </div>
-        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-          • Parameters: <em>DP_new</em> = 1000, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol.<br>
-          • <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5% moisture), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
+
+        <div class="formula-box">
+          <div class="formula-title"><i class="fa-solid fa-flask-vial"></i> 2. Dominelli 2-FAL Correlation &amp; Extrapolation</div>
+          <div>Correlation: <span class="formula-math">log₁₀(2-FAL_ppm) = 1.51 - 0.0035 · DP</span></div>
+          <div>Future DP: <span class="formula-math">DP_future = 1 / [ 1/DP_curr + k · Δt ]</span></div>
+          <div style="font-size: 7.5px; color: #475569; margin-top: 1px;">
+            • 2-FAL in ppm. Aging rate <em>k</em> = (1/DP_t - 1/DP₀) / t.
+          </div>
         </div>
       </div>
 
-      <div class="formula-box">
-        <div class="formula-title"><i class="fa-solid fa-flask-vial"></i> 2. Indirect DP Estimation from Furan 2-FAL (Dominelli / CIGRE 761 Correlation)</div>
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <div>Dominelli Correlation: <span class="formula-math">log₁₀(2-FAL_ppm) = 1.51 - 0.0035 · DP</span></div>
-          <div>Estimated DP: <span class="formula-math">DP = [ 1.51 - log₁₀(2-FAL_ppm) ] / 0.0035</span></div>
+      <!-- 6. Full-Width Chart: Weibull Cumulative Probability of Failure (PoF) -->
+      <div class="full-chart-box">
+        <div class="chart-header">
+          <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Weibull Cumulative Probability of Failure (PoF)</span>
+          <span style="font-size: 8px; color: #64748b; font-weight: 600;">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
         </div>
-        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-          • Note: 2-FAL concentration is converted from ppb to ppm (e.g. 9.3 ppb = 0.0093 ppm) before logarithmic calculation.
-        </div>
-      </div>
-
-      <div class="formula-box">
-        <div class="formula-title"><i class="fa-solid fa-chart-pie"></i> 3. Weibull Cumulative Probability of Failure (PoF) Fleet Risk Model</div>
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <div>Weibull PoF Formula: <span class="formula-math">PoF(t) = 1 - e^[ -(t / α)^β ]</span></div>
-          <div>Aging Extrapolation: <span class="formula-math">DP_future = 1 / [ 1/DP_present + k_yearly · Δt ]</span></div>
-        </div>
-        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-          • Parameters: Characteristic life scale <em>α</em> = 40–45 years, shape parameter <em>β</em> = 2.0–4.0 (Wear-out aging phase bathtub curve).
+        <div class="chart-canvas-container">
+          <canvas id="chart-weibull-pof"></canvas>
         </div>
       </div>
 
-      <!-- 6. Sensitivity & Scenario Analysis Table -->
+      <!-- 7. Sensitivity & Scenario Analysis Table -->
       <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison</div>
       <table class="report-table">
         <thead>
@@ -828,7 +814,7 @@
         <tbody>
           <tr>
             <td><strong>Normal Condition</strong> (Dry paper &lt; 1%, O₂ &lt; 7000 ppm)</td>
-            <td style="text-align: center;">3.10 × 10⁻⁵ h⁻¹</td>
+            <td style="text-align: center;">3.10 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;">48.5 Years</td>
             <td style="text-align: center;">72.0 Years</td>
             <td style="text-align: center;"><span class="status-badge status-normal">Optimal</span></td>
@@ -842,14 +828,14 @@
           </tr>
           <tr>
             <td><strong>Aggressive Condition</strong> (Moisture 1.5–2.0%, High Load)</td>
-            <td style="text-align: center;">5.97 × 10⁻⁵ h⁻¹</td>
+            <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;">26.0 Years</td>
             <td style="text-align: center;">42.0 Years</td>
             <td style="text-align: center;"><span class="status-badge status-questionable">Aggressive</span></td>
           </tr>
           <tr>
             <td><strong>Severe Degradation</strong> (Moisture &gt; 2.0%, O₂ &gt; 7000 ppm)</td>
-            <td style="text-align: center;">1.20 × 10⁻⁴ h⁻¹</td>
+            <td style="text-align: center;">1.20 × 10⁻⁴ year⁻¹</td>
             <td style="text-align: center;">12.5 Years</td>
             <td style="text-align: center;">22.0 Years</td>
             <td style="text-align: center;"><span class="status-badge status-unacceptable">Severe</span></td>
@@ -857,16 +843,16 @@
         </tbody>
       </table>
 
-      <!-- 7. Strategic Asset Management & Engineering Action Plan -->
+      <!-- 8. Strategic Asset Management & Engineering Action Plan -->
       <div class="section-banner">• Engineering Recommendations &amp; Strategic Asset Action Plan</div>
-      <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; font-size: 8.5px; line-height: 1.35; margin-bottom: 4px;" id="action-plan-box">
+      <div style="border: 1px solid var(--report-border); padding: 4px 8px; border-radius: 3px; background: #fafafa; font-size: 8.2px; line-height: 1.3; margin-bottom: 2px;" id="action-plan-box">
         • <strong>Short-term Actions (0–12 Months):</strong> Perform annual DGA and Furan 2-FAL screening. If moisture in oil indicates paper moisture &gt; 1.5%, plan for online oil dehydration or vacuum hot oil purification to retard hydrolysis.<br>
         • <strong>Medium-term Actions (1–3 Years):</strong> Maintain transformer cooling system (radiator fans and oil pumps) to restrict winding hotspot temperature below 95 °C under peak loading.<br>
         • <strong>Long-term Asset Planning (3–5+ Years):</strong> Review Capital Expenditure (CAPEX) fleet replacement horizon prior to reaching the mechanical end-of-life threshold (DP &lt; 200).
       </div>
 
       <!-- SIGNATURES / APPROVAL (Page 2) -->
-      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+      <div class="section-banner" style="margin-top: 5px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
           <tr>
@@ -1118,13 +1104,11 @@
     }
 
     function loadReportBySerial(serial) {
-      // Find metadata
       let meta = {};
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
         meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'], serial)) || {};
       }
 
-      // Find oil records
       let oilRecords = mtOilDataList.filter(x => matchSerial(x.serial, serial));
       if (oilRecords && oilRecords.length > 0) {
         oilRecords.sort((a, b) => {
@@ -1135,7 +1119,6 @@
       }
       const latestOil = oilRecords.length > 0 ? oilRecords[0] : {};
 
-      // Standard Header Metadata Binding
       const name = meta.name || meta['Equipment Name'] || latestOil.serial || serial;
       const sNo = meta.serial || meta['Serial No'] || latestOil.serial || serial;
       const site = meta.site || meta.SITE || '-';
@@ -1156,7 +1139,6 @@
       document.querySelectorAll('.val-meta-service').forEach(el => el.textContent = service);
       document.querySelectorAll('.val-meta-fluid').forEach(el => el.textContent = fluid);
 
-      // Extract Aging & Condition Inputs
       let age = parseFloat(meta.serviceAge || meta['Service Age (Year)'] || meta.age);
       if (isNaN(age) || age <= 0) age = 20;
 
@@ -1165,7 +1147,7 @@
 
       let dpVal = parseFloat(meta.estimatedDP || meta['Estimated DP (From Furan)']);
       if (isNaN(dpVal) || dpVal <= 0) {
-        dpVal = calcDominelliDP(furanPpb) || 950;
+        dpVal = calcDominelliDP(furanPpb) || 850;
       }
 
       const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.1%';
@@ -1177,20 +1159,17 @@
       document.getElementById('base-furan').textContent = furanPpb + ' ppb (' + (furanPpb / 1000).toFixed(4) + ' ppm)';
       document.getElementById('base-current-dp').textContent = Math.round(dpVal);
 
-      // Calculate Aging Rate k
       // k_yearly = (1/DP_t - 1/DP_0) / age
       const dp0 = 1000;
-      let kYearly = 0.00045;
+      let kYearly = 0.000035;
       if (age > 0 && dpVal < dp0) {
         kYearly = (1 / dpVal - 1 / dp0) / age;
       }
-      if (kYearly <= 0) kYearly = 0.00035;
+      if (kYearly <= 0) kYearly = 0.000031;
 
       const kScientific = kYearly.toExponential(2);
       document.getElementById('base-aging-k').textContent = `${kScientific} year⁻¹`;
 
-      // Calculate Remaining Years
-      // deltaT = (1/targetDP - 1/currentDP) / k_yearly
       const targetDP300 = 300;
       const targetDP200 = 200;
       const currentYear = new Date().getFullYear();
@@ -1314,21 +1293,24 @@
       const limit300 = [];
       const limit200 = [];
 
-      const kNormal = 0.00031;
-      const kAgg = 0.00060;
-      const kSev = 0.00120;
+      const kNormal = 0.0000310;
+      const kAgg = 0.0000597;
+      const kSev = 0.0001200;
 
-      for (let y = baseYear; y <= 2100; y += 2) {
+      for (let y = 2025; y <= 2100; y += 1) {
         years.push(y);
-        const dt = y - baseYear;
+        const dt = y - 2025;
 
-        // Benchmark starting from 850 in base year
         normalDP.push(Math.round(1 / (1 / 850 + kNormal * dt)));
         aggDP.push(Math.round(1 / (1 / 850 + kAgg * dt)));
-        sevDP.push(Math.max(50, Math.round(1 / (1 / 850 + kSev * dt))));
+        sevDP.push(Math.max(50, Math.round(1 / (1 / 820 + kSev * dt))));
 
-        // Unit DP trajectory starting from currentDP
-        unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
+        const dtUnit = y - baseYear;
+        if (dtUnit >= 0) {
+          unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dtUnit))));
+        } else {
+          unitDP.push(null);
+        }
 
         limit300.push(300);
         limit200.push(200);
@@ -1345,37 +1327,37 @@
               borderColor: '#4f46e5',
               backgroundColor: '#4f46e5',
               borderWidth: 2.5,
-              pointRadius: (ctx) => ctx.dataIndex === 0 ? 5 : 0,
+              pointRadius: (c) => years[c.dataIndex] === baseYear ? 5 : 0,
               pointBackgroundColor: '#4f46e5',
-              tension: 0.2
+              tension: 0.15
             },
             {
-              label: 'Normal (k=3.10e-5)',
+              label: 'Normal Condition (k = 3.10e-5)',
               data: normalDP,
               borderColor: '#0f172a',
               borderWidth: 1.5,
               pointRadius: 0,
-              tension: 0.2
+              tension: 0.15
             },
             {
-              label: 'Aggressive (k=5.97e-5)',
+              label: 'Aggressive Condition (k = 5.97e-5)',
               data: aggDP,
               borderColor: '#ea580c',
               borderWidth: 1.5,
               pointRadius: 0,
-              tension: 0.2
+              tension: 0.15
             },
             {
-              label: 'Severe (k=1.20e-4)',
+              label: 'Severe Degradation (k = 1.20e-4)',
               data: sevDP,
               borderColor: '#dc2626',
               borderWidth: 1.5,
-              borderDash: [4, 4],
+              borderDash: [5, 4],
               pointRadius: 0,
-              tension: 0.2
+              tension: 0.15
             },
             {
-              label: 'End of Life (DP=300)',
+              label: 'End of Life Limit (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
               borderWidth: 1.2,
@@ -1383,7 +1365,7 @@
               pointRadius: 0
             },
             {
-              label: 'Mechanical Limit (DP=200)',
+              label: 'Mechanical End of Life (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
               borderWidth: 1.2,
@@ -1399,23 +1381,28 @@
             legend: {
               position: 'top',
               labels: {
-                boxWidth: 8,
-                font: { size: 7.5 },
-                padding: 4
+                boxWidth: 10,
+                font: { size: 8 },
+                padding: 6
               }
             }
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year', font: { size: 8 } },
-              ticks: { font: { size: 7.5 } },
+              title: { display: true, text: 'Calendar Year', font: { size: 8.5 } },
+              ticks: {
+                font: { size: 8 },
+                maxRotation: 0,
+                autoSkip: true,
+                maxTicksLimit: 16
+              },
               grid: { color: '#f1f5f9' }
             },
             y: {
               min: 0,
               max: 1000,
-              title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 8 } },
-              ticks: { font: { size: 7.5 }, stepSize: 200 },
+              title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 }, stepSize: 200 },
               grid: { color: '#f1f5f9' }
             }
           }
@@ -1433,16 +1420,35 @@
 
       const years = [];
       const pofData = [];
+      const lowRiskBand = [];
+      const medRiskBand = [];
+      const highRiskBand = [];
       const unitPointData = [];
 
-      for (let y = baseYear; y <= 2100; y += 2) {
+      for (let y = 2025; y <= 2100; y += 1) {
         years.push(y);
-        const ageAtY = currentAge + (y - baseYear);
+        const ageAtY = (y - 2025);
         const pof = calcPoF(ageAtY);
         pofData.push(pof);
 
+        // Risk bands shading
+        if (pof < 20) {
+          lowRiskBand.push(pof);
+          medRiskBand.push(null);
+          highRiskBand.push(null);
+        } else if (pof <= 50) {
+          lowRiskBand.push(null);
+          medRiskBand.push(pof);
+          highRiskBand.push(null);
+        } else {
+          lowRiskBand.push(null);
+          medRiskBand.push(null);
+          highRiskBand.push(pof);
+        }
+
+        const unitCurrentAge = currentAge + (y - baseYear);
         if (y === baseYear) {
-          unitPointData.push(pof);
+          unitPointData.push(calcPoF(unitCurrentAge));
         } else {
           unitPointData.push(null);
         }
@@ -1457,11 +1463,35 @@
               label: 'Weibull PoF Model',
               data: pofData,
               borderColor: '#1e293b',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              backgroundColor: 'rgba(254, 226, 226, 0.35)',
               fill: true,
-              borderWidth: 2,
+              borderWidth: 2.2,
               pointRadius: 0,
-              tension: 0.3
+              tension: 0.25
+            },
+            {
+              label: 'Low Risk (<20%)',
+              data: lowRiskBand,
+              borderColor: 'transparent',
+              backgroundColor: 'rgba(220, 252, 231, 0.45)',
+              fill: true,
+              pointRadius: 0
+            },
+            {
+              label: 'Medium Risk (20%-50%)',
+              data: medRiskBand,
+              borderColor: 'transparent',
+              backgroundColor: 'rgba(254, 249, 195, 0.45)',
+              fill: true,
+              pointRadius: 0
+            },
+            {
+              label: 'High Risk (>=50%)',
+              data: highRiskBand,
+              borderColor: 'transparent',
+              backgroundColor: 'rgba(254, 226, 226, 0.45)',
+              fill: true,
+              pointRadius: 0
             },
             {
               label: 'Current Operating Point',
@@ -1481,23 +1511,29 @@
             legend: {
               position: 'top',
               labels: {
-                boxWidth: 8,
-                font: { size: 7.5 },
-                padding: 4
+                boxWidth: 10,
+                font: { size: 8 },
+                padding: 6,
+                filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
             }
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year', font: { size: 8 } },
-              ticks: { font: { size: 7.5 } },
+              title: { display: true, text: 'Calendar Year (Asset Age from 2025)', font: { size: 8.5 } },
+              ticks: {
+                font: { size: 8 },
+                maxRotation: 0,
+                autoSkip: true,
+                maxTicksLimit: 16
+              },
               grid: { color: '#f1f5f9' }
             },
             y: {
               min: 0,
               max: 100,
-              title: { display: true, text: 'Probability of Failure (%)', font: { size: 8 } },
-              ticks: { font: { size: 7.5 }, stepSize: 20 },
+              title: { display: true, text: 'Probability of Failure (%)', font: { size: 8.5 } },
+              ticks: { font: { size: 8 }, stepSize: 20 },
               grid: { color: '#f1f5f9' }
             }
           }
