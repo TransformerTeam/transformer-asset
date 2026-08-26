@@ -1801,21 +1801,29 @@
       // 4. Chart Gas Distribution (Latest sample)
       if (chartGasDistInstance) chartGasDistInstance.destroy();
       const latest = records[0];
-      const gasPieData = [
-        getValNum(latest, 'C2H2') || 8400,
-        getValNum(latest, 'H2') || 24,
-        getValNum(latest, 'C2H4') || 35,
-        getValNum(latest, 'CH4') || 18,
-        getValNum(latest, 'C2H6') || 12
+      const rawGasList = [
+        { key: 'C2H2', label: 'C2H2', color: '#ef4444', val: getValNum(latest, 'C2H2') || 0 },
+        { key: 'H2', label: 'H2', color: '#eab308', val: getValNum(latest, 'H2') || 0 },
+        { key: 'C2H4', label: 'C2H4', color: '#f97316', val: getValNum(latest, 'C2H4') || 0 },
+        { key: 'CH4', label: 'CH4', color: '#3b82f6', val: getValNum(latest, 'CH4') || 0 },
+        { key: 'C2H6', label: 'C2H6', color: '#10b981', val: getValNum(latest, 'C2H6') || 0 }
       ];
+      const totalGas = rawGasList.reduce((acc, g) => acc + g.val, 0);
+      const gasPieLabels = rawGasList.map(g => {
+        const pct = totalGas > 0 ? ((g.val / totalGas) * 100).toFixed(1) : '0.0';
+        return `${g.label} (${pct}%)`;
+      });
+      const gasPieData = rawGasList.map(g => g.val);
+      const gasPieColors = rawGasList.map(g => g.color);
+
       const ctx4 = document.getElementById('chart-gas-dist').getContext('2d');
       chartGasDistInstance = new Chart(ctx4, {
         type: 'doughnut',
         data: {
-          labels: ['C2H2', 'H2', 'C2H4', 'CH4', 'C2H6'],
+          labels: gasPieLabels,
           datasets: [{
             data: gasPieData,
-            backgroundColor: ['#ef4444', '#eab308', '#f97316', '#3b82f6', '#10b981'],
+            backgroundColor: gasPieColors,
             borderWidth: 1
           }]
         },
@@ -1823,7 +1831,23 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'right', labels: { font: { size: 8.5, family: 'Inter' } } }
+            legend: {
+              position: 'right',
+              labels: {
+                font: { size: 8.5, family: 'Inter' },
+                boxWidth: 10,
+                padding: 6
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed || 0;
+                  const pct = totalGas > 0 ? ((val / totalGas) * 100).toFixed(1) : '0.0';
+                  return ` ${context.label.split(' ')[0]}: ${val.toLocaleString()} ppm (${pct}%)`;
+                }
+              }
+            }
           }
         }
       });
