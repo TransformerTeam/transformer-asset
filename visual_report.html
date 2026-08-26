@@ -90,6 +90,28 @@
       gap: 6px;
     }
 
+    .search-select optgroup {
+      font-weight: 700;
+      color: #93c5fd;
+      background-color: #0f172a;
+    }
+
+    .search-select option {
+      font-weight: 400;
+      color: #ffffff;
+      background-color: #1e293b;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      color: #1e3a8a;
+      background-color: #f1f5f9;
+    }
+
+    [data-theme="light"] .search-select option {
+      color: #0f172a;
+      background-color: #ffffff;
+    }
+
     .search-select {
       background-color: rgba(30, 41, 59, 0.8);
       color: #ffffff;
@@ -1103,41 +1125,94 @@
       selectEl.innerHTML = '';
       
       const addedSerials = new Set();
-      const allItems = [];
+      const siteGroups = {};
+
+      const addUnit = (sn, name, site) => {
+        if (!sn) return;
+        const cleanSN = String(sn).trim();
+        const key = cleanSN.toUpperCase();
+        if (addedSerials.has(key)) return;
+        addedSerials.add(key);
+
+        const sSite = (site && String(site).trim() && String(site).trim() !== '-') ? String(site).trim() : 'Other Sites';
+        if (!siteGroups[sSite]) {
+          siteGroups[sSite] = [];
+        }
+        siteGroups[sSite].push({
+          serial: cleanSN,
+          name: name || cleanSN,
+          site: sSite
+        });
+      };
 
       // 1. From HEALTH_INDEX_DATA
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
           const s = meta.serial || meta['Serial No'] || meta['Serial No.'];
-          if (s && !addedSerials.has(String(s).toUpperCase())) {
-            addedSerials.add(String(s).toUpperCase());
+          if (s) {
             const name = meta.name || meta['Equipment Name'] || s;
             const site = meta.site || meta.SITE || '';
-            allItems.push({ serial: s, name: name, site: site });
+            addUnit(s, name, site);
           }
         });
       }
 
-      // 2. From VisualData.csv
+      // 2. From TR_DATA if present
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        TR_DATA.forEach(tr => {
+          const s = tr.SERIAL_NO || tr.serial || tr.Serial_No;
+          if (s) {
+            const name = tr.EQUIPMENT_NAME || tr.NAME || s;
+            const site = tr.SITE || tr.site || '';
+            addUnit(s, name, site);
+          }
+        });
+      }
+
+      // 3. From VisualData.csv
       visualDataList.forEach(item => {
-        if (item.serial && !addedSerials.has(String(item.serial).toUpperCase())) {
-          addedSerials.add(String(item.serial).toUpperCase());
-          allItems.push({ serial: item.serial, name: item.serial, site: '' });
+        if (item.serial) {
+          let site = '';
+          let name = item.serial;
+          if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+            const m = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'], item.serial));
+            if (m) {
+              site = m.site || m.SITE || '';
+              name = m.name || m['Equipment Name'] || item.serial;
+            }
+          }
+          addUnit(item.serial, name, site);
         }
       });
 
-      // Sort by Site then Name
-      allItems.sort((a, b) => {
-        const siteComp = (a.site || '').localeCompare(b.site || '', undefined, { numeric: true, sensitivity: 'base' });
-        if (siteComp !== 0) return siteComp;
-        return (a.name || a.serial).localeCompare(b.name || b.serial, undefined, { numeric: true, sensitivity: 'base' });
+      // Sort Sites alphabetically (with Other Sites at end)
+      const sortedSites = Object.keys(siteGroups).sort((a, b) => {
+        if (a === 'Other Sites') return 1;
+        if (b === 'Other Sites') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
       });
 
-      allItems.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item.serial;
-        opt.textContent = (item.name && item.name !== item.serial) ? item.name + ' (' + item.serial + ')' : item.serial;
-        selectEl.appendChild(opt);
+      sortedSites.forEach(siteName => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `Site: ${siteName}`;
+
+        // Sort units inside site by Name, then Serial
+        const items = siteGroups[siteName].sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          const comp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          if (comp !== 0) return comp;
+          return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        items.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+          optgroup.appendChild(opt);
+        });
+
+        selectEl.appendChild(optgroup);
       });
     }
 
