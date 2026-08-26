@@ -65,9 +65,9 @@
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-dark);
-      padding: 12px 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      margin-bottom: 18px;
       box-shadow: var(--glass-glow);
     }
 
@@ -82,7 +82,7 @@
     }
 
     .selector-label {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text-main);
       display: flex;
@@ -94,9 +94,9 @@
       background-color: rgba(30, 41, 59, 0.8);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
       font-weight: 500;
       outline: none;
       cursor: pointer;
@@ -114,14 +114,14 @@
       background-color: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
       border: 1px solid var(--border-dark);
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s ease;
     }
 
@@ -145,7 +145,7 @@
       max-width: 960px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 24px;
     }
 
     .report-page {
@@ -153,10 +153,10 @@
       color: var(--report-text);
       width: 100%;
       border-radius: 8px;
-      padding: 24px 32px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-      font-size: 10px;
-      line-height: 1.3;
+      padding: 20px 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      font-size: 9px;
+      line-height: 1.22;
       position: relative;
     }
 
@@ -165,9 +165,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2.5px solid var(--report-primary);
-      padding-bottom: 8px;
-      margin-bottom: 10px;
+      border-bottom: 2px solid var(--report-primary);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .report-title-group {
@@ -175,7 +175,7 @@
     }
 
     .report-title {
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--report-primary);
       letter-spacing: -0.01em;
@@ -183,48 +183,48 @@
     }
 
     .report-subtitle {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: #dc2626;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-top: 2px;
+      letter-spacing: 0.03em;
+      margin-top: 1px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .page-indicator {
       display: inline-block;
-      padding: 1px 6px;
+      padding: 1px 5px;
       background: #e2e8f0;
       color: #334155;
       border-radius: 3px;
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 700;
       letter-spacing: 0;
       text-transform: none;
     }
 
     .logo-container img {
-      height: 42px;
+      height: 36px;
       width: auto;
       object-fit: contain;
     }
 
-    /* Standard Report Table Styling (Full Width Linear Layout) */
+    /* Standard Report Table Styling (Full Width Compact Linear Layout) */
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .report-table th, 
     .report-table td {
       border: 1px solid var(--report-border);
-      padding: 3px 6px;
-      font-size: 9px;
-      line-height: 1.25;
+      padding: 2px 5px;
+      font-size: 8.5px;
+      line-height: 1.2;
     }
 
     .report-table th {
@@ -238,12 +238,12 @@
       background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 700;
-      padding: 3px 8px;
-      font-size: 9.5px;
+      padding: 2px 6px;
+      font-size: 8.8px;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-top: 8px;
-      margin-bottom: 3px;
+      letter-spacing: 0.02em;
+      margin-top: 5px;
+      margin-bottom: 2px;
       border-radius: 2px;
       display: flex;
       justify-content: space-between;
@@ -251,11 +251,11 @@
     }
 
     .badge-info {
-      font-size: 8px;
+      font-size: 7.5px;
       font-weight: 700;
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 3px;
       color: #ffffff;
       text-transform: none;
@@ -265,10 +265,10 @@
     /* Status Badges */
     .status-badge {
       display: inline-block;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 3px;
       font-weight: 700;
-      font-size: 8.5px;
+      font-size: 8px;
       text-transform: uppercase;
     }
 
@@ -306,14 +306,16 @@
     .signature-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 6px;
       margin-bottom: 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
 
     .signature-table th, .signature-table td {
       border: 1px solid var(--report-border);
-      padding: 4px 6px;
-      font-size: 9px;
+      padding: 2.5px 5px;
+      font-size: 8.5px;
       text-align: center;
     }
 
@@ -321,43 +323,53 @@
       background-color: #1e3a8a;
       color: #ffffff;
       font-weight: 700;
+      padding: 2px 4px;
+    }
+
+    .sig-cell {
+      height: 28px;
     }
 
     /* Photo Gallery */
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 4px;
+      gap: 6px;
+      margin-top: 3px;
     }
 
     .photo-card {
       border: 1px solid var(--report-border);
-      border-radius: 4px;
-      padding: 4px;
+      border-radius: 3px;
+      padding: 3px;
       background: #fafafa;
       text-align: center;
     }
 
     .photo-card img {
       max-width: 100%;
-      height: 85px;
+      height: 65px;
       object-fit: cover;
-      border-radius: 3px;
-      margin-bottom: 2px;
+      border-radius: 2px;
+      margin-bottom: 1px;
     }
 
     .photo-caption {
-      font-size: 8px;
+      font-size: 7.5px;
       color: #475569;
       font-style: italic;
     }
 
     /* Print styles */
     @media print {
+      @page {
+        size: A4 portrait;
+        margin: 4mm 6mm;
+      }
       body {
-        background: white !important;
+        background: #ffffff !important;
         padding: 0 !important;
+        margin: 0 !important;
       }
       .control-bar {
         display: none !important;
@@ -370,14 +382,20 @@
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 16px 20px !important;
+        padding: 6px 12px !important;
         page-break-after: always !important;
         break-after: page !important;
-        min-height: 100vh !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        height: auto !important;
       }
       .report-page:last-child {
         page-break-after: avoid !important;
         break-after: avoid !important;
+      }
+      .signature-table {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
     }
   </style>
@@ -405,12 +423,12 @@
 
     <!-- ==========================================
          PAGE 1: General Info, Environment, Bushings & Leakage
-         ========================================== -->
+         ========================================= -->
     <div class="report-page" id="page-1">
       <!-- Header Section -->
       <div class="report-header-grid">
         <div class="report-title-group">
-          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
             <h1 class="report-title">Transformer Visual Inspection</h1>
             <span class="page-indicator">Page 1 of 3</span>
             <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
@@ -456,70 +474,74 @@
         </tbody>
       </table>
 
-      <!-- 1. Test Instrument Information -->
-      <div class="section-banner">• Visual Inspection Test Instrument Information</div>
-      <table class="report-table">
-        <tbody>
-          <tr>
-            <th style="width: 25%;">Humidity (%)</th>
-            <td style="width: 25%;" id="inst-humidity">-</td>
-            <th style="width: 25%;">Ambient Temp.</th>
-            <td style="width: 25%;" id="inst-ambient-temp">-</td>
-          </tr>
-          <tr>
-            <th>Oil Temp.</th>
-            <td id="inst-oil-temp">-</td>
-            <th>Oil Temp. Max</th>
-            <td id="inst-oil-temp-max">-</td>
-          </tr>
-          <tr>
-            <th>Winding Temp.HV</th>
-            <td id="inst-wnd-hv">-</td>
-            <th>Winding HV Max</th>
-            <td id="inst-wnd-hv-max">-</td>
-          </tr>
-          <tr>
-            <th>Winding Temp.LV</th>
-            <td id="inst-wnd-lv">-</td>
-            <th>Winding LV Max</th>
-            <td id="inst-wnd-lv-max">-</td>
-          </tr>
-          <tr>
-            <th>Service Tap</th>
-            <td id="inst-tap">-</td>
-            <th>Calibration Date</th>
-            <td id="inst-cal-date">-</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- 1. Test Instrument & Load Data in Split Grid to save vertical space -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px;">
+        <div>
+          <div class="section-banner">• Test Instrument Info</div>
+          <table class="report-table">
+            <tbody>
+              <tr>
+                <th style="width: 32%;">Humidity (%)</th>
+                <td style="width: 18%;" id="inst-humidity">-</td>
+                <th style="width: 32%;">Ambient Temp.</th>
+                <td style="width: 18%;" id="inst-ambient-temp">-</td>
+              </tr>
+              <tr>
+                <th>Oil Temp.</th>
+                <td id="inst-oil-temp">-</td>
+                <th>Oil Temp. Max</th>
+                <td id="inst-oil-temp-max">-</td>
+              </tr>
+              <tr>
+                <th>Wnd Temp.HV</th>
+                <td id="inst-wnd-hv">-</td>
+                <th>Wnd HV Max</th>
+                <td id="inst-wnd-hv-max">-</td>
+              </tr>
+              <tr>
+                <th>Wnd Temp.LV</th>
+                <td id="inst-wnd-lv">-</td>
+                <th>Wnd LV Max</th>
+                <td id="inst-wnd-lv-max">-</td>
+              </tr>
+              <tr>
+                <th>Service Tap</th>
+                <td id="inst-tap">-</td>
+                <th>Calibration Date</th>
+                <td id="inst-cal-date">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <!-- Transformer Load Data Record -->
-      <div class="section-banner">• Transformer Load Data Record</div>
-      <table class="report-table">
-        <tbody>
-          <tr>
-            <th style="width: 25%;">Active Power (kVA)</th>
-            <td style="width: 25%;" id="load-active-power">-</td>
-            <th style="width: 25%;">Current (A)</th>
-            <td style="width: 25%;" id="load-current">-</td>
-          </tr>
-          <tr>
-            <th>Reactive Power (kVAr)</th>
-            <td id="load-reactive-power">-</td>
-            <th>Voltage (V)</th>
-            <td id="load-voltage">-</td>
-          </tr>
-          <tr>
-            <th>Real Power (kW)</th>
-            <td colspan="3" id="load-real-power">-</td>
-          </tr>
-        </tbody>
-      </table>
+        <div>
+          <div class="section-banner">• Load Data Record</div>
+          <table class="report-table">
+            <tbody>
+              <tr>
+                <th style="width: 32%;">Active Power</th>
+                <td style="width: 18%;" id="load-active-power">-</td>
+                <th style="width: 32%;">Current (A)</th>
+                <td style="width: 18%;" id="load-current">-</td>
+              </tr>
+              <tr>
+                <th>Reactive Power</th>
+                <td id="load-reactive-power">-</td>
+                <th>Voltage (V)</th>
+                <td id="load-voltage">-</td>
+              </tr>
+              <tr>
+                <th>Real Power (kW)</th>
+                <td colspan="3" id="load-real-power">-</td>
+              </tr>
+            </tbody>
+          </table>
 
-      <!-- Visual Summary Box -->
-      <div class="section-banner" id="visual-summary-banner">• Visual Summary</div>
-      <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 5px 8px; font-size: 8.5px; line-height: 1.35; background-color: #fff7ed; color: #9a3412; border-radius: 3px; margin-bottom: 6px;">
-        • Visual Summary loading...
+          <div class="section-banner" id="visual-summary-banner" style="margin-top: 4px;">• Visual Summary</div>
+          <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 3px 6px; font-size: 8px; line-height: 1.25; background-color: #fff7ed; color: #9a3412; border-radius: 2px;">
+            • Visual Summary loading...
+          </div>
+        </div>
       </div>
 
       <!-- 2. Porcelain Condition Checking -->
@@ -549,7 +571,7 @@
       </table>
 
       <!-- SIGNATURES / APPROVAL (Page 1) -->
-      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
           <tr>
@@ -560,28 +582,28 @@
         </thead>
         <tbody>
           <tr>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
           </tr>
           <tr>
-            <td class="val-resp-date-tested" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
           </tr>
         </tbody>
       </table>
@@ -594,7 +616,7 @@
       <!-- Header Section -->
       <div class="report-header-grid">
         <div class="report-title-group">
-          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
             <h1 class="report-title">Transformer Visual Inspection</h1>
             <span class="page-indicator">Page 2 of 3</span>
             <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
@@ -679,8 +701,8 @@
         <tbody id="tbl-self-protection"></tbody>
       </table>
 
-      <!-- 7. Surface Painting Checking -->
-      <div class="section-banner">• Surface Painting Checking</div>
+      <!-- 7. Surface Painting & 8. Foundation in one combined visual flow -->
+      <div class="section-banner">• Surface Painting &amp; Foundation Checking</div>
       <table class="report-table">
         <thead>
           <tr>
@@ -689,20 +711,7 @@
             <th style="width: 38%;">Remark</th>
           </tr>
         </thead>
-        <tbody id="tbl-surface-painting"></tbody>
-      </table>
-
-      <!-- 8. Foundation Condition Checking -->
-      <div class="section-banner">• Foundation Condition Checking</div>
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th style="width: 44%;">Inspection Item</th>
-            <th style="width: 18%; text-align: center;">Condition</th>
-            <th style="width: 38%;">Remark</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-foundation"></tbody>
+        <tbody id="tbl-surface-foundation"></tbody>
       </table>
 
       <!-- 9. Earthing Connection Checking -->
@@ -732,7 +741,7 @@
       </table>
 
       <!-- SIGNATURES / APPROVAL (Page 2) -->
-      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
           <tr>
@@ -743,28 +752,28 @@
         </thead>
         <tbody>
           <tr>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
           </tr>
           <tr>
-            <td class="val-resp-date-tested" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
           </tr>
         </tbody>
       </table>
@@ -777,7 +786,7 @@
       <!-- Header Section -->
       <div class="report-header-grid">
         <div class="report-title-group">
-          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
             <h1 class="report-title">Transformer Visual Inspection</h1>
             <span class="page-indicator">Page 3 of 3</span>
             <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
@@ -823,8 +832,8 @@
         </tbody>
       </table>
 
-      <!-- 11. Terminal Box Checking -->
-      <div class="section-banner">• Terminal Box Checking</div>
+      <!-- 11. Terminal Box, 12. Bolt & Nut, 13. Cooling System -->
+      <div class="section-banner">• Terminal Box, Bolt/Nut &amp; Cooling System</div>
       <table class="report-table">
         <thead>
           <tr>
@@ -833,33 +842,7 @@
             <th style="width: 38%;">Remark</th>
           </tr>
         </thead>
-        <tbody id="tbl-terminal-box"></tbody>
-      </table>
-
-      <!-- 12. All Bolt and Nut Connection Checking -->
-      <div class="section-banner">• Bolt and Nut Connection Checking</div>
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th style="width: 44%;">Inspection Item</th>
-            <th style="width: 18%; text-align: center;">Condition</th>
-            <th style="width: 38%;">Remark</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-bolt-nut"></tbody>
-      </table>
-
-      <!-- 13. Cooling System Operation -->
-      <div class="section-banner">• Cooling System Operation</div>
-      <table class="report-table">
-        <thead>
-          <tr>
-            <th style="width: 44%;">Inspection Item</th>
-            <th style="width: 18%; text-align: center;">Condition</th>
-            <th style="width: 38%;">Remark</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-cooling-system"></tbody>
+        <tbody id="tbl-terminal-cooling"></tbody>
       </table>
 
       <!-- 14. OLTC & Pressure Records -->
@@ -903,18 +886,18 @@
 
       <!-- 17. Others & Remarks -->
       <div class="section-banner">• Others &amp; Remarks</div>
-      <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; min-height: 42px; font-size: 9px; line-height: 1.35; margin-bottom: 6px;" id="remarks-box">
+      <div style="border: 1px solid var(--report-border); padding: 3px 6px; border-radius: 3px; background: #fafafa; min-height: 24px; font-size: 8.5px; line-height: 1.25; margin-bottom: 3px;" id="remarks-box">
         -
       </div>
 
       <!-- 18. Inspection Photos Attachment -->
-      <div class="section-banner" id="photo-section-banner">• Inspection Photos Attachment</div>
-      <div class="photo-grid" id="photo-grid">
+      <div class="section-banner" id="photo-section-banner" style="display: none;">• Inspection Photos Attachment</div>
+      <div class="photo-grid" id="photo-grid" style="display: none;">
         <!-- Photos dynamically rendered if present -->
       </div>
 
       <!-- SIGNATURES / APPROVAL (Page 3) -->
-      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
           <tr>
@@ -925,28 +908,28 @@
         </thead>
         <tbody>
           <tr>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
-            <td style="height: 38px;"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 4px 6px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 10px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8.5px; color: #64748b; margin-top: 2px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
           </tr>
           <tr>
-            <td class="val-resp-date-tested" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8.5px; color: #64748b; padding: 3px;"></td>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
           </tr>
         </tbody>
       </table>
@@ -1376,7 +1359,7 @@
         { label: 'Radiator', resKey: 'Radiator_result', remKey: 'Radiator_remark' },
         { label: 'HV bushing', resKey: 'HV_bushing_result', remKey: 'HV_bushing_remark' },
         { label: 'Neutral bushing', resKey: 'NB_result', remKey: 'NB_remark' },
-        { label: 'LV bushing', resKey: 'LV_bushing_result', remKey: 'LV_bushing_remark' },
+        { label: 'LV bushing', resKey: 'LVB_result', remKey: 'LVB_remark' },
         { label: 'Pipe line', resKey: 'Pipe_line_result', remKey: 'Pipe_line_remark' },
         { label: 'Inlet/outlet & sampling valve', resKey: 'Sampling_valve_result', remKey: 'Sampling_valve_remark' },
         { label: 'Isolate valve', resKey: 'Isolate_valve_result', remKey: 'Isolate_valve_remark' },
@@ -1415,14 +1398,10 @@
         { label: 'OLTC Oil Filter pressure', resKey: 'OLTC_Oil_Filter_pressure_result', remKey: 'OLTC_Oil_Filter_pressure_remark' }
       ], r);
 
-      // 7. Surface Painting Checking
-      renderTableRows('tbl-surface-painting', [
+      // 7. Surface Painting & 8. Foundation Combined Table
+      renderTableRows('tbl-surface-foundation', [
         { label: 'Surface painting Main Tank', resKey: 'Surface_painting_Main_Tank_result', remKey: 'Surface_painting_Main_Tank_remark' },
-        { label: 'Surface painting Radiator fins', resKey: 'Surface_painting_Radiator_fins_result', remKey: 'Surface_painting_Radiator_fins_remark' }
-      ], r);
-
-      // 8. Foundation Condition Checking
-      renderTableRows('tbl-foundation', [
+        { label: 'Surface painting Radiator fins', resKey: 'Surface_painting_Radiator_fins_result', remKey: 'Surface_painting_Radiator_fins_remark' },
         { label: 'Foundation condition', resKey: 'Foundation_condition_result', remKey: 'Foundation_condition_remark' }
       ], r);
 
@@ -1442,19 +1421,11 @@
         { label: 'LV Bushing terminals box', resKey: 'LV_Bushing_terminals_box_result', remKey: 'LV_Bushing_terminals_box_remark' }
       ], r);
 
-      // 11. Terminal Box Checking
-      renderTableRows('tbl-terminal-box', [
-        { label: 'Physical condition', resKey: 'Physical1_condition_result', remKey: 'Physical1_condition_remark' },
-        { label: 'Terminal & wiring / cable', resKey: 'Terminal_and_wiring_and_cable_result', remKey: 'Terminal_and_wiring_and_cable_remark' }
-      ], r);
-
-      // 12. All Bolt and Nut Connection Checking
-      renderTableRows('tbl-bolt-nut', [
-        { label: 'Bolt / nut connection', resKey: 'Bolt_and_nut_connection_result', remKey: 'Bolt_and_nut_connection_remark' }
-      ], r);
-
-      // 13. Cooling System Operation
-      renderTableRows('tbl-cooling-system', [
+      // 11. Terminal Box, 12. Bolt & Nut, 13. Cooling System Combined Table
+      renderTableRows('tbl-terminal-cooling', [
+        { label: 'Terminal Box Physical condition', resKey: 'Physical1_condition_result', remKey: 'Physical1_condition_remark' },
+        { label: 'Terminal & wiring / cable', resKey: 'Terminal_and_wiring_and_cable_result', remKey: 'Terminal_and_wiring_and_cable_remark' },
+        { label: 'Bolt / nut connection', resKey: 'Bolt_and_nut_connection_result', remKey: 'Bolt_and_nut_connection_remark' },
         { label: 'Cooling fans', resKey: 'Cooling_fans_result', remKey: 'Cooling_fans_remark' },
         { label: 'Cooling fans panel', resKey: 'Cooling_fans_panel_result', remKey: 'Cooling_fans_panel_remark' },
         { label: 'Operation test cooling fans', resKey: 'Operation_test_cooling_fans_result', remKey: 'Operation_test_cooling_fans_remark' },
