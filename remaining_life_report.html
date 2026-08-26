@@ -49,7 +49,7 @@
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
-      padding: 16px;
+      padding: 20px 16px 40px;
       transition: background-color 0.3s ease, color 0.3s ease;
       min-height: 100vh;
       display: flex;
@@ -57,24 +57,24 @@
       align-items: center;
     }
 
-    /* Top Control Bar */
+    /* Top Control Bar (Balanced A4 Width) */
     .control-bar {
       width: 100%;
-      max-width: 1140px;
+      max-width: 880px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-dark);
-      padding: 8px 18px;
+      padding: 10px 18px;
       border-radius: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       box-shadow: var(--glass-glow);
     }
 
     [data-theme="light"] .control-bar {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
     }
 
     .selector-container {
@@ -84,7 +84,7 @@
     }
 
     .selector-label {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text-main);
       display: flex;
@@ -93,16 +93,16 @@
     }
 
     .search-select {
-      background-color: rgba(30, 41, 59, 0.8);
+      background-color: rgba(30, 41, 59, 0.85);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 7px 14px;
+      padding: 7px 12px;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       outline: none;
       cursor: pointer;
-      min-width: 320px;
+      min-width: 280px;
       transition: all 0.2s ease;
     }
 
@@ -145,7 +145,7 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       transition: all 0.2s ease;
     }
 
@@ -163,10 +163,10 @@
       background-color: var(--primary-hover);
     }
 
-    /* Single Page Report Wrapper */
+    /* Report Sheet Preview Area (Balanced Standard A4 Width) */
     .report-wrapper {
       width: 100%;
-      max-width: 1140px;
+      max-width: 880px;
       display: flex;
       flex-direction: column;
     }
@@ -175,22 +175,22 @@
       background-color: var(--report-bg);
       color: var(--report-text);
       width: 100%;
+      padding: 24px 28px;
       border-radius: 8px;
-      padding: 16px 22px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-      font-size: 8.8px;
-      line-height: 1.25;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      font-size: 9px;
+      line-height: 1.3;
       position: relative;
     }
 
-    /* Report Header */
-    .report-header-grid {
+    /* Header Section */
+    .report-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--report-primary);
-      padding-bottom: 5px;
-      margin-bottom: 6px;
+      border-bottom: 2.5px solid var(--report-primary);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .report-title-group {
@@ -206,19 +206,32 @@
     }
 
     .report-subtitle {
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: #dc2626;
       text-transform: uppercase;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.03em;
       margin-top: 1px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
+    .badge-report-no {
+      display: inline-block;
+      padding: 1px 6px;
+      background: #e2e8f0;
+      color: #1e3a8a;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      font-size: 7.8px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
     .logo-container img {
-      height: 36px;
+      height: 38px;
       width: auto;
       object-fit: contain;
     }
@@ -227,15 +240,15 @@
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .report-table th, 
     .report-table td {
       border: 1px solid var(--report-border);
-      padding: 2.5px 5px;
-      font-size: 8.5px;
-      line-height: 1.2;
+      padding: 3px 6px;
+      font-size: 8.8px;
+      line-height: 1.25;
     }
 
     .report-table th {
@@ -249,34 +262,22 @@
       background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 700;
-      padding: 2.5px 6px;
-      font-size: 8.8px;
+      padding: 3px 8px;
+      font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      margin-top: 5px;
-      margin-bottom: 3px;
-      border-radius: 2px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      border-radius: 3px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .badge-info {
-      font-size: 7.8px;
-      font-weight: 700;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 1px 5px;
-      border-radius: 3px;
-      color: #ffffff;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
     /* Status Badges */
     .status-badge {
       display: inline-block;
-      padding: 1px 5px;
+      padding: 1.5px 6px;
       border-radius: 3px;
       font-weight: 700;
       font-size: 8px;
@@ -311,14 +312,14 @@
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin: 4px 0;
+      gap: 8px;
+      margin: 6px 0 8px;
     }
 
     .kpi-card {
       border: 1px solid var(--report-border);
-      border-radius: 4px;
-      padding: 4px 8px;
+      border-radius: 5px;
+      padding: 6px 8px;
       background: #f8fafc;
       text-align: center;
     }
@@ -331,31 +332,31 @@
     }
 
     .kpi-val {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--report-primary);
       margin-top: 1px;
     }
 
     .kpi-sub {
-      font-size: 7.5px;
+      font-size: 7.8px;
       color: #475569;
       margin-top: 1px;
     }
 
-    /* Vertical Stacked Full-Width Charts */
-    .charts-vertical-stack {
+    /* Charts Container (Well-proportioned Height & Aspect Ratio) */
+    .charts-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin: 4px 0;
+      gap: 10px;
+      margin: 8px 0;
       width: 100%;
     }
 
-    .chart-box-full {
+    .chart-box {
       border: 1px solid var(--report-border);
-      border-radius: 4px;
-      padding: 6px 10px;
+      border-radius: 6px;
+      padding: 8px 12px;
       background: #ffffff;
       width: 100%;
     }
@@ -365,12 +366,12 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px dashed #cbd5e1;
-      padding-bottom: 2px;
-      margin-bottom: 4px;
+      padding-bottom: 3px;
+      margin-bottom: 6px;
     }
 
     .chart-title {
-      font-size: 9.5px;
+      font-size: 9.8px;
       font-weight: 700;
       color: var(--report-primary);
       display: flex;
@@ -381,43 +382,43 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 190px;
+      height: 240px;
     }
 
     /* Technical Formula Box */
     .formula-container {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      margin-bottom: 4px;
+      gap: 4px;
+      margin-bottom: 6px;
     }
 
     .formula-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-left: 3px solid var(--report-primary);
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: 3px;
-      font-size: 8px;
-      line-height: 1.3;
+      font-size: 8.2px;
+      line-height: 1.35;
     }
 
     .formula-title {
       font-weight: 700;
       color: var(--report-primary);
-      margin-bottom: 1px;
+      margin-bottom: 2px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 8.5px;
+      gap: 5px;
+      font-size: 8.8px;
     }
 
     .formula-math {
       font-family: 'Cambria Math', 'Times New Roman', serif;
-      font-size: 8.8px;
+      font-size: 9px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      padding: 1.5px 6px;
+      padding: 2px 6px;
       border-radius: 3px;
       display: inline-block;
       margin: 1px 0;
@@ -428,19 +429,19 @@
     /* Action Plan Box */
     .action-box {
       border: 1px solid var(--report-border);
-      padding: 4px 8px;
-      border-radius: 3px;
+      padding: 6px 10px;
+      border-radius: 4px;
       background: #fafafa;
-      font-size: 8.2px;
-      line-height: 1.3;
-      margin-bottom: 4px;
+      font-size: 8.5px;
+      line-height: 1.35;
+      margin-bottom: 6px;
     }
 
     /* Signatures Section */
     .signature-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 4px;
+      margin-top: 6px;
       margin-bottom: 0;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -448,8 +449,8 @@
 
     .signature-table th, .signature-table td {
       border: 1px solid var(--report-border);
-      padding: 2px 5px;
-      font-size: 8.5px;
+      padding: 3px 6px;
+      font-size: 8.8px;
       text-align: center;
     }
 
@@ -457,18 +458,18 @@
       background-color: #1e3a8a;
       color: #ffffff;
       font-weight: 700;
-      padding: 2.5px 4px;
+      padding: 3px 6px;
     }
 
     .sig-cell {
-      height: 26px;
+      height: 30px;
     }
 
     /* Print styles */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 4mm 5mm;
+        margin: 5mm 6mm;
       }
       body {
         background: #ffffff !important;
@@ -486,14 +487,14 @@
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 2mm 3mm !important;
+        padding: 4mm 6mm !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         height: auto !important;
         width: 100% !important;
       }
       .chart-canvas-container {
-        height: 175px !important;
+        height: 220px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
@@ -525,11 +526,11 @@
 
     <div class="report-page" id="page-1">
       <!-- Header Section -->
-      <div class="report-header-grid">
+      <div class="report-header">
         <div class="report-title-group">
           <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
             <h1 class="report-title">Remaining Life Assessment Report</h1>
-            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-015, Rev.1</span>
+            <span class="badge-report-no">EMM-TR-F-015, Rev.1</span>
           </div>
           <div class="report-subtitle">GPSC Transformer Asset Management • CIGRE 761 / IEEE Std C57.152 Standard</div>
         </div>
@@ -541,15 +542,15 @@
       <!-- Transformer Identification & Information -->
       <div class="section-banner">
         <span>• Transformer Identification &amp; Information</span>
-        <span class="badge-info">EMM-TR-F-015, Rev.1</span>
+        <span class="badge-report-no" style="background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.3); color: #ffffff;">EMM-TR-F-015, Rev.1</span>
       </div>
       <table class="report-table">
         <tbody>
           <tr>
-            <th style="width: 14%;">Equipment Name</th>
-            <td style="width: 36%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
-            <th style="width: 14%;">Site</th>
-            <td style="width: 36%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
           </tr>
           <tr>
             <th>Serial No.</th>
@@ -596,24 +597,24 @@
         </div>
       </div>
 
-      <!-- 2. STACKED FULL-WIDTH CHARTS (Chart 1 followed by Chart 2) -->
-      <div class="charts-vertical-stack">
-        <!-- Chart 1: DP Degradation Curves (Full Width) -->
-        <div class="chart-box-full">
+      <!-- 2. STACKED CHARTS (Graph 1 followed by Graph 2) -->
+      <div class="charts-container">
+        <!-- Chart 1: DP Degradation Curves -->
+        <div class="chart-box">
           <div class="chart-header">
             <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
-            <span style="font-size: 8px; color: #64748b; font-weight: 600;">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
+            <span style="font-size: 8.2px; color: #64748b; font-weight: 600;">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
           </div>
           <div class="chart-canvas-container">
             <canvas id="chart-dp-degradation"></canvas>
           </div>
         </div>
 
-        <!-- Chart 2: Failure Probability (Weibull PoF) directly under Chart 1 (Full Width) -->
-        <div class="chart-box-full">
+        <!-- Chart 2: Failure Probability (Weibull PoF) directly under Chart 1 -->
+        <div class="chart-box">
           <div class="chart-header">
             <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
-            <span style="font-size: 8px; color: #64748b; font-weight: 600;">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
+            <span style="font-size: 8.2px; color: #64748b; font-weight: 600;">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
           </div>
           <div class="chart-canvas-container">
             <canvas id="chart-weibull-pof"></canvas>
@@ -630,7 +631,7 @@
             <div>Chain Scissions: <span class="formula-math">η = DP₀ · [ A_Oxi · e^(-E_Oxi / RT) + A_Hyd · e^(-E_Hyd / RT) ] · t</span></div>
             <div>Current DP: <span class="formula-math">DP_t = DP₀ / (η + 1)</span></div>
           </div>
-          <div style="font-size: 7.5px; color: #475569; margin-top: 1px;">
+          <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
             • Parameters: <em>DP₀</em> = 1000, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
           </div>
         </div>
@@ -641,7 +642,7 @@
             <div>Dominelli Correlation: <span class="formula-math">log₁₀(2-FAL_ppm) = 1.51 - 0.0035 · DP</span></div>
             <div>Estimated DP: <span class="formula-math">DP = [ 1.51 - log₁₀(2-FAL_ppm) ] / 0.0035</span></div>
           </div>
-          <div style="font-size: 7.5px; color: #475569; margin-top: 1px;">
+          <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
             • Note: 2-FAL concentration is converted from ppb to ppm (e.g. 9.3 ppb = 0.0093 ppm) before logarithmic calculation.
           </div>
         </div>
@@ -652,7 +653,7 @@
             <div>Weibull PoF Formula: <span class="formula-math">PoF(t) = 1 - e^[ -(t / α)^β ]</span></div>
             <div>Aging Extrapolation: <span class="formula-math">DP_future = 1 / [ 1/DP_curr + k_yearly · Δt ]</span></div>
           </div>
-          <div style="font-size: 7.5px; color: #475569; margin-top: 1px;">
+          <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
             • Parameters: Characteristic life scale <em>α</em> = 40–45 years, shape parameter <em>β</em> = 2.0–4.0 (Wear-out aging phase bathtub curve).
           </div>
         </div>
@@ -711,7 +712,7 @@
       </div>
 
       <!-- SIGNATURES / APPROVAL -->
-      <div class="section-banner" style="margin-top: 4px;">SIGNATURES / APPROVAL</div>
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
           <tr>
@@ -727,23 +728,23 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td style="padding: 1.5px 4px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 8.5px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 7.5px; color: #64748b; margin-top: 1px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 1.5px 4px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 8.5px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 7.5px; color: #64748b; margin-top: 1px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
-            <td style="padding: 1.5px 4px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 8.5px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 7.5px; color: #64748b; margin-top: 1px;"></div>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
             </td>
           </tr>
           <tr>
-            <td class="val-resp-date-tested" style="font-size: 7.5px; color: #64748b; padding: 1.5px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 7.5px; color: #64748b; padding: 1.5px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 7.5px; color: #64748b; padding: 1.5px;"></td>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
           </tr>
         </tbody>
       </table>
@@ -1165,8 +1166,8 @@
               data: unitDP,
               borderColor: '#4f46e5',
               backgroundColor: '#4f46e5',
-              borderWidth: 2.5,
-              pointRadius: (c) => years[c.dataIndex] === baseYear ? 5 : 0,
+              borderWidth: 2.8,
+              pointRadius: (c) => years[c.dataIndex] === baseYear ? 6 : 0,
               pointBackgroundColor: '#4f46e5',
               tension: 0.15
             },
@@ -1174,7 +1175,7 @@
               label: 'Normal Condition (k = 3.10e-5)',
               data: normalDP,
               borderColor: '#0f172a',
-              borderWidth: 1.6,
+              borderWidth: 1.8,
               pointRadius: 0,
               tension: 0.15
             },
@@ -1182,7 +1183,7 @@
               label: 'Aggressive Condition (k = 5.97e-5)',
               data: aggDP,
               borderColor: '#ea580c',
-              borderWidth: 1.6,
+              borderWidth: 1.8,
               pointRadius: 0,
               tension: 0.15
             },
@@ -1190,7 +1191,7 @@
               label: 'Severe Degradation (k = 1.20e-4)',
               data: sevDP,
               borderColor: '#dc2626',
-              borderWidth: 1.6,
+              borderWidth: 1.8,
               borderDash: [5, 4],
               pointRadius: 0,
               tension: 0.15
@@ -1199,7 +1200,7 @@
               label: 'End of Life Limit (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
-              borderWidth: 1.3,
+              borderWidth: 1.4,
               borderDash: [3, 3],
               pointRadius: 0
             },
@@ -1207,7 +1208,7 @@
               label: 'Mechanical End of Life (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
-              borderWidth: 1.3,
+              borderWidth: 1.4,
               borderDash: [3, 3],
               pointRadius: 0
             }
@@ -1221,27 +1222,27 @@
               position: 'top',
               labels: {
                 boxWidth: 10,
-                font: { size: 8, weight: '600' },
+                font: { size: 8.5, weight: '600' },
                 padding: 6
               }
             }
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year', font: { size: 8.5, weight: '700' } },
+              title: { display: true, text: 'Calendar Year', font: { size: 9, weight: '700' } },
               ticks: {
-                font: { size: 8 },
+                font: { size: 8.5 },
                 maxRotation: 0,
                 autoSkip: true,
-                maxTicksLimit: 16
+                maxTicksLimit: 14
               },
               grid: { color: '#f1f5f9' }
             },
             y: {
               min: 0,
               max: 1000,
-              title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 8.5, weight: '700' } },
-              ticks: { font: { size: 8 }, stepSize: 200 },
+              title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 9, weight: '700' } },
+              ticks: { font: { size: 8.5 }, stepSize: 200 },
               grid: { color: '#f1f5f9' }
             }
           }
@@ -1303,7 +1304,7 @@
               borderColor: '#1e293b',
               backgroundColor: 'rgba(254, 226, 226, 0.35)',
               fill: true,
-              borderWidth: 2.2,
+              borderWidth: 2.4,
               pointRadius: 0,
               tension: 0.25
             },
@@ -1336,8 +1337,8 @@
               data: unitPointData,
               borderColor: '#dc2626',
               backgroundColor: '#dc2626',
-              pointRadius: 6,
-              pointHoverRadius: 8,
+              pointRadius: 7,
+              pointHoverRadius: 9,
               showLine: false
             }
           ]
@@ -1350,7 +1351,7 @@
               position: 'top',
               labels: {
                 boxWidth: 10,
-                font: { size: 8, weight: '600' },
+                font: { size: 8.5, weight: '600' },
                 padding: 6,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
@@ -1358,20 +1359,20 @@
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year (Asset Age from 2025)', font: { size: 8.5, weight: '700' } },
+              title: { display: true, text: 'Calendar Year (Asset Age from 2025)', font: { size: 9, weight: '700' } },
               ticks: {
-                font: { size: 8 },
+                font: { size: 8.5 },
                 maxRotation: 0,
                 autoSkip: true,
-                maxTicksLimit: 16
+                maxTicksLimit: 14
               },
               grid: { color: '#f1f5f9' }
             },
             y: {
               min: 0,
               max: 100,
-              title: { display: true, text: 'Probability of Failure (%)', font: { size: 8.5, weight: '700' } },
-              ticks: { font: { size: 8 }, stepSize: 20 },
+              title: { display: true, text: 'Probability of Failure (%)', font: { size: 9, weight: '700' } },
+              ticks: { font: { size: 8.5 }, stepSize: 20 },
               grid: { color: '#f1f5f9' }
             }
           }
