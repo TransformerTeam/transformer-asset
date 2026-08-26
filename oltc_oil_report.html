@@ -1652,32 +1652,99 @@
         }
       });
 
-      // 2. Chart DGA Gases
+      // 2. Chart DGA Gases (Line Chart per gas)
       if (chartDgaGasesInstance) chartDgaGasesInstance.destroy();
       const ctx2 = document.getElementById('chart-dga-gases').getContext('2d');
       chartDgaGasesInstance = new Chart(ctx2, {
-        type: 'bar',
+        type: 'line',
         data: {
           labels: labels,
           datasets: [
-            { label: 'C2H2 (Acetylene)', data: c2h2Data, backgroundColor: '#ef4444' },
-            { label: 'H2 (Hydrogen)', data: h2Data, backgroundColor: '#eab308' },
-            { label: 'C2H4 (Ethylene)', data: c2h4Data, backgroundColor: '#f97316' },
-            { label: 'CH4 (Methane)', data: ch4Data, backgroundColor: '#3b82f6' }
+            {
+              label: 'C2H2 (Acetylene)',
+              data: c2h2Data,
+              borderColor: '#ef4444',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: '#ef4444',
+              fill: false
+            },
+            {
+              label: 'H2 (Hydrogen)',
+              data: h2Data,
+              borderColor: '#eab308',
+              backgroundColor: 'rgba(234, 179, 8, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: '#eab308',
+              fill: false
+            },
+            {
+              label: 'C2H4 (Ethylene)',
+              data: c2h4Data,
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: '#f97316',
+              fill: false
+            },
+            {
+              label: 'CH4 (Methane)',
+              data: ch4Data,
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: '#3b82f6',
+              fill: false
+            }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
           plugins: {
-            legend: { position: 'top', labels: { font: { size: 8.5, family: 'Inter' } } }
+            legend: {
+              position: 'top',
+              labels: {
+                font: { size: 8.5, family: 'Inter' },
+                usePointStyle: true,
+                boxWidth: 6
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  return ` ${context.dataset.label}: ${val !== null && !isNaN(val) ? val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '-'} ppm`;
+                }
+              }
+            }
           },
           scales: {
-            x: { ticks: { font: { size: 8.5 } } },
+            x: {
+              ticks: { font: { size: 8.5 } },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
+            },
             y: {
               type: 'logarithmic',
               title: { display: true, text: 'Concentration (ppm - Log Scale)', font: { size: 8.5 } },
-              ticks: { font: { size: 8 } }
+              ticks: { font: { size: 8 } },
+              grid: { color: 'rgba(226, 232, 240, 0.6)' }
             }
           }
         }
