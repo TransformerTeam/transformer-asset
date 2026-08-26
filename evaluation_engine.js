@@ -567,13 +567,13 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
   // 25. OLTC Oil / OLTC Breakdown / Water Content / DGA
   if (ptLower.includes('oltc') || subLower.includes('oltc') || mLower.includes('oltc')) {
     if (mLower.includes('breakdown') || mLower.includes('dielectric')) {
-      return 'IEEE C57.152 Table 5 / IEC 60156, Limit: ≥ 40.0 kV';
+      return 'IEEE C57.152 Table 5 / IEC 60156, Limit: ≥ 40.0 kV (Good) / ≥ 30 kV (Min)';
     }
     if (mLower.includes('water') || mLower.includes('moisture')) {
-      return 'IEEE C57.152 Table 5 / ASTM D1533, Limit: ≤ 30 ppm';
+      return 'IEEE C57.139 / IEC 60422, Limit: ≤ 30 ppm (Flashover risk > 50 ppm)';
     }
-    if (mLower.includes('dga') || mLower.includes('gas') || mLower.includes('acetylene')) {
-      return 'IEEE C57.139 / CIGRE 761, Typical LTC Pattern';
+    if (mLower.includes('dga') || mLower.includes('gas') || mLower.includes('acetylene') || mLower.includes('c2h2')) {
+      return 'IEEE C57.139 / CIGRE 761 (TB 443), Condition Level A–B (C2H2 ≤ 100 ppm)';
     }
     if (mLower.includes('dynamic') || mLower.includes('drm')) {
       return 'IEEE C57.152-2013, Limit: Ripple ≤ 10%, Deviation ≤ ±5%';
@@ -1781,16 +1781,47 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       if (latestOltc && latestOltc.BD) {
         const date = latestOltc.Date || latestOltc.date;
         const bdv = parseFloat(latestOltc.BD);
-        const score = bdv >= 40 ? 5 : (bdv >= 30 ? 4 : 3);
-        return { value: `${latestOltc.BD} kV`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Filter OLTC oil' };
+        const score = bdv >= 40 ? 5 : (bdv >= 30 ? 4 : (bdv >= 25 ? 3 : (bdv >= 20 ? 2 : 1)));
+        const rec = score >= 4 ? '-' : (score === 3 ? 'Plan OLTC oil filtration (BDV 25–39 kV)' : 'Urgent: Reclaim/filter OLTC oil immediately (BDV < 25 kV)');
+        return { value: `${latestOltc.BD} kV`, testDate: date, ratingScore: score, recommendation: rec };
       }
     }
     if (nameLower.includes('water content') || nameLower.includes('wc')) {
       if (latestOltc && latestOltc.WC) {
         const date = latestOltc.Date || latestOltc.date;
         const wc = parseFloat(latestOltc.WC);
-        const score = wc <= 30 ? 5 : (wc <= 40 ? 4 : 3);
-        return { value: `${latestOltc.WC} ppm`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Check OLTC moisture' };
+        const score = wc <= 20 ? 5 : (wc <= 30 ? 4 : (wc <= 40 ? 3 : (wc <= 50 ? 2 : 1)));
+        const rec = score >= 4 ? '-' : (wc > 50 ? 'Critical: High moisture > 50 ppm (Risk of dielectric tracking/flashover). Perform dehydration immediately.' : 'Plan OLTC oil dehydration / check breather');
+        return { value: `${latestOltc.WC} ppm`, testDate: date, ratingScore: score, recommendation: rec };
+      }
+    }
+    if (nameLower.includes('dga') || nameLower.includes('dissolved gas') || nameLower.includes('c2h2') || nameLower.includes('acetylene')) {
+      if (latestOltc) {
+        const date = latestOltc.Date || latestOltc.date;
+        const c2h2 = parseFloat(latestOltc.A_C2H2 || latestOltc.C2H2 || latestOltc.B_C2H2 || latestOltc.C_C2H2 || 0);
+        let score = 5;
+        let lvl = 'Level B (Normal)';
+        let rec = '-';
+        if (c2h2 <= 0) {
+          lvl = 'Level A (Excellent)';
+          score = 5;
+        } else if (c2h2 <= 100) {
+          lvl = 'Level B (Normal LTC Pattern)';
+          score = 5;
+        } else if (c2h2 <= 300) {
+          lvl = 'Level C (Suspicious / Watch)';
+          score = 4;
+          rec = 'Monitor C2H2 evolution rate & perform Duval Triangle 2 analysis';
+        } else if (c2h2 <= 500) {
+          lvl = 'Level D (Poor / Warning)';
+          score = 3;
+          rec = 'Perform DRM & Infrared thermography to inspect contact coking/overheating';
+        } else {
+          lvl = 'Level E/F (Severe Degradation / Danger)';
+          score = 1;
+          rec = 'Inspect OLTC contacts for severe coking/arcing and verify barrier board for oil migration';
+        }
+        return { value: `C2H2: ${c2h2.toLocaleString()} ppm (${lvl})`, testDate: date, ratingScore: score, recommendation: rec };
       }
     }
   }

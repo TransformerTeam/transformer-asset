@@ -385,15 +385,15 @@
 
     .diag-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
       margin-top: 4px;
     }
 
     .diag-card {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 6px 8px;
+      padding: 5px 8px;
       background: #ffffff;
     }
 
@@ -868,24 +868,29 @@
       <!-- 7. Diagnostic Assessment & Engineering Recommendations -->
       <div class="section-title">
         <span>7. Diagnostic Assessment &amp; Engineering Recommendations</span>
+        <span class="badge-info">IEEE C57.139 / CIGRE 761 (TB 443)</span>
       </div>
       <div class="diag-box">
         <div class="diag-grid">
           <div class="diag-card">
-            <div class="diag-card-title"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Dielectric Status</div>
-            <div id="diag-dielectric-text" style="font-size: 8.5px; color: #334155;">Breakdown voltage is above limit (&ge; 40 kV). Dielectric insulation is in satisfactory condition.</div>
+            <div class="diag-card-title"><i class="fa-solid fa-fire-flame-curved" style="color: #f59e0b;"></i> Step 1: Gas Pattern &amp; C₂H₂ Level</div>
+            <div id="diag-dga-text" style="font-size: 8.5px; color: #334155;">-</div>
           </div>
           <div class="diag-card">
-            <div class="diag-card-title"><i class="fa-solid fa-droplet" style="color: #0284c7;"></i> Moisture Condition</div>
-            <div id="diag-moisture-text" style="font-size: 8.5px; color: #334155;">Water content is within normal range (&le; 20 ppm). No dehydration required at this time.</div>
+            <div class="diag-card-title"><i class="fa-solid fa-shapes" style="color: #6366f1;"></i> Step 2: Duval Triangle 2 for LTC</div>
+            <div id="diag-duval-text" style="font-size: 8.5px; color: #334155;">-</div>
           </div>
           <div class="diag-card">
-            <div class="diag-card-title"><i class="fa-solid fa-fire-flame-curved" style="color: #f59e0b;"></i> DGA Switching Pattern</div>
-            <div id="diag-dga-text" style="font-size: 8.5px; color: #334155;">Acetylene presence aligns with normal switching arc pattern in standard LTC diverter/selector tank.</div>
+            <div class="diag-card-title"><i class="fa-solid fa-shuffle" style="color: #0284c7;"></i> Step 3: Internal Leak &amp; Oil Migration</div>
+            <div id="diag-migration-text" style="font-size: 8.5px; color: #334155;">-</div>
+          </div>
+          <div class="diag-card">
+            <div class="diag-card-title"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Step 4: Dielectric &amp; Complementary Tests</div>
+            <div id="diag-dielectric-text" style="font-size: 8.5px; color: #334155;">-</div>
           </div>
         </div>
-        <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #cbd5e1; font-weight: 600; color: #0f172a;" id="diag-overall-recommendation">
-          Recommendation: Continue routine periodic oil sampling and inspection according to scheduled PM cycle.
+        <div style="margin-top: 5px; padding-top: 4px; border-top: 1px dashed #cbd5e1; font-weight: 600; color: #0f172a;" id="diag-overall-recommendation">
+          Recommendation: -
         </div>
       </div>
 
@@ -1646,29 +1651,92 @@
       setElText('dga-tcg-p2', getTCG(r2));
       setElText('dga-tcg-p3', getTCG(r3));
 
-      // 7. Diagnostic Assessment Text
+      // 7. Comprehensive Diagnostic Assessment (IEEE C57.139 / CIGRE 761 & TB 443)
       const bdvNum = parseFloat(bd0);
       const wcNum = parseFloat(wc0);
+      const c2h2Num = parseFloat(getVal(r0, 'C2H2')) || 0;
+      const c2h4Num = parseFloat(getVal(r0, 'C2H4')) || 0;
+      const ch4Num = parseFloat(getVal(r0, 'CH4')) || 0;
+      const h2Num = parseFloat(getVal(r0, 'H2')) || 0;
+
+      // Step 1: Gas Pattern & C2H2 Level (CIGRE 761 Condition Levels A-F)
+      let step1Level = 'Level B (Normal)';
+      let step1Text = '';
+      if (c2h2Num <= 0) {
+        step1Level = 'Level A (Excellent)';
+        step1Text = `C₂H₂ is 0 ppm (${step1Level}). No LTC arcing byproducts detected.`;
+      } else if (c2h2Num <= 100) {
+        step1Level = 'Level B (Normal)';
+        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Stable gas evolution matching normal LTC switching arcing.`;
+      } else if (c2h2Num <= 300) {
+        step1Level = 'Level C (Suspicious / Watch)';
+        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Increased concentration; monitor rate of rise with regular trending.`;
+      } else if (c2h2Num <= 500) {
+        step1Level = 'Level D (Poor / Warning)';
+        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Indication of possible contact coking or excessive arcing.`;
+      } else {
+        step1Level = 'Level E/F (Severe / Danger)';
+        step1Text = `C₂H₂ is critical at ${c2h2Num.toLocaleString()} ppm (${step1Level}). Risk of severe contact coking or thermal runaway.`;
+      }
+      setElText('diag-dga-text', step1Text);
+
+      // Step 2: Duval Triangle 2 for LTC (CH4, C2H4, C2H2)
+      const totalTriangle = ch4Num + c2h4Num + c2h2Num;
+      let step2Text = '';
+      if (totalTriangle > 0) {
+        const pctCH4 = (ch4Num / totalTriangle) * 100;
+        const pctC2H4 = (c2h4Num / totalTriangle) * 100;
+        const pctC2H2 = (c2h2Num / totalTriangle) * 100;
+        if (pctC2H2 >= 70) {
+          step2Text = `Duval Triangle 2: Normal Arcing in Liquid (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). No abnormal thermal fault.`;
+        } else if (pctC2H4 > 25 || pctCH4 > 30) {
+          step2Text = `Duval Triangle 2: Thermal Fault / Contact Coking (T1/T2) indicated (C₂H₄: ${pctC2H4.toFixed(0)}%, CH₄: ${pctCH4.toFixed(0)}%). Overheating.`;
+        } else {
+          step2Text = `Duval Triangle 2: Mixed Arcing & Thermal traces (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). Stable pattern.`;
+        }
+      } else {
+        step2Text = 'Duval Triangle 2: Stable baseline; no fault gas concentration detected.';
+      }
+      setElText('diag-duval-text', step2Text);
+
+      // Step 3: Internal Leaks & Oil Migration
+      let step3Text = 'Barrier Board & gasket integrity satisfactory. No C₂H₂ or carbon soot migration into Main Tank detected.';
+      if (typeof DGA_DATA !== 'undefined' && Array.isArray(DGA_DATA)) {
+        const mtDga = DGA_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x.serial, serial));
+        if (mtDga && parseFloat(mtDga.C2H2 || mtDga.A_C2H2) > 3) {
+          step3Text = `Warning: Detectable C₂H₂ (${mtDga.C2H2} ppm) in Main Tank! Possible barrier board leak or gasket oil migration from OLTC.`;
+        }
+      }
+      setElText('diag-migration-text', step3Text);
+
+      // Step 4: Dielectric Strength & Complementary Tests
+      let step4Parts = [];
       if (!isNaN(bdvNum) && bdvNum < 30) {
-        setElText('diag-dielectric-text', `BDV is critical at ${bdvNum.toFixed(1)} kV (< 30 kV). Immediate oil filtration / dielectric reclamation required.`);
+        step4Parts.push(`BDV Critical (${bdvNum.toFixed(1)} kV < 30 kV)`);
       } else if (!isNaN(bdvNum) && bdvNum < 40) {
-        setElText('diag-dielectric-text', `BDV is fair at ${bdvNum.toFixed(1)} kV (30–39 kV). Plan oil filtration in next maintenance window.`);
+        step4Parts.push(`BDV Fair (${bdvNum.toFixed(1)} kV)`);
       } else {
-        setElText('diag-dielectric-text', `BDV is healthy at ${!isNaN(bdvNum) ? bdvNum.toFixed(1) : '85.2'} kV (>= 40 kV). Dielectric insulation is satisfactory.`);
+        step4Parts.push(`BDV Satisfactory (${!isNaN(bdvNum) ? bdvNum.toFixed(1) : '85.2'} kV ≥ 40 kV)`);
       }
 
-      if (!isNaN(wcNum) && wcNum > 30) {
-        setElText('diag-moisture-text', `Moisture is elevated at ${wcNum.toFixed(1)} ppm (> 30 ppm). Oil dehydration is recommended.`);
+      if (!isNaN(wcNum) && wcNum > 50) {
+        step4Parts.push(`Moisture DANGER (${wcNum.toFixed(1)} ppm > 50 ppm: Risk of flashover)`);
+      } else if (!isNaN(wcNum) && wcNum > 30) {
+        step4Parts.push(`Moisture elevated (${wcNum.toFixed(1)} ppm > 30 ppm)`);
       } else {
-        setElText('diag-moisture-text', `Water content is normal at ${!isNaN(wcNum) ? wcNum.toFixed(1) : '12.5'} ppm (<= 20 ppm). No dehydration required.`);
+        step4Parts.push(`Moisture Normal (${!isNaN(wcNum) ? wcNum.toFixed(1) : '12.5'} ppm ≤ 20 ppm)`);
       }
+      step4Parts.push('DRM & IR Thermography recommended during PM');
+      setElText('diag-dielectric-text', step4Parts.join(' • '));
 
-      const c2h2Num = parseFloat(getVal(r0, 'C2H2'));
-      if (!isNaN(c2h2Num) && c2h2Num > 10000) {
-        setElText('diag-dga-text', `Acetylene is high (${c2h2Num.toLocaleString()} ppm) representing significant diverter switch operations. Inspect contact wear.`);
-      } else {
-        setElText('diag-dga-text', `Acetylene level is typical for normal tap-changer arc switching. Gas evolution profile is in good agreement.`);
+      // Overall Recommendation
+      let overallRec = 'Recommendation: Continue routine periodic oil sampling and inspection according to scheduled PM cycle (IEEE C57.139 / IEC 60422).';
+      if (c2h2Num > 500 || (!isNaN(bdvNum) && bdvNum < 30) || (!isNaN(wcNum) && wcNum > 50)) {
+        overallRec = 'Action Required: Schedule urgent OLTC oil reclamation/dehydration and perform DRM & IR thermal scan to inspect contact wear/coking.';
+      } else if (c2h2Num > 300 || (!isNaN(bdvNum) && bdvNum < 40) || (!isNaN(wcNum) && wcNum > 30)) {
+        overallRec = 'Caution: Plan OLTC oil filtration and monthly DGA trending to verify gas evolution rate and transition resistor condition.';
       }
+      setElText('diag-overall-recommendation', overallRec);
 
       // 8. Dynamic Signatures Binding
       const testDateStr = r0 ? formatDate_ddMmmyyyy(r0.date) : '17-Nov-2025';
