@@ -1195,10 +1195,10 @@
       // Intersections metadata for callout lines
       const intersections = [
         { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
-        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#059669', offsetLevel: 2 },
-        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#ea580c', offsetLevel: 3 },
+        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#d97706', offsetLevel: 2 },
+        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f97316', offsetLevel: 3 },
         { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4 },
-        { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#1e293b', offsetLevel: 5 }
+        { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
 
       // Render Charts with Dynamic dpVal and Intersections
@@ -1353,7 +1353,7 @@
             {
               label: `0.5-2.0% Moisture, O2 < 7000 ppm (Normal, DP₀=${currentDP})`,
               data: normalDP,
-              borderColor: '#1e293b',
+              borderColor: '#16a34a',
               borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
@@ -1361,7 +1361,7 @@
             {
               label: `0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2, DP₀=${currentDP})`,
               data: highO2DP,
-              borderColor: '#ea580c',
+              borderColor: '#f97316',
               borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
@@ -1369,7 +1369,7 @@
             {
               label: `> 2.0% Moisture, O2 < 7000 ppm (High Moisture, DP₀=${currentDP})`,
               data: highMoistDP,
-              borderColor: '#059669',
+              borderColor: '#d97706',
               borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
@@ -1414,9 +1414,11 @@
             legend: {
               position: 'top',
               labels: {
-                boxWidth: 10,
+                usePointStyle: true,
+                pointStyle: 'line',
+                boxWidth: 22,
                 font: { size: 8.2, weight: '600' },
-                padding: 5
+                padding: 6
               }
             },
             dp300Callouts: {
@@ -1502,7 +1504,7 @@
             {
               label: 'Weibull PoF Model (α = 42.5 yrs, β = 3.0)',
               data: pofData,
-              borderColor: '#1e293b',
+              borderColor: '#16a34a',
               backgroundColor: 'rgba(254, 226, 226, 0.35)',
               fill: true,
               borderWidth: 2.2,
@@ -1551,9 +1553,11 @@
             legend: {
               position: 'top',
               labels: {
-                boxWidth: 10,
+                usePointStyle: true,
+                pointStyle: 'line',
+                boxWidth: 22,
                 font: { size: 8.2, weight: '600' },
-                padding: 5,
+                padding: 6,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
             }
