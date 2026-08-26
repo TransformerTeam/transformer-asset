@@ -344,7 +344,7 @@
       margin-top: 1px;
     }
 
-    /* Charts Container (Well-proportioned Height & Aspect Ratio) */
+    /* Charts Container */
     .charts-container {
       display: flex;
       flex-direction: column;
@@ -382,7 +382,7 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 240px;
+      height: 245px;
     }
 
     /* Technical Formula Box */
@@ -578,7 +578,7 @@
         <div class="kpi-card">
           <div class="kpi-label">Current Estimated DP</div>
           <div class="kpi-val" id="kpi-current-dp" style="color: #1e3a8a;">-</div>
-          <div class="kpi-sub" id="kpi-dp-status">Insulation Status: -</div>
+          <div class="kpi-sub" id="kpi-dp-status">Insulation: Healthy</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">Est. Life to DP 300 (Warning)</div>
@@ -597,9 +597,9 @@
         </div>
       </div>
 
-      <!-- 2. STACKED CHARTS (Graph 1 followed by Graph 2) -->
+      <!-- 2. STACKED CHARTS (Calibrated to 2025-2325 and DP 0-1200) -->
       <div class="charts-container">
-        <!-- Chart 1: DP Degradation Curves -->
+        <!-- Chart 1: DP Degradation Curves (Fig 6-4 in report) -->
         <div class="chart-box">
           <div class="chart-header">
             <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
@@ -610,7 +610,7 @@
           </div>
         </div>
 
-        <!-- Chart 2: Failure Probability (Weibull PoF) directly under Chart 1 -->
+        <!-- Chart 2: Failure Probability (Weibull PoF) -->
         <div class="chart-box">
           <div class="chart-header">
             <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
@@ -659,24 +659,24 @@
         </div>
       </div>
 
-      <!-- 4. Operating Regimes & Sensitivity Scenario Comparison -->
-      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison</div>
+      <!-- 4. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Standard) -->
+      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Table 6-4)</div>
       <table class="report-table">
         <thead>
           <tr>
-            <th style="width: 28%;">Operational Scenario</th>
+            <th style="width: 32%;">Operational Scenario</th>
             <th style="width: 18%; text-align: center;">Aging Rate (k)</th>
             <th style="width: 18%; text-align: center;">Est. Years to DP 300</th>
             <th style="width: 18%; text-align: center;">Est. Years to DP 200</th>
-            <th style="width: 18%; text-align: center;">Condition Profile</th>
+            <th style="width: 14%; text-align: center;">Condition Profile</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Normal Condition</strong> (Dry paper &lt; 1%, O₂ &lt; 7000 ppm)</td>
+            <td><strong>0.5–2.0% Moisture, O₂ &lt; 7000 ppm</strong> (Normal Operating)</td>
             <td style="text-align: center;">3.10 × 10⁻⁵ year⁻¹</td>
-            <td style="text-align: center;">48.5 Years</td>
-            <td style="text-align: center;">72.0 Years</td>
+            <td style="text-align: center;" id="scen-norm-300">~64 Years (2089)</td>
+            <td style="text-align: center;" id="scen-norm-200">~118 Years (2143)</td>
             <td style="text-align: center;"><span class="status-badge status-normal">Optimal</span></td>
           </tr>
           <tr>
@@ -687,17 +687,24 @@
             <td style="text-align: center;"><span class="status-badge status-normal" id="scen-curr-badge">Current</span></td>
           </tr>
           <tr>
-            <td><strong>Aggressive Condition</strong> (Moisture 1.5–2.0%, High Load)</td>
+            <td><strong>0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
-            <td style="text-align: center;">26.0 Years</td>
-            <td style="text-align: center;">42.0 Years</td>
-            <td style="text-align: center;"><span class="status-badge status-questionable">Aggressive</span></td>
+            <td style="text-align: center;" id="scen-oxy-300">~35 Years (2060)</td>
+            <td style="text-align: center;" id="scen-oxy-200">~63 Years (2088)</td>
+            <td style="text-align: center;"><span class="status-badge status-questionable">High O₂</span></td>
           </tr>
           <tr>
-            <td><strong>Severe Degradation</strong> (Moisture &gt; 2.0%, O₂ &gt; 7000 ppm)</td>
+            <td><strong>&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
+            <td style="text-align: center;">7.80 × 10⁻⁵ year⁻¹</td>
+            <td style="text-align: center;" id="scen-moist-300">~26 Years (2051)</td>
+            <td style="text-align: center;" id="scen-moist-200">~48 Years (2073)</td>
+            <td style="text-align: center;"><span class="status-badge status-questionable">High H₂O</span></td>
+          </tr>
+          <tr>
+            <td><strong>&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
             <td style="text-align: center;">1.20 × 10⁻⁴ year⁻¹</td>
-            <td style="text-align: center;">12.5 Years</td>
-            <td style="text-align: center;">22.0 Years</td>
+            <td style="text-align: center;" id="scen-sev-300">~15 Years (2040)</td>
+            <td style="text-align: center;" id="scen-sev-200">~28 Years (2053)</td>
             <td style="text-align: center;"><span class="status-badge status-unacceptable">Severe</span></td>
           </tr>
         </tbody>
@@ -1010,18 +1017,29 @@
         dpVal = calcDominelliDP(furanPpb) || 850;
       }
 
-      const dp0 = 1000;
-      let kYearly = 0.000035;
-      if (age > 0 && dpVal < dp0) {
-        kYearly = (1 / dpVal - 1 / dp0) / age;
+      // Check O2 and moisture from test data
+      const o2Val = parseFloat(latestOil.O2 || 5000);
+      const isHighO2 = o2Val >= 7000;
+      const moistureVal = parseFloat(meta['%Moisture in paper (FDS)'] || latestOil.WC || 1.0);
+      const isHighMoisture = moistureVal > 2.0;
+
+      // Realistic k_yearly based on SINTEF Winding Ageing Model (from official report)
+      let kYearly = 0.0000310; // Normal baseline
+      if (isHighMoisture && isHighO2) {
+        kYearly = 0.0001200; // Severe
+      } else if (isHighO2) {
+        kYearly = 0.0000597; // High O2
+      } else if (isHighMoisture) {
+        kYearly = 0.0000780; // High Moisture
+      } else if (dpVal < 750) {
+        kYearly = 0.0000450;
       }
-      if (kYearly <= 0) kYearly = 0.000031;
 
       const kScientific = kYearly.toExponential(2);
 
       const targetDP300 = 300;
       const targetDP200 = 200;
-      const currentYear = new Date().getFullYear();
+      const currentYear = 2025; // Base study year per report
 
       let rem300 = (dpVal > targetDP300) ? (1 / targetDP300 - 1 / dpVal) / kYearly : 0;
       let rem200 = (dpVal > targetDP200) ? (1 / targetDP200 - 1 / dpVal) / kYearly : 0;
@@ -1059,7 +1077,7 @@
       document.getElementById('kpi-target-year-300').textContent = `Target Year: ${year300}`;
 
       document.getElementById('kpi-rem-dp200').textContent = `${rem200} Years`;
-      document.getElementById('kpi-target-year-200').textContent = `Critical Year: ${year200}`;
+      document.getElementById('kpi-target-year-200').textContent = `Mechanical Limit: ${year200}`;
 
       document.getElementById('kpi-pof-val').textContent = pofStr;
       let pofRisk = 'Low Risk (<20%)';
@@ -1077,10 +1095,10 @@
       document.getElementById('kpi-pof-risk').textContent = pofRisk;
       document.getElementById('kpi-pof-risk').style.color = pofColor;
 
-      // Table Rows (Scenario)
+      // Table Rows (Scenario Table 6-4)
       document.getElementById('scen-curr-k').textContent = `${kScientific} year⁻¹`;
-      document.getElementById('scen-curr-300').textContent = `${rem300} Years`;
-      document.getElementById('scen-curr-200').textContent = `${rem200} Years`;
+      document.getElementById('scen-curr-300').textContent = `~${rem300} Years (${year300})`;
+      document.getElementById('scen-curr-200').textContent = `~${rem200} Years (${year200})`;
 
       // Render Charts
       renderDegradationChart(dpVal, kYearly, currentYear);
@@ -1125,32 +1143,33 @@
         dpChartInstance.destroy();
       }
 
+      // X-Axis range from 2025 to 2325 (300-year horizon per official report Fig 6-3 & Fig 6-4)
       const years = [];
-      const normalDP = [];
-      const aggDP = [];
-      const sevDP = [];
       const unitDP = [];
+      const normalDP = [];
+      const highO2DP = [];
+      const highMoistDP = [];
+      const severeDP = [];
       const limit300 = [];
       const limit200 = [];
 
-      const kNormal = 0.0000310;
-      const kAgg = 0.0000597;
-      const kSev = 0.0001200;
+      const kNorm = 0.0000310;
+      const kHighO2 = 0.0000597;
+      const kHighMoist = 0.0000780;
+      const kSevere = 0.0001200;
 
-      for (let y = 2025; y <= 2100; y += 1) {
+      for (let y = 2025; y <= 2325; y += 2) {
         years.push(y);
         const dt = y - 2025;
 
-        normalDP.push(Math.round(1 / (1 / 850 + kNormal * dt)));
-        aggDP.push(Math.round(1 / (1 / 850 + kAgg * dt)));
-        sevDP.push(Math.max(50, Math.round(1 / (1 / 820 + kSev * dt))));
+        // Scenarios from start DP = 800 (representative paper sample)
+        normalDP.push(Math.max(50, Math.round(1 / (1 / 800 + kNorm * dt))));
+        highO2DP.push(Math.max(50, Math.round(1 / (1 / 800 + kHighO2 * dt))));
+        highMoistDP.push(Math.max(50, Math.round(1 / (1 / 800 + kHighMoist * dt))));
+        severeDP.push(Math.max(50, Math.round(1 / (1 / 800 + kSevere * dt))));
 
-        const dtUnit = y - baseYear;
-        if (dtUnit >= 0) {
-          unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dtUnit))));
-        } else {
-          unitDP.push(null);
-        }
+        // Unit Trajectory
+        unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
 
         limit300.push(300);
         limit200.push(200);
@@ -1162,42 +1181,50 @@
           labels: years,
           datasets: [
             {
-              label: 'Unit Trajectory',
+              label: 'Operating Condition (Actual Unit Trajectory)',
               data: unitDP,
               borderColor: '#4f46e5',
               backgroundColor: '#4f46e5',
               borderWidth: 2.8,
-              pointRadius: (c) => years[c.dataIndex] === baseYear ? 6 : 0,
+              pointRadius: (c) => years[c.dataIndex] === 2025 ? 6 : 0,
               pointBackgroundColor: '#4f46e5',
               tension: 0.15
             },
             {
-              label: 'Normal Condition (k = 3.10e-5)',
+              label: '0.5-2.0% Moisture, O2 < 7000 ppm (Normal)',
               data: normalDP,
-              borderColor: '#0f172a',
-              borderWidth: 1.8,
+              borderColor: '#1e293b',
+              borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
             },
             {
-              label: 'Aggressive Condition (k = 5.97e-5)',
-              data: aggDP,
+              label: '0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2)',
+              data: highO2DP,
               borderColor: '#ea580c',
-              borderWidth: 1.8,
+              borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
             },
             {
-              label: 'Severe Degradation (k = 1.20e-4)',
-              data: sevDP,
+              label: '> 2.0% Moisture, O2 < 7000 ppm (High Moisture)',
+              data: highMoistDP,
+              borderColor: '#059669',
+              borderWidth: 1.6,
+              pointRadius: 0,
+              tension: 0.15
+            },
+            {
+              label: '> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation)',
+              data: severeDP,
               borderColor: '#dc2626',
-              borderWidth: 1.8,
+              borderWidth: 1.6,
               borderDash: [5, 4],
               pointRadius: 0,
               tension: 0.15
             },
             {
-              label: 'End of Life Limit (DP = 300)',
+              label: 'End of Life Criterion (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
               borderWidth: 1.4,
@@ -1205,7 +1232,7 @@
               pointRadius: 0
             },
             {
-              label: 'Mechanical End of Life (DP = 200)',
+              label: 'Mechanical End of Life Criterion (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
               borderWidth: 1.4,
@@ -1222,27 +1249,32 @@
               position: 'top',
               labels: {
                 boxWidth: 10,
-                font: { size: 8.5, weight: '600' },
-                padding: 6
+                font: { size: 8.2, weight: '600' },
+                padding: 5
               }
             }
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year', font: { size: 9, weight: '700' } },
+              title: { display: true, text: 'Calendar Year (2025–2325 Projection)', font: { size: 9, weight: '700' } },
               ticks: {
                 font: { size: 8.5 },
                 maxRotation: 0,
-                autoSkip: true,
-                maxTicksLimit: 14
+                callback: function(val, index) {
+                  const y = years[index];
+                  return (y % 50 === 25 || y === 2025 || y === 2325) ? y : '';
+                }
               },
               grid: { color: '#f1f5f9' }
             },
             y: {
               min: 0,
-              max: 1000,
+              max: 1200,
               title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 9, weight: '700' } },
-              ticks: { font: { size: 8.5 }, stepSize: 200 },
+              ticks: { 
+                font: { size: 8.5 },
+                stepSize: 200
+              },
               grid: { color: '#f1f5f9' }
             }
           }
@@ -1265,7 +1297,7 @@
       const highRiskBand = [];
       const unitPointData = [];
 
-      for (let y = 2025; y <= 2100; y += 1) {
+      for (let y = 2025; y <= 2325; y += 2) {
         years.push(y);
         const ageAtY = (y - 2025);
         const pof = calcPoF(ageAtY);
@@ -1285,9 +1317,8 @@
           highRiskBand.push(pof);
         }
 
-        const unitCurrentAge = currentAge + (y - baseYear);
-        if (y === baseYear) {
-          unitPointData.push(calcPoF(unitCurrentAge));
+        if (y === 2025) {
+          unitPointData.push(calcPoF(currentAge));
         } else {
           unitPointData.push(null);
         }
@@ -1299,12 +1330,12 @@
           labels: years,
           datasets: [
             {
-              label: 'Weibull PoF Model',
+              label: 'Weibull PoF Model (α = 42.5 yrs, β = 3.0)',
               data: pofData,
               borderColor: '#1e293b',
               backgroundColor: 'rgba(254, 226, 226, 0.35)',
               fill: true,
-              borderWidth: 2.4,
+              borderWidth: 2.2,
               pointRadius: 0,
               tension: 0.25
             },
@@ -1351,20 +1382,22 @@
               position: 'top',
               labels: {
                 boxWidth: 10,
-                font: { size: 8.5, weight: '600' },
-                padding: 6,
+                font: { size: 8.2, weight: '600' },
+                padding: 5,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
             }
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year (Asset Age from 2025)', font: { size: 9, weight: '700' } },
+              title: { display: true, text: 'Calendar Year (2025–2325 Projection)', font: { size: 9, weight: '700' } },
               ticks: {
                 font: { size: 8.5 },
                 maxRotation: 0,
-                autoSkip: true,
-                maxTicksLimit: 14
+                callback: function(val, index) {
+                  const y = years[index];
+                  return (y % 50 === 25 || y === 2025 || y === 2325) ? y : '';
+                }
               },
               grid: { color: '#f1f5f9' }
             },
