@@ -1275,7 +1275,56 @@
       return cleanStr;
     }
 
-    // Populate Dropdown sorted by SITE (A-Z) primarily, then by Equipment Name (A-Z)
+    // Helper to check if a transformer has an On Load Tap Changer (OLTC1, OLTC3)
+    function isOltcTransformer(s, meta, rawMeta) {
+      if (!s) return false;
+      const serialUpper = String(s).trim().toUpperCase();
+      if (serialUpper === 'SUPERMENG' || serialUpper === 'SUPHON TEST' || serialUpper === 'TEST' || serialUpper === '-' || serialUpper === '1') return false;
+
+      // 1. Direct rawMeta check from TR_DATA
+      if (rawMeta) {
+        const tap = String(rawMeta.TAP_CHANGER_TYPE || rawMeta.tap_changer || rawMeta.tapChanger || rawMeta.TAP_CHANGER || '').trim().toUpperCase();
+        if (tap === 'OLTC1' || tap === 'OLTC3' || tap.includes('OLTC')) return true;
+        if (tap.includes('NLTC') || tap.includes('DETC') || tap.includes('FIX')) return false;
+      }
+
+      // 2. Direct meta check from HEALTH_INDEX_DATA
+      if (meta) {
+        const tap = String(meta['Tap Changer'] || meta.tap_changer || meta.tapChanger || meta.TAP_CHANGER_TYPE || meta.tap || '').trim().toUpperCase();
+        if (tap === 'OLTC1' || tap === 'OLTC3' || tap.includes('OLTC')) return true;
+        if (tap.includes('NLTC') || tap.includes('DETC') || tap.includes('FIX') || meta.oltc === 'N/A' || meta.oltcOil === 'N/A') return false;
+      }
+
+      // 3. Lookup in TR_DATA
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        const found = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x.serial, s));
+        if (found) {
+          const tap = String(found.TAP_CHANGER_TYPE || found.tap_changer || found.tapChanger || '').trim().toUpperCase();
+          if (tap === 'OLTC1' || tap === 'OLTC3' || tap.includes('OLTC')) return true;
+          if (tap.includes('NLTC') || tap.includes('DETC') || tap.includes('FIX')) return false;
+        }
+      }
+
+      // 4. Lookup in HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        const found = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No, s));
+        if (found) {
+          const tap = String(found['Tap Changer'] || found.tap_changer || found.tapChanger || found.TAP_CHANGER_TYPE || '').trim().toUpperCase();
+          if (tap === 'OLTC1' || tap === 'OLTC3' || tap.includes('OLTC')) return true;
+          if (tap.includes('NLTC') || tap.includes('DETC') || tap.includes('FIX') || found.oltc === 'N/A' || found.oltcOil === 'N/A') return false;
+        }
+      }
+
+      // 5. Lookup in oltcAssetDataList
+      if (typeof oltcAssetDataList !== 'undefined' && Array.isArray(oltcAssetDataList)) {
+        const hasAsset = oltcAssetDataList.some(x => matchSerial(x.serial, s));
+        if (hasAsset) return true;
+      }
+
+      return false;
+    }
+
+    // Populate Dropdown sorted by SITE (A-Z) primarily, then by Equipment Name (A-Z) - ONLY OLTC transformers
     function populateDropdown() {
       const selectEl = document.getElementById('transformer-select');
       if (!selectEl) return;
@@ -1284,53 +1333,59 @@
       const addedSerials = new Set();
       const allItems = [];
 
-      // 1. From HEALTH_INDEX_DATA
-      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
-        HEALTH_INDEX_DATA.forEach(meta => {
-          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
-          let n = meta['Equipment Name'] || meta.name || s;
-          let site = meta.SITE || meta.site || meta.substation || '';
-          if (!n || n === s) {
-            const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
-            if (extraKey) {
-              if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
-              if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
-            }
-          }
-          if (s && !addedSerials.has(String(s).toUpperCase())) {
-            addedSerials.add(String(s).toUpperCase());
-            allItems.push({ serial: s, name: n, site: site });
-          }
-        });
-      }
-
-      // 2. From TR_DATA
+      // 1. From TR_DATA (has TAP_CHANGER_TYPE like OLTC1, OLTC3)
       if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
         TR_DATA.forEach(rawMeta => {
           const s = rawMeta.SERIAL_NUMBER || rawMeta.Serial_No || rawMeta.serial;
+          if (!s || addedSerials.has(String(s).toUpperCase())) return;
+          if (!isOltcTransformer(s, null, rawMeta)) return;
+
           let n = rawMeta.LOCAL_EQUIPMENT_CODE || rawMeta.DEVICE_CODE || rawMeta.NAME || s;
           let site = rawMeta.LOCATION || rawMeta.SUBSTATION || rawMeta.SITE || '';
-          if (s && !addedSerials.has(String(s).toUpperCase())) {
-            addedSerials.add(String(s).toUpperCase());
-            allItems.push({ serial: s, name: n, site: site });
-          }
-        });
-      }
-
-      // 3. From OLTCOilData.csv
-      oltcOilDataList.forEach(item => {
-        const s = item.serial || item.Serial_No;
-        if (s && s !== '-' && !addedSerials.has(String(s).toUpperCase())) {
-          addedSerials.add(String(s).toUpperCase());
-          let n = s;
-          let site = item.Site || item.site || item.SITE || '';
           const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
           if (extraKey) {
             if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
             if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
           }
+          addedSerials.add(String(s).toUpperCase());
           allItems.push({ serial: s, name: n, site: site });
+        });
+      }
+
+      // 2. From HEALTH_INDEX_DATA
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta.Serial_No || meta.SERIAL_NUMBER;
+          if (!s || addedSerials.has(String(s).toUpperCase())) return;
+          if (!isOltcTransformer(s, meta, null)) return;
+
+          let n = meta['Equipment Name'] || meta.name || s;
+          let site = meta.SITE || meta.site || meta.substation || '';
+          const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+          if (extraKey) {
+            if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+            if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
+          }
+          addedSerials.add(String(s).toUpperCase());
+          allItems.push({ serial: s, name: n, site: site });
+        });
+      }
+
+      // 3. From OLTCOilData.csv (only if verified as OLTC)
+      oltcOilDataList.forEach(item => {
+        const s = item.serial || item.Serial_No;
+        if (!s || s === '-' || addedSerials.has(String(s).toUpperCase())) return;
+        if (!isOltcTransformer(s, null, null)) return;
+
+        let n = s;
+        let site = item.Site || item.site || item.SITE || '';
+        const extraKey = Object.keys(EXTRA_TR_METADATA).find(k => matchSerial(k, s));
+        if (extraKey) {
+          if (EXTRA_TR_METADATA[extraKey].name) n = EXTRA_TR_METADATA[extraKey].name;
+          if (!site && EXTRA_TR_METADATA[extraKey].site) site = EXTRA_TR_METADATA[extraKey].site;
         }
+        addedSerials.add(String(s).toUpperCase());
+        allItems.push({ serial: s, name: n, site: site });
       });
 
       // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
@@ -2121,22 +2176,19 @@
         if (item) serial = item.serial;
       }
 
-      // Default selection
-      if (!serial) {
-        const selectEl = document.getElementById('transformer-select');
-        if (selectEl && selectEl.options.length > 0 && selectEl.options[0].value) {
-          serial = selectEl.options[0].value;
-        } else if (oltcOilDataList.length > 0 && oltcOilDataList[0].serial) {
-          serial = oltcOilDataList[0].serial;
-        } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
-          serial = HEALTH_INDEX_DATA[0].serial;
+      // Default selection (ensure selected serial is a valid OLTC unit)
+      const selectEl = document.getElementById('transformer-select');
+      const validOptions = selectEl ? Array.from(selectEl.options).map(o => o.value) : [];
+
+      if (!serial || (validOptions.length > 0 && !validOptions.some(s => matchSerial(s, serial)))) {
+        if (validOptions.length > 0) {
+          serial = validOptions[0];
         } else {
           serial = 'PP0084B01';
         }
       }
 
       if (serial) {
-        const selectEl = document.getElementById('transformer-select');
         if (selectEl) selectEl.value = serial;
         loadReportBySerial(serial);
       }
