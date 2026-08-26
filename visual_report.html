@@ -58,7 +58,7 @@
     /* Top Control Bar */
     .control-bar {
       width: 100%;
-      max-width: 1020px;
+      max-width: 960px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -142,7 +142,7 @@
     /* Report Wrapper & Pages */
     .report-wrapper {
       width: 100%;
-      max-width: 1020px;
+      max-width: 960px;
       display: flex;
       flex-direction: column;
       gap: 28px;
@@ -155,7 +155,7 @@
       border-radius: 8px;
       padding: 24px 32px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-      font-size: 10.5px;
+      font-size: 10px;
       line-height: 1.3;
       position: relative;
     }
@@ -212,17 +212,17 @@
       object-fit: contain;
     }
 
-    /* Standard Report Table Styling (Condensed) */
+    /* Standard Report Table Styling (Full Width Linear Layout) */
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .report-table th, 
     .report-table td {
       border: 1px solid var(--report-border);
-      padding: 2.5px 5px;
+      padding: 3px 6px;
       font-size: 9px;
       line-height: 1.25;
     }
@@ -238,11 +238,11 @@
       background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 700;
-      padding: 2.5px 6px;
+      padding: 3px 8px;
       font-size: 9.5px;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      margin-top: 7px;
+      margin-top: 8px;
       margin-bottom: 3px;
       border-radius: 2px;
       display: flex;
@@ -302,18 +302,11 @@
       border: 1px solid #cbd5e1;
     }
 
-    /* Grid Layouts for Sections */
-    .split-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
     /* Signatures Section */
     .signature-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 10px;
       margin-bottom: 0;
     }
 
@@ -333,7 +326,7 @@
     /* Photo Gallery */
     .photo-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
       margin-top: 4px;
     }
@@ -348,14 +341,14 @@
 
     .photo-card img {
       max-width: 100%;
-      height: 95px;
+      height: 85px;
       object-fit: cover;
       border-radius: 3px;
       margin-bottom: 2px;
     }
 
     .photo-caption {
-      font-size: 8.5px;
+      font-size: 8px;
       color: #475569;
       font-style: italic;
     }
@@ -463,74 +456,70 @@
         </tbody>
       </table>
 
-      <!-- Split Grid: 1. Test Instrument & Load Data + Visual Summary -->
-      <div class="split-grid-2" style="margin-top: 4px;">
-        <div>
-          <div class="section-banner">• Visual Inspection Test Instrument Information</div>
-          <table class="report-table">
-            <tbody>
-              <tr>
-                <th style="width: 30%;">Humidity (%)</th>
-                <td style="width: 20%;" id="inst-humidity">-</td>
-                <th style="width: 30%;">Ambient Temp.</th>
-                <td style="width: 20%;" id="inst-ambient-temp">-</td>
-              </tr>
-              <tr>
-                <th>Oil Temp.</th>
-                <td id="inst-oil-temp">-</td>
-                <th>Oil Temp. Max</th>
-                <td id="inst-oil-temp-max">-</td>
-              </tr>
-              <tr>
-                <th>Winding Temp.HV</th>
-                <td id="inst-wnd-hv">-</td>
-                <th>Winding HV Max</th>
-                <td id="inst-wnd-hv-max">-</td>
-              </tr>
-              <tr>
-                <th>Winding Temp.LV</th>
-                <td id="inst-wnd-lv">-</td>
-                <th>Winding LV Max</th>
-                <td id="inst-wnd-lv-max">-</td>
-              </tr>
-              <tr>
-                <th>Service Tap</th>
-                <td id="inst-tap">-</td>
-                <th>Calibration Date</th>
-                <td id="inst-cal-date">-</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <!-- 1. Test Instrument Information -->
+      <div class="section-banner">• Visual Inspection Test Instrument Information</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 25%;">Humidity (%)</th>
+            <td style="width: 25%;" id="inst-humidity">-</td>
+            <th style="width: 25%;">Ambient Temp.</th>
+            <td style="width: 25%;" id="inst-ambient-temp">-</td>
+          </tr>
+          <tr>
+            <th>Oil Temp.</th>
+            <td id="inst-oil-temp">-</td>
+            <th>Oil Temp. Max</th>
+            <td id="inst-oil-temp-max">-</td>
+          </tr>
+          <tr>
+            <th>Winding Temp.HV</th>
+            <td id="inst-wnd-hv">-</td>
+            <th>Winding HV Max</th>
+            <td id="inst-wnd-hv-max">-</td>
+          </tr>
+          <tr>
+            <th>Winding Temp.LV</th>
+            <td id="inst-wnd-lv">-</td>
+            <th>Winding LV Max</th>
+            <td id="inst-wnd-lv-max">-</td>
+          </tr>
+          <tr>
+            <th>Service Tap</th>
+            <td id="inst-tap">-</td>
+            <th>Calibration Date</th>
+            <td id="inst-cal-date">-</td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div>
-          <div class="section-banner">• Transformer Load Data Record</div>
-          <table class="report-table">
-            <tbody>
-              <tr>
-                <th style="width: 30%;">Active Power (kVA)</th>
-                <td style="width: 20%;" id="load-active-power">-</td>
-                <th style="width: 30%;">Current (A)</th>
-                <td style="width: 20%;" id="load-current">-</td>
-              </tr>
-              <tr>
-                <th>Reactive Power (kVAr)</th>
-                <td id="load-reactive-power">-</td>
-                <th>Voltage (V)</th>
-                <td id="load-voltage">-</td>
-              </tr>
-              <tr>
-                <th>Real Power (kW)</th>
-                <td colspan="3" id="load-real-power">-</td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- Transformer Load Data Record -->
+      <div class="section-banner">• Transformer Load Data Record</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 25%;">Active Power (kVA)</th>
+            <td style="width: 25%;" id="load-active-power">-</td>
+            <th style="width: 25%;">Current (A)</th>
+            <td style="width: 25%;" id="load-current">-</td>
+          </tr>
+          <tr>
+            <th>Reactive Power (kVAr)</th>
+            <td id="load-reactive-power">-</td>
+            <th>Voltage (V)</th>
+            <td id="load-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Real Power (kW)</th>
+            <td colspan="3" id="load-real-power">-</td>
+          </tr>
+        </tbody>
+      </table>
 
-          <div class="section-banner" id="visual-summary-banner" style="margin-top: 6px;">• Visual Summary</div>
-          <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 5px 8px; font-size: 8.5px; line-height: 1.35; background-color: #fff7ed; color: #9a3412; border-radius: 3px;">
-            • Visual Summary loading...
-          </div>
-        </div>
+      <!-- Visual Summary Box -->
+      <div class="section-banner" id="visual-summary-banner">• Visual Summary</div>
+      <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 5px 8px; font-size: 8.5px; line-height: 1.35; background-color: #fff7ed; color: #9a3412; border-radius: 3px; margin-bottom: 6px;">
+        • Visual Summary loading...
       </div>
 
       <!-- 2. Porcelain Condition Checking -->
@@ -538,9 +527,9 @@
       <table class="report-table">
         <thead>
           <tr>
-            <th style="width: 38%;">Visual Inspection Item</th>
-            <th style="width: 20%; text-align: center;">Condition</th>
-            <th style="width: 42%;">Remark</th>
+            <th style="width: 44%;">Visual Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
           </tr>
         </thead>
         <tbody id="tbl-porcelain"></tbody>
@@ -551,9 +540,9 @@
       <table class="report-table">
         <thead>
           <tr>
-            <th style="width: 38%;">Visual Inspection Item</th>
-            <th style="width: 20%; text-align: center;">Condition</th>
-            <th style="width: 42%;">Remark</th>
+            <th style="width: 44%;">Visual Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
           </tr>
         </thead>
         <tbody id="tbl-leakage"></tbody>
@@ -647,144 +636,96 @@
         </tbody>
       </table>
 
-      <!-- 2-Column Split Grid for Page 2 Items -->
-      <div class="split-grid-2" style="margin-top: 4px;">
-        <!-- Left Column -->
-        <div>
-          <!-- 4. Oil Level Checking -->
-          <div class="section-banner">• Oil Level Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-oil-level"></tbody>
-          </table>
+      <!-- 4. Oil Level Checking -->
+      <div class="section-banner">• Oil Level Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-oil-level"></tbody>
+      </table>
 
-          <!-- 5. Oil and Winding Temperature -->
-          <div class="section-banner">• Oil and Winding Temperature</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-temp-indicators"></tbody>
-          </table>
+      <!-- 5. Oil and Winding Temperature -->
+      <div class="section-banner">• Oil and Winding Temperature</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-temp-indicators"></tbody>
+      </table>
 
-          <!-- 6. Power Transformer Self-Protection -->
-          <div class="section-banner">• Power Transformer Self-Protection</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-self-protection"></tbody>
-          </table>
+      <!-- 6. Power Transformer Self-Protection -->
+      <div class="section-banner">• Power Transformer Self-Protection</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-self-protection"></tbody>
+      </table>
 
-          <!-- 7. Surface Painting Checking -->
-          <div class="section-banner">• Surface Painting Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-surface-painting"></tbody>
-          </table>
+      <!-- 7. Surface Painting Checking -->
+      <div class="section-banner">• Surface Painting Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-surface-painting"></tbody>
+      </table>
 
-          <!-- 8. Foundation Condition Checking -->
-          <div class="section-banner">• Foundation Condition Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-foundation"></tbody>
-          </table>
-        </div>
+      <!-- 8. Foundation Condition Checking -->
+      <div class="section-banner">• Foundation Condition Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-foundation"></tbody>
+      </table>
 
-        <!-- Right Column -->
-        <div>
-          <!-- 9. Earthing Connection Checking -->
-          <div class="section-banner">• Earthing Connection Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-earthing"></tbody>
-          </table>
+      <!-- 9. Earthing Connection Checking -->
+      <div class="section-banner">• Earthing Connection Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-earthing"></tbody>
+      </table>
 
-          <!-- 10. Dehydrating Breather Checking -->
-          <div class="section-banner">• Dehydrating Breather Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-breather"></tbody>
-          </table>
-
-          <!-- 11. Terminal Box Checking -->
-          <div class="section-banner">• Terminal Box Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-terminal-box"></tbody>
-          </table>
-
-          <!-- 12. All Bolt and Nut Connection Checking -->
-          <div class="section-banner">• Bolt and Nut Connection Checking</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-bolt-nut"></tbody>
-          </table>
-
-          <!-- 13. Cooling System Operation -->
-          <div class="section-banner">• Cooling System Operation</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-cooling-system"></tbody>
-          </table>
-        </div>
-      </div>
+      <!-- 10. Dehydrating Breather Checking -->
+      <div class="section-banner">• Dehydrating Breather Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-breather"></tbody>
+      </table>
 
       <!-- SIGNATURES / APPROVAL (Page 2) -->
       <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
@@ -874,64 +815,94 @@
         </tbody>
       </table>
 
-      <!-- 2-Column Split Grid for Page 3 Items -->
-      <div class="split-grid-2" style="margin-top: 4px;">
-        <!-- Left Column: OLTC & Local Control -->
-        <div>
-          <!-- 14. OLTC & Pressure Records -->
-          <div class="section-banner">• On-Load Tap Changer (OLTC)</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition / Press.</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-oltc"></tbody>
-          </table>
+      <!-- 11. Terminal Box Checking -->
+      <div class="section-banner">• Terminal Box Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-terminal-box"></tbody>
+      </table>
 
-          <!-- 15. Local Control Panel Operation -->
-          <div class="section-banner">• Local Control Panel Operation</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-local-control"></tbody>
-          </table>
-        </div>
+      <!-- 12. All Bolt and Nut Connection Checking -->
+      <div class="section-banner">• Bolt and Nut Connection Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-bolt-nut"></tbody>
+      </table>
 
-        <!-- Right Column: Conclusion, Remarks & Photos -->
-        <div>
-          <!-- 16. Visual Inspection Conclusion Result -->
-          <div class="section-banner">• Visual Inspection Conclusion Result</div>
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th style="width: 44%;">Inspection Item</th>
-                <th style="width: 24%; text-align: center;">Condition</th>
-                <th style="width: 32%;">Remark</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-conclusion"></tbody>
-          </table>
+      <!-- 13. Cooling System Operation -->
+      <div class="section-banner">• Cooling System Operation</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-cooling-system"></tbody>
+      </table>
 
-          <!-- 17. Others & Remarks -->
-          <div class="section-banner">• Others & Remarks</div>
-          <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; min-height: 42px; font-size: 9px; line-height: 1.35;" id="remarks-box">
-            -
-          </div>
+      <!-- 14. OLTC & Pressure Records -->
+      <div class="section-banner">• On-Load Tap Changer (OLTC)</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition / Press.</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-oltc"></tbody>
+      </table>
 
-          <!-- 18. Inspection Photos Attachment -->
-          <div class="section-banner" id="photo-section-banner">• Inspection Photos Attachment</div>
-          <div class="photo-grid" id="photo-grid">
-            <!-- Photos dynamically rendered if present -->
-          </div>
-        </div>
+      <!-- 15. Local Control Panel Operation -->
+      <div class="section-banner">• Local Control Panel Operation</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-local-control"></tbody>
+      </table>
+
+      <!-- 16. Visual Inspection Conclusion Result -->
+      <div class="section-banner">• Visual Inspection Conclusion Result</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 44%;">Inspection Item</th>
+            <th style="width: 18%; text-align: center;">Condition</th>
+            <th style="width: 38%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-conclusion"></tbody>
+      </table>
+
+      <!-- 17. Others & Remarks -->
+      <div class="section-banner">• Others &amp; Remarks</div>
+      <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; min-height: 42px; font-size: 9px; line-height: 1.35; margin-bottom: 6px;" id="remarks-box">
+        -
+      </div>
+
+      <!-- 18. Inspection Photos Attachment -->
+      <div class="section-banner" id="photo-section-banner">• Inspection Photos Attachment</div>
+      <div class="photo-grid" id="photo-grid">
+        <!-- Photos dynamically rendered if present -->
       </div>
 
       <!-- SIGNATURES / APPROVAL (Page 3) -->
