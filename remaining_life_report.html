@@ -617,7 +617,7 @@
             <th>Furan 2-FAL Concentration</th>
             <td id="base-furan">-</td>
             <th>Initial Paper DP (DP₀)</th>
-            <td>1,000 (New Kraft Paper)</td>
+            <td style="font-weight: 700; color: #1e3a8a;">1,000 (New Kraft Paper)</td>
           </tr>
           <tr>
             <th>Current Estimated DP (DPt)</th>
@@ -628,12 +628,12 @@
         </tbody>
       </table>
 
-      <!-- 3. STACKED CHARTS (Cut off at 2125) -->
+      <!-- 3. STACKED CHARTS (DP0 = 1000 Baseline, Cut off at 2125) -->
       <div class="charts-container">
-        <!-- Chart 1: DP Degradation Curves (2025 to 2125) -->
+        <!-- Chart 1: DP Degradation Curves (2025 to 2125, DP0 = 1000) -->
         <div class="chart-box">
           <div class="chart-header">
-            <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
+            <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves, Baseline DP₀ = 1000)</span>
             <span style="font-size: 8.2px; color: #64748b; font-weight: 600;">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
           </div>
           <div class="chart-canvas-container">
@@ -690,8 +690,8 @@
         </div>
       </div>
 
-      <!-- 5. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Standard) -->
-      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Table 6-4)</div>
+      <!-- 5. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Standard from DP0 = 1000) -->
+      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Baseline DP₀ = 1000)</div>
       <table class="report-table">
         <thead>
           <tr>
@@ -706,8 +706,8 @@
           <tr>
             <td><strong>0.5–2.0% Moisture, O₂ &lt; 7000 ppm</strong> (Normal Operating)</td>
             <td style="text-align: center;">3.10 × 10⁻⁵ year⁻¹</td>
-            <td style="text-align: center;" id="scen-norm-300">~64 Years (2089)</td>
-            <td style="text-align: center;" id="scen-norm-200">~118 Years (2143)</td>
+            <td style="text-align: center;" id="scen-norm-300">~75.3 Years (2100)</td>
+            <td style="text-align: center;" id="scen-norm-200">~129.0 Years (2154)</td>
             <td style="text-align: center;"><span class="status-badge status-normal">Optimal</span></td>
           </tr>
           <tr>
@@ -720,22 +720,22 @@
           <tr>
             <td><strong>0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
-            <td style="text-align: center;" id="scen-oxy-300">~35 Years (2060)</td>
-            <td style="text-align: center;" id="scen-oxy-200">~63 Years (2088)</td>
+            <td style="text-align: center;" id="scen-oxy-300">~39.1 Years (2064)</td>
+            <td style="text-align: center;" id="scen-oxy-200">~67.0 Years (2092)</td>
             <td style="text-align: center;"><span class="status-badge status-questionable">High O₂</span></td>
           </tr>
           <tr>
             <td><strong>&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
             <td style="text-align: center;">7.80 × 10⁻⁵ year⁻¹</td>
-            <td style="text-align: center;" id="scen-moist-300">~26 Years (2051)</td>
-            <td style="text-align: center;" id="scen-moist-200">~48 Years (2073)</td>
+            <td style="text-align: center;" id="scen-moist-300">~29.9 Years (2055)</td>
+            <td style="text-align: center;" id="scen-moist-200">~51.3 Years (2076)</td>
             <td style="text-align: center;"><span class="status-badge status-questionable">High H₂O</span></td>
           </tr>
           <tr>
             <td><strong>&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
             <td style="text-align: center;">1.20 × 10⁻⁴ year⁻¹</td>
-            <td style="text-align: center;" id="scen-sev-300">~15 Years (2040)</td>
-            <td style="text-align: center;" id="scen-sev-200">~28 Years (2053)</td>
+            <td style="text-align: center;" id="scen-sev-300">~19.4 Years (2044)</td>
+            <td style="text-align: center;" id="scen-sev-200">~33.3 Years (2058)</td>
             <td style="text-align: center;"><span class="status-badge status-unacceptable">Severe</span></td>
           </tr>
         </tbody>
@@ -1056,7 +1056,7 @@
       const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.0%';
       const oxygenStr = latestOil.O2 ? latestOil.O2 + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '< 7,000 ppm');
 
-      // Populate Baseline Operating Parameters Table
+      // Populate Baseline Parameters Table
       const elAge = document.getElementById('base-age');
       if (elAge) elAge.textContent = age + ' Years';
       const elMoist = document.getElementById('base-moisture');
@@ -1189,7 +1189,7 @@
         dpChartInstance.destroy();
       }
 
-      // X-Axis range from 2025 to 2125 (100-year horizon cut off at 2125)
+      // X-Axis range from 2025 to 2125 with baseline DP0 = 1000
       const years = [];
       const unitDP = [];
       const normalDP = [];
@@ -1199,6 +1199,7 @@
       const limit300 = [];
       const limit200 = [];
 
+      const dp0 = 1000;
       const kNorm = 0.0000310;
       const kHighO2 = 0.0000597;
       const kHighMoist = 0.0000780;
@@ -1208,13 +1209,13 @@
         years.push(y);
         const dt = y - 2025;
 
-        // Scenarios from start DP = 800 (representative paper sample)
-        normalDP.push(Math.max(50, Math.round(1 / (1 / 800 + kNorm * dt))));
-        highO2DP.push(Math.max(50, Math.round(1 / (1 / 800 + kHighO2 * dt))));
-        highMoistDP.push(Math.max(50, Math.round(1 / (1 / 800 + kHighMoist * dt))));
-        severeDP.push(Math.max(50, Math.round(1 / (1 / 800 + kSevere * dt))));
+        // All baseline scenario curves start at DP0 = 1000 in 2025
+        normalDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kNorm * dt))));
+        highO2DP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighO2 * dt))));
+        highMoistDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighMoist * dt))));
+        severeDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kSevere * dt))));
 
-        // Unit Trajectory
+        // Actual Unit Trajectory starts from unit's current DP
         unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
 
         limit300.push(300);
@@ -1237,7 +1238,7 @@
               tension: 0.15
             },
             {
-              label: '0.5-2.0% Moisture, O2 < 7000 ppm (Normal)',
+              label: '0.5-2.0% Moisture, O2 < 7000 ppm (Normal, DP0=1000)',
               data: normalDP,
               borderColor: '#1e293b',
               borderWidth: 1.6,
@@ -1245,7 +1246,7 @@
               tension: 0.15
             },
             {
-              label: '0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2)',
+              label: '0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2, DP0=1000)',
               data: highO2DP,
               borderColor: '#ea580c',
               borderWidth: 1.6,
@@ -1253,7 +1254,7 @@
               tension: 0.15
             },
             {
-              label: '> 2.0% Moisture, O2 < 7000 ppm (High Moisture)',
+              label: '> 2.0% Moisture, O2 < 7000 ppm (High Moisture, DP0=1000)',
               data: highMoistDP,
               borderColor: '#059669',
               borderWidth: 1.6,
@@ -1261,7 +1262,7 @@
               tension: 0.15
             },
             {
-              label: '> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation)',
+              label: '> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation, DP0=1000)',
               data: severeDP,
               borderColor: '#dc2626',
               borderWidth: 1.6,
