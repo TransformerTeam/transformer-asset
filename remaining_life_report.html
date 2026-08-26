@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remaining Life Assessment Report | GPSC</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- html2canvas Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-dark: rgba(255, 255, 255, 0.04);
+      --border-dark: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      --primary: #4f46e5;
+      --primary-hover: #6366f1;
+      --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+      --report-bg: #ffffff;
+      --report-text: #0f172a;
+      --report-border: #cbd5e1;
+      --report-primary: #1e3a8a;
+      --report-accent: #0284c7;
+    }
+
+    [data-theme="light"] {
+      --bg-dark: rgba(242, 242, 242, 0.95);
+      --panel-dark: #ffffff;
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top Control Bar */
+    .control-bar {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-dark);
+      padding: 10px 18px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      box-shadow: var(--glass-glow);
+    }
+
+    [data-theme="light"] .control-bar {
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .selector-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .selector-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .search-select {
+      background-color: rgba(30, 41, 59, 0.8);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      min-width: 290px;
+      transition: all 0.2s ease;
+    }
+
+    .search-select optgroup {
+      font-weight: 700;
+      color: #93c5fd;
+      background-color: #0f172a;
+    }
+
+    .search-select option {
+      font-weight: 400;
+      color: #ffffff;
+      background-color: #1e293b;
+    }
+
+    [data-theme="light"] .search-select {
+      background-color: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      color: #1e3a8a;
+      background-color: #f1f5f9;
+    }
+
+    [data-theme="light"] .search-select option {
+      color: #0f172a;
+      background-color: #ffffff;
+    }
+
+    .btn-action {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-dark);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Report Wrapper & Pages */
+    .report-wrapper {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .report-page {
+      background-color: var(--report-bg);
+      color: var(--report-text);
+      width: 100%;
+      border-radius: 8px;
+      padding: 20px 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      font-size: 9px;
+      line-height: 1.25;
+      position: relative;
+    }
+
+    /* Report Header */
+    .report-header-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--report-primary);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .report-title-group {
+      flex: 1;
+    }
+
+    .report-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--report-primary);
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .report-subtitle {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #dc2626;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .page-indicator {
+      display: inline-block;
+      padding: 1px 5px;
+      background: #e2e8f0;
+      color: #334155;
+      border-radius: 3px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .logo-container img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Standard Report Table Styling */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
+
+    .report-table th, 
+    .report-table td {
+      border: 1px solid var(--report-border);
+      padding: 2.5px 5px;
+      font-size: 8.5px;
+      line-height: 1.2;
+    }
+
+    .report-table th {
+      background-color: #f1f5f9;
+      color: var(--report-primary);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .section-banner {
+      background-color: var(--report-primary);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 2.5px 6px;
+      font-size: 8.8px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-top: 6px;
+      margin-bottom: 2px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-info {
+      font-size: 7.5px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #ffffff;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .status-normal {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .status-questionable {
+      background-color: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fde047;
+    }
+
+    .status-abnormal {
+      background-color: #ffedd5;
+      color: #ea580c;
+      border: 1px solid #fed7aa;
+    }
+
+    .status-unacceptable {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    /* KPI Summary Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 4px 0;
+    }
+
+    .kpi-card {
+      border: 1px solid var(--report-border);
+      border-radius: 4px;
+      padding: 5px 8px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .kpi-label {
+      font-size: 7.8px;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .kpi-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--report-primary);
+      margin-top: 1px;
+    }
+
+    .kpi-sub {
+      font-size: 7.5px;
+      color: #475569;
+      margin-top: 1px;
+    }
+
+    /* Chart Container */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .chart-box {
+      border: 1px solid var(--report-border);
+      border-radius: 4px;
+      padding: 6px;
+      background: #ffffff;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .chart-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--report-primary);
+    }
+
+    .chart-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 185px;
+    }
+
+    /* Formula & Technical Explanation Box */
+    .formula-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--report-primary);
+      padding: 5px 8px;
+      border-radius: 3px;
+      font-size: 8px;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .formula-title {
+      font-weight: 700;
+      color: var(--report-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .formula-math {
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      font-size: 9px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 3px 6px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 2px 0;
+      color: #1e293b;
+    }
+
+    /* Signatures Section */
+    .signature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      margin-bottom: 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    .signature-table th, .signature-table td {
+      border: 1px solid var(--report-border);
+      padding: 2.5px 5px;
+      font-size: 8.5px;
+      text-align: center;
+    }
+
+    .signature-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 2px 4px;
+    }
+
+    .sig-cell {
+      height: 28px;
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 4mm 6mm;
+      }
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .control-bar {
+        display: none !important;
+      }
+      .report-wrapper {
+        gap: 0 !important;
+        max-width: 100% !important;
+      }
+      .report-page {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 6px 12px !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        height: auto !important;
+      }
+      .report-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .signature-table {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Bar -->
+  <div class="control-bar">
+    <div class="selector-container">
+      <span class="selector-label"><i class="fa-solid fa-hourglass-half"></i> Transformer:</span>
+      <select id="transformer-select" class="search-select" onchange="loadReportBySerial(this.value)">
+        <!-- Dynamic Site-Grouped Options -->
+      </select>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i> Theme</button>
+      <button class="btn-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+      <button class="btn-action btn-primary" onclick="exportReportAsJPG()"><i class="fa-solid fa-file-image"></i> Export JPG</button>
+    </div>
+  </div>
+
+  <!-- Main Report Wrapper (2 Pages) -->
+  <div class="report-wrapper" id="report-wrapper">
+
+    <!-- ==========================================
+         PAGE 1: Executive Assessment, KPI Cards & Degradation Charts
+         ========================================== -->
+    <div class="report-page" id="page-1">
+      <!-- Header Section -->
+      <div class="report-header-grid">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+            <h1 class="report-title">Remaining Life Assessment Report</h1>
+            <span class="page-indicator">Page 1 of 2</span>
+            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-015, Rev.1</span>
+          </div>
+          <div class="report-subtitle">GPSC Transformer Asset Management • CIGRE 761 / IEEE Std C57.152 Standard</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- Standard Equipment Header Info Table -->
+      <div class="section-banner">
+        <span>• Transformer Identification &amp; Information</span>
+        <span class="badge-info">EMM-TR-F-015, Rev.1</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power Rating (MVA)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-power">-</td>
+          </tr>
+          <tr>
+            <th>Manufacture</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-manufacture">-</td>
+            <th>Voltage Rating (kV)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Fluid Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <th>Service Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 1. Executive Remaining Life & Risk Metrics Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Current Estimated DP</div>
+          <div class="kpi-val" id="kpi-current-dp" style="color: #1e3a8a;">-</div>
+          <div class="kpi-sub" id="kpi-dp-status">Insulation Status: -</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Est. Life to DP 300 (Warning)</div>
+          <div class="kpi-val" id="kpi-rem-dp300" style="color: #0284c7;">-</div>
+          <div class="kpi-sub" id="kpi-target-year-300">Target Year: -</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Est. Life to DP 200 (End of Life)</div>
+          <div class="kpi-val" id="kpi-rem-dp200" style="color: #ea580c;">-</div>
+          <div class="kpi-sub" id="kpi-target-year-200">Mechanical Limit: -</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Probability of Failure (PoF)</div>
+          <div class="kpi-val" id="kpi-pof-val" style="color: #15803d;">-</div>
+          <div class="kpi-sub" id="kpi-pof-risk">Risk Level: Low</div>
+        </div>
+      </div>
+
+      <!-- 2. Operating Environment & Insulation Ageing Baseline -->
+      <div class="section-banner">• Operating Environment &amp; Insulation Ageing Baseline</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 25%;">Service Age (Years)</th>
+            <td style="width: 25%; font-weight: 700;" id="base-age">-</td>
+            <th style="width: 25%;">Estimated Hotspot Temp. (Ths)</th>
+            <td style="width: 25%;" id="base-hotspot">98 °C (371.15 K)</td>
+          </tr>
+          <tr>
+            <th>Moisture in Paper (% FDS)</th>
+            <td id="base-moisture">-</td>
+            <th>Dissolved O2 in Oil</th>
+            <td id="base-oxygen">-</td>
+          </tr>
+          <tr>
+            <th>Furan 2-FAL Concentration</th>
+            <td id="base-furan">-</td>
+            <th>Initial Paper DP (DP0)</th>
+            <td>1,000 (New Kraft Paper)</td>
+          </tr>
+          <tr>
+            <th>Current Estimated DP (DPt)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" id="base-current-dp">-</td>
+            <th>Aging Rate Constant (k)</th>
+            <td style="font-weight: 700;" id="base-aging-k">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3. Dual Trend Analysis Charts -->
+      <div class="charts-grid">
+        <!-- Chart 1: DP Degradation Curves -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Degradation (DP Curves)</span>
+            <span style="font-size: 7.5px; color: #64748b;">SINTEF / CIGRE 761</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chart-dp-degradation"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Weibull PoF Curve -->
+        <div class="chart-box">
+          <div class="chart-header">
+            <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
+            <span style="font-size: 7.5px; color: #64748b;">Fleet Risk Curve</span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chart-weibull-pof"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Remaining Useful Life Evaluation Summary -->
+      <div class="section-banner">• Remaining Useful Life (RUL) &amp; Risk Evaluation Summary</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 28%;">Assessment Milestone</th>
+            <th style="width: 18%; text-align: center;">Critical DP Limit</th>
+            <th style="width: 18%; text-align: center;">Estimated Remaining Life</th>
+            <th style="width: 18%; text-align: center;">Projected Year</th>
+            <th style="width: 18%; text-align: center;">Risk Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>End of Life Warning Limit</strong> (Asset Caution)</td>
+            <td style="text-align: center; font-weight: 700; color: #ea580c;">DP = 300</td>
+            <td style="text-align: center; font-weight: 700;" id="row-rem-300">-</td>
+            <td style="text-align: center; font-weight: 700;" id="row-year-300">-</td>
+            <td style="text-align: center;"><span class="status-badge status-questionable">Medium Alert</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mechanical End of Life</strong> (Short-Circuit Risk)</td>
+            <td style="text-align: center; font-weight: 700; color: #dc2626;">DP = 200</td>
+            <td style="text-align: center; font-weight: 700;" id="row-rem-200">-</td>
+            <td style="text-align: center; font-weight: 700;" id="row-year-200">-</td>
+            <td style="text-align: center;"><span class="status-badge status-unacceptable">Critical Limit</span></td>
+          </tr>
+          <tr>
+            <td><strong>Current Asset Probability of Failure</strong> (PoF)</td>
+            <td style="text-align: center; font-weight: 700;">Weibull Model</td>
+            <td style="text-align: center; font-weight: 700;" id="row-pof-pct">-</td>
+            <td style="text-align: center; font-weight: 700;" id="row-current-year">2026</td>
+            <td style="text-align: center;"><span class="status-badge status-normal" id="badge-pof-risk">Low Risk</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SIGNATURES / APPROVAL (Page 1) -->
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ==========================================
+         PAGE 2: Mathematical Models, Scenario Analysis & Strategic Action Plan
+         ========================================== -->
+    <div class="report-page" id="page-2">
+      <!-- Header Section -->
+      <div class="report-header-grid">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+            <h1 class="report-title">Remaining Life Assessment Report</h1>
+            <span class="page-indicator">Page 2 of 2</span>
+            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-015, Rev.1</span>
+          </div>
+          <div class="report-subtitle">GPSC Transformer Asset Management • CIGRE 761 / IEEE Std C57.152 Standard</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- Standard Equipment Header Info Table -->
+      <div class="section-banner">
+        <span>• Transformer Identification &amp; Information</span>
+        <span class="badge-info">EMM-TR-F-015, Rev.1</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power Rating (MVA)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-power">-</td>
+          </tr>
+          <tr>
+            <th>Manufacture</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-manufacture">-</td>
+            <th>Voltage Rating (kV)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Fluid Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <th>Service Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 5. Technical Methodology & Standard Formulations -->
+      <div class="section-banner">• Technical Methodology &amp; Mathematical Formulation (CIGRE 761 / IEEE C57.152)</div>
+      
+      <div class="formula-box">
+        <div class="formula-title"><i class="fa-solid fa-atom"></i> 1. SINTEF Winding Ageing Model (Thermal-Chemical Kinetic Degradation)</div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div>Chain Scissions: <span class="formula-math">η = DP_new · [ A_Oxi · e^(-E_Oxi / RT) + A_Hyd · e^(-E_Hyd / RT) ] · t</span></div>
+          <div>Current DP: <span class="formula-math">DP_t = DP_new / (η + 1)</span></div>
+        </div>
+        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
+          • Parameters: <em>DP_new</em> = 1000, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol.<br>
+          • <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5% moisture), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-title"><i class="fa-solid fa-flask-vial"></i> 2. Indirect DP Estimation from Furan 2-FAL (Dominelli / CIGRE 761 Correlation)</div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div>Dominelli Correlation: <span class="formula-math">log₁₀(2-FAL_ppm) = 1.51 - 0.0035 · DP</span></div>
+          <div>Estimated DP: <span class="formula-math">DP = [ 1.51 - log₁₀(2-FAL_ppm) ] / 0.0035</span></div>
+        </div>
+        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
+          • Note: 2-FAL concentration is converted from ppb to ppm (e.g. 9.3 ppb = 0.0093 ppm) before logarithmic calculation.
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-title"><i class="fa-solid fa-chart-pie"></i> 3. Weibull Cumulative Probability of Failure (PoF) Fleet Risk Model</div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div>Weibull PoF Formula: <span class="formula-math">PoF(t) = 1 - e^[ -(t / α)^β ]</span></div>
+          <div>Aging Extrapolation: <span class="formula-math">DP_future = 1 / [ 1/DP_present + k_yearly · Δt ]</span></div>
+        </div>
+        <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
+          • Parameters: Characteristic life scale <em>α</em> = 40–45 years, shape parameter <em>β</em> = 2.0–4.0 (Wear-out aging phase bathtub curve).
+        </div>
+      </div>
+
+      <!-- 6. Sensitivity & Scenario Analysis Table -->
+      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Operational Scenario</th>
+            <th style="width: 20%; text-align: center;">Aging Rate (k)</th>
+            <th style="width: 20%; text-align: center;">Est. Years to DP 300</th>
+            <th style="width: 20%; text-align: center;">Est. Years to DP 200</th>
+            <th style="width: 15%; text-align: center;">Condition Profile</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Normal Condition</strong> (Dry paper &lt; 1%, O₂ &lt; 7000 ppm)</td>
+            <td style="text-align: center;">3.10 × 10⁻⁵ h⁻¹</td>
+            <td style="text-align: center;">48.5 Years</td>
+            <td style="text-align: center;">72.0 Years</td>
+            <td style="text-align: center;"><span class="status-badge status-normal">Optimal</span></td>
+          </tr>
+          <tr>
+            <td><strong>Current Unit Operating Trajectory</strong></td>
+            <td style="text-align: center; font-weight: 700;" id="scen-curr-k">-</td>
+            <td style="text-align: center; font-weight: 700;" id="scen-curr-300">-</td>
+            <td style="text-align: center; font-weight: 700;" id="scen-curr-200">-</td>
+            <td style="text-align: center;"><span class="status-badge status-normal" id="scen-curr-badge">Current</span></td>
+          </tr>
+          <tr>
+            <td><strong>Aggressive Condition</strong> (Moisture 1.5–2.0%, High Load)</td>
+            <td style="text-align: center;">5.97 × 10⁻⁵ h⁻¹</td>
+            <td style="text-align: center;">26.0 Years</td>
+            <td style="text-align: center;">42.0 Years</td>
+            <td style="text-align: center;"><span class="status-badge status-questionable">Aggressive</span></td>
+          </tr>
+          <tr>
+            <td><strong>Severe Degradation</strong> (Moisture &gt; 2.0%, O₂ &gt; 7000 ppm)</td>
+            <td style="text-align: center;">1.20 × 10⁻⁴ h⁻¹</td>
+            <td style="text-align: center;">12.5 Years</td>
+            <td style="text-align: center;">22.0 Years</td>
+            <td style="text-align: center;"><span class="status-badge status-unacceptable">Severe</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 7. Strategic Asset Management & Engineering Action Plan -->
+      <div class="section-banner">• Engineering Recommendations &amp; Strategic Asset Action Plan</div>
+      <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; font-size: 8.5px; line-height: 1.35; margin-bottom: 4px;" id="action-plan-box">
+        • <strong>Short-term Actions (0–12 Months):</strong> Perform annual DGA and Furan 2-FAL screening. If moisture in oil indicates paper moisture &gt; 1.5%, plan for online oil dehydration or vacuum hot oil purification to retard hydrolysis.<br>
+        • <strong>Medium-term Actions (1–3 Years):</strong> Maintain transformer cooling system (radiator fans and oil pumps) to restrict winding hotspot temperature below 95 °C under peak loading.<br>
+        • <strong>Long-term Asset Planning (3–5+ Years):</strong> Review Capital Expenditure (CAPEX) fleet replacement horizon prior to reaching the mechanical end-of-life threshold (DP &lt; 200).
+      </div>
+
+      <!-- SIGNATURES / APPROVAL (Page 2) -->
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+
+  <script>
+    let mtOilDataList = [];
+    let dpChartInstance = null;
+    let pofChartInstance = null;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      try {
+        const resp = await fetch('TestData/MTOilData.csv');
+        const csvTxt = await resp.text();
+        mtOilDataList = parseCSV(csvTxt);
+      } catch (e) {
+        console.error('Failed to load MTOilData.csv', e);
+      }
+
+      populateTransformerSelect();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const serialParam = urlParams.get('serial');
+      if (serialParam) {
+        document.getElementById('transformer-select').value = serialParam;
+        loadReportBySerial(serialParam);
+      } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
+        loadReportBySerial(HEALTH_INDEX_DATA[0].serial);
+      }
+    });
+
+    function parseCSV(text) {
+      if (!text) return [];
+      const clean = text.replace(/^\uFEFF/, '');
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < clean.length; i++) {
+        const char = clean[i];
+        const nextChar = clean[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(field.trim());
+          field = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') {
+            i++;
+          }
+          row.push(field.trim());
+          field = '';
+          if (row.some(f => f.length > 0)) {
+            rows.push(row);
+          }
+          row = [];
+        } else {
+          field += char;
+        }
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        if (row.some(f => f.length > 0)) {
+          rows.push(row);
+        }
+      }
+
+      if (rows.length < 2) return [];
+      const headers = rows[0].map(h => h.replace(/^\uFEFF/, '').trim());
+      const results = [];
+
+      for (let r = 1; r < rows.length; r++) {
+        const rData = rows[r];
+        const entry = {};
+        headers.forEach((h, idx) => {
+          if (h) entry[h] = rData[idx] !== undefined ? rData[idx] : '';
+        });
+        const sNo = entry.serial || entry.Serial_no || entry.Serial_No || entry['Serial No'] || entry.serial_no || entry.SERIAL;
+        if (sNo && typeof sNo === 'string' && sNo.trim()) {
+          const cleanSerial = sNo.trim();
+          if (!cleanSerial.startsWith('-') && !cleanSerial.startsWith('*') && cleanSerial.length >= 3 && cleanSerial.length <= 45) {
+            entry.serial = cleanSerial;
+            results.push(entry);
+          }
+        }
+      }
+      return results;
+    }
+
+    function matchSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA));
+    }
+
+    function populateTransformerSelect() {
+      const selectEl = document.getElementById('transformer-select');
+      if (!selectEl) return;
+      selectEl.innerHTML = '';
+      
+      const addedSerials = new Set();
+      const siteGroups = {};
+
+      const addUnit = (sn, name, site) => {
+        if (!sn) return;
+        const cleanSN = String(sn).trim();
+        const key = cleanSN.toUpperCase();
+        if (addedSerials.has(key)) return;
+        addedSerials.add(key);
+
+        const sSite = (site && String(site).trim() && String(site).trim() !== '-') ? String(site).trim() : 'Other Sites';
+        if (!siteGroups[sSite]) {
+          siteGroups[sSite] = [];
+        }
+        siteGroups[sSite].push({
+          serial: cleanSN,
+          name: name || cleanSN,
+          site: sSite
+        });
+      };
+
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        HEALTH_INDEX_DATA.forEach(meta => {
+          const s = meta.serial || meta['Serial No'] || meta['Serial No.'];
+          if (s) {
+            const name = meta.name || meta['Equipment Name'] || s;
+            const site = meta.site || meta.SITE || '';
+            addUnit(s, name, site);
+          }
+        });
+      }
+
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        TR_DATA.forEach(tr => {
+          const s = tr.SERIAL_NO || tr.serial || tr.Serial_No;
+          if (s) {
+            const name = tr.EQUIPMENT_NAME || tr.NAME || s;
+            const site = tr.SITE || tr.site || '';
+            addUnit(s, name, site);
+          }
+        });
+      }
+
+      const sortedSites = Object.keys(siteGroups).sort((a, b) => {
+        if (a === 'Other Sites') return 1;
+        if (b === 'Other Sites') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sortedSites.forEach(siteName => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `Site: ${siteName}`;
+
+        const items = siteGroups[siteName].sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          const comp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          if (comp !== 0) return comp;
+          return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        items.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+          optgroup.appendChild(opt);
+        });
+
+        selectEl.appendChild(optgroup);
+      });
+    }
+
+    function formatDateToDdMmmYyyy(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === 'N/A' || dateStr === 'null') return '-';
+      const str = String(dateStr).trim();
+      if (!str || str === '-') return '-';
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const parsed = new Date(str);
+      if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+        return String(parsed.getDate()).padStart(2, '0') + '-' + months[parsed.getMonth()] + '-' + parsed.getFullYear();
+      }
+      return str;
+    }
+
+    function calcDominelliDP(furanPpb) {
+      if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
+      const furanPpm = furanPpb / 1000;
+      const logFuran = Math.log10(furanPpm);
+      const dp = (1.51 - logFuran) / 0.0035;
+      return Math.max(100, Math.min(1200, Math.round(dp)));
+    }
+
+    function calcPoF(ageYears, alpha = 42.5, beta = 3.0) {
+      if (ageYears <= 0) return 0;
+      const pof = 1 - Math.exp(-Math.pow(ageYears / alpha, beta));
+      return Math.min(100, Math.max(0, pof * 100));
+    }
+
+    function loadReportBySerial(serial) {
+      // Find metadata
+      let meta = {};
+      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+        meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'], serial)) || {};
+      }
+
+      // Find oil records
+      let oilRecords = mtOilDataList.filter(x => matchSerial(x.serial, serial));
+      if (oilRecords && oilRecords.length > 0) {
+        oilRecords.sort((a, b) => {
+          const dA = new Date(a.Date || a.date);
+          const dB = new Date(b.Date || b.date);
+          return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+        });
+      }
+      const latestOil = oilRecords.length > 0 ? oilRecords[0] : {};
+
+      // Standard Header Metadata Binding
+      const name = meta.name || meta['Equipment Name'] || latestOil.serial || serial;
+      const sNo = meta.serial || meta['Serial No'] || latestOil.serial || serial;
+      const site = meta.site || meta.SITE || '-';
+      const power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
+      const manuf = meta.manufacture || meta['Manufacture'] || latestOil.COMP2 || '-';
+      const voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
+      const fluid = meta.fluidType || meta['Fluid Type'] || 'Mineral oil';
+      const service = meta.serviceType || meta['Service Type'] || '-';
+
+      const powerStr = (power && power !== '-') ? Number(power).toLocaleString() + ' MVA' : '-';
+
+      document.querySelectorAll('.val-meta-name').forEach(el => el.textContent = name);
+      document.querySelectorAll('.val-meta-serial').forEach(el => el.textContent = sNo);
+      document.querySelectorAll('.val-meta-manufacture').forEach(el => el.textContent = manuf);
+      document.querySelectorAll('.val-meta-site').forEach(el => el.textContent = site);
+      document.querySelectorAll('.val-meta-power').forEach(el => el.textContent = powerStr);
+      document.querySelectorAll('.val-meta-voltage').forEach(el => el.textContent = voltage);
+      document.querySelectorAll('.val-meta-service').forEach(el => el.textContent = service);
+      document.querySelectorAll('.val-meta-fluid').forEach(el => el.textContent = fluid);
+
+      // Extract Aging & Condition Inputs
+      let age = parseFloat(meta.serviceAge || meta['Service Age (Year)'] || meta.age);
+      if (isNaN(age) || age <= 0) age = 20;
+
+      let furanPpb = parseFloat(latestOil.Furan_Analysis || meta.Furan || 9.3);
+      if (isNaN(furanPpb)) furanPpb = 9.3;
+
+      let dpVal = parseFloat(meta.estimatedDP || meta['Estimated DP (From Furan)']);
+      if (isNaN(dpVal) || dpVal <= 0) {
+        dpVal = calcDominelliDP(furanPpb) || 950;
+      }
+
+      const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.1%';
+      const oxygenStr = latestOil.O2 ? latestOil.O2 + ' ppm' : '< 7,000 ppm';
+
+      document.getElementById('base-age').textContent = age + ' Years';
+      document.getElementById('base-moisture').textContent = moistureStr.includes('%') ? moistureStr : moistureStr + '%';
+      document.getElementById('base-oxygen').textContent = oxygenStr;
+      document.getElementById('base-furan').textContent = furanPpb + ' ppb (' + (furanPpb / 1000).toFixed(4) + ' ppm)';
+      document.getElementById('base-current-dp').textContent = Math.round(dpVal);
+
+      // Calculate Aging Rate k
+      // k_yearly = (1/DP_t - 1/DP_0) / age
+      const dp0 = 1000;
+      let kYearly = 0.00045;
+      if (age > 0 && dpVal < dp0) {
+        kYearly = (1 / dpVal - 1 / dp0) / age;
+      }
+      if (kYearly <= 0) kYearly = 0.00035;
+
+      const kScientific = kYearly.toExponential(2);
+      document.getElementById('base-aging-k').textContent = `${kScientific} year⁻¹`;
+
+      // Calculate Remaining Years
+      // deltaT = (1/targetDP - 1/currentDP) / k_yearly
+      const targetDP300 = 300;
+      const targetDP200 = 200;
+      const currentYear = new Date().getFullYear();
+
+      let rem300 = (dpVal > targetDP300) ? (1 / targetDP300 - 1 / dpVal) / kYearly : 0;
+      let rem200 = (dpVal > targetDP200) ? (1 / targetDP200 - 1 / dpVal) / kYearly : 0;
+
+      rem300 = Math.round(rem300 * 10) / 10;
+      rem200 = Math.round(rem200 * 10) / 10;
+
+      const year300 = Math.round(currentYear + rem300);
+      const year200 = Math.round(currentYear + rem200);
+
+      const pofVal = calcPoF(age);
+      const pofStr = pofVal.toFixed(1) + '%';
+
+      // KPI Cards
+      document.getElementById('kpi-current-dp').textContent = Math.round(dpVal);
+      let dpStatusText = 'Healthy';
+      let dpStatusColor = '#15803d';
+      if (dpVal < 250) {
+        dpStatusText = 'Critical End of Life';
+        dpStatusColor = '#b91c1c';
+      } else if (dpVal < 400) {
+        dpStatusText = 'Extensive Degradation';
+        dpStatusColor = '#ea580c';
+      } else if (dpVal < 550) {
+        dpStatusText = 'Advanced Ageing';
+        dpStatusColor = '#a16207';
+      } else if (dpVal < 700) {
+        dpStatusText = 'Moderate Ageing';
+        dpStatusColor = '#0284c7';
+      }
+      document.getElementById('kpi-dp-status').textContent = `Insulation: ${dpStatusText}`;
+      document.getElementById('kpi-dp-status').style.color = dpStatusColor;
+
+      document.getElementById('kpi-rem-dp300').textContent = `${rem300} Years`;
+      document.getElementById('kpi-target-year-300').textContent = `Target Year: ${year300}`;
+
+      document.getElementById('kpi-rem-dp200').textContent = `${rem200} Years`;
+      document.getElementById('kpi-target-year-200').textContent = `Critical Year: ${year200}`;
+
+      document.getElementById('kpi-pof-val').textContent = pofStr;
+      let pofRisk = 'Low Risk (<20%)';
+      let pofColor = '#15803d';
+      let pofBadgeClass = 'status-normal';
+      if (pofVal >= 50) {
+        pofRisk = 'High Risk (≥50%)';
+        pofColor = '#b91c1c';
+        pofBadgeClass = 'status-unacceptable';
+      } else if (pofVal >= 20) {
+        pofRisk = 'Medium Risk (20%-50%)';
+        pofColor = '#a16207';
+        pofBadgeClass = 'status-questionable';
+      }
+      document.getElementById('kpi-pof-risk').textContent = pofRisk;
+      document.getElementById('kpi-pof-risk').style.color = pofColor;
+
+      // Table Rows (Page 1)
+      document.getElementById('row-rem-300').textContent = `${rem300} Years`;
+      document.getElementById('row-year-300').textContent = `Year ${year300}`;
+      document.getElementById('row-rem-200').textContent = `${rem200} Years`;
+      document.getElementById('row-year-200').textContent = `Year ${year200}`;
+      document.getElementById('row-pof-pct').textContent = pofStr;
+      document.getElementById('badge-pof-risk').className = `status-badge ${pofBadgeClass}`;
+      document.getElementById('badge-pof-risk').textContent = pofRisk.split(' ')[0] + ' Risk';
+
+      // Table Rows (Page 2 Scenario)
+      document.getElementById('scen-curr-k').textContent = `${kScientific} year⁻¹`;
+      document.getElementById('scen-curr-300').textContent = `${rem300} Years`;
+      document.getElementById('scen-curr-200').textContent = `${rem200} Years`;
+
+      // Render Charts
+      renderDegradationChart(dpVal, kYearly, currentYear);
+      renderWeibullChart(age, currentYear);
+
+      // Signatures
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined' || s === 'N/A') ? '' : s;
+      };
+
+      const testedName = cleanSig(latestOil.Name1 || latestOil.TESTED_BY || latestOil.Tested_by);
+      const reviewedName = cleanSig(latestOil.Name2 || latestOil.WITNESSED_BY || latestOil.Witnessed_by);
+      const approvedName = cleanSig(latestOil.Name3 || latestOil.APPROVED_BY || latestOil.Approved_by);
+
+      const testedComp = cleanSig(latestOil.COMP1 || 'Hitachi Energy');
+      const reviewedComp = cleanSig(latestOil.COMP2 || 'GPSC');
+      const approvedComp = cleanSig(latestOil.COMP3 || 'GPSC');
+
+      const dStr = formatDateToDdMmmYyyy(latestOil.Date || latestOil.date || meta.Date);
+      const dateVal = (dStr && dStr !== '-') ? 'Date: ' + dStr : '';
+
+      document.querySelectorAll('.val-resp-name-tested').forEach(el => el.textContent = testedName);
+      document.querySelectorAll('.val-resp-name-reviewed').forEach(el => el.textContent = reviewedName);
+      document.querySelectorAll('.val-resp-name-approved').forEach(el => el.textContent = approvedName);
+
+      document.querySelectorAll('.val-resp-comp-tested').forEach(el => el.textContent = testedComp);
+      document.querySelectorAll('.val-resp-comp-reviewed').forEach(el => el.textContent = reviewedComp);
+      document.querySelectorAll('.val-resp-comp-approved').forEach(el => el.textContent = approvedComp);
+
+      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = testedName ? dateVal : '');
+      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = reviewedName ? dateVal : '');
+      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = approvedName ? dateVal : '');
+    }
+
+    function renderDegradationChart(currentDP, currentK, baseYear) {
+      const ctx = document.getElementById('chart-dp-degradation');
+      if (!ctx) return;
+
+      if (dpChartInstance) {
+        dpChartInstance.destroy();
+      }
+
+      const years = [];
+      const normalDP = [];
+      const aggDP = [];
+      const sevDP = [];
+      const unitDP = [];
+      const limit300 = [];
+      const limit200 = [];
+
+      const kNormal = 0.00031;
+      const kAgg = 0.00060;
+      const kSev = 0.00120;
+
+      for (let y = baseYear; y <= 2100; y += 2) {
+        years.push(y);
+        const dt = y - baseYear;
+
+        // Benchmark starting from 850 in base year
+        normalDP.push(Math.round(1 / (1 / 850 + kNormal * dt)));
+        aggDP.push(Math.round(1 / (1 / 850 + kAgg * dt)));
+        sevDP.push(Math.max(50, Math.round(1 / (1 / 850 + kSev * dt))));
+
+        // Unit DP trajectory starting from currentDP
+        unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
+
+        limit300.push(300);
+        limit200.push(200);
+      }
+
+      dpChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: 'Unit Trajectory',
+              data: unitDP,
+              borderColor: '#4f46e5',
+              backgroundColor: '#4f46e5',
+              borderWidth: 2.5,
+              pointRadius: (ctx) => ctx.dataIndex === 0 ? 5 : 0,
+              pointBackgroundColor: '#4f46e5',
+              tension: 0.2
+            },
+            {
+              label: 'Normal (k=3.10e-5)',
+              data: normalDP,
+              borderColor: '#0f172a',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2
+            },
+            {
+              label: 'Aggressive (k=5.97e-5)',
+              data: aggDP,
+              borderColor: '#ea580c',
+              borderWidth: 1.5,
+              pointRadius: 0,
+              tension: 0.2
+            },
+            {
+              label: 'Severe (k=1.20e-4)',
+              data: sevDP,
+              borderColor: '#dc2626',
+              borderWidth: 1.5,
+              borderDash: [4, 4],
+              pointRadius: 0,
+              tension: 0.2
+            },
+            {
+              label: 'End of Life (DP=300)',
+              data: limit300,
+              borderColor: '#f97316',
+              borderWidth: 1.2,
+              borderDash: [2, 2],
+              pointRadius: 0
+            },
+            {
+              label: 'Mechanical Limit (DP=200)',
+              data: limit200,
+              borderColor: '#b91c1c',
+              borderWidth: 1.2,
+              borderDash: [2, 2],
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 8,
+                font: { size: 7.5 },
+                padding: 4
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Calendar Year', font: { size: 8 } },
+              ticks: { font: { size: 7.5 } },
+              grid: { color: '#f1f5f9' }
+            },
+            y: {
+              min: 0,
+              max: 1000,
+              title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 8 } },
+              ticks: { font: { size: 7.5 }, stepSize: 200 },
+              grid: { color: '#f1f5f9' }
+            }
+          }
+        }
+      });
+    }
+
+    function renderWeibullChart(currentAge, baseYear) {
+      const ctx = document.getElementById('chart-weibull-pof');
+      if (!ctx) return;
+
+      if (pofChartInstance) {
+        pofChartInstance.destroy();
+      }
+
+      const years = [];
+      const pofData = [];
+      const unitPointData = [];
+
+      for (let y = baseYear; y <= 2100; y += 2) {
+        years.push(y);
+        const ageAtY = currentAge + (y - baseYear);
+        const pof = calcPoF(ageAtY);
+        pofData.push(pof);
+
+        if (y === baseYear) {
+          unitPointData.push(pof);
+        } else {
+          unitPointData.push(null);
+        }
+      }
+
+      pofChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: 'Weibull PoF Model',
+              data: pofData,
+              borderColor: '#1e293b',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              fill: true,
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.3
+            },
+            {
+              label: 'Current Operating Point',
+              data: unitPointData,
+              borderColor: '#dc2626',
+              backgroundColor: '#dc2626',
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 8,
+                font: { size: 7.5 },
+                padding: 4
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Calendar Year', font: { size: 8 } },
+              ticks: { font: { size: 7.5 } },
+              grid: { color: '#f1f5f9' }
+            },
+            y: {
+              min: 0,
+              max: 100,
+              title: { display: true, text: 'Probability of Failure (%)', font: { size: 8 } },
+              ticks: { font: { size: 7.5 }, stepSize: 20 },
+              grid: { color: '#f1f5f9' }
+            }
+          }
+        }
+      });
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    async function exportReportAsJPG() {
+      const selectEl = document.getElementById('transformer-select');
+      const serial = selectEl ? selectEl.value : 'Remaining_Life_Report';
+      const pages = document.querySelectorAll('.report-page');
+
+      for (let i = 0; i < pages.length; i++) {
+        const pageEl = pages[i];
+        const pageNo = i + 1;
+        const filename = 'Remaining_Life_Assessment_' + serial + '_Page' + pageNo + '.jpg';
+
+        const originalBoxShadow = pageEl.style.boxShadow;
+        const originalBorderRadius = pageEl.style.borderRadius;
+        pageEl.style.boxShadow = 'none';
+        pageEl.style.borderRadius = '0';
+
+        try {
+          const canvas = await html2canvas(pageEl, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+
+          pageEl.style.boxShadow = originalBoxShadow;
+          pageEl.style.borderRadius = originalBorderRadius;
+
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = canvas.toDataURL('image/jpeg', 0.95);
+          link.click();
+          await new Promise(r => setTimeout(r, 400));
+        } catch (err) {
+          console.error('Export page ' + pageNo + ' failed:', err);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
