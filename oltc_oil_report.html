@@ -617,11 +617,11 @@
           <table class="report-table info-table">
             <tr>
               <td class="lbl" style="width: 40%;">Test Instrument / Lab:</td>
-              <td class="val info-instrument" id="info-instrument">Hitachi Lab / BAUR DTA</td>
+              <td class="val info-instrument" id="info-instrument">-</td>
             </tr>
             <tr>
               <td class="lbl">Serial Number:</td>
-              <td class="val info-instrument-serial" id="info-instrument-serial">12M</td>
+              <td class="val info-instrument-serial" id="info-instrument-serial">-</td>
             </tr>
             <tr>
               <td class="lbl">Calibration Date:</td>
@@ -994,11 +994,11 @@
           <table class="report-table info-table">
             <tr>
               <td class="lbl" style="width: 40%;">Test Instrument / Lab:</td>
-              <td class="val info-instrument">Hitachi Lab / BAUR DTA</td>
+              <td class="val info-instrument">-</td>
             </tr>
             <tr>
               <td class="lbl">Serial Number:</td>
-              <td class="val info-instrument-serial">12M</td>
+              <td class="val info-instrument-serial">-</td>
             </tr>
             <tr>
               <td class="lbl">Calibration Date:</td>
@@ -1516,27 +1516,27 @@
         if (extraInfo.hv && extraInfo.lv) voltage = `${extraInfo.hv} / ${extraInfo.lv} kV`;
       }
 
-      // OLTC Asset information from OLTCData.csv
+      // OLTC Asset information from OLTCData.csv (strictly actual data)
       const oltcAsset = oltcAssetDataList.find(x => matchSerial(x.parentSerialNo || x.serial || x.Serial_No, serial));
       if (oltcAsset) {
-        setElText('oltc-mfg', oltcAsset.oltcManufacturer || 'MR / Reinhausen');
-        setElText('oltc-model', oltcAsset.oltcModelType || 'Oil Type');
-        setElText('oltc-serial', oltcAsset.oltcSerialNo || '-');
-        setElText('oltc-motor', oltcAsset.motorDrive || 'ED-S');
-        setElText('oltc-counter', oltcAsset.counterOperated ? Number(oltcAsset.counterOperated).toLocaleString() : '12,450');
-        setElText('oltc-taps', oltcAsset.tapNo ? `${oltcAsset.tapNo} Positions` : '17 Positions');
-        setElText('oltc-resistor', oltcAsset.transitionResistorOhm ? `${oltcAsset.transitionResistorOhm} Ω` : '3.8 Ω');
-        setElText('oltc-maint', oltcAsset.maintenanceTime || oltcAsset.contactLife || 'Every 7 Years / 100,000 Ops');
+        setElText('oltc-mfg', oltcAsset.oltcManufacturer || oltcAsset.Manufacturer || '-');
+        setElText('oltc-model', oltcAsset.oltcModelType || oltcAsset.Model || '-');
+        setElText('oltc-serial', oltcAsset.oltcSerialNo || oltcAsset.Serial_No || '-');
+        setElText('oltc-motor', oltcAsset.motorDrive || oltcAsset.Motor_Drive || '-');
+        setElText('oltc-counter', oltcAsset.counterOperated ? Number(oltcAsset.counterOperated).toLocaleString() : '-');
+        setElText('oltc-taps', oltcAsset.tapNo ? `${oltcAsset.tapNo} Positions` : '-');
+        setElText('oltc-resistor', oltcAsset.transitionResistorOhm ? `${oltcAsset.transitionResistorOhm} Ω` : '-');
+        setElText('oltc-maint', oltcAsset.maintenanceTime || oltcAsset.contactLife || '-');
         oltcSummary = `${oltcAsset.oltcManufacturer || ''} ${oltcAsset.oltcModelType || ''}`.trim() || 'OLTC';
       } else {
-        setElText('oltc-mfg', 'MR / Reinhausen');
-        setElText('oltc-model', 'Oil Type');
+        setElText('oltc-mfg', '-');
+        setElText('oltc-model', '-');
         setElText('oltc-serial', '-');
-        setElText('oltc-motor', 'ED-S');
-        setElText('oltc-counter', '14,820');
-        setElText('oltc-taps', '17 Positions');
-        setElText('oltc-resistor', '3.8 Ω');
-        setElText('oltc-maint', 'Every 7 Years / 100,000 Ops');
+        setElText('oltc-motor', '-');
+        setElText('oltc-counter', '-');
+        setElText('oltc-taps', '-');
+        setElText('oltc-resistor', '-');
+        setElText('oltc-maint', '-');
       }
 
       // Populate Section 1
@@ -1549,38 +1549,17 @@
       setElText('info-vector', vector);
       setElText('info-oltc-summary', oltcSummary);
 
-      // Section 2 & 3: Instrument & Environment
-      setElText('info-instrument', (record && record.Test_Instrument) ? record.Test_Instrument : 'Hitachi Lab / BAUR DTA');
-      setElText('info-instrument-serial', (record && record.Instrument_Serial_No) ? record.Instrument_Serial_No : '12M');
-      setElText('info-instrument-calib', (record && record.Calibration_Date) ? formatDate_ddMmmyyyy(record.Calibration_Date) : 'Annual Lab Validated');
-      setElText('env-ambient', (record && record.Ambient_Temp) ? `${record.Ambient_Temp} °C` : '32.0 °C');
-      setElText('env-oil', (record && record.Oil_Temp) ? `${record.Oil_Temp} °C` : '42.0 °C');
-      setElText('env-winding', (record && record.Winding_Temp) ? `${record.Winding_Temp} °C` : '45.0 °C');
-      setElText('env-humidity', (record && record.Humidity) ? `${record.Humidity}%` : '55%');
+      // Section 2 & 3: Instrument & Environment (strictly actual data)
+      setElText('info-instrument', (record && (record.Test_Instrument || record.Instrument)) ? (record.Test_Instrument || record.Instrument) : '-');
+      setElText('info-instrument-serial', (record && (record.Instrument_Serial_No || record.Serial_Instrument)) ? (record.Instrument_Serial_No || record.Serial_Instrument) : '-');
+      setElText('info-instrument-calib', (record && record.Calibration_Date) ? formatDate_ddMmmyyyy(record.Calibration_Date) : '-');
+      setElText('env-ambient', (record && record.Ambient_Temp) ? `${record.Ambient_Temp} °C` : '-');
+      setElText('env-oil', (record && record.Oil_Temp) ? `${record.Oil_Temp} °C` : '-');
+      setElText('env-winding', (record && record.Winding_Temp) ? `${record.Winding_Temp} °C` : '-');
+      setElText('env-humidity', (record && record.Humidity) ? `${record.Humidity}%` : '-');
 
       // Multi-Cycle Records (Up to 4: Current, Prev1, Prev2, Prev3)
       let recs = (allRecords && allRecords.length > 0) ? allRecords : (record ? [record] : []);
-      
-      // Fallback synthetic baseline if unit has no historical tests in CSV
-      if (recs.length === 0) {
-        recs = [{
-          date: '2025-11-17',
-          A_BD: '85.2',
-          A_WC: '12.5',
-          A_PF_25: '0.045',
-          A_PF_100: '0.850',
-          A_H2: '24',
-          A_CH4: '18',
-          A_C2H2: '8400',
-          A_C2H4: '35',
-          A_C2H6: '12',
-          A_C3H6: '4',
-          A_C3H8: '2',
-          A_CO: '45',
-          A_CO2: '380',
-          A_Test_Result: 'NORMAL'
-        }];
-      }
 
       const r0 = recs[0] || null;
       const r1 = recs[1] || null;
@@ -1611,7 +1590,7 @@
       const wc0 = getVal(r0, 'WC'); const wc1 = getVal(r1, 'WC'); const wc2 = getVal(r2, 'WC'); const wc3 = getVal(r3, 'WC');
       const pf25_0 = getVal(r0, 'PF_25'); const pf25_1 = getVal(r1, 'PF_25'); const pf25_2 = getVal(r2, 'PF_25'); const pf25_3 = getVal(r3, 'PF_25');
       const pf100_0 = getVal(r0, 'PF_100'); const pf100_1 = getVal(r1, 'PF_100'); const pf100_2 = getVal(r2, 'PF_100'); const pf100_3 = getVal(r3, 'PF_100');
-      const st0 = getVal(r0, 'Test_Result') || (parseFloat(bd0) >= 40 && parseFloat(wc0) <= 20 ? 'NORMAL' : 'NORMAL');
+      const st0 = getVal(r0, 'Test_Result') || (parseFloat(bd0) >= 40 && parseFloat(wc0) <= 20 ? 'NORMAL' : '-');
 
       setElText('val-bd-curr', formatNum(bd0, 1));
       setElText('val-bd-p1', formatNum(bd1, 1));
@@ -1636,7 +1615,7 @@
       const renderStatusCell = (id, st, bdv, wc) => {
         const el = document.getElementById(id);
         if (!el) return;
-        if (st === '-' && bdv === '-') {
+        if ((st === '-' || !st) && (bdv === '-' || !bdv)) {
           el.innerHTML = '-';
           return;
         }
@@ -1668,6 +1647,7 @@
 
       // Propene & Propane C3
       const getC3 = (r) => {
+        if (!r) return '-';
         const c3h6 = parseFloat(getVal(r, 'C3H6')) || 0;
         const c3h8 = parseFloat(getVal(r, 'C3H8')) || 0;
         if (getVal(r, 'C3H6') === '-' && getVal(r, 'C3H8') === '-') return '-';
@@ -1680,6 +1660,7 @@
 
       // CO & CO2
       const getCO = (r) => {
+        if (!r) return '-';
         const co = getVal(r, 'CO');
         const co2 = getVal(r, 'CO2');
         if (co === '-' && co2 === '-') return '-';
@@ -1699,7 +1680,9 @@
         const c2h4 = parseFloat(getVal(r, 'C2H4')) || 0;
         const c2h6 = parseFloat(getVal(r, 'C2H6')) || 0;
         const co = parseFloat(getVal(r, 'CO')) || 0;
-        return Math.round(h2 + ch4 + c2h2 + c2h4 + c2h6 + co).toLocaleString();
+        const sum = h2 + ch4 + c2h2 + c2h4 + c2h6 + co;
+        if (sum === 0 && getVal(r, 'C2H2') === '-') return '-';
+        return Math.round(sum).toLocaleString();
       };
       setElText('dga-tcg-curr', getTCG(r0));
       setElText('dga-tcg-p1', getTCG(r1));
@@ -1717,7 +1700,9 @@
       // Step 1: Gas Pattern & C2H2 Level (CIGRE 761 Condition Levels A-F)
       let step1Level = 'Level B (Normal)';
       let step1Text = '';
-      if (c2h2Num <= 0) {
+      if (getVal(r0, 'C2H2') === '-' && !record) {
+        step1Text = 'No OLTC DGA test data recorded for this unit.';
+      } else if (c2h2Num <= 0) {
         step1Level = 'Level A (Excellent)';
         step1Text = `C₂H₂ is 0 ppm (${step1Level}). No LTC arcing byproducts detected.`;
       } else if (c2h2Num <= 100) {
@@ -1750,7 +1735,7 @@
           step2Text = `Duval Triangle 2: Mixed Arcing & Thermal traces (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). Stable pattern.`;
         }
       } else {
-        step2Text = 'Duval Triangle 2: Stable baseline; no fault gas concentration detected.';
+        step2Text = 'Duval Triangle 2: Baseline / No fault gas concentration.';
       }
       setElText('diag-duval-text', step2Text);
 
@@ -1770,16 +1755,20 @@
         step4Parts.push(`BDV Critical (${bdvNum.toFixed(1)} kV < 30 kV)`);
       } else if (!isNaN(bdvNum) && bdvNum < 40) {
         step4Parts.push(`BDV Fair (${bdvNum.toFixed(1)} kV)`);
-      } else {
-        step4Parts.push(`BDV Satisfactory (${!isNaN(bdvNum) ? bdvNum.toFixed(1) : '85.2'} kV ≥ 40 kV)`);
+      } else if (!isNaN(bdvNum)) {
+        step4Parts.push(`BDV Satisfactory (${bdvNum.toFixed(1)} kV ≥ 40 kV)`);
       }
 
       if (!isNaN(wcNum) && wcNum > 50) {
         step4Parts.push(`Moisture DANGER (${wcNum.toFixed(1)} ppm > 50 ppm: Risk of flashover)`);
       } else if (!isNaN(wcNum) && wcNum > 30) {
         step4Parts.push(`Moisture elevated (${wcNum.toFixed(1)} ppm > 30 ppm)`);
-      } else {
-        step4Parts.push(`Moisture Normal (${!isNaN(wcNum) ? wcNum.toFixed(1) : '12.5'} ppm ≤ 20 ppm)`);
+      } else if (!isNaN(wcNum)) {
+        step4Parts.push(`Moisture Normal (${wcNum.toFixed(1)} ppm ≤ 20 ppm)`);
+      }
+
+      if (step4Parts.length === 0) {
+        step4Parts.push('Dielectric properties not tested yet');
       }
       step4Parts.push('DRM & IR Thermography recommended during PM');
       setElText('diag-dielectric-text', step4Parts.join(' • '));
@@ -1793,26 +1782,38 @@
       }
       setElText('diag-overall-recommendation', overallRec);
 
-      // 8. Dynamic Signatures Binding
-      const testDateStr = r0 ? formatDate_ddMmmyyyy(r0.date) : '17-Nov-2025';
-      const nameTested = r0 && r0.Name1 ? r0.Name1 : 'Aekapong Klamchang';
-      const compTested = r0 && r0.COMP1 ? r0.COMP1 : 'Hitachi Energy';
-      const nameReviewed = r0 && r0.Name2 ? r0.Name2 : 'Pimchart P.';
-      const compReviewed = r0 && r0.COMP2 ? r0.COMP2 : 'GPSC';
-      const nameApproved = 'Mr. Somchai R.';
-      const compApproved = 'GPSC Engineering';
+      // 8. Dynamic Signatures Binding (strictly actual data, blank if missing)
+      const cleanSig = (v) => {
+        if (!v) return '';
+        const s = String(v).trim();
+        return (s === '-' || s === 'null' || s === 'undefined' || s === 'N/A' || s === 'None') ? '' : s;
+      };
+      const r = r0 || {};
+
+      const nameTested = cleanSig(r.Name1 || r.NAME1 || r.test_name || r.Tested_by || r.TestedBy);
+      const compTested = cleanSig(r.COMP1 || r.Comp1 || r.comp1 || r.TestedComp);
+
+      const nameReviewed = cleanSig(r.Name2 || r.NAME2 || r.witness_name || r.reviewed_name || r.Witnessed_by || r.ReviewedBy);
+      const compReviewed = cleanSig(r.COMP2 || r.Comp2 || r.comp2 || r.ReviewedComp);
+
+      const nameApproved = cleanSig(r.Name3 || r.NAME3 || r.approved_name || r.Approved_by || r.ApprovedBy);
+      const compApproved = cleanSig(r.COMP3 || r.Comp3 || r.comp3 || r.ApprovedComp);
 
       document.querySelectorAll('.val-resp-name-tested').forEach(el => el.textContent = nameTested);
       document.querySelectorAll('.val-resp-comp-tested').forEach(el => el.textContent = compTested);
-      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = `Date: ${testDateStr}`);
 
       document.querySelectorAll('.val-resp-name-reviewed').forEach(el => el.textContent = nameReviewed);
       document.querySelectorAll('.val-resp-comp-reviewed').forEach(el => el.textContent = compReviewed);
-      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = `Date: ${testDateStr}`);
 
       document.querySelectorAll('.val-resp-name-approved').forEach(el => el.textContent = nameApproved);
       document.querySelectorAll('.val-resp-comp-approved').forEach(el => el.textContent = compApproved);
-      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = `Date: ${testDateStr}`);
+
+      const dStr = (r.date || r.Date || r.DATE) ? formatDate_ddMmmyyyy(r.date || r.Date || r.DATE) : '';
+      const dateVal = (dStr && dStr !== '-') ? `Date: ${dStr}` : '';
+
+      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = nameTested ? dateVal : '');
+      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = nameReviewed ? dateVal : '');
+      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = nameApproved ? dateVal : '');
 
       // 9. Render Charts on Page 2
       renderTrendCharts(recs);
@@ -1827,18 +1828,20 @@
       const labels = chronological.map(r => r.date ? formatDate_ddMmmyyyy(r.date) : 'Test');
 
       const getValNum = (r, key) => {
+        if (!r) return 0;
         const v = r[`A_${key}`] || r[key] || r[`B_${key}`] || r[`C_${key}`];
+        if (v === undefined || v === null || v === '' || v === '-') return 0;
         return parseFloat(v) || 0;
       };
 
-      const bdvData = chronological.map(r => getValNum(r, 'BD') || 85.2);
-      const wcData = chronological.map(r => getValNum(r, 'WC') || 12.5);
-      const c2h2Data = chronological.map(r => getValNum(r, 'C2H2') || 8400);
-      const h2Data = chronological.map(r => getValNum(r, 'H2') || 24);
-      const c2h4Data = chronological.map(r => getValNum(r, 'C2H4') || 35);
-      const ch4Data = chronological.map(r => getValNum(r, 'CH4') || 18);
-      const pf25Data = chronological.map(r => getValNum(r, 'PF_25') || 0.045);
-      const pf100Data = chronological.map(r => getValNum(r, 'PF_100') || 0.850);
+      const bdvData = chronological.map(r => getValNum(r, 'BD'));
+      const wcData = chronological.map(r => getValNum(r, 'WC'));
+      const c2h2Data = chronological.map(r => getValNum(r, 'C2H2'));
+      const h2Data = chronological.map(r => getValNum(r, 'H2'));
+      const c2h4Data = chronological.map(r => getValNum(r, 'C2H4'));
+      const ch4Data = chronological.map(r => getValNum(r, 'CH4'));
+      const pf25Data = chronological.map(r => getValNum(r, 'PF_25'));
+      const pf100Data = chronological.map(r => getValNum(r, 'PF_100'));
 
       // 1. Chart BDV & Water Content
       if (chartBdvWcInstance) chartBdvWcInstance.destroy();
