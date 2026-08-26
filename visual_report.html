@@ -1032,64 +1032,69 @@
       return str;
     }
 
-    function parseCSV(csvText) {
-      if (!csvText) return [];
-      const cleanText = csvText.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      const lines = cleanText.split('\n');
-      if (lines.length < 2) return [];
+    function parseCSV(text) {
+      if (!text) return [];
+      const clean = text.replace(/^\uFEFF/, '');
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
 
-      let headers = [];
-      let headRow = lines[0];
-      let cur = '';
-      let inside = false;
-      for (let i = 0; i < headRow.length; i++) {
-        const c = headRow[i];
-        if (c === '"') { inside = !inside; }
-        else if (c === ',' && !inside) { headers.push(cur.replace(/^\uFEFF/, '').trim()); cur = ''; }
-        else { cur += c; }
-      }
-      headers.push(cur.replace(/^\uFEFF/, '').trim());
+      for (let i = 0; i < clean.length; i++) {
+        const char = clean[i];
+        const nextChar = clean[i + 1];
 
-      const result = [];
-      for (let r = 1; r < lines.length; r++) {
-        const line = lines[r];
-        if (!line.trim()) continue;
-
-        const row = [];
-        let val = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            if (inQuotes && line[i + 1] === '"') {
-              val += '"';
-              i++;
-            } else {
-              inQuotes = !inQuotes;
-            }
-          } else if (char === ',' && !inQuotes) {
-            row.push(val.trim());
-            val = '';
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            field += '"';
+            i++;
           } else {
-            val += char;
+            inQuotes = !inQuotes;
           }
+        } else if (char === ',' && !inQuotes) {
+          row.push(field.trim());
+          field = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') {
+            i++;
+          }
+          row.push(field.trim());
+          field = '';
+          if (row.some(f => f.length > 0)) {
+            rows.push(row);
+          }
+          row = [];
+        } else {
+          field += char;
         }
-        row.push(val.trim());
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        if (row.some(f => f.length > 0)) {
+          rows.push(row);
+        }
+      }
 
+      if (rows.length < 2) return [];
+      const headers = rows[0].map(h => h.replace(/^\uFEFF/, '').trim());
+      const results = [];
+
+      for (let r = 1; r < rows.length; r++) {
+        const rData = rows[r];
         const entry = {};
         headers.forEach((h, idx) => {
-          if (h) {
-            entry[h] = row[idx] !== undefined ? row[idx] : '';
-          }
+          if (h) entry[h] = rData[idx] !== undefined ? rData[idx] : '';
         });
-
         const sNo = entry.serial || entry.Serial_no || entry.Serial_No || entry['Serial No'] || entry.serial_no || entry.SERIAL;
-        if (sNo) {
-          entry.serial = sNo;
-          result.push(entry);
+        if (sNo && typeof sNo === 'string' && sNo.trim()) {
+          const cleanSerial = sNo.trim();
+          if (!cleanSerial.startsWith('-') && !cleanSerial.startsWith('*') && cleanSerial.length >= 3 && cleanSerial.length <= 45) {
+            entry.serial = cleanSerial;
+            results.push(entry);
+          }
         }
       }
-      return result;
+      return results;
     }
 
     function populateTransformerSelect() {
