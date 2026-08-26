@@ -597,7 +597,38 @@
         </div>
       </div>
 
-      <!-- 2. STACKED CHARTS (Cut off at 2125) -->
+      <!-- 2. Operating Environment & Insulation Ageing Baseline Parameters Table -->
+      <div class="section-banner">• Operating Environment &amp; Insulation Ageing Baseline Parameters</div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 25%;">Service Age (Years)</th>
+            <td style="width: 25%; font-weight: 700;" id="base-age">-</td>
+            <th style="width: 25%;">Estimated Hotspot Temp. (Ths)</th>
+            <td style="width: 25%;" id="base-hotspot">98 °C (371.15 K)</td>
+          </tr>
+          <tr>
+            <th>Moisture in Paper (% FDS)</th>
+            <td id="base-moisture">-</td>
+            <th>Dissolved O₂ in Oil</th>
+            <td id="base-oxygen">-</td>
+          </tr>
+          <tr>
+            <th>Furan 2-FAL Concentration</th>
+            <td id="base-furan">-</td>
+            <th>Initial Paper DP (DP₀)</th>
+            <td>1,000 (New Kraft Paper)</td>
+          </tr>
+          <tr>
+            <th>Current Estimated DP (DPt)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" id="base-current-dp">-</td>
+            <th>Aging Rate Constant (k)</th>
+            <td style="font-weight: 700;" id="base-aging-k">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3. STACKED CHARTS (Cut off at 2125) -->
       <div class="charts-container">
         <!-- Chart 1: DP Degradation Curves (2025 to 2125) -->
         <div class="chart-box">
@@ -622,7 +653,7 @@
         </div>
       </div>
 
-      <!-- 3. Technical Methodology & Mathematical Formulation (CIGRE 761 / IEEE C57.152) -->
+      <!-- 4. Technical Methodology & Mathematical Formulation (CIGRE 761 / IEEE C57.152) -->
       <div class="section-banner">• Technical Methodology &amp; Mathematical Formulation (CIGRE 761 / IEEE C57.152)</div>
       <div class="formula-container">
         <div class="formula-box">
@@ -659,7 +690,7 @@
         </div>
       </div>
 
-      <!-- 4. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Standard) -->
+      <!-- 5. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Standard) -->
       <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Table 6-4)</div>
       <table class="report-table">
         <thead>
@@ -710,7 +741,7 @@
         </tbody>
       </table>
 
-      <!-- 5. Engineering Recommendations & Strategic Asset Action Plan -->
+      <!-- 6. Engineering Recommendations & Strategic Asset Action Plan -->
       <div class="section-banner">• Engineering Recommendations &amp; Strategic Asset Action Plan</div>
       <div class="action-box" id="action-plan-box">
         • <strong>Short-term Actions (0–12 Months):</strong> Perform annual DGA and Furan 2-FAL screening. If moisture in oil indicates paper moisture &gt; 1.5%, plan for online oil dehydration or vacuum hot oil purification to retard hydrolysis.<br>
@@ -1022,6 +1053,21 @@
       const moistureVal = parseFloat(meta['%Moisture in paper (FDS)'] || latestOil.WC || 1.0);
       const isHighMoisture = moistureVal > 2.0;
 
+      const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.0%';
+      const oxygenStr = latestOil.O2 ? latestOil.O2 + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '< 7,000 ppm');
+
+      // Populate Baseline Operating Parameters Table
+      const elAge = document.getElementById('base-age');
+      if (elAge) elAge.textContent = age + ' Years';
+      const elMoist = document.getElementById('base-moisture');
+      if (elMoist) elMoist.textContent = moistureStr.includes('%') ? moistureStr : moistureStr + '%';
+      const elOxy = document.getElementById('base-oxygen');
+      if (elOxy) elOxy.textContent = oxygenStr;
+      const elFuran = document.getElementById('base-furan');
+      if (elFuran) elFuran.textContent = furanPpb + ' ppb (' + (furanPpb / 1000).toFixed(4) + ' ppm)';
+      const elCurrDP = document.getElementById('base-current-dp');
+      if (elCurrDP) elCurrDP.textContent = Math.round(dpVal);
+
       let kYearly = 0.0000310;
       if (isHighMoisture && isHighO2) {
         kYearly = 0.0001200;
@@ -1034,6 +1080,8 @@
       }
 
       const kScientific = kYearly.toExponential(2);
+      const elK = document.getElementById('base-aging-k');
+      if (elK) elK.textContent = `${kScientific} year⁻¹`;
 
       const targetDP300 = 300;
       const targetDP200 = 200;
