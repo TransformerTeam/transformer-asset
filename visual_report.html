@@ -496,7 +496,7 @@
         </tbody>
       </table>
 
-      <!-- 1. Test Instrument & Load Data in Split Grid to save vertical space -->
+      <!-- 1. Test Instrument & Load Data in Split Grid -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px;">
         <div>
           <div class="section-banner">• Test Instrument Info</div>
@@ -526,12 +526,6 @@
                 <th>Wnd LV Max</th>
                 <td id="inst-wnd-lv-max">-</td>
               </tr>
-              <tr>
-                <th>Service Tap</th>
-                <td id="inst-tap">-</td>
-                <th>Calibration Date</th>
-                <td id="inst-cal-date">-</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -554,16 +548,19 @@
               </tr>
               <tr>
                 <th>Real Power (kW)</th>
-                <td colspan="3" id="load-real-power">-</td>
+                <td id="load-real-power">-</td>
+                <th>Service Tap</th>
+                <td id="load-service-tap">-</td>
               </tr>
             </tbody>
           </table>
-
-          <div class="section-banner" id="visual-summary-banner" style="margin-top: 4px;">• Visual Summary</div>
-          <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 3px 6px; font-size: 8px; line-height: 1.25; background-color: #fff7ed; color: #9a3412; border-radius: 2px;">
-            • Visual Summary loading...
-          </div>
         </div>
+      </div>
+
+      <!-- Visual Summary Box (Full Width) -->
+      <div class="section-banner" id="visual-summary-banner" style="margin-top: 4px;">• Visual Summary</div>
+      <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 4px 8px; font-size: 8.5px; line-height: 1.3; background-color: #fff7ed; color: #9a3412; border-radius: 2px; margin-bottom: 4px;">
+        • Visual Summary loading...
       </div>
 
       <!-- 2. Porcelain Condition Checking -->
@@ -1284,8 +1281,6 @@
       document.getElementById('inst-wnd-hv-max').textContent = r.Winding_temp_HV_max ? r.Winding_temp_HV_max + ' °C' : '-';
       document.getElementById('inst-wnd-lv').textContent = r.Winding_temp_LV ? r.Winding_temp_LV + ' °C' : '-';
       document.getElementById('inst-wnd-lv-max').textContent = r.Winding_temp_LV_max ? r.Winding_temp_LV_max + ' °C' : '-';
-      document.getElementById('inst-tap').textContent = r.Service_tap || '-';
-      document.getElementById('inst-cal-date').textContent = formatDateToDdMmmYyyy(r.Calibration_Date);
 
       // Load Data Record
       document.getElementById('load-active-power').textContent = r.Active_power || '-';
@@ -1293,6 +1288,7 @@
       document.getElementById('load-reactive-power').textContent = r.Reactive_power || '-';
       document.getElementById('load-voltage').textContent = r.Voltage_kV || r.Voltage || '-';
       document.getElementById('load-real-power').textContent = r.Real_power || '-';
+      document.getElementById('load-service-tap').textContent = r.Service_tap || '-';
 
       // 2. Visual Summary (Abnormal Findings Summary)
       const allInspectionConfigs = [
@@ -1545,17 +1541,10 @@
         { label: 'OLTC Inspection Result', resKey: 'OLTC_Result', remKey: 'OLTC_Result' }
       ], r);
 
-      // 17. Others & Remarks Box
+      // 17. Others & Remarks Box (Display actual Others field from CSV without duplicating Visual Summary)
       const remarksBox = document.getElementById('remarks-box');
-      const commentsList = [
-        r.comment1, r.comment2, r.comment3, r.comment4, r.comment5, r.comment6, r.Others
-      ].filter(c => c && c.trim() && c.trim() !== '-');
-
-      if (commentsList.length > 0) {
-        remarksBox.innerHTML = commentsList.map(c => '• ' + c.trim()).join('<br>');
-      } else {
-        remarksBox.textContent = 'All visual inspection items are in satisfactory condition with no abnormal defects reported.';
-      }
+      const otherText = (r.Others && r.Others.trim() && r.Others.trim() !== '-') ? r.Others.trim() : '-';
+      remarksBox.textContent = otherText;
 
       // 18. Photos Gallery
       const photoGrid = document.getElementById('photo-grid');
