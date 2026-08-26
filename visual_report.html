@@ -58,7 +58,7 @@
     /* Top Control Bar */
     .control-bar {
       width: 100%;
-      max-width: 1050px;
+      max-width: 1020px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -100,7 +100,7 @@
       font-weight: 500;
       outline: none;
       cursor: pointer;
-      min-width: 260px;
+      min-width: 280px;
       transition: all 0.2s ease;
     }
 
@@ -139,27 +139,35 @@
       background-color: var(--primary-hover);
     }
 
-    /* Main Report Paper Container */
-    .report-paper {
+    /* Report Wrapper & Pages */
+    .report-wrapper {
       width: 100%;
-      max-width: 1050px;
+      max-width: 1020px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .report-page {
       background-color: var(--report-bg);
       color: var(--report-text);
+      width: 100%;
       border-radius: 8px;
-      padding: 30px 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      font-size: 11px;
+      padding: 24px 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      font-size: 10.5px;
       line-height: 1.3;
+      position: relative;
     }
 
     /* Report Header */
     .report-header-grid {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 2px solid var(--report-primary);
-      padding-bottom: 12px;
-      margin-bottom: 14px;
+      align-items: center;
+      border-bottom: 2.5px solid var(--report-primary);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .report-title-group {
@@ -167,23 +175,39 @@
     }
 
     .report-title {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--report-primary);
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
     }
 
     .report-subtitle {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: #dc2626;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-indicator {
+      display: inline-block;
+      padding: 1px 6px;
+      background: #e2e8f0;
+      color: #334155;
+      border-radius: 3px;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .logo-container img {
-      height: 48px;
+      height: 42px;
       width: auto;
       object-fit: contain;
     }
@@ -198,8 +222,8 @@
     .report-table th, 
     .report-table td {
       border: 1px solid var(--report-border);
-      padding: 2px 5px;
-      font-size: 9.5px;
+      padding: 2.5px 5px;
+      font-size: 9px;
       line-height: 1.25;
     }
 
@@ -214,13 +238,28 @@
       background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 700;
-      padding: 3px 6px;
-      font-size: 10px;
+      padding: 2.5px 6px;
+      font-size: 9.5px;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      margin-top: 8px;
-      margin-bottom: 4px;
+      margin-top: 7px;
+      margin-bottom: 3px;
       border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-info {
+      font-size: 8px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: #ffffff;
+      text-transform: none;
+      letter-spacing: 0;
     }
 
     /* Status Badges */
@@ -229,7 +268,7 @@
       padding: 1px 6px;
       border-radius: 3px;
       font-weight: 700;
-      font-size: 9px;
+      font-size: 8.5px;
       text-transform: uppercase;
     }
 
@@ -263,23 +302,31 @@
       border: 1px solid #cbd5e1;
     }
 
+    /* Grid Layouts for Sections */
+    .split-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     /* Signatures Section */
     .signature-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 8px;
+      margin-bottom: 0;
     }
 
     .signature-table th, .signature-table td {
       border: 1px solid var(--report-border);
-      padding: 6px 8px;
-      font-size: 10px;
+      padding: 3px 6px;
+      font-size: 9px;
       text-align: center;
     }
 
     .signature-table th {
-      background-color: #f8fafc;
-      color: var(--report-primary);
+      background-color: #1e3a8a;
+      color: #ffffff;
       font-weight: 700;
     }
 
@@ -287,28 +334,28 @@
     .photo-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 8px;
+      gap: 8px;
+      margin-top: 4px;
     }
 
     .photo-card {
       border: 1px solid var(--report-border);
       border-radius: 4px;
-      padding: 6px;
+      padding: 4px;
       background: #fafafa;
       text-align: center;
     }
 
     .photo-card img {
       max-width: 100%;
-      height: 140px;
+      height: 95px;
       object-fit: cover;
-      border-radius: 4px;
-      margin-bottom: 4px;
+      border-radius: 3px;
+      margin-bottom: 2px;
     }
 
     .photo-caption {
-      font-size: 9.5px;
+      font-size: 8.5px;
       color: #475569;
       font-style: italic;
     }
@@ -322,10 +369,22 @@
       .control-bar {
         display: none !important;
       }
-      .report-paper {
-        box-shadow: none !important;
+      .report-wrapper {
+        gap: 0 !important;
         max-width: 100% !important;
-        padding: 10px !important;
+      }
+      .report-page {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 16px 20px !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        min-height: 100vh !important;
+      }
+      .report-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
       }
     }
   </style>
@@ -344,366 +403,571 @@
     <div style="display: flex; gap: 10px;">
       <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i> Theme</button>
       <button class="btn-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
-      <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-file-image"></i> Export JPG</button>
+      <button class="btn-action btn-primary" onclick="exportReportAsJPG()"><i class="fa-solid fa-file-image"></i> Export JPG</button>
     </div>
   </div>
 
-  <!-- Main Report Paper Container -->
-  <div class="report-paper" id="report-paper">
+  <!-- Main Report Wrapper (3 Pages) -->
+  <div class="report-wrapper" id="report-wrapper">
 
-    <!-- Header Section -->
-    <div class="report-header-grid">
-      <div class="report-title-group">
-        <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
-          <h1 class="report-title">Transformer Visual Inspection</h1>
-          <span class="badge-info" id="info-header-id" style="font-size: 8.5px; font-weight: 700; background: #e2e8f0; border: 1px solid #cbd5e1; padding: 2px 7px; border-radius: 4px; color: #1e3a8a;">EMM-TR-F-001, Rev.1</span>
+    <!-- ==========================================
+         PAGE 1: General Info, Environment, Bushings & Leakage
+         ========================================== -->
+    <div class="report-page" id="page-1">
+      <!-- Header Section -->
+      <div class="report-header-grid">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+            <h1 class="report-title">Transformer Visual Inspection</h1>
+            <span class="page-indicator">Page 1 of 3</span>
+            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
+          </div>
+          <div class="report-subtitle">GPSC Transformer Asset Management</div>
         </div>
-        <div class="report-subtitle">GPSC Transformer Asset Management</div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
       </div>
-      <div class="logo-container">
-        <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+
+      <!-- Standard Equipment Header Info Table -->
+      <div class="section-banner">
+        <span>• Transformer Identification &amp; Information</span>
+        <span class="badge-info">EMM-TR-F-001, Rev.1</span>
       </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power Rating (MVA)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-power">-</td>
+          </tr>
+          <tr>
+            <th>Manufacture</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-manufacture">-</td>
+            <th>Voltage Rating (kV)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Fluid Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <th>Service Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Split Grid: 1. Test Instrument & Load Data + Visual Summary -->
+      <div class="split-grid-2" style="margin-top: 4px;">
+        <div>
+          <div class="section-banner">• Visual Inspection Test Instrument Information</div>
+          <table class="report-table">
+            <tbody>
+              <tr>
+                <th style="width: 30%;">Humidity (%)</th>
+                <td style="width: 20%;" id="inst-humidity">-</td>
+                <th style="width: 30%;">Ambient Temp.</th>
+                <td style="width: 20%;" id="inst-ambient-temp">-</td>
+              </tr>
+              <tr>
+                <th>Oil Temp.</th>
+                <td id="inst-oil-temp">-</td>
+                <th>Oil Temp. Max</th>
+                <td id="inst-oil-temp-max">-</td>
+              </tr>
+              <tr>
+                <th>Winding Temp.HV</th>
+                <td id="inst-wnd-hv">-</td>
+                <th>Winding HV Max</th>
+                <td id="inst-wnd-hv-max">-</td>
+              </tr>
+              <tr>
+                <th>Winding Temp.LV</th>
+                <td id="inst-wnd-lv">-</td>
+                <th>Winding LV Max</th>
+                <td id="inst-wnd-lv-max">-</td>
+              </tr>
+              <tr>
+                <th>Service Tap</th>
+                <td id="inst-tap">-</td>
+                <th>Calibration Date</th>
+                <td id="inst-cal-date">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-banner">• Transformer Load Data Record</div>
+          <table class="report-table">
+            <tbody>
+              <tr>
+                <th style="width: 30%;">Active Power (kVA)</th>
+                <td style="width: 20%;" id="load-active-power">-</td>
+                <th style="width: 30%;">Current (A)</th>
+                <td style="width: 20%;" id="load-current">-</td>
+              </tr>
+              <tr>
+                <th>Reactive Power (kVAr)</th>
+                <td id="load-reactive-power">-</td>
+                <th>Voltage (V)</th>
+                <td id="load-voltage">-</td>
+              </tr>
+              <tr>
+                <th>Real Power (kW)</th>
+                <td colspan="3" id="load-real-power">-</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-banner" id="visual-summary-banner" style="margin-top: 6px;">• Visual Summary</div>
+          <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 5px 8px; font-size: 8.5px; line-height: 1.35; background-color: #fff7ed; color: #9a3412; border-radius: 3px;">
+            • Visual Summary loading...
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Porcelain Condition Checking -->
+      <div class="section-banner">• Porcelain Condition Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 38%;">Visual Inspection Item</th>
+            <th style="width: 20%; text-align: center;">Condition</th>
+            <th style="width: 42%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-porcelain"></tbody>
+      </table>
+
+      <!-- 3. Leakage/Gasket Oil Checking -->
+      <div class="section-banner">• Leakage/Gasket Oil Checking</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 38%;">Visual Inspection Item</th>
+            <th style="width: 20%; text-align: center;">Condition</th>
+            <th style="width: 42%;">Remark</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-leakage"></tbody>
+      </table>
+
+      <!-- SIGNATURES / APPROVAL (Page 1) -->
+      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="height: 38px;">
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-tested"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-reviewed"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-tested"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-reviewed"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px;" class="val-resp-date-tested"></td>
+            <td style="font-size: 8px;" class="val-resp-date-reviewed"></td>
+            <td style="font-size: 8px;" class="val-resp-date-approved"></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Standard Equipment Header Info Table -->
-    <div class="section-banner" style="display: flex; justify-content: space-between; align-items: center;">
-      <span>• Transformer Identification &amp; Information</span>
-      <span style="font-size: 8.5px; font-weight: 600; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 1px 6px; border-radius: 3px; color: #ffffff;">EMM-TR-F-001, Rev.1</span>
-    </div>
-    <table class="report-table">
-      <tbody>
-        <tr>
-          <th style="width: 15%;">Equipment Name</th>
-          <td style="width: 35%; font-weight: 700; color: #1e3a8a;" id="meta-name">-</td>
-          <th style="width: 15%;">Site</th>
-          <td style="width: 35%; font-weight: 700; color: #1e3a8a;" id="meta-site">-</td>
-        </tr>
-        <tr>
-          <th>Serial No.</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-serial">-</td>
-          <th>Power Rating (MVA)</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-power">-</td>
-        </tr>
-        <tr>
-          <th>Manufacture</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-manufacture">-</td>
-          <th>Voltage Rating (kV)</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-voltage">-</td>
-        </tr>
-        <tr>
-          <th>Fluid Type</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-fluid">Mineral oil</td>
-          <th>Service Type</th>
-          <td style="font-weight: 700; color: #1e3a8a;" id="meta-service">-</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- ==========================================
+         PAGE 2: Protection, Temperatures, Earthing & Auxiliaries
+         ========================================== -->
+    <div class="report-page" id="page-2">
+      <!-- Header Section -->
+      <div class="report-header-grid">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+            <h1 class="report-title">Transformer Visual Inspection</h1>
+            <span class="page-indicator">Page 2 of 3</span>
+            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
+          </div>
+          <div class="report-subtitle">GPSC Transformer Asset Management</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
 
-    <!-- 1. Test Instrument & Load Data -->
-    <div class="section-banner">• Visual Inspection Test Instrument Information</div>
-    <table class="report-table">
-      <tbody>
-        <tr>
-          <th style="width: 25%;">Humidity (%)</th>
-          <td style="width: 25%;" id="inst-humidity">-</td>
-          <th style="width: 25%;">Ambient Temp. (Celsius)</th>
-          <td style="width: 25%;" id="inst-ambient-temp">-</td>
-        </tr>
-        <tr>
-          <th>Oil Temp. (Celsius)</th>
-          <td id="inst-oil-temp">-</td>
-          <th>Oil Temp, Max (Celsius)</th>
-          <td id="inst-oil-temp-max">-</td>
-        </tr>
-        <tr>
-          <th>Winding Temp.HV (Celsius)</th>
-          <td id="inst-wnd-hv">-</td>
-          <th>Winding Temp.HV Max (Celsius)</th>
-          <td id="inst-wnd-hv-max">-</td>
-        </tr>
-        <tr>
-          <th>Winding Temp.LV (Celsius)</th>
-          <td id="inst-wnd-lv">-</td>
-          <th>Winding Temp.LV Max (Celsius)</th>
-          <td id="inst-wnd-lv-max">-</td>
-        </tr>
-        <tr>
-          <th>Service Tap</th>
-          <td id="inst-tap">-</td>
-          <th>Calibration Date</th>
-          <td id="inst-cal-date">-</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Standard Equipment Header Info Table -->
+      <div class="section-banner">
+        <span>• Transformer Identification &amp; Information</span>
+        <span class="badge-info">EMM-TR-F-001, Rev.1</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power Rating (MVA)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-power">-</td>
+          </tr>
+          <tr>
+            <th>Manufacture</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-manufacture">-</td>
+            <th>Voltage Rating (kV)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Fluid Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <th>Service Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div class="section-banner">• Transformer Load Data Record</div>
-    <table class="report-table">
-      <tbody>
-        <tr>
-          <th style="width: 25%;">Active Power (kVA)</th>
-          <td style="width: 25%;" id="load-active-power">-</td>
-          <th style="width: 25%;">Current (A)</th>
-          <td style="width: 25%;" id="load-current">-</td>
-        </tr>
-        <tr>
-          <th>Reactive Power (kVAr)</th>
-          <td id="load-reactive-power">-</td>
-          <th>Voltage (V)</th>
-          <td id="load-voltage">-</td>
-        </tr>
-        <tr>
-          <th>Real Power (kW)</th>
-          <td colspan="3" id="load-real-power">-</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- 2-Column Split Grid for Page 2 Items -->
+      <div class="split-grid-2" style="margin-top: 4px;">
+        <!-- Left Column -->
+        <div>
+          <!-- 4. Oil Level Checking -->
+          <div class="section-banner">• Oil Level Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-oil-level"></tbody>
+          </table>
 
-    <!-- 2. Visual Summary -->
-    <div class="section-banner" id="visual-summary-banner">• Visual Summary</div>
-    <div id="visual-summary-box" style="border: 1px solid #fed7aa; padding: 8px 12px; font-size: 9.5px; line-height: 1.5; background-color: #fff7ed; color: #9a3412; margin-bottom: 6px; border-radius: 3px;">
-      • Visual Summary loading...
-    </div>
+          <!-- 5. Oil and Winding Temperature -->
+          <div class="section-banner">• Oil and Winding Temperature</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-temp-indicators"></tbody>
+          </table>
 
-    <!-- 3. Porcelain Condition Checking -->
-    <div class="section-banner">• Porcelain Condition Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-porcelain"></tbody>
-    </table>
+          <!-- 6. Power Transformer Self-Protection -->
+          <div class="section-banner">• Power Transformer Self-Protection</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-self-protection"></tbody>
+          </table>
 
-    <!-- 3. Leakage/Gasket Oil Checking -->
-    <div class="section-banner">• Leakage/Gasket Oil Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-leakage"></tbody>
-    </table>
+          <!-- 7. Surface Painting Checking -->
+          <div class="section-banner">• Surface Painting Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-surface-painting"></tbody>
+          </table>
 
-    <!-- 4. Oil Level Checking -->
-    <div class="section-banner">• Oil Level Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-oil-level"></tbody>
-    </table>
+          <!-- 8. Foundation Condition Checking -->
+          <div class="section-banner">• Foundation Condition Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-foundation"></tbody>
+          </table>
+        </div>
 
-    <!-- 5. Oil and Winding Temperature -->
-    <div class="section-banner">• Oil and Winding Temperature</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-temp-indicators"></tbody>
-    </table>
+        <!-- Right Column -->
+        <div>
+          <!-- 9. Earthing Connection Checking -->
+          <div class="section-banner">• Earthing Connection Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-earthing"></tbody>
+          </table>
 
-    <!-- 6. Power Transformer Self-Protection -->
-    <div class="section-banner">• Power Transformer Self-Protection</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-self-protection"></tbody>
-    </table>
+          <!-- 10. Dehydrating Breather Checking -->
+          <div class="section-banner">• Dehydrating Breather Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-breather"></tbody>
+          </table>
 
-    <!-- 7. Surface Painting Checking -->
-    <div class="section-banner">• Surface Painting Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-surface-painting"></tbody>
-    </table>
+          <!-- 11. Terminal Box Checking -->
+          <div class="section-banner">• Terminal Box Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-terminal-box"></tbody>
+          </table>
 
-    <!-- 8. Foundation Condition Checking -->
-    <div class="section-banner">• Foundation Condition Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-foundation"></tbody>
-    </table>
+          <!-- 12. All Bolt and Nut Connection Checking -->
+          <div class="section-banner">• Bolt and Nut Connection Checking</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-bolt-nut"></tbody>
+          </table>
 
-    <!-- 9. Earthing Connection Checking -->
-    <div class="section-banner">• Earthing Connection Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-earthing"></tbody>
-    </table>
+          <!-- 13. Cooling System Operation -->
+          <div class="section-banner">• Cooling System Operation</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-cooling-system"></tbody>
+          </table>
+        </div>
+      </div>
 
-    <!-- 10. Dehydrating Breather Checking -->
-    <div class="section-banner">• Dehydrating Breather Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-breather"></tbody>
-    </table>
-
-    <!-- 11. Terminal Box Checking -->
-    <div class="section-banner">• Terminal Box Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-terminal-box"></tbody>
-    </table>
-
-    <!-- 12. All Bolt and Nut Connection Checking -->
-    <div class="section-banner">• All Bolt and Nut Connection Checking</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-bolt-nut"></tbody>
-    </table>
-
-    <!-- 13. Cooling System Operation -->
-    <div class="section-banner">• Cooling System Operation</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-cooling-system"></tbody>
-    </table>
-
-    <!-- 14. OLTC & Pressure Records -->
-    <div class="section-banner">• OLTC</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition / Pressure</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-oltc"></tbody>
-    </table>
-
-    <!-- 15. Local Control Panel Operation -->
-    <div class="section-banner">• Local Control Panel Operation</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-local-control"></tbody>
-    </table>
-
-    <!-- 16. Visual Inspection Conclusion Result -->
-    <div class="section-banner">• Visual Inspection Conclusion Result</div>
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th style="width: 38%;">Visual Inspection Item</th>
-          <th style="width: 22%; text-align: center;">Condition</th>
-          <th style="width: 40%;">Remark</th>
-        </tr>
-      </thead>
-      <tbody id="tbl-conclusion"></tbody>
-    </table>
-
-    <!-- 17. Others & Remarks -->
-    <div class="section-banner">• Others & Remarks</div>
-    <div style="border: 1px solid var(--report-border); padding: 8px 12px; border-radius: 4px; background: #fafafa; min-height: 50px; font-size: 10.5px; line-height: 1.4;" id="remarks-box">
-      -
+      <!-- SIGNATURES / APPROVAL (Page 2) -->
+      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="height: 38px;">
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-tested"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-reviewed"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-tested"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-reviewed"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px;" class="val-resp-date-tested"></td>
+            <td style="font-size: 8px;" class="val-resp-date-reviewed"></td>
+            <td style="font-size: 8px;" class="val-resp-date-approved"></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- 18. Inspection Photos Attachment -->
-    <div class="section-banner" id="photo-section-banner">• Inspection Photos Attachment</div>
-    <div class="photo-grid" id="photo-grid">
-      <!-- Photos dynamically rendered if present -->
-    </div>
+    <!-- ==========================================
+         PAGE 3: OLTC, Local Control, Conclusion, Remarks & Photos
+         ========================================== -->
+    <div class="report-page" id="page-3">
+      <!-- Header Section -->
+      <div class="report-header-grid">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+            <h1 class="report-title">Transformer Visual Inspection</h1>
+            <span class="page-indicator">Page 3 of 3</span>
+            <span class="badge-info" style="color: #1e3a8a; background: #e2e8f0; border-color: #cbd5e1;">EMM-TR-F-001, Rev.1</span>
+          </div>
+          <div class="report-subtitle">GPSC Transformer Asset Management</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
 
-    <!-- 19. SIGNATURES / APPROVAL -->
-    <div class="section-banner" style="margin-top: 20px;">SIGNATURES / APPROVAL</div>
-    <table class="report-table response-table" style="margin-bottom: 0;">
-      <thead>
-        <tr style="background-color: #1e3a8a; color: #ffffff;">
-          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Tested By</th>
-          <th style="width: 33.3%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Reviewed By</th>
-          <th style="width: 33.4%; text-align: center; background-color: #1e3a8a; color: #ffffff;">Approved By</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="height: 45px;">
-          <td class="sig-cell"></td>
-          <td class="sig-cell"></td>
-          <td class="sig-cell"></td>
-        </tr>
-        <tr>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-tested"></td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-reviewed"></td>
-          <td style="text-align: center; color: #1e3a8a; font-weight: 600;" id="resp-name-approved"></td>
-        </tr>
-        <tr>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-tested"></td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-reviewed"></td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b;" id="resp-company-approved"></td>
-        </tr>
-        <tr>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-tested"></td>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-reviewed"></td>
-          <td style="text-align: center; font-size: 8.5px;" id="resp-date-approved"></td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Standard Equipment Header Info Table -->
+      <div class="section-banner">
+        <span>• Transformer Identification &amp; Information</span>
+        <span class="badge-info">EMM-TR-F-001, Rev.1</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power Rating (MVA)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-power">-</td>
+          </tr>
+          <tr>
+            <th>Manufacture</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-manufacture">-</td>
+            <th>Voltage Rating (kV)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <th>Fluid Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <th>Service Type</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 2-Column Split Grid for Page 3 Items -->
+      <div class="split-grid-2" style="margin-top: 4px;">
+        <!-- Left Column: OLTC & Local Control -->
+        <div>
+          <!-- 14. OLTC & Pressure Records -->
+          <div class="section-banner">• On-Load Tap Changer (OLTC)</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition / Press.</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-oltc"></tbody>
+          </table>
+
+          <!-- 15. Local Control Panel Operation -->
+          <div class="section-banner">• Local Control Panel Operation</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-local-control"></tbody>
+          </table>
+        </div>
+
+        <!-- Right Column: Conclusion, Remarks & Photos -->
+        <div>
+          <!-- 16. Visual Inspection Conclusion Result -->
+          <div class="section-banner">• Visual Inspection Conclusion Result</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Inspection Item</th>
+                <th style="width: 24%; text-align: center;">Condition</th>
+                <th style="width: 32%;">Remark</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-conclusion"></tbody>
+          </table>
+
+          <!-- 17. Others & Remarks -->
+          <div class="section-banner">• Others & Remarks</div>
+          <div style="border: 1px solid var(--report-border); padding: 5px 8px; border-radius: 3px; background: #fafafa; min-height: 42px; font-size: 9px; line-height: 1.35;" id="remarks-box">
+            -
+          </div>
+
+          <!-- 18. Inspection Photos Attachment -->
+          <div class="section-banner" id="photo-section-banner">• Inspection Photos Attachment</div>
+          <div class="photo-grid" id="photo-grid">
+            <!-- Photos dynamically rendered if present -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNATURES / APPROVAL (Page 3) -->
+      <div class="section-banner" style="margin-top: 8px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="height: 38px;">
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-tested"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-reviewed"></td>
+            <td style="color: #1e3a8a; font-weight: 600;" class="val-resp-name-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-tested"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-reviewed"></td>
+            <td style="font-size: 8px; color: #64748b;" class="val-resp-comp-approved"></td>
+          </tr>
+          <tr>
+            <td style="font-size: 8px;" class="val-resp-date-tested"></td>
+            <td style="font-size: 8px;" class="val-resp-date-reviewed"></td>
+            <td style="font-size: 8px;" class="val-resp-date-approved"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
   </div>
 
@@ -723,7 +987,7 @@
         const csvTxt = await resp.text();
         visualDataList = parseCSV(csvTxt);
       } catch (e) {
-        console.error("Failed to load VisualData.csv", e);
+        console.error('Failed to load VisualData.csv', e);
       }
 
       populateTransformerSelect();
@@ -751,105 +1015,111 @@
         'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
       };
 
-      const ddMmmYyyyMatch = str.match(/^(\d{1,2})[-\/\s]([A-Za-z]{3,9})[-\/\s](\d{2,4})$/);
-      if (ddMmmYyyyMatch) {
-        const day = String(parseInt(ddMmmYyyyMatch[1], 10)).padStart(2, '0');
-        const mStr = ddMmmYyyyMatch[2].substring(0, 3).toLowerCase();
-        let yr = parseInt(ddMmmYyyyMatch[3], 10);
-        if (yr < 100) yr += 2000;
-        const mIdx = monthMap[mStr];
-        if (mIdx !== undefined) {
-          return `${day}-${months[mIdx]}-${yr}`;
+      if (str.includes('-')) {
+        const parts = str.split(' ')[0].split('-');
+        if (parts.length === 3) {
+          if (parts[0].length === 4) {
+            const y = parseInt(parts[0], 10);
+            let m = isNaN(parts[1]) ? monthMap[parts[1].toLowerCase().slice(0, 3)] : parseInt(parts[1], 10) - 1;
+            const d = parseInt(parts[2], 10);
+            if (m !== undefined && m >= 0 && m < 12 && !isNaN(d)) {
+              return String(d).padStart(2, '0') + '-' + months[m] + '-' + y;
+            }
+          } else if (parts[2].length === 4) {
+            const y = parseInt(parts[2], 10);
+            let m = isNaN(parts[1]) ? monthMap[parts[1].toLowerCase().slice(0, 3)] : parseInt(parts[1], 10) - 1;
+            const d = parseInt(parts[0], 10);
+            if (m !== undefined && m >= 0 && m < 12 && !isNaN(d)) {
+              return String(d).padStart(2, '0') + '-' + months[m] + '-' + y;
+            }
+          }
         }
       }
 
-      const mmmDdYyyyMatch = str.match(/^([A-Za-z]{3,9})[-\/\s](\d{1,2})[-\/\s](\d{2,4})$/);
-      if (mmmDdYyyyMatch) {
-        const mStr = mmmDdYyyyMatch[1].substring(0, 3).toLowerCase();
-        const day = String(parseInt(mmmDdYyyyMatch[2], 10)).padStart(2, '0');
-        let yr = parseInt(mmmDdYyyyMatch[3], 10);
-        if (yr < 100) yr += 2000;
-        const mIdx = monthMap[mStr];
-        if (mIdx !== undefined) {
-          return `${day}-${months[mIdx]}-${yr}`;
+      if (str.includes('/')) {
+        const parts = str.split(' ')[0].split('/');
+        if (parts.length === 3) {
+          let d = parseInt(parts[0], 10);
+          let m = parseInt(parts[1], 10) - 1;
+          let y = parseInt(parts[2], 10);
+          if (y < 100) y += 2000;
+          if (d > 12 && m <= 11) {
+            // d is day
+          } else if (parts[1] > 12) {
+            d = parseInt(parts[1], 10);
+            m = parseInt(parts[0], 10) - 1;
+          }
+          if (m >= 0 && m < 12 && !isNaN(d)) {
+            return String(d).padStart(2, '0') + '-' + months[m] + '-' + y;
+          }
         }
       }
 
-      const yyyyMmDdMatch = str.match(/^(\d{4})[-\/\s](\d{1,2})[-\/\s](\d{1,2})/);
-      if (yyyyMmDdMatch) {
-        const yr = parseInt(yyyyMmDdMatch[1], 10);
-        const mIdx = parseInt(yyyyMmDdMatch[2], 10) - 1;
-        const day = String(parseInt(yyyyMmDdMatch[3], 10)).padStart(2, '0');
-        if (mIdx >= 0 && mIdx < 12) {
-          return `${day}-${months[mIdx]}-${yr}`;
-        }
-      }
-
-      const mmDdYyyyMatch = str.match(/^(\d{1,2})[-\/\s](\d{1,2})[-\/\s](\d{2,4})/);
-      if (mmDdYyyyMatch) {
-        let mIdx = parseInt(mmDdYyyyMatch[1], 10) - 1;
-        let day = parseInt(mmDdYyyyMatch[2], 10);
-        let yr = parseInt(mmDdYyyyMatch[3], 10);
-        if (yr < 100) yr += 2000;
-        if (mIdx >= 0 && mIdx < 12) {
-          return `${String(day).padStart(2, '0')}-${months[mIdx]}-${yr}`;
-        }
-      }
-
-      const d = new Date(str);
-      if (!isNaN(d.getTime())) {
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
-        return `${day}-${month}-${year}`;
+      const parsed = new Date(str);
+      if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+        const dd = String(parsed.getDate()).padStart(2, '0');
+        const mmm = months[parsed.getMonth()];
+        const yyyy = parsed.getFullYear();
+        return dd + '-' + mmm + '-' + yyyy;
       }
 
       return str;
     }
 
-    function parseCSV(text) {
-      if (text.startsWith('\ufeff')) {
-        text = text.substring(1);
-      }
-      const lines = text.split(/\r?\n/);
+    function parseCSV(csvText) {
+      if (!csvText) return [];
+      const cleanText = csvText.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const lines = cleanText.split('\n');
       if (lines.length < 2) return [];
-      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-      const results = [];
 
-      for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        const row = parseCSVRow(lines[i]);
-        if (row.length >= 2) {
-          const obj = {};
-          headers.forEach((h, idx) => {
-            obj[h] = row[idx] ? row[idx].trim().replace(/^"|"$/g, '') : '';
-          });
-          obj.serial = obj.Serial_no || obj.Serial_No || obj.serial || obj['Serial No'];
-          obj.date = obj.Date || obj.date;
-          if (obj.serial) {
-            results.push(obj);
+      let headers = [];
+      let headRow = lines[0];
+      let cur = '';
+      let inside = false;
+      for (let i = 0; i < headRow.length; i++) {
+        const c = headRow[i];
+        if (c === '"') { inside = !inside; }
+        else if (c === ',' && !inside) { headers.push(cur.trim()); cur = ''; }
+        else { cur += c; }
+      }
+      headers.push(cur.trim());
+
+      const result = [];
+      for (let r = 1; r < lines.length; r++) {
+        const line = lines[r];
+        if (!line.trim()) continue;
+
+        const row = [];
+        let val = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              val += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === ',' && !inQuotes) {
+            row.push(val.trim());
+            val = '';
+          } else {
+            val += char;
           }
         }
-      }
-      return results;
-    }
+        row.push(val.trim());
 
-    function parseCSVRow(rowStr) {
-      const result = [];
-      let insideQuotes = false;
-      let entry = '';
-      for (let i = 0; i < rowStr.length; i++) {
-        const char = rowStr[i];
-        if (char === '"') {
-          insideQuotes = !insideQuotes;
-        } else if (char === ',' && !insideQuotes) {
+        const entry = {};
+        headers.forEach((h, idx) => {
+          entry[h] = row[idx] !== undefined ? row[idx] : '';
+        });
+
+        if (entry.serial || entry.Serial_No || entry['Serial No']) {
+          entry.serial = entry.serial || entry.Serial_No || entry['Serial No'];
           result.push(entry);
-          entry = '';
-        } else {
-          entry += char;
         }
       }
-      result.push(entry);
       return result;
     }
 
@@ -859,29 +1129,41 @@
       selectEl.innerHTML = '';
       
       const addedSerials = new Set();
+      const allItems = [];
 
+      // 1. From HEALTH_INDEX_DATA
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
           const s = meta.serial || meta['Serial No'] || meta['Serial No.'];
-          if (s && !addedSerials.has(s)) {
-            addedSerials.add(s);
-            const opt = document.createElement('option');
-            opt.value = s;
+          if (s && !addedSerials.has(String(s).toUpperCase())) {
+            addedSerials.add(String(s).toUpperCase());
             const name = meta.name || meta['Equipment Name'] || s;
-            opt.textContent = `${name} (${s})`;
-            selectEl.appendChild(opt);
+            const site = meta.site || meta.SITE || '';
+            allItems.push({ serial: s, name: name, site: site });
           }
         });
       }
 
+      // 2. From VisualData.csv
       visualDataList.forEach(item => {
-        if (item.serial && !addedSerials.has(item.serial)) {
-          addedSerials.add(item.serial);
-          const opt = document.createElement('option');
-          opt.value = item.serial;
-          opt.textContent = item.serial;
-          selectEl.appendChild(opt);
+        if (item.serial && !addedSerials.has(String(item.serial).toUpperCase())) {
+          addedSerials.add(String(item.serial).toUpperCase());
+          allItems.push({ serial: item.serial, name: item.serial, site: '' });
         }
+      });
+
+      // Sort by Site then Name
+      allItems.sort((a, b) => {
+        const siteComp = (a.site || '').localeCompare(b.site || '', undefined, { numeric: true, sensitivity: 'base' });
+        if (siteComp !== 0) return siteComp;
+        return (a.name || a.serial).localeCompare(b.name || b.serial, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      allItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.serial;
+        opt.textContent = (item.name && item.name !== item.serial) ? item.name + ' (' + item.serial + ')' : item.serial;
+        selectEl.appendChild(opt);
       });
     }
 
@@ -902,48 +1184,53 @@
       }
       const r = (items && items.length > 0) ? items[0] : {};
 
-      // Standard Header Metadata Binding
+      // Standard Header Metadata Binding across all 3 pages
+      let name = r.serial || serial;
+      let sNo = r.serial || serial;
+      let manuf = r.COMP2 || '-';
+      let site = '-';
+      let power = '-';
+      let voltage = '-';
+      let service = '-';
+      let fluid = 'Mineral oil';
+
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
         const meta = HEALTH_INDEX_DATA.find(x => {
           const s = x.serial || x['Serial No'] || x['Serial No.'] || x['Serial_no'];
           return matchSerial(s, serial);
         });
         if (meta) {
-          const name = meta.name || meta['Equipment Name'] || r.serial || serial;
-          const sNo = meta.serial || meta['Serial No'] || r.serial || serial;
-          const manuf = meta.manufacture || meta['Manufacture'] || r.COMP2 || 'TIRATHAI';
-          const site = meta.site || meta['SITE'] || '-';
-          const power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
-          const voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
-          const service = meta.serviceType || meta['Service Type'] || '-';
-
-          document.getElementById('meta-name').textContent = name;
-          document.getElementById('meta-serial').textContent = sNo;
-          document.getElementById('meta-manufacture').textContent = manuf;
-          document.getElementById('meta-site').textContent = site;
-          document.getElementById('meta-power').textContent = (power && power !== '-') ? Number(power).toLocaleString() : '-';
-          document.getElementById('meta-voltage').textContent = voltage;
-          document.getElementById('meta-service').textContent = service;
-        } else {
-          document.getElementById('meta-name').textContent = r.serial || serial;
-          document.getElementById('meta-serial').textContent = r.serial || serial;
-          document.getElementById('meta-manufacture').textContent = r.COMP2 || 'TIRATHAI';
-          document.getElementById('meta-site').textContent = '-';
-          document.getElementById('meta-power').textContent = '-';
-          document.getElementById('meta-voltage').textContent = '-';
-          document.getElementById('meta-service').textContent = '-';
+          name = meta.name || meta['Equipment Name'] || name;
+          sNo = meta.serial || meta['Serial No'] || sNo;
+          manuf = meta.manufacture || meta['Manufacture'] || manuf;
+          site = meta.site || meta['SITE'] || site;
+          power = meta.ratedPower || meta['Rated Power (MVA)'] || power;
+          voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || voltage;
+          service = meta.serviceType || meta['Service Type'] || service;
+          fluid = meta.fluidType || meta['Fluid Type'] || fluid;
         }
       }
 
+      const powerStr = (power && power !== '-') ? Number(power).toLocaleString() + ' MVA' : '-';
+
+      document.querySelectorAll('.val-meta-name').forEach(el => el.textContent = name);
+      document.querySelectorAll('.val-meta-serial').forEach(el => el.textContent = sNo);
+      document.querySelectorAll('.val-meta-manufacture').forEach(el => el.textContent = manuf);
+      document.querySelectorAll('.val-meta-site').forEach(el => el.textContent = site);
+      document.querySelectorAll('.val-meta-power').forEach(el => el.textContent = powerStr);
+      document.querySelectorAll('.val-meta-voltage').forEach(el => el.textContent = voltage);
+      document.querySelectorAll('.val-meta-service').forEach(el => el.textContent = service);
+      document.querySelectorAll('.val-meta-fluid').forEach(el => el.textContent = fluid);
+
       // 1. Instrument Information
-      document.getElementById('inst-humidity').textContent = r.Humidity ? `${r.Humidity}%` : '-';
-      document.getElementById('inst-ambient-temp').textContent = r.Ambient_temp ? `${r.Ambient_temp} °C` : '-';
-      document.getElementById('inst-oil-temp').textContent = r.Oil_temp ? `${r.Oil_temp} °C` : '-';
-      document.getElementById('inst-oil-temp-max').textContent = r.Oil_temp_max ? `${r.Oil_temp_max} °C` : '-';
-      document.getElementById('inst-wnd-hv').textContent = r.Winding_Temp || r.Winding_temp_HV ? `${r.Winding_temp_HV || r.Winding_Temp} °C` : '-';
-      document.getElementById('inst-wnd-hv-max').textContent = r.Winding_temp_HV_max ? `${r.Winding_temp_HV_max} °C` : '-';
-      document.getElementById('inst-wnd-lv').textContent = r.Winding_temp_LV ? `${r.Winding_temp_LV} °C` : '-';
-      document.getElementById('inst-wnd-lv-max').textContent = r.Winding_temp_LV_max ? `${r.Winding_temp_LV_max} °C` : '-';
+      document.getElementById('inst-humidity').textContent = r.Humidity ? r.Humidity + '%' : '-';
+      document.getElementById('inst-ambient-temp').textContent = r.Ambient_temp ? r.Ambient_temp + ' °C' : '-';
+      document.getElementById('inst-oil-temp').textContent = r.Oil_temp ? r.Oil_temp + ' °C' : '-';
+      document.getElementById('inst-oil-temp-max').textContent = r.Oil_temp_max ? r.Oil_temp_max + ' °C' : '-';
+      document.getElementById('inst-wnd-hv').textContent = r.Winding_Temp || r.Winding_temp_HV ? (r.Winding_temp_HV || r.Winding_Temp) + ' °C' : '-';
+      document.getElementById('inst-wnd-hv-max').textContent = r.Winding_temp_HV_max ? r.Winding_temp_HV_max + ' °C' : '-';
+      document.getElementById('inst-wnd-lv').textContent = r.Winding_temp_LV ? r.Winding_temp_LV + ' °C' : '-';
+      document.getElementById('inst-wnd-lv-max').textContent = r.Winding_temp_LV_max ? r.Winding_temp_LV_max + ' °C' : '-';
       document.getElementById('inst-tap').textContent = r.Service_tap || '-';
       document.getElementById('inst-cal-date').textContent = formatDateToDdMmmYyyy(r.Calibration_Date);
 
@@ -1031,6 +1318,9 @@
         { label: 'Proper hand crank interlock', resKey: 'Proper_hand_crank_interlock', remKey: 'Proper_hand_crank_interlock_remark' },
         { label: 'Indication and counter operation', resKey: 'Indication_and_counter_operation_result', remKey: 'Indication_and_counter_operation_remark' },
         { label: 'Oil filter unit operation test and record pressure', resKey: 'Oil_filter_unit_operation_test_and_record_pressure_result', remKey: 'Oil_filter_unit_operation_test_and_record_pressure_remark' },
+        { label: 'Phase A', resKey: 'Phase_A', remKey: 'Phase_A_remark', unit: 'bar' },
+        { label: 'Phase B', resKey: 'Phase_B', remKey: 'Phase_B_remark', unit: 'bar' },
+        { label: 'Phase C', resKey: 'Phase_C', remKey: 'Phase_C_remark', unit: 'bar' },
         // Local control
         { label: 'Physical condition', resKey: 'Physical2_condition_result', remKey: 'Physical2_condition_remark' },
         { label: 'Check all alarm annunciator', resKey: 'Check_all_alarm_annunciator_result', remKey: 'Check_all_alarm_annunciator_remark' },
@@ -1054,7 +1344,7 @@
           if (!detailText || detailText === '-' || detailText.toLowerCase() === 'n/a') {
             detailText = rawRes;
           }
-          const itemKey = `${item.label}:${detailText}`;
+          const itemKey = item.label + ':' + detailText;
           if (!seenLabels.has(itemKey)) {
             seenLabels.add(itemKey);
             abnormalFindings.push({
@@ -1071,7 +1361,7 @@
           summaryBox.style.backgroundColor = '#fff7ed';
           summaryBox.style.borderColor = '#fed7aa';
           summaryBox.style.color = '#9a3412';
-          summaryBox.innerHTML = abnormalFindings.map(f => `• <strong>${f.label}</strong>: ${f.detail}`).join('<br>');
+          summaryBox.innerHTML = abnormalFindings.map(f => '• <strong>' + f.label + '</strong>: ' + f.detail).join('<br>');
         } else {
           summaryBox.style.backgroundColor = '#f0fdf4';
           summaryBox.style.borderColor = '#bbf7d0';
@@ -1080,7 +1370,7 @@
         }
       }
 
-      // 3. Porcelain Condition Checking
+      // 2. Porcelain Condition Checking
       renderTableRows('tbl-porcelain', [
         { label: 'HV bushing', resKey: 'HVB_result', remKey: 'HVB_remark' },
         { label: 'Neutral bushing (HV Side)', resKey: 'NBH_result', remKey: 'NBH_remark' },
@@ -1117,10 +1407,10 @@
       renderTableRows('tbl-temp-indicators', [
         { label: 'Oil temperature indicator', resKey: 'Oil_temp_indicator_result', remKey: 'Oil_temp_indicator_remark' },
         { label: 'Oil temperature switch', resKey: 'Oil_temp_sw_result', remKey: 'Oil_temp_sw_remark' },
-        { label: 'HV Winding temperature indicator', resKey: 'HVW_temp_indicator_result', remKey: 'HVW_temp_indicator_remark' },
-        { label: 'HV Winding temperature switch', resKey: 'HVW_temp_sw_result', remKey: 'HVW_temp_sw_remark' },
-        { label: 'LV Winding temperature indicator', resKey: 'LVW_temp_indicator_result', remKey: 'LVW_temp_indicator_remark' },
-        { label: 'LV Winding temperature switch', resKey: 'LVW_temp_sw_result', remKey: 'LVW_temp_sw_remark' }
+        { label: 'HV Winding temp. indicator', resKey: 'HVW_temp_indicator_result', remKey: 'HVW_temp_indicator_remark' },
+        { label: 'HV Winding temp. switch', resKey: 'HVW_temp_sw_result', remKey: 'HVW_temp_sw_remark' },
+        { label: 'LV Winding temp. indicator', resKey: 'LVW_temp_indicator_result', remKey: 'LVW_temp_indicator_remark' },
+        { label: 'LV Winding temp. switch', resKey: 'LVW_temp_sw_result', remKey: 'LVW_temp_sw_remark' }
       ], r);
 
       // 6. Power Transformer Self-Protection
@@ -1148,11 +1438,11 @@
 
       // 9. Earthing Connection Checking
       renderTableRows('tbl-earthing', [
-        { label: 'Transformer Earthing connection', resKey: 'Transfomer_Earthing_connection_result', remKey: 'Transfomer_Earthing_connection_remark' },
+        { label: 'Transformer Earthing conn.', resKey: 'Transfomer_Earthing_connection_result', remKey: 'Transfomer_Earthing_connection_remark' },
         { label: 'Fence Earthing connection', resKey: 'Fence_Earthing_connection_result', remKey: 'Fence_Earthing_connection_remark' },
-        { label: 'Neutral Ground Resistance (NGR)', resKey: 'NGR_result', remKey: 'NGR_remark' },
-        { label: 'NGR Resistance measurement [Ohm]', resKey: 'NGR_resistance_ohm', remKey: 'NGR_resistance_ohm_remark' },
-        { label: 'Ground Resistance measurement [Ohm]', resKey: 'GND_resistance_Ohm', remKey: 'GND_resistance_Ohm_remark' }
+        { label: 'Neutral Ground Res. (NGR)', resKey: 'NGR_result', remKey: 'NGR_remark' },
+        { label: 'NGR Resistance [Ohm]', resKey: 'NGR_resistance_ohm', remKey: 'NGR_resistance_ohm_remark' },
+        { label: 'Ground Resistance [Ohm]', resKey: 'GND_resistance_Ohm', remKey: 'GND_resistance_Ohm_remark' }
       ], r);
 
       // 10. Dehydrating Breather Checking
@@ -1165,7 +1455,7 @@
       // 11. Terminal Box Checking
       renderTableRows('tbl-terminal-box', [
         { label: 'Physical condition', resKey: 'Physical1_condition_result', remKey: 'Physical1_condition_remark' },
-        { label: 'Terminal and wiring / cable', resKey: 'Terminal_and_wiring_and_cable_result', remKey: 'Terminal_and_wiring_and_cable_remark' }
+        { label: 'Terminal & wiring / cable', resKey: 'Terminal_and_wiring_and_cable_result', remKey: 'Terminal_and_wiring_and_cable_remark' }
       ], r);
 
       // 12. All Bolt and Nut Connection Checking
@@ -1182,19 +1472,19 @@
         { label: 'Operation test cooling pump', resKey: 'Operation_test_cooling_pump_result', remKey: 'Operation_test_cooling_pump_remark' }
       ], r);
 
-      // 14. OLTC
+      // 14. OLTC & Pressure Records
       renderTableRows('tbl-oltc', [
         { label: 'Condition of OLTC Panel', resKey: 'Condition_of_OLTC_Panel_result', remKey: 'Condition_of_OLTC_Panel_remark' },
         { label: 'Operation counter', resKey: 'Operation_counter', remKey: 'Operation_counter_remark' },
-        { label: 'Inspection for Motor drive unit', resKey: 'Inspection_for_Motor_drive_unit', remKey: 'Inspection_for_Motor_drive_unit_remark' },
-        { label: 'Proper step-by-step operation', resKey: 'Proper_step_by_step_operation', remKey: 'Proper_step_by_step_operation_remark' },
-        { label: 'Proper operation of hand crank', resKey: 'Proper_operation_of_hand_crank', remKey: 'Proper_operation_of_hand_crank_remark' },
-        { label: 'Proper hand crank interlock', resKey: 'Proper_hand_crank_interlock', remKey: 'Proper_hand_crank_interlock_remark' },
-        { label: 'Indication and counter operation', resKey: 'Indication_and_counter_operation_result', remKey: 'Indication_and_counter_operation_remark' },
-        { label: 'Oil filter unit operation test and record pressure', resKey: 'Oil_filter_unit_operation_test_and_record_pressure_result', remKey: 'Oil_filter_unit_operation_test_and_record_pressure_remark' },
-        { label: 'Phase A', resKey: 'Phase_A', remKey: 'Phase_A_remark', unit: 'bar' },
-        { label: 'Phase B', resKey: 'Phase_B', remKey: 'Phase_B_remark', unit: 'bar' },
-        { label: 'Phase C', resKey: 'Phase_C', remKey: 'Phase_C_remark', unit: 'bar' }
+        { label: 'Motor drive unit inspection', resKey: 'Inspection_for_Motor_drive_unit', remKey: 'Inspection_for_Motor_drive_unit_remark' },
+        { label: 'Step-by-step operation', resKey: 'Proper_step_by_step_operation', remKey: 'Proper_step_by_step_operation_remark' },
+        { label: 'Operation of hand crank', resKey: 'Proper_operation_of_hand_crank', remKey: 'Proper_operation_of_hand_crank_remark' },
+        { label: 'Hand crank interlock', resKey: 'Proper_hand_crank_interlock', remKey: 'Proper_hand_crank_interlock_remark' },
+        { label: 'Indication & counter operation', resKey: 'Indication_and_counter_operation_result', remKey: 'Indication_and_counter_operation_remark' },
+        { label: 'Oil filter unit test & pressure', resKey: 'Oil_filter_unit_operation_test_and_record_pressure_result', remKey: 'Oil_filter_unit_operation_test_and_record_pressure_remark' },
+        { label: 'Phase A Pressure', resKey: 'Phase_A', remKey: 'Phase_A_remark', unit: 'bar' },
+        { label: 'Phase B Pressure', resKey: 'Phase_B', remKey: 'Phase_B_remark', unit: 'bar' },
+        { label: 'Phase C Pressure', resKey: 'Phase_C', remKey: 'Phase_C_remark', unit: 'bar' }
       ], r);
 
       // 15. Local Control Panel Operation
@@ -1221,7 +1511,7 @@
       ].filter(c => c && c.trim() && c.trim() !== '-');
 
       if (commentsList.length > 0) {
-        remarksBox.innerHTML = commentsList.map(c => `• ${c.trim()}`).join('<br>');
+        remarksBox.innerHTML = commentsList.map(c => '• ' + c.trim()).join('<br>');
       } else {
         remarksBox.textContent = 'All visual inspection items are in satisfactory condition with no abnormal defects reported.';
       }
@@ -1241,15 +1531,12 @@
       ].filter(p => p.url && p.url.trim() && p.url.trim() !== '-');
 
       if (photos.length > 0) {
-        photoSectionBanner.style.display = 'block';
+        photoSectionBanner.style.display = 'flex';
         photoGrid.style.display = 'grid';
         photos.forEach((p, idx) => {
           const div = document.createElement('div');
           div.className = 'photo-card';
-          div.innerHTML = `
-            <img src="${p.url}" alt="Inspection Photo ${idx+1}" onerror="this.src='background.jpg'">
-            <div class="photo-caption">${p.cap}</div>
-          `;
+          div.innerHTML = '<img src="' + p.url + '" alt="Inspection Photo ' + (idx+1) + '" onerror="this.src=\'background.jpg\'"><div class="photo-caption">' + p.cap + '</div>';
           photoGrid.appendChild(div);
         });
       } else {
@@ -1257,7 +1544,7 @@
         photoGrid.style.display = 'none';
       }
 
-      // 19. SIGNATURES / APPROVAL (Dynamic values; if missing leave blank)
+      // 19. SIGNATURES / APPROVAL across all 3 pages (Dynamic values; if missing leave blank)
       const cleanSig = (v) => {
         if (!v) return '';
         const s = String(v).trim();
@@ -1268,25 +1555,30 @@
         const s = String(d).trim();
         if (s === '-' || s === 'null' || s === 'undefined' || s === '0000-00-00') return '';
         const formatted = formatDateToDdMmmYyyy(s);
-        return (formatted && formatted !== '-') ? `Date: ${formatted}` : '';
+        return (formatted && formatted !== '-') ? 'Date: ' + formatted : '';
       };
 
       const testedName = cleanSig(r.Tested_by || r.TESTED_BY || r.Name1 || r.NAME1);
       const reviewedName = cleanSig(r.Witnessed_by || r.WITNESSED_BY || r.Name2 || r.NAME2 || r.reviewed_name);
       const approvedName = cleanSig(r.Approved_by || r.APPROVED_BY || r.Name3 || r.NAME3 || r.approved_name);
 
-      document.getElementById('resp-name-tested').textContent = testedName;
-      document.getElementById('resp-name-reviewed').textContent = reviewedName;
-      document.getElementById('resp-name-approved').textContent = approvedName;
-
-      document.getElementById('resp-company-tested').textContent = cleanSig(r.COMP1 || r.comp1);
-      document.getElementById('resp-company-reviewed').textContent = cleanSig(r.COMP2 || r.comp2);
-      document.getElementById('resp-company-approved').textContent = cleanSig(r.COMP3 || r.comp3);
+      const testedComp = cleanSig(r.COMP1 || r.comp1);
+      const reviewedComp = cleanSig(r.COMP2 || r.comp2);
+      const approvedComp = cleanSig(r.COMP3 || r.comp3);
 
       const dStr = cleanDate(r.date || r.Date || r.DATE);
-      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
-      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
-      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
+
+      document.querySelectorAll('.val-resp-name-tested').forEach(el => el.textContent = testedName);
+      document.querySelectorAll('.val-resp-name-reviewed').forEach(el => el.textContent = reviewedName);
+      document.querySelectorAll('.val-resp-name-approved').forEach(el => el.textContent = approvedName);
+
+      document.querySelectorAll('.val-resp-comp-tested').forEach(el => el.textContent = testedComp);
+      document.querySelectorAll('.val-resp-comp-reviewed').forEach(el => el.textContent = reviewedComp);
+      document.querySelectorAll('.val-resp-comp-approved').forEach(el => el.textContent = approvedComp);
+
+      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = testedName ? dStr : '');
+      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = reviewedName ? dStr : '');
+      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = approvedName ? dStr : '');
     }
 
     function renderTableRows(tbodyId, rowConfigs, dataObj) {
@@ -1302,7 +1594,7 @@
         let remVal = rawRem ? rawRem.trim() : '-';
 
         if (item.unit && resVal !== '-' && !resVal.includes(item.unit)) {
-          resVal = `${resVal} ${item.unit}`;
+          resVal = resVal + ' ' + item.unit;
         }
 
         let badgeClass = 'status-na';
@@ -1321,11 +1613,7 @@
         }
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.label}</td>
-          <td style="text-align: center;"><span class="status-badge ${badgeClass}">${resVal}</span></td>
-          <td>${remVal}</td>
-        `;
+        tr.innerHTML = '<td>' + item.label + '</td><td style="text-align: center;"><span class="status-badge ' + badgeClass + '">' + resVal + '</span></td><td>' + remVal + '</td>';
         tbody.appendChild(tr);
       });
     }
@@ -1345,24 +1633,41 @@
       }
     }
 
-    function exportToJPG() {
-      const paper = document.getElementById('report-paper');
-      html2canvas(paper, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      }).then(canvas => {
-        const link = document.createElement('a');
-        const serialEl = document.getElementById('meta-serial');
-        const serial = serialEl ? serialEl.textContent.trim() : 'Report';
-        link.download = `Visual_Inspection_Report_${serial}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
-        link.click();
-      }).catch(err => {
-        console.error("Export JPG failed:", err);
-        alert("Failed to export JPG.");
-      });
+    async function exportReportAsJPG() {
+      const selectEl = document.getElementById('transformer-select');
+      const serial = selectEl ? selectEl.value : 'Visual_Report';
+      const pages = document.querySelectorAll('.report-page');
+
+      for (let i = 0; i < pages.length; i++) {
+        const pageEl = pages[i];
+        const pageNo = i + 1;
+        const filename = 'Visual_Inspection_Report_' + serial + '_Page' + pageNo + '.jpg';
+
+        const originalBoxShadow = pageEl.style.boxShadow;
+        const originalBorderRadius = pageEl.style.borderRadius;
+        pageEl.style.boxShadow = 'none';
+        pageEl.style.borderRadius = '0';
+
+        try {
+          const canvas = await html2canvas(pageEl, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+
+          pageEl.style.boxShadow = originalBoxShadow;
+          pageEl.style.borderRadius = originalBorderRadius;
+
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = canvas.toDataURL('image/jpeg', 0.95);
+          link.click();
+          await new Promise(r => setTimeout(r, 400));
+        } catch (err) {
+          console.error('Export page ' + pageNo + ' failed:', err);
+        }
+      }
     }
   </script>
 </body>
