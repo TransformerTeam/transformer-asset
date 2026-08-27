@@ -1341,7 +1341,7 @@
           labels: years,
           datasets: [
             {
-              label: `Current (DP₀=${currentDP})`,
+              label: `Current (DP₀ = ${currentDP})`,
               data: unitDP,
               borderColor: '#2563eb',
               backgroundColor: '#2563eb',
@@ -1351,7 +1351,7 @@
               tension: 0.15
             },
             {
-              label: `0.5-2.0% Moisture, O2 < 7000 ppm (Normal, DP₀=${currentDP})`,
+              label: `Normal (0.5–2% H₂O, Low O₂)`,
               data: normalDP,
               borderColor: '#16a34a',
               borderWidth: 1.6,
@@ -1359,7 +1359,7 @@
               tension: 0.15
             },
             {
-              label: `0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2, DP₀=${currentDP})`,
+              label: `High O₂ (0.5–2% H₂O, O₂ ≥ 7k)`,
               data: highO2DP,
               borderColor: '#f97316',
               borderWidth: 1.6,
@@ -1367,7 +1367,7 @@
               tension: 0.15
             },
             {
-              label: `> 2.0% Moisture, O2 < 7000 ppm (High Moisture, DP₀=${currentDP})`,
+              label: `High Moisture (> 2% H₂O, Low O₂)`,
               data: highMoistDP,
               borderColor: '#d97706',
               borderWidth: 1.6,
@@ -1375,7 +1375,7 @@
               tension: 0.15
             },
             {
-              label: `> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation, DP₀=${currentDP})`,
+              label: `Severe (> 2% H₂O, O₂ ≥ 7k)`,
               data: severeDP,
               borderColor: '#dc2626',
               borderWidth: 1.6,
@@ -1384,7 +1384,7 @@
               tension: 0.15
             },
             {
-              label: 'End of Life Criterion (DP = 300)',
+              label: 'End of Life (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
               borderWidth: 1.4,
@@ -1392,7 +1392,7 @@
               pointRadius: 0
             },
             {
-              label: 'Mechanical End of Life Criterion (DP = 200)',
+              label: 'Mechanical Limit (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
               borderWidth: 1.4,
@@ -1406,20 +1406,20 @@
           maintainAspectRatio: false,
           layout: {
             padding: {
-              top: 15,
-              right: 15
+              top: 10,
+              right: 10
             }
           },
           plugins: {
             legend: {
-              position: 'top',
-              align: 'end',
+              position: 'right',
+              align: 'center',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 20,
-                font: { size: 8, weight: '600' },
-                padding: 6
+                boxWidth: 16,
+                font: { size: 7.6, weight: '600' },
+                padding: 5
               }
             },
             dp300Callouts: {
@@ -1552,14 +1552,14 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'top',
-              align: 'end',
+              position: 'right',
+              align: 'center',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 20,
-                font: { size: 8, weight: '600' },
-                padding: 6,
+                boxWidth: 16,
+                font: { size: 7.6, weight: '600' },
+                padding: 5,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
             }
