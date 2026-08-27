@@ -616,8 +616,8 @@
           <tr>
             <th>Furan 2-FAL Concentration</th>
             <td id="base-furan">-</td>
-            <th>Current Baseline DP (DP₀)</th>
-            <td style="font-weight: 700; color: #1e3a8a;" id="base-dp0">-</td>
+            <th>Initial Baseline DP (DP₀)</th>
+            <td style="font-weight: 700; color: #1e3a8a;" id="base-dp0">1,000 (New Paper Baseline)</td>
           </tr>
           <tr>
             <th>Current Estimated DP (DPt)</th>
@@ -663,7 +663,7 @@
             <div>Current DP: <span class="formula-math">DP_t = DP₀ / (η + 1)</span></div>
           </div>
           <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-            • Parameters: <em>DP₀</em> = Dynamic Current DP, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
+            • Parameters: <em>DP₀</em> = Initial Baseline DP (1,000), <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
           </div>
         </div>
 
@@ -691,7 +691,7 @@
       </div>
 
       <!-- 5. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Dynamic from DP0 = Current DP) -->
-      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Dynamic Baseline DP₀)</div>
+      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Initial DP₀ = 1,000)</div>
       <table class="report-table">
         <thead>
           <tr>
@@ -1072,9 +1072,9 @@
       const elFuran = document.getElementById('base-furan');
       if (elFuran) elFuran.textContent = furanPpb + ' ppb (' + (furanPpb / 1000).toFixed(4) + ' ppm)';
       const elDP0 = document.getElementById('base-dp0');
-      if (elDP0) elDP0.textContent = `${dpVal} (Current Baseline)`;
+      if (elDP0) elDP0.textContent = '1,000 (New Paper Baseline)';
       const elCurrDP = document.getElementById('base-current-dp');
-      if (elCurrDP) elCurrDP.textContent = dpVal;
+      if (elCurrDP) elCurrDP.textContent = `${dpVal} (Estimated from Furan)`;
 
       let kYearly = 0.0000310;
       if (isHighMoisture && isHighO2) {
@@ -1190,7 +1190,7 @@
 
       // Update Chart Subtitle
       const elSubtitle = document.getElementById('chart-dp-subtitle');
-      if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (CIGRE 761 / SINTEF)`;
+      if (elSubtitle) elSubtitle.textContent = `Initial Paper Baseline DP₀ = 1,000 | Current DP = ${dpVal} (CIGRE 761 / SINTEF)`;
 
       // Intersections metadata for callout lines
       const intersections = [
