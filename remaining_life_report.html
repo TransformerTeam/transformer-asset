@@ -822,6 +822,7 @@
 
   <script>
     let mtOilDataList = [];
+    let visualDataList = [];
     let dpChartInstance = null;
     let pofChartInstance = null;
 
@@ -836,6 +837,14 @@
         mtOilDataList = parseCSV(csvTxt);
       } catch (e) {
         console.error('Failed to load MTOilData.csv', e);
+      }
+
+      try {
+        const respVis = await fetch('TestData/VisualData.csv');
+        const visCsvTxt = await respVis.text();
+        visualDataList = parseCSV(visCsvTxt);
+      } catch (e) {
+        console.error('Failed to load VisualData.csv', e);
       }
 
       populateTransformerSelect();
@@ -1090,11 +1099,45 @@
       const cleanMoistNum = parseFloat(moistureStr) || 1.0;
       const oxygenDisplay = latestOil.O2 ? Number(latestOil.O2).toLocaleString() + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '5,000 ppm');
 
+      // Retrieve Temperature from Visual Inspection Data
+      let visRecords = visualDataList.filter(x => matchSerial(x.serial || x.Serial_no || x.Serial_No, serial));
+      if (visRecords && visRecords.length > 0) {
+        visRecords.sort((a, b) => {
+          const dA = new Date(a.Date || a.date);
+          const dB = new Date(b.Date || b.date);
+          return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+        });
+      }
+      const latestVis = visRecords.length > 0 ? visRecords[0] : {};
+
+      // 1. Try LV Winding temp first
+      let rawLvTemp = latestVis.Winding_temp_LV || latestVis.Winding_temp_LV_max || latestVis.Winding_Temp || latestVis.Winding_temp_HV;
+      let lvTemp = (rawLvTemp !== undefined && rawLvTemp !== '' && rawLvTemp !== '-' && !isNaN(parseFloat(rawLvTemp))) ? parseFloat(rawLvTemp) : null;
+
+      // 2. Try Oil temp next
+      let rawOilTemp = latestVis.Oil_temp || latestVis.Oil_temp_max || latestOil.Oil_Temp || latestOil.Oil_temp;
+      let oilTemp = (rawOilTemp !== undefined && rawOilTemp !== '' && rawOilTemp !== '-' && !isNaN(parseFloat(rawOilTemp))) ? parseFloat(rawOilTemp) : null;
+
+      let hotspotVal = null;
+      let hotspotSubText = '-';
+
+      if (lvTemp !== null && lvTemp > 0) {
+        // IEC 60076-7 standard: Hotspot = LV_Temp + (H*gr - gr) -> 5.1 °C rise
+        hotspotVal = lvTemp + 5.1;
+        hotspotSubText = `From LV Winding (${lvTemp} °C) + 5.1 °C`;
+      } else if (oilTemp !== null && oilTemp > 0) {
+        hotspotVal = oilTemp + 5.1;
+        hotspotSubText = `From Oil Temp (${oilTemp} °C) + 5.1 °C`;
+      } else {
+        hotspotVal = null;
+        hotspotSubText = 'No Temperature Record';
+      }
+
       // Populate 3 Main Key Variable Cards (Before DP Graph)
       const elCardHsVal = document.getElementById('card-hotspot-val');
-      if (elCardHsVal) elCardHsVal.textContent = '98 °C';
+      if (elCardHsVal) elCardHsVal.textContent = hotspotVal !== null ? (Math.round(hotspotVal * 10) / 10) + ' °C' : '-';
       const elCardHsSub = document.getElementById('card-hotspot-sub');
-      if (elCardHsSub) elCardHsSub.textContent = 'IEC 60076-7 (371.15 K)';
+      if (elCardHsSub) elCardHsSub.textContent = hotspotSubText;
 
       const elCardMoistVal = document.getElementById('card-moisture-val');
       if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
