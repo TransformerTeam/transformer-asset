@@ -604,7 +604,7 @@
           </tr>
           <tr>
             <th>Fluid Type</th>
-            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">Mineral oil</td>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-fluid">-</td>
             <th>Service Type</th>
             <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-service">-</td>
           </tr>
@@ -1071,7 +1071,7 @@
       const power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
       const manuf = meta.manufacture || meta['Manufacture'] || latestOil.COMP2 || '-';
       const voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
-      const fluid = meta.fluidType || meta['Fluid Type'] || 'Mineral oil';
+      const fluid = meta.fluidType || meta['Fluid Type'] || '-';
       const service = meta.serviceType || meta['Service Type'] || '-';
 
       const powerStr = (power && power !== '-') ? Number(power).toLocaleString() + ' MVA' : '-';
@@ -1085,26 +1085,39 @@
       document.querySelectorAll('.val-meta-service').forEach(el => el.textContent = service);
       document.querySelectorAll('.val-meta-fluid').forEach(el => el.textContent = fluid);
 
+      // Extract Real Service Age
       let age = parseFloat(meta.serviceAge || meta['Service Age (Year)'] || meta.age);
-      if (isNaN(age) || age <= 0) age = 20;
-
-      let furanPpb = parseFloat(latestOil.Furan_Analysis || meta.Furan || 9.3);
-      if (isNaN(furanPpb)) furanPpb = 9.3;
-
-      let dpVal = parseFloat(meta.estimatedDP || meta['Estimated DP (From Furan)']);
-      if (isNaN(dpVal) || dpVal <= 0) {
-        dpVal = calcDominelliDP(furanPpb) || 850;
+      if (isNaN(age) || age <= 0) {
+        const mfgYear = parseInt(meta.manufactureYear || meta['Manufacture Year'] || meta.year);
+        if (!isNaN(mfgYear) && mfgYear > 1900 && mfgYear <= 2025) {
+          age = 2025 - mfgYear;
+        } else {
+          age = null;
+        }
       }
-      dpVal = Math.round(dpVal);
 
-      const o2Val = parseFloat(latestOil.O2 || 5000);
-      const isHighO2 = o2Val >= 7000;
-      const moistureVal = parseFloat(meta['%Moisture in paper (FDS)'] || latestOil.WC || 1.0);
-      const isHighMoisture = moistureVal > 2.0;
+      // Extract Real Furan / Estimated DP
+      let rawFuran = latestOil.Furan_Analysis || meta.Furan || meta['Furan (ppb)'];
+      let furanPpb = (rawFuran !== undefined && rawFuran !== '' && rawFuran !== '-' && !isNaN(parseFloat(rawFuran))) ? parseFloat(rawFuran) : null;
 
-      const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.0%';
-      const cleanMoistNum = parseFloat(moistureStr) || 1.0;
-      const oxygenDisplay = latestOil.O2 ? Number(latestOil.O2).toLocaleString() + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '5,000 ppm');
+      let rawDP = meta.estimatedDP || meta['Estimated DP (From Furan)'];
+      let dpVal = (rawDP !== undefined && rawDP !== '' && rawDP !== '-' && !isNaN(parseFloat(rawDP))) ? parseFloat(rawDP) : null;
+      if (dpVal === null && furanPpb !== null) {
+        dpVal = calcDominelliDP(furanPpb);
+      }
+      if (dpVal !== null) {
+        dpVal = Math.round(dpVal);
+      }
+
+      // Extract Real O2 Level
+      let rawO2 = latestOil.O2 || latestOil.O2_ppm || meta.O2;
+      let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
+      const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
+
+      // Extract Real Moisture in Paper (FDS)
+      let rawMoist = meta['%Moisture in paper (FDS)'] || latestOil.WC || meta.Moisture;
+      let cleanMoistNum = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
+      const isHighMoisture = cleanMoistNum !== null ? cleanMoistNum > 2.0 : false;
 
       // Retrieve Temperature from Visual Inspection Data
       let visRecords = visualDataList.filter(x => matchSerial(x.serial || x.Serial_no || x.Serial_No, serial));
@@ -1146,32 +1159,50 @@
       const elCardHsSub = document.getElementById('card-hotspot-sub');
       if (elCardHsSub) elCardHsSub.textContent = hotspotSubText;
 
+      // 2. Moisture in Paper Card
       const elCardMoistVal = document.getElementById('card-moisture-val');
-      if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
       const elCardMoistSub = document.getElementById('card-moisture-sub');
-      if (elCardMoistSub) {
-        if (cleanMoistNum < 1.5) {
-          elCardMoistSub.textContent = 'FDS Test: Dry (< 1.5%)';
-          elCardMoistSub.style.color = '#15803d';
-        } else if (cleanMoistNum <= 2.0) {
-          elCardMoistSub.textContent = 'FDS Test: Moderate (1.5-2.0%)';
-          elCardMoistSub.style.color = '#a16207';
-        } else {
-          elCardMoistSub.textContent = 'FDS Test: High Moisture (> 2.0%)';
-          elCardMoistSub.style.color = '#dc2626';
+      if (cleanMoistNum !== null) {
+        if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
+        if (elCardMoistSub) {
+          if (cleanMoistNum < 1.5) {
+            elCardMoistSub.textContent = 'FDS Test: Dry (< 1.5%)';
+            elCardMoistSub.style.color = '#15803d';
+          } else if (cleanMoistNum <= 2.0) {
+            elCardMoistSub.textContent = 'FDS Test: Moderate (1.5-2.0%)';
+            elCardMoistSub.style.color = '#a16207';
+          } else {
+            elCardMoistSub.textContent = 'FDS Test: High Moisture (> 2.0%)';
+            elCardMoistSub.style.color = '#dc2626';
+          }
+        }
+      } else {
+        if (elCardMoistVal) elCardMoistVal.textContent = '-';
+        if (elCardMoistSub) {
+          elCardMoistSub.textContent = 'No FDS Moisture Record';
+          elCardMoistSub.style.color = '#64748b';
         }
       }
 
+      // 3. O2 Level Card
       const elCardOxyVal = document.getElementById('card-oxygen-val');
-      if (elCardOxyVal) elCardOxyVal.textContent = oxygenDisplay;
       const elCardOxySub = document.getElementById('card-oxygen-sub');
-      if (elCardOxySub) {
-        if (isHighO2) {
-          elCardOxySub.textContent = 'SINTEF: High O₂ (≥ 7,000 ppm)';
-          elCardOxySub.style.color = '#f97316';
-        } else {
-          elCardOxySub.textContent = 'SINTEF: Normal O₂ (< 7,000 ppm)';
-          elCardOxySub.style.color = '#15803d';
+      if (o2Val !== null) {
+        if (elCardOxyVal) elCardOxyVal.textContent = Number(o2Val).toLocaleString() + ' ppm';
+        if (elCardOxySub) {
+          if (isHighO2) {
+            elCardOxySub.textContent = 'SINTEF: High O₂ (≥ 7,000 ppm)';
+            elCardOxySub.style.color = '#f97316';
+          } else {
+            elCardOxySub.textContent = 'SINTEF: Normal O₂ (< 7,000 ppm)';
+            elCardOxySub.style.color = '#15803d';
+          }
+        }
+      } else {
+        if (elCardOxyVal) elCardOxyVal.textContent = '-';
+        if (elCardOxySub) {
+          elCardOxySub.textContent = 'No DGA O₂ Record';
+          elCardOxySub.style.color = '#64748b';
         }
       }
 
@@ -1226,47 +1257,61 @@
       const pofVal = calcPoF(age);
       const pofStr = pofVal.toFixed(1) + '%';
 
-      // KPI Cards
-      document.getElementById('kpi-current-dp').textContent = dpVal;
-      let dpStatusText = 'Healthy';
-      let dpStatusColor = '#15803d';
-      if (dpVal < 250) {
-        dpStatusText = 'Critical End of Life';
-        dpStatusColor = '#b91c1c';
-      } else if (dpVal < 400) {
-        dpStatusText = 'Extensive Degradation';
-        dpStatusColor = '#ea580c';
-      } else if (dpVal < 550) {
-        dpStatusText = 'Advanced Ageing';
-        dpStatusColor = '#a16207';
-      } else if (dpVal < 700) {
-        dpStatusText = 'Moderate Ageing';
-        dpStatusColor = '#0284c7';
+      // KPI 1: Current Estimated DP
+      if (dpVal !== null) {
+        document.getElementById('kpi-current-dp').textContent = dpVal;
+        let dpStatusText = 'Healthy';
+        let dpStatusColor = '#15803d';
+        if (dpVal < 250) {
+          dpStatusText = 'Critical End of Life';
+          dpStatusColor = '#b91c1c';
+        } else if (dpVal < 400) {
+          dpStatusText = 'Extensive Degradation';
+          dpStatusColor = '#ea580c';
+        } else if (dpVal < 550) {
+          dpStatusText = 'Advanced Ageing';
+          dpStatusColor = '#a16207';
+        } else if (dpVal < 700) {
+          dpStatusText = 'Moderate Ageing';
+          dpStatusColor = '#0284c7';
+        }
+        document.getElementById('kpi-dp-status').textContent = `Insulation: ${dpStatusText}`;
+        document.getElementById('kpi-dp-status').style.color = dpStatusColor;
+
+        document.getElementById('kpi-rem-dp300').textContent = `${rulCurr300} Years`;
+        document.getElementById('kpi-target-year-300').textContent = `Target Year: ${yearCurr300}`;
+
+        document.getElementById('kpi-rem-dp200').textContent = `${rulCurr200} Years`;
+        document.getElementById('kpi-target-year-200').textContent = `Mechanical Limit: ${yearCurr200}`;
+      } else {
+        document.getElementById('kpi-current-dp').textContent = '-';
+        document.getElementById('kpi-dp-status').textContent = 'No Furan/DP Record';
+        document.getElementById('kpi-dp-status').style.color = '#64748b';
+        document.getElementById('kpi-rem-dp300').textContent = '-';
+        document.getElementById('kpi-target-year-300').textContent = 'Target Year: -';
+        document.getElementById('kpi-rem-dp200').textContent = '-';
+        document.getElementById('kpi-target-year-200').textContent = 'Mechanical Limit: -';
       }
-      document.getElementById('kpi-dp-status').textContent = `Insulation: ${dpStatusText}`;
-      document.getElementById('kpi-dp-status').style.color = dpStatusColor;
 
-      document.getElementById('kpi-rem-dp300').textContent = `${rulCurr300} Years`;
-      document.getElementById('kpi-target-year-300').textContent = `Target Year: ${yearCurr300}`;
-
-      document.getElementById('kpi-rem-dp200').textContent = `${rulCurr200} Years`;
-      document.getElementById('kpi-target-year-200').textContent = `Mechanical Limit: ${yearCurr200}`;
-
-      document.getElementById('kpi-pof-val').textContent = pofStr;
-      let pofRisk = 'Low Risk (<20%)';
-      let pofColor = '#15803d';
-      let pofBadgeClass = 'status-normal';
-      if (pofVal >= 50) {
-        pofRisk = 'High Risk (≥50%)';
-        pofColor = '#b91c1c';
-        pofBadgeClass = 'status-unacceptable';
-      } else if (pofVal >= 20) {
-        pofRisk = 'Medium Risk (20%-50%)';
-        pofColor = '#a16207';
-        pofBadgeClass = 'status-questionable';
+      // KPI 4: Probability of Failure (PoF)
+      if (age !== null) {
+        document.getElementById('kpi-pof-val').textContent = pofStr;
+        let pofRisk = 'Low Risk (<20%)';
+        let pofColor = '#15803d';
+        if (pofVal >= 50) {
+          pofRisk = 'High Risk (≥50%)';
+          pofColor = '#b91c1c';
+        } else if (pofVal >= 20) {
+          pofRisk = 'Medium Risk (20%-50%)';
+          pofColor = '#a16207';
+        }
+        document.getElementById('kpi-pof-risk').textContent = pofRisk;
+        document.getElementById('kpi-pof-risk').style.color = pofColor;
+      } else {
+        document.getElementById('kpi-pof-val').textContent = '-';
+        document.getElementById('kpi-pof-risk').textContent = 'No Service Age Record';
+        document.getElementById('kpi-pof-risk').style.color = '#64748b';
       }
-      document.getElementById('kpi-pof-risk').textContent = pofRisk;
-      document.getElementById('kpi-pof-risk').style.color = pofColor;
 
       // Table Rows (Dynamic Scenario Table 6-4)
       document.getElementById('scen-norm-300').textContent = `~${rulNorm300} Years (${yearNorm300})`;
@@ -1298,9 +1343,10 @@
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
 
-      // Render Charts with Dynamic dpVal and Intersections
-      renderDegradationChart(dpVal, kYearly, currentYear, intersections);
-      renderWeibullChart(age, currentYear);
+      // Render Charts with Real Available Data
+      const effectiveDP = dpVal !== null ? dpVal : 1000;
+      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : []);
+      renderWeibullChart(age !== null ? age : 20, currentYear);
 
       // Signatures
       const cleanSig = (v) => {
@@ -1313,9 +1359,9 @@
       const reviewedName = cleanSig(latestOil.Name2 || latestOil.WITNESSED_BY || latestOil.Witnessed_by);
       const approvedName = cleanSig(latestOil.Name3 || latestOil.APPROVED_BY || latestOil.Approved_by);
 
-      const testedComp = cleanSig(latestOil.COMP1 || 'Hitachi Energy');
-      const reviewedComp = cleanSig(latestOil.COMP2 || 'GPSC');
-      const approvedComp = cleanSig(latestOil.COMP3 || 'GPSC');
+      const testedComp = cleanSig(latestOil.COMP1 || '');
+      const reviewedComp = cleanSig(latestOil.COMP2 || '');
+      const approvedComp = cleanSig(latestOil.COMP3 || '');
 
       const dStr = formatDateToDdMmmYyyy(latestOil.Date || latestOil.date || meta.Date);
       const dateVal = (dStr && dStr !== '-') ? 'Date: ' + dStr : '';
