@@ -823,6 +823,7 @@
   <script>
     let mtOilDataList = [];
     let visualDataList = [];
+    let dfrDataList = [];
     let dpChartInstance = null;
     let pofChartInstance = null;
 
@@ -845,6 +846,14 @@
         visualDataList = parseCSV(visCsvTxt);
       } catch (e) {
         console.error('Failed to load VisualData.csv', e);
+      }
+
+      try {
+        const respDfr = await fetch('TestData/DFRData.csv');
+        const dfrCsvTxt = await respDfr.text();
+        dfrDataList = parseCSV(dfrCsvTxt);
+      } catch (e) {
+        console.error('Failed to load DFRData.csv', e);
       }
 
       populateTransformerSelect();
@@ -1114,9 +1123,20 @@
       let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
       const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
-      // Extract Real Moisture in Paper (FDS)
-      let rawMoist = meta['%Moisture in paper (FDS)'] || latestOil.WC || meta.Moisture;
+      // Extract Real Moisture in Paper from DFR/FDS Test Data (TestData/DFRData.csv)
+      let dfrRecords = dfrDataList.filter(x => matchSerial(x.serial || x['Serial No.'] || x['Serial No'] || x.Serial_no, serial));
+      if (dfrRecords && dfrRecords.length > 0) {
+        dfrRecords.sort((a, b) => {
+          const dA = new Date(a['Test Date'] || a.Date || a.date);
+          const dB = new Date(b['Test Date'] || b.Date || b.date);
+          return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+        });
+      }
+      const latestDfr = dfrRecords.length > 0 ? dfrRecords[0] : {};
+
+      let rawMoist = latestDfr['PercentMoisture (CHL)'] || latestDfr.PercentMoisture || meta['%Moisture in paper (FDS)'];
       let cleanMoistNum = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
+      const dfrInstrument = latestDfr['Test Instrument'] || 'FDS';
       const isHighMoisture = cleanMoistNum !== null ? cleanMoistNum > 2.0 : false;
 
       // Retrieve Temperature from Visual Inspection Data
@@ -1165,14 +1185,15 @@
       if (cleanMoistNum !== null) {
         if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
         if (elCardMoistSub) {
+          const instLabel = dfrInstrument ? `${dfrInstrument} Test` : 'FDS Test';
           if (cleanMoistNum < 1.5) {
-            elCardMoistSub.textContent = 'FDS Test: Dry (< 1.5%)';
+            elCardMoistSub.textContent = `${instLabel}: Dry (< 1.5%)`;
             elCardMoistSub.style.color = '#15803d';
           } else if (cleanMoistNum <= 2.0) {
-            elCardMoistSub.textContent = 'FDS Test: Moderate (1.5-2.0%)';
+            elCardMoistSub.textContent = `${instLabel}: Moderate (1.5-2.0%)`;
             elCardMoistSub.style.color = '#a16207';
           } else {
-            elCardMoistSub.textContent = 'FDS Test: High Moisture (> 2.0%)';
+            elCardMoistSub.textContent = `${instLabel}: High Moisture (> 2.0%)`;
             elCardMoistSub.style.color = '#dc2626';
           }
         }
