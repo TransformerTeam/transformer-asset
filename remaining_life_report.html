@@ -421,7 +421,7 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 290px;
+      height: 350px;
     }
 
     /* Technical Formula Box */
@@ -533,7 +533,7 @@
         width: 100% !important;
       }
       .chart-canvas-container {
-        height: 260px !important;
+        height: 320px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
@@ -1572,10 +1572,10 @@
           maintainAspectRatio: false,
           layout: {
             padding: {
-              top: 28,
-              bottom: 4,
-              left: 4,
-              right: 18
+              top: 32,
+              bottom: 12,
+              left: 8,
+              right: 25
             }
           },
           plugins: {
@@ -1595,9 +1595,8 @@
           },
           scales: {
             x: {
-              title: { display: true, text: 'Calendar Year (2025–2125 Projection)', font: { size: 8.8, weight: '700' }, padding: { top: 4, bottom: 2 } },
-              ticks: {
-                font: { size: 8.5 },
+              title: { display: true, text: 'Calendar Year (2025–2125 Projection)', font: { size: 9.5, weight: '700' }, padding: { top: 8, bottom: 4 } },
+              ticks: { font: { size: 9, weight: '500' },
                 maxRotation: 0,
                 callback: function(val, index) {
                   const y = years[index];
@@ -1610,8 +1609,7 @@
               min: 0,
               max: yMax,
               title: { display: true, text: 'Degree of Polymerization (DP)', font: { size: 9, weight: '700' } },
-              ticks: { 
-                font: { size: 8.5 },
+              ticks: { font: { size: 9, weight: '500' },
                 stepSize: 200
               },
               grid: { color: '#f1f5f9' }
@@ -1723,10 +1721,10 @@
           maintainAspectRatio: false,
           layout: {
             padding: {
-              top: 14,
-              bottom: 12,
-              left: 6,
-              right: 18
+              top: 22,
+              bottom: 14,
+              left: 8,
+              right: 25
             }
           },
           plugins: {
@@ -1756,9 +1754,8 @@
           },
           scales: {
             x: {
-              title: { display: true, text: `Life-Cycle Timeline: Commissioning Year (${commissionYear}) → Current (${baseYear}) → 2125 Projection`, font: { size: 8.8, weight: '700' }, padding: { top: 4, bottom: 2 } },
-              ticks: {
-                font: { size: 8.5 },
+              title: { display: true, text: `Life-Cycle Timeline: Commissioning Year (${commissionYear}) → Current (${baseYear}) → 2125 Projection`, font: { size: 9.5, weight: '700' }, padding: { top: 8, bottom: 4 } },
+              ticks: { font: { size: 9, weight: '500' },
                 maxRotation: 0,
                 callback: function(val, index) {
                   const y = years[index];
@@ -1771,7 +1768,7 @@
               min: 0,
               max: 100,
               title: { display: true, text: 'Probability of Failure (%)', font: { size: 9, weight: '700' } },
-              ticks: { font: { size: 8.5 }, stepSize: 20 },
+              ticks: { font: { size: 9, weight: '500' }, stepSize: 20 },
               grid: { color: '#f1f5f9' }
             }
           }
