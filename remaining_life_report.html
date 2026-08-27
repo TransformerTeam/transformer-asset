@@ -344,6 +344,44 @@
       margin-top: 1px;
     }
 
+    /* 3 Main Key Aging Drivers Grid (Before DP Chart) */
+    .key-drivers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 6px 0 8px;
+    }
+
+    .key-driver-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .key-driver-label {
+      font-size: 8.2px;
+      font-weight: 700;
+      color: #475569;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .key-driver-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin: 2px 0 1px;
+    }
+
+    .key-driver-sub {
+      font-size: 7.8px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
     /* Charts Container */
     .charts-container {
       display: flex;
@@ -382,7 +420,7 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 260px;
+      height: 250px;
     }
 
     /* Technical Formula Box */
@@ -494,7 +532,7 @@
         width: 100% !important;
       }
       .chart-canvas-container {
-        height: 235px !important;
+        height: 225px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
@@ -597,36 +635,25 @@
         </div>
       </div>
 
-      <!-- 2. Operating Environment & Insulation Ageing Baseline Parameters Table -->
-      <div class="section-banner">• Operating Environment &amp; Insulation Ageing Baseline Parameters</div>
-      <table class="report-table">
-        <tbody>
-          <tr>
-            <th style="width: 25%;">Service Age (Years)</th>
-            <td style="width: 25%; font-weight: 700;" id="base-age">-</td>
-            <th style="width: 25%;">Estimated Hotspot Temp. (Ths)</th>
-            <td style="width: 25%;" id="base-hotspot">98 °C (371.15 K)</td>
-          </tr>
-          <tr>
-            <th>Moisture in Paper (% FDS)</th>
-            <td id="base-moisture">-</td>
-            <th>Dissolved O₂ in Oil</th>
-            <td id="base-oxygen">-</td>
-          </tr>
-          <tr>
-            <th>Furan 2-FAL Concentration</th>
-            <td id="base-furan">-</td>
-            <th>Initial Baseline DP (DP₀)</th>
-            <td style="font-weight: 700; color: #1e3a8a;" id="base-dp0">1,000 (New Paper Baseline)</td>
-          </tr>
-          <tr>
-            <th>Current Estimated DP (DPt)</th>
-            <td style="font-weight: 700; color: #1e3a8a;" id="base-current-dp">-</td>
-            <th>Aging Rate Constant (k)</th>
-            <td style="font-weight: 700;" id="base-aging-k">-</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- 2. 3 Main Key Aging Drivers / Variables (Before DP Degradation Graph) -->
+      <div class="section-banner">• Key Degradation Variables &amp; Operating Environment (SINTEF Model Inputs)</div>
+      <div class="key-drivers-grid">
+        <div class="key-driver-card">
+          <div class="key-driver-label">1. Hot Spot Temperature</div>
+          <div class="key-driver-val" id="card-hotspot-val">98 °C</div>
+          <div class="key-driver-sub" id="card-hotspot-sub">IEC 60076-7 Baseline: ≤ 98 °C</div>
+        </div>
+        <div class="key-driver-card">
+          <div class="key-driver-label">2. Moisture in Paper</div>
+          <div class="key-driver-val" id="card-moisture-val">1.0%</div>
+          <div class="key-driver-sub" id="card-moisture-sub">FDS Test: Dry (&lt; 1.5%)</div>
+        </div>
+        <div class="key-driver-card">
+          <div class="key-driver-label">3. O2 Level (in Oil)</div>
+          <div class="key-driver-val" id="card-oxygen-val">5,000 ppm</div>
+          <div class="key-driver-sub" id="card-oxygen-sub">SINTEF: Normal (&lt; 7,000 ppm)</div>
+        </div>
+      </div>
 
       <!-- 3. STACKED CHARTS (Dynamic DP0, Callout Intersections at DP = 300, Cut off at 2125) -->
       <div class="charts-container">
@@ -663,7 +690,7 @@
             <div>Current DP: <span class="formula-math">DP_t = DP₀ / (η + 1)</span></div>
           </div>
           <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-            • Parameters: <em>DP₀</em> = Initial Baseline DP (1,000), <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
+            • Parameters: <em>DP₀</em> = Dynamic Current DP, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (≥2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
           </div>
         </div>
 
@@ -691,7 +718,7 @@
       </div>
 
       <!-- 5. Operating Regimes & Sensitivity Scenario Comparison (Table 6-4 Dynamic from DP0 = Current DP) -->
-      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Initial DP₀ = 1,000)</div>
+      <div class="section-banner">• Operating Regimes &amp; Sensitivity Scenario Comparison (Dynamic Baseline DP₀)</div>
       <table class="report-table">
         <thead>
           <tr>
@@ -704,7 +731,7 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>0.5–2.0% Moisture, O₂ &lt; 7000 ppm</strong> (Normal Operating)</td>
+            <td><strong style="color: #16a34a;">0.5–2.0% Moisture, O₂ &lt; 7000 ppm</strong> (Normal Operating)</td>
             <td style="text-align: center;">3.10 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-norm-300">-</td>
             <td style="text-align: center;" id="scen-norm-200">-</td>
@@ -718,21 +745,21 @@
             <td style="text-align: center;"><span class="status-badge status-normal" id="scen-curr-badge">Current</span></td>
           </tr>
           <tr>
-            <td><strong>0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
+            <td><strong style="color: #f97316;">0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-oxy-300">-</td>
             <td style="text-align: center;" id="scen-oxy-200">-</td>
             <td style="text-align: center;"><span class="status-badge status-questionable">High O₂</span></td>
           </tr>
           <tr>
-            <td><strong>&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
+            <td><strong style="color: #d97706;">&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
             <td style="text-align: center;">7.80 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-moist-300">-</td>
             <td style="text-align: center;" id="scen-moist-200">-</td>
             <td style="text-align: center;"><span class="status-badge status-questionable">High H₂O</span></td>
           </tr>
           <tr>
-            <td><strong>&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
+            <td><strong style="color: #dc2626;">&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
             <td style="text-align: center;">1.20 × 10⁻⁴ year⁻¹</td>
             <td style="text-align: center;" id="scen-sev-300">-</td>
             <td style="text-align: center;" id="scen-sev-200">-</td>
@@ -1060,21 +1087,43 @@
       const isHighMoisture = moistureVal > 2.0;
 
       const moistureStr = meta['%Moisture in paper (FDS)'] || latestOil.WC || '1.0%';
-      const oxygenStr = latestOil.O2 ? latestOil.O2 + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '< 7,000 ppm');
+      const cleanMoistNum = parseFloat(moistureStr) || 1.0;
+      const oxygenDisplay = latestOil.O2 ? Number(latestOil.O2).toLocaleString() + ' ppm' : (isHighO2 ? '≥ 7,000 ppm' : '5,000 ppm');
 
-      // Populate Baseline Parameters Table (Dynamic DP0 = dpVal)
-      const elAge = document.getElementById('base-age');
-      if (elAge) elAge.textContent = age + ' Years';
-      const elMoist = document.getElementById('base-moisture');
-      if (elMoist) elMoist.textContent = moistureStr.includes('%') ? moistureStr : moistureStr + '%';
-      const elOxy = document.getElementById('base-oxygen');
-      if (elOxy) elOxy.textContent = oxygenStr;
-      const elFuran = document.getElementById('base-furan');
-      if (elFuran) elFuran.textContent = furanPpb + ' ppb (' + (furanPpb / 1000).toFixed(4) + ' ppm)';
-      const elDP0 = document.getElementById('base-dp0');
-      if (elDP0) elDP0.textContent = '1,000 (New Paper Baseline)';
-      const elCurrDP = document.getElementById('base-current-dp');
-      if (elCurrDP) elCurrDP.textContent = `${dpVal} (Estimated from Furan)`;
+      // Populate 3 Main Key Variable Cards (Before DP Graph)
+      const elCardHsVal = document.getElementById('card-hotspot-val');
+      if (elCardHsVal) elCardHsVal.textContent = '98 °C';
+      const elCardHsSub = document.getElementById('card-hotspot-sub');
+      if (elCardHsSub) elCardHsSub.textContent = 'IEC 60076-7 (371.15 K)';
+
+      const elCardMoistVal = document.getElementById('card-moisture-val');
+      if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
+      const elCardMoistSub = document.getElementById('card-moisture-sub');
+      if (elCardMoistSub) {
+        if (cleanMoistNum < 1.5) {
+          elCardMoistSub.textContent = 'FDS Test: Dry (< 1.5%)';
+          elCardMoistSub.style.color = '#15803d';
+        } else if (cleanMoistNum <= 2.0) {
+          elCardMoistSub.textContent = 'FDS Test: Moderate (1.5-2.0%)';
+          elCardMoistSub.style.color = '#a16207';
+        } else {
+          elCardMoistSub.textContent = 'FDS Test: High Moisture (> 2.0%)';
+          elCardMoistSub.style.color = '#dc2626';
+        }
+      }
+
+      const elCardOxyVal = document.getElementById('card-oxygen-val');
+      if (elCardOxyVal) elCardOxyVal.textContent = oxygenDisplay;
+      const elCardOxySub = document.getElementById('card-oxygen-sub');
+      if (elCardOxySub) {
+        if (isHighO2) {
+          elCardOxySub.textContent = 'SINTEF: High O₂ (≥ 7,000 ppm)';
+          elCardOxySub.style.color = '#f97316';
+        } else {
+          elCardOxySub.textContent = 'SINTEF: Normal O₂ (< 7,000 ppm)';
+          elCardOxySub.style.color = '#15803d';
+        }
+      }
 
       let kYearly = 0.0000310;
       if (isHighMoisture && isHighO2) {
@@ -1088,8 +1137,6 @@
       }
 
       const kScientific = kYearly.toExponential(2);
-      const elK = document.getElementById('base-aging-k');
-      if (elK) elK.textContent = `${kScientific} year⁻¹`;
 
       const targetDP300 = 300;
       const targetDP200 = 200;
@@ -1190,7 +1237,7 @@
 
       // Update Chart Subtitle
       const elSubtitle = document.getElementById('chart-dp-subtitle');
-      if (elSubtitle) elSubtitle.textContent = `Initial Paper Baseline DP₀ = 1,000 | Current DP = ${dpVal} (CIGRE 761 / SINTEF)`;
+      if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (CIGRE 761 / SINTEF)`;
 
       // Intersections metadata for callout lines
       const intersections = [
@@ -1341,7 +1388,7 @@
           labels: years,
           datasets: [
             {
-              label: `Current (DP = ${currentDP})`,
+              label: `Current (DP₀=${currentDP})`,
               data: unitDP,
               borderColor: '#2563eb',
               backgroundColor: '#2563eb',
@@ -1351,7 +1398,7 @@
               tension: 0.15
             },
             {
-              label: `Normal (0.5–2% Moisture in Paper, O₂ < 7,000 ppm.)`,
+              label: `0.5-2.0% Moisture, O2 < 7000 ppm (Normal, DP₀=${currentDP})`,
               data: normalDP,
               borderColor: '#16a34a',
               borderWidth: 1.6,
@@ -1359,7 +1406,7 @@
               tension: 0.15
             },
             {
-              label: `High O₂ (0.5–2% Moisture in Paper, O₂ ≥ 7,000 ppm.)`,
+              label: `0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2, DP₀=${currentDP})`,
               data: highO2DP,
               borderColor: '#f97316',
               borderWidth: 1.6,
@@ -1367,7 +1414,7 @@
               tension: 0.15
             },
             {
-              label: `High Moisture (> 2% Moisture in Paper, O₂ < 7,000 ppm.)`,
+              label: `> 2.0% Moisture, O2 < 7000 ppm (High Moisture, DP₀=${currentDP})`,
               data: highMoistDP,
               borderColor: '#d97706',
               borderWidth: 1.6,
@@ -1375,7 +1422,7 @@
               tension: 0.15
             },
             {
-              label: `Severe (> 2% Moisture in Paper, O₂ ≥ 7,000 ppm.)`,
+              label: `> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation, DP₀=${currentDP})`,
               data: severeDP,
               borderColor: '#dc2626',
               borderWidth: 1.6,
@@ -1384,7 +1431,7 @@
               tension: 0.15
             },
             {
-              label: 'End of Life (DP = 300)',
+              label: 'End of Life Criterion (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
               borderWidth: 1.4,
@@ -1392,7 +1439,7 @@
               pointRadius: 0
             },
             {
-              label: 'Mechanical Limit (DP = 200)',
+              label: 'Mechanical End of Life Criterion (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
               borderWidth: 1.4,
@@ -1406,20 +1453,19 @@
           maintainAspectRatio: false,
           layout: {
             padding: {
-              top: 10,
-              right: 10
+              top: 15,
+              right: 15
             }
           },
           plugins: {
             legend: {
-              position: 'right',
-              align: 'center',
+              position: 'top',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 16,
-                font: { size: 7.6, weight: '600' },
-                padding: 5
+                boxWidth: 22,
+                font: { size: 8.2, weight: '600' },
+                padding: 6
               }
             },
             dp300Callouts: {
@@ -1505,7 +1551,7 @@
             {
               label: 'Weibull PoF Model (α = 42.5 yrs, β = 3.0)',
               data: pofData,
-              borderColor: '#16a34a',
+              borderColor: '#1e293b',
               backgroundColor: 'rgba(254, 226, 226, 0.35)',
               fill: true,
               borderWidth: 2.2,
@@ -1552,14 +1598,13 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'right',
-              align: 'center',
+              position: 'top',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 16,
-                font: { size: 7.6, weight: '600' },
-                padding: 5,
+                boxWidth: 22,
+                font: { size: 8.2, weight: '600' },
+                padding: 6,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
             }
