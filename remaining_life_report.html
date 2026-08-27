@@ -1285,8 +1285,8 @@
       // Intersections metadata for callout lines
       const intersections = [
         { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
-        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#d97706', offsetLevel: 2 },
-        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f97316', offsetLevel: 3 },
+        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#f97316', offsetLevel: 2 },
+        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f59e0b', offsetLevel: 3 },
         { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4 },
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
@@ -1451,7 +1451,7 @@
             {
               label: '0.5-2.0% Moisture, O₂ ≥ 7000 ppm (High O₂)',
               data: highO2DP,
-              borderColor: '#f97316',
+              borderColor: '#f59e0b',
               borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
@@ -1459,7 +1459,7 @@
             {
               label: '> 2.0% Moisture, O₂ < 7000 ppm (High Moisture)',
               data: highMoistDP,
-              borderColor: '#d97706',
+              borderColor: '#f97316',
               borderWidth: 1.6,
               pointRadius: 0,
               tension: 0.15
@@ -1469,14 +1469,13 @@
               data: severeDP,
               borderColor: '#dc2626',
               borderWidth: 1.6,
-              borderDash: [5, 4],
               pointRadius: 0,
               tension: 0.15
             },
             {
               label: 'Limit (DP = 300)',
               data: limit300,
-              borderColor: '#f97316',
+              borderColor: '#f59e0b',
               borderWidth: 1.4,
               borderDash: [3, 3],
               pointRadius: 0
