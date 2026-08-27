@@ -1413,11 +1413,12 @@
           plugins: {
             legend: {
               position: 'top',
+              align: 'end',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 22,
-                font: { size: 8.2, weight: '600' },
+                boxWidth: 20,
+                font: { size: 8, weight: '600' },
                 padding: 6
               }
             },
@@ -1552,11 +1553,12 @@
           plugins: {
             legend: {
               position: 'top',
+              align: 'end',
               labels: {
                 usePointStyle: true,
                 pointStyle: 'line',
-                boxWidth: 22,
-                font: { size: 8.2, weight: '600' },
+                boxWidth: 20,
+                font: { size: 8, weight: '600' },
                 padding: 6,
                 filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
               }
