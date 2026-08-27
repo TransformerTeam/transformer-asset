@@ -849,13 +849,20 @@
 
       populateTransformerSelect();
 
+      const selectEl = document.getElementById('transformer-select');
       const urlParams = new URLSearchParams(window.location.search);
       const serialParam = urlParams.get('serial');
-      if (serialParam) {
-        document.getElementById('transformer-select').value = serialParam;
+
+      if (serialParam && selectEl) {
+        selectEl.value = serialParam;
         loadReportBySerial(serialParam);
+      } else if (selectEl && selectEl.value) {
+        // Always sync the loaded data with the currently active dropdown selection
+        loadReportBySerial(selectEl.value);
       } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
-        loadReportBySerial(HEALTH_INDEX_DATA[0].serial);
+        const defaultSerial = HEALTH_INDEX_DATA[0].serial;
+        if (selectEl) selectEl.value = defaultSerial;
+        loadReportBySerial(defaultSerial);
       }
     });
 
