@@ -1431,7 +1431,7 @@
           labels: years,
           datasets: [
             {
-              label: `Current (DP₀=${currentDP})`,
+              label: 'Current',
               data: unitDP,
               borderColor: '#2563eb',
               backgroundColor: '#2563eb',
@@ -1441,7 +1441,7 @@
               tension: 0.15
             },
             {
-              label: `0.5-2.0% Moisture, O2 < 7000 ppm (Normal, DP₀=${currentDP})`,
+              label: '0.5-2.0% Moisture, O₂ < 7000 ppm (Normal)',
               data: normalDP,
               borderColor: '#16a34a',
               borderWidth: 1.6,
@@ -1449,7 +1449,7 @@
               tension: 0.15
             },
             {
-              label: `0.5-2.0% Moisture, O2 ≥ 7000 ppm (High O2, DP₀=${currentDP})`,
+              label: '0.5-2.0% Moisture, O₂ ≥ 7000 ppm (High O₂)',
               data: highO2DP,
               borderColor: '#f97316',
               borderWidth: 1.6,
@@ -1457,7 +1457,7 @@
               tension: 0.15
             },
             {
-              label: `> 2.0% Moisture, O2 < 7000 ppm (High Moisture, DP₀=${currentDP})`,
+              label: '> 2.0% Moisture, O₂ < 7000 ppm (High Moisture)',
               data: highMoistDP,
               borderColor: '#d97706',
               borderWidth: 1.6,
@@ -1465,7 +1465,7 @@
               tension: 0.15
             },
             {
-              label: `> 2.0% Moisture, O2 ≥ 7000 ppm (Severe Degradation, DP₀=${currentDP})`,
+              label: '> 2.0% Moisture, O₂ ≥ 7000 ppm (Severe)',
               data: severeDP,
               borderColor: '#dc2626',
               borderWidth: 1.6,
@@ -1474,7 +1474,7 @@
               tension: 0.15
             },
             {
-              label: 'End of Life Criterion (DP = 300)',
+              label: 'Limit (DP = 300)',
               data: limit300,
               borderColor: '#f97316',
               borderWidth: 1.4,
@@ -1482,7 +1482,7 @@
               pointRadius: 0
             },
             {
-              label: 'Mechanical End of Life Criterion (DP = 200)',
+              label: 'Limit (DP = 200)',
               data: limit200,
               borderColor: '#b91c1c',
               borderWidth: 1.4,
