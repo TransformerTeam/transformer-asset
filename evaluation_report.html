@@ -1385,7 +1385,7 @@
           </table>
           <!-- Remaining Life (Year) Progress Bar -->
           <div class="pdf-dp-bar-wrapper" style="margin-top: 8px;">
-            <div class="pdf-dp-bar-title">Remaining Life (Year)</div>
+            <div class="pdf-dp-bar-title">Remaining Life (Year) to DP = 300</div>
             <div class="pdf-dp-track">
               <div class="pdf-dp-pointer" id="an-dp-pointer" style="left: 62.5%;"></div>
             </div>
@@ -1645,6 +1645,58 @@
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       loadEvaluationBySerial(serial);
+    }
+
+    
+    function calcDominelliDP(furanPpb) {
+      if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
+      const furanPpm = furanPpb / 1000;
+      const logFuran = Math.log10(furanPpm);
+      const dp = (1.51 - logFuran) / 0.0035;
+      return Math.max(100, Math.min(1150, Math.round(dp)));
+    }
+
+    function calcRUL(startDP, targetDP, kRate) {
+      if (!startDP || startDP <= targetDP || !kRate || kRate <= 0) return 0;
+      return (1 / targetDP - 1 / startDP) / kRate;
+    }
+
+    function getRemainingLifeDP300(item, serialVal) {
+      let rawFuran = item.Furan || item['Furan (ppb)'] || item.furan;
+      let furanPpb = (rawFuran !== undefined && rawFuran !== '' && rawFuran !== '-' && !isNaN(parseFloat(rawFuran))) ? parseFloat(rawFuran) : null;
+
+      let rawDP = item.estimatedDP || item['Estimated DP (From Furan)'];
+      let dpVal = (rawDP !== undefined && rawDP !== '' && rawDP !== '-' && !isNaN(parseFloat(rawDP))) ? parseFloat(rawDP) : null;
+      if (dpVal === null && furanPpb !== null) {
+        dpVal = calcDominelliDP(furanPpb);
+      }
+      if (dpVal !== null) {
+        dpVal = Math.round(dpVal);
+      }
+      const dp0 = dpVal !== null ? dpVal : 950;
+
+      let rawO2 = item.O2 || item.O2_ppm;
+      let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
+      const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
+
+      let rawMoist = item['%Moisture in paper (FDS)'] || item.PercentMoisture;
+      let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
+      const isHighMoisture = cleanMoist !== null ? cleanMoist > 2.0 : false;
+
+      let kYearly = 0.0000310;
+      if (isHighMoisture && isHighO2) {
+        kYearly = 0.0001200;
+      } else if (isHighO2) {
+        kYearly = 0.0000597;
+      } else if (isHighMoisture) {
+        kYearly = 0.0000780;
+      } else if (dp0 < 750) {
+        kYearly = 0.0000450;
+      }
+
+      const targetDP300 = 300;
+      const rul300 = Math.round(calcRUL(dp0, targetDP300, kYearly) * 10) / 10;
+      return { dp: dp0, rul300: rul300, kYearly: kYearly };
     }
 
     function setElText(id, text) {
