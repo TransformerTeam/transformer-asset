@@ -397,6 +397,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
     { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
     { url: 'TestData/PIData.csv', target: d => piCsvData = d },
+    { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
   ];
 
   return Promise.allSettled(
