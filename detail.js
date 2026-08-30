@@ -1181,14 +1181,6 @@ function openDetail(no) {
       return `<span style="color: ${color} !important; background-color: ${bg} !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block;">${formatted}</span>`;
     };
 
-    const getIndicatorCell = (status) => {
-      const cls = getStatusClass(status);
-      if (status === 'N/A' || status === '-' || !status) {
-        return `<td>-</td>`;
-      }
-      return `<td class="${cls}">${status === 'A' || status === 'Good' ? 'Good' : (status === 'Q' || status === 'Warning' ? 'Warning' : 'Critical')}</td>`;
-    };
-
     basicBody.innerHTML = `
       <tr>
         <td>
@@ -1199,7 +1191,6 @@ function openDetail(no) {
         </td>
         <td>${getWindingDateSpan(piDate)}</td>
         <td>IEEE C57.152: PI > 1.25</td>
-        ${getIndicatorCell(ap.insulationResistance)}
         <td>${piResultHtml}</td>
       </tr>
       <tr>
@@ -1211,7 +1202,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: > 100 MΩ</td>
-        ${getIndicatorCell(ap.coreToGround)}
         <td class="ex-status-good">> 1000 MΩ</td>
       </tr>
       <tr>
@@ -1220,7 +1210,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>Manufacturer</td>
-        ${getIndicatorCell(item.dynamicResistance)}
         <td class="ex-status-good">Normal</td>
       </tr>
       <tr>
@@ -1232,7 +1221,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: %PF <= 1.0%</td>
-        ${getIndicatorCell(ap.insulationPowerFactor)}
         <td class="ex-status-good">0.35% (Good)</td>
       </tr>
       <tr>
@@ -1244,7 +1232,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: <= 0.5% Dev</td>
-        ${getIndicatorCell(ap.ratioPolarity)}
         <td class="ex-status-good">< 0.5% Dev</td>
       </tr>
       <tr>
@@ -1256,7 +1243,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>EGAT Vectors</td>
-        ${getIndicatorCell(ap.excitingCurrent)}
         <td class="ex-status-good">Normal Pattern</td>
       </tr>
       <tr>
@@ -1268,7 +1254,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: <= 5% Dev</td>
-        ${getIndicatorCell(ap.windingResistance)}
         <td class="ex-status-good">< 2% Dev</td>
       </tr>
       <tr>
@@ -1280,7 +1265,6 @@ function openDetail(no) {
         </td>
         <td><span>${item.dateToAssess}</span></td>
         <td>IEEE C57.152: <= 3.0% Dev</td>
-        ${getIndicatorCell(ap.shortCircuit1P || 'A')}
         <td class="ex-status-good">< 3.0% Dev</td>
       </tr>
     `;
