@@ -707,10 +707,19 @@
           <div class="key-driver-val" id="card-hotspot-val">98 °C</div>
           <div class="key-driver-sub" id="card-hotspot-sub">IEC 60076-7 Baseline: ≤ 98 °C</div>
         </div>
-        <div class="key-driver-card">
-          <div class="key-driver-label">2. Moisture in Paper</div>
-          <div class="key-driver-val" id="card-moisture-val">1.0%</div>
-          <div class="key-driver-sub" id="card-moisture-sub">FDS Test: Dry (&lt; 1.5%)</div>
+        <div class="key-driver-card" style="padding: 5px 6px;">
+          <div class="key-driver-label" style="font-size: 8px;">2. Moisture in Paper</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 3px 0 2px; align-items: center;">
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 4px; text-align: center;">
+              <div style="font-size: 6.8px; font-weight: 700; color: #64748b;">1. SDMyers [Cal.]</div>
+              <div id="card-moisture-sdmayer" style="font-size: 13px; font-weight: 800; color: #1e3a8a;">-</div>
+            </div>
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 4px; text-align: center;">
+              <div style="font-size: 6.8px; font-weight: 700; color: #64748b;" id="lbl-moisture-fds">2. FDS Test [Meas.]</div>
+              <div id="card-moisture-fds" style="font-size: 13px; font-weight: 800; color: #1e3a8a;">-</div>
+            </div>
+          </div>
+          <div class="key-driver-sub" id="card-moisture-sub" style="font-size: 7.5px;">Standard Limit: Dry (&lt; 1.5%)</div>
         </div>
         <div class="key-driver-card">
           <div class="key-driver-label">3. O2 Level (in Oil)</div>
@@ -1355,6 +1364,17 @@
       return str;
     }
 
+    
+    function calcSDMyersMoisture(wcPpm, tempC) {
+      if (wcPpm === null || isNaN(wcPpm) || wcPpm <= 0) return null;
+      const t = (tempC !== null && !isNaN(tempC) && tempC > 0) ? tempC : 50;
+      const tK = t + 273.15;
+      const sOil = Math.pow(10, 7.0895 - 1567 / tK);
+      const rs = (wcPpm / sOil) * 100;
+      const wp = 0.049 * Math.pow(rs, 0.77) * Math.exp(500 / tK);
+      return Math.max(0.1, Math.round(wp * 10) / 10);
+    }
+
     function calcDominelliDP(furanPpb) {
       if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
       const furanPpm = furanPpb / 1000;
@@ -1495,28 +1515,45 @@
       const elCardHsSub = document.getElementById('card-hotspot-sub');
       if (elCardHsSub) elCardHsSub.textContent = hotspotSubText;
 
-      // 2. Moisture in Paper Card
-      const elCardMoistVal = document.getElementById('card-moisture-val');
+      // Extract Real Water Content in Oil (for SDMyers calculation)
+      let rawWc = latestOil.WC || latestOil.Water_Content || latestOil['Water Content'] || meta.Water_Content || meta['Water Content'];
+      let oilWcPpm = (rawWc !== undefined && rawWc !== '' && rawWc !== '-' && !isNaN(parseFloat(rawWc))) ? parseFloat(rawWc) : null;
+      let oilTempForSDM = (oilTemp !== null) ? oilTemp : (lvTemp !== null ? lvTemp : null);
+      let sdMyersMoist = (oilWcPpm !== null) ? calcSDMyersMoisture(oilWcPpm, oilTempForSDM) : null;
+
+      // 2. Moisture in Paper Card (Displaying both 1. SDMyers [Cal.] and 2. FDS [Meas.])
+      const elSdMyersVal = document.getElementById('card-moisture-sdmayer');
+      const elFdsVal = document.getElementById('card-moisture-fds');
+      const elFdsLbl = document.getElementById('lbl-moisture-fds');
       const elCardMoistSub = document.getElementById('card-moisture-sub');
-      if (cleanMoistNum !== null) {
-        if (elCardMoistVal) elCardMoistVal.textContent = cleanMoistNum.toFixed(1) + '%';
-        if (elCardMoistSub) {
-          const instLabel = dfrInstrument ? `${dfrInstrument} Test` : 'FDS Test';
-          if (cleanMoistNum < 1.5) {
-            elCardMoistSub.textContent = `${instLabel}: Dry (< 1.5%)`;
+
+      if (elSdMyersVal) {
+        elSdMyersVal.textContent = sdMyersMoist !== null ? `${sdMyersMoist.toFixed(1)}%` : '-';
+      }
+
+      if (elFdsVal) {
+        elFdsVal.textContent = cleanMoistNum !== null ? `${cleanMoistNum.toFixed(1)}%` : '-';
+      }
+
+      if (elFdsLbl) {
+        elFdsLbl.textContent = dfrInstrument ? `2. FDS [${dfrInstrument}]` : '2. FDS Test [Meas.]';
+      }
+
+      if (elCardMoistSub) {
+        const activeMoist = cleanMoistNum !== null ? cleanMoistNum : sdMyersMoist;
+        if (activeMoist !== null) {
+          if (activeMoist < 1.5) {
+            elCardMoistSub.textContent = 'Moisture Status: Dry (< 1.5%)';
             elCardMoistSub.style.color = '#15803d';
-          } else if (cleanMoistNum <= 2.0) {
-            elCardMoistSub.textContent = `${instLabel}: Moderate (1.5-2.0%)`;
+          } else if (activeMoist <= 2.0) {
+            elCardMoistSub.textContent = 'Moisture Status: Moderate (1.5–2.0%)';
             elCardMoistSub.style.color = '#a16207';
           } else {
-            elCardMoistSub.textContent = `${instLabel}: High Moisture (> 2.0%)`;
+            elCardMoistSub.textContent = 'Moisture Status: High Moisture (> 2.0%)';
             elCardMoistSub.style.color = '#dc2626';
           }
-        }
-      } else {
-        if (elCardMoistVal) elCardMoistVal.textContent = '-';
-        if (elCardMoistSub) {
-          elCardMoistSub.textContent = 'No FDS Moisture Record';
+        } else {
+          elCardMoistSub.textContent = 'No Moisture Record (FDS / WC)';
           elCardMoistSub.style.color = '#64748b';
         }
       }
@@ -1735,7 +1772,9 @@
       const kHydHourly = aHydNum * Math.exp(-128000 / (8.314 * effectiveThsK));
       const kOxiHourly = aOxiNum > 0 ? aOxiNum * Math.exp(-89000 / (8.314 * effectiveThsK)) : 0;
       
-      document.getElementById('calc-moist-stat').textContent = cleanMoistNum !== null ? `${cleanMoistNum.toFixed(1)}% (${isHighMoisture ? '>2.0%' : '0.5-2.0%'})` : 'Default Standard (0.5-2.0%)';
+      const fdsText = cleanMoistNum !== null ? `FDS: ${cleanMoistNum.toFixed(1)}%` : 'FDS: -';
+      const sdmText = sdMyersMoist !== null ? `SDMyers: ${sdMyersMoist.toFixed(1)}% (from ${oilWcPpm} ppm WC)` : 'SDMyers: -';
+      document.getElementById('calc-moist-stat').textContent = `${sdmText} | ${fdsText}`;
       document.getElementById('calc-o2-stat').textContent = o2Val !== null ? `${o2Val} ppm (${isHighO2 ? '≥7000' : '<7000'})` : 'Default Standard (<7000 ppm)';
       document.getElementById('calc-ahyd-val').textContent = aHydValStr;
       document.getElementById('calc-aoxi-val').textContent = aOxiValStr;
