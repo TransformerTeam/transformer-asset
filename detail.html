@@ -35,9 +35,6 @@
       --primary-blue: #3b82f6;
       --primary-indigo: #4f46e5;
       --primary-teal: #0ea5e9;
-      --badge-good: #10b981;
-      --badge-fair: #f59e0b;
-      --badge-poor: #ef4444;
     }
 
     [data-theme="light"] {
@@ -515,33 +512,6 @@
       font-weight: 700;
     }
 
-    .status-pill {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 9.5px;
-      text-align: center;
-    }
-
-    .pill-good {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .pill-fair {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .pill-poor {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
     .excel-visual-box {
       padding: 10px;
       font-weight: 700;
@@ -550,7 +520,6 @@
       border-radius: 0 0 6px 6px;
     }
 
-    /* Active Part Section titles */
     .active-part-sub-title {
       font-size: 0.72rem;
       font-weight: 700;
@@ -566,6 +535,16 @@
     [data-theme="light"] .active-part-sub-title {
       background: #f8fafc;
       color: #0284c7;
+    }
+
+    .dga-diag-container {
+      padding: 8px 10px;
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.15);
+      border-top: 1px solid var(--card-border);
     }
   </style>
 </head>
@@ -655,6 +634,14 @@
                 <tr>
                   <td>Vector Group</td>
                   <td id="ex-info-vector">Dyn1</td>
+                </tr>
+                <tr>
+                  <td>Tap Changer Type</td>
+                  <td id="ex-info-oltc-type">-</td>
+                </tr>
+                <tr style="display:none;">
+                  <td>OLTC Brand</td>
+                  <td id="ex-info-oltc-brand">-</td>
                 </tr>
               </tbody>
             </table>
@@ -950,23 +937,17 @@
               </tbody>
             </table>
 
-            <!-- Interpretation Table -->
-            <table class="excel-table dga-interpretation-table" style="margin-top: 6px;">
-              <tbody>
-                <tr>
-                  <td style="width: 32%; font-weight: 600;">Duval Triangle 1</td>
-                  <td id="ex-dga-duval1" colspan="2" style="font-weight: 700; color: #38bdf8;">-</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: 600;">Status Condition</td>
-                  <td id="ex-dga-status" style="font-weight: 700;">-</td>
-                  <td id="ex-dga-co-ratio" style="text-align: right; color: var(--text-muted);">-</td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- Duval Triangle 1 / Diagnosis Details -->
+            <div class="dga-diag-container">
+              <div><strong>Duval Method:</strong> <span id="ex-dga-duval1" style="font-weight: 600;">-</span></div>
+              <div><strong>Fault Diagnosis:</strong> <span id="ex-dga-fault" style="font-weight: 600;">-</span></div>
+              <div><strong>IEEE C57.104 Evaluation:</strong> <span id="ex-dga-ieee-status" style="font-weight: 600;">-</span></div>
+              <div><strong>IEC 60599 Diagnosis:</strong> <span id="ex-dga-iec-status" style="font-weight: 600;">-</span></div>
+              <div><strong>Paper Insulation Condition:</strong> <span id="ex-dga-paper-status" style="font-weight: 600;">-</span></div>
+            </div>
           </div>
 
-          <!-- Main Tank Oil Properties -->
+          <!-- Main Tank Oil Properties (Divided into Physical, Aging, and Sulfur) -->
           <div class="excel-card">
             <div class="excel-card-header">
               <span>
@@ -977,16 +958,48 @@
               </span>
               <span class="card-update-time" id="ex-update-oil">-</span>
             </div>
+
+            <div class="active-part-sub-title">1. Physical &amp; Electrical Properties</div>
             <table class="excel-table test-table">
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Limit</th>
                   <th>Value</th>
+                  <th>Unit</th>
                 </tr>
               </thead>
-              <tbody id="ex-oil-rows">
+              <tbody id="ex-oil-physical-rows">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+
+            <div class="active-part-sub-title">2. Paper &amp; Oil Aging Degradation</div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th>Value</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oil-aging-rows">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+
+            <div class="active-part-sub-title">3. Corrosive Sulfur &amp; Passivator</div>
+            <table class="excel-table test-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th>Value</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="ex-oil-sulfur-rows">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -997,22 +1010,22 @@
             <div class="excel-card-header">
               <span>
                 <i class="fa-solid fa-oil-can" style="color: #facc15;"></i> OLTC Oil Properties
-                <a id="ex-oltc-oil-link" href="oltc_oil_report.html" target="_blank" class="btn-report-link" title="Open OLTC Oil Report">
+                <a id="ex-oltc-link" href="oltc_oil_report.html" target="_blank" class="btn-report-link" title="Open OLTC Oil Report">
                   <i class="fa-solid fa-file-invoice"></i> Report
                 </a>
               </span>
-              <span class="card-update-time" id="ex-update-oltc-oil">-</span>
+              <span class="card-update-time" id="ex-update-oltc">-</span>
             </div>
             <table class="excel-table test-table">
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Limit</th>
                   <th>Value</th>
+                  <th>Unit</th>
                 </tr>
               </thead>
-              <tbody id="ex-oltc-oil-rows">
+              <tbody id="ex-oltc-rows">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -1025,14 +1038,175 @@
     </div>
   </div>
 
-  <!-- Data Scripts -->
+  <!-- Hidden dummy element to prevent assessment.js script error if modal-close or detail-modal is missing -->
+  <div id="detail-modal" style="display:none;"><button id="modal-close"></button></div>
+
+  <script>
+    window.isDetailStandalonePage = true;
+  </script>
   <script src="data.js"></script>
   <script src="health_data.js"></script>
   <script src="oltc_data.js"></script>
+  <script src="oil_criteria.js"></script>
   <script src="evaluation_criteria.js"></script>
   <script src="evaluation_engine.js"></script>
   <script src="detail.js"></script>
 
+  <script>
+    function isExcludedSite(site) {
+      if (!site) return false;
+      const s = String(site).trim().toLowerCase();
+      if (s === 'scrap' || s.includes('scrap')) return true;
+      if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+      return false;
+    }
+
+    function getAssessmentDataArray() {
+      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
+        return assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
+      }
+      if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
+        return window.assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
+      }
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
+        const parsed = (typeof parseHealthIndexSumCSV === 'function') ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : HEALTH_INDEX_DATA;
+        assessmentData = parsed.filter(i => !isExcludedSite(i.site || i.SITE));
+        if (typeof window !== 'undefined') window.assessmentData = assessmentData;
+        return assessmentData;
+      }
+      return [];
+    }
+
+    function populateTransformerDropdown() {
+      const data = getAssessmentDataArray();
+      const selectEl = document.getElementById('detail-transformer-select');
+      if (selectEl && data.length > 0) {
+        const curVal = selectEl.value;
+        selectEl.innerHTML = '';
+        data.forEach(item => {
+          const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+          const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
+          if (s) {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = (n && n !== s) ? `${n} (${s})` : s;
+            selectEl.appendChild(opt);
+          }
+        });
+        if (curVal) selectEl.value = curVal;
+      }
+    }
+
+    function initDetailPage() {
+      const data = getAssessmentDataArray();
+      populateTransformerDropdown();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let serialParam = urlParams.get('serial') || urlParams.get('no') || urlParams.get('id');
+
+      if (!serialParam && data.length > 0) {
+        serialParam = data[0].serial;
+      }
+
+      if (serialParam) {
+        loadDetailBySerial(serialParam);
+      }
+    }
+
+    function initDetailPageWrapper() {
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      initDetailPage();
+
+      if (typeof loadAllTestDataCSVs === 'function') {
+        loadAllTestDataCSVs().then(() => {
+          initDetailPage();
+        }).catch(() => {
+          initDetailPage();
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initDetailPageWrapper);
+    } else {
+      initDetailPageWrapper();
+    }
+
+    function switchTransformer(serial) {
+      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+      loadDetailBySerial(serial);
+    }
+
+    function loadDetailBySerial(serial) {
+      const data = getAssessmentDataArray();
+      if (!data || !data.length) return;
+      
+      let item = data.find(x => String(x.serial) === String(serial));
+      if (!item) {
+        const cleanTarget = String(serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+        item = data.find(x => {
+          const s = String(x.serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+          const n = String(x.name || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
+          return (s && (s === cleanTarget || s.includes(cleanTarget) || cleanTarget.includes(s))) ||
+                 (n && (n === cleanTarget || n.includes(cleanTarget) || cleanTarget.includes(n)));
+        });
+      }
+      if (!item) item = data[0];
+      if (!item) return;
+
+      const selectEl = document.getElementById('detail-transformer-select');
+      if (selectEl && item.serial) selectEl.value = item.serial;
+
+      if (typeof openDetail === 'function') {
+        openDetail(item);
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('tr-dashboard-theme', next);
+      updateThemeIcon(next);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      }
+    }
+
+    function exportToJPG() {
+      const paper = document.getElementById('detail-paper');
+      const originalHeight = paper.style.height;
+      const originalOverflow = paper.style.overflowY;
+      paper.style.height = 'auto';
+      paper.style.overflowY = 'visible';
+      
+      html2canvas(paper, {
+        scale: 2,
+        useCORS: true,
+        windowHeight: paper.scrollHeight,
+        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
+      }).then(canvas => {
+        paper.style.height = originalHeight;
+        paper.style.overflowY = originalOverflow;
+        const link = document.createElement('a');
+        link.download = `Transformer_Detail_${document.getElementById('ex-info-serial').textContent || 'Report'}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      }).catch(err => {
+        paper.style.height = originalHeight;
+        paper.style.overflowY = originalOverflow;
+        console.error('Export failed', err);
+      });
+    }
+  </script>
 </body>
 
 </html>

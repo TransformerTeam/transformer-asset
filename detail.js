@@ -1,3 +1,88 @@
+
+let dfrCsvData = [];
+
+function calcDominelliDP(furanPpb) {
+  if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
+  const furanPpm = furanPpb / 1000;
+  const logFuran = Math.log10(furanPpm);
+  const dp = (1.51 - logFuran) / 0.0035;
+  return Math.max(100, Math.min(1150, Math.round(dp)));
+}
+
+function calcRUL(startDP, targetDP, kRate) {
+  if (!startDP || startDP <= targetDP || !kRate || kRate <= 0) return 0;
+  return (1 / targetDP - 1 / startDP) / kRate;
+}
+
+function matchSerialDetail(a, b) {
+  if (!a || !b) return false;
+  const sA = String(a).replace(/[^A-Z0-9]/gi, '').toLowerCase();
+  const sB = String(b).replace(/[^A-Z0-9]/gi, '').toLowerCase();
+  return sA && sB && (sA === sB || sA.includes(sB) || sB.includes(sA));
+}
+
+function getRemainingLifeDP300(item, serialVal) {
+  const sVal = serialVal || (item && (item.serial || item.SERIAL_NUMBER || item['Serial No'])) || '';
+  
+  let oilRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData)) ? mtOilCsvData.filter(x => 
+    matchSerialDetail(x.serial || x.Serial_no || x['Serial No'], sVal) ||
+    matchSerialDetail(x.Equipment_name || x.name, sVal) ||
+    (item && matchSerialDetail(x.serial, item.serial))
+  ) : [];
+
+  if (oilRecords && oilRecords.length > 0) {
+    oilRecords.sort((a, b) => {
+      const dA = new Date(a.Date || a.date);
+      const dB = new Date(b.Date || b.date);
+      return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+    });
+  }
+  const latestOil = oilRecords.length > 0 ? oilRecords[0] : {};
+
+  let rawFuran = latestOil.Furan_Analysis || (item && (item.Furan || item['Furan (ppb)'] || item.furan));
+  let furanPpb = (rawFuran !== undefined && rawFuran !== '' && rawFuran !== '-' && !isNaN(parseFloat(rawFuran))) ? parseFloat(rawFuran) : null;
+
+  let rawDP = (item && (item.estimatedDP || item['Estimated DP (From Furan)']));
+  let dpVal = (rawDP !== undefined && rawDP !== '' && rawDP !== '-' && !isNaN(parseFloat(rawDP))) ? parseFloat(rawDP) : null;
+  if (dpVal === null && furanPpb !== null) {
+    dpVal = calcDominelliDP(furanPpb);
+  }
+  if (dpVal !== null) {
+    dpVal = Math.round(dpVal);
+  }
+  const dp0 = dpVal !== null ? dpVal : 950;
+
+  let rawO2 = latestOil.O2 || latestOil.O2_ppm || (item && (item.O2 || item.O2_ppm));
+  let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
+  const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
+
+  let dfrRecords = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? dfrCsvData.filter(x => 
+    matchSerialDetail(x.serial || x['Serial No.'] || x['Serial No'], sVal) ||
+    matchSerialDetail(x['Equipment Name'] || x.name, sVal) ||
+    (item && matchSerialDetail(x.serial, item.serial))
+  ) : [];
+  const latestDfr = dfrRecords.length > 0 ? dfrRecords[0] : {};
+  let rawMoist = latestDfr['PercentMoisture (CHL)'] || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
+  let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
+  const isHighMoisture = cleanMoist !== null ? cleanMoist > 2.0 : false;
+
+  let kYearly = 0.0000310;
+  if (isHighMoisture && isHighO2) {
+    kYearly = 0.0001200;
+  } else if (isHighO2) {
+    kYearly = 0.0000597;
+  } else if (isHighMoisture) {
+    kYearly = 0.0000780;
+  } else if (dp0 < 750) {
+    kYearly = 0.0000450;
+  }
+
+  const targetDP300 = 300;
+  const rul300 = Math.round(calcRUL(dp0, targetDP300, kYearly) * 10) / 10;
+  const targetYear = Math.round(2025 + rul300);
+  return { dp: dp0, rul300: rul300, targetYear: targetYear, kYearly: kYearly };
+}
+
 // Standalone Detail Page Logic for GPSC Transformer Asset Management
 // Completely cut off and independent of assessment.js
 
@@ -600,10 +685,20 @@ function openDetail(no) {
     }
   }
 
-  // 2. Speedometer Gauge
+  // 2. Speedometer Gauge & Key Metrics (Synced with Evaluation DP 300)
   const hi = item.healthIndex;
-  setElTxt('ex-est-life', item.estimatedLife || '-');
-  setElTxt('ex-est-dp', item.estimatedDP && !isNaN(parseFloat(item.estimatedDP)) ? Math.round(parseFloat(item.estimatedDP)) : (item.estimatedDP || '0'));
+  const remLifeInfo = (typeof getRemainingLifeDP300 === 'function') 
+    ? getRemainingLifeDP300(item, item.serial)
+    : { dp: (item.estimatedDP || 950), rul300: (item.estimatedLife || 25) };
+  
+  const displayLifeText = (remLifeInfo.rul300 > 40) ? '>40' : String(remLifeInfo.rul300);
+  setElTxt('ex-est-life', displayLifeText);
+  setElTxt('ex-est-dp', remLifeInfo.dp);
+
+  const subLifeEl = document.getElementById('ex-est-life-sub');
+  if (subLifeEl) {
+    subLifeEl.textContent = remLifeInfo.rul300 > 40 ? 'Target: >2065' : (remLifeInfo.targetYear ? `Target: ${remLifeInfo.targetYear}` : 'To DP = 300');
+  }
 
   const score = document.getElementById('ex-gauge-score');
   if (score) {
