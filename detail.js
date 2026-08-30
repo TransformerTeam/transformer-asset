@@ -1272,27 +1272,57 @@ function openDetail(no) {
 
   const specialBody = document.getElementById('ex-active-special-rows');
   if (specialBody) {
+    let fraRec = (typeof fraCsvData !== 'undefined' && Array.isArray(fraCsvData)) ? findLatestRecord(fraCsvData, item.serial) : null;
+    let dfrRec = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? findLatestRecord(dfrCsvData, item.serial) : null;
+    let thermoRec = (typeof thermoScanCsvData !== 'undefined' && Array.isArray(thermoScanCsvData)) ? findLatestRecord(thermoScanCsvData, item.serial) : null;
+
+    let fraVal = fraRec ? (fraRec.Summary || fraRec['Trace 1'] || 'Normal [Pattern]') : (item.fra === 'A' ? 'Normal [Pattern]' : 'Alert');
+    let fraDate = formatDgaDate(fraRec ? (fraRec['Test Date'] || fraRec.date || fraRec.Date) : item.dateToAssess);
+
+    let dfrVal = '0.5% [Dry]';
+    let dfrDate = item.dateToAssess;
+    let dfrClass = 'ex-status-good';
+
+    if (dfrRec) {
+      const rawM = dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture || dfrRec['Percent Moisture'];
+      const inst = dfrRec['Test Instrument'] || '';
+      if (rawM !== undefined && rawM !== '' && rawM !== '-') {
+        const numM = parseFloat(rawM);
+        if (!isNaN(numM)) {
+          const cat = numM <= 2.0 ? 'Dry' : (numM <= 3.5 ? 'Moderate' : 'Wet');
+          dfrVal = `${numM.toFixed(1)}% [${cat}]${inst ? ' (' + inst + ')' : ''}`;
+          dfrClass = numM <= 2.0 ? 'ex-status-good' : (numM <= 3.5 ? 'ex-status-fair' : 'ex-status-poor');
+        }
+      }
+      if (dfrRec['Test Date'] || dfrRec.date || dfrRec.Date) {
+        dfrDate = formatDgaDate(dfrRec['Test Date'] || dfrRec.date || dfrRec.Date);
+      }
+    } else if (item.moisturePaper && item.moisturePaper !== 'N/A' && item.moisturePaper !== '-') {
+      dfrClass = item.moisturePaper === 'A' ? 'ex-status-good' : (item.moisturePaper === 'Q' ? 'ex-status-fair' : 'ex-status-poor');
+      dfrVal = item.moisturePaper === 'A' ? '0.5% [Dry]' : 'Alert';
+    }
+
+    let thermoVal = thermoRec ? (thermoRec.Summary || thermoRec['HV Terminator'] || 'Normal') : 'Normal';
+    let thermoDate = formatDgaDate(thermoRec ? (thermoRec['Test Date'] || thermoRec.date || thermoRec.Date) : item.dateToAssess);
+
     specialBody.innerHTML = `
       <tr>
         <td>Frequency Response Analysis (FRA)</td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td><span>${fraDate}</span></td>
         <td>IEEE C57.149</td>
-        <td class="ex-status-good">${item.fra === 'A' ? 'Good' : 'Alert'}</td>
-        <td class="ex-status-good">Normal [Pattern]</td>
+        <td class="ex-status-good">${fraVal}</td>
       </tr>
       <tr>
         <td>Moisture in Paper [FDS]</td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td><span>${dfrDate}</span></td>
         <td>IEEE C57.161-2018</td>
-        <td class="ex-status-good">${item.moisturePaper === 'A' ? 'Good' : 'Alert'}</td>
-        <td class="ex-status-good">0.8% [Normal]</td>
+        <td class="${dfrClass}">${dfrVal}</td>
       </tr>
       <tr>
         <td>Thermography Scan</td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td><span>${thermoDate}</span></td>
         <td>EGAT Limits</td>
-        <td class="ex-status-good">Good</td>
-        <td class="ex-status-good">Normal</td>
+        <td class="ex-status-good">${thermoVal}</td>
       </tr>
     `;
   }

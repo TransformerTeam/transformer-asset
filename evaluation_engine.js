@@ -599,6 +599,49 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     return { value: 'N/A (DETC/NLTC)', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
 
+    // FDS Moisture in Paper (DFRData.csv)
+  if (nameLower.includes('moisture in paper') || nameLower.includes('fds') || nameLower.includes('dfr')) {
+    const latestDfr = (typeof dfrCsvData !== 'undefined') ? findLatestRecord(dfrCsvData, serialVal) : null;
+    if (latestDfr) {
+      const date = latestDfr['Test Date'] || latestDfr.date || latestDfr.Date;
+      const rawM = latestDfr['PercentMoisture (CHL)'] || latestDfr.PercentMoisture || latestDfr['Percent Moisture'];
+      if (rawM !== undefined && rawM !== '' && rawM !== '-') {
+        const numM = parseFloat(rawM);
+        if (!isNaN(numM)) {
+          let score = 5;
+          let cat = 'Dry';
+          let rec = '-';
+          if (numM > 3.5) {
+            score = 1;
+            cat = 'Wet / Excessive';
+            rec = 'High Moisture in Paper: Urgent insulation dry-out required';
+          } else if (numM > 2.0) {
+            score = 3;
+            cat = 'Moderate';
+            rec = 'Elevated Moisture in Paper: Plan insulation drying';
+          }
+          return {
+            value: `${numM.toFixed(1)}% [${cat}]`,
+            testDate: date,
+            ratingScore: score,
+            recommendation: rec
+          };
+        }
+      }
+    }
+    const rawVal = item['%Moisture in paper (FDS)'] || item.moisturePaper;
+    if (rawVal && rawVal !== 'N/A' && rawVal !== '-') {
+      const isGood = rawVal === 'A' || rawVal === 'Good';
+      return {
+        value: isGood ? '0.5% [Dry]' : 'Elevated Moisture',
+        testDate: item.dateToAssess || '-',
+        ratingScore: isGood ? 5 : 3,
+        recommendation: isGood ? '-' : 'Investigate paper moisture'
+      };
+    }
+    return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
+  }
+
   // 1. General Visual Inspection (VisualData.csv)
   if (nameLower.includes('visual inspection') || nameLower.includes('visual')) {
     const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, serialVal) : null;

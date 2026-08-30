@@ -2054,8 +2054,23 @@ function openDetail(no) {
   const fraVal = fraRec ? (fraRec.Summary || fraRec['Trace 1'] || 'Normal [Pattern]') : (item.fra === 'A' ? 'Normal [Pattern]' : 'Deformed');
   const fraDate = formatDgaDate(fraRec ? (fraRec['Test Date'] || fraRec.date) : item.dateToAssess);
 
-  const dfrVal = dfrRec ? (dfrRec['PercentMoisture (CHL)'] ? `${dfrRec['PercentMoisture (CHL)']}% [Normal]` : '0.8% [Normal]') : (item.moisturePaper === 'A' ? '0.8% [Normal]' : 'High (Warning)');
-  const dfrDate = formatDgaDate(dfrRec ? (dfrRec['Test Date'] || dfrRec.date) : item.dateToAssess);
+  let dfrVal = '0.5% [Dry]';
+  let dfrDate = formatDgaDate(item.dateToAssess);
+  if (dfrRec) {
+    const rawM = dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture || dfrRec['Percent Moisture'];
+    if (rawM !== undefined && rawM !== '' && rawM !== '-') {
+      const numM = parseFloat(rawM);
+      if (!isNaN(numM)) {
+        const cat = numM <= 2.0 ? 'Dry' : (numM <= 3.5 ? 'Moderate' : 'Wet');
+        dfrVal = `${numM.toFixed(1)}% [${cat}]`;
+      }
+    }
+    if (dfrRec['Test Date'] || dfrRec.date || dfrRec.Date) {
+      dfrDate = formatDgaDate(dfrRec['Test Date'] || dfrRec.date || dfrRec.Date);
+    }
+  } else if (item.moisturePaper && item.moisturePaper !== 'N/A' && item.moisturePaper !== '-') {
+    dfrVal = item.moisturePaper === 'A' ? '0.5% [Dry]' : 'Alert';
+  }
 
   const thermoVal = thermoRec ? (thermoRec.Summary || thermoRec['HV Terminator'] || 'Normal') : 'Normal';
   const thermoDate = formatDgaDate(thermoRec ? (thermoRec['Test Date'] || thermoRec.date) : item.dateToAssess);
