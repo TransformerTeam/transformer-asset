@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transformer Detail - GPSC Asset Management</title>
+  <title>Transformer Detail Assessment - GPSC Asset Management</title>
 
   <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -18,65 +18,109 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assessment.css">
 
+  <!-- html2canvas Library for Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <style>
-    html,
-    body {
+    :root {
+      --bg-page: #0b0f19;
+      --card-bg: #131b2e;
+      --card-header-bg: linear-gradient(135deg, #1e293b, #0f172a);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      --table-th-bg: #192338;
+      --table-td-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary-blue: #3b82f6;
+      --primary-indigo: #4f46e5;
+      --primary-teal: #0ea5e9;
+      --badge-good: #10b981;
+      --badge-fair: #f59e0b;
+      --badge-poor: #ef4444;
+    }
+
+    [data-theme="light"] {
+      --bg-page: #f1f5f9;
+      --card-bg: #ffffff;
+      --card-header-bg: linear-gradient(135deg, #1e3a8a, #2563eb);
+      --card-border: #cbd5e1;
+      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+      --table-th-bg: #f8fafc;
+      --table-td-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       max-width: 100%;
       overflow-x: hidden;
       box-sizing: border-box;
-      background-color: var(--bg-color, #0b0f19);
-      color: var(--text-color, #f8fafc);
+      background-color: var(--bg-page);
+      color: var(--text-main);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* Top Navigation Bar */
     .detail-topbar {
-      background: #152e6f;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       color: #ffffff;
-      padding: 8px 16px;
+      padding: 8px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #102456;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      z-index: 20;
       width: 100%;
       box-sizing: border-box;
+      position: sticky;
+      top: 0;
+    }
+
+    [data-theme="light"] .detail-topbar {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      border-bottom: 1px solid #1e3a8a;
     }
 
     .detail-topbar-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .detail-topbar-left img {
-      height: 28px !important;
+      height: 30px !important;
       width: auto !important;
-      max-width: 140px !important;
       background: #ffffff;
-      padding: 2px;
-      border-radius: 4px;
+      padding: 3px 6px;
+      border-radius: 6px;
       object-fit: contain;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
     .detail-topbar-title h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       margin: 0;
       color: #ffffff;
+      font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .detail-topbar-title .subtitle {
       color: #93c5fd;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 0.04em;
       margin-top: 2px;
@@ -85,20 +129,37 @@
     .detail-topbar-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .selector-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .search-select {
-      background: rgba(15, 23, 42, 0.7);
+      background: rgba(15, 23, 42, 0.85);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 6px;
       padding: 5px 10px;
-      font-size: 0.8rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
-      min-width: 220px;
+      min-width: 240px;
+      transition: all 0.2s ease;
+    }
+
+    .search-select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
     }
 
     .search-select option {
@@ -110,7 +171,7 @@
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-size: 0.78rem;
       font-weight: 600;
@@ -118,32 +179,52 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
       transition: all 0.2s ease;
     }
 
     .btn-action:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
     }
 
     .btn-primary {
-      background: #3b82f6;
-      border-color: #3b82f6;
+      background: #2563eb !important;
+      border-color: #3b82f6 !important;
     }
 
     .btn-primary:hover {
-      background: #2563eb;
+      background: #1d4ed8 !important;
     }
 
+    .btn-indigo {
+      background: #4f46e5 !important;
+      border-color: #6366f1 !important;
+    }
+
+    .btn-indigo:hover {
+      background: #4338ca !important;
+    }
+
+    .btn-sky {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+    }
+
+    .btn-sky:hover {
+      background: #0369a1 !important;
+    }
+
+    /* Content Area */
     .detail-content-wrapper {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       box-sizing: border-box;
       overflow-y: auto;
       overflow-x: hidden;
       width: 100%;
     }
 
-    /* Force modal window to be full width inline page container */
     .detail-page-window {
       width: 100% !important;
       max-width: 100% !important;
@@ -159,64 +240,332 @@
       width: 100% !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
-      grid-template-columns: minmax(0, 20fr) minmax(0, 51fr) minmax(0, 29fr) !important;
-      gap: 10px !important;
-      padding: 8px !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 22fr) minmax(0, 48fr) minmax(0, 30fr) !important;
+      gap: 12px !important;
+      padding: 4px !important;
+    }
+
+    @media (max-width: 1280px) {
+      .excel-body {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .excel-body {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     .excel-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       min-width: 0 !important;
       box-sizing: border-box !important;
     }
 
+    /* Modern Card Styles */
+    .excel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: border-color 0.2s ease;
+    }
+
+    .excel-card:hover {
+      border-color: rgba(96, 165, 250, 0.4);
+    }
+
+    .excel-card-header {
+      background: var(--card-header-bg);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--card-border);
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .excel-card-header span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-update-time {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="light"] .card-update-time {
+      color: #e0f2fe;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-report-link {
+      color: #38bdf8 !important;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn-report-link:hover {
+      background: rgba(56, 189, 248, 0.25);
+      color: #ffffff !important;
+    }
+
+    [data-theme="light"] .btn-report-link {
+      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Tables Styling */
     .excel-table {
       width: 100% !important;
+      border-collapse: collapse;
+      font-size: 10.5px;
       box-sizing: border-box !important;
-      table-layout: auto !important;
     }
 
-    /* Interpretation & Recommendation text styling */
-    .rec-box.rec-box-good,
-    .rec-box.rec-box-good .rec-list,
-    .rec-box.rec-box-good .rec-list li,
-    .rec-box.rec-box-good .rec-description,
-    .rec-box.rec-box-good #ex-recommendation-text {
-      color: #34d399 !important;
+    .excel-table th, .excel-table td {
+      border: 1px solid var(--table-td-border);
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: middle;
+      color: var(--text-main);
     }
-    .rec-box.rec-box-good .rec-list li strong {
+
+    .excel-table th {
+      background: var(--table-th-bg);
+      font-weight: 700;
+      color: #cbd5e1;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    [data-theme="light"] .excel-table th {
+      color: #334155 !important;
+      background: #f1f5f9 !important;
+    }
+
+    .info-table td:first-child {
+      font-weight: 600;
+      width: 42%;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    [data-theme="light"] .info-table td:first-child {
+      color: #475569 !important;
+      background: #f8fafc !important;
+    }
+
+    .info-table td:last-child {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    [data-theme="light"] .info-table td:last-child {
+      color: #1e3a8a !important;
+    }
+
+    /* Center Top Life & Gauge Section */
+    .excel-center-top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .excel-life-dp-boxes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .life-kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+    }
+
+    .life-kpi-card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    .life-kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .life-kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .life-kpi-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #38bdf8;
+      line-height: 1.1;
+    }
+
+    [data-theme="light"] .life-kpi-value {
+      color: #0284c7;
+    }
+
+    .life-kpi-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .gauge-kpi-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: var(--card-shadow);
+    }
+
+    .excel-model-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      min-height: 190px;
+    }
+
+    .excel-model-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .excel-model-container:hover img {
+      transform: scale(1.03);
+    }
+
+    /* Status Badges */
+    .ex-status-good {
       color: #10b981 !important;
-    }
-    [data-theme="light"] .rec-box.rec-box-good,
-    [data-theme="light"] .rec-box.rec-box-good .rec-list,
-    [data-theme="light"] .rec-box.rec-box-good .rec-list li,
-    [data-theme="light"] .rec-box.rec-box-good .rec-description,
-    [data-theme="light"] .rec-box.rec-box-good #ex-recommendation-text {
-      color: #15803d !important;
-    }
-    [data-theme="light"] .rec-box.rec-box-good .rec-list li strong {
-      color: #166534 !important;
-    }
-
-    .rec-box:not(.rec-box-good):not(.rec-box-critical),
-    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list,
-    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li,
-    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-description,
-    #ex-recommendation-text {
-      color: #f97316 !important;
-    }
-    .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li strong {
-      color: #ea580c !important;
       font-weight: 700;
     }
-    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical),
-    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list,
-    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li,
-    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-description,
-    [data-theme="light"] #ex-recommendation-text {
-      color: #ea580c !important;
+
+    .ex-status-fair {
+      color: #f59e0b !important;
+      font-weight: 700;
     }
-    [data-theme="light"] .rec-box:not(.rec-box-good):not(.rec-box-critical) .rec-list li strong {
-      color: #c2410c !important;
+
+    .ex-status-poor {
+      color: #ef4444 !important;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 9.5px;
+      text-align: center;
+    }
+
+    .pill-good {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-fair {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .pill-poor {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .excel-visual-box {
+      padding: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: center;
+      border-radius: 0 0 6px 6px;
+    }
+
+    /* Active Part Section titles */
+    .active-part-sub-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #38bdf8;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    [data-theme="light"] .active-part-sub-title {
+      background: #f8fafc;
+      color: #0284c7;
     }
   </style>
 </head>
@@ -228,46 +577,47 @@
     <div class="detail-topbar-left">
       <img src="GPSC_logo_ART.png" alt="GPSC Logo">
       <div class="detail-topbar-title">
-        <h1>TRANSFORMER HEALTH INDEX</h1>
-        <div class="subtitle">HV NETWORK MAINTENANCE</div>
+        <h1><i class="fa-solid fa-microchip" style="color: #60a5fa;"></i> TRANSFORMER DETAILED DIAGNOSTICS</h1>
+        <div class="subtitle">GPSC HV ASSET PERFORMANCE &amp; DIAGNOSTIC ASSESSMENT</div>
       </div>
     </div>
 
     <div class="detail-topbar-right">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <span style="font-size: 0.78rem; color: #cbd5e1; font-weight: 500;"><i class="fa-solid fa-bolt"></i>
-          Transformer:</span>
+      <div class="selector-badge">
+        <span style="font-size: 0.78rem; color: #cbd5e1; font-weight: 600;"><i class="fa-solid fa-bolt" style="color: #facc15;"></i> Transformer:</span>
         <select id="detail-transformer-select" class="search-select" onchange="switchTransformer(this.value)">
           <!-- Dynamic Options -->
         </select>
       </div>
 
-      <a id="btn-eval-report" href="evaluation_report.html" class="btn-action"
-        style="text-decoration:none; color:#ffffff; background:#4f46e5;"><i class="fa-solid fa-clipboard-check"></i>
-        Evaluation Report</a>
+      <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
+      <a id="btn-eval-report" href="evaluation_report.html" class="btn-action btn-indigo" title="Open Evaluation &amp; Criteria Report"><i class="fa-solid fa-clipboard-check"></i> Evaluation Report</a>
+      <a id="btn-rem-life-report" href="remaining_life_report.html" class="btn-action btn-sky" title="Open Remaining Life Assessment Report"><i class="fa-solid fa-hourglass-half"></i> Remaining Life</a>
       <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-sun" id="theme-icon"></i> Theme</button>
-      <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-camera"></i> Export
-        JPG</button>
+      <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-camera"></i> Export JPG</button>
       <button class="btn-action" onclick="window.close()"><i class="fa-solid fa-xmark"></i> Close</button>
     </div>
   </div>
 
-  <!-- Detail Window Container (Exact matching assessment.html modal structure) -->
+  <!-- Detail Window Container -->
   <div class="detail-content-wrapper" id="detail-paper">
     <div class="modal-window modal-wide detail-page-window">
 
       <div class="modal-body excel-body">
 
-        <!-- Left Column: Transformer Info & Visual & Recommendation -->
+        <!-- Left Column: Transformer Info & OLTC & Recommendation & Visual -->
         <div class="excel-col excel-col-left">
 
           <!-- Transformer Information -->
           <div class="excel-card">
-            <div class="excel-card-header">Transformer Information</div>
+            <div class="excel-card-header">
+              <span><i class="fa-solid fa-circle-info" style="color: #60a5fa;"></i> Transformer Information</span>
+              <span class="card-update-time" id="ex-info-badge">NAMEPLATE</span>
+            </div>
             <table class="excel-table info-table">
               <tbody>
                 <tr>
-                  <td>Device Name</td>
+                  <td>Equipment Name</td>
                   <td id="ex-info-name">-</td>
                 </tr>
                 <tr>
@@ -275,20 +625,12 @@
                   <td id="ex-info-serial">-</td>
                 </tr>
                 <tr>
-                  <td>Device Code</td>
-                  <td id="ex-info-code">-</td>
-                </tr>
-                <tr>
-                  <td>Manufacture</td>
-                  <td id="ex-info-manufacture">DAIHEN</td>
-                </tr>
-                <tr>
-                  <td>Fluid Type</td>
-                  <td id="ex-info-fluid">Mineral Oil</td>
-                </tr>
-                <tr>
-                  <td>Site</td>
+                  <td>Site / Plant</td>
                   <td id="ex-info-site">-</td>
+                </tr>
+                <tr>
+                  <td>Manufacturer</td>
+                  <td id="ex-info-brand">-</td>
                 </tr>
                 <tr>
                   <td>Power Rating</td>
@@ -299,12 +641,16 @@
                   <td id="ex-info-voltage">-</td>
                 </tr>
                 <tr>
+                  <td>Fluid Type</td>
+                  <td id="ex-info-fluid">Mineral Oil</td>
+                </tr>
+                <tr>
                   <td>Service Type</td>
                   <td id="ex-info-service">-</td>
                 </tr>
                 <tr>
-                  <td>Service Year</td>
-                  <td id="ex-info-year">-</td>
+                  <td>Service Age</td>
+                  <td id="ex-info-age">-</td>
                 </tr>
                 <tr>
                   <td>Vector Group</td>
@@ -316,25 +662,25 @@
 
           <!-- On-Load Tap Changer (OLTC) Information Card -->
           <div class="excel-card" id="card-oltc-info">
-            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #ffffff; display: flex; align-items: center; justify-content: space-between;">
-              <span><i class="fa-solid fa-gears" style="margin-right: 6px;"></i> On-Load Tap Changer (OLTC) Information</span>
+            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e3a8a, #1d4ed8);">
+              <span><i class="fa-solid fa-sliders" style="color: #93c5fd;"></i> Tap Changer (OLTC / DETC) Information</span>
             </div>
             <table class="excel-table info-table">
               <tbody>
                 <tr>
-                  <td>OLTC Manufacture</td>
+                  <td>OLTC Manufacturer</td>
                   <td id="ex-oltc-mfg">-</td>
                 </tr>
                 <tr>
-                  <td>OLTC Model Type</td>
+                  <td>Model Type</td>
                   <td id="ex-oltc-model">-</td>
                 </tr>
                 <tr>
-                  <td>OLTC Model Year</td>
+                  <td>Model Year</td>
                   <td id="ex-oltc-year">-</td>
                 </tr>
                 <tr>
-                  <td>OLTC Serial No.</td>
+                  <td>Serial No.</td>
                   <td id="ex-oltc-serial">-</td>
                 </tr>
                 <tr>
@@ -358,7 +704,7 @@
                   <td id="ex-oltc-maint-spec">-</td>
                 </tr>
                 <tr>
-                  <td>Last Inspection / Next Due</td>
+                  <td>Last / Next Inspection</td>
                   <td id="ex-oltc-schedule">-</td>
                 </tr>
               </tbody>
@@ -367,25 +713,20 @@
 
           <!-- Recommendation -->
           <div class="excel-card">
-            <div class="excel-card-header"
-              style="background: linear-gradient(135deg, #1e293b, #334155); color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-clipboard-check"></i> Recommendation
+            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #38bdf8;">
+              <span><i class="fa-solid fa-clipboard-check"></i> Interpretation &amp; Recommendations</span>
             </div>
-            <div
-              style="padding: 10px 12px; font-size: 0.75rem; line-height: 1.5; color: var(--text-color, #e2e8f0); background: rgba(30, 41, 59, 0.2); border-radius: 0 0 6px 6px; min-height: 80px; white-space: pre-line;"
-              id="ex-recommendation-text">
+            <div style="padding: 10px 12px; font-size: 0.78rem; line-height: 1.5; color: var(--text-main); background: rgba(0, 0, 0, 0.15); border-radius: 0 0 6px 6px; min-height: 70px; white-space: pre-line;" id="ex-recommendation-text">
               -
             </div>
           </div>
 
           <!-- Visual Inspection -->
           <div class="excel-card">
-            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <span>Visual Inspection</span>
-              <a id="ex-visual-link" href="visual_report.html" target="_blank" class="btn-report-link"
-                title="Open Visual Inspection Report"
-                style="color: #38bdf8; font-size: 0.8rem; display: inline-flex; align-items: center;">
-                <i class="fa-solid fa-file-invoice"></i>
+            <div class="excel-card-header">
+              <span><i class="fa-solid fa-eye" style="color: #38bdf8;"></i> Visual Inspection</span>
+              <a id="ex-visual-link" href="visual_report.html" target="_blank" class="btn-report-link" title="Open Visual Inspection Report">
+                <i class="fa-solid fa-file-invoice"></i> Report
               </a>
             </div>
             <div class="excel-visual-box" id="ex-visual-text">Normal</div>
@@ -393,91 +734,83 @@
 
         </div>
 
-        <!-- Center Column: Bushing & Surge Arrester & Remaining Life & Active Part -->
+        <!-- Center Column: Speedometer & Life KPIs & Bushing & Surge & Active Part -->
         <div class="excel-col excel-col-center">
 
           <!-- Center Top: Life & Gauge Row -->
           <div class="excel-center-top-row">
 
-            <!-- Stacked info & gauge boxes (Left) -->
+            <!-- Stacked Health Gauge & Life KPI Cards (Left) -->
             <div class="excel-life-dp-boxes">
-              <!-- Speedometer Gauge (Top Left) -->
-              <div class="excel-gauge-container life-box"
-                style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8px 6px;">
-                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-report-link"
-                  title="Open Evaluation & Criteria Report"
-                  style="position: absolute; top: 6px; right: 6px; color: #38bdf8; font-size: 0.9rem; text-decoration: none; z-index: 5;">
+              <!-- Speedometer Gauge -->
+              <div class="gauge-kpi-box">
+                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-report-link" title="Open Evaluation Report" style="position: absolute; top: 6px; right: 6px;">
                   <i class="fa-solid fa-file-invoice"></i>
                 </a>
-                <div class="gauge-chart-container"
-                  style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px;">
+                <div style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 130px;">
                   <svg viewBox="0 0 120 72" style="width: 120px; height: 72px; overflow: visible;">
-                    <!-- Red Zone: 0% to 50% -->
-                    <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ff4d4d" stroke-width="12"
-                      stroke-linecap="butt" />
-                    <!-- Yellow Zone: 51% to 79% -->
-                    <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#facc15" stroke-width="12"
-                      stroke-linecap="butt" />
-                    <!-- Green Zone: 80% to 100% -->
-                    <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#22c55e" stroke-width="12"
-                      stroke-linecap="butt" />
+                    <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="butt" />
+                    <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="butt" />
+                    <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="butt" />
 
-                    <!-- Range Labels -->
-                    <text x="14" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif"
-                      text-anchor="middle">0</text>
-                    <text x="106" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif"
-                      text-anchor="middle">100</text>
+                    <text x="14" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
+                    <text x="106" y="70" font-size="8" fill="#94a3b8" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
 
                     <!-- Pointer Needle -->
-                    <g id="ex-gauge-needle-group" transform="rotate(0 60 60)"
-                      style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <g id="ex-gauge-needle-group" transform="rotate(0 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
                       <polygon points="56.5,60 63.5,60 60,20" fill="#0f172a" stroke="#ffffff" stroke-width="1" />
                       <circle cx="60" cy="60" r="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5" />
                       <circle cx="60" cy="60" r="2" fill="#ffffff" />
                     </g>
                   </svg>
 
-                  <div class="gauge-center-text" style="text-align: center; margin-top: 4px; line-height: 1;">
-                    <span class="gauge-score" id="ex-gauge-score"
-                      style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: #10b981;">HI
-                      100%</span>
+                  <div style="text-align: center; margin-top: 2px; line-height: 1;">
+                    <span id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #10b981;">HI 100%</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Estimated Remaining Life Box -->
-              <div class="life-box">
-                <span class="life-label">Estimated Remaining Life</span>
-                <span class="life-value" id="ex-est-life">-</span>
-              </div>
+              <!-- Estimated Remaining Life Box (Linked to DP 300) -->
+              <a id="link-kpi-remaining-life" href="remaining_life_report.html" target="_blank" class="life-kpi-card" style="text-decoration: none;">
+                <div class="life-kpi-header">
+                  <span><i class="fa-solid fa-hourglass-half" style="color: #38bdf8;"></i> Remaining Life</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; color: #38bdf8;"></i>
+                </div>
+                <div class="life-kpi-value-row">
+                  <span class="life-kpi-value" id="ex-est-life">-</span>
+                  <span class="life-kpi-sub" id="ex-est-life-sub">To DP = 300</span>
+                </div>
+              </a>
 
               <!-- Estimated DP Box -->
-              <div class="life-box">
-                <span class="life-label">Estimated DP</span>
-                <span class="life-value" id="ex-est-dp">0</span>
+              <div class="life-kpi-card">
+                <div class="life-kpi-header">
+                  <span><i class="fa-solid fa-atom" style="color: #38bdf8;"></i> Estimated DP</span>
+                  <span style="font-size: 0.65rem; color: #94a3b8;">Furan 2-FAL</span>
+                </div>
+                <div class="life-kpi-value-row">
+                  <span class="life-kpi-value" id="ex-est-dp">0</span>
+                  <span class="life-kpi-sub" id="ex-est-dp-sub" style="color: #38bdf8; background: rgba(56,189,248,0.12); border-color: rgba(56,189,248,0.25);">Dominelli Model</span>
+                </div>
               </div>
             </div>
 
-            <!-- Enlarged Transformer photo container (Right) -->
-            <div class="excel-model-container"
-              style="display: flex; justify-content: center; align-items: center; overflow: hidden; background: rgba(0,0,0,0.2);">
-              <img id="ex-model-img" src="background.jpg"
-                style="width: 100%; height: 100%; object-fit: contain; opacity: 0.9; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); display: block;"
-                alt="Transformer Photo">
+            <!-- Transformer Photo Container (Right) -->
+            <div class="excel-model-container">
+              <img id="ex-model-img" src="background.jpg" alt="Transformer Photo">
             </div>
 
           </div>
 
           <!-- Bushing Card -->
           <div class="excel-card">
-            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Bushing</span>
-                <a id="ex-bushing-link" href="bushing_pf_report.html" target="_blank" class="btn-report-link"
-                  title="Open Bushing Insulation Power Factor Report" style="color: #38bdf8; font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-invoice"></i>
+            <div class="excel-card-header">
+              <span>
+                <i class="fa-solid fa-plug" style="color: #60a5fa;"></i> Bushing
+                <a id="ex-bushing-link" href="bushing_pf_report.html" target="_blank" class="btn-report-link" title="Open Bushing Report">
+                  <i class="fa-solid fa-file-invoice"></i> Report
                 </a>
-              </div>
+              </span>
               <span class="card-update-time" id="ex-update-bushing">-</span>
             </div>
             <table class="excel-table test-table">
@@ -494,14 +827,22 @@
                 </tr>
               </thead>
               <tbody id="ex-bushing-rows">
-                <!-- Will be dynamically populated -->
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
 
           <!-- Surge Arrester Card -->
           <div class="excel-card">
-            <div class="excel-card-header">Surge Arrester <span class="card-update-time" id="ex-update-arrester">-</span></div>
+            <div class="excel-card-header">
+              <span>
+                <i class="fa-solid fa-bolt-lightning" style="color: #facc15;"></i> Surge Arrester
+                <a id="ex-surge-link" href="surge_report.html" target="_blank" class="btn-report-link" title="Open Surge Arrester Report">
+                  <i class="fa-solid fa-file-invoice"></i> Report
+                </a>
+              </span>
+              <span class="card-update-time" id="ex-update-arrester">-</span>
+            </div>
             <table class="excel-table test-table">
               <thead>
                 <tr>
@@ -519,31 +860,34 @@
                 </tr>
               </thead>
               <tbody id="ex-arrester-rows">
-                <!-- Will be dynamically populated -->
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
 
           <!-- Active Part Card -->
           <div class="excel-card">
-            <div class="excel-card-header">Active Part <span class="card-update-time" id="ex-update-active">-</span></div>
+            <div class="excel-card-header">
+              <span><i class="fa-solid fa-microchip" style="color: #60a5fa;"></i> Active Part Diagnostics</span>
+              <span class="card-update-time" id="ex-update-active">-</span>
+            </div>
 
-            <div class="active-part-sub-title">Basic Test</div>
+            <div class="active-part-sub-title">Basic Diagnostics</div>
             <table class="excel-table test-table active-part-table">
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Date</th>
                   <th>Standard</th>
-                  <th colspan="3">Results & Status</th>
+                  <th colspan="3">Results &amp; Status</th>
                 </tr>
               </thead>
               <tbody id="ex-active-basic-rows">
-                <!-- Will be dynamically populated -->
+                <!-- Dynamically populated -->
               </tbody>
             </table>
 
-            <div class="active-part-sub-title">Special Test</div>
+            <div class="active-part-sub-title">Special Diagnostics</div>
             <table class="excel-table test-table active-part-table">
               <thead>
                 <tr>
@@ -554,7 +898,7 @@
                 </tr>
               </thead>
               <tbody id="ex-active-special-rows">
-                <!-- Will be dynamically populated -->
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
@@ -566,14 +910,13 @@
 
           <!-- Main Tank DGA -->
           <div class="excel-card">
-            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Main Tank DGA</span>
-                <a href="#" id="ex-dga-link" target="_blank" class="btn-report-link" title="Open DGA Report"
-                  style="color: #38bdf8; font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-invoice"></i>
+            <div class="excel-card-header">
+              <span>
+                <i class="fa-solid fa-fire-flame-curved" style="color: #f97316;"></i> Main Tank DGA
+                <a href="#" id="ex-dga-link" target="_blank" class="btn-report-link" title="Open DGA Report">
+                  <i class="fa-solid fa-file-invoice"></i> Report
                 </a>
-              </div>
+              </span>
               <span class="card-update-time" id="ex-update-dga">-</span>
             </div>
 
@@ -607,98 +950,70 @@
               </tbody>
             </table>
 
-            <!-- Duval Triangle 1 / Diagnosis Details -->
-            <div class="dga-diag-container">
-              <div><strong>Duval Method:</strong> <span id="ex-dga-duval1" style="font-weight: 600;">-</span></div>
-              <div><strong>Fault Diagnosis:</strong> <span id="ex-dga-fault" style="font-weight: 600;">-</span></div>
-              <div><strong>IEEE C57.104 Evaluation:</strong> <span id="ex-dga-ieee-status"
-                  style="font-weight: 600;">-</span></div>
-              <div><strong>IEC 60599 Diagnosis:</strong> <span id="ex-dga-iec-status" style="font-weight: 600;">-</span>
-              </div>
-              <div><strong>Paper Insulation Condition:</strong> <span id="ex-dga-paper-status"
-                  style="font-weight: 600;">-</span></div>
-            </div>
+            <!-- Interpretation Table -->
+            <table class="excel-table dga-interpretation-table" style="margin-top: 6px;">
+              <tbody>
+                <tr>
+                  <td style="width: 32%; font-weight: 600;">Duval Triangle 1</td>
+                  <td id="ex-dga-duval1" colspan="2" style="font-weight: 700; color: #38bdf8;">-</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">Status Condition</td>
+                  <td id="ex-dga-status" style="font-weight: 700;">-</td>
+                  <td id="ex-dga-co-ratio" style="text-align: right; color: var(--text-muted);">-</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- Main Tank Oil Properties -->
           <div class="excel-card">
-            <div class="excel-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Main Tank Oil Properties</span>
-                <a href="#" id="ex-oil-link" target="_blank" class="btn-report-link" title="Open Main Tank Oil Properties Report"
-                  style="color: #38bdf8; font-size: 0.85rem;">
-                  <i class="fa-solid fa-file-invoice"></i>
+            <div class="excel-card-header">
+              <span>
+                <i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> Main Tank Oil Properties
+                <a id="ex-oil-link" href="oil_report.html" target="_blank" class="btn-report-link" title="Open Main Tank Oil Report">
+                  <i class="fa-solid fa-file-invoice"></i> Report
                 </a>
-              </div>
+              </span>
               <span class="card-update-time" id="ex-update-oil">-</span>
             </div>
-
-            <div class="active-part-sub-title">Electrical Chemical and Physical</div>
-            <table class="excel-table test-table oil-table">
+            <table class="excel-table test-table">
               <thead>
                 <tr>
                   <th>Item Test</th>
-                  <th>Standards</th>
-                  <th>Result</th>
-                  <th>Unit</th>
+                  <th>Standard</th>
+                  <th>Limit</th>
+                  <th>Value</th>
                 </tr>
               </thead>
-              <tbody id="ex-oil-physical-rows">
-                <!-- Will be dynamically populated -->
-              </tbody>
-            </table>
-
-            <div class="active-part-sub-title">Paper Aging</div>
-            <table class="excel-table test-table oil-table">
-              <thead>
-                <tr>
-                  <th>Item Test</th>
-                  <th>Standards</th>
-                  <th>Result</th>
-                  <th>Unit</th>
-                </tr>
-              </thead>
-              <tbody id="ex-oil-aging-rows">
-                <!-- Will be dynamically populated -->
-              </tbody>
-            </table>
-
-            <div class="active-part-sub-title">Corrosive Sulfur</div>
-            <table class="excel-table test-table oil-table">
-              <thead>
-                <tr>
-                  <th>Item Test</th>
-                  <th>Standards</th>
-                  <th>Result</th>
-                  <th>Unit</th>
-                </tr>
-              </thead>
-              <tbody id="ex-oil-sulfur-rows">
-                <!-- Will be dynamically populated -->
+              <tbody id="ex-oil-rows">
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
 
-          <!-- OLTC Oil -->
-          <div class="excel-card">
+          <!-- OLTC Oil Properties -->
+          <div class="excel-card" id="card-oltc-oil">
             <div class="excel-card-header">
-              <span>On Load Tap Changer Oil (OLTC1)</span>
-              <a href="#" id="ex-oltc-link" target="_blank" class="btn-report-link" title="Open OLTC Oil Report" style="color: #38bdf8; font-size: 0.85rem;">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-              </a>
-              <span class="card-update-time" id="ex-update-oltc">-</span>
+              <span>
+                <i class="fa-solid fa-oil-can" style="color: #facc15;"></i> OLTC Oil Properties
+                <a id="ex-oltc-oil-link" href="oltc_oil_report.html" target="_blank" class="btn-report-link" title="Open OLTC Oil Report">
+                  <i class="fa-solid fa-file-invoice"></i> Report
+                </a>
+              </span>
+              <span class="card-update-time" id="ex-update-oltc-oil">-</span>
             </div>
-            <table class="excel-table test-table oil-table">
+            <table class="excel-table test-table">
               <thead>
                 <tr>
                   <th>Item Test</th>
-                  <th>Standards</th>
-                  <th>Result</th>
-                  <th>Unit</th>
+                  <th>Standard</th>
+                  <th>Limit</th>
+                  <th>Value</th>
                 </tr>
               </thead>
-              <tbody id="ex-oltc-rows">
-                <!-- Will be dynamically populated -->
+              <tbody id="ex-oltc-oil-rows">
+                <!-- Dynamically populated -->
               </tbody>
             </table>
           </div>
@@ -707,211 +1022,17 @@
 
       </div>
 
-      <!-- Modal Footer (Bottom Right: Last Updated Version) -->
-      <div
-        style="padding: 6px 16px; background: #0b193c; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: flex-end; align-items: center; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
-        <div id="modal-last-update-v" style="color: #94a3b8; font-size: 0.68rem; font-weight: 500;">Last Updated V.23 (1
-          Oct 2025)</div>
-      </div>
     </div>
   </div>
 
-  <!-- Hidden dummy element to prevent assessment.js script error if modal-close or detail-modal is missing -->
-  <div id="detail-modal" style="display:none;"><button id="modal-close"></button></div>
-
-  <script>
-    window.isDetailStandalonePage = true;
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Data Scripts -->
   <script src="data.js"></script>
-  <script src="health_data.js?v=20260810_v3"></script>
+  <script src="health_data.js"></script>
   <script src="oltc_data.js"></script>
-  <script src="oil_criteria.js"></script>
   <script src="evaluation_criteria.js"></script>
   <script src="evaluation_engine.js"></script>
-  <script src="detail.js?v=20260810_v3"></script>
+  <script src="detail.js"></script>
 
-  <script>
-    function isExcludedSite(site) {
-      if (!site) return false;
-      const s = String(site).trim().toLowerCase();
-      if (s === 'scrap' || s.includes('scrap')) return true;
-      if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
-      return false;
-    }
-
-    function getAssessmentDataArray() {
-      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
-        return assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
-      }
-      if (typeof window !== 'undefined' && window.assessmentData && Array.isArray(window.assessmentData) && window.assessmentData.length > 0) {
-        return window.assessmentData.filter(i => !isExcludedSite(i.site || i.SITE));
-      }
-      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
-        const parsed = (typeof parseHealthIndexSumCSV === 'function') ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : HEALTH_INDEX_DATA;
-        assessmentData = parsed.filter(i => !isExcludedSite(i.site || i.SITE));
-        if (typeof window !== 'undefined') window.assessmentData = assessmentData;
-        return assessmentData;
-      }
-      return [];
-    }
-
-    function populateTransformerDropdown() {
-      const data = getAssessmentDataArray();
-      const selectEl = document.getElementById('detail-transformer-select');
-      if (selectEl && data.length > 0) {
-        const curVal = selectEl.value;
-        selectEl.innerHTML = '';
-        data.forEach(item => {
-          const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
-          const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
-          if (s) {
-            const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = `${n || s} (${s})`;
-            selectEl.appendChild(opt);
-          }
-        });
-        if (curVal) selectEl.value = curVal;
-      }
-    }
-
-    function initDetailPage() {
-      const data = getAssessmentDataArray();
-      populateTransformerDropdown();
-
-      const urlParams = new URLSearchParams(window.location.search);
-      let serialParam = urlParams.get('serial') || urlParams.get('no') || urlParams.get('id');
-
-      if (!serialParam && data.length > 0) {
-        serialParam = data[0].serial;
-      }
-
-      if (serialParam) {
-        loadDetailBySerial(serialParam);
-      }
-    }
-
-    function initDetailPageWrapper() {
-      // Initialize theme
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
-
-      // Render immediately with preloaded data
-      initDetailPage();
-
-      // Background CSV loading
-      if (typeof loadAllTestDataCSVs === 'function') {
-        loadAllTestDataCSVs().then(() => {
-          initDetailPage();
-        }).catch(() => {
-          initDetailPage();
-        });
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      window.addEventListener('DOMContentLoaded', initDetailPageWrapper);
-    } else {
-      initDetailPageWrapper();
-    }
-
-    function switchTransformer(serial) {
-      const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
-      window.history.pushState({ path: newUrl }, '', newUrl);
-      loadDetailBySerial(serial);
-    }
-
-    function loadDetailBySerial(serial) {
-      const data = getAssessmentDataArray();
-      if (!data || !data.length) return;
-      
-      let item = data.find(x => String(x.serial) === String(serial));
-      if (!item) {
-        const cleanTarget = String(serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
-        item = data.find(x => {
-          const s = String(x.serial || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
-          const n = String(x.name || '').replace(/[^A-Z0-9]/gi, '').toLowerCase();
-          return (s && (s === cleanTarget || s.includes(cleanTarget) || cleanTarget.includes(s))) ||
-                 (n && (n === cleanTarget || n.includes(cleanTarget) || cleanTarget.includes(n)));
-        });
-      }
-      if (!item) item = data[0];
-      if (!item) return;
-
-      const selectEl = document.getElementById('detail-transformer-select');
-      if (selectEl && item.serial) selectEl.value = item.serial;
-
-      // Update Report Links
-      const evalBtn = document.getElementById('btn-eval-report');
-      if (evalBtn) evalBtn.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const dgaLink = document.getElementById('ex-dga-link');
-      if (dgaLink) dgaLink.href = `dga_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const visualLink = document.getElementById('ex-visual-link');
-      if (visualLink) visualLink.href = `visual_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const evalGaugeLink = document.getElementById('ex-eval-gauge-link');
-      if (evalGaugeLink) evalGaugeLink.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const bushingLink = document.getElementById('ex-bushing-link');
-      if (bushingLink) bushingLink.href = `bushing_pf_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const oilLink = document.getElementById('ex-oil-link');
-      if (oilLink) oilLink.href = `oil_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      const oltcLink = document.getElementById('ex-oltc-link');
-      if (oltcLink) oltcLink.href = `oltc_oil_report.html?serial=${encodeURIComponent(item.serial)}`;
-
-      // Render detail view
-      if (typeof openDetail === 'function') {
-        openDetail(item);
-      }
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('tr-dashboard-theme', next);
-      updateThemeIcon(next);
-    }
-
-    function updateThemeIcon(theme) {
-      const icon = document.getElementById('theme-icon');
-      if (icon) {
-        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-      }
-    }
-
-    function exportToJPG() {
-      const paper = document.getElementById('detail-paper');
-      const originalHeight = paper.style.height;
-      const originalOverflow = paper.style.overflowY;
-      paper.style.height = 'auto';
-      paper.style.overflowY = 'visible';
-      
-      html2canvas(paper, {
-        scale: 2,
-        useCORS: true,
-        windowHeight: paper.scrollHeight,
-        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
-      }).then(canvas => {
-        paper.style.height = originalHeight;
-        paper.style.overflowY = originalOverflow;
-        const link = document.createElement('a');
-        link.download = `Transformer_Detail_${document.getElementById('ex-info-serial').textContent || 'Report'}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
-        link.click();
-      }).catch(err => {
-        paper.style.height = originalHeight;
-        paper.style.overflowY = originalOverflow;
-        console.error('Export failed', err);
-      });
-    }
-  </script>
 </body>
 
 </html>
