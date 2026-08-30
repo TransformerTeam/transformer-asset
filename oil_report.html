@@ -1388,6 +1388,18 @@
       }
     });
 
+    // Function to calculate Estimated DP via Chendong / IEC formula: DP = (1.51 - log10(2-FAL in ppm)) / 0.0035
+    function calcChendongDP(furanVal) {
+      if (furanVal === undefined || furanVal === null || furanVal === '' || furanVal === '-' || furanVal === 'N/A') return null;
+      let numFuran = parseFloat(furanVal);
+      if (isNaN(numFuran) || numFuran <= 0) return null;
+      let furanPpm = numFuran / 1000;
+      const logF = Math.log10(furanPpm);
+      const dp = (1.51 - logF) / 0.0035;
+      if (isNaN(dp)) return null;
+      return Math.max(100, Math.min(1200, Math.round(dp)));
+    }
+
     // Helper to match serials robustly
     function matchSerial(a, b) {
       if (!a || !b) return false;
@@ -1684,23 +1696,30 @@
       // Populate Aging Indicators
       populateRow('furan', 'Furan', curr.Furan_Analysis, prev1.Furan_Analysis, prev2.Furan_Analysis, prev3.Furan_Analysis, 1);
       
-      // Estimated DP calculation if not present
-      let calcDP = estDP;
-      const furanVal = parseFloat(curr.Furan_Analysis);
-      if ((!calcDP || calcDP === '-' || calcDP === '0') && !isNaN(furanVal) && furanVal > 0) {
-        const furanPpm = furanVal / 1000;
-        const dpVal = Math.round(7100 / (8.88 + furanPpm));
-        calcDP = dpVal > 0 ? dpVal : 800;
-      }
+      // Estimated DP calculation via Chendong / IEC model for all test periods
+      const dpCurr = calcChendongDP(curr.Furan_Analysis) || (estDP && estDP !== '-' && estDP !== '0' ? parseInt(estDP, 10) : null);
+      const dpPrev1 = calcChendongDP(prev1.Furan_Analysis);
+      const dpPrev2 = calcChendongDP(prev2.Furan_Analysis);
+      const dpPrev3 = calcChendongDP(prev3.Furan_Analysis);
 
-      document.getElementById('res-dp-curr').textContent = calcDP && calcDP !== '-' ? calcDP : '-';
-      document.getElementById('res-dp-p1').textContent = '-';
-      document.getElementById('res-dp-p2').textContent = '-';
-      document.getElementById('res-dp-p3').textContent = '-';
+      const setDpCell = (elId, dpVal) => {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = dpVal ? dpVal : '-';
+        el.className = 'val-col';
+        if (dpVal) {
+          const rating = checkParam('DP')(dpVal);
+          if (rating) el.className = `val-col status-${rating}`;
+        }
+      };
+
+      setDpCell('res-dp-curr', dpCurr);
+      setDpCell('res-dp-p1', dpPrev1);
+      setDpCell('res-dp-p2', dpPrev2);
+      setDpCell('res-dp-p3', dpPrev3);
+
       const critDpCol = document.getElementById('crit-dp');
       if (critDpCol) critDpCol.textContent = getCriteriaString('DP', fluidType, hvVoltage);
-      const dpRating = checkParam('DP')(calcDP);
-      if (dpRating) document.getElementById('res-dp-curr').className = `val-col status-${dpRating}`;
 
       populateRow('sludge', 'Sludge', curr.Sludge_Condition, prev1.Sludge_Condition, prev2.Sludge_Condition, prev3.Sludge_Condition);
 
@@ -1959,12 +1978,8 @@
       const furanVals = sorted.map(d => parseFloat(d.Furan_Analysis) || null);
       createSingleParamChart('chart-trend-furan', 'Furan 2-FAL', furanVals, '#d97706', 'ppb', 1, 700, 'Limit: ≤ 700 ppb');
 
-      // 10. Estimated Degree of Polymerization (DP)
-      const dpVals = sorted.map(d => {
-        const fur = parseFloat(d.Furan_Analysis);
-        if (!isNaN(fur) && fur > 0) return Math.round(7100 / (8.88 + fur / 1000));
-        return null;
-      });
+      // 10. Estimated Degree of Polymerization (DP) via Chendong Model
+      const dpVals = sorted.map(d => calcChendongDP(d.Furan_Analysis));
       createSingleParamChart('chart-trend-dp', 'Estimated DP', dpVals, '#10b981', 'DP', 0, 700, 'Limit: ≥ 700 DP');
 
       // 11. Sludge Condition (wt%)
