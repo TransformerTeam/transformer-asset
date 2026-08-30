@@ -135,6 +135,7 @@
     }
 
     .btn-action {
+      text-decoration: none;
       background-color: rgba(255, 255, 255, 0.08);
       color: var(--text-main);
       border: 1px solid var(--border-dark);
@@ -619,6 +620,7 @@
     </div>
 
     <div style="display: flex; gap: 10px;">
+      <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
       <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i> Theme</button>
       <button class="btn-action btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
     </div>
@@ -1420,6 +1422,11 @@
       const service = meta.serviceType || meta['Service Type'] || '-';
 
       const powerStr = (power && power !== '-') ? Number(power).toLocaleString() + ' MVA' : '-';
+
+      const elBack = document.getElementById('btn-back-assessment');
+      if (elBack) {
+        elBack.href = `assessment.html?serial=${encodeURIComponent(sNo)}`;
+      }
 
       document.querySelectorAll('.val-meta-name').forEach(el => el.textContent = name);
       document.querySelectorAll('.val-meta-serial').forEach(el => el.textContent = sNo);
