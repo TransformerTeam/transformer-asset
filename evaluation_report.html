@@ -3203,14 +3203,13 @@
         `;
       }
 
-      // Update Analysis Cards (DP & Remaining Life 0-40 Year Bar)
-      const dpVal = item.estimatedDP || 1066.2425;
-      const lifeVal = item.estimatedLife || 25;
-
-      const dpNum = typeof dpVal === 'number' ? Math.round(dpVal) : (parseFloat(dpVal) ? Math.round(parseFloat(dpVal)) : dpVal);
+      // Update Analysis Cards (DP & Remaining Life dynamically from Remaining Life Report at DP 300)
+      const currentSerialForRemLife = item.serial || item.SERIAL_NUMBER || item['Serial No'] || (typeof currentSerial !== 'undefined' ? currentSerial : '');
+      const remLifeInfo = getRemainingLifeDP300(item, currentSerialForRemLife);
+      const dpNum = remLifeInfo.dp;
       setElText('an-dp', dpNum);
 
-      const lifeNum = parseFloat(lifeVal) || 0;
+      const lifeNum = remLifeInfo.rul300;
       const lifeEl = document.getElementById('an-life');
       if (lifeEl) {
         const pillClass = lifeNum > 15 ? 'pdf-status-pill-green' : (lifeNum >= 10 ? 'pdf-status-pill-yellow' : 'pdf-status-pill-red');
