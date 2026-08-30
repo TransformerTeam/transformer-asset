@@ -2764,14 +2764,14 @@
         return 'IEC 60296, Limit: ≥ 0.10 wt%';
       }
 
-      // 10. Furan [2-FAL]
-      if (mLower.includes('furan')) {
-        return 'ASTM D5837, Limit: ≤ 700 ppb';
-      }
-
-      // 11. Estimated DP
+      // 10. Estimated DP
       if (mLower.includes('estimated dp') || mLower.includes('dp')) {
         return 'Chendong / IEC, Limit: ≥ 700 DP';
+      }
+
+      // 11. Furan [2-FAL]
+      if (mLower.includes('furan')) {
+        return 'ASTM D5837, Limit: ≤ 700 ppb';
       }
 
       // 12. Sludge condition
@@ -4730,11 +4730,23 @@
       }
 
       if (nameLower.includes('estimated dp')) {
-        if (item.estimatedDP || item.ESTIMATED_DP) {
-          const dpVal = item.estimatedDP || item.ESTIMATED_DP;
-          const date = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : '-';
+        let dpVal = null;
+        let date = latestMt ? (latestMt.Date || latestMt.date || latestMt.DATE) : '-';
+        if (latestMt && (latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan)) {
+          const fur = parseFloat(latestMt.Furan_Analysis || latestMt.FURAN || latestMt.Furan);
+          if (!isNaN(fur) && fur > 0) {
+            const furanPpm = fur / 1000;
+            const logF = Math.log10(furanPpm);
+            const calcDp = Math.round((1.51 - logF) / 0.0035);
+            if (!isNaN(calcDp) && calcDp > 0) dpVal = Math.max(100, Math.min(1200, calcDp));
+          }
+        }
+        if (!dpVal) {
+          dpVal = item.estimatedDP || item.ESTIMATED_DP || item['Estimated DP (From Furan)'];
+        }
+        if (dpVal && dpVal !== '-' && dpVal !== 'N/A') {
           const num = parseFloat(dpVal);
-          const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 400 ? 4 : 3));
+          const score = isNaN(num) ? 5 : (num >= 700 ? 5 : (num >= 450 ? 4 : 3));
           return { value: `${dpVal}`, testDate: date, ratingScore: score, recommendation: score >= 4 ? '-' : 'Monitor DP level' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
