@@ -1,4 +1,4 @@
-﻿const TR_DATA = [
+const TR_DATA = [
     {
         "SERIAL_NUMBER":  "4803167",
         "DEVICE_CODE":  "16120-TR-002B",
@@ -13216,3 +13216,27 @@
         "Result_Date":  ""
     }
 ];
+
+var DFR_DATA = [
+  { "Equipment Name": "14100-TR-001 (GTG11)", "Serial No.": "4810106", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-03-20 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "1", "Oil Conductivity (pS/m)": "0.642" },
+  { "Equipment Name": "14100-TR-005 (GTG13)", "Serial No.": "PP0174B01", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2024-03-07 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "0.8", "Oil Conductivity (pS/m)": "1.8" },
+  { "Equipment Name": "14100-TR-002 (GTG12)", "Serial No.": "4811735", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2023-10-03 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "1", "Oil Conductivity (pS/m)": "0.515" },
+  { "Equipment Name": "14100-TR-005 (GTG13)", "Serial No.": "PP0174B01", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2021-07-23 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "-", "Oil Conductivity (pS/m)": "-" },
+  { "Equipment Name": "14100-TR-006 (GTG14)", "Serial No.": "PP0225B01", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-01-21 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "0.9", "Oil Conductivity (pS/m)": "0.31" },
+  { "Equipment Name": "14100-TR-006 (GTG14)", "Serial No.": "PP0225B01", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2022-02-01 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "0.6", "Oil Conductivity (pS/m)": "0.478" },
+  { "Equipment Name": "10060-TR-001 (GTG15)", "Serial No.": "5110021", "SITE": "CUP-1", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-10-24 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "0.5", "Oil Conductivity (pS/m)": "0.343" },
+  { "Equipment Name": "KT6A.30.EN", "Serial No.": "PTE 1689/03", "SITE": "SITE3", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-01-26 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "1.3", "Oil Conductivity (pS/m)": "0.273" },
+  { "Equipment Name": "KT2A.30.EN", "Serial No.": "510049", "SITE": "SITE3", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-02-06 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "0.5", "Oil Conductivity (pS/m)": "0.033" },
+  { "Equipment Name": "KT12A.30.EN", "Serial No.": "EDP008001", "SITE": "SITE3", "Test Name": "Mr.Jirasak S.", "Test Company": "GPSC", "Withness Name": "Mr.Suchat M.", "Withness Company": "GPSC", "Test Date": "2025-05-09 00:00:00", "Test Instrument": "DIRANA", "PercentMoisture (CHL)": "1.3", "Oil Conductivity (pS/m)": "0.371" },
+  { "Equipment Name": "16120-TR-001", "Serial No.": "4803321", "SITE": "CUP-1", "Test Name": "Dr. Pethai N", "Test Company": "TIS", "Withness Name": "Mr. Aekkarat M.", "Withness Company": "GPSC", "Test Date": "2022-05-28 00:00:00", "Test Instrument": "PDC-ANALYSER-1MOD", "PercentMoisture (CHL)": "2.7", "Oil Conductivity (pS/m)": "0.038" },
+  { "Equipment Name": "16120-TR-006", "Serial No.": "5101711", "SITE": "CUP-1", "Test Name": "Dr. Pethai N", "Test Company": "TIS", "Withness Name": "Mr. Aekkarat M.", "Withness Company": "GPSC", "Test Date": "2022-01-31 00:00:00", "Test Instrument": "PDC-ANALYSER-1MOD", "PercentMoisture (CHL)": "2.3", "Oil Conductivity (pS/m)": "0.69" }
+];
+if (typeof window !== 'undefined') {
+  window.DFR_DATA = DFR_DATA;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.DFR_DATA = DFR_DATA;
+}
+if (typeof global !== 'undefined') {
+  global.DFR_DATA = DFR_DATA;
+}

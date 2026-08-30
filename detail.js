@@ -1,5 +1,5 @@
 
-let dfrCsvData = [];
+let dfrCsvData = (typeof DFR_DATA !== 'undefined') ? DFR_DATA : [];
 
 function calcDominelliDP(furanPpb) {
   if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
