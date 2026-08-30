@@ -1648,6 +1648,48 @@
     }
 
     
+    let evalOilDataList = [];
+    let evalDfrDataList = [];
+
+    const parseEvalCSV = (text) => {
+      if (!text) return [];
+      const lines = text.trim().split('\n');
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^[\uFEFF\ufeff]/, ''));
+      return lines.slice(1).map(line => {
+        const cols = line.split(',');
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = cols[i] ? cols[i].trim() : '');
+        return obj;
+      });
+    };
+
+    async function loadTestDatasetsForEval() {
+      try {
+        const [resOil, resDfr] = await Promise.all([
+          fetch('TestData/MTOilData.csv').catch(() => null),
+          fetch('TestData/DFRData.csv').catch(() => null)
+        ]);
+        if (resOil && resOil.ok) {
+          const text = await resOil.text();
+          evalOilDataList = parseEvalCSV(text);
+        }
+        if (resDfr && resDfr.ok) {
+          const text = await resDfr.text();
+          evalDfrDataList = parseEvalCSV(text);
+        }
+      } catch (e) {
+        console.warn('Dataset load warning:', e);
+      }
+    }
+
+    function matchEvalSerial(s1, s2) {
+      if (!s1 || !s2) return false;
+      const str1 = String(s1).trim().toLowerCase();
+      const str2 = String(s2).trim().toLowerCase();
+      return str1 === str2 || str1.includes(str2) || str2.includes(str1);
+    }
+
     function calcDominelliDP(furanPpb) {
       if (!furanPpb || isNaN(furanPpb) || furanPpb <= 0) return null;
       const furanPpm = furanPpb / 1000;
@@ -1662,10 +1704,28 @@
     }
 
     function getRemainingLifeDP300(item, serialVal) {
-      let rawFuran = item.Furan || item['Furan (ppb)'] || item.furan;
+      const sVal = serialVal || (item && (item.serial || item.SERIAL_NUMBER || item['Serial No'])) || '';
+      
+      let oilRecords = evalOilDataList.filter(x => 
+        matchEvalSerial(x.serial || x.Serial_no || x['Serial No'], sVal) || 
+        matchEvalSerial(x.Equipment_name || x.name, sVal) || 
+        (item && matchEvalSerial(x.serial, item.serial)) || 
+        (item && matchEvalSerial(x.serial, item['Serial No']))
+      );
+
+      if (oilRecords && oilRecords.length > 0) {
+        oilRecords.sort((a, b) => {
+          const dA = new Date(a.Date || a.date);
+          const dB = new Date(b.Date || b.date);
+          return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+        });
+      }
+      const latestOil = oilRecords.length > 0 ? oilRecords[0] : {};
+
+      let rawFuran = latestOil.Furan_Analysis || (item && (item.Furan || item['Furan (ppb)'] || item.furan));
       let furanPpb = (rawFuran !== undefined && rawFuran !== '' && rawFuran !== '-' && !isNaN(parseFloat(rawFuran))) ? parseFloat(rawFuran) : null;
 
-      let rawDP = item.estimatedDP || item['Estimated DP (From Furan)'];
+      let rawDP = (item && (item.estimatedDP || item['Estimated DP (From Furan)']));
       let dpVal = (rawDP !== undefined && rawDP !== '' && rawDP !== '-' && !isNaN(parseFloat(rawDP))) ? parseFloat(rawDP) : null;
       if (dpVal === null && furanPpb !== null) {
         dpVal = calcDominelliDP(furanPpb);
@@ -1675,11 +1735,17 @@
       }
       const dp0 = dpVal !== null ? dpVal : 950;
 
-      let rawO2 = item.O2 || item.O2_ppm;
+      let rawO2 = latestOil.O2 || latestOil.O2_ppm || (item && (item.O2 || item.O2_ppm));
       let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
       const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
-      let rawMoist = item['%Moisture in paper (FDS)'] || item.PercentMoisture;
+      let dfrRecords = evalDfrDataList.filter(x => 
+        matchEvalSerial(x.serial || x['Serial No.'] || x['Serial No'], sVal) || 
+        matchEvalSerial(x['Equipment Name'] || x.name, sVal) || 
+        (item && matchEvalSerial(x.serial, item.serial))
+      );
+      const latestDfr = dfrRecords.length > 0 ? dfrRecords[0] : {};
+      let rawMoist = latestDfr['PercentMoisture (CHL)'] || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
       let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
       const isHighMoisture = cleanMoist !== null ? cleanMoist > 2.0 : false;
 
@@ -1696,7 +1762,8 @@
 
       const targetDP300 = 300;
       const rul300 = Math.round(calcRUL(dp0, targetDP300, kYearly) * 10) / 10;
-      return { dp: dp0, rul300: rul300, kYearly: kYearly };
+      const targetYear = Math.round(2025 + rul300);
+      return { dp: dp0, rul300: rul300, targetYear: targetYear, kYearly: kYearly };
     }
 
     function setElText(id, text) {
