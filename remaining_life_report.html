@@ -1635,10 +1635,10 @@
       }
 
       // KPI 4: Probability of Failure (PoF)
+      let pofRisk = 'Low Risk (<20%)';
+      let pofColor = '#15803d';
       if (age !== null) {
         document.getElementById('kpi-pof-val').textContent = pofStr;
-        let pofRisk = 'Low Risk (<20%)';
-        let pofColor = '#15803d';
         if (pofVal >= 50) {
           pofRisk = 'High Risk (≥50%)';
           pofColor = '#b91c1c';
@@ -1649,8 +1649,9 @@
         document.getElementById('kpi-pof-risk').textContent = pofRisk;
         document.getElementById('kpi-pof-risk').style.color = pofColor;
       } else {
+        pofRisk = 'No Service Age Record';
         document.getElementById('kpi-pof-val').textContent = '-';
-        document.getElementById('kpi-pof-risk').textContent = 'No Service Age Record';
+        document.getElementById('kpi-pof-risk').textContent = pofRisk;
         document.getElementById('kpi-pof-risk').style.color = '#64748b';
       }
 
