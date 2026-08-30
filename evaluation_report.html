@@ -1887,8 +1887,10 @@
         statusEl.className = `gauge-status ${hi >= 80 ? 'badge-good' : (hi >= 70 ? 'badge-warn' : (hi >= 50 ? 'badge-orange' : 'badge-danger'))}`;
       }
 
-      setElText('summary-dp', item.estimatedDP || item['Estimated DP (From Furan)'] || '950');
-      setElText('summary-life', item.estimatedLife ? `${item.estimatedLife} yrs` : (item['Estimated Remaining Life time (Year)'] ? `${item['Estimated Remaining Life time (Year)']} yrs` : '25 yrs'));
+      const remLifeSummaryInfo = getRemainingLifeDP300(item, serialVal);
+      setElText('summary-dp', remLifeSummaryInfo.dp);
+      const displaySummaryLife = remLifeSummaryInfo.rul300 > 40 ? '>40 yrs' : `${remLifeSummaryInfo.rul300} yrs`;
+      setElText('summary-life', displaySummaryLife);
       
       const recContainer = document.getElementById('eval-recommendation-box');
       const recEl = document.getElementById('eval-recommendation-text');
@@ -3210,10 +3212,11 @@
       setElText('an-dp', dpNum);
 
       const lifeNum = remLifeInfo.rul300;
+      const displayLifeText = lifeNum > 40 ? '>40' : lifeNum;
       const lifeEl = document.getElementById('an-life');
       if (lifeEl) {
         const pillClass = lifeNum > 15 ? 'pdf-status-pill-green' : (lifeNum >= 10 ? 'pdf-status-pill-yellow' : 'pdf-status-pill-red');
-        lifeEl.innerHTML = `<span class="${pillClass}">${lifeNum}</span>`;
+        lifeEl.innerHTML = `<span class="${pillClass}">${displayLifeText}</span>`;
       }
 
       // Remaining Life Bar Pointer: Limit at 40 years (Red <10, Yellow 10-15, Green >15)
