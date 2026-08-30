@@ -1943,7 +1943,8 @@ function openDetail(no) {
   const ratioValStr = ratioRec ? (ratioRec.H1_max_err ? `${parseFloat(ratioRec.H1_max_err).toFixed(2)}% Dev` : '< 0.5% Dev') : '< 0.5% Dev';
   const ratioDateDisp = formatDgaDate(ratioRec ? (ratioRec.date || ratioRec.Date) : item.dateToAssess);
 
-  const exValStr = exRec ? (exRec.H1CENTER ? `${parseFloat(exRec.H1CENTER).toFixed(1)} mA (Normal)` : 'Normal Pattern') : 'Normal Pattern';
+  const exNum = exRec ? parseFloat(exRec.H1CENTER || exRec.H1NO1 || exRec.H1NO2 || exRec.H1MAX || exRec.H1MIN || exRec.X1 || exRec.H1COM1) : NaN;
+  const exValStr = !isNaN(exNum) ? `${exNum.toFixed(1)} mA (Normal)` : 'Normal Pattern';
   const exDateDisp = formatDgaDate(exRec ? (exRec.DATE || exRec.date) : item.dateToAssess);
 
   const wValStr = wRec ? (wRec.H1RCENTER ? `${parseFloat(wRec.H1RCENTER).toFixed(2)} mΩ (< 2% Dev)` : '< 2% Dev') : '< 2% Dev';

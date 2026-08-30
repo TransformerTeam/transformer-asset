@@ -786,9 +786,49 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
     const latestExciting = (typeof excitingCsvData !== 'undefined') ? findLatestRecord(excitingCsvData, serialVal) : null;
     if (latestExciting) {
       const date = latestExciting.DATE || latestExciting.Date || latestExciting.date;
-      const h1 = parseFloat(latestExciting.H1CENTER || latestExciting.H1MAX || latestExciting.H1MIN);
-      const h2 = parseFloat(latestExciting.H2CENTER || latestExciting.H2MAX || latestExciting.H2MIN);
-      const h3 = parseFloat(latestExciting.H3CENTER || latestExciting.H3MAX || latestExciting.H3MIN);
+      
+      const pNum = (v) => {
+        if (v === undefined || v === null || v === '' || v === '-' || v === 'N/A') return NaN;
+        const n = parseFloat(v);
+        return isNaN(n) ? NaN : n;
+      };
+
+      let h1 = pNum(latestExciting.H1CENTER);
+      let h2 = pNum(latestExciting.H2CENTER);
+      let h3 = pNum(latestExciting.H3CENTER);
+      let tapName = '';
+
+      if (isNaN(h1) || isNaN(h2) || isNaN(h3)) {
+        if (!isNaN(pNum(latestExciting.H1NO1)) && !isNaN(pNum(latestExciting.H2NO1)) && !isNaN(pNum(latestExciting.H3NO1))) {
+          h1 = pNum(latestExciting.H1NO1);
+          h2 = pNum(latestExciting.H2NO1);
+          h3 = pNum(latestExciting.H3NO1);
+          tapName = latestExciting.H1TAP1 ? ` (Tap ${latestExciting.H1TAP1})` : '';
+        } else if (!isNaN(pNum(latestExciting.H1NO2)) && !isNaN(pNum(latestExciting.H2NO2)) && !isNaN(pNum(latestExciting.H3NO2))) {
+          h1 = pNum(latestExciting.H1NO2);
+          h2 = pNum(latestExciting.H2NO2);
+          h3 = pNum(latestExciting.H3NO2);
+          tapName = latestExciting.H1TAP2 ? ` (Tap ${latestExciting.H1TAP2})` : '';
+        } else if (!isNaN(pNum(latestExciting.H1MAX)) && !isNaN(pNum(latestExciting.H2MAX)) && !isNaN(pNum(latestExciting.H3MAX))) {
+          h1 = pNum(latestExciting.H1MAX);
+          h2 = pNum(latestExciting.H2MAX);
+          h3 = pNum(latestExciting.H3MAX);
+          tapName = ' (Max Tap)';
+        } else if (!isNaN(pNum(latestExciting.H1MIN)) && !isNaN(pNum(latestExciting.H2MIN)) && !isNaN(pNum(latestExciting.H3MIN))) {
+          h1 = pNum(latestExciting.H1MIN);
+          h2 = pNum(latestExciting.H2MIN);
+          h3 = pNum(latestExciting.H3MIN);
+          tapName = ' (Min Tap)';
+        } else if (!isNaN(pNum(latestExciting.H1COM1)) && !isNaN(pNum(latestExciting.H2COM1)) && !isNaN(pNum(latestExciting.H3COM1))) {
+          h1 = pNum(latestExciting.H1COM1);
+          h2 = pNum(latestExciting.H2COM1);
+          h3 = pNum(latestExciting.H3COM1);
+        } else if (!isNaN(pNum(latestExciting.X1)) && !isNaN(pNum(latestExciting.X2)) && !isNaN(pNum(latestExciting.X3))) {
+          h1 = pNum(latestExciting.X1);
+          h2 = pNum(latestExciting.X2);
+          h3 = pNum(latestExciting.X3);
+        }
+      }
 
       if (!isNaN(h1) && !isNaN(h2) && !isNaN(h3) && h1 > 0 && h2 > 0 && h3 > 0) {
         let patternName = 'H-L-H';
@@ -818,7 +858,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
           score = 1;
         }
 
-        const valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA<br>Pattern: ${patternName}`;
+        const valStr = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA${tapName}<br>Pattern: ${patternName}`;
         let recStr = '-';
         if (score === 3) recStr = 'Core demagnetization recommended (IEEE C57.152 / CIGRE TB 761)';
         else if (score === 2) recStr = 'Check core grounding & perform FRA (IEEE C57.152 / CIGRE TB 761)';
@@ -827,6 +867,18 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         return { value: valStr, testDate: date, ratingScore: score, recommendation: recStr };
       }
     }
+
+    const rawEx = item['Exciting Current'] || (item.activePart && item.activePart.excitingCurrent);
+    if (rawEx && rawEx !== 'N/A' && rawEx !== '-') {
+      const isGood = rawEx === 'A' || rawEx === 'Good' || rawEx === '5';
+      return {
+        value: isGood ? 'Balanced (Normal Pattern)' : 'Pattern Variance Detected',
+        testDate: item.dateToAssess || item['Date To Assess'] || '-',
+        ratingScore: isGood ? 5 : 3,
+        recommendation: isGood ? '-' : 'Investigate exciting current pattern'
+      };
+    }
+
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
 
