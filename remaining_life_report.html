@@ -521,24 +521,89 @@
       .report-wrapper {
         max-width: 100% !important;
         width: 100% !important;
+        gap: 0 !important;
       }
       .report-page {
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
         padding: 4mm 6mm !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
         height: auto !important;
         width: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
+      #page-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      #page-2 {
+        page-break-before: always !important;
+        break-before: page !important;
       }
       .chart-canvas-container {
-        height: 320px !important;
+        height: 300px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
+    }
+
+    /* Page 2 Specific Styling */
+    .calc-step-card {
+      border: 1px solid var(--report-border);
+      border-radius: 5px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      margin-bottom: 6px;
+    }
+
+    .calc-step-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--report-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 2px;
+    }
+
+    .calc-box-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .calc-formula-display {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 8.5px;
+      line-height: 1.35;
+    }
+
+    .calc-subst-display {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-left: 3px solid var(--report-primary);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 8.5px;
+      line-height: 1.35;
+    }
+
+    .math-hl {
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    .math-res {
+      font-weight: 800;
+      color: #15803d;
     }
   </style>
 </head>
@@ -555,8 +620,9 @@
 
     <div style="display: flex; gap: 10px;">
       <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i> Theme</button>
-      <button class="btn-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
-      <button class="btn-action btn-primary" onclick="exportReportAsJPG()"><i class="fa-solid fa-file-image"></i> Export JPG</button>
+      <button class="btn-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Print 2 Pages</button>
+      <button class="btn-action" onclick="exportSinglePageJPG('page-1', 'Page1_Summary')"><i class="fa-solid fa-file-image"></i> JPG Page 1</button>
+      <button class="btn-action btn-primary" onclick="exportSinglePageJPG('page-2', 'Page2_Calculations')"><i class="fa-solid fa-calculator"></i> JPG Page 2</button>
     </div>
   </div>
 
@@ -778,6 +844,259 @@
       </div>
 
       <!-- SIGNATURES / APPROVAL -->
+      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+      <table class="signature-table">
+        <thead>
+          <tr>
+            <th style="width: 33.33%;">Tested By</th>
+            <th style="width: 33.33%;">Reviewed By</th>
+            <th style="width: 33.34%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+            <td class="sig-cell"></td>
+          </tr>
+          <tr>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+            <td style="padding: 2px 4px;">
+              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGE 2: Step-by-Step Calculation Details & Engineering Methodology -->
+    <div class="report-page" id="page-2" style="margin-top: 24px;">
+      <!-- Header Section -->
+      <div class="report-header">
+        <div class="report-title-group">
+          <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+            <h1 class="report-title">Remaining Life Assessment Report</h1>
+            <span class="badge-report-no">EMM-TR-F-015, Rev.1 (Page 2 of 2)</span>
+          </div>
+          <div class="report-subtitle">Calculation Details &amp; Engineering Formula Substitutions • CIGRE 761 / SINTEF Model</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo">
+        </div>
+      </div>
+
+      <!-- Transformer Identification Mini Summary -->
+      <div class="section-banner">
+        <span>• Equipment Reference Summary</span>
+        <span class="badge-report-no" style="background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.3); color: #ffffff;">Calculation Sheet</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr>
+            <th style="width: 15%;">Equipment Name</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-name">-</td>
+            <th style="width: 15%;">Site</th>
+            <td style="width: 35%; font-weight: 700; color: #1e3a8a;" class="val-meta-site">-</td>
+          </tr>
+          <tr>
+            <th>Serial No.</th>
+            <td style="font-weight: 700; color: #1e3a8a;" class="val-meta-serial">-</td>
+            <th>Power / Voltage</th>
+            <td style="font-weight: 700; color: #1e3a8a;"><span class="val-meta-power">-</span> / <span class="val-meta-voltage">-</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- STEP 1: Indirect DP Estimation -->
+      <div class="calc-step-card">
+        <div class="calc-step-title">
+          <span><i class="fa-solid fa-flask-vial"></i> Step 1: Indirect DP Estimation from Furan 2-FAL (Dominelli / CIGRE 761)</span>
+          <span style="font-size: 8px; color: #64748b;">Dominelli Logarithmic Correlation</span>
+        </div>
+        <div class="calc-box-grid">
+          <div class="calc-formula-display">
+            <strong>Standard Mathematical Formula:</strong><br>
+            • Correlation: <span class="formula-math">\log_{10}(2\text{-FAL}_{\text{ppm}}) = 1.51 - 0.0035 \times DP</span><br>
+            • Extrapolated DP: <span class="formula-math">DP = \frac{1.51 - \log_{10}(2\text{-FAL}_{\text{ppm}})}{0.0035}</span><br>
+            • Conversion: <span class="formula-math">2\text{-FAL}_{\text{ppm}} = \frac{2\text{-FAL}_{\text{ppb}}}{1000}</span>
+          </div>
+          <div class="calc-subst-display" id="step1-subst-box">
+            <strong>Actual Value Substitution:</strong><br>
+            • Measured 2-FAL: <span class="math-hl" id="calc-furan-raw">-</span> ppb = <span class="math-hl" id="calc-furan-ppm">-</span> ppm<br>
+            • <span class="formula-math">\log_{10}(<span id="calc-furan-ppm2">-</span>) = <span class="math-hl" id="calc-log-furan">-</span></span><br>
+            • <span class="formula-math">DP = \frac{1.51 - (<span id="calc-log-furan2">-</span>)}{0.0035} = </span> <span class="math-res" id="calc-dp-result">-</span><br>
+            • <strong>Baseline Starting DP₀:</strong> <span class="math-res" id="calc-dp0-final">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Hot Spot Temperature -->
+      <div class="calc-step-card">
+        <div class="calc-step-title">
+          <span><i class="fa-solid fa-temperature-arrow-up"></i> Step 2: Winding Hot Spot Temperature Calculation (IEC 60076-7 / Annex C)</span>
+          <span style="font-size: 8px; color: #64748b;">Winding Gradient Model</span>
+        </div>
+        <div class="calc-box-grid">
+          <div class="calc-formula-display">
+            <strong>Standard Mathematical Formula:</strong><br>
+            • Hot Spot Rise: <span class="formula-math">T_{hs} = T_{LV} + (H \times g_r - g_r) = T_{LV} + \Delta T_{hs}</span><br>
+            • IEC 60076-7 Standard Constants: <span class="formula-math">H = 1.3, \; g_r = 17^\circ\text{C}</span><br>
+            • Thermal Gradient: <span class="formula-math">\Delta T_{hs} = 1.3 \times 17 - 17 = 5.1^\circ\text{C}</span><br>
+            • Absolute Temperature: <span class="formula-math">T_{hs(K)} = T_{hs(^\circ\text{C})} + 273.15 \; \text{K}</span>
+          </div>
+          <div class="calc-subst-display" id="step2-subst-box">
+            <strong>Actual Value Substitution:</strong><br>
+            • Measured LV Winding Temp: <span class="math-hl" id="calc-tlv-val">-</span><br>
+            • <span class="formula-math">T_{hs} = <span id="calc-tlv-base">-</span> + 5.1^\circ\text{C} = </span> <span class="math-res" id="calc-ths-c">-</span><br>
+            • <span class="formula-math">T_{hs(K)} = <span id="calc-ths-c2">-</span> + 273.15 = </span> <span class="math-res" id="calc-ths-k">-</span> K<br>
+            • Source: <span class="math-hl" id="calc-temp-source">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: SINTEF Kinetic Degradation Rate -->
+      <div class="calc-step-card">
+        <div class="calc-step-title">
+          <span><i class="fa-solid fa-atom"></i> Step 3: Thermal-Chemical Ageing Reaction Rate (k) (SINTEF Kinetic Model)</span>
+          <span style="font-size: 8px; color: #64748b;">Arrhenius Dual-Mechanism Kinetics</span>
+        </div>
+        <div class="calc-box-grid">
+          <div class="calc-formula-display">
+            <strong>Standard Mathematical Formula:</strong><br>
+            • Combined Rate: <span class="formula-math">k = A_{Hyd} \cdot e^{-\frac{E_{Hyd}}{R \cdot T_{hs}}} + A_{Oxi} \cdot e^{-\frac{E_{Oxi}}{R \cdot T_{hs}}}</span><br>
+            • Gas Constant: <span class="formula-math">R = 8.314 \; \text{J/(mol}\cdot\text{K)}</span><br>
+            • Activation Energy: <span class="formula-math">E_{Hyd} = 128{,}000 \; \text{J/mol}, \; E_{Oxi} = 89{,}000 \; \text{J/mol}</span><br>
+            • Pre-exponential: <span class="formula-math">A_{Hyd}</span> (Moisture % dependent), <span class="formula-math">A_{Oxi}</span> (O₂ ppm dependent)
+          </div>
+          <div class="calc-subst-display" id="step3-subst-box">
+            <strong>Actual Value Substitution:</strong><br>
+            • Operating State: Moisture = <span class="math-hl" id="calc-moist-stat">-</span>, O₂ = <span class="math-hl" id="calc-o2-stat">-</span><br>
+            • Factors: <span class="formula-math">A_{Hyd} = <span id="calc-ahyd-val">-</span> \; \text{h}^{-1}, \; A_{Oxi} = <span id="calc-aoxi-val">-</span> \; \text{h}^{-1}</span><br>
+            • Hydrolysis Rate: <span class="formula-math">k_{Hyd} = </span> <span class="math-hl" id="calc-khyd-val">-</span> h⁻¹<br>
+            • Oxidation Rate: <span class="formula-math">k_{Oxi} = </span> <span class="math-hl" id="calc-koxi-val">-</span> h⁻¹<br>
+            • <strong>Total Yearly Rate (k):</strong> <span class="math-res" id="calc-ktotal-yearly">-</span> year⁻¹
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Remaining Useful Life Calculation -->
+      <div class="calc-step-card">
+        <div class="calc-step-title">
+          <span><i class="fa-solid fa-hourglass-half"></i> Step 4: Remaining Useful Life (RUL) Calculation to DP 300 &amp; DP 200</span>
+          <span style="font-size: 8px; color: #64748b;">Kinetic EOL Extrapolation</span>
+        </div>
+        <div class="calc-box-grid">
+          <div class="calc-formula-display">
+            <strong>Standard Mathematical Formula:</strong><br>
+            • Reciprocal Kinetics: <span class="formula-math">\frac{1}{DP_t} - \frac{1}{DP_0} = k \cdot \Delta t</span><br>
+            • Remaining Years: <span class="formula-math">\text{RUL} = \Delta t = \frac{\frac{1}{DP_{\text{target}}} - \frac{1}{DP_0}}{k}</span><br>
+            • Target Calendar Year: <span class="formula-math">\text{Year}_{\text{target}} = 2025 + \text{RUL}</span>
+          </div>
+          <div class="calc-subst-display" id="step4-subst-box">
+            <strong>Actual Value Substitution:</strong><br>
+            • <strong>1. To Warning Limit (DP = 300):</strong><br>
+              <span class="formula-math">\Delta t_{300} = \frac{\frac{1}{300} - \frac{1}{<span id="calc-dp0-s4a">-</span>}}{<span id="calc-k-s4a">-</span>} = </span> <span class="math-res" id="calc-rul300-val">-</span> Years (<span class="math-hl" id="calc-year300-val">-</span>)<br>
+            • <strong>2. To Mechanical End of Life (DP = 200):</strong><br>
+              <span class="formula-math">\Delta t_{200} = \frac{\frac{1}{200} - \frac{1}{<span id="calc-dp0-s4b">-</span>}}{<span id="calc-k-s4b">-</span>} = </span> <span class="math-res" id="calc-rul200-val">-</span> Years (<span class="math-hl" id="calc-year200-val">-</span>)
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Weibull Probability of Failure -->
+      <div class="calc-step-card">
+        <div class="calc-step-title">
+          <span><i class="fa-solid fa-shield-halved"></i> Step 5: Cumulative Probability of Failure (Weibull PoF) (CIGRE 761)</span>
+          <span style="font-size: 8px; color: #64748b;">Fleet Statistical Reliability Model</span>
+        </div>
+        <div class="calc-box-grid">
+          <div class="calc-formula-display">
+            <strong>Standard Mathematical Formula:</strong><br>
+            • Weibull CDF: <span class="formula-math">PoF(t) = \left[ 1 - e^{-\left( \frac{t}{\alpha} \right)^\beta} \right] \times 100\%</span><br>
+            • Scale Parameter: <span class="formula-math">\alpha = 42.5 \; \text{years}</span> (Characteristic Fleet Life)<br>
+            • Shape Parameter: <span class="formula-math">\beta = 3.0</span> (Wear-out Aging Phase)<br>
+            • Current Service Age: <span class="formula-math">t = \text{Service Age (Years)}</span>
+          </div>
+          <div class="calc-subst-display" id="step5-subst-box">
+            <strong>Actual Value Substitution:</strong><br>
+            • Current Age: <span class="math-hl" id="calc-age-val">-</span> Years<br>
+            • <span class="formula-math">\left( \frac{<span id="calc-age-val2">-</span>}{42.5} \right)^3 = </span> <span class="math-hl" id="calc-weibull-ratio">-</span><br>
+            • <span class="formula-math">PoF = \left[ 1 - e^{-<span id="calc-weibull-ratio2">-</span>} \right] \times 100\% = </span> <span class="math-res" id="calc-pof-result">-</span><br>
+            • <strong>Risk Classification:</strong> <span class="math-res" id="calc-pof-status">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table 6-4 Kinetic Model Sensitivity Parameters Matrix -->
+      <div class="section-banner">• Summary of Kinetic Model Rate Constants &amp; RUL Matrix (SINTEF Model)</div>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th style="width: 28%;">Operational Condition</th>
+            <th style="width: 14%; text-align: center;">A_Hyd (h⁻¹)</th>
+            <th style="width: 14%; text-align: center;">A_Oxi (h⁻¹)</th>
+            <th style="width: 16%; text-align: center;">Rate Constant (k)</th>
+            <th style="width: 14%; text-align: center;">RUL to DP 300</th>
+            <th style="width: 14%; text-align: center;">RUL to DP 200</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color: #16a34a;">Normal (0.5–2.0% H₂O, O₂ &lt; 7000)</strong></td>
+            <td style="text-align: center;">1.50 × 10¹¹</td>
+            <td style="text-align: center;">0.00</td>
+            <td style="text-align: center;">3.10 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-norm-300">-</td>
+            <td style="text-align: center;" id="p2-norm-200">-</td>
+          </tr>
+          <tr>
+            <td><strong style="color: #2563eb;">Current Unit Trajectory</strong></td>
+            <td style="text-align: center;" id="p2-curr-ahyd">-</td>
+            <td style="text-align: center;" id="p2-curr-aoxi">-</td>
+            <td style="text-align: center; font-weight: 700;" id="p2-curr-k">-</td>
+            <td style="text-align: center; font-weight: 700;" id="p2-curr-300">-</td>
+            <td style="text-align: center; font-weight: 700;" id="p2-curr-200">-</td>
+          </tr>
+          <tr>
+            <td><strong style="color: #f59e0b;">High O₂ (0.5–2.0% H₂O, O₂ ≥ 7000)</strong></td>
+            <td style="text-align: center;">1.50 × 10¹¹</td>
+            <td style="text-align: center;">4.60 × 10⁵</td>
+            <td style="text-align: center;">5.97 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-oxy-300">-</td>
+            <td style="text-align: center;" id="p2-oxy-200">-</td>
+          </tr>
+          <tr>
+            <td><strong style="color: #f97316;">High Moisture (&gt; 2.0% H₂O, O₂ &lt; 7000)</strong></td>
+            <td style="text-align: center;">4.50 × 10¹¹</td>
+            <td style="text-align: center;">0.00</td>
+            <td style="text-align: center;">7.80 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-moist-300">-</td>
+            <td style="text-align: center;" id="p2-moist-200">-</td>
+          </tr>
+          <tr>
+            <td><strong style="color: #dc2626;">Severe (&gt; 2.0% H₂O, O₂ ≥ 7000)</strong></td>
+            <td style="text-align: center;">4.50 × 10¹¹</td>
+            <td style="text-align: center;">4.60 × 10⁵</td>
+            <td style="text-align: center;">1.20 × 10⁻⁴ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-sev-300">-</td>
+            <td style="text-align: center;" id="p2-sev-200">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SIGNATURES / APPROVAL PAGE 2 -->
       <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
       <table class="signature-table">
         <thead>
@@ -1352,6 +1671,120 @@
       document.getElementById('scen-sev-300').textContent = `~${rulSev300} Years (${yearSev300})`;
       document.getElementById('scen-sev-200').textContent = `~${rulSev200} Years (${yearSev200})`;
 
+      // Page 2 Matrix Table
+      const elP2Norm300 = document.getElementById('p2-norm-300'); if (elP2Norm300) elP2Norm300.textContent = `~${rulNorm300} yrs (${yearNorm300})`;
+      const elP2Norm200 = document.getElementById('p2-norm-200'); if (elP2Norm200) elP2Norm200.textContent = `~${rulNorm200} yrs (${yearNorm200})`;
+      const elP2Oxy300 = document.getElementById('p2-oxy-300'); if (elP2Oxy300) elP2Oxy300.textContent = `~${rulOxy300} yrs (${yearOxy300})`;
+      const elP2Oxy200 = document.getElementById('p2-oxy-200'); if (elP2Oxy200) elP2Oxy200.textContent = `~${rulOxy200} yrs (${yearOxy200})`;
+      const elP2Moist300 = document.getElementById('p2-moist-300'); if (elP2Moist300) elP2Moist300.textContent = `~${rulMoist300} yrs (${yearMoist300})`;
+      const elP2Moist200 = document.getElementById('p2-moist-200'); if (elP2Moist200) elP2Moist200.textContent = `~${rulMoist200} yrs (${yearMoist200})`;
+      const elP2Sev300 = document.getElementById('p2-sev-300'); if (elP2Sev300) elP2Sev300.textContent = `~${rulSev300} yrs (${yearSev300})`;
+      const elP2Sev200 = document.getElementById('p2-sev-200'); if (elP2Sev200) elP2Sev200.textContent = `~${rulSev200} yrs (${yearSev200})`;
+
+      let aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
+      let aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
+      const elP2CurrAhyd = document.getElementById('p2-curr-ahyd'); if (elP2CurrAhyd) elP2CurrAhyd.textContent = aHydValStr;
+      const elP2CurrAoxi = document.getElementById('p2-curr-aoxi'); if (elP2CurrAoxi) elP2CurrAoxi.textContent = aOxiValStr;
+      const elP2CurrK = document.getElementById('p2-curr-k'); if (elP2CurrK) elP2CurrK.textContent = `${kScientific} yr⁻¹`;
+      const elP2Curr300 = document.getElementById('p2-curr-300'); if (elP2Curr300) elP2Curr300.textContent = `~${rulCurr300} yrs (${yearCurr300})`;
+      const elP2Curr200 = document.getElementById('p2-curr-200'); if (elP2Curr200) elP2Curr200.textContent = `~${rulCurr200} yrs (${yearCurr200})`;
+
+      // PAGE 2 STEP-BY-STEP DYNAMIC FORMULA SUBSTITUTIONS
+      // Step 1: Furan & Dominelli DP
+      if (furanPpb !== null) {
+        const fPpm = furanPpb / 1000;
+        const logF = Math.log10(fPpm);
+        const calcDpRaw = (1.51 - logF) / 0.0035;
+        document.getElementById('calc-furan-raw').textContent = furanPpb.toFixed(2);
+        document.getElementById('calc-furan-ppm').textContent = fPpm.toFixed(5);
+        document.getElementById('calc-furan-ppm2').textContent = fPpm.toFixed(5);
+        document.getElementById('calc-log-furan').textContent = logF.toFixed(4);
+        document.getElementById('calc-log-furan2').textContent = logF.toFixed(4);
+        document.getElementById('calc-dp-result').textContent = calcDpRaw.toFixed(1);
+        document.getElementById('calc-dp0-final').textContent = dpVal !== null ? `${dpVal} DP` : '-';
+      } else {
+        document.getElementById('calc-furan-raw').textContent = '-';
+        document.getElementById('calc-furan-ppm').textContent = '-';
+        document.getElementById('calc-furan-ppm2').textContent = '-';
+        document.getElementById('calc-log-furan').textContent = '-';
+        document.getElementById('calc-log-furan2').textContent = '-';
+        document.getElementById('calc-dp-result').textContent = '-';
+        document.getElementById('calc-dp0-final').textContent = dpVal !== null ? `${dpVal} DP (Direct Record)` : 'No Furan/DP Record';
+      }
+
+      // Step 2: Hotspot Temperature
+      if (hotspotVal !== null) {
+        const baseT = lvTemp !== null ? lvTemp : oilTemp;
+        const thsK = hotspotVal + 273.15;
+        document.getElementById('calc-tlv-val').textContent = `${baseT} °C`;
+        document.getElementById('calc-tlv-base').textContent = `${baseT} °C`;
+        document.getElementById('calc-ths-c').textContent = `${(Math.round(hotspotVal * 10) / 10)} °C`;
+        document.getElementById('calc-ths-c2').textContent = `${(Math.round(hotspotVal * 10) / 10)}`;
+        document.getElementById('calc-ths-k').textContent = thsK.toFixed(2);
+        document.getElementById('calc-temp-source').textContent = hotspotSubText;
+      } else {
+        document.getElementById('calc-tlv-val').textContent = '-';
+        document.getElementById('calc-tlv-base').textContent = '-';
+        document.getElementById('calc-ths-c').textContent = '-';
+        document.getElementById('calc-ths-c2').textContent = '-';
+        document.getElementById('calc-ths-k').textContent = '-';
+        document.getElementById('calc-temp-source').textContent = 'No Temperature Record';
+      }
+
+      // Step 3: SINTEF Kinetic Rate k
+      const effectiveThsK = hotspotVal !== null ? (hotspotVal + 273.15) : (98 + 273.15);
+      const aHydNum = isHighMoisture ? 4.50e11 : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? 4.10e10 : 1.50e11);
+      const aOxiNum = isHighO2 ? 4.60e5 : 0;
+      const kHydHourly = aHydNum * Math.exp(-128000 / (8.314 * effectiveThsK));
+      const kOxiHourly = aOxiNum > 0 ? aOxiNum * Math.exp(-89000 / (8.314 * effectiveThsK)) : 0;
+      
+      document.getElementById('calc-moist-stat').textContent = cleanMoistNum !== null ? `${cleanMoistNum.toFixed(1)}% (${isHighMoisture ? '>2.0%' : '0.5-2.0%'})` : 'Default Standard (0.5-2.0%)';
+      document.getElementById('calc-o2-stat').textContent = o2Val !== null ? `${o2Val} ppm (${isHighO2 ? '≥7000' : '<7000'})` : 'Default Standard (<7000 ppm)';
+      document.getElementById('calc-ahyd-val').textContent = aHydValStr;
+      document.getElementById('calc-aoxi-val').textContent = aOxiValStr;
+      document.getElementById('calc-khyd-val').textContent = kHydHourly.toExponential(3);
+      document.getElementById('calc-koxi-val').textContent = kOxiHourly > 0 ? kOxiHourly.toExponential(3) : '0.00 (Inert O₂)';
+      document.getElementById('calc-ktotal-yearly').textContent = `${kScientific}`;
+
+      // Step 4: RUL Substitutions
+      if (dpVal !== null) {
+        document.getElementById('calc-dp0-s4a').textContent = dpVal;
+        document.getElementById('calc-dp0-s4b').textContent = dpVal;
+        document.getElementById('calc-k-s4a').textContent = kScientific;
+        document.getElementById('calc-k-s4b').textContent = kScientific;
+        document.getElementById('calc-rul300-val').textContent = rulCurr300;
+        document.getElementById('calc-year300-val').textContent = `Target Year: ${yearCurr300}`;
+        document.getElementById('calc-rul200-val').textContent = rulCurr200;
+        document.getElementById('calc-year200-val').textContent = `Limit Year: ${yearCurr200}`;
+      } else {
+        document.getElementById('calc-dp0-s4a').textContent = '-';
+        document.getElementById('calc-dp0-s4b').textContent = '-';
+        document.getElementById('calc-k-s4a').textContent = '-';
+        document.getElementById('calc-k-s4b').textContent = '-';
+        document.getElementById('calc-rul300-val').textContent = '-';
+        document.getElementById('calc-year300-val').textContent = '-';
+        document.getElementById('calc-rul200-val').textContent = '-';
+        document.getElementById('calc-year200-val').textContent = '-';
+      }
+
+      // Step 5: Weibull PoF Substitutions
+      if (age !== null) {
+        const ratio = Math.pow(age / 42.5, 3);
+        document.getElementById('calc-age-val').textContent = age;
+        document.getElementById('calc-age-val2').textContent = age;
+        document.getElementById('calc-weibull-ratio').textContent = ratio.toFixed(4);
+        document.getElementById('calc-weibull-ratio2').textContent = ratio.toFixed(4);
+        document.getElementById('calc-pof-result').textContent = pofStr;
+        document.getElementById('calc-pof-status').textContent = pofRisk;
+      } else {
+        document.getElementById('calc-age-val').textContent = '-';
+        document.getElementById('calc-age-val2').textContent = '-';
+        document.getElementById('calc-weibull-ratio').textContent = '-';
+        document.getElementById('calc-weibull-ratio2').textContent = '-';
+        document.getElementById('calc-pof-result').textContent = '-';
+        document.getElementById('calc-pof-status').textContent = 'No Service Age Record';
+      }
+
       // Update Chart Subtitle
       const elSubtitle = document.getElementById('chart-dp-subtitle');
       if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (CIGRE 761 / SINTEF)`;
@@ -1791,10 +2224,11 @@
       }
     }
 
-    async function exportReportAsJPG() {
+    async function exportSinglePageJPG(pageId, label) {
       const selectEl = document.getElementById('transformer-select');
       const serial = selectEl ? selectEl.value : 'Remaining_Life_Report';
-      const pageEl = document.getElementById('page-1');
+      const pageEl = document.getElementById(pageId);
+      if (!pageEl) return;
 
       const originalBoxShadow = pageEl.style.boxShadow;
       const originalBorderRadius = pageEl.style.borderRadius;
@@ -1813,12 +2247,16 @@
         pageEl.style.borderRadius = originalBorderRadius;
 
         const link = document.createElement('a');
-        link.download = 'Remaining_Life_Assessment_' + serial + '.jpg';
+        link.download = `Remaining_Life_${label}_${serial}.jpg`;
         link.href = canvas.toDataURL('image/jpeg', 0.95);
         link.click();
       } catch (err) {
         console.error('Export failed:', err);
       }
+    }
+
+    async function exportReportAsJPG() {
+      await exportSinglePageJPG('page-1', 'Page1_Summary');
     }
   </script>
 </body>
