@@ -1737,13 +1737,13 @@
       document.getElementById('scen-curr-300').textContent = `~${rulCurr300} Years (${yearCurr300})`;
       document.getElementById('scen-curr-200').textContent = `~${rulCurr200} Years (${yearCurr200})`;
 
-      let aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
-      let aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
-
       const elScenSdmMoist = document.getElementById('scen-sdm-moist'); if (elScenSdmMoist) elScenSdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
       const elScenSdmK = document.getElementById('scen-sdm-k'); if (elScenSdmK) elScenSdmK.textContent = `${kSDMScientific} year⁻¹`;
       const elScenSdm300 = document.getElementById('scen-sdm-300'); if (elScenSdm300) elScenSdm300.textContent = `~${rulSDM300} Years (${yearSDM300})`;
       const elScenSdm200 = document.getElementById('scen-sdm-200'); if (elScenSdm200) elScenSdm200.textContent = `~${rulSDM200} Years (${yearSDM200})`;
+
+      const aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
+      const aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
 
       const elP2SdmMoist = document.getElementById('p2-sdm-moist'); if (elP2SdmMoist) elP2SdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
       const elP2SdmAhyd = document.getElementById('p2-sdm-ahyd'); if (elP2SdmAhyd) elP2SdmAhyd.textContent = isHighMoistSDM ? '4.50 × 10¹¹' : (sdMyersMoist !== null && sdMyersMoist < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
