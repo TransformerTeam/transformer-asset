@@ -138,7 +138,7 @@ var windingCsvData = [];
 var singleShortCsvData = [];
 var threeShortCsvData = [];
 var fraCsvData = [];
-var dfrCsvData = [];
+var dfrCsvData = (typeof dfrCsvData !== 'undefined' && dfrCsvData && dfrCsvData.length) ? dfrCsvData : ((typeof DFR_DATA !== 'undefined') ? DFR_DATA : []);
 var drmCsvData = [];
 var pdOnlineCsvData = [];
 var thermoScanCsvData = [];

@@ -168,29 +168,29 @@ function isExcludedSite(site) {
 }
 
 // Global CSV Data holders for Dynamic Evaluation Engine
-let trInfoCsvData = [];
-let bushingPfCsvData = [];
-let mtOilCsvData = [];
-let mainTankDgaCsvData = [];
-let oltcOilCsvData = [];
-let visualCsvData = [];
-let bushingInfoCsvData = [];
-let surgeInfoCsvData = [];
-let surgePfCsvData = [];
-let irPiCsvData = [];
-let piCsvData = [];
-let windingPfCsvData = [];
-let ratioCsvData = [];
-let excitingCsvData = [];
-let windingCsvData = [];
-let singleShortCsvData = [];
-let threeShortCsvData = [];
-let fraCsvData = [];
-let dfrCsvData = [];
-let drmCsvData = [];
-let pdOnlineCsvData = [];
-let thermoScanCsvData = [];
-let factoryDataCsvData = [];
+var trInfoCsvData = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length) ? trInfoCsvData : [];
+var bushingPfCsvData = (typeof bushingPfCsvData !== 'undefined' && bushingPfCsvData && bushingPfCsvData.length) ? bushingPfCsvData : [];
+var mtOilCsvData = (typeof mtOilCsvData !== 'undefined' && mtOilCsvData && mtOilCsvData.length) ? mtOilCsvData : [];
+var mainTankDgaCsvData = (typeof mainTankDgaCsvData !== 'undefined' && mainTankDgaCsvData && mainTankDgaCsvData.length) ? mainTankDgaCsvData : [];
+var oltcOilCsvData = (typeof oltcOilCsvData !== 'undefined' && oltcOilCsvData && oltcOilCsvData.length) ? oltcOilCsvData : [];
+var visualCsvData = (typeof visualCsvData !== 'undefined' && visualCsvData && visualCsvData.length) ? visualCsvData : [];
+var bushingInfoCsvData = (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData && bushingInfoCsvData.length) ? bushingInfoCsvData : [];
+var surgeInfoCsvData = (typeof surgeInfoCsvData !== 'undefined' && surgeInfoCsvData && surgeInfoCsvData.length) ? surgeInfoCsvData : [];
+var surgePfCsvData = (typeof surgePfCsvData !== 'undefined' && surgePfCsvData && surgePfCsvData.length) ? surgePfCsvData : [];
+var irPiCsvData = (typeof irPiCsvData !== 'undefined' && irPiCsvData && irPiCsvData.length) ? irPiCsvData : [];
+var piCsvData = (typeof piCsvData !== 'undefined' && piCsvData && piCsvData.length) ? piCsvData : [];
+var windingPfCsvData = (typeof windingPfCsvData !== 'undefined' && windingPfCsvData && windingPfCsvData.length) ? windingPfCsvData : [];
+var ratioCsvData = (typeof ratioCsvData !== 'undefined' && ratioCsvData && ratioCsvData.length) ? ratioCsvData : [];
+var excitingCsvData = (typeof excitingCsvData !== 'undefined' && excitingCsvData && excitingCsvData.length) ? excitingCsvData : [];
+var windingCsvData = (typeof windingCsvData !== 'undefined' && windingCsvData && windingCsvData.length) ? windingCsvData : [];
+var singleShortCsvData = (typeof singleShortCsvData !== 'undefined' && singleShortCsvData && singleShortCsvData.length) ? singleShortCsvData : [];
+var threeShortCsvData = (typeof threeShortCsvData !== 'undefined' && threeShortCsvData && threeShortCsvData.length) ? threeShortCsvData : [];
+var fraCsvData = (typeof fraCsvData !== 'undefined' && fraCsvData && fraCsvData.length) ? fraCsvData : [];
+var dfrCsvData = (typeof dfrCsvData !== 'undefined' && dfrCsvData && dfrCsvData.length) ? dfrCsvData : ((typeof DFR_DATA !== 'undefined') ? DFR_DATA : []);
+var drmCsvData = (typeof drmCsvData !== 'undefined' && drmCsvData && drmCsvData.length) ? drmCsvData : [];
+var pdOnlineCsvData = (typeof pdOnlineCsvData !== 'undefined' && pdOnlineCsvData && pdOnlineCsvData.length) ? pdOnlineCsvData : [];
+var thermoScanCsvData = (typeof thermoScanCsvData !== 'undefined' && thermoScanCsvData && thermoScanCsvData.length) ? thermoScanCsvData : [];
+var factoryDataCsvData = (typeof factoryDataCsvData !== 'undefined' && factoryDataCsvData && factoryDataCsvData.length) ? factoryDataCsvData : [];
 
 // Helper for parsing CSV into Objects
 function parseDgaCSV(txt) {

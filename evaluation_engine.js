@@ -1,4 +1,4 @@
-let dfrCsvData = (typeof DFR_DATA !== 'undefined') ? DFR_DATA : [];
+var dfrCsvData = (typeof dfrCsvData !== 'undefined' && dfrCsvData && dfrCsvData.length) ? dfrCsvData : ((typeof DFR_DATA !== 'undefined') ? DFR_DATA : []);
 /**
  * GPSC Transformer Asset Management - Evaluation Engine
  * Authoritative implementation of Condition Health Index (CHI), Component Evaluation, and Diagnostic Rules
