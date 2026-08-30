@@ -820,6 +820,13 @@
             <td style="text-align: center;"><span class="status-badge status-normal" id="scen-curr-badge">Current</span></td>
           </tr>
           <tr>
+            <td><strong style="color: #9333ea;">SDMyers [Cal.]</strong> (<span id="scen-sdm-moist">-</span>% Moisture)</td>
+            <td style="text-align: center; color: #9333ea; font-weight: 700;" id="scen-sdm-k">-</td>
+            <td style="text-align: center; color: #9333ea; font-weight: 700;" id="scen-sdm-300">-</td>
+            <td style="text-align: center; color: #9333ea; font-weight: 700;" id="scen-sdm-200">-</td>
+            <td style="text-align: center;"><span class="status-badge" style="background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe;">SDMyers</span></td>
+          </tr>
+          <tr>
             <td><strong style="color: #f97316;">0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-oxy-300">-</td>
@@ -1075,6 +1082,14 @@
             <td style="text-align: center; font-weight: 700;" id="p2-curr-k">-</td>
             <td style="text-align: center; font-weight: 700;" id="p2-curr-300">-</td>
             <td style="text-align: center; font-weight: 700;" id="p2-curr-200">-</td>
+          </tr>
+          <tr>
+            <td><strong style="color: #9333ea;">SDMyers [Cal.] (<span id="p2-sdm-moist">-</span>% H₂O)</strong></td>
+            <td style="text-align: center;" id="p2-sdm-ahyd">-</td>
+            <td style="text-align: center;" id="p2-sdm-aoxi">-</td>
+            <td style="text-align: center; font-weight: 700; color: #9333ea;" id="p2-sdm-k">-</td>
+            <td style="text-align: center; font-weight: 700; color: #9333ea;" id="p2-sdm-300">-</td>
+            <td style="text-align: center; font-weight: 700; color: #9333ea;" id="p2-sdm-200">-</td>
           </tr>
           <tr>
             <td><strong style="color: #f59e0b;">High O₂ (0.5–2.0% H₂O, O₂ ≥ 7000)</strong></td>
@@ -1600,6 +1615,20 @@
 
       const kScientific = kYearly.toExponential(2);
 
+      // SDMyers Specific Degradation Rate kSDM
+      const isHighMoistSDM = sdMyersMoist !== null ? sdMyersMoist > 2.0 : false;
+      let kSDM = 0.0000310;
+      if (isHighMoistSDM && isHighO2) {
+        kSDM = 0.0001200;
+      } else if (isHighO2) {
+        kSDM = 0.0000597;
+      } else if (isHighMoistSDM) {
+        kSDM = 0.0000780;
+      } else if (dpVal < 750) {
+        kSDM = 0.0000450;
+      }
+      const kSDMScientific = kSDM.toExponential(2);
+
       const targetDP300 = 300;
       const targetDP200 = 200;
       const currentYear = 2025;
@@ -1634,6 +1663,11 @@
       const rulSev200 = Math.round(calcRUL(dpVal, targetDP200, kSevere) * 10) / 10;
       const yearSev300 = Math.round(currentYear + rulSev300);
       const yearSev200 = Math.round(currentYear + rulSev200);
+
+      const rulSDM300 = Math.round(calcRUL(dpVal, targetDP300, kSDM) * 10) / 10;
+      const rulSDM200 = Math.round(calcRUL(dpVal, targetDP200, kSDM) * 10) / 10;
+      const yearSDM300 = Math.round(currentYear + rulSDM300);
+      const yearSDM200 = Math.round(currentYear + rulSDM200);
 
       const pofVal = calcPoF(age);
       const pofStr = pofVal.toFixed(1) + '%';
@@ -1703,6 +1737,21 @@
       document.getElementById('scen-curr-300').textContent = `~${rulCurr300} Years (${yearCurr300})`;
       document.getElementById('scen-curr-200').textContent = `~${rulCurr200} Years (${yearCurr200})`;
 
+      let aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
+      let aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
+
+      const elScenSdmMoist = document.getElementById('scen-sdm-moist'); if (elScenSdmMoist) elScenSdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
+      const elScenSdmK = document.getElementById('scen-sdm-k'); if (elScenSdmK) elScenSdmK.textContent = `${kSDMScientific} year⁻¹`;
+      const elScenSdm300 = document.getElementById('scen-sdm-300'); if (elScenSdm300) elScenSdm300.textContent = `~${rulSDM300} Years (${yearSDM300})`;
+      const elScenSdm200 = document.getElementById('scen-sdm-200'); if (elScenSdm200) elScenSdm200.textContent = `~${rulSDM200} Years (${yearSDM200})`;
+
+      const elP2SdmMoist = document.getElementById('p2-sdm-moist'); if (elP2SdmMoist) elP2SdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
+      const elP2SdmAhyd = document.getElementById('p2-sdm-ahyd'); if (elP2SdmAhyd) elP2SdmAhyd.textContent = isHighMoistSDM ? '4.50 × 10¹¹' : (sdMyersMoist !== null && sdMyersMoist < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
+      const elP2SdmAoxi = document.getElementById('p2-sdm-aoxi'); if (elP2SdmAoxi) elP2SdmAoxi.textContent = aOxiValStr;
+      const elP2SdmK = document.getElementById('p2-sdm-k'); if (elP2SdmK) elP2SdmK.textContent = `${kSDMScientific} yr⁻¹`;
+      const elP2Sdm300 = document.getElementById('p2-sdm-300'); if (elP2Sdm300) elP2Sdm300.textContent = `~${rulSDM300} yrs (${yearSDM300})`;
+      const elP2Sdm200 = document.getElementById('p2-sdm-200'); if (elP2Sdm200) elP2Sdm200.textContent = `~${rulSDM200} yrs (${yearSDM200})`;
+
       document.getElementById('scen-oxy-300').textContent = `~${rulOxy300} Years (${yearOxy300})`;
       document.getElementById('scen-oxy-200').textContent = `~${rulOxy200} Years (${yearOxy200})`;
 
@@ -1722,8 +1771,6 @@
       const elP2Sev300 = document.getElementById('p2-sev-300'); if (elP2Sev300) elP2Sev300.textContent = `~${rulSev300} yrs (${yearSev300})`;
       const elP2Sev200 = document.getElementById('p2-sev-200'); if (elP2Sev200) elP2Sev200.textContent = `~${rulSev200} yrs (${yearSev200})`;
 
-      let aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
-      let aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
       const elP2CurrAhyd = document.getElementById('p2-curr-ahyd'); if (elP2CurrAhyd) elP2CurrAhyd.textContent = aHydValStr;
       const elP2CurrAoxi = document.getElementById('p2-curr-aoxi'); if (elP2CurrAoxi) elP2CurrAoxi.textContent = aOxiValStr;
       const elP2CurrK = document.getElementById('p2-curr-k'); if (elP2CurrK) elP2CurrK.textContent = `${kScientific} yr⁻¹`;
@@ -1837,13 +1884,14 @@
         { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
         { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#f97316', offsetLevel: 2 },
         { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f59e0b', offsetLevel: 3 },
+        { label: 'SDMyers [Cal.]', years: rulSDM300, targetYear: yearSDM300, color: '#9333ea', offsetLevel: 3.5 },
         { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4 },
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
 
       // Render Charts with Real Available Data
       const effectiveDP = dpVal !== null ? dpVal : 1000;
-      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : []);
+      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : [], kSDM, sdMyersMoist);
       renderWeibullChart(age !== null ? age : 20, currentYear);
 
       // Signatures (Specific for Remaining Life Assessment Report per GPSC Directive)
@@ -1934,7 +1982,7 @@
       }
     };
 
-    function renderDegradationChart(currentDP, currentK, baseYear, intersections = []) {
+    function renderDegradationChart(currentDP, currentK, baseYear, intersections = [], kSDM = null, sdMyersMoist = null) {
       const ctx = document.getElementById('chart-dp-degradation');
       if (!ctx) return;
 
@@ -1945,6 +1993,7 @@
       // X-Axis range from 2025 to 2125 with Dynamic DP0 = currentDP
       const years = [];
       const unitDP = [];
+      const sdmDP = [];
       const normalDP = [];
       const highO2DP = [];
       const highMoistDP = [];
@@ -1957,6 +2006,7 @@
       const kHighO2 = 0.0000597;
       const kHighMoist = 0.0000780;
       const kSevere = 0.0001200;
+      const effectiveKSDM = kSDM !== null ? kSDM : 0.0000310;
 
       for (let y = 2025; y <= 2125; y += 1) {
         years.push(y);
@@ -1968,6 +2018,7 @@
         severeDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kSevere * dt))));
 
         unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
+        sdmDP.push(Math.max(50, Math.round(1 / (1 / currentDP + effectiveKSDM * dt))));
 
         limit300.push(300);
         limit200.push(200);
@@ -1982,13 +2033,24 @@
           labels: years,
           datasets: [
             {
-              label: 'Current',
+              label: 'Current (Operating Condition)',
               data: unitDP,
               borderColor: '#2563eb',
               backgroundColor: '#2563eb',
               borderWidth: 2.8,
               pointRadius: (c) => years[c.dataIndex] === 2025 ? 6 : 0,
               pointBackgroundColor: '#2563eb',
+              tension: 0.15
+            },
+            {
+              label: `SDMyers [Cal.] (${sdMyersMoist !== null ? sdMyersMoist.toFixed(1) + '%' : '-'} Moisture)`,
+              data: sdmDP,
+              borderColor: '#9333ea',
+              backgroundColor: '#9333ea',
+              borderWidth: 2.2,
+              borderDash: [5, 3],
+              pointRadius: (c) => years[c.dataIndex] === 2025 ? 5 : 0,
+              pointBackgroundColor: '#9333ea',
               tension: 0.15
             },
             {
