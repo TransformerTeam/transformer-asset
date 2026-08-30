@@ -3226,10 +3226,10 @@
 
       // Build HTML for Part 1 Table
       ptStructure.forEach(ptObj => {
-        // Hide PT Component if Health Index is N/A
-        if (ptObj.dynHI === 'N/A' || ptObj.dynPct === 'N/A') {
-          return;
-        }
+        // Exclude OLTC if DETC / NLTC
+        if (ptObj.pt === 'OLTC' && isOltcNA) return;
+        // Exclude Bushing & Arrester if UAT or Auxiliary
+        if ((ptObj.pt === 'Bushing' || ptObj.pt === 'Arrester') && isUatOrAux) return;
 
         let ptRowCount = 0;
         ptObj.subs.forEach(sub => { ptRowCount += sub.methods.length; });
