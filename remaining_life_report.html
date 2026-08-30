@@ -1846,23 +1846,21 @@
       renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : []);
       renderWeibullChart(age !== null ? age : 20, currentYear);
 
-      // Signatures
-      const cleanSig = (v) => {
-        if (!v) return '';
-        const s = String(v).trim();
-        return (s === '-' || s === 'null' || s === 'undefined' || s === 'N/A') ? '' : s;
-      };
+      // Signatures (Specific for Remaining Life Assessment Report per GPSC Directive)
+      const testedName = 'Jirasak Suksakun';
+      const testedComp = 'GPSC';
+      
+      const reviewedName = 'Pimchart Promkhandee';
+      const reviewedComp = 'GPSC';
+      
+      const approvedName = 'Suchat Mondopyai';
+      const approvedComp = 'GPSC';
 
-      const testedName = cleanSig(latestOil.Name1 || latestOil.TESTED_BY || latestOil.Tested_by);
-      const reviewedName = cleanSig(latestOil.Name2 || latestOil.WITNESSED_BY || latestOil.Witnessed_by);
-      const approvedName = cleanSig(latestOil.Name3 || latestOil.APPROVED_BY || latestOil.Approved_by);
-
-      const testedComp = cleanSig(latestOil.COMP1 || '');
-      const reviewedComp = cleanSig(latestOil.COMP2 || '');
-      const approvedComp = cleanSig(latestOil.COMP3 || '');
-
-      const dStr = formatDateToDdMmmYyyy(latestOil.Date || latestOil.date || meta.Date);
-      const dateVal = (dStr && dStr !== '-') ? 'Date: ' + dStr : '';
+      // Current Assessment Date
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const now = new Date();
+      const currentFormattedDate = String(now.getDate()).padStart(2, '0') + '-' + months[now.getMonth()] + '-' + now.getFullYear();
+      const dateVal = 'Date: ' + currentFormattedDate;
 
       document.querySelectorAll('.val-resp-name-tested').forEach(el => el.textContent = testedName);
       document.querySelectorAll('.val-resp-name-reviewed').forEach(el => el.textContent = reviewedName);
@@ -1872,9 +1870,9 @@
       document.querySelectorAll('.val-resp-comp-reviewed').forEach(el => el.textContent = reviewedComp);
       document.querySelectorAll('.val-resp-comp-approved').forEach(el => el.textContent = approvedComp);
 
-      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = testedName ? dateVal : '');
-      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = reviewedName ? dateVal : '');
-      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = approvedName ? dateVal : '');
+      document.querySelectorAll('.val-resp-date-tested').forEach(el => el.textContent = dateVal);
+      document.querySelectorAll('.val-resp-date-reviewed').forEach(el => el.textContent = dateVal);
+      document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = dateVal);
     }
 
     // Custom Callout Plugin for DP = 300 Intersections
