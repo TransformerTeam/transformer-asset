@@ -436,13 +436,17 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 8px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .gas-pattern-box {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 6px 8px;
+      padding: 6px 12px 4px 6px;
       background: #ffffff;
       height: 165px;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     /* Duval Diagram Grid (Page 4) */
@@ -585,13 +589,19 @@
         grid-template-columns: 1fr 1fr !important;
         gap: 3px !important;
         margin-bottom: 3px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
       }
       .gas-pattern-box {
         height: 120px !important;
-        padding: 2px 4px !important;
+        padding: 2px 8px 2px 4px !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
       }
-      .gas-pattern-box .apexcharts-canvas {
+      .gas-pattern-box .apexcharts-canvas, .gas-pattern-box .apexcharts-canvas svg {
         height: 95px !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
       }
       .duval-grid {
         display: grid !important;
@@ -2294,7 +2304,15 @@
           xaxis: { categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'], labels: { style: { fontSize: '7.5px', colors: labelColor } } },
           yaxis: { max: 100, labels: { formatter: val => val + '%', style: { fontSize: '7px', colors: labelColor } } },
           legend: { position: 'top', fontSize: '8px', labels: { colors: labelColor } },
-          grid: { borderColor: gridBorder }
+          grid: {
+            borderColor: gridBorder,
+            padding: {
+              top: -6,
+              right: 25,
+              bottom: 0,
+              left: 10
+            }
+          }
         };
 
         const targetEl = document.getElementById(p.id);
