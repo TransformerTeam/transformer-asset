@@ -2902,7 +2902,16 @@
 
       // 24. Surge Arrester
       if (ptLower.includes('arrester') || mLower.includes('arrester') || mLower.includes('surge')) {
-        return 'IEEE C57.152-2013, Limit: Leakage ≤ 0.50 mA, IR ≥ 10,000 MΩ';
+        if (mLower.includes('watt loss') || mLower.includes('watt')) {
+          return 'IEEE C57.152-2013, Limit: Phase Diff / %Dev ≤ 10.0%';
+        }
+        if (mLower.includes('leakage') || mLower.includes('current')) {
+          return 'IEEE C57.152-2013, Limit: Leakage Current ≤ 0.50 mA';
+        }
+        if (mLower.includes('insulation resistance') || mLower.includes('ir')) {
+          return 'IEEE C57.152-2013, Limit: IR ≥ 10,000 MΩ';
+        }
+        return 'IEEE C57.152-2013, Limit: Phase Diff ≤ 10.0%, Leakage ≤ 0.50 mA';
       }
 
       // 25. OLTC Oil / OLTC Breakdown / Water Content / DGA
@@ -5132,57 +5141,52 @@
               }
             }
           } else if (nameLower.includes('watt loss') || nameLower.includes('watt')) {
-            if (isLv) {
-              const w1 = parseFloat(latestSurge.xh1_watt_loss);
-              const w2 = parseFloat(latestSurge.xh2_watt_loss);
-              const w3 = parseFloat(latestSurge.xh3_watt_loss);
+            const parts = [];
+            const validWatts = [];
+            const devScores = [];
 
-              const parts = [];
-              const scores = [];
-              if (!isNaN(w1) && w1 > 0) {
-                parts.push(`X1: ${w1.toFixed(2)} W`);
-                scores.push(w1 <= 50 ? 5 : (w1 <= 100 ? 4 : (w1 <= 200 ? 3 : 1)));
-              }
-              if (!isNaN(w2) && w2 > 0) {
-                parts.push(`X2: ${w2.toFixed(2)} W`);
-                scores.push(w2 <= 50 ? 5 : (w2 <= 100 ? 4 : (w2 <= 200 ? 3 : 1)));
-              }
-              if (!isNaN(w3) && w3 > 0) {
-                parts.push(`X3: ${w3.toFixed(2)} W`);
-                scores.push(w3 <= 50 ? 5 : (w3 <= 100 ? 4 : (w3 <= 200 ? 3 : 1)));
-              }
+            const prefix = isLv ? 'X' : 'H';
+            const w1 = parseFloat(isLv ? latestSurge.xh1_watt_loss : (latestSurge.h1_watt_loss && latestSurge.h1_watt_loss !== '-' ? latestSurge.h1_watt_loss : latestSurge.maxw1));
+            const w2 = parseFloat(isLv ? latestSurge.xh2_watt_loss : (latestSurge.h2_watt_loss && latestSurge.h2_watt_loss !== '-' ? latestSurge.h2_watt_loss : latestSurge.maxw2));
+            const w3 = parseFloat(isLv ? latestSurge.xh3_watt_loss : (latestSurge.h3_watt_loss && latestSurge.h3_watt_loss !== '-' ? latestSurge.h3_watt_loss : latestSurge.maxw3));
 
-              if (parts.length > 0) {
-                const minScore = Math.min(...scores);
-                const rec = minScore >= 4 ? '-' : 'Check LV Arrester Watt Loss';
-                return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
-              }
-            } else {
-              // HV Arrester
-              const w1 = parseFloat(latestSurge.h1_watt_loss && latestSurge.h1_watt_loss !== '-' ? latestSurge.h1_watt_loss : latestSurge.maxw1);
-              const w2 = parseFloat(latestSurge.h2_watt_loss && latestSurge.h2_watt_loss !== '-' ? latestSurge.h2_watt_loss : latestSurge.maxw2);
-              const w3 = parseFloat(latestSurge.h3_watt_loss && latestSurge.h3_watt_loss !== '-' ? latestSurge.h3_watt_loss : latestSurge.maxw3);
+            const surgeInfoArr = (typeof surgeInfoCsvData !== 'undefined' && surgeInfoCsvData && surgeInfoCsvData.length) ? surgeInfoCsvData : ((typeof window !== 'undefined' && window.surgeInfoCsvData) ? window.surgeInfoCsvData : []);
 
-              const parts = [];
-              const scores = [];
-              if (!isNaN(w1) && w1 > 0) {
-                parts.push(`H1: ${w1.toFixed(2)} W`);
-                scores.push(w1 <= 50 ? 5 : (w1 <= 100 ? 4 : (w1 <= 200 ? 3 : 1)));
+            [w1, w2, w3].forEach((w, idx) => {
+              if (!isNaN(w) && w > 0) {
+                parts.push(`${prefix}${idx+1}: ${w.toFixed(2)} W`);
+                validWatts.push(w);
+
+                const phaseCode = `${prefix}${idx+1}`;
+                const sInfo = surgeInfoArr.find(x => (x.Parent_Serial_No === targetSerial || x.Parent_Serial_No === serialVal) && (x.Phase === phaseCode || x.Phase === String(idx+1)));
+                const npW = sInfo ? parseFloat(sInfo.Watts) : NaN;
+                if (!isNaN(npW) && npW > 0) {
+                  const incPct = ((w - npW) / npW) * 100;
+                  const s = incPct <= 10.0 ? 5 : (incPct <= 20.0 ? 4 : (incPct <= 30.0 ? 3 : (incPct <= 50.0 ? 2 : 1)));
+                  devScores.push(s);
+                }
               }
-              if (!isNaN(w2) && w2 > 0) {
-                parts.push(`H2: ${w2.toFixed(2)} W`);
-                scores.push(w2 <= 50 ? 5 : (w2 <= 100 ? 4 : (w2 <= 200 ? 3 : 1)));
-              }
-              if (!isNaN(w3) && w3 > 0) {
-                parts.push(`H3: ${w3.toFixed(2)} W`);
-                scores.push(w3 <= 50 ? 5 : (w3 <= 100 ? 4 : (w3 <= 200 ? 3 : 1)));
+            });
+
+            if (parts.length > 0) {
+              let finalScore = 5;
+              if (validWatts.length >= 2) {
+                const maxW = Math.max(...validWatts);
+                const minW = Math.min(...validWatts);
+                const phaseVar = maxW > 0 ? ((maxW - minW) / maxW) * 100 : 0;
+                const phaseScore = phaseVar <= 10.0 ? 5 : (phaseVar <= 20.0 ? 4 : (phaseVar <= 30.0 ? 3 : (phaseVar <= 50.0 ? 2 : 1)));
+
+                if (devScores.length > 0) {
+                  finalScore = Math.min(Math.min(...devScores), phaseScore);
+                } else {
+                  finalScore = phaseScore;
+                }
+              } else if (devScores.length > 0) {
+                finalScore = Math.min(...devScores);
               }
 
-              if (parts.length > 0) {
-                const minScore = Math.min(...scores);
-                const rec = minScore >= 4 ? '-' : 'Check HV Arrester Watt Loss';
-                return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
-              }
+              const rec = finalScore >= 4 ? '-' : (isLv ? 'Check LV Arrester Watt Loss (IEEE C57.152)' : 'Check HV Arrester Watt Loss (IEEE C57.152)');
+              return { value: parts.join(', '), testDate: date, ratingScore: finalScore, recommendation: rec };
             }
           }
         }
