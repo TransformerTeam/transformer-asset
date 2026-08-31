@@ -444,13 +444,20 @@
     .gas-pattern-box {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 6px 12px 4px 6px;
+      padding: 6px 10px 4px 6px;
       background: #ffffff;
-      height: 190px;
+      height: 185px;
       overflow: hidden;
       box-sizing: border-box;
       min-width: 0;
       max-width: 100%;
+    }
+    .gas-pattern-box * {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .gas-pattern-box ::-webkit-scrollbar {
+      display: none !important;
     }
 
     /* Duval Diagram Grid (Page 3) */
@@ -641,15 +648,23 @@
         box-sizing: border-box !important;
       }
       .gas-pattern-box {
-        height: 140px !important;
+        height: 160px !important;
         padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
         min-width: 0 !important;
         max-width: 100% !important;
       }
+      .gas-pattern-box * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+      .gas-pattern-box ::-webkit-scrollbar {
+        display: none !important;
+      }
       .gas-pattern-box .apexcharts-canvas, .gas-pattern-box .apexcharts-canvas svg {
-        height: 118px !important;
+        height: 140px !important;
+        max-height: 140px !important;
         max-width: 100% !important;
         overflow: hidden !important;
       }
@@ -662,7 +677,7 @@
         box-sizing: border-box !important;
       }
       .duval-card {
-        height: 220px !important;
+        height: 200px !important;
         padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
@@ -670,7 +685,7 @@
         max-width: 100% !important;
       }
       .duval-svg-container, #svg-duval-1, #svg-duval-4, #svg-pentagon-1, #svg-pentagon-2 {
-        height: 175px !important;
+        height: 155px !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow: hidden !important;
@@ -2305,30 +2320,46 @@
             { name: 'Key Gas Pattern', data: p.ref },
             { name: 'Gas Measured', data: measuredPct }
           ],
-          chart: { width: '100%', height: 160, type: 'bar', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+          chart: {
+            width: '100%',
+            height: 155,
+            type: 'bar',
+            toolbar: { show: false },
+            background: 'transparent',
+            animations: { enabled: false },
+            parentHeightOffset: 0
+          },
           colors: ['#a8a29e', '#3b82f6'],
-          plotOptions: { bar: { columnWidth: '52%', borderRadius: 2 } },
+          plotOptions: { bar: { columnWidth: '55%', borderRadius: 2 } },
           dataLabels: { enabled: false },
           xaxis: {
             categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'],
-            labels: { style: { fontSize: '9px', fontWeight: 'bold', colors: labelColor } }
+            labels: {
+              style: { fontSize: '8.5px', fontWeight: 'bold', colors: labelColor },
+              offsetY: -2
+            },
+            axisBorder: { show: true, color: gridBorder },
+            axisTicks: { show: true, color: gridBorder }
           },
           yaxis: {
             max: 100,
-            labels: { formatter: val => val + '%', style: { fontSize: '8.5px', colors: labelColor } }
+            tickAmount: 2,
+            labels: { formatter: val => val + '%', style: { fontSize: '8px', colors: labelColor } }
           },
           legend: {
             position: 'top',
-            fontSize: '9.5px',
+            horizontalAlign: 'right',
+            fontSize: '9px',
+            offsetY: -4,
             labels: { colors: labelColor },
-            markers: { width: 9, height: 9, radius: 2 }
+            markers: { width: 8, height: 8, radius: 2 }
           },
           grid: {
             borderColor: gridBorder,
             padding: {
-              top: -6,
-              right: 25,
-              bottom: 0,
+              top: -8,
+              right: 15,
+              bottom: 8,
               left: 10
             }
           }
