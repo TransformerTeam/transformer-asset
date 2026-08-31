@@ -446,7 +446,7 @@
       border-radius: 4px;
       padding: 6px 12px 4px 6px;
       background: #ffffff;
-      height: 145px;
+      height: 190px;
       overflow: hidden;
       box-sizing: border-box;
       min-width: 0;
@@ -467,7 +467,7 @@
       border-radius: 4px;
       padding: 6px 10px;
       background: #ffffff;
-      height: 250px;
+      height: 270px;
       text-align: left;
       overflow: hidden;
       box-sizing: border-box;
@@ -478,7 +478,7 @@
     }
     .duval-svg-container {
       flex: 1;
-      height: 200px;
+      height: 220px;
       width: 100%;
       overflow: hidden;
     }
@@ -641,7 +641,7 @@
         box-sizing: border-box !important;
       }
       .gas-pattern-box {
-        height: 96px !important;
+        height: 140px !important;
         padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
@@ -649,7 +649,7 @@
         max-width: 100% !important;
       }
       .gas-pattern-box .apexcharts-canvas, .gas-pattern-box .apexcharts-canvas svg {
-        height: 74px !important;
+        height: 118px !important;
         max-width: 100% !important;
         overflow: hidden !important;
       }
@@ -662,7 +662,7 @@
         box-sizing: border-box !important;
       }
       .duval-card {
-        height: 180px !important;
+        height: 220px !important;
         padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
@@ -670,7 +670,7 @@
         max-width: 100% !important;
       }
       .duval-svg-container, #svg-duval-1, #svg-duval-4, #svg-pentagon-1, #svg-pentagon-2 {
-        height: 140px !important;
+        height: 175px !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow: hidden !important;
@@ -2305,13 +2305,24 @@
             { name: 'Key Gas Pattern', data: p.ref },
             { name: 'Gas Measured', data: measuredPct }
           ],
-          chart: { width: '100%', height: 120, type: 'bar', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+          chart: { width: '100%', height: 160, type: 'bar', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
           colors: ['#a8a29e', '#3b82f6'],
-          plotOptions: { bar: { columnWidth: '50%' } },
+          plotOptions: { bar: { columnWidth: '52%', borderRadius: 2 } },
           dataLabels: { enabled: false },
-          xaxis: { categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'], labels: { style: { fontSize: '7.5px', colors: labelColor } } },
-          yaxis: { max: 100, labels: { formatter: val => val + '%', style: { fontSize: '7px', colors: labelColor } } },
-          legend: { position: 'top', fontSize: '8px', labels: { colors: labelColor } },
+          xaxis: {
+            categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'],
+            labels: { style: { fontSize: '9px', fontWeight: 'bold', colors: labelColor } }
+          },
+          yaxis: {
+            max: 100,
+            labels: { formatter: val => val + '%', style: { fontSize: '8.5px', colors: labelColor } }
+          },
+          legend: {
+            position: 'top',
+            fontSize: '9.5px',
+            labels: { colors: labelColor },
+            markers: { width: 9, height: 9, radius: 2 }
+          },
           grid: {
             borderColor: gridBorder,
             padding: {
