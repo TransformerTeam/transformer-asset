@@ -344,9 +344,9 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 225px;
+      height: 165px;
       border: 1px solid #cbd5e1;
-      padding: 8px 6px;
+      padding: 6px 12px;
       background: #fafafa;
       margin-bottom: 8px;
       border-radius: 4px;
@@ -397,7 +397,36 @@
       color: #0f172a;
     }
 
-    /* Trending Grid */
+    /* Key Gas Trending Grid (4 Columns x 2 Rows) */
+    .keygas-trending-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .keygas-trending-grid .trend-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 5px 6px;
+      background: #ffffff;
+      height: 120px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .keygas-trending-grid .trend-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+    }
+    .keygas-trending-grid .trend-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 2px;
+    }
+
+    /* General Trending Grid (for Page 3 & Page 4) */
     .trending-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -405,7 +434,7 @@
       margin-bottom: 8px;
     }
 
-    .trend-box {
+    .trending-grid .trend-box {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
       padding: 6px;
@@ -476,21 +505,39 @@
         break-after: page !important;
       }
       .keygas-chart-container {
-        height: 110px !important;
-        margin-bottom: 2px !important;
+        height: 120px !important;
+        padding: 3px 8px !important;
+        margin-bottom: 3px !important;
       }
       .gas-bar-stack {
         height: 75px !important;
+      }
+      .keygas-trending-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 3px !important;
+        margin-bottom: 3px !important;
+      }
+      .keygas-trending-grid .trend-box {
+        height: 94px !important;
+        padding: 2px 4px !important;
+      }
+      .keygas-trending-grid .trend-title {
+        font-size: 8px !important;
+        margin-bottom: 0px !important;
+      }
+      .keygas-trending-grid .apexcharts-canvas {
+        height: 74px !important;
       }
       .trending-grid {
         gap: 3px !important;
         margin-bottom: 2px !important;
       }
-      .trend-box {
+      .trending-grid .trend-box {
         height: 88px !important;
         padding: 2px 4px !important;
       }
-      .trend-title {
+      .trending-grid .trend-title {
         font-size: 8px !important;
         margin-bottom: 0px !important;
       }
@@ -924,7 +971,7 @@
         <!-- Rendered dynamically -->
       </div>
 
-      <div class="trending-grid">
+      <div class="keygas-trending-grid">
         <div class="trend-box"><div class="trend-title">H2 (ppm)</div><div id="chart-trend-h2"></div></div>
         <div class="trend-box"><div class="trend-title">CH4 (ppm)</div><div id="chart-trend-ch4"></div></div>
         <div class="trend-box"><div class="trend-title">C2H6 (ppm)</div><div id="chart-trend-c2h6"></div></div>
@@ -1986,14 +2033,14 @@
 
         const options = {
           series: [{ name: gas, data: vals }],
-          chart: { height: 75, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+          chart: { height: 85, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
           stroke: { width: 2, curve: 'straight' },
           colors: [gasColor],
-          markers: { size: 3, colors: [gasColor] },
+          markers: { size: 3.5, colors: [gasColor] },
           dataLabels: {
             enabled: true,
-            offsetY: -4,
-            style: { fontSize: '7.5px', fontWeight: 'bold', colors: [labelColor] },
+            offsetY: -3,
+            style: { fontSize: '7px', fontWeight: 'bold', colors: [labelColor] },
             background: { enabled: false }
           },
           xaxis: {
@@ -2006,7 +2053,12 @@
             },
             tickAmount: Math.min(dates.length, 5)
           },
-          yaxis: { labels: { style: { fontSize: '6.5px', colors: labelColor } } },
+          yaxis: {
+            labels: {
+              style: { fontSize: '6.5px', colors: labelColor },
+              formatter: (val) => val !== null && !isNaN(val) ? (val >= 100 ? Math.round(val) : val.toFixed(1)) : ''
+            }
+          },
           grid: { borderColor: gridBorder, strokeDashArray: 2 }
         };
 
