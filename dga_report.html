@@ -410,7 +410,7 @@
     .keygas-trending-grid .trend-box {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 6px 12px 4px 6px;
+      padding: 6px 14px 4px 10px;
       background: #ffffff;
       height: 220px;
       cursor: pointer;
@@ -624,7 +624,7 @@
       }
       .keygas-trending-grid .trend-box {
         height: 185px !important;
-        padding: 2px 8px 1px 4px !important;
+        padding: 3px 12px 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
         min-width: 0 !important;
@@ -2169,18 +2169,19 @@
           },
           yaxis: {
             labels: {
+              minWidth: 26,
               style: { fontSize: '7.5px', colors: labelColor },
-              formatter: (val) => val !== null && !isNaN(val) ? (val >= 100 ? Math.round(val) : val.toFixed(1)) : ''
+              formatter: (val) => val !== null && !isNaN(val) ? (val >= 1000 ? Math.round(val) : (val >= 100 ? Math.round(val) : val.toFixed(1))) : ''
             }
           },
           grid: {
             borderColor: gridBorder,
             strokeDashArray: 2,
             padding: {
-              top: -8,
-              right: 28,
-              bottom: 0,
-              left: 10
+              top: -6,
+              right: 42,
+              bottom: 6,
+              left: 20
             }
           }
         };
