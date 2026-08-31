@@ -2169,7 +2169,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             validWatts.push(w);
 
             const phaseCode = `${prefix}${idx+1}`;
-            const sInfo = surgeInfoArr.find(x => (x.Parent_Serial_No === targetSerial || x.Parent_Serial_No === serialVal) && (x.Phase === phaseCode || x.Phase === String(idx+1)));
+            const sInfo = surgeInfoArr.find(x => String(x.Parent_Serial_No || '').trim() === String(serialVal || '').trim() && (x.Phase === phaseCode || x.Phase === String(idx+1)));
             const npW = sInfo ? parseFloat(sInfo.Watts) : NaN;
             if (!isNaN(npW) && npW > 0) {
               const incPct = ((w - npW) / npW) * 100;
