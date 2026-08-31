@@ -397,20 +397,20 @@
       color: #0f172a;
     }
 
-    /* Key Gas Trending Grid (4 Columns x 2 Rows) */
+    /* Key Gas Trending Grid (2 Columns x 4 Rows - Stretched & Clear) */
     .keygas-trending-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       margin-bottom: 8px;
     }
 
     .keygas-trending-grid .trend-box {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 5px 6px;
+      padding: 6px 10px;
       background: #ffffff;
-      height: 120px;
+      height: 155px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
@@ -420,7 +420,7 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
     }
     .keygas-trending-grid .trend-title {
-      font-size: 9.5px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #2563eb;
       margin-bottom: 2px;
@@ -549,20 +549,20 @@
       }
       .keygas-trending-grid {
         display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 3px !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 4px !important;
         margin-bottom: 3px !important;
       }
       .keygas-trending-grid .trend-box {
-        height: 94px !important;
-        padding: 2px 4px !important;
+        height: 118px !important;
+        padding: 3px 6px !important;
       }
       .keygas-trending-grid .trend-title {
-        font-size: 8px !important;
+        font-size: 8.5px !important;
         margin-bottom: 0px !important;
       }
       .keygas-trending-grid .apexcharts-canvas {
-        height: 74px !important;
+        height: 96px !important;
       }
       .gas-pattern-grid {
         display: grid !important;
@@ -2094,24 +2094,29 @@
 
         const options = {
           series: [{ name: gas, data: vals }],
-          chart: { height: 85, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
-          stroke: { width: 2, curve: 'straight' },
+          chart: { height: 120, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+          stroke: { width: 2.5, curve: 'straight' },
           colors: [gasColor],
-          markers: { size: 3.5, colors: [gasColor] },
-          dataLabels: { enabled: false },
+          markers: { size: 4, colors: [gasColor] },
+          dataLabels: {
+            enabled: true,
+            offsetY: -4,
+            style: { fontSize: '8px', fontWeight: 'bold', colors: [labelColor] },
+            background: { enabled: false }
+          },
           xaxis: {
             categories: dates,
             labels: {
-              style: { fontSize: '6.5px', colors: labelColor },
-              rotate: -45,
+              style: { fontSize: '7.5px', colors: labelColor },
+              rotate: -25,
               rotateAlways: false,
               hideOverlappingLabels: true
             },
-            tickAmount: Math.min(dates.length, 5)
+            tickAmount: Math.min(dates.length, 6)
           },
           yaxis: {
             labels: {
-              style: { fontSize: '6.5px', colors: labelColor },
+              style: { fontSize: '7.5px', colors: labelColor },
               formatter: (val) => val !== null && !isNaN(val) ? (val >= 100 ? Math.round(val) : val.toFixed(1)) : ''
             }
           },
