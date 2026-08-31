@@ -509,7 +509,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 5mm 6mm;
+        margin: 4mm 6mm;
       }
       body {
         background: #ffffff !important;
@@ -528,7 +528,7 @@
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 4mm 6mm !important;
+        padding: 3mm 4mm !important;
         height: auto !important;
         width: 100% !important;
         margin-top: 0 !important;
@@ -541,13 +541,42 @@
       #page-2 {
         page-break-before: always !important;
         break-before: page !important;
+        margin-top: 0 !important;
       }
       .chart-canvas-container {
-        height: 300px !important;
+        height: 145px !important;
+      }
+      .summary-cards-grid {
+        gap: 4px !important;
+        margin-bottom: 4px !important;
+      }
+      .summary-card {
+        padding: 4px 6px !important;
+      }
+      .summary-card-val {
+        font-size: 13px !important;
+      }
+      .formula-box {
+        padding: 3px 6px !important;
+      }
+      .action-box {
+        padding: 4px 6px !important;
+        margin-bottom: 4px !important;
+      }
+      .report-table th, .report-table td {
+        padding: 2px 4px !important;
+        font-size: 7.8px !important;
+      }
+      .calc-step-card {
+        padding: 3px 6px !important;
+        margin-bottom: 3px !important;
       }
       .signature-table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+      }
+      .sig-cell {
+        height: 22px !important;
       }
     }
 
@@ -943,15 +972,15 @@
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Correlation: <span class="formula-math">\log_{10}(2\text{-FAL}_{\text{ppm}}) = 1.51 - 0.0035 \times DP</span><br>
-            • Extrapolated DP: <span class="formula-math">DP = \frac{1.51 - \log_{10}(2\text{-FAL}_{\text{ppm}})}{0.0035}</span><br>
-            • Conversion: <span class="formula-math">2\text{-FAL}_{\text{ppm}} = \frac{2\text{-FAL}_{\text{ppb}}}{1000}</span>
+            • Correlation: <span class="formula-math">log₁₀(2-FAL<sub>ppm</sub>) = 1.51 - 0.0035 × DP</span><br>
+            • Extrapolated DP: <span class="formula-math">DP = [1.51 - log₁₀(2-FAL<sub>ppm</sub>)] / 0.0035</span><br>
+            • Conversion: <span class="formula-math">2-FAL<sub>ppm</sub> = 2-FAL<sub>ppb</sub> / 1000</span>
           </div>
           <div class="calc-subst-display" id="step1-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • Measured 2-FAL: <span class="math-hl" id="calc-furan-raw">-</span> ppb = <span class="math-hl" id="calc-furan-ppm">-</span> ppm<br>
-            • <span class="formula-math">\log_{10}(<span id="calc-furan-ppm2">-</span>) = <span class="math-hl" id="calc-log-furan">-</span></span><br>
-            • <span class="formula-math">DP = \frac{1.51 - (<span id="calc-log-furan2">-</span>)}{0.0035} = </span> <span class="math-res" id="calc-dp-result">-</span><br>
+            • <span class="formula-math">log₁₀(<span id="calc-furan-ppm2">-</span>) = <span class="math-hl" id="calc-log-furan">-</span></span><br>
+            • <span class="formula-math">DP = [1.51 - (<span id="calc-log-furan2">-</span>)] / 0.0035 = </span> <span class="math-res" id="calc-dp-result">-</span><br>
             • <strong>Baseline Starting DP₀:</strong> <span class="math-res" id="calc-dp0-final">-</span>
           </div>
         </div>
@@ -966,16 +995,16 @@
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Hot Spot Rise: <span class="formula-math">T_{hs} = T_{LV} + (H \times g_r - g_r) = T_{LV} + \Delta T_{hs}</span><br>
-            • IEC 60076-7 Standard Constants: <span class="formula-math">H = 1.3, \; g_r = 17^\circ\text{C}</span><br>
-            • Thermal Gradient: <span class="formula-math">\Delta T_{hs} = 1.3 \times 17 - 17 = 5.1^\circ\text{C}</span><br>
-            • Absolute Temperature: <span class="formula-math">T_{hs(K)} = T_{hs(^\circ\text{C})} + 273.15 \; \text{K}</span>
+            • Hot Spot Rise: <span class="formula-math">T<sub>hs</sub> = T<sub>LV</sub> + (H × g<sub>r</sub> - g<sub>r</sub>) = T<sub>LV</sub> + ΔT<sub>hs</sub></span><br>
+            • IEC 60076-7 Standard Constants: <span class="formula-math">H = 1.3, g<sub>r</sub> = 17 °C</span><br>
+            • Thermal Gradient: <span class="formula-math">ΔT<sub>hs</sub> = 1.3 × 17 - 17 = 5.1 °C</span><br>
+            • Absolute Temperature: <span class="formula-math">T<sub>hs(K)</sub> = T<sub>hs(°C)</sub> + 273.15 K</span>
           </div>
           <div class="calc-subst-display" id="step2-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • Measured LV Winding Temp: <span class="math-hl" id="calc-tlv-val">-</span><br>
-            • <span class="formula-math">T_{hs} = <span id="calc-tlv-base">-</span> + 5.1^\circ\text{C} = </span> <span class="math-res" id="calc-ths-c">-</span><br>
-            • <span class="formula-math">T_{hs(K)} = <span id="calc-ths-c2">-</span> + 273.15 = </span> <span class="math-res" id="calc-ths-k">-</span> K<br>
+            • <span class="formula-math">T<sub>hs</sub> = <span id="calc-tlv-base">-</span> + 5.1 °C = </span> <span class="math-res" id="calc-ths-c">-</span><br>
+            • <span class="formula-math">T<sub>hs(K)</sub> = <span id="calc-ths-c2">-</span> + 273.15 = </span> <span class="math-res" id="calc-ths-k">-</span> K<br>
             • Source: <span class="math-hl" id="calc-temp-source">-</span>
           </div>
         </div>
@@ -990,17 +1019,17 @@
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Combined Rate: <span class="formula-math">k = A_{Hyd} \cdot e^{-\frac{E_{Hyd}}{R \cdot T_{hs}}} + A_{Oxi} \cdot e^{-\frac{E_{Oxi}}{R \cdot T_{hs}}}</span><br>
-            • Gas Constant: <span class="formula-math">R = 8.314 \; \text{J/(mol}\cdot\text{K)}</span><br>
-            • Activation Energy: <span class="formula-math">E_{Hyd} = 128{,}000 \; \text{J/mol}, \; E_{Oxi} = 89{,}000 \; \text{J/mol}</span><br>
-            • Pre-exponential: <span class="formula-math">A_{Hyd}</span> (Moisture % dependent), <span class="formula-math">A_{Oxi}</span> (O₂ ppm dependent)
+            • Combined Rate: <span class="formula-math">k = A<sub>Hyd</sub> · e<sup>-E<sub>Hyd</sub> / (R · T<sub>hs</sub>)</sup> + A<sub>Oxi</sub> · e<sup>-E<sub>Oxi</sub> / (R · T<sub>hs</sub>)</sup></span><br>
+            • Gas Constant: <span class="formula-math">R = 8.314 J/(mol·K)</span><br>
+            • Activation Energy: <span class="formula-math">E<sub>Hyd</sub> = 128,000 J/mol, E<sub>Oxi</sub> = 89,000 J/mol</span><br>
+            • Pre-exponential: <span class="formula-math">A<sub>Hyd</sub></span> (Moisture % dep.), <span class="formula-math">A<sub>Oxi</sub></span> (O₂ ppm dep.)
           </div>
           <div class="calc-subst-display" id="step3-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • Operating State: Moisture = <span class="math-hl" id="calc-moist-stat">-</span>, O₂ = <span class="math-hl" id="calc-o2-stat">-</span><br>
-            • Factors: <span class="formula-math">A_{Hyd} = <span id="calc-ahyd-val">-</span> \; \text{h}^{-1}, \; A_{Oxi} = <span id="calc-aoxi-val">-</span> \; \text{h}^{-1}</span><br>
-            • Hydrolysis Rate: <span class="formula-math">k_{Hyd} = </span> <span class="math-hl" id="calc-khyd-val">-</span> h⁻¹<br>
-            • Oxidation Rate: <span class="formula-math">k_{Oxi} = </span> <span class="math-hl" id="calc-koxi-val">-</span> h⁻¹<br>
+            • Factors: <span class="formula-math">A<sub>Hyd</sub> = <span id="calc-ahyd-val">-</span> h⁻¹, A<sub>Oxi</sub> = <span id="calc-aoxi-val">-</span> h⁻¹</span><br>
+            • Hydrolysis Rate: <span class="formula-math">k<sub>Hyd</sub> = </span> <span class="math-hl" id="calc-khyd-val">-</span> h⁻¹<br>
+            • Oxidation Rate: <span class="formula-math">k<sub>Oxi</sub> = </span> <span class="math-hl" id="calc-koxi-val">-</span> h⁻¹<br>
             • <strong>Total Yearly Rate (k):</strong> <span class="math-res" id="calc-ktotal-yearly">-</span> year⁻¹
           </div>
         </div>
@@ -1015,16 +1044,16 @@
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Reciprocal Kinetics: <span class="formula-math">\frac{1}{DP_t} - \frac{1}{DP_0} = k \cdot \Delta t</span><br>
-            • Remaining Years: <span class="formula-math">\text{RUL} = \Delta t = \frac{\frac{1}{DP_{\text{target}}} - \frac{1}{DP_0}}{k}</span><br>
-            • Target Calendar Year: <span class="formula-math">\text{Year}_{\text{target}} = 2025 + \text{RUL}</span>
+            • Reciprocal Kinetics: <span class="formula-math">1/DP<sub>t</sub> - 1/DP₀ = k · Δt</span><br>
+            • Remaining Years: <span class="formula-math">RUL = Δt = (1/DP<sub>target</sub> - 1/DP₀) / k</span><br>
+            • Target Calendar Year: <span class="formula-math">Year<sub>target</sub> = 2025 + RUL</span>
           </div>
           <div class="calc-subst-display" id="step4-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • <strong>1. To Warning Limit (DP = 300):</strong><br>
-              <span class="formula-math">\Delta t_{300} = \frac{\frac{1}{300} - \frac{1}{<span id="calc-dp0-s4a">-</span>}}{<span id="calc-k-s4a">-</span>} = </span> <span class="math-res" id="calc-rul300-val">-</span> Years (<span class="math-hl" id="calc-year300-val">-</span>)<br>
+              <span class="formula-math">Δt<sub>300</sub> = (1/300 - 1/<span id="calc-dp0-s4a">-</span>) / <span id="calc-k-s4a">-</span> = </span> <span class="math-res" id="calc-rul300-val">-</span> Years (<span class="math-hl" id="calc-year300-val">-</span>)<br>
             • <strong>2. To Mechanical End of Life (DP = 200):</strong><br>
-              <span class="formula-math">\Delta t_{200} = \frac{\frac{1}{200} - \frac{1}{<span id="calc-dp0-s4b">-</span>}}{<span id="calc-k-s4b">-</span>} = </span> <span class="math-res" id="calc-rul200-val">-</span> Years (<span class="math-hl" id="calc-year200-val">-</span>)
+              <span class="formula-math">Δt<sub>200</sub> = (1/200 - 1/<span id="calc-dp0-s4b">-</span>) / <span id="calc-k-s4b">-</span> = </span> <span class="math-res" id="calc-rul200-val">-</span> Years (<span class="math-hl" id="calc-year200-val">-</span>)
           </div>
         </div>
       </div>
@@ -1038,16 +1067,16 @@
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Weibull CDF: <span class="formula-math">PoF(t) = \left[ 1 - e^{-\left( \frac{t}{\alpha} \right)^\beta} \right] \times 100\%</span><br>
-            • Scale Parameter: <span class="formula-math">\alpha = 42.5 \; \text{years}</span> (Characteristic Fleet Life)<br>
-            • Shape Parameter: <span class="formula-math">\beta = 3.0</span> (Wear-out Aging Phase)<br>
-            • Current Service Age: <span class="formula-math">t = \text{Service Age (Years)}</span>
+            • Weibull CDF: <span class="formula-math">PoF(t) = [1 - e<sup>-(t / α)<sup>β</sup></sup>] × 100%</span><br>
+            • Scale Parameter: <span class="formula-math">α = 42.5 years</span> (Characteristic Fleet Life)<br>
+            • Shape Parameter: <span class="formula-math">β = 3.0</span> (Wear-out Aging Phase)<br>
+            • Current Service Age: <span class="formula-math">t = Service Age (Years)</span>
           </div>
           <div class="calc-subst-display" id="step5-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • Current Age: <span class="math-hl" id="calc-age-val">-</span> Years<br>
-            • <span class="formula-math">\left( \frac{<span id="calc-age-val2">-</span>}{42.5} \right)^3 = </span> <span class="math-hl" id="calc-weibull-ratio">-</span><br>
-            • <span class="formula-math">PoF = \left[ 1 - e^{-<span id="calc-weibull-ratio2">-</span>} \right] \times 100\% = </span> <span class="math-res" id="calc-pof-result">-</span><br>
+            • <span class="formula-math">(<span id="calc-age-val2">-</span> / 42.5)³ = </span> <span class="math-hl" id="calc-weibull-ratio">-</span><br>
+            • <span class="formula-math">PoF = [1 - e<sup>-(<span id="calc-weibull-ratio2">-</span>)</sup>] × 100% = </span> <span class="math-res" id="calc-pof-result">-</span><br>
             • <strong>Risk Classification:</strong> <span class="math-res" id="calc-pof-status">-</span>
           </div>
         </div>

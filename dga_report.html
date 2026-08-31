@@ -426,7 +426,42 @@
       margin-bottom: 2px;
     }
 
-    /* General Trending Grid (for Page 3 & Page 4) */
+    /* Gas Pattern Grid (Page 3) */
+    .gas-pattern-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .gas-pattern-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px 8px;
+      background: #ffffff;
+      height: 165px;
+    }
+
+    /* Duval Diagram Grid (Page 4) */
+    .duval-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .duval-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 8px 10px;
+      background: #ffffff;
+      height: 275px;
+      text-align: left;
+    }
+    .duval-svg-container {
+      height: 205px;
+      width: 100%;
+    }
+
+    /* General Trending Grid */
     .trending-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -528,6 +563,32 @@
       }
       .keygas-trending-grid .apexcharts-canvas {
         height: 74px !important;
+      }
+      .gas-pattern-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 3px !important;
+        margin-bottom: 3px !important;
+      }
+      .gas-pattern-box {
+        height: 120px !important;
+        padding: 2px 4px !important;
+      }
+      .gas-pattern-box .apexcharts-canvas {
+        height: 95px !important;
+      }
+      .duval-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 3px !important;
+        margin-bottom: 3px !important;
+      }
+      .duval-card {
+        height: 172px !important;
+        padding: 3px 6px !important;
+      }
+      .duval-svg-container, #svg-duval-1, #svg-duval-4, #svg-pentagon-1, #svg-pentagon-2 {
+        height: 120px !important;
       }
       .trending-grid {
         gap: 3px !important;
@@ -1052,11 +1113,11 @@
 
       <div class="section-title">Dissolve Gas Analysis - Gas Pattern Method</div>
 
-      <div class="trending-grid">
-        <div class="trend-box" style="height:210px;"><div class="trend-title">Arcing in Oil</div><div id="pattern-arcing"></div></div>
-        <div class="trend-box" style="height:210px;"><div class="trend-title">Partial Discharge in Oil</div><div id="pattern-pd"></div></div>
-        <div class="trend-box" style="height:210px;"><div class="trend-title">Overheated Cellulose</div><div id="pattern-cellulose"></div></div>
-        <div class="trend-box" style="height:210px;"><div class="trend-title">Overheated Oil</div><div id="pattern-oil"></div></div>
+      <div class="gas-pattern-grid">
+        <div class="gas-pattern-box"><div class="trend-title">Arcing in Oil</div><div id="pattern-arcing"></div></div>
+        <div class="gas-pattern-box"><div class="trend-title">Partial Discharge in Oil</div><div id="pattern-pd"></div></div>
+        <div class="gas-pattern-box"><div class="trend-title">Overheated Cellulose</div><div id="pattern-cellulose"></div></div>
+        <div class="gas-pattern-box"><div class="trend-title">Overheated Oil</div><div id="pattern-oil"></div></div>
       </div>
 
       <!-- Signatures Block -->
@@ -1129,41 +1190,41 @@
 
       <div class="section-title">Dissolve Gas Analysis - Duval Triangles & Pentagons</div>
 
-      <div class="trending-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="duval-grid">
         <!-- Duval Triangle 1 -->
-        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+        <div class="duval-card">
           <div class="trend-title" style="margin-bottom:2px;">Triangle 1</div>
-          <div style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+          <div style="margin-top:2px; margin-bottom:4px; padding-left:6px; border-left:3px solid #2563eb; text-align:left; font-size:9.5px; font-weight:600; color:var(--text-sub); line-height:1.2;">
             <span id="res-duval-1-code">-</span>
           </div>
-          <div id="svg-duval-1" style="height:305px; width:100%;"></div>
+          <div id="svg-duval-1" class="duval-svg-container"></div>
         </div>
 
         <!-- Duval Triangle 4 -->
-        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+        <div class="duval-card">
           <div class="trend-title" style="margin-bottom:2px;">Triangle 4</div>
-          <div style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+          <div style="margin-top:2px; margin-bottom:4px; padding-left:6px; border-left:3px solid #2563eb; text-align:left; font-size:9.5px; font-weight:600; color:var(--text-sub); line-height:1.2;">
             <span id="res-duval-4-code">-</span>
           </div>
-          <div id="svg-duval-4" style="height:305px; width:100%;"></div>
+          <div id="svg-duval-4" class="duval-svg-container"></div>
         </div>
 
         <!-- Pentagon 1 -->
-        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+        <div class="duval-card">
           <div class="trend-title" style="margin-bottom:2px;">Pentagon 1</div>
-          <div id="res-pentagon-1-text" style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+          <div id="res-pentagon-1-text" style="margin-top:2px; margin-bottom:4px; padding-left:6px; border-left:3px solid #2563eb; text-align:left; font-size:9.5px; font-weight:600; color:var(--text-sub); line-height:1.2;">
             Duval Pentagon 1 Diagram
           </div>
-          <div id="svg-pentagon-1" style="height:305px; width:100%;"></div>
+          <div id="svg-pentagon-1" class="duval-svg-container"></div>
         </div>
 
         <!-- Pentagon 2 -->
-        <div class="trend-box" style="height:380px; text-align:left; padding:10px;">
+        <div class="duval-card">
           <div class="trend-title" style="margin-bottom:2px;">Pentagon 2</div>
-          <div id="res-pentagon-2-text" style="margin-top:4px; margin-bottom:6px; padding-left:8px; border-left:3.5px solid #2563eb; text-align:left; font-size:10.5px; font-weight:500; color:var(--text-sub); line-height:1.2;">
+          <div id="res-pentagon-2-text" style="margin-top:2px; margin-bottom:4px; padding-left:6px; border-left:3px solid #2563eb; text-align:left; font-size:9.5px; font-weight:600; color:var(--text-sub); line-height:1.2;">
             Duval Pentagon 2 Diagram
           </div>
-          <div id="svg-pentagon-2" style="height:305px; width:100%;"></div>
+          <div id="svg-pentagon-2" class="duval-svg-container"></div>
         </div>
       </div>
 
@@ -2037,12 +2098,7 @@
           stroke: { width: 2, curve: 'straight' },
           colors: [gasColor],
           markers: { size: 3.5, colors: [gasColor] },
-          dataLabels: {
-            enabled: true,
-            offsetY: -3,
-            style: { fontSize: '7px', fontWeight: 'bold', colors: [labelColor] },
-            background: { enabled: false }
-          },
+          dataLabels: { enabled: false },
           xaxis: {
             categories: dates,
             labels: {
@@ -2197,11 +2253,11 @@
             { name: 'Key Gas Pattern', data: p.ref },
             { name: 'Gas Measured', data: measuredPct }
           ],
-          chart: { height: 175, type: 'bar', toolbar: { show: false }, background: 'transparent' },
+          chart: { height: 120, type: 'bar', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
           colors: ['#a8a29e', '#3b82f6'],
-          plotOptions: { bar: { columnWidth: '55%' } },
+          plotOptions: { bar: { columnWidth: '50%' } },
           dataLabels: { enabled: false },
-          xaxis: { categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'], labels: { style: { fontSize: '8px', colors: labelColor } } },
+          xaxis: { categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'], labels: { style: { fontSize: '7.5px', colors: labelColor } } },
           yaxis: { max: 100, labels: { formatter: val => val + '%', style: { fontSize: '7px', colors: labelColor } } },
           legend: { position: 'top', fontSize: '8px', labels: { colors: labelColor } },
           grid: { borderColor: gridBorder }
