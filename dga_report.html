@@ -2161,11 +2161,13 @@
             categories: dates,
             labels: {
               style: { fontSize: '7.5px', colors: labelColor },
-              rotate: -25,
-              rotateAlways: false,
-              hideOverlappingLabels: true
+              rotate: -30,
+              rotateAlways: true,
+              hideOverlappingLabels: true,
+              trim: false
             },
-            tickAmount: Math.min(dates.length, 6)
+            axisBorder: { show: true, color: gridBorder },
+            axisTicks: { show: true, color: gridBorder }
           },
           yaxis: {
             labels: {
