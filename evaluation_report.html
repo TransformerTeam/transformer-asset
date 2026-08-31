@@ -1985,7 +1985,8 @@
     function computeHI(item) {
       let overallSumHI = 0;
       let activePtCount = 0;
-      let worstDgaOrBdvEval = 5;
+      let worstDgaEval = 5;
+      let worstBdvOrWaterEval = 5;
       const ptStructure = buildPtStructure(item);
       ptStructure.forEach(ptObj => {
         if (ptObj.splitSubWeights) {
@@ -2009,9 +2010,13 @@
 
               // Check DGA and Dielectric Breakdown & Water Content for Capping Rule
               const subNameUpper = String(subObj.sub || '').toUpperCase();
-              if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
-                if (minSubEval < worstDgaOrBdvEval) {
-                  worstDgaOrBdvEval = minSubEval;
+              if (subNameUpper.includes('DGA')) {
+                if (minSubEval < worstDgaEval) {
+                  worstDgaEval = minSubEval;
+                }
+              } else if (subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+                if (minSubEval < worstBdvOrWaterEval) {
+                  worstBdvOrWaterEval = minSubEval;
                 }
               }
             }
@@ -2046,19 +2051,20 @@
       const maxOverallHI = activePtCount * 100;
       let percentHIVal = maxOverallHI > 0 ? Math.round((overallHIVal / maxOverallHI) * 100) : 0;
 
-      // Capping Rule (แนวทางที่ 1): Cap Overall HI based on DGA and BDV & Water Content
+      // Capping Rule:
       // Score 1 (Critical) -> Cap at 49%
       // Score 2 (Warning)  -> Cap at 69%
-      // Score 3 (Monitor)  -> Cap at 79%
-      if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+      // BDV/Water Score 3 (Monitor) -> Cap at 79% (DGA Score 3 does NOT cap at 79%)
+      if ((worstDgaEval === 1 || worstBdvOrWaterEval === 1) && percentHIVal > 49) {
         percentHIVal = 49;
-      } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+      } else if ((worstDgaEval === 2 || worstBdvOrWaterEval === 2) && percentHIVal > 69) {
         percentHIVal = 69;
-      } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+      } else if (worstBdvOrWaterEval === 3 && percentHIVal > 79) {
         percentHIVal = 79;
       }
 
-      return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval };
+      const worstDgaOrBdvEval = Math.min(worstDgaEval, worstBdvOrWaterEval);
+      return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval, worstDgaEval, worstBdvOrWaterEval };
     }
 
     function setSubScoreBox(idKey, valStr) {
@@ -3038,30 +3044,31 @@
         ? Math.round((overallHIVal / maxOverallHI) * 100)
         : 0;
 
-      // Capping Rule (แนวทางที่ 1): Cap Overall HI based on DGA and BDV & Water Content
+      // Capping Rule:
       // Score 1 (Critical) -> Cap at 49%
       // Score 2 (Warning)  -> Cap at 69%
-      // Score 3 (Monitor)  -> Cap at 79%
-      let worstDgaOrBdvEval = 5;
+      // BDV/Water Score 3 (Monitor) -> Cap at 79% (DGA Score 3 does NOT cap at 79%)
+      let worstDgaEval = 5;
+      let worstBdvOrWaterEval = 5;
       ptStructure.forEach(pt => {
         pt.subs.forEach(s => {
           const subNameUpper = String(s.sub || '').toUpperCase();
-          if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
-            if (typeof s.dynHI === 'number') {
-              const evalScoreFromHI = Math.round((s.dynHI * 5) / 100);
-              if (evalScoreFromHI < worstDgaOrBdvEval) {
-                worstDgaOrBdvEval = evalScoreFromHI;
-              }
+          if (typeof s.dynHI === 'number') {
+            const evalScoreFromHI = Math.round((s.dynHI * 5) / 100);
+            if (subNameUpper.includes('DGA')) {
+              if (evalScoreFromHI < worstDgaEval) worstDgaEval = evalScoreFromHI;
+            } else if (subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+              if (evalScoreFromHI < worstBdvOrWaterEval) worstBdvOrWaterEval = evalScoreFromHI;
             }
           }
         });
       });
 
-      if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+      if ((worstDgaEval === 1 || worstBdvOrWaterEval === 1) && percentHIVal > 49) {
         percentHIVal = 49;
-      } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+      } else if ((worstDgaEval === 2 || worstBdvOrWaterEval === 2) && percentHIVal > 69) {
         percentHIVal = 69;
-      } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+      } else if (worstBdvOrWaterEval === 3 && percentHIVal > 79) {
         percentHIVal = 79;
       }
 

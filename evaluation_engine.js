@@ -2213,7 +2213,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 function computeHI(item) {
   let overallSumHI = 0;
   let activePtCount = 0;
-  let worstDgaOrBdvEval = 5;
+  let worstDgaEval = 5;
+  let worstBdvOrWaterEval = 5;
   const ptStructure = buildPtStructure(item);
 
   ptStructure.forEach(ptObj => {
@@ -2237,9 +2238,13 @@ function computeHI(item) {
           activePtCount++;
 
           const subNameUpper = String(subObj.sub || '').toUpperCase();
-          if (subNameUpper.includes('DGA') || subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
-            if (minSubEval < worstDgaOrBdvEval) {
-              worstDgaOrBdvEval = minSubEval;
+          if (subNameUpper.includes('DGA')) {
+            if (minSubEval < worstDgaEval) {
+              worstDgaEval = minSubEval;
+            }
+          } else if (subNameUpper.includes('DIELECTRIC') || subNameUpper.includes('BREAKDOWN') || subNameUpper.includes('WATER')) {
+            if (minSubEval < worstBdvOrWaterEval) {
+              worstBdvOrWaterEval = minSubEval;
             }
           }
         }
@@ -2277,16 +2282,17 @@ function computeHI(item) {
   // Capping Rule:
   // Score 1 (Critical) -> Cap at 49%
   // Score 2 (Warning)  -> Cap at 69%
-  // Score 3 (Monitor)  -> Cap at 79%
-  if (worstDgaOrBdvEval === 1 && percentHIVal > 49) {
+  // BDV/Water Score 3 (Monitor) -> Cap at 79% (DGA Score 3 does NOT cap at 79%)
+  if ((worstDgaEval === 1 || worstBdvOrWaterEval === 1) && percentHIVal > 49) {
     percentHIVal = 49;
-  } else if (worstDgaOrBdvEval === 2 && percentHIVal > 69) {
+  } else if ((worstDgaEval === 2 || worstBdvOrWaterEval === 2) && percentHIVal > 69) {
     percentHIVal = 69;
-  } else if (worstDgaOrBdvEval === 3 && percentHIVal > 79) {
+  } else if (worstBdvOrWaterEval === 3 && percentHIVal > 79) {
     percentHIVal = 79;
   }
 
-  return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval };
+  const worstDgaOrBdvEval = Math.min(worstDgaEval, worstBdvOrWaterEval);
+  return { overallHIVal, maxOverallHI, percentHIVal, worstDgaOrBdvEval, worstDgaEval, worstBdvOrWaterEval };
 }
 
 // ==========================================
