@@ -1159,6 +1159,10 @@
       table.response-table td {
         font-size: 9px !important;
       }
+      .part-2-section, .part-3-section, #part-2-wrapper, #part-3-wrapper,
+      .part-banner-2, #part2-table, .part-banner-3, #part3-table {
+        display: none !important;
+      }
     }
     /* Refresh Loading Popup Modal & Toast */
     .loading-modal-overlay {
@@ -1468,59 +1472,63 @@
     <!-- ========================================================================= -->
     <!-- PART 2: GENERAL HEALTH INDEX (GHI) -->
     <!-- ========================================================================= -->
-    <div class="part-banner part-banner-2">
-      <span><i class="fa-solid fa-clock-rotate-left"></i> Part 2: General Health Index (GHI)</span>
-      <span class="part-banner-subtitle">Historical Operational & Maintenance Factors</span>
-    </div>
+    <div class="part-2-section no-print" id="part-2-wrapper">
+      <div class="part-banner part-banner-2">
+        <span><i class="fa-solid fa-clock-rotate-left"></i> Part 2: General Health Index (GHI)</span>
+        <span class="part-banner-subtitle">Historical Operational & Maintenance Factors</span>
+      </div>
 
-    <table class="eval-table" id="part2-table">
-      <thead>
-        <tr>
-          <th class="th-part2" style="width: 3%;">#</th>
-          <th class="th-part2" style="width: 19%;">Test Item</th>
-          <th class="th-part2" style="width: 16%;">Criteria &amp; Limit</th>
-          <th class="th-part2" style="width: 9%;">Standards</th>
-          <th class="th-part2" style="width: 7%;">Test Date</th>
-          <th class="th-part2" style="width: 11%;">Measurement Value</th>
-          <th class="th-part2" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
-          <th class="th-part2" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
-          <th class="th-part2" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
-          <th class="th-part2" style="width: 11%;">Recommendation</th>
-        </tr>
-      </thead>
-      <tbody id="part2-table-body">
-        <!-- Dynamically rendered Part 2 rows -->
-      </tbody>
-    </table>
+      <table class="eval-table" id="part2-table">
+        <thead>
+          <tr>
+            <th class="th-part2" style="width: 3%;">#</th>
+            <th class="th-part2" style="width: 19%;">Test Item</th>
+            <th class="th-part2" style="width: 16%;">Criteria &amp; Limit</th>
+            <th class="th-part2" style="width: 9%;">Standards</th>
+            <th class="th-part2" style="width: 7%;">Test Date</th>
+            <th class="th-part2" style="width: 11%;">Measurement Value</th>
+            <th class="th-part2" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
+            <th class="th-part2" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+            <th class="th-part2" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
+            <th class="th-part2" style="width: 11%;">Recommendation</th>
+          </tr>
+        </thead>
+        <tbody id="part2-table-body">
+          <!-- Dynamically rendered Part 2 rows -->
+        </tbody>
+      </table>
+    </div>
 
 
     <!-- ========================================================================= -->
     <!-- PART 3: IMPACT INDEX (CONSEQUENCE OF FAILURE & RISK) -->
     <!-- ========================================================================= -->
-    <div class="part-banner part-banner-3">
-      <span><i class="fa-solid fa-triangle-exclamation"></i> Part 3: Impact Index (Consequence of Failure & Criticality)</span>
-      <span class="part-banner-subtitle">Financial, Grid & Safety Risk Impact Assessment</span>
-    </div>
+    <div class="part-3-section no-print" id="part-3-wrapper">
+      <div class="part-banner part-banner-3">
+        <span><i class="fa-solid fa-triangle-exclamation"></i> Part 3: Impact Index (Consequence of Failure & Criticality)</span>
+        <span class="part-banner-subtitle">Financial, Grid & Safety Risk Impact Assessment</span>
+      </div>
 
-    <table class="eval-table" id="part3-table">
-      <thead>
-        <tr>
-          <th class="th-part3" style="width: 3%;">#</th>
-          <th class="th-part3" style="width: 19%;">Test Item</th>
-          <th class="th-part3" style="width: 16%;">Criteria &amp; Limit</th>
-          <th class="th-part3" style="width: 9%;">Standards</th>
-          <th class="th-part3" style="width: 7%;">Test Date</th>
-          <th class="th-part3" style="width: 11%;">Measurement Value</th>
-          <th class="th-part3" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
-          <th class="th-part3" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
-          <th class="th-part3" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
-          <th class="th-part3" style="width: 11%;">Recommendation</th>
-        </tr>
-      </thead>
-      <tbody id="part3-table-body">
-        <!-- Dynamically rendered Part 3 rows -->
-      </tbody>
-    </table>
+      <table class="eval-table" id="part3-table">
+        <thead>
+          <tr>
+            <th class="th-part3" style="width: 3%;">#</th>
+            <th class="th-part3" style="width: 19%;">Test Item</th>
+            <th class="th-part3" style="width: 16%;">Criteria &amp; Limit</th>
+            <th class="th-part3" style="width: 9%;">Standards</th>
+            <th class="th-part3" style="width: 7%;">Test Date</th>
+            <th class="th-part3" style="width: 11%;">Measurement Value</th>
+            <th class="th-part3" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
+            <th class="th-part3" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+            <th class="th-part3" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
+            <th class="th-part3" style="width: 11%;">Recommendation</th>
+          </tr>
+        </thead>
+        <tbody id="part3-table-body">
+          <!-- Dynamically rendered Part 3 rows -->
+        </tbody>
+      </table>
+    </div>
 
     <!-- Signatures / Approval Block -->
     <div class="part-banner part-banner-1" style="margin-top: 24px; background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
@@ -5598,6 +5606,10 @@
             table.response-table td {
               font-size: 9px !important;
             }
+            .part-2-section, .part-3-section, #part-2-wrapper, #part-3-wrapper,
+            .part-banner-2, #part2-table, .part-banner-3, #part3-table {
+              display: none !important;
+            }
 
             @media print {
               @page { size: A4 portrait; margin: 5mm 7mm; }
@@ -5658,6 +5670,7 @@
         const evalPaper = document.getElementById('evaluation-paper');
         if (evalPaper) {
           const evalClone = cloneNodeWithCanvases(evalPaper);
+          evalClone.querySelectorAll('.part-2-section, .part-3-section, #part-2-wrapper, #part-3-wrapper, .part-banner-2, #part2-table, .part-banner-3, #part3-table').forEach(el => el.remove());
           evalClone.style.pageBreakAfter = 'always';
           evalClone.style.breakAfter = 'page';
           container.appendChild(evalClone);
