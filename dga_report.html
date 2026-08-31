@@ -342,14 +342,14 @@
     /* Key Gas Column Chart Container */
     .keygas-chart-container {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
-      height: 135px;
+      height: 180px;
       border: 1px solid #cbd5e1;
-      padding: 6px 12px;
-      background: #fafafa;
-      margin-bottom: 6px;
-      border-radius: 4px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      margin-bottom: 8px;
+      border-radius: 6px;
     }
 
     .gas-bar-group {
@@ -599,21 +599,13 @@
         height: 20px !important;
       }
       .keygas-chart-container {
-        height: 75px !important;
-        padding: 2px 6px !important;
+        height: 115px !important;
+        padding: 3px 6px !important;
         margin-bottom: 3px !important;
       }
-      .gas-bar-stack {
-        height: 42px !important;
-        width: 14px !important;
-      }
-      .gas-bar-label-top {
-        font-size: 7.5px !important;
-        margin-bottom: 1px !important;
-      }
-      .gas-bar-val-bottom {
-        font-size: 7px !important;
-        margin-top: 1px !important;
+      .keygas-chart-container svg {
+        height: 100% !important;
+        max-width: 100% !important;
       }
       .keygas-trending-grid {
         display: grid !important;
@@ -2052,7 +2044,7 @@
       if (paperEl) paperEl.textContent = paperDesc;
     }
 
-    // Render Key Gas Analysis Thermometer Charts (Left Criteria Numbers + Inner Black Mercury Fluid Column)
+    // Render Key Gas Analysis Thermometer Charts (Clear, Bold, Larger with Status Badges)
     function renderKeyGasBars(curr, norms) {
       const container = document.getElementById('keygas-stacked-bars');
       container.innerHTML = '';
@@ -2073,73 +2065,95 @@
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const txtColor = isDark ? '#f8fafc' : '#0f172a';
       const strokeColor = isDark ? '#94a3b8' : '#334155';
-      const bulbBg = isDark ? '#1e293b' : '#ffffff';
 
       gases.forEach(g => {
-        // Segment heights inside 135px tube (y: 28 to 163)
-        const tubeH = 135;
-        const greenH = Math.max(Math.round((g.green / g.max) * tubeH), 12);
-        const yellowH = Math.max(Math.round(((g.yellow - g.green) / g.max) * tubeH), 12);
+        // Tube dimensions (y: 24 to 129 inside 105px tube)
+        const tubeH = 105;
+        const greenH = Math.max(Math.round((g.green / g.max) * tubeH), 10);
+        const yellowH = Math.max(Math.round(((g.yellow - g.green) / g.max) * tubeH), 10);
         const redH = tubeH - greenH - yellowH;
 
-        const yGreenTop = 28 + redH + yellowH;
-        const yYellowTop = 28 + redH;
-        const yRedTop = 28;
+        const yGreenTop = 24 + redH + yellowH;
+        const yYellowTop = 24 + redH;
+        const yRedTop = 24;
 
-        // Current value inner black column height (y: 163 is 0, 28 is max)
+        // Current value inner black column height (y: 129 is 0, 24 is max)
         const valPct = Math.min(Math.max(g.val / g.max, 0), 1);
-        const yMeasured = 163 - (valPct * tubeH);
-        const barHeight = Math.max(163 - yMeasured, 4);
+        const yMeasured = 129 - (valPct * tubeH);
+        const barHeight = Math.max(129 - yMeasured, 4);
+
+        // Status badge color
+        let badgeBg = '#f1f5f9';
+        let badgeBorder = '#cbd5e1';
+        let badgeTxt = '#0f172a';
+        if (g.val > g.yellow) {
+          badgeBg = isDark ? 'rgba(239, 68, 68, 0.25)' : '#fee2e2';
+          badgeBorder = isDark ? '#ef4444' : '#fca5a5';
+          badgeTxt = isDark ? '#fca5a5' : '#b91c1c';
+        } else if (g.val > g.green) {
+          badgeBg = isDark ? 'rgba(234, 179, 8, 0.25)' : '#fef3c7';
+          badgeBorder = isDark ? '#eab308' : '#fde047';
+          badgeTxt = isDark ? '#fde047' : '#b45309';
+        } else {
+          badgeBg = isDark ? 'rgba(34, 197, 94, 0.25)' : '#dcfce7';
+          badgeBorder = isDark ? '#22c55e' : '#86efac';
+          badgeTxt = isDark ? '#86efac' : '#15803d';
+        }
 
         const svgHtml = `
-          <svg viewBox="0 0 92 198" style="width:100%; height:100%; display:block;">
+          <svg viewBox="0 0 110 162" style="width:100%; height:100%; display:block;" preserveAspectRatio="xMidYMid meet">
             <!-- Gas Title Above Column -->
-            <text x="56" y="16" font-size="12" font-weight="800" text-anchor="middle" fill="${txtColor}">${g.label}</text>
+            <text x="68" y="16" font-size="13" font-weight="900" text-anchor="middle" fill="${txtColor}">${g.label}</text>
 
             <!-- Thermometer Column Mask & Background Threshold Color Fills -->
             <defs>
               <clipPath id="tube-clip-${g.label}">
-                <rect x="45" y="28" width="22" height="135" rx="3" ry="3"/>
+                <rect x="50" y="24" width="36" height="105" rx="4" ry="4"/>
               </clipPath>
             </defs>
 
             <!-- Color Segments Fills inside Column (Background Criteria) -->
             <g clip-path="url(#tube-clip-${g.label})">
               <!-- Red Segment (Top) -->
-              <rect x="45" y="${yRedTop}" width="22" height="${redH}" fill="#ef4444" opacity="0.85"/>
+              <rect x="50" y="${yRedTop}" width="36" height="${redH}" fill="#ef4444" opacity="0.88"/>
               <!-- Yellow Segment (Middle) -->
-              <rect x="45" y="${yYellowTop}" width="22" height="${yellowH}" fill="#eab308" opacity="0.85"/>
+              <rect x="50" y="${yYellowTop}" width="36" height="${yellowH}" fill="#eab308" opacity="0.88"/>
               <!-- Green Segment (Bottom) -->
-              <rect x="45" y="${yGreenTop}" width="22" height="${greenH}" fill="#22c55e" opacity="0.85"/>
+              <rect x="50" y="${yGreenTop}" width="36" height="${greenH}" fill="#22c55e" opacity="0.88"/>
 
-              <!-- Inner Black Mercury Column (แท่งสีดำอยู่กลางกระเปาะ) -->
-              <rect x="52" y="${yMeasured}" width="8" height="${barHeight + 10}" rx="2" fill="#000000"/>
+              <!-- Inner Black Mercury Column (แท่งสีดำชัดเจนอยู่กลางกระเปาะ) -->
+              <rect x="62" y="${yMeasured}" width="12" height="${barHeight + 10}" rx="3" fill="#0b0f19"/>
             </g>
 
             <!-- Column Outer Border -->
-            <rect x="45" y="28" width="22" height="135" rx="3" ry="3" fill="none" stroke="${strokeColor}" stroke-width="2"/>
+            <rect x="50" y="24" width="36" height="105" rx="4" ry="4" fill="none" stroke="${strokeColor}" stroke-width="2"/>
 
             <!-- Criteria Scale Ticks & Numbers (Left Side) -->
-            <line x1="40" y1="${yRedTop}" x2="45" y2="${yRedTop}" stroke="${strokeColor}" stroke-width="1.5"/>
-            <text x="37" y="${yRedTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.max}</text>
+            <line x1="43" y1="${yRedTop}" x2="50" y2="${yRedTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="39" y="${yRedTop + 3.5}" font-size="10" font-weight="800" fill="${txtColor}" text-anchor="end">${g.max}</text>
 
-            <line x1="40" y1="${yYellowTop}" x2="45" y2="${yYellowTop}" stroke="${strokeColor}" stroke-width="1.5"/>
-            <text x="37" y="${yYellowTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.yellow}</text>
+            <line x1="43" y1="${yYellowTop}" x2="50" y2="${yYellowTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="39" y="${yYellowTop + 3.5}" font-size="10" font-weight="800" fill="${txtColor}" text-anchor="end">${g.yellow}</text>
 
-            <line x1="40" y1="${yGreenTop}" x2="45" y2="${yGreenTop}" stroke="${strokeColor}" stroke-width="1.5"/>
-            <text x="37" y="${yGreenTop + 3.5}" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">${g.green}</text>
+            <line x1="43" y1="${yGreenTop}" x2="50" y2="${yGreenTop}" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="39" y="${yGreenTop + 3.5}" font-size="10" font-weight="800" fill="${txtColor}" text-anchor="end">${g.green}</text>
 
-            <line x1="40" y1="163" x2="45" y2="163" stroke="${strokeColor}" stroke-width="1.5"/>
-            <text x="37" y="166.5" font-size="9" font-weight="800" fill="${txtColor}" text-anchor="end">0</text>
+            <line x1="43" y1="129" x2="50" y2="129" stroke="${strokeColor}" stroke-width="1.5"/>
+            <text x="39" y="132.5" font-size="10" font-weight="800" fill="${txtColor}" text-anchor="end">0</text>
 
-            <!-- Measured Value Label Below Column -->
-            <text x="56" y="184" font-size="11" font-weight="800" fill="${txtColor}" text-anchor="middle">${g.val} ppm.</text>
+            <!-- Measured Value Badge Below Column -->
+            <rect x="24" y="137" width="84" height="20" rx="4" fill="${badgeBg}" stroke="${badgeBorder}" stroke-width="1"/>
+            <text x="66" y="151.5" font-size="11.5" font-weight="900" fill="${badgeTxt}" text-anchor="middle">${g.val} ppm</text>
           </svg>
         `;
 
         const wrapper = document.createElement('div');
-        wrapper.style.width = '13%';
+        wrapper.style.width = '14%';
+        wrapper.style.flex = '1';
         wrapper.style.height = '100%';
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignItems = 'center';
         wrapper.innerHTML = svgHtml;
         container.appendChild(wrapper);
       });
