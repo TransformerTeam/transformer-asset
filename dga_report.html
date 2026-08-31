@@ -624,7 +624,7 @@
       }
       .keygas-trending-grid .trend-box {
         height: 185px !important;
-        padding: 3px 12px 2px 6px !important;
+        padding: 3px 6px 2px 4px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
         min-width: 0 !important;
@@ -637,7 +637,7 @@
       .keygas-trending-grid .apexcharts-canvas, .keygas-trending-grid .apexcharts-canvas svg {
         height: 158px !important;
         max-width: 100% !important;
-        overflow: hidden !important;
+        overflow: visible !important;
       }
       .gas-pattern-grid {
         display: grid !important;
@@ -666,7 +666,7 @@
         height: 140px !important;
         max-height: 140px !important;
         max-width: 100% !important;
-        overflow: hidden !important;
+        overflow: visible !important;
       }
       .duval-grid {
         display: grid !important;
@@ -2118,7 +2118,10 @@
 
       // Sort chronologically
       const sorted = [...items].sort((a, b) => parseDate(a.date) - parseDate(b.date));
-      const dates = sorted.map(x => formatDate(x.date));
+      const dates = sorted.map(x => {
+        const f = formatDate(x.date);
+        return f.replace(/-20(\d\d)$/, '-$1');
+      });
 
       const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
 
@@ -2148,20 +2151,21 @@
         const options = {
           series: [{ name: gas, data: vals }],
           chart: { width: '100%', height: 185, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
-          stroke: { width: 2.5, curve: 'straight' },
+          stroke: { width: 2.2, curve: 'straight' },
           colors: [gasColor],
-          markers: { size: 4, colors: [gasColor] },
+          markers: { size: 3.5, colors: [gasColor] },
           dataLabels: {
             enabled: true,
-            offsetY: -4,
-            style: { fontSize: '8px', fontWeight: 'bold', colors: [labelColor] },
-            background: { enabled: false }
+            offsetY: -5,
+            style: { fontSize: '7.5px', fontWeight: 'bold', colors: [labelColor] },
+            background: { enabled: false },
+            formatter: (val) => val !== null && !isNaN(val) ? (val >= 1000 ? Math.round(val) : (val >= 100 ? Math.round(val) : (Number.isInteger(val) ? val : val.toFixed(1)))) : ''
           },
           xaxis: {
             categories: dates,
             labels: {
-              style: { fontSize: '7.5px', colors: labelColor },
-              rotate: -30,
+              style: { fontSize: '7px', colors: labelColor },
+              rotate: -35,
               rotateAlways: true,
               hideOverlappingLabels: true,
               trim: false
@@ -2172,7 +2176,7 @@
           yaxis: {
             labels: {
               minWidth: 26,
-              style: { fontSize: '7.5px', colors: labelColor },
+              style: { fontSize: '7px', colors: labelColor },
               formatter: (val) => val !== null && !isNaN(val) ? (val >= 1000 ? Math.round(val) : (val >= 100 ? Math.round(val) : val.toFixed(1))) : ''
             }
           },
@@ -2181,8 +2185,8 @@
             strokeDashArray: 2,
             padding: {
               top: -6,
-              right: 42,
-              bottom: 6,
+              right: 55,
+              bottom: 8,
               left: 20
             }
           }
@@ -2333,12 +2337,12 @@
             parentHeightOffset: 0
           },
           colors: ['#a8a29e', '#3b82f6'],
-          plotOptions: { bar: { columnWidth: '55%', borderRadius: 2 } },
+          plotOptions: { bar: { columnWidth: '46%', borderRadius: 2 } },
           dataLabels: { enabled: false },
           xaxis: {
             categories: ['CO', 'H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'],
             labels: {
-              style: { fontSize: '8.5px', fontWeight: 'bold', colors: labelColor },
+              style: { fontSize: '8px', fontWeight: 'bold', colors: labelColor },
               offsetY: -2
             },
             axisBorder: { show: true, color: gridBorder },
@@ -2361,9 +2365,9 @@
             borderColor: gridBorder,
             padding: {
               top: -8,
-              right: 15,
+              right: 32,
               bottom: 8,
-              left: 10
+              left: 14
             }
           }
         };
