@@ -410,7 +410,7 @@
       border-radius: 4px;
       padding: 6px 10px;
       background: #ffffff;
-      height: 155px;
+      height: 195px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
@@ -560,15 +560,15 @@
         margin-bottom: 3px !important;
       }
       .keygas-trending-grid .trend-box {
-        height: 118px !important;
+        height: 158px !important;
         padding: 3px 6px !important;
       }
       .keygas-trending-grid .trend-title {
         font-size: 8.5px !important;
         margin-bottom: 0px !important;
       }
-      .keygas-trending-grid .apexcharts-canvas {
-        height: 96px !important;
+      .keygas-trending-grid .apexcharts-canvas, .keygas-trending-grid .apexcharts-canvas svg {
+        height: 132px !important;
       }
       .gas-pattern-grid {
         display: grid !important;
@@ -2104,7 +2104,7 @@
 
         const options = {
           series: [{ name: gas, data: vals }],
-          chart: { height: 120, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+          chart: { height: 160, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
           stroke: { width: 2.5, curve: 'straight' },
           colors: [gasColor],
           markers: { size: 4, colors: [gasColor] },
