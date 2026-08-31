@@ -445,20 +445,26 @@
     .duval-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 8px;
     }
     .duval-card {
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      padding: 8px 10px;
+      padding: 6px 10px;
       background: #ffffff;
-      height: 275px;
+      height: 310px;
       text-align: left;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
     }
     .duval-svg-container {
-      height: 205px;
+      flex: 1;
+      height: 255px;
       width: 100%;
+      overflow: hidden;
     }
 
     /* General Trending Grid */
@@ -580,15 +586,19 @@
       .duval-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 3px !important;
+        gap: 4px !important;
         margin-bottom: 3px !important;
       }
       .duval-card {
-        height: 172px !important;
+        height: 215px !important;
         padding: 3px 6px !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
       }
       .duval-svg-container, #svg-duval-1, #svg-duval-4, #svg-pentagon-1, #svg-pentagon-2 {
-        height: 120px !important;
+        height: 165px !important;
+        width: 100% !important;
+        overflow: hidden !important;
       }
       .trending-grid {
         gap: 3px !important;
@@ -2488,11 +2498,8 @@
         for (let v = 20; v <= 80; v += 20) {
           const p1 = xy(0, 100 - v, v);
           const p2 = xy(2.5, 97.5 - v, v);
-          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${strokeColor}" stroke-width="1"/>`;
-        }
-
-        return `
-          <svg viewBox="0 0 310 340" style="width:100%; height:100%; font-family:sans-serif;">
+          ticksHtml += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y        return `
+          <svg viewBox="0 0 310 290" style="width:100%; height:100%; display:block; font-family:sans-serif;">
             <!-- Outer border -->
             <polygon points="150,25 270,215 30,215" fill="none" stroke="${strokeColor}" stroke-width="1.8"/>
 
@@ -2511,7 +2518,7 @@
             <!-- Axis Labels & Arrows -->
             <text x="38" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(-60 38 125)" text-anchor="middle">% CH₄ ⟶</text>
             <text x="262" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(60 262 125)" text-anchor="middle">% C₂H₄ ⟶</text>
-            <text x="150" y="242" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₂</text>
+            <text x="150" y="240" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₂</text>
 
             <!-- Ticks Labels -->
             <!-- CH4 Left Axis -->
@@ -2544,28 +2551,30 @@
             <!-- Target Point (Solid Red Dot with white outline) -->
             <circle cx="${pt[0]}" cy="${pt[1]}" r="3.5" fill="#dc2626" stroke="#ffffff" stroke-width="1.0" class="duval-point" data-tooltip="${tooltipText}" style="${isLowGases ? 'display: none;' : ''}"/>
 
-            <!-- Legend matching screenshot -->
-            <g transform="translate(10, 248)">
-              <rect x="0" y="0" width="10" height="10" fill="#598fe6"/>
-              <text x="14" y="8" font-size="8.5" fill="${txtColor}">D1 Discharges of low energy</text>
+            <!-- Legend matching screenshot (2 columns) -->
+            <g transform="translate(8, 246)">
+              <!-- Col 1 -->
+              <rect x="0" y="0" width="8" height="8" fill="#598fe6"/>
+              <text x="12" y="7" font-size="7.5" fill="${txtColor}">D1 Discharges low energy</text>
 
-              <rect x="0" y="12" width="10" height="10" fill="#ea85ea"/>
-              <text x="14" y="20" font-size="8.5" fill="${txtColor}">D2 Discharges of high energy</text>
+              <rect x="0" y="11" width="8" height="8" fill="#ea85ea"/>
+              <text x="12" y="18" font-size="7.5" fill="${txtColor}">D2 Discharges high energy</text>
 
-              <rect x="0" y="24" width="10" height="10" fill="#addce6"/>
-              <text x="14" y="32" font-size="8.5" fill="${txtColor}">DT Mixed thermal and discharge faults</text>
+              <rect x="0" y="22" width="8" height="8" fill="#addce6"/>
+              <text x="12" y="29" font-size="7.5" fill="${txtColor}">DT Mixed thermal & discharge</text>
 
-              <rect x="0" y="36" width="10" height="10" fill="#f2e779"/>
-              <text x="14" y="44" font-size="8.5" fill="${txtColor}">T1 Thermal faults (T &lt; 300°C)</text>
+              <rect x="0" y="33" width="8" height="8" fill="#f2e779"/>
+              <text x="12" y="40" font-size="7.5" fill="${txtColor}">T1 Thermal (T &lt; 300°C)</text>
 
-              <rect x="0" y="48" width="10" height="10" fill="#f08913"/>
-              <text x="14" y="56" font-size="8.5" fill="${txtColor}">T2 Thermal faults (300°C &lt; T &lt; 700°C)</text>
+              <!-- Col 2 -->
+              <rect x="150" y="0" width="8" height="8" fill="#f08913"/>
+              <text x="162" y="7" font-size="7.5" fill="${txtColor}">T2 Thermal (300–700°C)</text>
 
-              <rect x="0" y="60" width="10" height="10" fill="#e62e43"/>
-              <text x="14" y="68" font-size="8.5" fill="${txtColor}">T3 Thermal faults (T &gt; 700°C)</text>
+              <rect x="150" y="11" width="8" height="8" fill="#e62e43"/>
+              <text x="162" y="18" font-size="7.5" fill="${txtColor}">T3 Thermal (T &gt; 700°C)</text>
 
-              <rect x="0" y="72" width="10" height="10" fill="#ffffff" stroke="#94a3b8" stroke-width="0.5"/>
-              <text x="14" y="80" font-size="8.5" fill="${txtColor}">PD Partial discharges</text>
+              <rect x="150" y="22" width="8" height="8" fill="#ffffff" stroke="#94a3b8" stroke-width="0.5"/>
+              <text x="162" y="29" font-size="7.5" fill="${txtColor}">PD Partial discharges</text>
             </g>
           </svg>
         `;
@@ -2625,7 +2634,7 @@
         }
 
         return `
-          <svg viewBox="0 0 310 340" style="width:100%; height:100%; font-family:sans-serif;">
+          <svg viewBox="0 0 310 290" style="width:100%; height:100%; display:block; font-family:sans-serif;">
             <!-- Outer border -->
             <polygon points="150,25 270,215 30,215" fill="none" stroke="${strokeColor}" stroke-width="1.8"/>
 
@@ -2641,7 +2650,7 @@
             <!-- Axis Labels & Arrows -->
             <text x="38" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(-60 38 125)" text-anchor="middle">% H₂ ⟶</text>
             <text x="262" y="125" font-size="10.5" font-weight="bold" fill="${txtColor}" transform="rotate(60 262 125)" text-anchor="middle">% CH₄ ⟶</text>
-            <text x="150" y="242" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₆</text>
+            <text x="150" y="240" font-size="10.5" font-weight="bold" fill="${txtColor}" text-anchor="middle">⟵ % C₂H₆</text>
 
             <!-- Ticks Labels -->
             <!-- H2 Left Axis -->
@@ -2671,19 +2680,25 @@
             <!-- Target Point (Solid Red Dot with white outline) -->
             <circle cx="${pt[0]}" cy="${pt[1]}" r="3.5" fill="#dc2626" stroke="#ffffff" stroke-width="1.0" class="duval-point" data-tooltip="${tooltipText}" style="${isLowGases ? 'display: none;' : ''}"/>
 
-            <!-- Legend matching screenshot -->
-            <g transform="translate(10, 248)">
-              <rect x="0" y="0" width="11" height="11" fill="#f7b7f2"/>
-              <text x="16" y="9" font-size="9" fill="${txtColor}">C Carbonization</text>
+            <!-- Legend matching screenshot (2 columns) -->
+            <g transform="translate(8, 246)">
+              <!-- Col 1 -->
+              <rect x="0" y="0" width="8" height="8" fill="#9ebbf8"/>
+              <text x="12" y="7" font-size="7.5" fill="${txtColor}">S Stray gases</text>
 
-              <rect x="0" y="14" width="11" height="11" fill="#9ebbf8"/>
-              <text x="16" y="23" font-size="9" fill="${txtColor}">S Stray gases</text>
+              <rect x="0" y="11" width="8" height="8" fill="#f7b7f2"/>
+              <text x="12" y="18" font-size="7.5" fill="${txtColor}">C Carbonization</text>
 
-              <rect x="0" y="28" width="11" height="11" fill="#67c5cd"/>
-              <text x="16" y="37" font-size="9" fill="${txtColor}">O Overheating</text>
+              <!-- Col 2 -->
+              <rect x="150" y="0" width="8" height="8" fill="#67c5cd"/>
+              <text x="162" y="7" font-size="7.5" fill="${txtColor}">O Overheating</text>
 
-              <rect x="0" y="42" width="11" height="11" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.5"/>
-              <text x="16" y="51" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+              <rect x="150" y="11" width="8" height="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.5"/>
+              <text x="162" y="18" font-size="7.5" fill="${txtColor}">PD Partial discharges</text>
+            </g>
+          </svg>
+        `;
+      };-size="9" fill="${txtColor}">PD Partial discharges</text>
             </g>
           </svg>
         `;
@@ -2810,72 +2825,62 @@
         let legendHtml = '';
         if (title === 'Pentagon 1') {
           legendHtml = `
-            <g transform="translate(10, 250)">
-              <!-- Item 1: D1 -->
-              <rect x="0" y="0" width="11" height="11" fill="#5da4e6" rx="1"/>
-              <text x="16" y="9" font-size="9" fill="${txtColor}">D1 Discharges of low energy</text>
+            <g transform="translate(8, 246)">
+              <!-- Col 1 -->
+              <rect x="0" y="0" width="8" height="8" fill="#5da4e6" rx="1"/>
+              <text x="12" y="7" font-size="7.5" fill="${txtColor}">D1 Discharges low energy</text>
 
-              <!-- Item 2: D2 -->
-              <rect x="0" y="15" width="11" height="11" fill="#f7b7f2" rx="1"/>
-              <text x="16" y="24" font-size="9" fill="${txtColor}">D2 Discharges of high energy</text>
+              <rect x="0" y="11" width="8" height="8" fill="#f7b7f2" rx="1"/>
+              <text x="12" y="18" font-size="7.5" fill="${txtColor}">D2 Discharges high energy</text>
 
-              <!-- Item 3: T1 -->
-              <rect x="0" y="30" width="11" height="11" fill="#ebd15b" rx="1"/>
-              <text x="16" y="39" font-size="9" fill="${txtColor}">T1 Thermal faults (T &lt; 300°C)</text>
+              <rect x="0" y="22" width="8" height="8" fill="#ebd15b" rx="1"/>
+              <text x="12" y="29" font-size="7.5" fill="${txtColor}">T1 Thermal (T &lt; 300°C)</text>
 
-              <!-- Item 4: T2 -->
-              <rect x="0" y="45" width="11" height="11" fill="#f97316" rx="1"/>
-              <text x="16" y="54" font-size="9" fill="${txtColor}">T2 Thermal faults (300°C &lt; T &lt; 700°C)</text>
+              <rect x="0" y="33" width="8" height="8" fill="#f97316" rx="1"/>
+              <text x="12" y="40" font-size="7.5" fill="${txtColor}">T2 Thermal (300–700°C)</text>
 
-              <!-- Item 5: T3 -->
-              <rect x="0" y="60" width="11" height="11" fill="#e03e52" rx="1"/>
-              <text x="16" y="69" font-size="9" fill="${txtColor}">T3 Thermal faults (T &gt; 700°C)</text>
+              <!-- Col 2 -->
+              <rect x="145" y="0" width="8" height="8" fill="#e03e52" rx="1"/>
+              <text x="157" y="7" font-size="7.5" fill="${txtColor}">T3 Thermal (T &gt; 700°C)</text>
 
-              <!-- Item 6: S -->
-              <rect x="0" y="75" width="11" height="11" fill="#9ebbf8" rx="1"/>
-              <text x="16" y="84" font-size="9" fill="${txtColor}">S Stray gases</text>
+              <rect x="145" y="11" width="8" height="8" fill="#9ebbf8" rx="1"/>
+              <text x="157" y="18" font-size="7.5" fill="${txtColor}">S Stray gases</text>
 
-              <!-- Item 7: PD -->
-              <rect x="0" y="90" width="11" height="11" fill="#cbd5e1" rx="1"/>
-              <text x="16" y="99" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+              <rect x="145" y="22" width="8" height="8" fill="#cbd5e1" rx="1"/>
+              <text x="157" y="29" font-size="7.5" fill="${txtColor}">PD Partial discharges</text>
             </g>
           `;
         } else {
           legendHtml = `
-            <g transform="translate(10, 250)">
-              <!-- Item 1: C -->
-              <rect x="0" y="0" width="11" height="11" fill="#fcc8f8" rx="1"/>
-              <text x="16" y="9" font-size="9" fill="${txtColor}">C Carbonization</text>
+            <g transform="translate(8, 246)">
+              <!-- Col 1 -->
+              <rect x="0" y="0" width="8" height="8" fill="#fcc8f8" rx="1"/>
+              <text x="12" y="7" font-size="7.5" fill="${txtColor}">C Carbonization</text>
 
-              <!-- Item 2: S -->
-              <rect x="0" y="15" width="11" height="11" fill="#9ebbf8" rx="1"/>
-              <text x="16" y="24" font-size="9" fill="${txtColor}">S Stray gases</text>
+              <rect x="0" y="11" width="8" height="8" fill="#9ebbf8" rx="1"/>
+              <text x="12" y="18" font-size="7.5" fill="${txtColor}">S Stray gases</text>
 
-              <!-- Item 3: O -->
-              <rect x="0" y="30" width="11" height="11" fill="#7bc0cf" rx="1"/>
-              <text x="16" y="39" font-size="9" fill="${txtColor}">O Overheating</text>
+              <rect x="0" y="22" width="8" height="8" fill="#7bc0cf" rx="1"/>
+              <text x="12" y="29" font-size="7.5" fill="${txtColor}">O Overheating</text>
 
-              <!-- Item 4: D1 -->
-              <rect x="0" y="45" width="11" height="11" fill="#5da4e6" rx="1"/>
-              <text x="16" y="54" font-size="9" fill="${txtColor}">D1 Discharges of low energy</text>
+              <rect x="0" y="33" width="8" height="8" fill="#5da4e6" rx="1"/>
+              <text x="12" y="40" font-size="7.5" fill="${txtColor}">D1 Discharges low energy</text>
 
-              <!-- Item 5: D2 -->
-              <rect x="0" y="60" width="11" height="11" fill="#f7b7f2" rx="1"/>
-              <text x="16" y="69" font-size="9" fill="${txtColor}">D2 Discharges of high energy</text>
+              <!-- Col 2 -->
+              <rect x="145" y="0" width="8" height="8" fill="#f7b7f2" rx="1"/>
+              <text x="157" y="7" font-size="7.5" fill="${txtColor}">D2 Discharges high energy</text>
 
-              <!-- Item 6: T3-H -->
-              <rect x="0" y="75" width="11" height="11" fill="#e03e52" rx="1"/>
-              <text x="16" y="84" font-size="9" fill="${txtColor}">T3-H Thermal faults T3 in oil only</text>
+              <rect x="145" y="11" width="8" height="8" fill="#e03e52" rx="1"/>
+              <text x="157" y="18" font-size="7.5" fill="${txtColor}">T3-H Thermal T3 in oil</text>
 
-              <!-- Item 7: PD -->
-              <rect x="0" y="90" width="11" height="11" fill="#cbd5e1" rx="1"/>
-              <text x="16" y="99" font-size="9" fill="${txtColor}">PD Partial discharges</text>
+              <rect x="145" y="22" width="8" height="8" fill="#cbd5e1" rx="1"/>
+              <text x="157" y="29" font-size="7.5" fill="${txtColor}">PD Partial discharges</text>
             </g>
           `;
         }
 
         return `
-          <svg viewBox="0 0 300 365" style="width:100%; height:305px;">
+          <svg viewBox="0 0 300 295" style="width:100%; height:100%; display:block;">
             ${polygonsHtml}
             
             <!-- Outer pentagon border -->
@@ -2884,8 +2889,8 @@
             <!-- Axis Labels -->
             <text x="150" y="9" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">H2</text>
             <text x="276" y="103" font-size="9" font-weight="700" text-anchor="start" fill="${txtColor}">C2H2</text>
-            <text x="228" y="246" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">C2H4</text>
-            <text x="72" y="246" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">CH4</text>
+            <text x="228" y="244" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">C2H4</text>
+            <text x="72" y="244" font-size="9" font-weight="700" text-anchor="middle" fill="${txtColor}">CH4</text>
             <text x="24" y="103" font-size="9" font-weight="700" text-anchor="end" fill="${txtColor}">C2H6</text>
  
             <!-- Zone Labels -->
