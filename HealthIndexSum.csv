@@ -49,16 +49,16 @@
 5,GT2B GSUT,4710348,GEN,50,123,11,123/11,GSUT,21,88,Healthy,905,,A,A,A,A,A,A,A,A,A,N/A,A,Q,N/A,A,A,Q,A,A,A,A,A,A,A,A,A,A,A,Q,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2024,2027,"""Replacement buchholz relay (oil leak), Add passivator and budget plan for oil regeneration (IFT questinable limit)."""
 6,GT2C GSUT,4710349,GEN,50,123,11,123/11,GSUT,21,83,Healthy,930,,A,A,A,A,A,A,A,A,A,N/A,A,U,N/A,N/A,N/A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2023,2026,Add passivator and budget plan for oil regeneration (IFT questinable limit).
 7,41BAT10 (GTG41),6310537,GEN,65,120,11,120/11,GSUT,5,78,Monitor,1066,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-8,42BAT10 (GTG42),6310535,GEN,65,120,11,120/11,GSUT,5,68,Warning,1117,25,Q,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2026,-,Routine Inspection & Maintenance.
+8,42BAT10 (GTG42),6310535,GEN,65,120,11,120/11,GSUT,5,85,Healthy,1117,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2026,-,Routine Inspection & Maintenance.
 9,61BAT10 (GTG61),6310534,GEN,65,120,11,120/11,GSUT,5,90,Healthy,1117,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2026,-,Routine Inspection & Maintenance.
-10,62BAT10 (GTG62),6310536,GEN,65,120,11,120/11,GSUT,5,70,Monitor,1117,25,Q,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+10,62BAT10 (GTG62),6310536,GEN,65,120,11,120/11,GSUT,5,90,Healthy,1117,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 11,TR1,54002,GEN,50,115,23,115/23,Distribution,32,88,Healthy,991,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,Q,A,A,A,A,,A,A,A,A,,,,,,,,,,2021,-,Routine Inspection & Maintenance.
 12,TR2,508038,GEN,50,115,23,115/23,Distribution,32,70,Monitor,1047,25,A,A,A,U,A,A,A,A,A,,A,U,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 13,TR3,54001,GEN,50,115,23,115/23,Distribution,32,83,Healthy,1117,25,A,A,A,U,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 14,GT2B Bleeding,383204884,GEN,4.5,11,6.9,11/6.9,Auxiliary,31,93,Healthy,1047,,A,A,A,A,A,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,Q,A,A,A,A,N/A,A,A,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2024,2027,"""Plan for oil regeneration: Concern oil conductivity is unacceptable limit, PF 100C and IFT are questionable limit."""
 15,GT2C Bleeding,383204886,GEN,4.5,11,6.9,11/6.9,Auxiliary,31,90,Healthy,1117,,A,A,A,A,Q,A,A,A,A,N/A,N/A,N/A,N/A,N/A,N/A,Q,A,A,A,A,A,A,A,A,A,N/A,Q,Q,A,A,N/A,N/A,N/A,N/A,04/01/2026,,,,,2021,2024,"""3Y PM program overdue, Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Corrosive sulfur is suspect corrosive (3b)."""
 16,ETR1,6611059,GEN,315,22,0.4,22/0.4,Auxiliary,3,94,Healthy,1152,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-17,ETR2,6611060,GEN,315,22,0.4,22/0.4,Auxiliary,3,94,Healthy,1152,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+17,ETR2,6611060,GEN,315,22,0.4,22/0.4,Auxiliary,3,77,Monitor,1152,25,Q,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 18,ETR3,5310991,GEN,315,22,0.4,22/0.4,Auxiliary,16,86,Healthy,950,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 19,EDTRF-TCC1 (TR7),3905095,GEN,4,22,6.6,22/6.6,Auxiliary,30,88,Healthy,668,25,A,A,Q,Q,Q,A,A,A,A,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
 20,EDTRF-TCC2 (TR6),56118448EE,GEN,2,22,0.4,22/0.4,Auxiliary,13,95,Healthy,1152,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
@@ -124,30 +124,30 @@
 35,61HDE20GT010.35.EN,N09078,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 35,61HDE20GT011.35.EN,N09079,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 35,61HDE20GT012.35.EN,N09080,GHECO-ONE,0.136,0.4,0.11,0.4/0.11,Auxiliary,-,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11BBT20,T013001,GIPP,40,21,6.75,21/6.75,UAT,25,90,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,21BBT20,T013007,GIPP,40,21,6.75,21/6.75,UAT,25,90,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11BAT10,T012006,GIPP,500,235,121,235/121,GSUT,25,80,Healthy,1003,25,A,A,A,A,A,A,A,A,U,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2026,-,Routine Inspection & Maintenance.
-35,21BAT10,T012023,GIPP,500,235,121,235/121,GSUT,25,80,Healthy,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11MKC50 (Excitation),5217613,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,79,Monitor,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,21MKC50 (Excitation),5217612,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,79,Monitor,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11BFT10,424758_03,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11BFT20,424758_04,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,11BFT30,424759_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,21BFT10,424758_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,21BFT20,424759_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,21BFT30,424758_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,TR-1501,EV9277_1,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,49,Critical,867,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,U,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,TR-1502,EV9277_2,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,79,Monitor,871,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,TR-101,ET8712/1,GSPP11 PLT1,48,123,11,123/11,GSUT,27,80,Healthy,917,25,A,A,A,U,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
-35,TR-201,ET8712_2,GSPP11 PLT1,48,123,11,123/11,GSUT,33,68,Warning,917,25,Q,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2024,-,Routine Inspection & Maintenance.
-35,TR-301,ET8713/1,GSPP11 PLT1,52,123,10.5,123/10.5,GSUT,27,80,Healthy,950,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
-35,GE-TR1,PP0091B01,GSPP11 PLT1,26,22,11,22/11,GSUT,20,90,Healthy,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,GE-TR2,5710877,GSPP11 PLT1,25,22,11,22/11,GSUT,12,80,Healthy,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,TR-401,EDP004301,GSPP11 PLT1,25,115,22,115/22,Distribution,31,85,Healthy,730,25,A,A,A,Q,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
-35,TR-501,EDP018401,GSPP11 PLT1,25,115,22,115/22,Distribution,25,85,Healthy,911,25,A,A,A,A,A,A,A,Q,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
-35,TR-601,PP0041B01,GSPP11 PLT1,20,115,22,115/22,Distribution,22,87,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
-35,TR-40001,4700831,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,79,Monitor,1117,25,A,A,A,A,A,A,Q,,,,A,A,,,,A,A,Q,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
-35,TR-40002,4700830,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,83,Healthy,1066,25,A,A,A,A,A,A,Q,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,Q,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
+35,11BBT20,T013001,GIPP,40,21,6.75,21/6.75,UAT,25,90,Healthy,1152,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,21BBT20,T013007,GIPP,40,21,6.75,21/6.75,UAT,25,85,Healthy,1152,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,11BAT10,T012006,GIPP,500,235,121,235/121,GSUT,25,80,Healthy,1003,25,A,A,A,A,A,A,A,A,U,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2026,-,Routine Inspection & Maintenance.
+35,21BAT10,T012023,GIPP,500,235,121,235/121,GSUT,25,80,Healthy,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,11MKC50 (Excitation),5217613,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,79,Monitor,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,A,A,Q,A,A,Q,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,21MKC50 (Excitation),5217612,GIPP,4.1,21,0.52,21/0.52,Auxiliary,25,79,Monitor,1003,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,Q,A,A,Q,A,A,Q,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,11BFT10,424758_03,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,11BFT20,424758_04,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,11BFT30,424759_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,21BFT10,424758_01,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,21BFT20,424759_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,21BFT30,424758_02,GIPP,2.5,6.6,0.4,6.6/0.4,Auxiliary,25,0,Critical,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,TR-1501,EV9277_1,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,90,Healthy,855,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,TR-1502,EV9277_2,GSPP11 PLT1,4.75,11,6.9,11/6.9,UAT,26,85,Healthy,923,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,Q,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,TR-101,ET8712/1,GSPP11 PLT1,48,123,11,123/11,GSUT,27,80,Healthy,923,25,A,A,A,U,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,Q,A,A,A,A,,A,Q,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
+35,TR-201,ET8712_2,GSPP11 PLT1,48,123,11,123/11,GSUT,33,68,Warning,961,25,Q,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,Q,A,A,A,A,,A,Q,A,A,,,,,,,,,,2024,-,Routine Inspection & Maintenance.
+35,TR-301,ET8713/1,GSPP11 PLT1,52,123,10.5,123/10.5,GSUT,27,80,Healthy,1003,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
+35,GE-TR1,PP0091B01,GSPP11 PLT1,26,22,11,22/11,GSUT,20,90,Healthy,1047,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,GE-TR2,5710877,GSPP11 PLT1,25,22,11,22/11,GSUT,12,80,Healthy,1066,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,TR-401,EDP004301,GSPP11 PLT1,25,115,22,115/22,Distribution,31,83,Healthy,796,25,A,A,A,Q,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
+35,TR-501,EDP018401,GSPP11 PLT1,25,115,22,115/22,Distribution,25,85,Healthy,980,25,A,A,A,A,A,A,A,Q,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
+35,TR-601,PP0041B01,GSPP11 PLT1,20,115,22,115/22,Distribution,22,80,Healthy,905,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
+35,TR-40001,4700831,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,91,Healthy,937,25,A,A,A,A,A,A,Q,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
+35,TR-40002,4700830,GSPP11 PLT1,2.5,22,0.4,22/0.4,Auxiliary,22,80,Healthy,847,25,A,A,A,A,A,A,Q,,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
 35,GE-TR1 Aux.,O61539,GSPP11 PLT1,1.25,11,0.4,11/0.4,Auxiliary,20,100,Healthy,911,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 35,GE-TR2 Aux.,5710876,GSPP11 PLT1,0.63,11,0.4,11/0.4,Auxiliary,12,49,Critical,1200,25,A,A,A,A,A,A,A,,,,A,A,,,,A,U,Q,A,A,A,A,A,Q,A,,Q,Q,A,Q,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 35,GSUT-1,PP0284B01,GSPP11 PLT2,90,115,11,115/11,GSUT,15,90,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,Q,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
@@ -168,10 +168,10 @@
 44,32BBT10 (CTG3B UAT),4612314,GSPP2&3,2,11.5,7.2,11.5/7.2,UAT,22,65,Warning,1066,25,Q,A,A,A,Q,A,A,A,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2018,-,Routine Inspection & Maintenance.
 45,51BBT01 (CTG5 GSUT),VN00408,GSPP2&3,20,20,6.9,20/6.9,UAT,17,89,Healthy,1003,25,A,A,A,Q,Q,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 46,COGEN GSUT (CTG1&2),9640548,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,75,Monitor,781,25,Q,A,A,A,A,A,A,A,A,,A,A,,,,A,A,A,A,A,A,A,A,A,A,,A,A,A,,,,,,,,,,,2024,-,Routine Inspection & Maintenance.
-47,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,80,Healthy,785,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
+47,CTG1A&1B GSUT,9640549,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,30,77,Monitor,785,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 48,CTG2A&2B GSUT,57005,GSPP2&3,90,118,11.5/11.5,118/11.5/11.5,GSUT,29,83,Healthy,871,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,A,A,A,A,Q,A,A,A,A,,A,A,A,A,,,,,,,,,,2022,-,Routine Inspection & Maintenance.
 49,STG3C GSUT,5011857,GSPP2&3,155,118,15.75,118/15.75,GSUT,18,93,Healthy,930,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,A,A,A,,,,,,,,,,2024,-,Routine Inspection & Maintenance.
-50,71BAT10 (CTG7A GSUT),6512362,GSPP2&3,72,118,11,118/11,GSUT,3,80,Healthy,1089,25,A,A,A,A,A,A,A,A,U,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
+50,71BAT10 (CTG7A GSUT),6512362,GSPP2&3,72,118,11,118/11,GSUT,3,88,Healthy,1089,25,A,A,A,A,A,A,A,A,,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 51,72BAT10 (CTG7B GSUT),6512363,GSPP2&3,72,118,11,118/11,GSUT,3,80,Healthy,1117,25,A,A,A,A,U,A,A,A,U,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,Q,A,A,A,,,,,,,,,,2023,-,Routine Inspection & Maintenance.
 52,STG1C GSUT,57011,GSPP2&3,215,118,15.75,118/15.75,GSUT,29,80,Healthy,620,25,A,A,A,A,U,A,Q,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 53,STG2C GSUT,57012,GSPP2&3,215,118,15.75,118/15.75,GSUT,29,86,Healthy,917,25,A,A,A,A,A,A,A,A,A,,A,A,,,,A,Q,A,A,A,A,A,A,A,A,,A,Q,A,A,,,,,,,,,,2019,-,Routine Inspection & Maintenance.
@@ -216,7 +216,7 @@
 92,Coal Harbor Tower 1,K757927,GSPP2&3,0.8,6.9,0.4,6.9/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 93,Coal Harbor Tower 2,K757926,GSPP2&3,1,6.9,0.4,6.9/0.4,Auxiliary,25,100,Healthy,950,25,A,A,A,A,A,A,A,,,,A,A,,,,A,A,A,A,,,,,,,,,A,,,,,,,,,,,,2025,-,Routine Inspection & Maintenance.
 94,1APC-XF-11 (Block1 SUS11),332162H5018727A,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,90,Healthy,950,25,A,A,A,U,A,A,A,Q,A,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
-95,1APC-XF-12 (Block1 SUS12),332162H501_8727B,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,84,Healthy,950,25,A,A,A,U,A,A,Q,A,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
+95,1APC-XF-12 (Block1 SUS12),332162H501_8727B,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,84,Healthy,950,25,A,A,A,U,A,A,Q,A,A,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
 96,1APC-XF-21 (Block1 SUS21),332162H501_8727E,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,84,Healthy,950,25,A,A,A,U,A,A,A,A,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
 97,1APC-XF-22 (Block1 SUS22),332162H502_8727F,GSPP2&3,2.882,6.9,0.4,6.9/0.4,Auxiliary,29,84,Healthy,950,25,A,A,A,U,A,A,A,A,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.
 98,1APC-XF-23 (Block1 SUS23),331000H509_8727J,GSPP2&3,1.333,6.9,0.4,6.9/0.4,Auxiliary,29,84,Healthy,950,25,A,A,A,U,A,A,Q,,,,A,A,,,,A,A,A,A,,,,,,,,,,,,,,,,,,,,,2017,-,Routine Inspection & Maintenance.

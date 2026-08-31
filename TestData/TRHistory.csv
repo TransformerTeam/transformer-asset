@@ -21,6 +21,8 @@ KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2022-06-19 00:00:00
 KT5A.30.EN,31-90-CPPB-XF-KT5A,SITE3,Distribution Transformer,2022-06-13 00:00:00,2022,SP,-,"Reset ""Rubber Bag Rupture Alarm"", Replacement new OLTC pressure relief 3 EA, OLTC hot oil purify and top up, Function test.",,,,,,
 14100-TR-001 (GTG11),14100-TR-001,CUP-1,GSUT,2022-05-25 00:00:00,2022,PM,LV Bushing,"LV bushing broken Phase C, Replacement new on",,Human error effect to broken,"Replacement new LV bushing, hot oil purify",2022-05-26 00:00:00,1,
 14100-TR-001 (GTG11),14100-TR-001,CUP-1,GSUT,2022-05-25 00:00:00,2022,PM,-,3Y PM Program,,,,,,
+TR2,22-90-00ATC20 (TR2),SITE2,Distribution Transformer,2026-03-25 00:00:00,2026,PM,-,3YPM Program.,,,,,,
+TR2,22-90-00ATC20 (TR2),SITE2,Distribution Transformer,2023-12-24 00:00:00,2023,PM,-,6Y PM Program (Overhual OLTC).,,,,,,
 TR2,22-90-00ATC20 (TR2),SITE2,Distribution Transformer,2022-05-17 00:00:00,2022,SP,-,"Improvement flexible conduit of self-protection, Function test.",,,,,,
 TR1,22-90-00ATC10 (TR1),SITE2,Distribution Transformer,2022-05-10 00:00:00,2022,SP,-,"Improvement flexible conduit of self-protection, LCC equipment repalcement, OLTC hot oil purify.",,,,,,
 TR1,22-90-00ATC10 (TR1),SITE2,Distribution Transformer,2022-05-10 00:00:00,2022,CM,-,- Dielectric breakdown uacceptable limit.,,- Unkown root cause.,"- Change new oil.
@@ -42,6 +44,8 @@ KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2022-02-07 00:00:00
 14100-TR-006 (GTG14),14100-TR-006,CUP-1,GSUT,2022-01-27 00:00:00,2022,PM,-,3Y PM Program.,,,,,,
 KT7A.30.EN,31-90-CPPB-XF-KT7A,SITE3,Distribution Transformer,2021-10-31 00:00:00,2021,CM,Tap Changer Oil,OLTC hot oil purify and top up oil,,,,,,
 KT7A.30.EN,31-90-CPPB-XF-KT7A,SITE3,Distribution Transformer,2021-10-31 00:00:00,2021,Improved,Self-Protection,Verify and replacement cable of Rapid pressure (Follow from KT6A Trip),,,,,,
+TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2026-05-10 00:00:00,2026,PM,-,6Y PM Program (Overhual OLTC).,,,,,,
+TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2023-09-14 00:00:00,2023,PM,-,3Y PM Pogram,,,,,,
 TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2021-10-28 00:00:00,2021,CM,Tap Changer Oil,OLTC hot oil purify.,,-,,,,
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2021-10-28 00:00:00,2021,CM,Main Tank Oil,Hot oil purify and top up and FDS and PDC+ test,,,"- Hot oil purify and top up.
 - FDS and PDC+ test.",,,
@@ -61,7 +65,7 @@ KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2020-11-08 00:00:00
 KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2020-11-08 00:00:00,2020,CM,Bushing,Replacement new HV bushing Phase C.,,,,,,
 KT5A.30.EN,31-90-CPPB-XF-KT5A,SITE3,Distribution Transformer,2020-11-03 00:00:00,2020,PM,-,6Y PM Program.,,,,,,
 TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2020-11-01 00:00:00,2020,CM,Tap Changer Oil,OLTC hot oil purify,,,,,,
-TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2020-10-31 00:00:00,2020,PM,-,3Y PM Program,,,,,,
+TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2020-10-31 00:00:00,2020,PM,-,6Y PM Program (Overhual OLTC).,,,,,,
 TR2,22-90-00ATC20 (TR2),SITE2,Distribution Transformer,2020-10-30 00:00:00,2020,Improved,-,Install insulation bus bar 22 kV,,,,,,
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2020-10-30 00:00:00,2020,PM,-,3Y PM Program,,,,,,
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2020-10-30 00:00:00,2020,CM,Main Tank,"Replacement new gaskets HV, LV, tap, BCT",,- Unkown root cause.,"- 
