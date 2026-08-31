@@ -446,14 +446,14 @@
       border-radius: 4px;
       padding: 6px 12px 4px 6px;
       background: #ffffff;
-      height: 165px;
+      height: 145px;
       overflow: hidden;
       box-sizing: border-box;
       min-width: 0;
       max-width: 100%;
     }
 
-    /* Duval Diagram Grid (Page 4) */
+    /* Duval Diagram Grid (Page 3) */
     .duval-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -467,7 +467,7 @@
       border-radius: 4px;
       padding: 6px 10px;
       background: #ffffff;
-      height: 310px;
+      height: 250px;
       text-align: left;
       overflow: hidden;
       box-sizing: border-box;
@@ -478,7 +478,7 @@
     }
     .duval-svg-container {
       flex: 1;
-      height: 255px;
+      height: 200px;
       width: 100%;
       overflow: hidden;
     }
@@ -641,36 +641,36 @@
         box-sizing: border-box !important;
       }
       .gas-pattern-box {
-        height: 120px !important;
-        padding: 2px 8px 2px 4px !important;
+        height: 96px !important;
+        padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
         min-width: 0 !important;
         max-width: 100% !important;
       }
       .gas-pattern-box .apexcharts-canvas, .gas-pattern-box .apexcharts-canvas svg {
-        height: 95px !important;
+        height: 74px !important;
         max-width: 100% !important;
         overflow: hidden !important;
       }
       .duval-grid {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-        gap: 4px !important;
+        gap: 3px !important;
         margin-bottom: 3px !important;
         width: 100% !important;
         box-sizing: border-box !important;
       }
       .duval-card {
-        height: 215px !important;
-        padding: 3px 6px !important;
+        height: 180px !important;
+        padding: 2px 6px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
         min-width: 0 !important;
         max-width: 100% !important;
       }
       .duval-svg-container, #svg-duval-1, #svg-duval-4, #svg-pentagon-1, #svg-pentagon-2 {
-        height: 165px !important;
+        height: 140px !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow: hidden !important;
@@ -1205,75 +1205,8 @@
         <div class="gas-pattern-box"><div class="trend-title">Overheated Oil</div><div id="pattern-oil"></div></div>
       </div>
 
-      <!-- Signatures Block -->
-      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
-      <table class="report-table response-table" style="margin-bottom:0;">
-        <thead>
-          <tr>
-            <th style="width: 33.3%;">Tested By</th>
-            <th style="width: 33.3%;">Reviewed By</th>
-            <th style="width: 33.4%;">Approved By</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-          </tr>
-          <tr>
-            <td class="val p3-resp-name-tested"></td>
-            <td class="val p3-resp-name-reviewed"></td>
-            <td class="val p3-resp-name-approved"></td>
-          </tr>
-          <tr>
-            <td class="val p3-resp-company-tested" style="font-size: 8.5px; color: #64748b;"></td>
-            <td class="val p3-resp-company-reviewed" style="font-size: 8.5px; color: #64748b;"></td>
-            <td class="val p3-resp-company-approved" style="font-size: 8.5px; color: #64748b;"></td>
-          </tr>
-          <tr>
-            <td class="val p3-resp-date-tested" style="font-size: 8.5px;"></td>
-            <td class="val p3-resp-date-reviewed" style="font-size: 8.5px;"></td>
-            <td class="val p3-resp-date-approved" style="font-size: 8.5px;"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- PAGE 4: Duval Triangle & Pentagon Analysis -->
-    <div class="report-page" id="page-4">
-      <div class="report-header">
-        <div class="report-title-container">
-          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
-          <div class="report-subtitle">DISSOLVED GAS ANALYSIS (DGA) & OIL DIAGNOSTIC REPORT</div>
-        </div>
-        <div class="logo-container">
-          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
-        </div>
-      </div>
-
-      <table class="report-table tbl-meta" style="margin-top:6px;">
-        <tbody>
-          <tr>
-            <td class="lbl">Equipment Name</td><td class="val p4-meta-name">-</td>
-            <td class="lbl">Site</td><td class="val p4-meta-site">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Serial No.</td><td class="val p4-meta-serial">-</td>
-            <td class="lbl">Power Rating (MVA)</td><td class="val p4-meta-power">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Manufacture</td><td class="val p4-meta-mfg">-</td>
-            <td class="lbl">Voltage Rating (kV)</td><td class="val p4-meta-voltage">-</td>
-          </tr>
-          <tr>
-            <td class="lbl">Fluid Type</td><td class="val">Mineral Oil</td>
-            <td class="lbl">Service Type</td><td class="val p4-meta-service">-</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="section-title">Dissolve Gas Analysis - Duval Triangles & Pentagons</div>
+      <!-- Duval Triangles & Pentagons Section -->
+      <div class="section-title" style="margin-top:8px;">Dissolve Gas Analysis - Duval Triangles & Pentagons</div>
 
       <div class="duval-grid">
         <!-- Duval Triangle 1 -->
@@ -1313,10 +1246,8 @@
         </div>
       </div>
 
-
-
       <!-- Signatures Block -->
-      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <div class="section-title" style="margin-top:8px;">Signatures / Approval</div>
       <table class="report-table response-table" style="margin-bottom:0;">
         <thead>
           <tr>
@@ -1332,19 +1263,19 @@
             <td class="sig-cell"></td>
           </tr>
           <tr>
-            <td class="val p4-resp-name-tested"></td>
-            <td class="val p4-resp-name-reviewed"></td>
-            <td class="val p4-resp-name-approved"></td>
+            <td class="val p3-resp-name-tested"></td>
+            <td class="val p3-resp-name-reviewed"></td>
+            <td class="val p3-resp-name-approved"></td>
           </tr>
           <tr>
-            <td class="val p4-resp-company-tested" style="font-size: 8.5px; color: #64748b;"></td>
-            <td class="val p4-resp-company-reviewed" style="font-size: 8.5px; color: #64748b;"></td>
-            <td class="val p4-resp-company-approved" style="font-size: 8.5px; color: #64748b;"></td>
+            <td class="val p3-resp-company-tested" style="font-size: 8.5px; color: #64748b;"></td>
+            <td class="val p3-resp-company-reviewed" style="font-size: 8.5px; color: #64748b;"></td>
+            <td class="val p3-resp-company-approved" style="font-size: 8.5px; color: #64748b;"></td>
           </tr>
           <tr>
-            <td class="val p4-resp-date-tested" style="font-size: 8.5px;"></td>
-            <td class="val p4-resp-date-reviewed" style="font-size: 8.5px;"></td>
-            <td class="val p4-resp-date-approved" style="font-size: 8.5px;"></td>
+            <td class="val p3-resp-date-tested" style="font-size: 8.5px;"></td>
+            <td class="val p3-resp-date-reviewed" style="font-size: 8.5px;"></td>
+            <td class="val p3-resp-date-approved" style="font-size: 8.5px;"></td>
           </tr>
         </tbody>
       </table>
