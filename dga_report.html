@@ -344,11 +344,11 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 165px;
+      height: 135px;
       border: 1px solid #cbd5e1;
       padding: 6px 12px;
       background: #fafafa;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       border-radius: 4px;
     }
 
@@ -362,14 +362,14 @@
     }
 
     .gas-bar-label-top {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .gas-bar-stack {
-      width: 24px;
-      height: 180px;
+      width: 18px;
+      height: 75px;
       display: flex;
       flex-direction: column-reverse;
       border: 1px solid #64748b;
@@ -382,7 +382,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 8px;
+      font-size: 7.5px;
       font-weight: 600;
       color: #000;
     }
@@ -391,8 +391,8 @@
     .bar-seg.red { background-color: #ef4444; }
 
     .gas-bar-val-bottom {
-      margin-top: 6px;
-      font-size: 10px;
+      margin-top: 3px;
+      font-size: 8.5px;
       font-weight: 700;
       color: #0f172a;
     }
@@ -599,12 +599,21 @@
         height: 20px !important;
       }
       .keygas-chart-container {
-        height: 90px !important;
+        height: 75px !important;
         padding: 2px 6px !important;
         margin-bottom: 3px !important;
       }
       .gas-bar-stack {
-        height: 50px !important;
+        height: 42px !important;
+        width: 14px !important;
+      }
+      .gas-bar-label-top {
+        font-size: 7.5px !important;
+        margin-bottom: 1px !important;
+      }
+      .gas-bar-val-bottom {
+        font-size: 7px !important;
+        margin-top: 1px !important;
       }
       .keygas-trending-grid {
         display: grid !important;
@@ -615,7 +624,7 @@
         box-sizing: border-box !important;
       }
       .keygas-trending-grid .trend-box {
-        height: 118px !important;
+        height: 140px !important;
         padding: 2px 8px 1px 4px !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
@@ -627,7 +636,7 @@
         margin-bottom: 0px !important;
       }
       .keygas-trending-grid .apexcharts-canvas, .keygas-trending-grid .apexcharts-canvas svg {
-        height: 96px !important;
+        height: 116px !important;
         max-width: 100% !important;
         overflow: hidden !important;
       }
@@ -941,6 +950,12 @@
         </div>
       </div>
 
+      <!-- Key Gas Analysis Stacked Bar Chart [IEEE C57.104-2019] -->
+      <div style="font-weight:700; font-size:9.5px; margin-top:5px; margin-bottom:3px;">Key Gas Analysis [IEEE C57.104-2019]</div>
+      <div class="keygas-chart-container" id="keygas-stacked-bars" style="margin-bottom:6px;">
+        <!-- Rendered dynamically -->
+      </div>
+
       <!-- Test Result Section -->
       <div style="font-weight:700; font-size:10px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
         <span>Test Result</span>
@@ -1109,12 +1124,6 @@
       </table>
 
       <div class="section-title">Dissolve Gas Analysis - Key Gas Trending</div>
-
-      <!-- Key Gas Analysis Stacked Bar Chart [IEEE C57.104-2019] -->
-      <div style="font-weight:700; font-size:10px; margin-top:6px; margin-bottom:4px;">Key Gas Analysis [IEEE C57.104-2019]</div>
-      <div class="keygas-chart-container" id="keygas-stacked-bars" style="margin-bottom:8px;">
-        <!-- Rendered dynamically -->
-      </div>
 
       <div class="keygas-trending-grid">
         <div class="trend-box"><div class="trend-title">H2 (ppm)</div><div id="chart-trend-h2"></div></div>
