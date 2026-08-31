@@ -510,7 +510,7 @@
       }
       .report-page {
         box-shadow: none !important;
-        padding: 0 !important;
+        padding: 3mm 4mm !important;
         border: none !important;
         width: 100% !important;
         page-break-after: always !important;
@@ -534,14 +534,25 @@
         color: #ffffff !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        padding: 2px 6px !important;
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
       }
       .trend-box {
+        height: 120px !important;
+        padding: 3px 5px !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+      }
+      .trending-grid {
+        gap: 4px !important;
       }
       .response-table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
+      }
+      .response-table td.sig-cell {
+        height: 22px !important;
       }
     }
   </style>
@@ -1825,26 +1836,35 @@
       const wcVals = sorted.map(d => parseFloat(d.WC) || null);
 
       createOrUpdateChart('chart-trend-bdv-wc', {
-        chart: { type: 'line', height: 195, toolbar: { show: false }, zoom: { enabled: false } },
-        stroke: { width: [3, 3], curve: 'smooth' },
+        chart: { type: 'line', height: 160, toolbar: { show: false }, zoom: { enabled: false }, animations: { enabled: false } },
+        stroke: { width: [2.5, 2.5], curve: 'smooth' },
         colors: ['#22c55e', '#0284c7'],
         series: [
           { name: 'Breakdown Voltage (kV)', type: 'line', data: bdvVals },
           { name: 'Water Content (ppm)', type: 'line', data: wcVals }
         ],
-        xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '9px', fontWeight: 600 } } },
+        xaxis: {
+          categories: dates,
+          labels: {
+            style: { colors: textColor, fontSize: '7.5px', fontWeight: 600 },
+            rotate: -45,
+            rotateAlways: false,
+            hideOverlappingLabels: true
+          },
+          tickAmount: Math.min(dates.length, 6)
+        },
         yaxis: [
           {
             min: (min) => Math.max(0, Math.min(min || 40, 40)),
-            title: { text: 'BDV (kV)', style: { color: '#22c55e', fontSize: '9.5px', fontWeight: 700 } },
-            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: (v) => v ? v.toFixed(1) : '' }
+            title: { text: 'BDV (kV)', style: { color: '#22c55e', fontSize: '8.5px', fontWeight: 700 } },
+            labels: { style: { colors: textColor, fontSize: '8px' }, formatter: (v) => v ? v.toFixed(1) : '' }
           },
           {
             min: 0,
             max: (max) => Math.max(max || 30, 30),
             opposite: true,
-            title: { text: 'Water Content (ppm)', style: { color: '#0284c7', fontSize: '9.5px', fontWeight: 700 } },
-            labels: { style: { colors: textColor, fontSize: '9px' }, formatter: (v) => v ? v.toFixed(1) : '' }
+            title: { text: 'Water Content (ppm)', style: { color: '#0284c7', fontSize: '8.5px', fontWeight: 700 } },
+            labels: { style: { colors: textColor, fontSize: '8px' }, formatter: (v) => v ? v.toFixed(1) : '' }
           }
         ],
         annotations: {
@@ -1856,7 +1876,7 @@
               strokeDashArray: 4,
               label: {
                 borderColor: '#16a34a',
-                style: { color: '#fff', background: '#16a34a', fontSize: '8px', fontWeight: 700 },
+                style: { color: '#fff', background: '#16a34a', fontSize: '7.5px', fontWeight: 700 },
                 text: 'Limit BDV: ≥ 45.0 kV'
               }
             },
@@ -1867,15 +1887,15 @@
               strokeDashArray: 4,
               label: {
                 borderColor: '#ef4444',
-                style: { color: '#fff', background: '#ef4444', fontSize: '8px', fontWeight: 700 },
+                style: { color: '#fff', background: '#ef4444', fontSize: '7.5px', fontWeight: 700 },
                 text: 'Limit Water: ≤ 25.0 ppm'
               }
             }
           ]
         },
         grid: { borderColor: gridColor, strokeDashArray: 3 },
-        legend: { position: 'top', labels: { colors: textColor }, fontSize: '10.5px', fontWeight: 600 },
-        markers: { size: 4, strokeWidth: 2, hover: { size: 6 } },
+        legend: { position: 'top', labels: { colors: textColor }, fontSize: '9.5px', fontWeight: 600 },
+        markers: { size: 3.5, strokeWidth: 2, hover: { size: 5 } },
         tooltip: { shared: true, intersect: false, theme: isDark ? 'dark' : 'light' }
       });
 
@@ -1888,7 +1908,7 @@
             strokeDashArray: 4,
             label: {
               borderColor: '#ef4444',
-              style: { color: '#fff', background: '#ef4444', fontSize: '8px', fontWeight: 700 },
+              style: { color: '#fff', background: '#ef4444', fontSize: '7.5px', fontWeight: 700 },
               text: limitLabel || `Limit: ${limitVal}`
             }
           }]
@@ -1898,7 +1918,7 @@
         const validNums = dataVals.filter(v => v !== null && !isNaN(v));
         let yaxisConfig = {
           labels: {
-            style: { colors: textColor, fontSize: '8.5px' },
+            style: { colors: textColor, fontSize: '7.5px' },
             formatter: (v) => {
               if (v === null || v === undefined || isNaN(v)) return '';
               if (customYFormatter) return customYFormatter(v);
@@ -1920,14 +1940,23 @@
         }
 
         createOrUpdateChart(chartId, {
-          chart: { type: 'line', height: 155, toolbar: { show: false }, zoom: { enabled: false } },
-          stroke: { width: 2.5, curve: 'smooth' },
+          chart: { type: 'line', height: 100, toolbar: { show: false }, zoom: { enabled: false }, animations: { enabled: false } },
+          stroke: { width: 2, curve: 'smooth' },
           colors: [color],
           series: [{ name: `${name} (${unit})`, data: dataVals }],
-          xaxis: { categories: dates, labels: { style: { colors: textColor, fontSize: '8.5px', fontWeight: 600 } } },
+          xaxis: {
+            categories: dates,
+            labels: {
+              style: { colors: textColor, fontSize: '7px', fontWeight: 600 },
+              rotate: -45,
+              rotateAlways: false,
+              hideOverlappingLabels: true
+            },
+            tickAmount: Math.min(dates.length, 5)
+          },
           yaxis: yaxisConfig,
           grid: { borderColor: gridColor, strokeDashArray: 3 },
-          markers: { size: 4, strokeWidth: 2, hover: { size: 6 } },
+          markers: { size: 3, strokeWidth: 1.5, hover: { size: 5 } },
           annotations: annotations,
           tooltip: {
             theme: isDark ? 'dark' : 'light',

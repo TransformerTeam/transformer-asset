@@ -469,17 +469,41 @@
       }
       .report-page {
         box-shadow: none !important;
-        padding: 4mm !important;
+        padding: 3mm 4mm !important;
         border: none !important;
         width: 100% !important;
         page-break-after: always !important;
         break-after: page !important;
       }
       .keygas-chart-container {
-        height: 180px !important;
+        height: 110px !important;
+        margin-bottom: 2px !important;
       }
       .gas-bar-stack {
-        height: 120px !important;
+        height: 75px !important;
+      }
+      .trending-grid {
+        gap: 3px !important;
+        margin-bottom: 2px !important;
+      }
+      .trend-box {
+        height: 88px !important;
+        padding: 2px 4px !important;
+      }
+      .trend-title {
+        font-size: 8px !important;
+        margin-bottom: 0px !important;
+      }
+      .trending-grid .apexcharts-canvas {
+        height: 68px !important;
+      }
+      table.response-table td.sig-cell {
+        height: 22px !important;
+      }
+      .section-title {
+        margin-top: 3px !important;
+        margin-bottom: 3px !important;
+        padding: 2px 6px !important;
       }
     }
 
@@ -1962,18 +1986,27 @@
 
         const options = {
           series: [{ name: gas, data: vals }],
-          chart: { height: 115, type: 'line', toolbar: { show: false }, background: 'transparent' },
+          chart: { height: 75, type: 'line', toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
           stroke: { width: 2, curve: 'straight' },
           colors: [gasColor],
-          markers: { size: 4, colors: [gasColor] },
+          markers: { size: 3, colors: [gasColor] },
           dataLabels: {
             enabled: true,
-            offsetY: -6,
-            style: { fontSize: '8.5px', fontWeight: 'bold', colors: [labelColor] },
+            offsetY: -4,
+            style: { fontSize: '7.5px', fontWeight: 'bold', colors: [labelColor] },
             background: { enabled: false }
           },
-          xaxis: { categories: dates, labels: { style: { fontSize: '7px', colors: labelColor } } },
-          yaxis: { labels: { style: { fontSize: '7px', colors: labelColor } } },
+          xaxis: {
+            categories: dates,
+            labels: {
+              style: { fontSize: '6.5px', colors: labelColor },
+              rotate: -45,
+              rotateAlways: false,
+              hideOverlappingLabels: true
+            },
+            tickAmount: Math.min(dates.length, 5)
+          },
+          yaxis: { labels: { style: { fontSize: '6.5px', colors: labelColor } } },
           grid: { borderColor: gridBorder, strokeDashArray: 2 }
         };
 

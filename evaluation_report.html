@@ -5551,18 +5551,49 @@
           iframeDoc.head.appendChild(node.cloneNode(true));
         });
 
+        // Helper function to clone DOM elements while converting all <canvas> into static <img> elements
+        function cloneNodeWithCanvases(origNode) {
+          const clone = origNode.cloneNode(true);
+          const origCanvases = origNode.querySelectorAll('canvas');
+          const clonedCanvases = clone.querySelectorAll('canvas');
+
+          origCanvases.forEach((origCanvas, idx) => {
+            const clonedCanvas = clonedCanvases[idx];
+            if (clonedCanvas && origCanvas.width > 0 && origCanvas.height > 0) {
+              try {
+                const dataUrl = origCanvas.toDataURL('image/png');
+                const img = iframeDoc.createElement('img');
+                img.src = dataUrl;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+                img.style.display = 'block';
+                img.style.margin = '0 auto';
+                img.className = clonedCanvas.className;
+                clonedCanvas.parentNode.replaceChild(img, clonedCanvas);
+              } catch (canvasErr) {
+                console.warn('Canvas rasterization failed:', canvasErr);
+              }
+            }
+          });
+
+          return clone;
+        }
+
         // 1. Report 1 (Evaluation Report)
         if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลด: 1. Evaluation Report...`;
         if (bar) bar.style.width = '8%';
         const evalPaper = document.getElementById('evaluation-paper');
         if (evalPaper) {
-          const evalClone = evalPaper.cloneNode(true);
+          const evalClone = cloneNodeWithCanvases(evalPaper);
           evalClone.style.pageBreakAfter = 'always';
           evalClone.style.breakAfter = 'page';
           container.appendChild(evalClone);
         }
 
-        // 2. Reports 2 to 12
+        // 2. Reports 2 to 15
         for (let i = 1; i < REPORT_DEFS.length; i++) {
           const rep = REPORT_DEFS[i];
           const stepPct = Math.round(((i + 1) / REPORT_DEFS.length) * 95);
@@ -5579,12 +5610,13 @@
             tempIframe.src = `${rep.url}?serial=${encodeURIComponent(serial)}&t=${Date.now()}`;
 
             tempIframe.onload = async () => {
-              await new Promise(r => setTimeout(r, 650));
+              // Wait for sub-report CSV data fetching & Chart rendering to complete
+              await new Promise(r => setTimeout(r, 1100));
 
               try {
                 const subDoc = tempIframe.contentWindow.document;
                 
-                subDoc.querySelectorAll('style').forEach(st => {
+                subDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach(st => {
                   iframeDoc.head.appendChild(st.cloneNode(true));
                 });
 
@@ -5598,7 +5630,7 @@
                   const pages = subDoc.querySelectorAll('.report-page, .report-sheet, .report-paper');
                   if (pages && pages.length > 0) {
                     pages.forEach(p => {
-                      const clone = p.cloneNode(true);
+                      const clone = cloneNodeWithCanvases(p);
                       clone.style.pageBreakAfter = 'always';
                       clone.style.breakAfter = 'page';
                       container.appendChild(clone);
@@ -5606,7 +5638,7 @@
                   } else {
                     const wrap = subDoc.querySelector('.report-wrapper, #report-capture-area');
                     if (wrap) {
-                      const clone = wrap.cloneNode(true);
+                      const clone = cloneNodeWithCanvases(wrap);
                       clone.style.pageBreakAfter = 'always';
                       clone.style.breakAfter = 'page';
                       container.appendChild(clone);
