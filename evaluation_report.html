@@ -1061,15 +1061,32 @@
         max-width: 100% !important;
         width: 100% !important;
       }
-      .info-grid {
+      #evaluation-paper .info-grid, .info-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
         font-size: 9.5px !important;
         gap: 3px 6px !important;
+        margin-bottom: 8px !important;
+      }
+      .info-item {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 3px 5px !important;
+        border-radius: 4px !important;
       }
       .info-item .label {
-        font-size: 8.5px !important;
+        font-size: 7.5px !important;
+        color: #64748b !important;
+        text-transform: uppercase !important;
+        font-weight: 600 !important;
+        margin-bottom: 1px !important;
+        line-height: 1.1 !important;
       }
       .info-item .val {
-        font-size: 10.5px !important;
+        font-size: 9.5px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        line-height: 1.2 !important;
       }
       .eval-table th, .eval-table-pdf th {
         font-size: 9.5px !important;
@@ -5465,15 +5482,32 @@
             #evaluation-paper, .report-paper {
               font-size: 10px !important;
             }
-            .info-grid {
+            #evaluation-paper .info-grid, .info-grid {
+              display: grid !important;
+              grid-template-columns: repeat(4, 1fr) !important;
               font-size: 9.5px !important;
               gap: 3px 6px !important;
+              margin-bottom: 8px !important;
+            }
+            .info-item {
+              background: #f8fafc !important;
+              border: 1px solid #e2e8f0 !important;
+              padding: 3px 5px !important;
+              border-radius: 4px !important;
             }
             .info-item .label {
-              font-size: 8.5px !important;
+              font-size: 7.5px !important;
+              color: #64748b !important;
+              text-transform: uppercase !important;
+              font-weight: 600 !important;
+              margin-bottom: 1px !important;
+              line-height: 1.1 !important;
             }
             .info-item .val {
-              font-size: 10.5px !important;
+              font-size: 9.5px !important;
+              font-weight: 700 !important;
+              color: #0f172a !important;
+              line-height: 1.2 !important;
             }
             .eval-table th, .eval-table-pdf th {
               font-size: 9.5px !important;
