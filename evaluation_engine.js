@@ -916,7 +916,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         }
       }
 
-      const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestSingleShort.Single_Phase_Result)].filter(v => !isNaN(v));
+      const tapDevs = [maxDev, cenDev, minDev, tap1Dev].filter(v => !isNaN(v));
+      const validDevs = tapDevs.length > 0 
+        ? tapDevs 
+        : [parseFloat(latestSingleShort.Single_Phase_Result)].filter(v => !isNaN(v));
       if (parts.length === 0 || validDevs.length === 0) {
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
@@ -986,7 +989,10 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         }
       }
 
-      const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
+      const tapDevs = [maxDev, cenDev, minDev, tap1Dev].filter(v => !isNaN(v));
+      const validDevs = tapDevs.length > 0 
+        ? tapDevs 
+        : [parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
       if (parts.length === 0 || validDevs.length === 0) {
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
