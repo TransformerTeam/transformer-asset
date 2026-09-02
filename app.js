@@ -487,10 +487,13 @@ function updateMapLayer(isDark) {
   } else {
     // Default Theme Sync
     if (isDark) {
-      // CartoDB Dark Matter
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // Esri World Dark Gray Canvas (Clean Dark Theme without API Key requirement or watermark)
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap &copy; CartoDB'
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+      }).addTo(mapInstance);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19
       }).addTo(mapInstance);
     } else {
       // Bing Road
