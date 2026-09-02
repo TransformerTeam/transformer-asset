@@ -2354,18 +2354,18 @@
       const reviewedComp = cleanSig(r.COMP2 || r.comp2);
       const approvedComp = cleanSig(r.COMP3 || r.comp3);
 
-      document.getElementById('resp-name-tested').textContent = testedName;
-      document.getElementById('resp-name-reviewed').textContent = reviewedName;
-      document.getElementById('resp-name-approved').textContent = approvedName;
+      document.getElementById('resp-name-tested').textContent = testedName || '-';
+      document.getElementById('resp-name-reviewed').textContent = reviewedName || '-';
+      document.getElementById('resp-name-approved').textContent = approvedName || '-';
 
-      document.getElementById('resp-comp-tested').textContent = testedComp;
-      document.getElementById('resp-comp-reviewed').textContent = reviewedComp;
-      document.getElementById('resp-comp-approved').textContent = approvedComp;
+      document.getElementById('resp-comp-tested').textContent = testedComp || '-';
+      document.getElementById('resp-comp-reviewed').textContent = reviewedComp || '-';
+      document.getElementById('resp-comp-approved').textContent = approvedComp || '-';
 
       const dStr = cleanDate(r.date || r.Date || r.DATE) || (cleanDate(currentRecord ? currentRecord.date : ''));
-      document.getElementById('resp-date-tested').textContent = testedName ? dStr : '';
-      document.getElementById('resp-date-reviewed').textContent = reviewedName ? dStr : '';
-      document.getElementById('resp-date-approved').textContent = approvedName ? dStr : '';
+      document.getElementById('resp-date-tested').textContent = (testedName && testedName !== '-') ? dStr : 'Date: -';
+      document.getElementById('resp-date-reviewed').textContent = (reviewedName && reviewedName !== '-') ? dStr : 'Date: -';
+      document.getElementById('resp-date-approved').textContent = (approvedName && approvedName !== '-') ? dStr : 'Date: -';
     }
 
     function toggleTheme() {
