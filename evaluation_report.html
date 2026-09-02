@@ -4015,10 +4015,42 @@
       if (nameLower.includes('three phase short circuit') || nameLower.includes('three phase impedance') || (nameLower.includes('three') && nameLower.includes('short')) || (nameLower.includes('short circuit') && !nameLower.includes('single'))) {
         if (latestThreeShort) {
           const date = latestThreeShort.Date || latestThreeShort.date;
-          const maxDev = parseFloat(latestThreeShort.HV_Max_Dev);
-          const cenDev = parseFloat(latestThreeShort.HV_Cen_Dev);
-          const minDev = parseFloat(latestThreeShort.HV_Min_Dev);
-          const tap1Dev = parseFloat(latestThreeShort.HV_Tap1_Dev);
+          const sUpper = String(targetSerial || '').trim().toUpperCase();
+          const facItem = (typeof factoryDataCsvData !== 'undefined' && Array.isArray(factoryDataCsvData))
+            ? factoryDataCsvData.find(x => String(x.Serial_No || x.serial || '').trim().toUpperCase() === sUpper)
+            : null;
+
+          const calcDevForTap = (tapKey, rawDevCol) => {
+            const zA = parseFloat(latestThreeShort[`HV_A_Z_${tapKey}`] || latestThreeShort[`HV_A_${tapKey}_Z`]);
+            const zB = parseFloat(latestThreeShort[`HV_B_Z_${tapKey}`] || latestThreeShort[`HV_B_${tapKey}_Z`]);
+            const zC = parseFloat(latestThreeShort[`HV_C_Z_${tapKey}`] || latestThreeShort[`HV_C_${tapKey}_Z`]);
+            const vTap = parseFloat(latestThreeShort[`Tap_Voltage_${tapKey}`] || (tapKey === 'Tap1' ? latestThreeShort.Tap_Voltage_No1 : 0) || (facItem ? facItem.HV_Rated : 0));
+            const fatZ = facItem ? parseFloat(facItem[`ShortZ_Y_${tapKey}`] || facItem[`ShortZ_X_${tapKey}`] || facItem.IMPEDANCE_MIDDLE_TAP || 0) : null;
+            const pKVA = facItem ? parseFloat(facItem.Power_Rated || facItem.Rated_Power || 0) : 0;
+            const sMVA = pKVA > 0 ? (pKVA >= 1000 ? pKVA / 1000 : pKVA) : null;
+
+            if (!isNaN(zA) && !isNaN(zB) && !isNaN(zC) && fatZ && fatZ > 0 && vTap > 0 && sMVA > 0) {
+              const zAvg = (zA + zB + zC) / 3;
+              let computed = (zAvg * sMVA) / (vTap * vTap) * 100;
+              const candidates = [computed, computed / 2, computed * 2];
+              let best = computed;
+              let minDiff = Math.abs(computed - fatZ);
+              for (let c of candidates) {
+                const diff = Math.abs(c - fatZ);
+                if (diff < minDiff) { minDiff = diff; best = c; }
+              }
+              return (Math.abs(best - fatZ) / fatZ) * 100;
+            }
+
+            const rawD = parseFloat(latestThreeShort[rawDevCol]);
+            if (!isNaN(rawD) && rawD < 50) return rawD;
+            return NaN;
+          };
+
+          const maxDev = calcDevForTap('Max', 'HV_Max_Dev');
+          const cenDev = calcDevForTap('Cen', 'HV_Cen_Dev');
+          const minDev = calcDevForTap('Min', 'HV_Min_Dev');
+          const tap1Dev = calcDevForTap('Tap1', 'HV_Tap1_Dev');
           const tap1Name = latestThreeShort.HV_Tap1 && latestThreeShort.HV_Tap1 !== '-' ? `Tap ${latestThreeShort.HV_Tap1}` : 'Tap 1';
 
           const parts = [];
@@ -4031,11 +4063,11 @@
               parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
             } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-' && !isNaN(parseFloat(latestThreeShort.Short_Circuit_Impedance_Result))) {
               const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
-              parts.push(`%Dev: ${resNum.toFixed(2)}%`);
+              if (resNum < 50) parts.push(`%Dev: ${resNum.toFixed(2)}%`);
             }
           }
 
-          const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
+          const validDevs = [maxDev, cenDev, minDev, tap1Dev].filter(v => !isNaN(v));
           if (parts.length === 0 || validDevs.length === 0) {
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }

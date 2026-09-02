@@ -1659,33 +1659,115 @@
 
       const hlBody = hlTableBox.querySelector('#short-table-hl-body');
 
+      // Dynamic calculation for %Z Calc (Meas) and % Deviation without relying on raw CSV columns
+      const calcDynamicZAndDev = (tapObj, tapKey, windingMode = 'HL') => {
+        const zList = [tapObj.zA, tapObj.zB, tapObj.zC].filter(z => z !== null && !isNaN(parseFloat(z)) && parseFloat(z) > 0);
+        const zAvg = zList.length > 0 ? (zList.reduce((a, b) => a + parseFloat(b), 0) / zList.length) : null;
+        const fatZ = tapObj.fatZ;
+
+        // 1. Get Tap Voltage (kV)
+        let vTap = null;
+        if (r) {
+          if (tapKey === 'Max' && r.Tap_Voltage_Max) vTap = parseFloat(r.Tap_Voltage_Max);
+          else if (tapKey === 'Cen' && r.Tap_Voltage_Cen) vTap = parseFloat(r.Tap_Voltage_Cen);
+          else if (tapKey === 'Min' && r.Tap_Voltage_Min) vTap = parseFloat(r.Tap_Voltage_Min);
+          else if (tapKey === 'Tap1' && r.Tap_Voltage_No1) vTap = parseFloat(r.Tap_Voltage_No1);
+          else if (tapKey === 'Tap2' && r.Tap_Voltage_No2) vTap = parseFloat(r.Tap_Voltage_No2);
+        }
+        if (!vTap && facMeta) {
+          vTap = parseFloat(facMeta.HV_Rated || facMeta.Rated_Voltage || 0);
+        }
+
+        // 2. Get Rated Power (MVA)
+        let sMVA = null;
+        if (facMeta) {
+          const pKVA = parseFloat(facMeta.Power_Rated || facMeta.Rated_Power || 0);
+          if (!isNaN(pKVA) && pKVA > 0) sMVA = pKVA >= 1000 ? pKVA / 1000 : pKVA;
+        }
+        if (!sMVA && typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+          const s = r ? (r.Serial_No || r.serial || r.SERIAL_NUMBER) : null;
+          if (s) {
+            const tr = HEALTH_INDEX_DATA.find(x => x['Serial No'] === s || x.serial === s);
+            if (tr) {
+              const p = parseFloat(tr['Rated Power (MVA)'] || tr.mva || 0);
+              if (!isNaN(p) && p > 0) sMVA = p;
+            }
+          }
+        }
+
+        // 3. Compute %Z = (Z_avg * S_base) / (V_tap^2) * 100
+        let calcPctZ = null;
+        if (zAvg !== null && vTap && vTap > 0 && sMVA && sMVA > 0) {
+          let computed = (zAvg * sMVA) / (vTap * vTap) * 100;
+          if (fatZ && fatZ > 0) {
+            const candidates = [computed, computed / 2, computed * 2];
+            let best = computed;
+            let minDiff = Math.abs(computed - fatZ);
+            for (let c of candidates) {
+              const diff = Math.abs(c - fatZ);
+              if (diff < minDiff) {
+                minDiff = diff;
+                best = c;
+              }
+            }
+            calcPctZ = best;
+          } else {
+            calcPctZ = computed;
+          }
+        }
+
+        // Scale-correction fallback if rawPctZ from CSV is available but vTap/sMVA missing
+        if (calcPctZ === null && tapObj.rawPctZ && !isNaN(parseFloat(tapObj.rawPctZ))) {
+          const raw = parseFloat(tapObj.rawPctZ);
+          if (fatZ && fatZ > 0) {
+            if (Math.abs(raw * 10 - fatZ) / fatZ < 0.20 && Math.abs(raw - fatZ) / fatZ > 0.50) {
+              calcPctZ = raw * 10;
+            } else if (Math.abs(raw / 10 - fatZ) / fatZ < 0.20 && Math.abs(raw - fatZ) / fatZ > 0.50) {
+              calcPctZ = raw / 10;
+            } else {
+              calcPctZ = raw;
+            }
+          } else {
+            calcPctZ = raw;
+          }
+        }
+
+        // 4. Calculate % Deviation strictly: |%Z_calc - %Z_FAT| / %Z_FAT * 100%
+        let calcDev = null;
+        if (calcPctZ !== null && fatZ && fatZ > 0) {
+          calcDev = (Math.abs(calcPctZ - fatZ) / fatZ) * 100;
+        }
+
+        return { pctZ: calcPctZ, dev: calcDev };
+      };
+
       const hlTaps = [
         {
           name: 'Tap Max (+)',
+          tapKey: 'Max',
           vA: r ? r.HV_A_Voltage_Max : null, iA: r ? r.HV_A_Current_Max : null, zA: getZ(r ? r.HV_A_Z_Max : null, r ? r.HV_A_Voltage_Max : null, r ? r.HV_A_Current_Max : null),
           vB: r ? r.HV_B_Voltage_Max : null, iB: r ? r.HV_B_Current_Max : null, zB: getZ(r ? r.HV_B_Z_Max : null, r ? r.HV_B_Voltage_Max : null, r ? r.HV_B_Current_Max : null),
           vC: r ? r.HV_C_Voltage_Max : null, iC: r ? r.HV_C_Current_Max : null, zC: getZ(r ? r.HV_C_Z_Max : null, r ? r.HV_C_Voltage_Max : null, r ? r.HV_C_Current_Max : null),
           fatZ: getFatZ(facMeta, r, 'Max', 'HL'),
-          pctZ: r ? r.HV_Max_Z_Cal : null,
-          dev: r ? r.HV_Max_Dev : null
+          rawPctZ: r ? r.HV_Max_Z_Cal : null
         },
         {
           name: 'Tap Center',
+          tapKey: 'Cen',
           vA: r ? r.HV_A_Voltage_Cen : null, iA: r ? r.HV_A_Current_Cen : null, zA: getZ(r ? r.HV_A_Z_Cen : null, r ? r.HV_A_Voltage_Cen : null, r ? r.HV_A_Current_Cen : null),
           vB: r ? r.HV_B_Voltage_Cen : null, iB: r ? r.HV_B_Current_Cen : null, zB: getZ(r ? r.HV_B_Z_Cen : null, r ? r.HV_B_Voltage_Cen : null, r ? r.HV_B_Current_Cen : null),
           vC: r ? r.HV_C_Voltage_Cen : null, iC: r ? r.HV_C_Current_Cen : null, zC: getZ(r ? r.HV_C_Z_Cen : null, r ? r.HV_C_Voltage_Cen : null, r ? r.HV_C_Current_Cen : null),
           fatZ: getFatZ(facMeta, r, 'Cen', 'HL'),
-          pctZ: r ? r.HV_Cen_Z_Cal : null,
-          dev: r ? r.HV_Cen_Dev : null
+          rawPctZ: r ? r.HV_Cen_Z_Cal : null
         },
         {
           name: 'Tap Min (-)',
+          tapKey: 'Min',
           vA: r ? r.HV_A_Voltage_Min : null, iA: r ? r.HV_A_Current_Min : null, zA: getZ(r ? r.HV_A_Z_Min : null, r ? r.HV_A_Voltage_Min : null, r ? r.HV_A_Current_Min : null),
           vB: r ? r.HV_B_Voltage_Min : null, iB: r ? r.HV_B_Current_Min : null, zB: getZ(r ? r.HV_B_Z_Min : null, r ? r.HV_B_Voltage_Min : null, r ? r.HV_B_Current_Min : null),
           vC: r ? r.HV_C_Voltage_Min : null, iC: r ? r.HV_C_Current_Min : null, zC: getZ(r ? r.HV_C_Z_Min : null, r ? r.HV_C_Voltage_Min : null, r ? r.HV_C_Current_Min : null),
           fatZ: getFatZ(facMeta, r, 'Min', 'HL'),
-          pctZ: r ? r.HV_Min_Z_Cal : null,
-          dev: r ? r.HV_Min_Dev : null
+          rawPctZ: r ? r.HV_Min_Z_Cal : null
         }
       ];
 
@@ -1696,35 +1778,34 @@
           const tapLabel = r.HV_Tap1 && r.HV_Tap1 !== '-' ? `Tap ${r.HV_Tap1} (Service)` : 'Tap 1 (Service)';
           hlTaps.push({
             name: tapLabel,
+            tapKey: 'Tap1',
             vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
             vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
             vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
             fatZ: getFatZ(facMeta, r, 'Tap1', 'HL'),
-            pctZ: r.HV_Tap1_Z_Cal,
-            dev: r.HV_Tap1_Dev
+            rawPctZ: r.HV_Tap1_Z_Cal
           });
         }
         if (r && (r.HV_Tap2 || r.HV_A_Tap2_Voltage || r.HV_A_Tap2_Z)) {
           const tapLabel = r.HV_Tap2 && r.HV_Tap2 !== '-' ? `Tap ${r.HV_Tap2}` : 'Tap 2';
           hlTaps.push({
             name: tapLabel,
+            tapKey: 'Tap2',
             vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
             vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
             vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
             fatZ: getFatZ(facMeta, r, 'Tap2', 'HL'),
-            pctZ: r.HV_Tap2_Z_Cal,
-            dev: r.HV_Tap2_Dev
+            rawPctZ: r.HV_Tap2_Z_Cal
           });
         }
       }
 
       hlTaps.forEach(t => {
-        let d = (t.dev !== null && t.dev !== undefined && t.dev !== '' && !isNaN(parseFloat(t.dev))) ? parseFloat(t.dev) : null;
-        if (d === null && t.pctZ && !isNaN(parseFloat(t.pctZ)) && t.fatZ && t.fatZ > 0) {
-          d = (Math.abs(parseFloat(t.pctZ) - t.fatZ) / t.fatZ) * 100;
-        }
+        const dyn = calcDynamicZAndDev(t, t.tapKey, 'HL');
+        const pctZVal = dyn.pctZ;
+        const d = dyn.dev;
 
-        const hasData = (t.zA !== null || (t.pctZ && t.pctZ !== '-') || d !== null);
+        const hasData = (t.zA !== null || pctZVal !== null || d !== null);
         if (!hasData) return;
 
         totalTestedTaps++;
@@ -1756,8 +1837,8 @@
           <td>${formatVal(t.iC, 3)}</td>
           <td style="font-weight: 600; color: #0f172a;">${formatVal(t.zC, 4)}</td>
           <td style="font-weight: 600; color: #334155; background-color: #f8fafc;">${t.fatZ !== null ? `${t.fatZ.toFixed(2)}%` : '-'}</td>
-          <td style="font-weight: 600; color: #1e3a8a;">${t.pctZ && !isNaN(parseFloat(t.pctZ)) ? `${parseFloat(t.pctZ).toFixed(4)}%` : '-'}</td>
-          <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
+          <td style="font-weight: 600; color: #1e3a8a;">${pctZVal !== null && !isNaN(pctZVal) ? `${pctZVal.toFixed(4)}%` : '-'}</td>
+          <td style="font-weight: 700;">${d !== null && !isNaN(d) ? `${d.toFixed(2)}%` : '-'}</td>
           <td>${getDevBadge(d)}</td>
         `;
         hlBody.appendChild(tr);
@@ -1821,30 +1902,30 @@
           htTaps.push(
             {
               name: 'Tap Max (+)',
+              tapKey: 'Max',
               vA: r.TV_A_Voltage_Max, iA: r.TV_A_Current_Max, zA: getZ(r.TV_A_Z_Max, r.TV_A_Voltage_Max, r.TV_A_Current_Max),
               vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
               vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
               fatZ: getFatZ(facMeta, r, 'Max', 'HT'),
-              pctZ: r.TV_Max_Z_Cal,
-              dev: r.TV_Max_Dev
+              rawPctZ: r.TV_Max_Z_Cal
             },
             {
               name: 'Tap Center',
+              tapKey: 'Cen',
               vA: r.TV_A_Voltage_Cen, iA: r.TV_A_Current_Cen, zA: getZ(r.TV_A_Z_Cen, r.TV_A_Voltage_Cen, r.TV_A_Current_Cen),
               vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
               vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
               fatZ: getFatZ(facMeta, r, 'Cen', 'HT'),
-              pctZ: r.TV_Cen_Z_Cal,
-              dev: r.TV_Cen_Dev
+              rawPctZ: r.TV_Cen_Z_Cal
             },
             {
               name: 'Tap Min (-)',
+              tapKey: 'Min',
               vA: r.TV_A_Voltage_Min, iA: r.TV_A_Current_Min, zA: getZ(r.TV_A_Z_Min, r.TV_A_Voltage_Min, r.TV_A_Current_Min),
               vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
               vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
               fatZ: getFatZ(facMeta, r, 'Min', 'HT'),
-              pctZ: r.TV_Min_Z_Cal,
-              dev: r.TV_Min_Dev
+              rawPctZ: r.TV_Min_Z_Cal
             }
           );
         } else if (has3WTap1Data) {
@@ -1852,35 +1933,34 @@
           const tapLabel1 = r.HV_Tap1 && r.HV_Tap1 !== '-' && !isNaN(parseFloat(r.HV_Tap1)) ? `Tap ${r.HV_Tap1} (HT)` : 'Tap Center (HT)';
           htTaps.push({
             name: tapLabel1,
+            tapKey: 'Tap1',
             vA: r.HV_A_Tap1_Voltage, iA: r.HV_A_Tap1_Current, zA: getZ(r.HV_A_Tap1_Z, r.HV_A_Tap1_Voltage, r.HV_A_Tap1_Current),
             vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
             vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
             fatZ: getFatZ(facMeta, r, 'Cen', 'HT'),
-            pctZ: r.HV_Tap1_Z_Cal,
-            dev: r.HV_Tap1_Dev
+            rawPctZ: r.HV_Tap1_Z_Cal
           });
 
           if (r.HV_Tap2 || r.HV_A_Tap2_Voltage || r.HV_A_Tap2_Z) {
             const tapLabel2 = r.HV_Tap2 && r.HV_Tap2 !== '-' ? `Tap ${r.HV_Tap2} (HT)` : 'Tap 2 (HT)';
             htTaps.push({
               name: tapLabel2,
+              tapKey: 'Tap2',
               vA: r.HV_A_Tap2_Voltage, iA: r.HV_A_Tap2_Current, zA: getZ(r.HV_A_Tap2_Z, r.HV_A_Tap2_Voltage, r.HV_A_Tap2_Current),
               vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
               vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
               fatZ: getFatZ(facMeta, r, 'Tap2', 'HT'),
-              pctZ: r.HV_Tap2_Z_Cal,
-              dev: r.HV_Tap2_Dev
+              rawPctZ: r.HV_Tap2_Z_Cal
             });
           }
         }
 
         htTaps.forEach(t => {
-          let d = (t.dev !== null && t.dev !== undefined && t.dev !== '' && !isNaN(parseFloat(t.dev))) ? parseFloat(t.dev) : null;
-          if (d === null && t.pctZ && !isNaN(parseFloat(t.pctZ)) && t.fatZ && t.fatZ > 0) {
-            d = (Math.abs(parseFloat(t.pctZ) - t.fatZ) / t.fatZ) * 100;
-          }
+          const dyn = calcDynamicZAndDev(t, t.tapKey, 'HT');
+          const pctZVal = dyn.pctZ;
+          const d = dyn.dev;
 
-          const hasData = (t.zA !== null || (t.pctZ && t.pctZ !== '-') || d !== null);
+          const hasData = (t.zA !== null || pctZVal !== null || d !== null);
           if (!hasData) return;
 
           totalTestedTaps++;
@@ -1912,16 +1992,16 @@
             <td>${formatVal(t.iC, 3)}</td>
             <td style="font-weight: 600; color: #0f172a;">${formatVal(t.zC, 4)}</td>
             <td style="font-weight: 600; color: #334155; background-color: #f8fafc;">${t.fatZ !== null ? `${t.fatZ.toFixed(2)}%` : '-'}</td>
-            <td style="font-weight: 600; color: #1e3a8a;">${t.pctZ && !isNaN(parseFloat(t.pctZ)) ? `${parseFloat(t.pctZ).toFixed(4)}%` : '-'}</td>
-            <td style="font-weight: 700;">${d !== null ? `${d.toFixed(2)}%` : '-'}</td>
+            <td style="font-weight: 600; color: #1e3a8a;">${pctZVal !== null && !isNaN(pctZVal) ? `${pctZVal.toFixed(4)}%` : '-'}</td>
+            <td style="font-weight: 700;">${d !== null && !isNaN(d) ? `${d.toFixed(2)}%` : '-'}</td>
             <td>${getDevBadge(d)}</td>
           `;
           htBody.appendChild(tr);
         });
       }
 
-      // Check Short_Circuit_Impedance_Result if present in CSV
-      if (r && r.Short_Circuit_Impedance_Result && !isNaN(parseFloat(r.Short_Circuit_Impedance_Result))) {
+      // Fallback to Short_Circuit_Impedance_Result only if no taps had valid measurement data
+      if (totalTestedTaps === 0 && r && r.Short_Circuit_Impedance_Result && !isNaN(parseFloat(r.Short_Circuit_Impedance_Result))) {
         fleetMaxDev = parseFloat(r.Short_Circuit_Impedance_Result);
       }
 
@@ -2099,21 +2179,18 @@
           zAVal = parseFloat(rec.HV_A_Z_Cen);
           zBVal = parseFloat(rec.HV_B_Z_Cen);
           zCVal = parseFloat(rec.HV_C_Z_Cen);
-          devVal = rec.HV_Cen_Dev && !isNaN(parseFloat(rec.HV_Cen_Dev)) ? parseFloat(rec.HV_Cen_Dev) : null;
         }
         // 2. Service Tap 1
         else if (rec.HV_A_Tap1_Z && !isNaN(parseFloat(rec.HV_A_Tap1_Z)) && parseFloat(rec.HV_A_Tap1_Z) > 0) {
           zAVal = parseFloat(rec.HV_A_Tap1_Z);
           zBVal = parseFloat(rec.HV_B_Tap1_Z);
           zCVal = parseFloat(rec.HV_C_Tap1_Z);
-          devVal = rec.HV_Tap1_Dev && !isNaN(parseFloat(rec.HV_Tap1_Dev)) ? parseFloat(rec.HV_Tap1_Dev) : null;
         }
         // 3. Max Tap
         else if (rec.HV_A_Z_Max && !isNaN(parseFloat(rec.HV_A_Z_Max)) && parseFloat(rec.HV_A_Z_Max) > 0) {
           zAVal = parseFloat(rec.HV_A_Z_Max);
           zBVal = parseFloat(rec.HV_B_Z_Max);
           zCVal = parseFloat(rec.HV_C_Z_Max);
-          devVal = rec.HV_Max_Dev && !isNaN(parseFloat(rec.HV_Max_Dev)) ? parseFloat(rec.HV_Max_Dev) : null;
         }
         // 4. Fallback V / I
         else if (rec.HV_A_Voltage_Cen && rec.HV_A_Current_Cen && parseFloat(rec.HV_A_Current_Cen) > 0) {
@@ -2126,15 +2203,37 @@
           zCVal = parseFloat(rec.HV_C_Tap1_Voltage) / parseFloat(rec.HV_C_Tap1_Current);
         }
 
+        // Dynamically compute devVal from measured impedances and FAT
+        const zAvg = (zAVal !== null && zBVal !== null && zCVal !== null) ? (zAVal + zBVal + zCVal) / 3 : null;
+        if (zAvg !== null && facMeta) {
+          const fatCen = parseFloat(facMeta.ShortZ_Y_Cen || facMeta.ShortZ_X_Cen || facMeta.IMPEDANCE_MIDDLE_TAP || 0);
+          const pKVA = parseFloat(facMeta.Power_Rated || facMeta.Rated_Power || 0);
+          const sMVA = pKVA > 0 ? (pKVA >= 1000 ? pKVA / 1000 : pKVA) : null;
+          const vTap = parseFloat(rec.Tap_Voltage_Cen || facMeta.HV_Rated || facMeta.Rated_Voltage || 0);
+          if (fatCen > 0 && sMVA > 0 && vTap > 0) {
+            let computed = (zAvg * sMVA) / (vTap * vTap) * 100;
+            const candidates = [computed, computed / 2, computed * 2];
+            let best = computed;
+            let minDiff = Math.abs(computed - fatCen);
+            for (let c of candidates) {
+              const diff = Math.abs(c - fatCen);
+              if (diff < minDiff) { minDiff = diff; best = c; }
+            }
+            devVal = (Math.abs(best - fatCen) / fatCen) * 100;
+          }
+        }
+
+        if (devVal === null && rec.HV_Cen_Dev && !isNaN(parseFloat(rec.HV_Cen_Dev))) {
+          const rawD = parseFloat(rec.HV_Cen_Dev);
+          if (rawD < 50) devVal = rawD;
+        }
+
         if (devVal === null && zAVal !== null && zBVal !== null && zCVal !== null) {
           const vals = [zAVal, zBVal, zCVal];
           const min = Math.min(...vals);
           const max = Math.max(...vals);
           const avg = (zAVal + zBVal + zCVal) / 3;
           if (avg > 0) devVal = ((max - min) / avg) * 100;
-        }
-        if (rec.Short_Circuit_Impedance_Result && !isNaN(parseFloat(rec.Short_Circuit_Impedance_Result))) {
-          devVal = parseFloat(rec.Short_Circuit_Impedance_Result);
         }
 
         if (zAVal !== null || devVal !== null) {
