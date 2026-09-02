@@ -1190,9 +1190,6 @@
       });
 
       sortedSites.forEach(siteName => {
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = `📍 ${siteName} (${items.length})`;
-
         // Sort units inside site by Name, then Serial
         const items = siteGroups[siteName].sort((a, b) => {
           const nameA = (a.name || a.serial || '').trim();
@@ -1201,6 +1198,9 @@
           if (comp !== 0) return comp;
           return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
         });
+
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `📍 ${siteName} (${items.length})`;
 
         items.forEach(item => {
           const opt = document.createElement('option');

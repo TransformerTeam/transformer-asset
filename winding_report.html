@@ -1034,9 +1034,6 @@
       });
 
       sortedSites.forEach(siteName => {
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = `📍 ${siteName} (${items.length})`;
-
         const items = siteGroups[siteName].sort((a, b) => {
           const nameA = (a.name || a.serial || '').trim();
           const nameB = (b.name || b.serial || '').trim();
@@ -1044,6 +1041,9 @@
           if (comp !== 0) return comp;
           return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
         });
+
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `📍 ${siteName} (${items.length})`;
 
         items.forEach(u => {
           const opt = document.createElement('option');
