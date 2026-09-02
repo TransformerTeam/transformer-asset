@@ -1609,6 +1609,7 @@
   <script src="assessment.js"></script>
 
   <script>
+    var assessmentData = (typeof window !== 'undefined' && window.assessmentData) ? window.assessmentData : [];
     var currentSerial = '';
     var evalRetryCount = 0;
     var refreshEvalTimer = null;
@@ -4077,7 +4078,7 @@
             }
 
             const rawD = parseFloat(latestThreeShort[rawDevCol]);
-            if (!isNaN(rawD) && rawD < 50) return rawD;
+            if (!isNaN(rawD)) return rawD;
             return NaN;
           };
 
@@ -4097,11 +4098,11 @@
               parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
             } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-' && !isNaN(parseFloat(latestThreeShort.Short_Circuit_Impedance_Result))) {
               const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
-              if (resNum < 50) parts.push(`%Dev: ${resNum.toFixed(2)}%`);
+              parts.push(`%Dev: ${resNum.toFixed(2)}%`);
             }
           }
 
-          const validDevs = [maxDev, cenDev, minDev, tap1Dev].filter(v => !isNaN(v));
+          const validDevs = [maxDev, cenDev, minDev, tap1Dev, parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
           if (parts.length === 0 || validDevs.length === 0) {
             return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
           }

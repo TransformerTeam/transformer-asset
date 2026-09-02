@@ -1767,6 +1767,14 @@
           calcDev = (Math.abs(calcPctZ - fatZ) / fatZ) * 100;
         }
 
+        // Fallback: if dynamic %Z or %Dev couldn't be calculated, preserve original CSV values
+        if (calcPctZ === null && tapObj.rawPctZ && !isNaN(parseFloat(tapObj.rawPctZ))) {
+          calcPctZ = parseFloat(tapObj.rawPctZ);
+        }
+        if (calcDev === null && tapObj.rawDev && !isNaN(parseFloat(tapObj.rawDev))) {
+          calcDev = parseFloat(tapObj.rawDev);
+        }
+
         return { pctZ: calcPctZ, dev: calcDev };
       };
 
@@ -1778,7 +1786,8 @@
           vB: r ? r.HV_B_Voltage_Max : null, iB: r ? r.HV_B_Current_Max : null, zB: getZ(r ? r.HV_B_Z_Max : null, r ? r.HV_B_Voltage_Max : null, r ? r.HV_B_Current_Max : null),
           vC: r ? r.HV_C_Voltage_Max : null, iC: r ? r.HV_C_Current_Max : null, zC: getZ(r ? r.HV_C_Z_Max : null, r ? r.HV_C_Voltage_Max : null, r ? r.HV_C_Current_Max : null),
           fatZ: getFatZ(facMeta, r, 'Max', 'HL'),
-          rawPctZ: r ? r.HV_Max_Z_Cal : null
+          rawPctZ: r ? r.HV_Max_Z_Cal : null,
+          rawDev: r ? r.HV_Max_Dev : null
         },
         {
           name: 'Tap Center',
@@ -1787,7 +1796,8 @@
           vB: r ? r.HV_B_Voltage_Cen : null, iB: r ? r.HV_B_Current_Cen : null, zB: getZ(r ? r.HV_B_Z_Cen : null, r ? r.HV_B_Voltage_Cen : null, r ? r.HV_B_Current_Cen : null),
           vC: r ? r.HV_C_Voltage_Cen : null, iC: r ? r.HV_C_Current_Cen : null, zC: getZ(r ? r.HV_C_Z_Cen : null, r ? r.HV_C_Voltage_Cen : null, r ? r.HV_C_Current_Cen : null),
           fatZ: getFatZ(facMeta, r, 'Cen', 'HL'),
-          rawPctZ: r ? r.HV_Cen_Z_Cal : null
+          rawPctZ: r ? r.HV_Cen_Z_Cal : null,
+          rawDev: r ? r.HV_Cen_Dev : null
         },
         {
           name: 'Tap Min (-)',
@@ -1796,7 +1806,8 @@
           vB: r ? r.HV_B_Voltage_Min : null, iB: r ? r.HV_B_Current_Min : null, zB: getZ(r ? r.HV_B_Z_Min : null, r ? r.HV_B_Voltage_Min : null, r ? r.HV_B_Current_Min : null),
           vC: r ? r.HV_C_Voltage_Min : null, iC: r ? r.HV_C_Current_Min : null, zC: getZ(r ? r.HV_C_Z_Min : null, r ? r.HV_C_Voltage_Min : null, r ? r.HV_C_Current_Min : null),
           fatZ: getFatZ(facMeta, r, 'Min', 'HL'),
-          rawPctZ: r ? r.HV_Min_Z_Cal : null
+          rawPctZ: r ? r.HV_Min_Z_Cal : null,
+          rawDev: r ? r.HV_Min_Dev : null
         }
       ];
 
@@ -1812,7 +1823,8 @@
             vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
             vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
             fatZ: getFatZ(facMeta, r, 'Tap1', 'HL'),
-            rawPctZ: r.HV_Tap1_Z_Cal
+            rawPctZ: r.HV_Tap1_Z_Cal,
+            rawDev: r.HV_Tap1_Dev
           });
         }
         if (r && (r.HV_Tap2 || r.HV_A_Tap2_Voltage || r.HV_A_Tap2_Z)) {
@@ -1824,7 +1836,8 @@
             vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
             vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
             fatZ: getFatZ(facMeta, r, 'Tap2', 'HL'),
-            rawPctZ: r.HV_Tap2_Z_Cal
+            rawPctZ: r.HV_Tap2_Z_Cal,
+            rawDev: r.HV_Tap2_Dev
           });
         }
       }
@@ -1834,7 +1847,7 @@
         const pctZVal = dyn.pctZ;
         const d = dyn.dev;
 
-        const hasData = (t.zA !== null || pctZVal !== null || d !== null);
+        const hasData = (t.zA !== null || t.vA !== null || pctZVal !== null || d !== null || (t.rawPctZ && t.rawPctZ !== '-') || (t.rawDev && t.rawDev !== '-'));
         if (!hasData) return;
 
         totalTestedTaps++;
@@ -1936,7 +1949,8 @@
               vB: r.TV_B_Voltage_Max, iB: r.TV_B_Current_Max, zB: getZ(r.TV_B_Z_Max, r.TV_B_Voltage_Max, r.TV_B_Current_Max),
               vC: r.TV_C_Voltage_Max, iC: r.TV_C_Current_Max, zC: getZ(r.TV_C_Z_Max, r.TV_C_Voltage_Max, r.TV_C_Current_Max),
               fatZ: getFatZ(facMeta, r, 'Max', 'HT'),
-              rawPctZ: r.TV_Max_Z_Cal
+              rawPctZ: r.TV_Max_Z_Cal,
+              rawDev: r.TV_Max_Dev
             },
             {
               name: 'Tap Center',
@@ -1945,7 +1959,8 @@
               vB: r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, iB: r.TV_B_Current_Cen, zB: getZ(r.TV_B_Z_Cen, r.TV_B_Voltage_Cen || r.V_B_Voltage_Cen, r.TV_B_Current_Cen),
               vC: r.TV_C_Voltage_Cen, iC: r.TV_C_Current_Cen, zC: getZ(r.TV_C_Z_Cen, r.TV_C_Voltage_Cen, r.TV_C_Current_Cen),
               fatZ: getFatZ(facMeta, r, 'Cen', 'HT'),
-              rawPctZ: r.TV_Cen_Z_Cal
+              rawPctZ: r.TV_Cen_Z_Cal,
+              rawDev: r.TV_Cen_Dev
             },
             {
               name: 'Tap Min (-)',
@@ -1954,7 +1969,8 @@
               vB: r.TV_B_Voltage_Min, iB: r.TV_B_Current_Min, zB: getZ(r.TV_B_Z_Min, r.TV_B_Voltage_Min, r.TV_B_Current_Min),
               vC: r.TV_C_Voltage_Min, iC: r.TV_C_Current_Min, zC: getZ(r.TV_C_Z_Min, r.TV_C_Voltage_Min, r.TV_C_Current_Min),
               fatZ: getFatZ(facMeta, r, 'Min', 'HT'),
-              rawPctZ: r.TV_Min_Z_Cal
+              rawPctZ: r.TV_Min_Z_Cal,
+              rawDev: r.TV_Min_Dev
             }
           );
         } else if (has3WTap1Data) {
@@ -1967,7 +1983,8 @@
             vB: r.HV_B_Tap1_Voltage, iB: r.HV_B_Tap1_Current, zB: getZ(r.HV_B_Tap1_Z, r.HV_B_Tap1_Voltage, r.HV_B_Tap1_Current),
             vC: r.HV_C_Tap1_Voltage, iC: r.HV_C_Tap1_Current, zC: getZ(r.HV_C_Tap1_Z, r.HV_C_Tap1_Voltage, r.HV_C_Tap1_Current),
             fatZ: getFatZ(facMeta, r, 'Cen', 'HT'),
-            rawPctZ: r.HV_Tap1_Z_Cal
+            rawPctZ: r.HV_Tap1_Z_Cal,
+            rawDev: r.HV_Tap1_Dev
           });
 
           if (r.HV_Tap2 || r.HV_A_Tap2_Voltage || r.HV_A_Tap2_Z) {
@@ -1979,7 +1996,8 @@
               vB: r.HV_B_Tap2_Voltage, iB: r.HV_B_Tap2_Current, zB: getZ(r.HV_B_Tap2_Z, r.HV_B_Tap2_Voltage, r.HV_B_Tap2_Current),
               vC: r.HV_C_Tap2_Voltage, iC: r.HV_C_Tap2_Current, zC: getZ(r.HV_C_Tap2_Z, r.HV_C_Tap2_Voltage, r.HV_C_Tap2_Current),
               fatZ: getFatZ(facMeta, r, 'Tap2', 'HT'),
-              rawPctZ: r.HV_Tap2_Z_Cal
+              rawPctZ: r.HV_Tap2_Z_Cal,
+              rawDev: r.HV_Tap2_Dev
             });
           }
         }
@@ -1989,7 +2007,7 @@
           const pctZVal = dyn.pctZ;
           const d = dyn.dev;
 
-          const hasData = (t.zA !== null || pctZVal !== null || d !== null);
+          const hasData = (t.zA !== null || t.vA !== null || pctZVal !== null || d !== null || (t.rawPctZ && t.rawPctZ !== '-') || (t.rawDev && t.rawDev !== '-'));
           if (!hasData) return;
 
           totalTestedTaps++;
