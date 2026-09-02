@@ -105,10 +105,38 @@
 
     [data-theme="light"] .search-select {
       background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
     }
 
     .search-select:focus {
       border-color: var(--primary);
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
     }
 
     .btn-group {
@@ -947,26 +975,38 @@
         }
       });
 
-      // Sort primarily by SITE (A-Z), secondarily by Name (A-Z)
-      allItems.sort((a, b) => {
-        const siteA = (a.site || '').trim();
-        const siteB = (b.site || '').trim();
-        const siteComp = siteA.localeCompare(siteB, undefined, { numeric: true, sensitivity: 'base' });
-        if (siteComp !== 0) return siteComp;
-
-        const nameA = (a.name || a.serial || '').trim();
-        const nameB = (b.name || b.serial || '').trim();
-        const nameComp = nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-        if (nameComp !== 0) return nameComp;
-
-        return (a.serial || '').localeCompare(b.serial || '', undefined, { numeric: true, sensitivity: 'base' });
+      // Group by Site / Plant
+      const plantGroups = {};
+      allItems.forEach(item => {
+        let site = (item.site || 'Other').trim();
+        if (!site || site === '-' || site.toLowerCase() === 'null') site = 'Other';
+        if (!plantGroups[site]) plantGroups[site] = [];
+        plantGroups[site].push(item);
       });
 
-      allItems.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item.serial;
-        opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
-        selectEl.appendChild(opt);
+      const sortedSites = Object.keys(plantGroups).sort((a, b) => {
+        if (a === 'Other') return 1;
+        if (b === 'Other') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sortedSites.forEach(siteName => {
+        const trList = plantGroups[siteName];
+        trList.sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        const grp = document.createElement('optgroup');
+        grp.label = `📍 ${siteName} (${trList.length})`;
+        trList.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+          grp.appendChild(opt);
+        });
+        selectEl.appendChild(grp);
       });
     }
 

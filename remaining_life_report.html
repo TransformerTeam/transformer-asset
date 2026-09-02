@@ -1377,7 +1377,7 @@
 
       sortedSites.forEach(siteName => {
         const optgroup = document.createElement('optgroup');
-        optgroup.label = `Site: ${siteName}`;
+        optgroup.label = `📍 ${siteName} (${items.length})`;
 
         const items = siteGroups[siteName].sort((a, b) => {
           const nameA = (a.name || a.serial || '').trim();

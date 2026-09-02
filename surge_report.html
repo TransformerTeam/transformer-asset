@@ -101,6 +101,33 @@
     [data-theme="light"] .search-select {
       background: #ffffff;
       color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
     }
 
     .btn-group {
@@ -700,26 +727,65 @@
       if (!select) return;
       select.innerHTML = '';
 
-      const serials = new Set();
-      surgeData.forEach(r => { if (r.serial) serials.add(r.serial); });
+      const addedSerials = new Set();
+      const allItems = [];
 
-      if (typeof HEALTH_INDEX_DATA !== 'undefined') {
+      if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
-          if (meta.serial && serials.has(meta.serial)) {
-            const opt = document.createElement('option');
-            opt.value = meta.serial;
-            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
-            select.appendChild(opt);
-            serials.delete(meta.serial);
+          if (meta.serial && !addedSerials.has(meta.serial)) {
+            addedSerials.add(meta.serial);
+            allItems.push({
+              serial: meta.serial,
+              name: meta.name || meta.serial,
+              site: meta.site || meta.SITE || ''
+            });
           }
         });
       }
 
-      serials.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = s;
-        select.appendChild(opt);
+      surgeData.forEach(r => {
+        if (r.serial && !addedSerials.has(r.serial)) {
+          addedSerials.add(r.serial);
+          allItems.push({
+            serial: r.serial,
+            name: r.serial,
+            site: r.site || r.SITE || ''
+          });
+        }
+      });
+
+      // Group by Site / Plant
+      const plantGroups = {};
+      allItems.forEach(item => {
+        let site = (item.site || 'Other').trim();
+        if (!site || site === '-' || site.toLowerCase() === 'null') site = 'Other';
+        if (!plantGroups[site]) plantGroups[site] = [];
+        plantGroups[site].push(item);
+      });
+
+      const sortedSites = Object.keys(plantGroups).sort((a, b) => {
+        if (a === 'Other') return 1;
+        if (b === 'Other') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sortedSites.forEach(siteName => {
+        const trList = plantGroups[siteName];
+        trList.sort((a, b) => {
+          const nameA = (a.name || a.serial || '').trim();
+          const nameB = (b.name || b.serial || '').trim();
+          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        const grp = document.createElement('optgroup');
+        grp.label = `📍 ${siteName} (${trList.length})`;
+        trList.forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.serial;
+          opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+          grp.appendChild(opt);
+        });
+        select.appendChild(grp);
       });
     }
 

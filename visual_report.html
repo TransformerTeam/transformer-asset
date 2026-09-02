@@ -1191,7 +1191,7 @@
 
       sortedSites.forEach(siteName => {
         const optgroup = document.createElement('optgroup');
-        optgroup.label = `Site: ${siteName}`;
+        optgroup.label = `📍 ${siteName} (${items.length})`;
 
         // Sort units inside site by Name, then Serial
         const items = siteGroups[siteName].sort((a, b) => {

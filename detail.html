@@ -159,9 +159,36 @@
       box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
     }
 
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 4px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 4px;
+    }
+
     .search-select option {
       background: #12161f;
       color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    [data-theme="light"] .search-select option {
+      background: #ffffff;
+      color: #0f172a;
     }
 
     .btn-action {
@@ -1083,16 +1110,45 @@
       if (selectEl && data.length > 0) {
         const curVal = selectEl.value;
         selectEl.innerHTML = '';
+
+        // Group by Site / Plant
+        const plantGroups = {};
         data.forEach(item => {
           const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
-          const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
-          if (s) {
+          if (!s) return;
+          let site = (item.site || item.SITE || item.substation || 'Other').trim();
+          if (!site || site === '-' || site.toLowerCase() === 'null') site = 'Other';
+          if (!plantGroups[site]) plantGroups[site] = [];
+          plantGroups[site].push(item);
+        });
+
+        const sortedSites = Object.keys(plantGroups).sort((a, b) => {
+          if (a === 'Other') return 1;
+          if (b === 'Other') return -1;
+          return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        sortedSites.forEach(siteName => {
+          const trList = plantGroups[siteName];
+          trList.sort((a, b) => {
+            const nameA = (a.name || a.serial || '').trim();
+            const nameB = (b.name || b.serial || '').trim();
+            return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          });
+
+          const grp = document.createElement('optgroup');
+          grp.label = `📍 ${siteName} (${trList.length})`;
+          trList.forEach(item => {
+            const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+            const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
             const opt = document.createElement('option');
             opt.value = s;
             opt.textContent = (n && n !== s) ? `${n} (${s})` : s;
-            selectEl.appendChild(opt);
-          }
+            grp.appendChild(opt);
+          });
+          selectEl.appendChild(grp);
         });
+
         if (curVal) selectEl.value = curVal;
       }
     }

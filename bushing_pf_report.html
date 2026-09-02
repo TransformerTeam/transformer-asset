@@ -110,10 +110,38 @@
 
     [data-theme="light"] .search-select {
       background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
     }
 
     .search-select:focus {
       border-color: var(--primary);
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
     }
 
     .btn-group {
@@ -962,6 +990,7 @@
       if (selectEl) {
         selectEl.innerHTML = '';
         const addedSerials = new Set();
+        const allItems = [];
         const fleet = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA))
           ? HEALTH_INDEX_DATA 
           : ((typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) ? assessmentData : []);
@@ -969,10 +998,11 @@
         fleet.forEach(item => {
           if (item.serial && !addedSerials.has(item.serial)) {
             addedSerials.add(item.serial);
-            const opt = document.createElement('option');
-            opt.value = item.serial;
-            opt.textContent = `${item.name || item.serial} (${item.serial})`;
-            selectEl.appendChild(opt);
+            allItems.push({
+              serial: item.serial,
+              name: item.name || item.serial,
+              site: item.site || item.SITE || ''
+            });
           }
         });
 
@@ -980,11 +1010,46 @@
           const s = item.serial || item.Serial_No || item.Serial;
           if (s && !addedSerials.has(s)) {
             addedSerials.add(s);
-            const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = s;
-            selectEl.appendChild(opt);
+            allItems.push({
+              serial: s,
+              name: s,
+              site: item.Site || item.site || item.SITE || ''
+            });
           }
+        });
+
+        // Group by Site / Plant
+        const plantGroups = {};
+        allItems.forEach(item => {
+          let site = (item.site || 'Other').trim();
+          if (!site || site === '-' || site.toLowerCase() === 'null') site = 'Other';
+          if (!plantGroups[site]) plantGroups[site] = [];
+          plantGroups[site].push(item);
+        });
+
+        const sortedSites = Object.keys(plantGroups).sort((a, b) => {
+          if (a === 'Other') return 1;
+          if (b === 'Other') return -1;
+          return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        sortedSites.forEach(siteName => {
+          const trList = plantGroups[siteName];
+          trList.sort((a, b) => {
+            const nameA = (a.name || a.serial || '').trim();
+            const nameB = (b.name || b.serial || '').trim();
+            return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+          });
+
+          const grp = document.createElement('optgroup');
+          grp.label = `📍 ${siteName} (${trList.length})`;
+          trList.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.serial;
+            opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+            grp.appendChild(opt);
+          });
+          selectEl.appendChild(grp);
         });
       }
 

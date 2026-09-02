@@ -113,6 +113,33 @@
     [data-theme="light"] .search-select {
       background: #ffffff;
       color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
     }
 
     .btn-group {
@@ -1493,11 +1520,15 @@
         }
       });
 
-      const sortedSites = Object.keys(siteGroups).sort((a, b) => a.localeCompare(b));
+      const sortedSites = Object.keys(siteGroups).sort((a, b) => {
+        if (a === 'Other Sites') return 1;
+        if (b === 'Other Sites') return -1;
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      });
       sortedSites.forEach(site => {
         const optGroup = document.createElement('optgroup');
-        optGroup.label = site;
-        siteGroups[site].sort((a, b) => a.label.localeCompare(b.label));
+        optGroup.label = `📍 ${site} (${siteGroups[site].length})`;
+        siteGroups[site].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: 'base' }));
         siteGroups[site].forEach(unit => {
           const opt = document.createElement('option');
           opt.value = unit.serial;
