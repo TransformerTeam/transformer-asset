@@ -104,6 +104,30 @@
       background: #ffffff;
     }
 
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+
+    .search-select option {
+      background-color: #12161f;
+      color: #ffffff;
+    }
+    [data-theme="light"] .search-select option {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+
     .search-select:focus {
       border-color: var(--primary);
     }
@@ -1406,15 +1430,21 @@
       selectEl.innerHTML = '';
       
       const addedSerials = new Set();
+      const grouped = {};
 
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
         HEALTH_INDEX_DATA.forEach(meta => {
-          if (meta.serial && !addedSerials.has(meta.serial)) {
-            addedSerials.add(meta.serial);
-            const opt = document.createElement('option');
-            opt.value = meta.serial;
-            opt.textContent = `${meta.name || meta.serial} (${meta.serial})`;
-            selectEl.appendChild(opt);
+          if (!meta) return;
+          const site = (meta.SITE || meta.site || meta.Plant || meta.plant || 'Other').trim();
+          const s = meta.serial || meta.SERIAL_NUMBER || meta['Serial No'];
+          const n = meta.name || meta.EQUIPMENT_NAME || meta['Equipment Name'];
+          
+          if (s && !addedSerials.has(s)) {
+            addedSerials.add(s);
+            if (!grouped[site]) {
+              grouped[site] = [];
+            }
+            grouped[site].push({ serial: s, name: n || s });
           }
         });
       }
@@ -1422,11 +1452,33 @@
       dgaDataList.forEach(item => {
         if (item.serial && !addedSerials.has(item.serial)) {
           addedSerials.add(item.serial);
-          const opt = document.createElement('option');
-          opt.value = item.serial;
-          opt.textContent = item.serial;
-          selectEl.appendChild(opt);
+          const site = (item.site || item.SITE || item.plant || item.Plant || 'Other').trim();
+          if (!grouped[site]) {
+            grouped[site] = [];
+          }
+          grouped[site].push({ serial: item.serial, name: item.serial });
         }
+      });
+
+      const sortedSites = Object.keys(grouped).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+
+      sortedSites.forEach(site => {
+        const list = grouped[site];
+        if (list.length === 0) return;
+
+        const groupEl = document.createElement('optgroup');
+        groupEl.label = `📍 ${site} (${list.length})`;
+
+        list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+        list.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.serial;
+          opt.textContent = `${t.name} (${t.serial})`;
+          groupEl.appendChild(opt);
+        });
+
+        selectEl.appendChild(groupEl);
       });
     }
 

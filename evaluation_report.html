@@ -100,6 +100,20 @@
     [data-theme="light"] .search-select {
       background: #ffffff;
     }
+    .search-select optgroup {
+      background-color: #1a2234;
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
+    [data-theme="light"] .search-select optgroup {
+      background-color: #f1f5f9;
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 6px 4px;
+    }
     .search-select option {
       background-color: #12161f;
       color: #ffffff;
@@ -1679,19 +1693,57 @@
       const selectEl = document.getElementById('eval-transformer-select');
       if (!selectEl) return;
       
-      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) {
+      if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0) {
         const curVal = selectEl.value;
         selectEl.innerHTML = '';
+        
+        // Group transformers by Plant / Site
+        const grouped = {};
+        const addedSerials = new Set();
+
         assessmentData.forEach(item => {
+          if (!item) return;
+          const site = (item.SITE || item.site || item.Plant || item.plant || 'Other').trim();
+          if (isExcludedSite(site)) return;
+          
           const s = item.serial || item.SERIAL_NUMBER || item['Serial No'];
           const n = item.name || item.EQUIPMENT_NAME || item['Equipment Name'];
-          if (s) {
-            const opt = document.createElement('option');
-            opt.value = s;
-            opt.textContent = `${n || s} (${s})`;
-            selectEl.appendChild(opt);
+          
+          if (s && !addedSerials.has(s)) {
+            addedSerials.add(s);
+            if (!grouped[site]) {
+              grouped[site] = [];
+            }
+            grouped[site].push({
+              serial: s,
+              name: n || s
+            });
           }
         });
+
+        // Sort plant names alphabetically
+        const sortedSites = Object.keys(grouped).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+
+        sortedSites.forEach(site => {
+          const list = grouped[site];
+          if (list.length === 0) return;
+          
+          const groupEl = document.createElement('optgroup');
+          groupEl.label = `📍 ${site} (${list.length})`;
+
+          // Sort transformers within each plant
+          list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+          list.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.serial;
+            opt.textContent = `${t.name} (${t.serial})`;
+            groupEl.appendChild(opt);
+          });
+
+          selectEl.appendChild(groupEl);
+        });
+
         if (curVal) selectEl.value = curVal;
       }
     }
