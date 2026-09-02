@@ -471,34 +471,40 @@ function updateMapLayer(isDark) {
   });
   
   if (currentMapType === 'satellite') {
-    // Bing Hybrid (aerial + labels)
-    L.bingLayer({
-      type: 'h',
+    // Esri World Imagery (High-res aerial satellite up to zoom 19)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19,
-      attribution: 'Tiles &copy; Microsoft Bing'
+      attribution: 'Tiles &copy; Esri'
+    }).addTo(mapInstance);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19
     }).addTo(mapInstance);
   } else if (currentMapType === 'streets') {
-    // Bing Road
+    // Bing Road with auto-scaling above zoom 16
     L.bingLayer({
       type: 'r',
+      maxNativeZoom: 16,
       maxZoom: 19,
       attribution: 'Tiles &copy; Microsoft Bing'
     }).addTo(mapInstance);
   } else {
     // Default Theme Sync
     if (isDark) {
-      // Esri World Dark Gray Canvas (Clean Dark Theme without API Key requirement or watermark)
+      // Esri World Dark Gray Canvas with maxNativeZoom: 16 to prevent 'Map data not yet available'
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
         maxZoom: 19,
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
       }).addTo(mapInstance);
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 16,
         maxZoom: 19
       }).addTo(mapInstance);
     } else {
       // Bing Road
       L.bingLayer({
         type: 'r',
+        maxNativeZoom: 16,
         maxZoom: 19,
         attribution: 'Tiles &copy; Microsoft Bing'
       }).addTo(mapInstance);
