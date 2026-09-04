@@ -82,11 +82,11 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
       z-index: 20;
     }
-    /* Distinct Category Themes inspired by User Reference */
+    /* Distinct Category Themes */
     .gantt-bar-outage {
-      background: #f8dfd4;
-      color: #2b130b;
-      border: 1px solid #e7ab91;
+      background: #fde8e4;
+      color: #7c2d12;
+      border: 1px solid #fca5a5;
     }
     .gantt-bar-outage.has-start-handle::before {
       content: '';
@@ -95,14 +95,94 @@
       top: 2px;
       bottom: 2px;
       width: 4px;
-      background: #c25e37;
-      border: 1px solid #7c2d12;
+      background: #ef4444;
+      border: 1px solid #b91c1c;
+      border-radius: 2px;
+    }
+    .gantt-bar-life {
+      background: #ede9fe;
+      color: #4c1d95;
+      border: 1px solid #c4b5fd;
+    }
+    .gantt-bar-life.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #8b5cf6;
+      border: 1px solid #6d28d9;
+      border-radius: 2px;
+    }
+    .gantt-bar-plant {
+      background: #ccfbf1;
+      color: #115e59;
+      border: 1px solid #5eead4;
+    }
+    .gantt-bar-plant.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #14b8a6;
+      border: 1px solid #0f766e;
+      border-radius: 2px;
+    }
+    .gantt-bar-oil {
+      background: #fef3c7;
+      color: #78350f;
+      border: 1px solid #fcd34d;
+    }
+    .gantt-bar-oil.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #f59e0b;
+      border: 1px solid #b45309;
+      border-radius: 2px;
+    }
+    .gantt-bar-visual {
+      background: #e0f2fe;
+      color: #0c4a6e;
+      border: 1px solid #7dd3fc;
+    }
+    .gantt-bar-visual.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #0ea5e9;
+      border: 1px solid #0369a1;
+      border-radius: 2px;
+    }
+    .gantt-bar-oltc {
+      background: #fce7f3;
+      color: #831843;
+      border: 1px solid #f472b6;
+    }
+    .gantt-bar-oltc.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #ec4899;
+      border: 1px solid #be185d;
       border-radius: 2px;
     }
     .gantt-bar-52week {
-      background: #d8f7e8;
-      color: #064e3b;
-      border: 1px solid #93e8bc;
+      background: #e0f2fe;
+      color: #0c4a6e;
+      border: 1px solid #7dd3fc;
     }
     .gantt-bar-52week.has-start-handle::before {
       content: '';
@@ -111,14 +191,14 @@
       top: 2px;
       bottom: 2px;
       width: 4px;
-      background: #10b981;
-      border: 1px solid #047857;
+      background: #0ea5e9;
+      border: 1px solid #0369a1;
       border-radius: 2px;
     }
     .gantt-bar-assess {
-      background: #cbf3f9;
-      color: #0e4e5e;
-      border: 1px solid #8be4f0;
+      background: #ccfbf1;
+      color: #115e59;
+      border: 1px solid #5eead4;
     }
     .gantt-bar-assess.has-start-handle::before {
       content: '';
@@ -127,8 +207,8 @@
       top: 2px;
       bottom: 2px;
       width: 4px;
-      background: #06b6d4;
-      border: 1px solid #0e7490;
+      background: #14b8a6;
+      border: 1px solid #0f766e;
       border-radius: 2px;
     }
     /* Continuation Arrows */
@@ -446,9 +526,12 @@
               <label for="filter-cat"><i class="fa-solid fa-tags"></i> Category</label>
               <select id="filter-cat" onchange="applyFilters()" class="filter-select">
                 <option value="ALL">All Categories</option>
-                <option value="Outage">Transformer Outage (1.x)</option>
-                <option value="Assessment">Transformer Assessment (2.x)</option>
-                <option value="52Week">52 Week Plan (3.x)</option>
+                <option value="1.Transformer Outage">1. Transformer Outage</option>
+                <option value="2.Life Assessment">2. Life Assessment</option>
+                <option value="3.Plant Assessment">3. Plant Assessment</option>
+                <option value="Oil Analysis">Oil Analysis</option>
+                <option value="3M Visual">3M Visual</option>
+                <option value="OLTC Inspection">OLTC Inspection</option>
               </select>
             </div>
 
@@ -539,9 +622,12 @@
 
             <!-- Calendar Legend -->
             <div class="flex flex-wrap items-center gap-3 text-[11px]">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-blue-500"></span> Outage</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-orange-500"></span> 52-Wk Routine</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-emerald-500"></span> Assessment</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> 1. Transformer Outage</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span> 2. Life Assessment</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span> 3. Plant Assessment</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Oil Analysis</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span> 3M Visual</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span> OLTC Inspection</span>
             </div>
           </div>
 
@@ -653,9 +739,12 @@
           <div>
             <label class="block text-slate-400 font-medium mb-1">Category</label>
             <select id="form-cat" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none">
-              <option value="Outage">Transformer Outage (1.x)</option>
-              <option value="Assessment">Transformer Assessment (2.x)</option>
-              <option value="52Week">52 Week Plan (3.x)</option>
+              <option value="1.Transformer Outage">1. Transformer Outage</option>
+              <option value="2.Life Assessment">2. Life Assessment</option>
+              <option value="3.Plant Assessment">3. Plant Assessment</option>
+              <option value="Oil Analysis">Oil Analysis</option>
+              <option value="3M Visual">3M Visual</option>
+              <option value="OLTC Inspection">OLTC Inspection</option>
             </select>
           </div>
         </div>
@@ -734,46 +823,50 @@
     // Initial Plan Dataset (Derived from user's Excel sheet with WBS Hierarchies)
     let tasks = [
       // 1.1 GHECO-ONE Outage
-      { id: '1.1', wbs: '1.1', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: 'Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
+      { id: '1.1', wbs: '1.1', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: '1.Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
       
       // 1.2 GT42 (GEN Ph.2) + Sub-tasks (1.2.1, 1.2.2)
-      { id: '1.2', wbs: '1.2', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
-      { id: '1.2.1', wbs: '1.2.1', parentId: '1.2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
-      { id: '1.2.2', wbs: '1.2.2', parentId: '1.2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
+      { id: '1.2', wbs: '1.2', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
+      { id: '1.2.1', wbs: '1.2.1', parentId: '1.2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
+      { id: '1.2.2', wbs: '1.2.2', parentId: '1.2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
 
       // 1.3 CUP-1 GTG16 + Sub-tasks (1.3.1, 1.3.2)
-      { id: '1.3', wbs: '1.3', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
-      { id: '1.3.1', wbs: '1.3.1', parentId: '1.3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
-      { id: '1.3.2', wbs: '1.3.2', parentId: '1.3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
+      { id: '1.3', wbs: '1.3', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
+      { id: '1.3.1', wbs: '1.3.1', parentId: '1.3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
+      { id: '1.3.2', wbs: '1.3.2', parentId: '1.3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
 
       // 1.4 GEN Ph.2
-      { id: '1.4', wbs: '1.4', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
+      { id: '1.4', wbs: '1.4', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
 
       // 1.5 GEN Ph.2 GT62 + Sub-tasks (1.5.1, 1.5.2)
-      { id: '1.5', wbs: '1.5', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
-      { id: '1.5.1', wbs: '1.5.1', parentId: '1.5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
-      { id: '1.5.2', wbs: '1.5.2', parentId: '1.5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
+      { id: '1.5', wbs: '1.5', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
+      { id: '1.5.1', wbs: '1.5.1', parentId: '1.5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
+      { id: '1.5.2', wbs: '1.5.2', parentId: '1.5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
 
       // 1.6 GSPP2&3 + Sub-tasks (1.6.1, 1.6.2)
-      { id: '1.6', wbs: '1.6', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
-      { id: '1.6.1', wbs: '1.6.1', parentId: '1.6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
-      { id: '1.6.2', wbs: '1.6.2', parentId: '1.6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
+      { id: '1.6', wbs: '1.6', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
+      { id: '1.6.1', wbs: '1.6.1', parentId: '1.6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
+      { id: '1.6.2', wbs: '1.6.2', parentId: '1.6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
 
-      // 1.7 GIPP
-      { id: '1.7', wbs: '1.7', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: 'Outage', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
-      { id: '0.1', wbs: '0.1', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: 'Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
+      // 1.7 Plant Assessment
+      { id: '1.7', wbs: '1.7', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: '3.Plant Assessment', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
+      { id: '0.1', wbs: '0.1', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
 
-      // 52-Week Routine Plans
-      { id: '3.1', wbs: '3.1', parentId: null, task: '3 Months Visual CUP-1_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '52Week', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
-      { id: '3.2', wbs: '3.2', parentId: null, task: '3 Months Visual CUP-2_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-2', cat: '52Week', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
-      { id: '3.10', wbs: '3.10', parentId: null, task: '3 Months Visual CUP-1_Q2', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '52Week', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
-      { id: '3.19', wbs: '3.19', parentId: null, task: '3 Months Visual CUP-1_Q3', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '52Week', start: '2026-07-01', end: '2026-07-31', days: 31, progress: 0, cost: 0 },
-      { id: '3.28', wbs: '3.28', parentId: null, task: '3 Months Visual CUP-1_Q4', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '52Week', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 0, cost: 0 },
-      { id: '3.37', wbs: '3.37', parentId: null, task: '6 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'Main TRs', plant: 'CUP-1', cat: '52Week', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
+      // 2.x Life Assessment & OLTC Inspection
+      { id: '2.1', wbs: '2.1', parentId: null, task: 'CUP-1: Transformer Life Assessment', lead: 'MMT', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '2.Life Assessment', start: '2026-02-15', end: '2026-02-28', days: 14, progress: 100, cost: 45000 },
+      { id: '2.2', wbs: '2.2', parentId: null, task: 'GEN Ph.2: OLTC Diagnostic & Inspection', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'OLTC Inspection', start: '2026-03-10', end: '2026-03-18', days: 8, progress: 50, cost: 28000 },
+
+      // 3M Visual & Oil Analysis
+      { id: '3.1', wbs: '3.1', parentId: null, task: '3 Months Visual CUP-1_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
+      { id: '3.2', wbs: '3.2', parentId: null, task: '3 Months Visual CUP-2_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-2', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
+      { id: '3.10', wbs: '3.10', parentId: null, task: '3 Months Visual CUP-1_Q2', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
+      { id: '3.19', wbs: '3.19', parentId: null, task: '3 Months Visual CUP-1_Q3', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-07-01', end: '2026-07-31', days: 31, progress: 0, cost: 0 },
+      { id: '3.28', wbs: '3.28', parentId: null, task: '3 Months Visual CUP-1_Q4', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 0, cost: 0 },
+      { id: '3.37', wbs: '3.37', parentId: null, task: '6 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'Main TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
       
       // 3.46 CUP-1 + Sub-task 3.46.1 PR for Oil sampling
-      { id: '3.46', wbs: '3.46', parentId: null, task: '12 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '52Week', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 },
-      { id: '3.46.1', wbs: '3.46.1', parentId: '3.46', task: 'PR for Oil sampling CUP-1', lead: 'PIP', tr: 'Sampling', plant: 'CUP-1', cat: '52Week', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 }
+      { id: '3.46', wbs: '3.46', parentId: null, task: '12 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 },
+      { id: '3.46.1', wbs: '3.46.1', parentId: '3.46', task: 'PR for Oil sampling CUP-1', lead: 'PIP', tr: 'Sampling', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 }
     ];
 
     let currentYear = 2026;
@@ -782,14 +875,40 @@
     let calendarSpan = 'week'; // Default to Week view
     let collapsedParents = new Set();
 
-    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V1';
+    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V2';
+
+    function migrateTaskCategory(t) {
+      if (!t.cat) t.cat = '1.Transformer Outage';
+      const c = t.cat.toLowerCase();
+      if (c === 'outage' || c.includes('outage')) {
+        t.cat = '1.Transformer Outage';
+      } else if (c.includes('life')) {
+        t.cat = '2.Life Assessment';
+      } else if (c.includes('oltc')) {
+        t.cat = 'OLTC Inspection';
+      } else if (c.includes('visual')) {
+        t.cat = '3M Visual';
+      } else if (c.includes('oil')) {
+        t.cat = 'Oil Analysis';
+      } else if (c.includes('plant') || c === 'assessment' || c === 'assess') {
+        t.cat = '3.Plant Assessment';
+      } else if (c === '52week') {
+        if ((t.task || '').toLowerCase().includes('visual')) t.cat = '3M Visual';
+        else if ((t.task || '').toLowerCase().includes('oil')) t.cat = 'Oil Analysis';
+        else t.cat = '3.Plant Assessment';
+      }
+    }
 
     function loadSavedTasks() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        let saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) {
+          saved = localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V1');
+        }
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
+            parsed.forEach(migrateTaskCategory);
             tasks = parsed;
           }
         }
@@ -893,6 +1012,49 @@
       }
     }
 
+    // Category Matching Helper
+    function matchCategory(filterVal, taskCat) {
+      if (!filterVal || filterVal === 'ALL') return true;
+      if (!taskCat) return false;
+      if (filterVal === taskCat) return true;
+      const f = filterVal.replace(/^[0-9.]+\s*/, '').trim().toLowerCase();
+      const t = taskCat.replace(/^[0-9.]+\s*/, '').trim().toLowerCase();
+      if (f === t) return true;
+      if (f.includes('outage') && t.includes('outage')) return true;
+      if (f.includes('life') && t.includes('life')) return true;
+      if (f.includes('plant') && t.includes('plant')) return true;
+      if (f.includes('oil') && t.includes('oil')) return true;
+      if (f.includes('visual') && t.includes('visual')) return true;
+      if (f.includes('oltc') && t.includes('oltc')) return true;
+      if (t === '52week' && (f.includes('visual') || f.includes('oil'))) return true;
+      if ((t === 'assessment' || t === 'assess') && (f.includes('plant') || f.includes('life'))) return true;
+      return false;
+    }
+
+    function getGanttCategoryClass(cat) {
+      const c = (cat || '').replace(/^[0-9.]+\s*/, '').trim().toLowerCase();
+      if (c.includes('outage')) return 'gantt-bar-outage';
+      if (c.includes('life')) return 'gantt-bar-life';
+      if (c.includes('plant')) return 'gantt-bar-plant';
+      if (c.includes('oil')) return 'gantt-bar-oil';
+      if (c.includes('visual')) return 'gantt-bar-visual';
+      if (c.includes('oltc')) return 'gantt-bar-oltc';
+      if (c.includes('52week')) return 'gantt-bar-visual';
+      if (c.includes('assess')) return 'gantt-bar-plant';
+      return 'gantt-bar-outage';
+    }
+
+    function getCategoryColorDot(cat) {
+      const c = (cat || '').replace(/^[0-9.]+\s*/, '').trim().toLowerCase();
+      if (c.includes('outage')) return 'bg-rose-400';
+      if (c.includes('life')) return 'bg-purple-400';
+      if (c.includes('plant')) return 'bg-teal-400';
+      if (c.includes('oil')) return 'bg-amber-400';
+      if (c.includes('visual')) return 'bg-sky-400';
+      if (c.includes('oltc')) return 'bg-pink-400';
+      return 'bg-blue-400';
+    }
+
     // Filter Logic
     function getFilteredTasks() {
       const p = document.getElementById('filter-plant').value;
@@ -903,7 +1065,7 @@
 
       return tasks.filter(t => {
         if (p !== 'ALL' && t.plant !== p) return false;
-        if (c !== 'ALL' && t.cat !== c) return false;
+        if (c !== 'ALL' && !matchCategory(c, t.cat)) return false;
         if (l !== 'ALL' && t.lead !== l) return false;
         if (s === 'DONE' && t.progress < 100) return false;
         if (s === 'PROG' && (t.progress <= 0 || t.progress >= 100)) return false;
@@ -916,9 +1078,11 @@
 
     function applyFilters() {
       const p = document.getElementById('filter-plant').value;
+      const c = document.getElementById('filter-cat').value;
       const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
       const lvlText = lvl === 'MAIN' ? ' (Main WBS Only)' : (lvl === 'SUB' ? ' (Sub-tasks Only)' : ' (All WBS)');
-      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: ' + (p === 'ALL' ? 'All Plants' : 'Plant ' + p) + lvlText;
+      const catText = c !== 'ALL' ? ` | Category: ${c}` : '';
+      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: ' + (p === 'ALL' ? 'All Plants' : 'Plant ' + p) + catText + lvlText;
       renderAll(); saveTasksToStorage();
     }
 
@@ -1032,7 +1196,13 @@
       if (parent) {
         // Auto-match parent properties
         document.getElementById('form-plant').value = parent.plant;
-        document.getElementById('form-cat').value = parent.cat;
+        const catSelect = document.getElementById('form-cat');
+        for (let opt of catSelect.options) {
+          if (matchCategory(opt.value, parent.cat)) {
+            catSelect.value = opt.value;
+            break;
+          }
+        }
         document.getElementById('form-tr').value = parent.tr;
         document.getElementById('form-start').value = parent.start;
         document.getElementById('form-end').value = parent.end;
@@ -1055,7 +1225,13 @@
         title.innerHTML = '<i class="fa-solid fa-pen-to-square text-sky-400"></i> Edit Task: ' + t.wbs;
         document.getElementById('form-id').value = t.id;
         document.getElementById('form-wbs').value = t.wbs;
-        document.getElementById('form-cat').value = t.cat;
+        const catSelect = document.getElementById('form-cat');
+        for (let opt of catSelect.options) {
+          if (matchCategory(opt.value, t.cat)) {
+            catSelect.value = opt.value;
+            break;
+          }
+        }
         document.getElementById('form-task').value = t.task;
         document.getElementById('form-plant').value = t.plant;
         document.getElementById('form-tr').value = t.tr;
@@ -1382,7 +1558,7 @@
             const t = pt.task;
             const isSub = !!t.parentId;
             const isDone = t.progress >= 100;
-            const catClass = t.cat === 'Outage' ? 'gantt-bar-outage' : (t.cat === '52Week' ? 'gantt-bar-52week' : 'gantt-bar-assess');
+            const catClass = getGanttCategoryClass(t.cat);
 
             const hasStartHandle = !pt.isContinuationLeft;
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
@@ -1554,7 +1730,7 @@
           placedTasks.forEach(pt => {
             const t = pt.task;
             const isDone = t.progress >= 100;
-            const catClass = t.cat === 'Outage' ? 'gantt-bar-outage' : (t.cat === '52Week' ? 'gantt-bar-52week' : 'gantt-bar-assess');
+            const catClass = getGanttCategoryClass(t.cat);
 
             const hasStartHandle = !pt.isContinuationLeft;
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
@@ -1702,7 +1878,7 @@
           </td>
           <td class="py-2.5 px-3 font-semibold text-white">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full ${p.cat === 'Outage' ? 'bg-blue-400' : (p.cat === '52Week' ? 'bg-orange-400' : 'bg-emerald-400')}"></span>
+              <span class="w-2.5 h-2.5 rounded-full ${getCategoryColorDot(p.cat)}"></span>
               <span class="${isDone ? 'line-through opacity-70' : ''}">${p.task}</span>
               ${hasSubs ? `
                 <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-indigo-950 text-indigo-300 border border-indigo-700/60 flex items-center gap-1">
@@ -1861,6 +2037,16 @@
         setCalendarSpan(s === 'week' ? 'week' : parseInt(s));
       } else {
         setCalendarSpan('week');
+      }
+      if (urlParams.has('cat')) {
+        const catParam = urlParams.get('cat');
+        const catSelect = document.getElementById('filter-cat');
+        for (let opt of catSelect.options) {
+          if (opt.value !== 'ALL' && matchCategory(catParam, opt.value)) {
+            catSelect.value = opt.value;
+            break;
+          }
+        }
       }
       applyFilters();
       if (urlParams.has('view')) {
