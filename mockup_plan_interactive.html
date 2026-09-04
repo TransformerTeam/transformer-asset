@@ -591,8 +591,8 @@
                   <th class="py-2.5 px-2 w-16 text-center">Lead</th>
                   <th class="py-2.5 px-2 min-w-[100px]">Transformer</th>
                   <th class="py-2.5 px-2 w-24">Plant</th>
-                  <th class="py-2.5 px-2 min-w-[90px]">Start</th>
-                  <th class="py-2.5 px-2 min-w-[90px]">End</th>
+                  <th class="py-2.5 px-2 min-w-[100px]">Start</th>
+                  <th class="py-2.5 px-2 min-w-[100px]">End</th>
                   <th class="py-2.5 px-2 w-12 text-center">Days</th>
                   <th class="py-2.5 px-3 w-28 text-center">% Done</th>
                   <th class="py-2.5 px-2 w-24 text-right">Cost (THB)</th>
@@ -1597,6 +1597,22 @@
       container.appendChild(monthsGrid);
     }
 
+    // Format Date helper: YYYY-MM-DD -> dd-Mmm-yyyy (e.g. 05-Jan-2026)
+    function formatDate(dateStr) {
+      if (!dateStr || dateStr === '-' || dateStr === 'N/A') return '-';
+      const parts = String(dateStr).trim().split('-');
+      if (parts.length === 3) {
+        const yr = parts[0];
+        const mIdx = parseInt(parts[1], 10) - 1;
+        const day = parts[2].padStart(2, '0');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        if (mIdx >= 0 && mIdx < 12) {
+          return `${day}-${months[mIdx]}-${yr}`;
+        }
+      }
+      return dateStr;
+    }
+
     // ==========================================
     // HIERARCHICAL WBS TREE TABLE RENDERING
     // ==========================================
@@ -1665,8 +1681,8 @@
           <td class="py-2.5 px-2">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-sky-300 border border-slate-700">${p.plant}</span>
           </td>
-          <td class="py-2.5 px-2 text-slate-400 font-mono text-[11px]">${p.start}</td>
-          <td class="py-2.5 px-2 text-slate-400 font-mono text-[11px]">${p.end}</td>
+          <td class="py-2.5 px-2 text-slate-400 font-mono text-[11px] whitespace-nowrap">${formatDate(p.start)}</td>
+          <td class="py-2.5 px-2 text-slate-400 font-mono text-[11px] whitespace-nowrap">${formatDate(p.end)}</td>
           <td class="py-2.5 px-2 text-center text-slate-300 font-bold">${p.days}</td>
           <td class="py-2.5 px-3 text-center">
             <div class="flex items-center gap-1.5 justify-center">
@@ -1728,8 +1744,8 @@
               <td class="py-2 px-2">
                 <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-900 text-slate-400 border border-slate-800">${c.plant}</span>
               </td>
-              <td class="py-2 px-2 text-slate-500 font-mono text-[10px]">${c.start}</td>
-              <td class="py-2 px-2 text-slate-500 font-mono text-[10px]">${c.end}</td>
+              <td class="py-2 px-2 text-slate-500 font-mono text-[10px] whitespace-nowrap">${formatDate(c.start)}</td>
+              <td class="py-2 px-2 text-slate-500 font-mono text-[10px] whitespace-nowrap">${formatDate(c.end)}</td>
               <td class="py-2 px-2 text-center text-slate-400 text-[11px]">${c.days}</td>
               <td class="py-2 px-3 text-center">
                 <div class="flex items-center gap-1.5 justify-center">
