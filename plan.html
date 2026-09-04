@@ -257,7 +257,7 @@
       color: #0f172a;
     }
 
-    /* Progress Spinner Icon */
+    /* Progress Spinner Icon (Static) */
     .kpi-monitor .kpi-icon {
       opacity: 0.95;
       display: flex;
@@ -268,14 +268,9 @@
       width: 32px;
       height: 32px;
       color: #94a3b8;
-      animation: spin-step 1s steps(8, end) infinite;
     }
     [data-theme="light"] .progress-spinner {
       color: #1e293b;
-    }
-    @keyframes spin-step {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
 
     /* Scrollbar */
