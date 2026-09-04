@@ -234,12 +234,22 @@
                 <option value="PLAN" class="bg-slate-900 text-white">Planned (0%)</option>
               </select>
             </div>
+
+            <!-- WBS Level Filter (Main Only vs All) -->
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-sky-400/60 shadow-sm">
+              <label class="text-xs font-bold text-sky-400 font-medium">WBS Level:</label>
+              <select id="filter-level" onchange="applyFilters()" class="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer">
+                <option value="MAIN" class="bg-slate-900 text-white" selected>📌 Main WBS Only (เฉพาะงานหลัก)</option>
+                <option value="ALL" class="bg-slate-900 text-white">📑 All (รวม Sub-tasks)</option>
+                <option value="SUB" class="bg-slate-900 text-white">↳ Sub-tasks Only</option>
+              </select>
+            </div>
           </div>
 
           <!-- Active Filter Badge -->
           <div class="text-xs text-sky-400 bg-sky-950/80 px-3 py-1.5 rounded-lg border border-sky-700 flex items-center gap-2 font-medium">
             <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span id="filter-status-text">Calendar filtered by: Plant CUP-1</span>
+            <span id="filter-status-text">Calendar filtered by: Plant CUP-1 (Main WBS Only)</span>
           </div>
         </div>
 
@@ -635,6 +645,7 @@
       const c = document.getElementById('filter-cat').value;
       const l = document.getElementById('filter-lead').value;
       const s = document.getElementById('filter-status').value;
+      const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
 
       return tasks.filter(t => {
         if (p !== 'ALL' && t.plant !== p) return false;
@@ -643,13 +654,17 @@
         if (s === 'DONE' && t.progress < 100) return false;
         if (s === 'PROG' && (t.progress <= 0 || t.progress >= 100)) return false;
         if (s === 'PLAN' && t.progress > 0) return false;
+        if (lvl === 'MAIN' && t.parentId) return false; // Hide Sub-tasks, show only Main WBS
+        if (lvl === 'SUB' && !t.parentId) return false;  // Show only Sub-tasks
         return true;
       });
     }
 
     function applyFilters() {
       const p = document.getElementById('filter-plant').value;
-      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: Plant ' + (p === 'ALL' ? 'All' : p);
+      const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
+      const lvlText = lvl === 'MAIN' ? ' (Main WBS Only)' : (lvl === 'SUB' ? ' (Sub-tasks Only)' : ' (All WBS)');
+      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: Plant ' + (p === 'ALL' ? 'All' : p) + lvlText;
       renderAll(); saveTasksToStorage();
     }
 
