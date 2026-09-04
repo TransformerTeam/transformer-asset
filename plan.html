@@ -29,6 +29,97 @@
     .pill-outage { background: rgba(37, 99, 235, 0.9); border-left: 3px solid #93c5fd; }
     .pill-routine { background: rgba(234, 88, 12, 0.9); border-left: 3px solid #fdba74; }
     .pill-assess { background: rgba(5, 150, 105, 0.9); border-left: 3px solid #6ee7b7; }
+
+    /* Continuous Horizontal Gantt Span Bars (Matching Reference Image) */
+    .gantt-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 26px;
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 2px 8px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      z-index: 10;
+    }
+    .gantt-bar:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 20;
+    }
+    /* Distinct Category Themes inspired by User Reference */
+    .gantt-bar-outage {
+      background: #f8dfd4;
+      color: #2b130b;
+      border: 1px solid #e7ab91;
+    }
+    .gantt-bar-outage.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #c25e37;
+      border: 1px solid #7c2d12;
+      border-radius: 2px;
+    }
+    .gantt-bar-52week {
+      background: #d8f7e8;
+      color: #064e3b;
+      border: 1px solid #93e8bc;
+    }
+    .gantt-bar-52week.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #10b981;
+      border: 1px solid #047857;
+      border-radius: 2px;
+    }
+    .gantt-bar-assess {
+      background: #cbf3f9;
+      color: #0e4e5e;
+      border: 1px solid #8be4f0;
+    }
+    .gantt-bar-assess.has-start-handle::before {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 2px;
+      bottom: 2px;
+      width: 4px;
+      background: #06b6d4;
+      border: 1px solid #0e7490;
+      border-radius: 2px;
+    }
+    /* Continuation Arrows */
+    .gantt-bar.cont-left {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 2px dashed rgba(0, 0, 0, 0.4);
+      padding-left: 14px;
+    }
+    .gantt-bar.cont-right {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 2px dashed rgba(0, 0, 0, 0.4);
+      padding-right: 14px;
+    }
+    .gantt-bar.has-start-handle {
+      padding-left: 10px;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
@@ -908,6 +999,113 @@
       return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
     }
 
+    // Helper: Build 7-day row chunks for a given month
+    function getWeekRowsForMonth(year, month) {
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDow = new Date(year, month, 1).getDay(); // 0 = Sun
+      const weeks = [];
+      let currentWeek = [];
+
+      for (let b = 0; b < firstDow; b++) {
+        const prevDate = new Date(year, month, 1 - (firstDow - b));
+        const pYear = prevDate.getFullYear();
+        const pMonth = String(prevDate.getMonth() + 1).padStart(2, '0');
+        const pDay = String(prevDate.getDate()).padStart(2, '0');
+        currentWeek.push({ d: prevDate.getDate(), dateStr: `${pYear}-${pMonth}-${pDay}`, currentMonth: false, dow: b });
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dow = new Date(year, month, d).getDay();
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        currentWeek.push({ d, dateStr, currentMonth: true, dow });
+        if (dow === 6 || d === daysInMonth) {
+          if (d === daysInMonth && dow < 6) {
+            for (let next = 1; dow + next <= 6; next++) {
+              const nextDate = new Date(year, month + 1, next);
+              const nYear = nextDate.getFullYear();
+              const nMonth = String(nextDate.getMonth() + 1).padStart(2, '0');
+              const nDay = String(nextDate.getDate()).padStart(2, '0');
+              currentWeek.push({ d: nextDate.getDate(), dateStr: `${nYear}-${nMonth}-${nDay}`, currentMonth: false, dow: dow + next });
+            }
+          }
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+      }
+      return weeks;
+    }
+
+    // Helper: Compute non-colliding Gantt tracks for a 7-day week row
+    function computeWeekTaskTracks(weekDates, taskList) {
+      const weekStart = weekDates[0];
+      const weekEnd = weekDates[6];
+
+      // Find tasks active in this week
+      const activeTasks = taskList.filter(t => t.start <= weekEnd && t.end >= weekStart);
+
+      // Sort by start date, then longer duration first
+      activeTasks.sort((a, b) => {
+        if (a.start !== b.start) return a.start.localeCompare(b.start);
+        return b.end.localeCompare(a.end);
+      });
+
+      const tracks = [];
+      const placedTasks = [];
+
+      for (const t of activeTasks) {
+        let startCol = 1;
+        let isContinuationLeft = false;
+        if (t.start < weekStart) {
+          startCol = 1;
+          isContinuationLeft = true;
+        } else {
+          const idx = weekDates.indexOf(t.start);
+          startCol = (idx >= 0 ? idx + 1 : 1);
+        }
+
+        let endCol = 7;
+        let isContinuationRight = false;
+        if (t.end > weekEnd) {
+          endCol = 7;
+          isContinuationRight = true;
+        } else {
+          const idx = weekDates.indexOf(t.end);
+          endCol = (idx >= 0 ? idx + 1 : 7);
+        }
+
+        const span = Math.max(1, endCol - startCol + 1);
+
+        // Find earliest available track
+        let trackRow = 0;
+        while (true) {
+          if (!tracks[trackRow]) tracks[trackRow] = new Array(7).fill(false);
+          let collision = false;
+          for (let c = startCol - 1; c <= endCol - 1; c++) {
+            if (tracks[trackRow][c]) { collision = true; break; }
+          }
+          if (!collision) {
+            for (let c = startCol - 1; c <= endCol - 1; c++) {
+              tracks[trackRow][c] = true;
+            }
+            break;
+          }
+          trackRow++;
+        }
+
+        placedTasks.push({
+          task: t,
+          trackRow,
+          startCol,
+          endCol,
+          span,
+          isContinuationLeft,
+          isContinuationRight
+        });
+      }
+
+      return { placedTasks, trackCount: tracks.length };
+    }
+
     // Core Render Engine
     function renderAll() {
       const filtered = getFilteredTasks();
@@ -934,13 +1132,23 @@
       if (!container) return;
       container.innerHTML = '';
 
-      // === 1. WEEK VIEW ===
+      // === 1. WEEK VIEW: CONTINUOUS HORIZONTAL GANTT SPAN BARS (MATCHING USER REFERENCE) ===
       if (calendarSpan === 'week') {
         const curr = new Date(currentWeekDate);
         const first = curr.getDate() - curr.getDay(); // Sunday
         const sunday = new Date(curr.setDate(first));
         const saturday = new Date(new Date(sunday).setDate(sunday.getDate() + 6));
         const weekNum = getWeekNumber(sunday);
+
+        const weekDates = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(sunday);
+          d.setDate(sunday.getDate() + i);
+          const yr = d.getFullYear();
+          const mo = String(d.getMonth() + 1).padStart(2, '0');
+          const dy = String(d.getDate()).padStart(2, '0');
+          weekDates.push({ date: d, dateStr: `${yr}-${mo}-${dy}` });
+        }
 
         document.getElementById('cal-period-title').innerHTML = `
           <span>Week ${weekNum}, ${sunday.getFullYear()}</span>
@@ -950,64 +1158,86 @@
         const weekCard = document.createElement('div');
         weekCard.className = 'bg-slate-900/90 border border-sky-500/40 rounded-xl p-4 shadow-xl space-y-3';
 
-        const weekGrid = document.createElement('div');
-        weekGrid.className = 'grid grid-cols-1 md:grid-cols-7 gap-2.5';
-
         const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-        for (let i = 0; i < 7; i++) {
-          const dayDate = new Date(sunday);
-          dayDate.setDate(sunday.getDate() + i);
-          const dateStr = `${dayDate.getFullYear()}-${String(dayDate.getMonth() + 1).padStart(2, '0')}-${String(dayDate.getDate()).padStart(2, '0')}`;
-          const isToday = (dayDate.getDate() === 9 && dayDate.getMonth() === 0 && dayDate.getFullYear() === 2026);
+        // Week Calendar Container with absolute/relative layering
+        const weekGridContainer = document.createElement('div');
+        weekGridContainer.className = 'relative rounded-xl border border-slate-800 bg-slate-950/70 p-2 min-h-[380px] overflow-hidden';
 
-          const dayCol = document.createElement('div');
-          dayCol.className = `rounded-lg border p-2.5 min-h-[220px] flex flex-col justify-between ${isToday ? 'bg-slate-900/90 border-sky-400 ring-2 ring-sky-400/40' : 'bg-slate-950/60 border-slate-800'}`;
+        // 1. Base Day Columns (7 columns)
+        const colsGrid = document.createElement('div');
+        colsGrid.className = 'grid grid-cols-7 gap-1.5 h-full min-h-[360px]';
 
-          let colHTML = `
-            <div>
-              <div class="flex items-center justify-between pb-1.5 border-b border-slate-800 mb-2">
-                <span class="text-xs font-bold ${i === 0 ? 'text-rose-400' : (i === 6 ? 'text-sky-400' : 'text-slate-300')}">${dayLabels[i]}</span>
-                <span class="text-xs font-black px-1.5 py-0.5 rounded ${isToday ? 'bg-sky-500 text-white' : 'text-slate-200 bg-slate-800'}">${dayDate.getDate()}</span>
-              </div>
-              <div class="space-y-1.5 overflow-y-auto max-h-[170px] pr-0.5">
+        weekDates.forEach((wDate, i) => {
+          const isToday = (wDate.date.getDate() === 9 && wDate.date.getMonth() === 0 && wDate.date.getFullYear() === 2026);
+          const colEl = document.createElement('div');
+          colEl.className = `rounded-lg border flex flex-col justify-start p-2 transition ${isToday ? 'bg-slate-900/90 border-sky-400 ring-2 ring-sky-400/40' : 'bg-slate-900/30 border-slate-800/80'}`;
+
+          colEl.innerHTML = `
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80 mb-2">
+              <span class="text-xs font-bold ${i === 0 ? 'text-rose-400' : (i === 6 ? 'text-sky-400' : 'text-slate-400')}">${dayLabels[i]}</span>
+              <span class="text-xs font-black px-1.5 py-0.5 rounded ${isToday ? 'bg-sky-500 text-white shadow' : 'text-slate-200 bg-slate-800/90'}">${wDate.date.getDate()}</span>
+            </div>
           `;
+          colsGrid.appendChild(colEl);
+        });
+        weekGridContainer.appendChild(colsGrid);
 
-          const dayTasks = filtered.filter(t => t.start <= dateStr && t.end >= dateStr);
+        // 2. Gantt Span Layer
+        const ganttLayer = document.createElement('div');
+        ganttLayer.className = 'absolute top-12 left-2 right-2 bottom-2 pointer-events-none';
 
-          if (dayTasks.length === 0) {
-            colHTML += `<p class="text-[10px] text-slate-600 text-center py-4">No tasks</p>`;
-          } else {
-            dayTasks.forEach(t => {
-              const isDone = t.progress >= 100;
-              const isSub = !!t.parentId;
-              const pClass = t.cat === 'Outage' ? 'pill-outage text-blue-100' : (t.cat === '52Week' ? 'pill-routine text-orange-100' : 'pill-assess text-emerald-100');
+        const { placedTasks, trackCount } = computeWeekTaskTracks(weekDates.map(x => x.dateStr), filtered);
 
-              colHTML += `
-                <div onclick="openModal('edit', '${t.id}')" title="Click to edit ${t.task}" class="${pClass} p-1.5 rounded shadow cursor-pointer hover:brightness-110 transition ${isSub ? 'border-dashed opacity-95 ml-1' : ''}">
-                  <div class="flex items-center justify-between gap-1 text-[9px]">
-                    <span class="font-mono font-bold text-sky-200">${t.wbs}</span>
-                    <div class="flex items-center gap-1">
-                      ${isSub ? '<span class="text-[8px] px-1 bg-indigo-950 text-indigo-200 border border-indigo-700/50 rounded font-bold">Sub</span>' : ''}
-                      <span class="px-1 bg-black/40 rounded font-bold">${t.plant}</span>
-                    </div>
-                  </div>
-                  <p class="text-[10.5px] font-bold leading-tight line-clamp-1 mt-0.5">${t.task}</p>
-                  <div class="flex items-center justify-between text-[8.5px] pt-1 mt-1 border-t border-white/20">
-                    <span class="text-slate-300 truncate max-w-[70px]">${t.tr || '-'}</span>
-                    <span class="font-bold ${isDone ? 'text-emerald-300' : 'text-amber-200'}">${t.progress}%</span>
-                  </div>
+        if (placedTasks.length === 0) {
+          const emptyMsg = document.createElement('div');
+          emptyMsg.className = 'flex items-center justify-center h-48 text-slate-500 text-xs font-medium';
+          emptyMsg.textContent = 'No tasks scheduled in this week period.';
+          ganttLayer.appendChild(emptyMsg);
+        } else {
+          const trackGrid = document.createElement('div');
+          trackGrid.className = 'grid grid-cols-7 gap-1.5 auto-rows-[34px] w-full pt-1 pointer-events-auto';
+
+          placedTasks.forEach(pt => {
+            const t = pt.task;
+            const isSub = !!t.parentId;
+            const isDone = t.progress >= 100;
+            const catClass = t.cat === 'Outage' ? 'gantt-bar-outage' : (t.cat === '52Week' ? 'gantt-bar-52week' : 'gantt-bar-assess');
+
+            const hasStartHandle = !pt.isContinuationLeft;
+            const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
+            const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
+            const handleClass = hasStartHandle ? 'has-start-handle' : '';
+            const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
+
+            const bar = document.createElement('div');
+            bar.onclick = () => openModal('edit', t.id);
+            bar.title = `${t.wbs}: ${t.task} (${t.plant} - ${t.tr || 'TR'}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%`;
+            bar.className = `gantt-bar ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group`;
+            bar.style.gridColumn = `${pt.startCol} / span ${pt.span}`;
+            bar.style.gridRow = `${pt.trackRow + 1}`;
+
+            bar.innerHTML = `
+              <div class="flex items-center justify-between w-full overflow-hidden text-[11px] font-semibold gap-1.5">
+                <div class="flex items-center gap-1.5 truncate">
+                  ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[9px] opacity-70"></i>' : ''}
+                  <span class="font-mono font-black text-[11px] opacity-95">${displayTitle}</span>
+                  ${t.tr ? `<span class="opacity-75 text-[10px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
                 </div>
-              `;
-            });
-          }
-
-          colHTML += `</div></div>`;
-          dayCol.innerHTML = colHTML;
-          weekGrid.appendChild(dayCol);
+                <div class="flex items-center gap-1.5 shrink-0 ml-1 text-[10px]">
+                  <span class="font-bold opacity-80">${t.progress}%</span>
+                  ${isDone ? '<i class="fa-solid fa-circle-check text-emerald-700 text-[11px]"></i>' : ''}
+                  ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>' : ''}
+                </div>
+              </div>
+            `;
+            trackGrid.appendChild(bar);
+          });
+          ganttLayer.appendChild(trackGrid);
         }
 
-        weekCard.appendChild(weekGrid);
+        weekGridContainer.appendChild(ganttLayer);
+        weekCard.appendChild(weekGridContainer);
         container.appendChild(weekCard);
         return;
       }
@@ -1026,15 +1256,108 @@
         document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} - ${monthNames[normEndMonth]} ${endYear} (${spanCount} Months)`;
       }
 
+      // === 2. 1-MONTH VIEW: WEEKLY ROW GANTT SPAN BARS (MATCHING USER REFERENCE IMAGE) ===
+      if (spanCount === 1) {
+        const yIdx = currentYear + Math.floor(startMonth / 12);
+        const mIdx = ((startMonth % 12) + 12) % 12;
+
+        const monthCard = document.createElement('div');
+        monthCard.className = 'bg-slate-900/90 border border-sky-500/40 rounded-xl p-4 shadow-xl space-y-3';
+
+        const weekRows = getWeekRowsForMonth(yIdx, mIdx);
+        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        // Header Day of Week
+        let headerRow = `
+          <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400 pb-2 border-b border-slate-800">
+            <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
+          </div>
+          <div class="space-y-2.5">
+        `;
+
+        let rowsHTML = '';
+        weekRows.forEach((wRow, rIdx) => {
+          const weekDateStrs = wRow.map(x => x.dateStr);
+          const { placedTasks, trackCount } = computeWeekTaskTracks(weekDateStrs, filtered);
+          const rowMinHeight = Math.max(90, 42 + (trackCount * 30));
+
+          // Base 7-day columns for this week
+          let colsHTML = `<div class="grid grid-cols-7 gap-2 h-full">`;
+          wRow.forEach((cell, dIdx) => {
+            const isCurrentMonth = cell.currentMonth;
+            const isToday = (cell.d === 9 && mIdx === 0 && yIdx === 2026 && isCurrentMonth);
+            const numColor = isToday ? 'bg-sky-500 text-white shadow' : (isCurrentMonth ? (dIdx === 0 ? 'text-rose-400' : (dIdx === 6 ? 'text-sky-400' : 'text-slate-200')) : 'text-slate-600');
+            const bgCell = isCurrentMonth ? (isToday ? 'bg-slate-900/90 border-sky-400 ring-1 ring-sky-400/30' : 'bg-slate-950/50 border-slate-800/80') : 'bg-slate-950/20 border-slate-900/40 opacity-40';
+
+            colsHTML += `
+              <div class="rounded-lg border ${bgCell} p-1.5 flex flex-col justify-start min-h-[${rowMinHeight}px]">
+                <div class="flex items-center justify-between pb-1">
+                  <span class="text-[11px] font-black px-1.5 py-0.2 rounded ${numColor}">${cell.d}</span>
+                </div>
+              </div>
+            `;
+          });
+          colsHTML += `</div>`;
+
+          // Gantt track bars layer
+          let trackLayerHTML = `
+            <div class="absolute top-8 left-1.5 right-1.5 bottom-1 pointer-events-none">
+              <div class="grid grid-cols-7 gap-2 auto-rows-[28px] pointer-events-auto">
+          `;
+
+          placedTasks.forEach(pt => {
+            const t = pt.task;
+            const isDone = t.progress >= 100;
+            const catClass = t.cat === 'Outage' ? 'gantt-bar-outage' : (t.cat === '52Week' ? 'gantt-bar-52week' : 'gantt-bar-assess');
+
+            const hasStartHandle = !pt.isContinuationLeft;
+            const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
+            const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
+            const handleClass = hasStartHandle ? 'has-start-handle' : '';
+            const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
+
+            trackLayerHTML += `
+              <div onclick="openModal('edit', '${t.id}')"
+                   title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} | Progress: ${t.progress}%"
+                   class="gantt-bar ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
+                   style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
+                <div class="flex items-center justify-between w-full overflow-hidden text-[10.5px] font-semibold gap-1.5">
+                  <div class="flex items-center gap-1.5 truncate">
+                    ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[8px] opacity-70"></i>' : ''}
+                    <span class="font-mono font-black text-[10.5px] opacity-95">${displayTitle}</span>
+                    ${t.tr ? `<span class="opacity-75 text-[9.5px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0 ml-1 text-[9.5px]">
+                    <span class="font-bold opacity-80">${t.progress}%</span>
+                    ${isDone ? '<i class="fa-solid fa-check text-emerald-700 text-[10px]"></i>' : ''}
+                    ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[8px] opacity-70"></i>' : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          trackLayerHTML += `</div></div>`;
+
+          rowsHTML += `
+            <div class="relative rounded-xl border border-slate-800/80 bg-slate-950/40 p-1.5 min-h-[${rowMinHeight}px] overflow-hidden">
+              ${colsHTML}
+              ${trackLayerHTML}
+            </div>
+          `;
+        });
+
+        monthCard.innerHTML = headerRow + rowsHTML + `</div>`;
+        container.appendChild(monthCard);
+        return;
+      }
+
+      // === 3. MULTI-MONTH VIEW (3M, 6M, 12M) - STRETCHED GRID ===
       let gridCols = 'grid-cols-1 md:grid-cols-3';
       let cellMinHeight = 'min-h-[115px]';
       let blankHeight = 'min-h-[115px]';
 
-      if (spanCount === 1) {
-        gridCols = 'grid-cols-1';
-        cellMinHeight = 'min-h-[140px]';
-        blankHeight = 'min-h-[140px]';
-      } else if (spanCount === 3) {
+      if (spanCount === 3) {
         gridCols = 'grid-cols-1 md:grid-cols-3';
         cellMinHeight = 'min-h-[115px]'; // Stretched tall and spacious!
         blankHeight = 'min-h-[115px]';
@@ -1114,7 +1437,6 @@
               const isDone = t.progress >= 100;
               const bgBadge = t.cat === 'Outage' ? 'bg-blue-600 hover:bg-blue-500 text-white' : (t.cat === '52Week' ? 'bg-orange-600 hover:bg-orange-500 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white');
               
-              // In 3-month view, cell width is ~50px: format as prominent WBS badge with progress or sub indicator
               dayHTML += `
                 <div onclick="openModal('edit', '${t.id}')" title="${t.wbs}: ${t.task} (${t.plant}) - Click to edit" class="${bgBadge} px-1 py-1 rounded-md text-center shadow-md transition transform hover:scale-105 active:scale-95 cursor-pointer ${isSub ? 'ring-1 ring-indigo-400/80 bg-indigo-950/90' : ''}">
                   <div class="flex items-center justify-center gap-1">
