@@ -44,6 +44,7 @@
   --glass-bg: rgba(26, 59, 112, 0.5);
   --glass-border: rgba(203, 230, 249, 0.12);
   --glass-blur: blur(12px);
+  --sidebar-bg: #171c27;
 }
 
 /* Light Theme Variables */
@@ -75,6 +76,7 @@
   
   --glass-bg: rgba(237, 237, 237, 0.95);
   --glass-border: rgba(0, 0, 0, 0.06);
+  --sidebar-bg: rgba(237, 237, 237, 0.95);
 }
 
 /* Reset & Base Styles */
@@ -1211,7 +1213,7 @@ svg.circular-chart {
 /* Sidebar Styling */
 .sidebar {
   width: 240px;
-  background: var(--glass-bg);
+  background: var(--sidebar-bg, #171c27);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
