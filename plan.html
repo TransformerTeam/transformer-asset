@@ -980,7 +980,7 @@
         return;
       }
 
-      // === 2. MULTI-MONTH VIEW (1M, 3M, 6M, 12M) ===
+      // === 2. MULTI-MONTH VIEW (1M, 3M, 6M, 12M) - STRETCHED & LEGIBLE ===
       const spanCount = typeof calendarSpan === 'number' ? calendarSpan : 3;
       const endMonth = startMonth + spanCount - 1;
       const endYear = currentYear + Math.floor(endMonth / 12);
@@ -995,9 +995,26 @@
       }
 
       let gridCols = 'grid-cols-1 md:grid-cols-3';
-      if (spanCount === 1) gridCols = 'grid-cols-1';
-      else if (spanCount === 6) gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-      else if (spanCount === 12) gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+      let cellMinHeight = 'min-h-[115px]';
+      let blankHeight = 'min-h-[115px]';
+
+      if (spanCount === 1) {
+        gridCols = 'grid-cols-1';
+        cellMinHeight = 'min-h-[140px]';
+        blankHeight = 'min-h-[140px]';
+      } else if (spanCount === 3) {
+        gridCols = 'grid-cols-1 md:grid-cols-3';
+        cellMinHeight = 'min-h-[115px]'; // Stretched tall and spacious!
+        blankHeight = 'min-h-[115px]';
+      } else if (spanCount === 6) {
+        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+        cellMinHeight = 'min-h-[90px]';
+        blankHeight = 'min-h-[90px]';
+      } else if (spanCount === 12) {
+        gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+        cellMinHeight = 'min-h-[65px]';
+        blankHeight = 'min-h-[65px]';
+      }
 
       const monthsGrid = document.createElement('div');
       monthsGrid.className = `grid ${gridCols} gap-4`;
@@ -1008,20 +1025,20 @@
         const mIdx = ((absM % 12) + 12) % 12;
 
         const monthCard = document.createElement('div');
-        monthCard.className = 'bg-slate-900/80 border border-slate-700/60 rounded-xl p-3 shadow-lg flex flex-col justify-between';
+        monthCard.className = 'bg-slate-900/90 border border-slate-700/70 rounded-xl p-3.5 shadow-xl flex flex-col justify-between';
 
         const daysInMonth = new Date(yIdx, mIdx + 1, 0).getDate();
         const firstDayDow = new Date(yIdx, mIdx, 1).getDay(); // Sunday=0
 
         let headerHTML = `
           <div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-2">
-            <h3 class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
-              <i class="fa-regular fa-calendar"></i> ${monthNames[mIdx]} ${yIdx}
+            <h3 class="text-xs md:text-sm font-bold text-sky-300 flex items-center gap-1.5">
+              <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
             </h3>
-            <span class="text-[10px] text-slate-500 font-mono">Q${Math.floor(mIdx/3)+1}</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
           </div>
-          <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400 mb-1">
-            <span class="text-rose-400">S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span class="text-sky-400">S</span>
+          <div class="grid grid-cols-7 gap-1 text-center text-[10.5px] font-bold text-slate-400 mb-1.5">
+            <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
           </div>
         `;
         monthCard.innerHTML = headerHTML;
@@ -1031,7 +1048,7 @@
 
         for (let b = 0; b < firstDayDow; b++) {
           const blank = document.createElement('div');
-          blank.className = 'h-7 rounded bg-slate-950/20';
+          blank.className = `${blankHeight} rounded-lg bg-slate-950/20 border border-transparent`;
           daysGrid.appendChild(blank);
         }
 
@@ -1042,37 +1059,72 @@
 
           const dayCell = document.createElement('div');
           const hasTask = dayTasks.length > 0;
-          let bgClass = 'bg-slate-950/40 border-slate-800/40';
-          if (isToday) bgClass = 'bg-sky-950/90 border-sky-400 ring-1 ring-sky-400';
-          else if (hasTask) bgClass = 'bg-slate-800/70 border-slate-700 hover:border-slate-500';
+          let bgClass = 'bg-slate-950/40 border-slate-800/60';
+          if (isToday) bgClass = 'bg-slate-900/90 border-sky-400 ring-2 ring-sky-400/40 shadow-lg';
+          else if (hasTask) bgClass = 'bg-slate-900/80 border-slate-700/80 hover:border-slate-500 shadow-md';
 
-          dayCell.className = `min-h-[30px] rounded border ${bgClass} p-0.5 flex flex-col justify-between transition cursor-pointer relative group`;
+          dayCell.className = `${cellMinHeight} rounded-lg border ${bgClass} p-1.5 flex flex-col justify-between transition cursor-pointer relative group`;
 
           let dayHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-[9px] font-bold ${isToday ? 'text-sky-300' : 'text-slate-400'}">${d}</span>
-              ${hasTask ? `<span class="w-1.5 h-1.5 rounded-full ${dayTasks[0].cat === 'Outage' ? 'bg-blue-400' : (dayTasks[0].cat === '52Week' ? 'bg-orange-400' : 'bg-emerald-400')}"></span>` : ''}
+            <div class="flex items-center justify-between pb-1">
+              <span class="text-[10px] font-black ${isToday ? 'px-1.5 py-0.2 rounded bg-sky-500 text-white shadow' : 'text-slate-300'}">${d}</span>
+              ${hasTask ? `<span class="w-2 h-2 rounded-full ${dayTasks[0].cat === 'Outage' ? 'bg-blue-400 ring-1 ring-blue-300' : (dayTasks[0].cat === '52Week' ? 'bg-orange-400 ring-1 ring-orange-300' : 'bg-emerald-400 ring-1 ring-emerald-300')}"></span>` : ''}
             </div>
           `;
 
           if (hasTask) {
-            const topTask = dayTasks[0];
-            const bgBadge = topTask.cat === 'Outage' ? 'bg-blue-600' : (topTask.cat === '52Week' ? 'bg-orange-600' : 'bg-emerald-600');
-            dayHTML += `
-              <div class="mt-0.5 px-0.5 py-0.2 rounded ${bgBadge} text-[8px] text-white font-bold truncate">
-                ${topTask.wbs}
-              </div>
-            `;
+            dayHTML += `<div class="space-y-1 overflow-y-auto max-h-[82px] pr-0.5">`;
+            
+            // Show up to 3 task pills directly in the elongated box
+            const displayTasks = dayTasks.slice(0, 3);
+            displayTasks.forEach(t => {
+              const isSub = !!t.parentId;
+              const isDone = t.progress >= 100;
+              const bgBadge = t.cat === 'Outage' ? 'bg-blue-600 hover:bg-blue-500 text-white' : (t.cat === '52Week' ? 'bg-orange-600 hover:bg-orange-500 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white');
+              
+              // In 3-month view, cell width is ~50px: format as prominent WBS badge with progress or sub indicator
+              dayHTML += `
+                <div onclick="openModal('edit', '${t.id}')" title="${t.wbs}: ${t.task} (${t.plant}) - Click to edit" class="${bgBadge} px-1 py-1 rounded-md text-center shadow-md transition transform hover:scale-105 active:scale-95 cursor-pointer ${isSub ? 'ring-1 ring-indigo-400/80 bg-indigo-950/90' : ''}">
+                  <div class="flex items-center justify-center gap-1">
+                    ${isSub ? '<span class="text-[8px] text-indigo-300 font-bold">↳</span>' : ''}
+                    <span class="font-mono font-black text-[10.5px] tracking-tight leading-none">${t.wbs}</span>
+                    ${isDone ? '<i class="fa-solid fa-check text-[8px] text-emerald-300"></i>' : ''}
+                  </div>
+                  ${spanCount <= 3 ? `
+                    <div class="text-[8px] font-semibold opacity-90 truncate leading-tight mt-0.5 max-w-full">
+                      ${t.plant}
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            });
 
-            // Hover Tooltip
+            if (dayTasks.length > 2) {
+              dayHTML += `
+                <div class="text-[8.5px] font-bold text-sky-400 text-center">
+                  +${dayTasks.length - 2} more
+                </div>
+              `;
+            }
+
+            dayHTML += `</div>`;
+
+            // Rich Hover Tooltip
             dayHTML += `
-              <div class="hidden group-hover:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 w-44 p-2 rounded-lg bg-slate-900 text-white text-[10px] shadow-2xl border border-slate-700 z-30 pointer-events-none">
-                <p class="font-bold text-sky-400 border-b border-slate-700 pb-1 mb-1">${dateStr}</p>
-                <div class="space-y-1 max-h-28 overflow-y-auto">
+              <div class="hidden group-hover:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 w-52 p-2.5 rounded-xl bg-slate-950/95 text-white text-[11px] shadow-2xl border border-sky-500/50 z-40 pointer-events-none backdrop-blur-md">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-1 mb-1.5">
+                  <span class="font-bold text-sky-400">${dateStr}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800">${dayTasks.length} tasks</span>
+                </div>
+                <div class="space-y-1.5 max-h-36 overflow-y-auto pr-0.5">
                   ${dayTasks.map(t => `
-                    <div class="flex items-center justify-between text-[9px]">
-                      <span class="truncate max-w-[95px] font-medium">${t.parentId ? '↳ ' : ''}${t.task}</span>
-                      <span class="font-bold text-sky-300">${t.progress}%</span>
+                    <div class="p-1 rounded bg-slate-900 border border-slate-800">
+                      <div class="flex items-center justify-between text-[9.5px]">
+                        <span class="font-mono font-bold text-sky-300">${t.wbs}</span>
+                        <span class="font-bold ${t.progress >= 100 ? 'text-emerald-400' : 'text-amber-400'}">${t.progress}%</span>
+                      </div>
+                      <p class="font-semibold text-[10px] text-slate-200 leading-tight mt-0.5">${t.parentId ? '↳ ' : ''}${t.task}</p>
+                      <p class="text-[9px] text-slate-400 mt-0.5">TR: ${t.tr || '-'} | Plant: ${t.plant}</p>
                     </div>
                   `).join('')}
                 </div>
