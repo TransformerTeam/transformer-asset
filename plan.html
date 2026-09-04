@@ -24,7 +24,8 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(rgba(13, 33, 73, 0.60), rgba(13, 33, 73, 0.60)), url('background.jpg') no-repeat center center fixed;
+      background: linear-gradient(rgba(8, 12, 20, 0.88), rgba(8, 12, 20, 0.88)), url('background.jpg') no-repeat center center fixed;
+      background-color: #0d111a;
       background-size: cover;
       color: var(--text-primary, #f1f5f9);
       line-height: 1.5;
@@ -35,11 +36,23 @@
       font-family: 'Outfit', sans-serif;
     }
     .glass-card {
-      background: var(--glass-bg, rgba(26, 59, 112, 0.55));
-      backdrop-filter: var(--glass-blur, blur(12px));
-      -webkit-backdrop-filter: var(--glass-blur, blur(12px));
-      border: 1px solid var(--glass-border, rgba(203, 230, 249, 0.15));
+      background: #171c27 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
       border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    }
+    #view-calendar, #view-table {
+      background: #171c27 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+    }
+    .filters-card {
+      background: #171c27 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .kpi-card {
+      background: #171c27 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
     .pill-outage { background: rgba(37, 99, 235, 0.9); border-left: 3px solid #93c5fd; }
     .pill-routine { background: rgba(234, 88, 12, 0.9); border-left: 3px solid #fdba74; }
@@ -482,7 +495,7 @@
             </div>
 
             <!-- Calendar Range Span Buttons: Week, 1M, 3M, 6M, 12M -->
-            <div class="flex items-center gap-1.5 p-1 rounded-lg border" style="background: var(--bg-secondary); border-color: var(--border-color);">
+            <div class="flex items-center gap-1.5 p-1 rounded-lg border border-slate-700/80 bg-slate-900/90">
               <span class="text-[11px] font-bold px-2 flex items-center gap-1" style="color: var(--text-secondary);">
                 <i class="fa-solid fa-clock"></i> Range:
               </span>
@@ -1267,7 +1280,7 @@
         `;
 
         const weekCard = document.createElement('div');
-        weekCard.className = 'bg-slate-900/90 border border-sky-500/40 rounded-xl p-4 shadow-xl space-y-3';
+        weekCard.className = 'bg-[#111622] border border-slate-700/70 rounded-xl p-4 shadow-xl space-y-3';
 
         const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -1425,7 +1438,7 @@
         const mIdx = ((absM % 12) + 12) % 12;
 
         const monthCard = document.createElement('div');
-        monthCard.className = 'bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
+        monthCard.className = 'bg-[#111622] border border-slate-700/70 rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
 
         const weekRows = getWeekRowsForMonth(yIdx, mIdx);
 
