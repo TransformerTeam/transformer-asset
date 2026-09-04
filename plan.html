@@ -120,6 +120,55 @@
       padding-left: 10px;
     }
 
+    /* Compact Gantt Bar for 3-Month View */
+    .gantt-bar-sm {
+      min-height: 20px;
+      font-size: 9.5px;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .gantt-bar-sm.has-start-handle {
+      padding-left: 7px;
+    }
+    .gantt-bar-sm.has-start-handle::before {
+      width: 3px;
+      left: 1px;
+      top: 1.5px;
+      bottom: 1.5px;
+      border-radius: 1.5px;
+    }
+    .gantt-bar-sm.cont-left {
+      padding-left: 10px;
+    }
+    .gantt-bar-sm.cont-right {
+      padding-right: 10px;
+    }
+
+    /* Micro Gantt Bar for 6-Month & 12-Month Views */
+    .gantt-bar-xs {
+      min-height: 16px;
+      font-size: 8.5px;
+      padding: 0 3px;
+      border-radius: 3px;
+      line-height: 1;
+    }
+    .gantt-bar-xs.has-start-handle {
+      padding-left: 6px;
+    }
+    .gantt-bar-xs.has-start-handle::before {
+      width: 2.5px;
+      left: 0.5px;
+      top: 1px;
+      bottom: 1px;
+      border-radius: 1px;
+    }
+    .gantt-bar-xs.cont-left {
+      padding-left: 8px;
+    }
+    .gantt-bar-xs.cont-right {
+      padding-right: 8px;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
@@ -1256,43 +1305,102 @@
         document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} - ${monthNames[normEndMonth]} ${endYear} (${spanCount} Months)`;
       }
 
-      // === 2. 1-MONTH VIEW: WEEKLY ROW GANTT SPAN BARS (MATCHING USER REFERENCE IMAGE) ===
+      // === 2. MONTHS VIEW (1M, 3M, 6M, 12M): ALL SUPPORT CONTINUOUS HORIZONTAL GANTT SPAN BARS ===
+      let gridCols = 'grid-cols-1';
+      let barVariantClass = '';
+      let autoRowHeight = 28;
+      let minRowBaseHeight = 42;
+      let defaultRowHeight = 90;
+      let dayHeaderSize = 'text-xs';
+      let dayNumSize = 'text-[11px]';
+      let titleSize = 'text-xs md:text-sm';
+      let maxVisibleTracks = 99; // show all or truncate with more indicator
+
       if (spanCount === 1) {
-        const yIdx = currentYear + Math.floor(startMonth / 12);
-        const mIdx = ((startMonth % 12) + 12) % 12;
+        gridCols = 'grid-cols-1';
+        barVariantClass = '';
+        autoRowHeight = 28;
+        minRowBaseHeight = 42;
+        defaultRowHeight = 90;
+        dayHeaderSize = 'text-xs';
+        dayNumSize = 'text-[11px]';
+        titleSize = 'text-sm md:text-base';
+      } else if (spanCount === 3) {
+        gridCols = 'grid-cols-1 md:grid-cols-3';
+        barVariantClass = 'gantt-bar-sm';
+        autoRowHeight = 22;
+        minRowBaseHeight = 32;
+        defaultRowHeight = 72;
+        dayHeaderSize = 'text-[10.5px]';
+        dayNumSize = 'text-[10px]';
+        titleSize = 'text-xs md:text-sm';
+      } else if (spanCount === 6) {
+        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+        barVariantClass = 'gantt-bar-xs';
+        autoRowHeight = 18;
+        minRowBaseHeight = 28;
+        defaultRowHeight = 60;
+        dayHeaderSize = 'text-[9.5px]';
+        dayNumSize = 'text-[9px]';
+        titleSize = 'text-xs';
+      } else if (spanCount === 12) {
+        gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+        barVariantClass = 'gantt-bar-xs';
+        autoRowHeight = 17;
+        minRowBaseHeight = 26;
+        defaultRowHeight = 52;
+        dayHeaderSize = 'text-[9px]';
+        dayNumSize = 'text-[8.5px]';
+        titleSize = 'text-xs';
+      }
+
+      const monthsGrid = document.createElement('div');
+      monthsGrid.className = `grid ${gridCols} gap-4`;
+
+      for (let m = 0; m < spanCount; m++) {
+        const absM = startMonth + m;
+        const yIdx = currentYear + Math.floor(absM / 12);
+        const mIdx = ((absM % 12) + 12) % 12;
 
         const monthCard = document.createElement('div');
-        monthCard.className = 'bg-slate-900/90 border border-sky-500/40 rounded-xl p-4 shadow-xl space-y-3';
+        monthCard.className = 'bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
 
         const weekRows = getWeekRowsForMonth(yIdx, mIdx);
-        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-        // Header Day of Week
+        // Header Title + Days of week
         let headerRow = `
-          <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400 pb-2 border-b border-slate-800">
-            <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
+          <div>
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800 mb-1.5">
+              <h3 class="${titleSize} font-bold text-sky-300 flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
+              </h3>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center ${dayHeaderSize} font-bold text-slate-400 pb-1">
+              <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
+            </div>
           </div>
-          <div class="space-y-2.5">
+          <div class="space-y-1.5 flex-1">
         `;
 
         let rowsHTML = '';
-        weekRows.forEach((wRow, rIdx) => {
+        weekRows.forEach((wRow) => {
           const weekDateStrs = wRow.map(x => x.dateStr);
           const { placedTasks, trackCount } = computeWeekTaskTracks(weekDateStrs, filtered);
-          const rowMinHeight = Math.max(90, 42 + (trackCount * 30));
+          const rowMinHeight = Math.max(defaultRowHeight, minRowBaseHeight + (trackCount * autoRowHeight));
 
-          // Base 7-day columns for this week
-          let colsHTML = `<div class="grid grid-cols-7 gap-2 h-full">`;
+          // Base 7-day columns
+          let colsHTML = `<div class="grid grid-cols-7 gap-1 h-full">`;
           wRow.forEach((cell, dIdx) => {
             const isCurrentMonth = cell.currentMonth;
             const isToday = (cell.d === 9 && mIdx === 0 && yIdx === 2026 && isCurrentMonth);
-            const numColor = isToday ? 'bg-sky-500 text-white shadow' : (isCurrentMonth ? (dIdx === 0 ? 'text-rose-400' : (dIdx === 6 ? 'text-sky-400' : 'text-slate-200')) : 'text-slate-600');
-            const bgCell = isCurrentMonth ? (isToday ? 'bg-slate-900/90 border-sky-400 ring-1 ring-sky-400/30' : 'bg-slate-950/50 border-slate-800/80') : 'bg-slate-950/20 border-slate-900/40 opacity-40';
+            const numColor = isToday ? 'bg-sky-500 text-white shadow' : (isCurrentMonth ? (dIdx === 0 ? 'text-rose-400' : (dIdx === 6 ? 'text-sky-400' : 'text-slate-300')) : 'text-slate-600');
+            const bgCell = isCurrentMonth ? (isToday ? 'bg-slate-900/90 border-sky-400 ring-1 ring-sky-400/30' : 'bg-slate-950/50 border-slate-800/80') : 'bg-slate-950/20 border-slate-900/40 opacity-30';
 
             colsHTML += `
-              <div class="rounded-lg border ${bgCell} p-1.5 flex flex-col justify-start min-h-[${rowMinHeight}px]">
-                <div class="flex items-center justify-between pb-1">
-                  <span class="text-[11px] font-black px-1.5 py-0.2 rounded ${numColor}">${cell.d}</span>
+              <div class="rounded border ${bgCell} p-1 flex flex-col justify-start min-h-[${rowMinHeight}px]">
+                <div class="flex items-center justify-between">
+                  <span class="${dayNumSize} font-black px-1 rounded ${numColor}">${cell.d}</span>
                 </div>
               </div>
             `;
@@ -1300,9 +1408,10 @@
           colsHTML += `</div>`;
 
           // Gantt track bars layer
+          const topOffset = spanCount === 1 ? 'top-8' : (spanCount === 3 ? 'top-6' : 'top-5');
           let trackLayerHTML = `
-            <div class="absolute top-8 left-1.5 right-1.5 bottom-1 pointer-events-none">
-              <div class="grid grid-cols-7 gap-2 auto-rows-[28px] pointer-events-auto">
+            <div class="absolute ${topOffset} left-1 right-1 bottom-1 pointer-events-none">
+              <div class="grid grid-cols-7 gap-1 auto-rows-[${autoRowHeight}px] pointer-events-auto">
           `;
 
           placedTasks.forEach(pt => {
@@ -1316,11 +1425,10 @@
             const handleClass = hasStartHandle ? 'has-start-handle' : '';
             const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
 
-            trackLayerHTML += `
-              <div onclick="openModal('edit', '${t.id}')"
-                   title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} | Progress: ${t.progress}%"
-                   class="gantt-bar ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
-                   style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
+            // Text rendering based on view density
+            let barContent = '';
+            if (spanCount === 1) {
+              barContent = `
                 <div class="flex items-center justify-between w-full overflow-hidden text-[10.5px] font-semibold gap-1.5">
                   <div class="flex items-center gap-1.5 truncate">
                     ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[8px] opacity-70"></i>' : ''}
@@ -1333,6 +1441,39 @@
                     ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[8px] opacity-70"></i>' : ''}
                   </div>
                 </div>
+              `;
+            } else if (spanCount === 3) {
+              barContent = `
+                <div class="flex items-center justify-between w-full overflow-hidden text-[9.5px] font-semibold gap-1">
+                  <div class="flex items-center gap-1 truncate">
+                    ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[7px] opacity-70"></i>' : ''}
+                    <span class="font-mono font-black opacity-95">${pt.span >= 2 ? displayTitle : t.wbs}</span>
+                  </div>
+                  <div class="flex items-center gap-0.5 shrink-0 text-[8.5px]">
+                    ${isDone ? '<i class="fa-solid fa-check text-emerald-700 text-[9px]"></i>' : `<span class="font-bold opacity-75">${t.progress}%</span>`}
+                    ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[7px] opacity-70"></i>' : ''}
+                  </div>
+                </div>
+              `;
+            } else {
+              // 6M & 12M Micro View
+              barContent = `
+                <div class="flex items-center justify-between w-full overflow-hidden text-[8.5px] font-bold gap-0.5">
+                  <div class="flex items-center gap-0.5 truncate">
+                    ${pt.isContinuationLeft ? '<span class="text-[7px]">&lt;</span>' : ''}
+                    <span class="font-mono tracking-tighter truncate">${pt.span >= 2 ? (t.plant + ' ' + t.wbs) : t.wbs}</span>
+                  </div>
+                  ${pt.isContinuationRight ? '<span class="text-[7px]">&gt;</span>' : ''}
+                </div>
+              `;
+            }
+
+            trackLayerHTML += `
+              <div onclick="openModal('edit', '${t.id}')"
+                   title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%"
+                   class="gantt-bar ${barVariantClass} ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
+                   style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
+                ${barContent}
               </div>
             `;
           });
@@ -1340,7 +1481,7 @@
           trackLayerHTML += `</div></div>`;
 
           rowsHTML += `
-            <div class="relative rounded-xl border border-slate-800/80 bg-slate-950/40 p-1.5 min-h-[${rowMinHeight}px] overflow-hidden">
+            <div class="relative rounded-lg border border-slate-800/80 bg-slate-950/40 p-1 min-h-[${rowMinHeight}px] overflow-hidden">
               ${colsHTML}
               ${trackLayerHTML}
             </div>
@@ -1348,149 +1489,6 @@
         });
 
         monthCard.innerHTML = headerRow + rowsHTML + `</div>`;
-        container.appendChild(monthCard);
-        return;
-      }
-
-      // === 3. MULTI-MONTH VIEW (3M, 6M, 12M) - STRETCHED GRID ===
-      let gridCols = 'grid-cols-1 md:grid-cols-3';
-      let cellMinHeight = 'min-h-[115px]';
-      let blankHeight = 'min-h-[115px]';
-
-      if (spanCount === 3) {
-        gridCols = 'grid-cols-1 md:grid-cols-3';
-        cellMinHeight = 'min-h-[115px]'; // Stretched tall and spacious!
-        blankHeight = 'min-h-[115px]';
-      } else if (spanCount === 6) {
-        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-        cellMinHeight = 'min-h-[90px]';
-        blankHeight = 'min-h-[90px]';
-      } else if (spanCount === 12) {
-        gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
-        cellMinHeight = 'min-h-[65px]';
-        blankHeight = 'min-h-[65px]';
-      }
-
-      const monthsGrid = document.createElement('div');
-      monthsGrid.className = `grid ${gridCols} gap-4`;
-
-      for (let m = 0; m < spanCount; m++) {
-        const absM = startMonth + m;
-        const yIdx = currentYear + Math.floor(absM / 12);
-        const mIdx = ((absM % 12) + 12) % 12;
-
-        const monthCard = document.createElement('div');
-        monthCard.className = 'bg-slate-900/90 border border-slate-700/70 rounded-xl p-3.5 shadow-xl flex flex-col justify-between';
-
-        const daysInMonth = new Date(yIdx, mIdx + 1, 0).getDate();
-        const firstDayDow = new Date(yIdx, mIdx, 1).getDay(); // Sunday=0
-
-        let headerHTML = `
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-2">
-            <h3 class="text-xs md:text-sm font-bold text-sky-300 flex items-center gap-1.5">
-              <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
-            </h3>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
-          </div>
-          <div class="grid grid-cols-7 gap-1 text-center text-[10.5px] font-bold text-slate-400 mb-1.5">
-            <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
-          </div>
-        `;
-        monthCard.innerHTML = headerHTML;
-
-        const daysGrid = document.createElement('div');
-        daysGrid.className = 'grid grid-cols-7 gap-1 flex-1';
-
-        for (let b = 0; b < firstDayDow; b++) {
-          const blank = document.createElement('div');
-          blank.className = `${blankHeight} rounded-lg bg-slate-950/20 border border-transparent`;
-          daysGrid.appendChild(blank);
-        }
-
-        for (let d = 1; d <= daysInMonth; d++) {
-          const dateStr = `${yIdx}-${String(mIdx + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-          const isToday = (d === 9 && mIdx === 0 && yIdx === 2026);
-          const dayTasks = filtered.filter(t => t.start <= dateStr && t.end >= dateStr);
-
-          const dayCell = document.createElement('div');
-          const hasTask = dayTasks.length > 0;
-          let bgClass = 'bg-slate-950/40 border-slate-800/60';
-          if (isToday) bgClass = 'bg-slate-900/90 border-sky-400 ring-2 ring-sky-400/40 shadow-lg';
-          else if (hasTask) bgClass = 'bg-slate-900/80 border-slate-700/80 hover:border-slate-500 shadow-md';
-
-          dayCell.className = `${cellMinHeight} rounded-lg border ${bgClass} p-1.5 flex flex-col justify-between transition cursor-pointer relative group`;
-
-          let dayHTML = `
-            <div class="flex items-center justify-between pb-1">
-              <span class="text-[10px] font-black ${isToday ? 'px-1.5 py-0.2 rounded bg-sky-500 text-white shadow' : 'text-slate-300'}">${d}</span>
-              ${hasTask ? `<span class="w-2 h-2 rounded-full ${dayTasks[0].cat === 'Outage' ? 'bg-blue-400 ring-1 ring-blue-300' : (dayTasks[0].cat === '52Week' ? 'bg-orange-400 ring-1 ring-orange-300' : 'bg-emerald-400 ring-1 ring-emerald-300')}"></span>` : ''}
-            </div>
-          `;
-
-          if (hasTask) {
-            dayHTML += `<div class="space-y-1 overflow-y-auto max-h-[82px] pr-0.5">`;
-            
-            // Show up to 3 task pills directly in the elongated box
-            const displayTasks = dayTasks.slice(0, 3);
-            displayTasks.forEach(t => {
-              const isSub = !!t.parentId;
-              const isDone = t.progress >= 100;
-              const bgBadge = t.cat === 'Outage' ? 'bg-blue-600 hover:bg-blue-500 text-white' : (t.cat === '52Week' ? 'bg-orange-600 hover:bg-orange-500 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white');
-              
-              dayHTML += `
-                <div onclick="openModal('edit', '${t.id}')" title="${t.wbs}: ${t.task} (${t.plant}) - Click to edit" class="${bgBadge} px-1 py-1 rounded-md text-center shadow-md transition transform hover:scale-105 active:scale-95 cursor-pointer ${isSub ? 'ring-1 ring-indigo-400/80 bg-indigo-950/90' : ''}">
-                  <div class="flex items-center justify-center gap-1">
-                    ${isSub ? '<span class="text-[8px] text-indigo-300 font-bold">↳</span>' : ''}
-                    <span class="font-mono font-black text-[10.5px] tracking-tight leading-none">${t.wbs}</span>
-                    ${isDone ? '<i class="fa-solid fa-check text-[8px] text-emerald-300"></i>' : ''}
-                  </div>
-                  ${spanCount <= 3 ? `
-                    <div class="text-[8px] font-semibold opacity-90 truncate leading-tight mt-0.5 max-w-full">
-                      ${t.plant}
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-            });
-
-            if (dayTasks.length > 2) {
-              dayHTML += `
-                <div class="text-[8.5px] font-bold text-sky-400 text-center">
-                  +${dayTasks.length - 2} more
-                </div>
-              `;
-            }
-
-            dayHTML += `</div>`;
-
-            // Rich Hover Tooltip
-            dayHTML += `
-              <div class="hidden group-hover:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 w-52 p-2.5 rounded-xl bg-slate-950/95 text-white text-[11px] shadow-2xl border border-sky-500/50 z-40 pointer-events-none backdrop-blur-md">
-                <div class="flex items-center justify-between border-b border-slate-700 pb-1 mb-1.5">
-                  <span class="font-bold text-sky-400">${dateStr}</span>
-                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800">${dayTasks.length} tasks</span>
-                </div>
-                <div class="space-y-1.5 max-h-36 overflow-y-auto pr-0.5">
-                  ${dayTasks.map(t => `
-                    <div class="p-1 rounded bg-slate-900 border border-slate-800">
-                      <div class="flex items-center justify-between text-[9.5px]">
-                        <span class="font-mono font-bold text-sky-300">${t.wbs}</span>
-                        <span class="font-bold ${t.progress >= 100 ? 'text-emerald-400' : 'text-amber-400'}">${t.progress}%</span>
-                      </div>
-                      <p class="font-semibold text-[10px] text-slate-200 leading-tight mt-0.5">${t.parentId ? '↳ ' : ''}${t.task}</p>
-                      <p class="text-[9px] text-slate-400 mt-0.5">TR: ${t.tr || '-'} | Plant: ${t.plant}</p>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            `;
-          }
-
-          dayCell.innerHTML = dayHTML;
-          daysGrid.appendChild(dayCell);
-        }
-
-        monthCard.appendChild(daysGrid);
         monthsGrid.appendChild(monthCard);
       }
 
