@@ -90,10 +90,25 @@ var assessmentData = [];
 var trInfoCsvData = [];
 var bushingPfCsvData = [];
 var bushingInfoCsvData = [];
+var surgeInfoCsvData = [];
+var surgePfCsvData = [];
 var mtOilCsvData = [];
 var mainTankDgaCsvData = [];
 var oltcOilCsvData = [];
 var piCsvData = [];
+var irPiCsvData = [];
+var windingPfCsvData = [];
+var ratioCsvData = [];
+var excitingCsvData = [];
+var windingCsvData = [];
+var singleShortCsvData = [];
+var threeShortCsvData = [];
+var visualCsvData = [];
+var fraCsvData = [];
+var dfrCsvData = [];
+var drmCsvData = [];
+var thermoScanCsvData = [];
+var factoryDataCsvData = [];
 
 // Auto-initialize assessmentData from HEALTH_INDEX_DATA if available
 if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
@@ -224,7 +239,7 @@ function parseHealthIndexSumCSV(rows) {
       },
       bushing: String(row['Bushing'] || 'N/A'),
       surgeArrester: String(row['Surge Arrester'] || 'N/A'),
-      dynamicResistance: String(row['OLTC Dynamic Resistance'] || 'N/A'),
+      dynamicResistance: String(row['OLTC Dynamic Resistance'] || row['Dynamic Resistance Measurement (OLTC)'] || 'N/A'),
       fra: String(row['FRA'] || 'N/A'),
       moisturePaper: String(row['Moisture in Paper [FDS]'] || 'N/A'),
       mainTankOil: {
@@ -471,18 +486,33 @@ function loadAllTestDataCSVs() {
           const parsed = parseHealthIndexSumCSV(d);
           if (parsed && parsed.length > 0) {
             assessmentData = parsed;
+            if (typeof window !== 'undefined') window.assessmentData = parsed;
           }
         }
       }
     },
-    { url: 'TestData/TRinfo2.csv', target: d => trInfoCsvData = d },
-    { url: 'TestData/BushingPFData.csv', target: d => bushingPfCsvData = d },
-    { url: 'TestData/BushingInfo.csv', target: d => bushingInfoCsvData = d },
-    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; } },
-    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; } } },
-    { url: 'TestData/OLTCOilData.csv', target: d => oltcOilCsvData = d },
-    { url: 'TestData/PIData.csv', target: d => piCsvData = d },
-    { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
+    { url: 'TestData/TRinfo2.csv', target: d => { trInfoCsvData = d; if (typeof window !== 'undefined') window.trInfoCsvData = d; } },
+    { url: 'TestData/BushingPFData.csv', target: d => { bushingPfCsvData = d; if (typeof window !== 'undefined') window.bushingPfCsvData = d; } },
+    { url: 'TestData/BushingInfo.csv', target: d => { bushingInfoCsvData = d; if (typeof window !== 'undefined') window.bushingInfoCsvData = d; } },
+    { url: 'TestData/SurgeInfo.csv', target: d => { surgeInfoCsvData = d; if (typeof window !== 'undefined') window.surgeInfoCsvData = d; } },
+    { url: 'TestData/SurgePFData.csv', target: d => { surgePfCsvData = d; if (typeof window !== 'undefined') window.surgePfCsvData = d; } },
+    { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } },
+    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } } },
+    { url: 'TestData/OLTCOilData.csv', target: d => { oltcOilCsvData = d; if (typeof window !== 'undefined') window.oltcOilCsvData = d; } },
+    { url: 'TestData/PIData.csv', target: d => { piCsvData = d; if (typeof window !== 'undefined') window.piCsvData = d; } },
+    { url: 'TestData/IRandPIData.csv', target: d => { irPiCsvData = d; if (!piCsvData.length) piCsvData = d; if (typeof window !== 'undefined') { window.irPiCsvData = d; window.piCsvData = piCsvData; } } },
+    { url: 'TestData/WindingPFData.csv', target: d => { windingPfCsvData = d; if (typeof window !== 'undefined') window.windingPfCsvData = d; } },
+    { url: 'TestData/RatioData.csv', target: d => { ratioCsvData = d; if (typeof window !== 'undefined') window.ratioCsvData = d; } },
+    { url: 'TestData/ExcitingData.csv', target: d => { excitingCsvData = d; if (typeof window !== 'undefined') window.excitingCsvData = d; } },
+    { url: 'TestData/WindingData.csv', target: d => { windingCsvData = d; if (typeof window !== 'undefined') window.windingCsvData = d; } },
+    { url: 'TestData/SingleShortData.csv', target: d => { singleShortCsvData = d; if (typeof window !== 'undefined') window.singleShortCsvData = d; } },
+    { url: 'TestData/ThreeShortData.csv', target: d => { threeShortCsvData = d; if (typeof window !== 'undefined') window.threeShortCsvData = d; } },
+    { url: 'TestData/VisualData.csv', target: d => { visualCsvData = d; if (typeof window !== 'undefined') window.visualCsvData = d; } },
+    { url: 'TestData/FRAData.csv', target: d => { fraCsvData = d; if (typeof window !== 'undefined') window.fraCsvData = d; } },
+    { url: 'TestData/DFRData.csv', target: d => { dfrCsvData = d; if (typeof window !== 'undefined') window.dfrCsvData = d; } },
+    { url: 'TestData/DRMData.csv', target: d => { drmCsvData = d; if (typeof window !== 'undefined') window.drmCsvData = d; } },
+    { url: 'TestData/ThermoScanData.csv', target: d => { thermoScanCsvData = d; if (typeof window !== 'undefined') window.thermoScanCsvData = d; } },
+    { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } }
   ];
 
   return Promise.allSettled(
@@ -691,9 +721,61 @@ function openDetail(no) {
     ? getRemainingLifeDP300(item, item.serial)
     : { dp: (item.estimatedDP || 950), rul300: (item.estimatedLife || 25) };
   
+  // Score-based coloring for Remaining Life (Green, Yellow, Orange, Red)
+  const getRemainingLifeKpi = (rulVal) => {
+    if (rulVal === '-' || rulVal === undefined || rulVal === null || rulVal === 'N/A') {
+      return { cls: '', color: '#64748b' };
+    }
+    if (typeof rulVal === 'string' && rulVal.includes('>')) {
+      return { cls: 'kpi-val-green', color: '#16a34a' }; // e.g. >40
+    }
+    const num = parseFloat(rulVal);
+    if (isNaN(num)) return { cls: '', color: '#64748b' };
+    if (num > 20) {
+      return { cls: 'kpi-val-green', color: '#16a34a' }; // Healthy / Long Life > 20
+    } else if (num >= 11) {
+      return { cls: 'kpi-val-yellow', color: '#ca8a04' }; // Fair / Moderate 11 - 20
+    } else if (num >= 6) {
+      return { cls: 'kpi-val-orange', color: '#ea580c' }; // Watch 6 - 10
+    } else {
+      return { cls: 'kpi-val-red', color: '#dc2626' }; // Critical <= 5
+    }
+  };
+
+  // Score-based coloring for Estimated DP (Green, Yellow, Orange, Red per CIGRE 761 / IEC)
+  const getEstimatedDpKpi = (dpVal) => {
+    if (dpVal === '-' || dpVal === undefined || dpVal === null || dpVal === 'N/A') {
+      return { cls: '', color: '#64748b' };
+    }
+    const num = parseFloat(dpVal);
+    if (isNaN(num)) return { cls: '', color: '#64748b' };
+    if (num >= 700) {
+      return { cls: 'kpi-val-green', color: '#16a34a' }; // Healthy >= 700
+    } else if (num >= 550) {
+      return { cls: 'kpi-val-yellow', color: '#ca8a04' }; // Moderate Ageing 550 - 699
+    } else if (num >= 400) {
+      return { cls: 'kpi-val-orange', color: '#ea580c' }; // Advanced Ageing 400 - 549
+    } else {
+      return { cls: 'kpi-val-red', color: '#dc2626' }; // Critical < 400
+    }
+  };
+
   const displayLifeText = (remLifeInfo.rul300 > 40) ? '>40' : String(remLifeInfo.rul300);
-  setElTxt('ex-est-life', displayLifeText);
-  setElTxt('ex-est-dp', remLifeInfo.dp);
+  const lifeEl = document.getElementById('ex-est-life');
+  if (lifeEl) {
+    lifeEl.textContent = displayLifeText;
+    const lifeKpi = getRemainingLifeKpi(remLifeInfo.rul300);
+    lifeEl.className = `life-kpi-value ${lifeKpi.cls}`;
+    lifeEl.style.color = lifeKpi.color;
+  }
+
+  const dpEl = document.getElementById('ex-est-dp');
+  if (dpEl) {
+    dpEl.textContent = remLifeInfo.dp;
+    const dpKpi = getEstimatedDpKpi(remLifeInfo.dp);
+    dpEl.className = `life-kpi-value ${dpKpi.cls}`;
+    dpEl.style.color = dpKpi.color;
+  }
 
   const subLifeEl = document.getElementById('ex-est-life-sub');
   if (subLifeEl) {
@@ -720,13 +802,59 @@ function openDetail(no) {
     needleGroup.setAttribute('transform', `rotate(${angle} 60 60)`);
   }
 
+  // Check if transformer is Dry Type
+  const isDryType = (() => {
+    if (trInfo) {
+      const dataCol = String(trInfo.DATA || '').toUpperCase();
+      const insul = String(trInfo.TYPE_OF_INSULATION || '').toUpperCase();
+      if (dataCol.includes('DRY')) return true;
+      if (insul.includes('DRY') || insul.includes('RESIN') || insul.includes('RASIN') || insul.includes('CAST')) return true;
+      if (/dry/i.test(String(trInfo.MODEL_TYPE || ''))) return true;
+      if (/dry/i.test(String(trInfo.APPLICATION || ''))) return true;
+    }
+    if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+      const match = TR_DATA.find(x => x.SERIAL_NUMBER === item.serial);
+      if (match) {
+        const dataCol = String(match.DATA || '').toUpperCase();
+        const insul = String(match.TYPE_OF_INSULATION || '').toUpperCase();
+        if (dataCol.includes('DRY') || insul.includes('DRY') || insul.includes('RESIN') || insul.includes('RASIN') || insul.includes('CAST')) return true;
+      }
+    }
+    const fluid = String(item.fluid || '').toUpperCase();
+    if (fluid.includes('DRY') || fluid.includes('RESIN') || fluid.includes('RASIN') || fluid.includes('CAST')) return true;
+    if (String(item.type || '').toUpperCase().includes('DRY')) return true;
+    return false;
+  })();
+
   const imgEl = document.getElementById('ex-model-img');
   if (imgEl) {
-    imgEl.src = `Transformer Photo/${item.name}.jpg`;
-    imgEl.onerror = () => {
-      imgEl.src = 'background.jpg';
-    };
+    if (isDryType) {
+      imgEl.src = 'dry_type_transformer.jpg';
+      imgEl.onerror = () => {
+        imgEl.src = 'Transformer Photo/dry_type.jpg';
+      };
+    } else {
+      imgEl.src = `Transformer Photo/${item.name}.jpg`;
+      imgEl.onerror = () => {
+        imgEl.src = 'background.jpg';
+      };
+    }
   }
+
+  // Dynamically update all card report button links with the transformer serial
+  const encodedSerial = encodeURIComponent(item.serial || '');
+  const setLinkHref = (id, url) => {
+    const el = document.getElementById(id);
+    if (el) el.href = encodedSerial ? `${url}?serial=${encodedSerial}` : url;
+  };
+  setLinkHref('ex-dga-link', 'dga_report.html');
+  setLinkHref('ex-oil-link', 'oil_report.html');
+  setLinkHref('ex-oltc-link', 'oltc_oil_report.html');
+  setLinkHref('ex-bushing-link', 'bushing_pf_report.html');
+  setLinkHref('ex-surge-link', 'surge_report.html');
+  setLinkHref('ex-visual-link', 'visual_report.html');
+  setLinkHref('ex-eval-gauge-link', 'evaluation_report.html');
+  setLinkHref('link-kpi-remaining-life', 'remaining_life_report.html');
 
   // 3. Bushing Card
   const bushBody = document.getElementById('ex-bushing-rows');
@@ -1027,56 +1155,175 @@ function openDetail(no) {
     }
   }
 
-  // 4. Surge Arrester Mock Fallback
+  // 4. Surge Arrester
   const saBody = document.getElementById('ex-arrester-rows');
   if (saBody) {
-    updateTestDate('ex-update-arrester', item.dateToAssess);
-    saBody.innerHTML = `
-      <tr>
-        <td>Insulation Resistance (MΩ)</td>
-        <td>EGAT</td>
-        <td>> 1000</td>
-        <td>> 1000</td>
-        <td>> 1000</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <td>Current (mA)</td>
-        <td>EGAT</td>
-        <td>0.082</td>
-        <td>0.085</td>
-        <td>0.081</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <td>Watt Loss (W)</td>
-        <td>EGAT</td>
-        <td>0.005</td>
-        <td>0.005</td>
-        <td>0.004</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-    `;
+    const latestSurge = (typeof surgePfCsvData !== 'undefined' && Array.isArray(surgePfCsvData)) 
+      ? findLatestRecord(surgePfCsvData, item.serial) 
+      : null;
+
+    if (latestSurge) {
+      updateTestDate('ex-update-arrester', latestSurge.Date || latestSurge.date);
+      
+      const fmtVal = (v) => {
+        if (v === undefined || v === null || v === '' || v === '-' || v === 'N/A') return '-';
+        const num = parseFloat(v);
+        return isNaN(num) ? v : (num < 1 && num > 0 ? num.toFixed(3) : (num >= 100 ? Math.round(num) : num.toFixed(2)));
+      };
+
+      const h1_ir = latestSurge.h1_mohm && latestSurge.h1_mohm !== '-' ? fmtVal(latestSurge.h1_mohm) : (latestSurge.minr ? fmtVal(latestSurge.minr) : '-');
+      const h2_ir = latestSurge.h2_mohm && latestSurge.h2_mohm !== '-' ? fmtVal(latestSurge.h2_mohm) : (latestSurge.minr ? fmtVal(latestSurge.minr) : '-');
+      const h3_ir = latestSurge.h3_mohm && latestSurge.h3_mohm !== '-' ? fmtVal(latestSurge.h3_mohm) : (latestSurge.minr ? fmtVal(latestSurge.minr) : '-');
+
+      const h1_cur = fmtVal(latestSurge.h1_current && latestSurge.h1_current !== '-' ? latestSurge.h1_current : latestSurge.maxma1);
+      const h2_cur = fmtVal(latestSurge.h2_current && latestSurge.h2_current !== '-' ? latestSurge.h2_current : latestSurge.maxma2);
+      const h3_cur = fmtVal(latestSurge.h3_current && latestSurge.h3_current !== '-' ? latestSurge.h3_current : latestSurge.maxma3);
+
+      const h1_watt = fmtVal(latestSurge.h1_watt_loss && latestSurge.h1_watt_loss !== '-' ? latestSurge.h1_watt_loss : latestSurge.maxw1);
+      const h2_watt = fmtVal(latestSurge.h2_watt_loss && latestSurge.h2_watt_loss !== '-' ? latestSurge.h2_watt_loss : latestSurge.maxw2);
+      const h3_watt = fmtVal(latestSurge.h3_watt_loss && latestSurge.h3_watt_loss !== '-' ? latestSurge.h3_watt_loss : latestSurge.maxw3);
+
+      const x1_cur = fmtVal(latestSurge.xh1_current);
+      const x2_cur = fmtVal(latestSurge.xh2_current);
+      const x3_cur = fmtVal(latestSurge.xh3_current);
+
+      const x1_watt = fmtVal(latestSurge.xh1_watt_loss);
+      const x2_watt = fmtVal(latestSurge.xh2_watt_loss);
+      const x3_watt = fmtVal(latestSurge.xh3_watt_loss);
+
+      const x1_ir = fmtVal(latestSurge.xh1_mohm);
+      const x2_ir = fmtVal(latestSurge.xh2_mohm);
+      const x3_ir = fmtVal(latestSurge.xh3_mohm);
+
+      saBody.innerHTML = `
+        <tr>
+          <td>Insulation Resistance (MΩ)</td>
+          <td>EGAT</td>
+          <td>${h1_ir}</td>
+          <td>${h2_ir}</td>
+          <td>${h3_ir}</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>${x1_ir}</td>
+          <td>${x2_ir}</td>
+          <td>${x3_ir}</td>
+        </tr>
+        <tr>
+          <td>Current (mA)</td>
+          <td>EGAT</td>
+          <td>${h1_cur}</td>
+          <td>${h2_cur}</td>
+          <td>${h3_cur}</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>${x1_cur}</td>
+          <td>${x2_cur}</td>
+          <td>${x3_cur}</td>
+        </tr>
+        <tr>
+          <td>Watt Loss (W)</td>
+          <td>EGAT</td>
+          <td>${h1_watt}</td>
+          <td>${h2_watt}</td>
+          <td>${h3_watt}</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>${x1_watt}</td>
+          <td>${x2_watt}</td>
+          <td>${x3_watt}</td>
+        </tr>
+      `;
+    } else {
+      updateTestDate('ex-update-arrester', '-');
+      saBody.innerHTML = `
+        <tr>
+          <td>Insulation Resistance (MΩ)</td>
+          <td>EGAT</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Current (mA)</td>
+          <td>EGAT</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Watt Loss (W)</td>
+          <td>EGAT</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      `;
+    }
   }
 
-  // 5. Active Part Mock Fallback
+  // 5. Active Part Card
   const ap = item.activePart || {};
   const basicBody = document.getElementById('ex-active-basic-rows');
+  
+  const getWindingDateSpan = (rawDateStr) => {
+    if (!rawDateStr || rawDateStr === '-' || rawDateStr === 'N/A') return '<span>-</span>';
+    const dateObj = parseDateRobust(rawDateStr);
+    let cleanStr = String(rawDateStr || '-').trim();
+    if (cleanStr.includes(' ')) {
+      cleanStr = cleanStr.split(' ')[0];
+    }
+    const formatted = dateObj ? formatDgaDate(dateObj) : cleanStr;
+    if (!dateObj || formatted === '-') return `<span>${formatted}</span>`;
+    
+    const today = new Date();
+    const diffTime = Math.abs(today - dateObj);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const threeYearsInDays = 3 * 365.25;
+    
+    let color = '#eab308';
+    let bg = 'rgba(234, 179, 8, 0.15)';
+    if (diffDays <= threeYearsInDays) {
+      color = '#10b981';
+      bg = 'rgba(16, 185, 129, 0.15)';
+    }
+    
+    return `<span style="color: ${color} !important; background-color: ${bg} !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block;">${formatted}</span>`;
+  };
+
+  let piDateStr = '-';
+  let cgDate = '-';
+  let wPfDate = '-';
+  let ratioDate = '-';
+  let exDate = '-';
+  let wDate = '-';
+  let ssDate = '-';
+  let tsDate = '-';
+  let fraDate = '-';
+  let dfrDate = '-';
+  let drmDate = '-';
+  let thermoDate = '-';
+
   if (basicBody) {
     // Lookup NO_WINDING
     let noWinding = 2; // default fallback
@@ -1094,239 +1341,505 @@ function openDetail(no) {
       }
     }
 
-    // Lookup PI Record from piCsvData
-    let piRec = null;
-    if (typeof piCsvData !== 'undefined' && piCsvData && piCsvData.length > 0) {
-      const matches = piCsvData.filter(x => String(x.serial || '').trim().toLowerCase() === String(item.serial).trim().toLowerCase());
-      if (matches.length > 0) {
-        piRec = matches[0];
-      }
-    }
-    if (!piRec && item.pi) {
-      piRec = {
-        H_PI: item.pi.H_PI,
-        L_PI: item.pi.L_PI,
-        T_PI: item.pi.T_PI,
-        date: item.pi.date
+    // 1. Insulation Resistance & PI
+    const latestPi = (typeof irPiCsvData !== 'undefined' && Array.isArray(irPiCsvData) && irPiCsvData.length > 0) 
+      ? findLatestRecord(irPiCsvData, item.serial) 
+      : ((typeof piCsvData !== 'undefined' && Array.isArray(piCsvData) && piCsvData.length > 0) ? findLatestRecord(piCsvData, item.serial) : null);
+
+    let piResultHtml = 'HV = - , LV = - , HV-LV = -';
+    if (latestPi) {
+      piDateStr = latestPi.Date || latestPi.date || latestPi.DATE || '-';
+      const h_pi = parseNum(latestPi.H_PI);
+      const l_pi = parseNum(latestPi.L_PI);
+      const t_pi = parseNum(latestPi.T_PI || latestPi['H-LV'] || latestPi.HV_LV || latestPi.H_L_PI);
+
+      const formatPi = (v) => {
+        if (v === null) return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
+        const cls = v > 1.25 ? 'ex-status-good' : (v >= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+        return `<span class="${cls}" style="font-weight: bold; padding: 2px 6px; border-radius: 4px; margin: 0 4px; display: inline-block;">${v.toFixed(2)}</span>`;
       };
-    }
-
-    // Format PI Results
-    let piResultHtml = '';
-    let piDate = item.dateToAssess || '-';
-
-    const getPiSpan = (valStr) => {
-      if (valStr === undefined || valStr === null || valStr === '' || valStr === '-' || valStr === 'N/A') {
-        return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
-      }
-      const val = parseFloat(String(valStr).replace(/,/g, ''));
-      if (isNaN(val)) {
-        return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
-      }
-      
-      let cls = 'ex-status-good';
-      if (val <= 1.0) cls = 'ex-status-poor';
-      else if (val <= 1.25) cls = 'ex-status-fair';
-      
-      return `<span class="${cls}" style="font-weight: bold; padding: 2px 6px; border-radius: 4px; margin: 0 4px; display: inline-block;">${val.toFixed(2)}</span>`;
-    };
-
-    if (piRec) {
-      const h_pi_span = getPiSpan(piRec.H_PI);
-      const l_pi_span = getPiSpan(piRec.L_PI);
-      const t_pi_span = getPiSpan(piRec.T_PI);
 
       if (noWinding === 3) {
-        piResultHtml = `HV = ${h_pi_span}, LV = ${l_pi_span}, TV = ${t_pi_span}`;
+        piResultHtml = `HV = ${formatPi(h_pi)}, LV = ${formatPi(l_pi)}, TV = ${formatPi(t_pi)}`;
       } else {
-        piResultHtml = `HV = ${h_pi_span}, LV = ${l_pi_span}, HV-LV = ${t_pi_span}`;
+        piResultHtml = `HV = ${formatPi(h_pi)}, LV = ${formatPi(l_pi)}, HV-LV = ${formatPi(t_pi)}`;
       }
+    } else if (item.pi && (item.pi.H_PI || item.pi.L_PI)) {
+      const h_pi = parseNum(item.pi.H_PI);
+      const l_pi = parseNum(item.pi.L_PI);
+      const t_pi = parseNum(item.pi.T_PI);
+      piDateStr = item.pi.date || '-';
+      const formatPi = (v) => {
+        if (v === null) return `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
+        const cls = v > 1.25 ? 'ex-status-good' : (v >= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+        return `<span class="${cls}" style="font-weight: bold; padding: 2px 6px; border-radius: 4px; margin: 0 4px; display: inline-block;">${v.toFixed(2)}</span>`;
+      };
+      piResultHtml = noWinding === 3 ? `HV = ${formatPi(h_pi)}, LV = ${formatPi(l_pi)}, TV = ${formatPi(t_pi)}` : `HV = ${formatPi(h_pi)}, LV = ${formatPi(l_pi)}, HV-LV = ${formatPi(t_pi)}`;
+    }
 
-      if (piRec.date) {
-        const parsedDate = parseDateRobust(piRec.date);
-        if (parsedDate) {
-          piDate = formatDgaDate(parsedDate);
+    // 2. Core to Ground
+    let cgVal = '-';
+    let cgClass = '';
+    if (latestPi && latestPi.coregnd && latestPi.coregnd !== '-' && latestPi.coregnd !== 'N/A') {
+      const numCg = parseFloat(latestPi.coregnd);
+      cgVal = !isNaN(numCg) ? `${numCg >= 500 ? Math.round(numCg) : numCg.toFixed(1)} MΩ` : `${latestPi.coregnd} MΩ`;
+      cgClass = !isNaN(numCg) ? (numCg >= 100 ? 'ex-status-good' : (numCg >= 10 ? 'ex-status-fair' : 'ex-status-poor')) : 'ex-status-good';
+      cgDate = piDateStr;
+    } else if (item['Core to Ground'] && item['Core to Ground'] !== '-' && item['Core to Ground'] !== 'N/A') {
+      cgVal = item['Core to Ground'] === 'A' ? '> 1000 MΩ' : item['Core to Ground'];
+      cgClass = item['Core to Ground'] === 'A' ? 'ex-status-good' : 'ex-status-fair';
+      cgDate = item.dateToAssess || '-';
+    }
+
+    // 3. Insulation Power Factor
+    const latestWindingPf = (typeof windingPfCsvData !== 'undefined' && Array.isArray(windingPfCsvData)) 
+      ? findLatestRecord(windingPfCsvData, item.serial) 
+      : null;
+    let wPfVal = '-';
+    let wPfClass = '';
+    if (latestWindingPf) {
+      wPfDate = latestWindingPf.Date || latestWindingPf.date || '-';
+      const ch = parseNum(latestWindingPf.ch_pf_2 || latestWindingPf.ch_pf_1 || latestWindingPf.chl_ch_pf_20c);
+      const chl = parseNum(latestWindingPf.chl_pf_2 || latestWindingPf.chl_pf_1);
+      const cl = parseNum(latestWindingPf.cl_pf_2 || latestWindingPf.cl_pf_1);
+      
+      const parts = [];
+      if (ch !== null) parts.push(`CH: ${ch.toFixed(2)}%`);
+      if (chl !== null) parts.push(`CHL: ${chl.toFixed(2)}%`);
+      else if (cl !== null) parts.push(`CL: ${cl.toFixed(2)}%`);
+
+      const validPFs = [ch, chl, cl].filter(v => v !== null);
+      if (parts.length > 0 && validPFs.length > 0) {
+        wPfVal = parts.join(', ');
+        const maxVal = Math.max(...validPFs);
+        wPfClass = maxVal <= 0.5 ? 'ex-status-good' : (maxVal <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+      }
+    } else if (item['Insulation Power Factor'] && item['Insulation Power Factor'] !== '-' && item['Insulation Power Factor'] !== 'N/A') {
+      wPfVal = item['Insulation Power Factor'] === 'A' ? '0.35% (Good)' : item['Insulation Power Factor'];
+      wPfClass = item['Insulation Power Factor'] === 'A' ? 'ex-status-good' : 'ex-status-fair';
+      wPfDate = item.dateToAssess || '-';
+    }
+
+    // 4. Transformer Turn Ratio (TTR)
+    const latestRatio = (typeof ratioCsvData !== 'undefined' && Array.isArray(ratioCsvData)) 
+      ? findLatestRecord(ratioCsvData, item.serial) 
+      : null;
+    let ratioVal = '-';
+    let ratioClass = '';
+    if (latestRatio) {
+      ratioDate = latestRatio.Date || latestRatio.date || '-';
+      const maxErr = parseNum(latestRatio.H1_max_err || latestRatio.MAX_DEV || latestRatio.max_error);
+      const cenErr = parseNum(latestRatio.H1_cen_err || latestRatio.CEN_DEV);
+      const minErr = parseNum(latestRatio.H1_min_err || latestRatio.MIN_DEV);
+
+      const devs = [maxErr, cenErr, minErr].filter(v => v !== null);
+      if (devs.length > 0) {
+        const worst = Math.max(...devs.map(Math.abs));
+        ratioVal = `< 0.5% Dev (Max ${worst.toFixed(2)}%)`;
+        ratioClass = worst <= 0.5 ? 'ex-status-good' : (worst <= 1.0 ? 'ex-status-fair' : 'ex-status-poor');
+      } else {
+        ratioVal = '< 0.5% Dev';
+        ratioClass = 'ex-status-good';
+      }
+    } else if (item['Ratio&Polarity'] && item['Ratio&Polarity'] !== '-' && item['Ratio&Polarity'] !== 'N/A') {
+      ratioVal = item['Ratio&Polarity'] === 'A' ? '< 0.5% Dev' : item['Ratio&Polarity'];
+      ratioClass = item['Ratio&Polarity'] === 'A' ? 'ex-status-good' : 'ex-status-fair';
+      ratioDate = item.dateToAssess || '-';
+    }
+
+    // 5. Exciting Current
+    const latestExciting = (typeof excitingCsvData !== 'undefined' && Array.isArray(excitingCsvData)) 
+      ? findLatestRecord(excitingCsvData, item.serial) 
+      : null;
+    let exVal = '-';
+    let exClass = '';
+    if (latestExciting) {
+      exDate = latestExciting.Date || latestExciting.date || latestExciting.DATE || '-';
+      const h1 = parseNum(latestExciting.H1CENTER || latestExciting.H1NO1 || latestExciting.H1MAX || latestExciting.X1);
+      const h2 = parseNum(latestExciting.H2CENTER || latestExciting.H2NO1 || latestExciting.H2MAX || latestExciting.X2);
+      const h3 = parseNum(latestExciting.H3CENTER || latestExciting.H3NO1 || latestExciting.H3MAX || latestExciting.X3);
+
+      if (h1 !== null && h2 !== null && h3 !== null) {
+        let pattern = (h1 > h2 && h3 > h2) ? 'H-L-H' : ((h2 > h1 && h2 > h3) ? 'L-H-L' : 'Normal');
+        exVal = `H1: ${h1.toFixed(1)}, H2: ${h2.toFixed(1)}, H3: ${h3.toFixed(1)} mA (${pattern})`;
+        exClass = 'ex-status-good';
+      } else {
+        exVal = 'Normal Pattern';
+        exClass = 'ex-status-good';
+      }
+    } else if (item['Exciting Current'] && item['Exciting Current'] !== '-' && item['Exciting Current'] !== 'N/A') {
+      exVal = item['Exciting Current'] === 'A' ? 'Normal Pattern' : item['Exciting Current'];
+      exClass = item['Exciting Current'] === 'A' ? 'ex-status-good' : 'ex-status-fair';
+      exDate = item.dateToAssess || '-';
+    }
+
+    // 6. Winding Resistance
+    const latestWinding = (typeof windingCsvData !== 'undefined' && Array.isArray(windingCsvData)) 
+      ? findLatestRecord(windingCsvData, item.serial) 
+      : null;
+    let wVal = '-';
+    let wClass = '';
+    if (latestWinding) {
+      wDate = latestWinding.Date || latestWinding.date || latestWinding.DATE || '-';
+      const maxDev = parseNum(latestWinding.HV_MAX_DEV || latestWinding.MAX_DEV || latestWinding.H1_max_dev);
+      const cenDev = parseNum(latestWinding.HV_CEN_DEV || latestWinding.CEN_DEV);
+      const minDev = parseNum(latestWinding.HV_MIN_DEV || latestWinding.MIN_DEV);
+
+      const devs = [maxDev, cenDev, minDev].filter(v => v !== null);
+      if (devs.length > 0) {
+        const worst = Math.max(...devs.map(Math.abs));
+        wVal = `< 2% Dev (Max ${worst.toFixed(2)}%)`;
+        wClass = worst <= 2.0 ? 'ex-status-good' : (worst <= 5.0 ? 'ex-status-fair' : 'ex-status-poor');
+      } else {
+        wVal = '< 2% Dev';
+        wClass = 'ex-status-good';
+      }
+    } else if (item['Winding Resistance'] && item['Winding Resistance'] !== '-' && item['Winding Resistance'] !== 'N/A') {
+      wVal = item['Winding Resistance'] === 'A' ? '< 2% Dev' : item['Winding Resistance'];
+      wClass = item['Winding Resistance'] === 'A' ? 'ex-status-good' : 'ex-status-fair';
+      wDate = item.dateToAssess || '-';
+    }
+
+    // 7. Single Phase Short Circuit Impedance (3 Taps Display matching Evaluation Report)
+    const latestSingleShort = (typeof singleShortCsvData !== 'undefined' && Array.isArray(singleShortCsvData)) 
+      ? findLatestRecord(singleShortCsvData, item.serial) 
+      : null;
+    let ssVal = '-';
+    let ssClass = '';
+    if (latestSingleShort) {
+      ssDate = latestSingleShort.Date || latestSingleShort.date || '-';
+      const maxDev = parseNum(latestSingleShort.HV_Max_Dev);
+      const cenDev = parseNum(latestSingleShort.HV_Cen_Dev);
+      const minDev = parseNum(latestSingleShort.HV_Min_Dev);
+      const tap1Dev = parseNum(latestSingleShort.HV_Tap1_Dev);
+
+      const parts = [];
+      if (maxDev !== null) parts.push(`Max: ${maxDev.toFixed(2)}%`);
+      if (cenDev !== null) parts.push(`Cen: ${cenDev.toFixed(2)}%`);
+      if (minDev !== null) parts.push(`Min: ${minDev.toFixed(2)}%`);
+
+      if (parts.length === 0) {
+        if (tap1Dev !== null) {
+          const tap1Name = latestSingleShort.HV_Tap1 && latestSingleShort.HV_Tap1 !== '-' ? `Tap ${latestSingleShort.HV_Tap1}` : 'Tap 1';
+          parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
+        } else if (latestSingleShort.Single_Phase_Result && latestSingleShort.Single_Phase_Result !== '-' && !isNaN(parseFloat(latestSingleShort.Single_Phase_Result))) {
+          const resNum = parseFloat(latestSingleShort.Single_Phase_Result);
+          parts.push(`%Dev: ${resNum.toFixed(2)}%`);
         }
       }
-    } else {
-      const emptySpan = `<span style="color: var(--text-sub); margin: 0 4px;">-</span>`;
-      if (noWinding === 3) {
-        piResultHtml = `HV = ${emptySpan}, LV = ${emptySpan}, TV = ${emptySpan}`;
+
+      const devs = [maxDev, cenDev, minDev, tap1Dev].filter(v => v !== null);
+      if (parts.length > 0 && devs.length > 0) {
+        ssVal = parts.join(', ');
+        const worst = Math.max(...devs.map(Math.abs));
+        if (worst <= 3.0) {
+          ssClass = 'ex-status-good';
+        } else if (worst <= 5.0) {
+          ssClass = 'ex-status-fair'; // Yellow / Monitor (Score 3)
+        } else {
+          ssClass = 'ex-status-poor'; // Red / Critical (Score 1)
+        }
       } else {
-        piResultHtml = `HV = ${emptySpan}, LV = ${emptySpan}, HV-LV = ${emptySpan}`;
+        ssVal = '< 3.0% Dev';
+        ssClass = 'ex-status-good';
       }
+    } else if (item['1∅ Short Circuit Impedance'] && item['1∅ Short Circuit Impedance'] !== '-' && item['1∅ Short Circuit Impedance'] !== 'N/A') {
+      const isGood = item['1∅ Short Circuit Impedance'] === 'A';
+      ssVal = isGood ? '< 3.0% Dev' : 'Monitor';
+      ssClass = isGood ? 'ex-status-good' : 'ex-status-fair';
+      ssDate = item.dateToAssess || '-';
     }
 
-    const getWindingDateSpan = (rawDateStr) => {
-      const dateObj = parseDateRobust(rawDateStr);
-      let cleanStr = String(rawDateStr || '-').trim();
-      if (cleanStr.includes(' ')) {
-        cleanStr = cleanStr.split(' ')[0];
+    // 8. Three Phase Short Circuit Impedance (3 Taps Display matching Evaluation Report)
+    const latestThreeShort = (typeof threeShortCsvData !== 'undefined' && Array.isArray(threeShortCsvData)) 
+      ? findLatestRecord(threeShortCsvData, item.serial) 
+      : null;
+    let tsVal = '-';
+    let tsClass = '';
+    if (latestThreeShort) {
+      tsDate = latestThreeShort.Date || latestThreeShort.date || '-';
+      const sUpper = String(item.serial || '').trim().toUpperCase();
+      const facItem = (typeof factoryDataCsvData !== 'undefined' && Array.isArray(factoryDataCsvData))
+        ? factoryDataCsvData.find(x => String(x.Serial_No || x.serial || '').trim().toUpperCase() === sUpper)
+        : null;
+
+      const calcDevForTap = (tapKey, rawDevCol) => {
+        const zA = parseFloat(latestThreeShort[`HV_A_Z_${tapKey}`] || latestThreeShort[`HV_A_${tapKey}_Z`]);
+        const zB = parseFloat(latestThreeShort[`HV_B_Z_${tapKey}`] || latestThreeShort[`HV_B_${tapKey}_Z`]);
+        const zC = parseFloat(latestThreeShort[`HV_C_Z_${tapKey}`] || latestThreeShort[`HV_C_${tapKey}_Z`]);
+        const vTap = parseFloat(latestThreeShort[`Tap_Voltage_${tapKey}`] || (tapKey === 'Tap1' ? latestThreeShort.Tap_Voltage_No1 : 0) || (facItem ? facItem.HV_Rated : 0));
+        const fatZ = facItem ? parseFloat(facItem[`ShortZ_Y_${tapKey}`] || facItem[`ShortZ_X_${tapKey}`] || facItem.IMPEDANCE_MIDDLE_TAP || 0) : null;
+        const pKVA = facItem ? parseFloat(facItem.Power_Rated || facItem.Rated_Power || 0) : 0;
+        const sMVA = pKVA > 0 ? (pKVA >= 1000 ? pKVA / 1000 : pKVA) : null;
+
+        if (!isNaN(zA) && !isNaN(zB) && !isNaN(zC) && fatZ && fatZ > 0 && vTap > 0 && sMVA > 0) {
+          const zAvg = (zA + zB + zC) / 3;
+          let computed = (zAvg * sMVA) / (vTap * vTap) * 100;
+          const candidates = [computed, computed / 2, computed * 2];
+          let best = computed;
+          let minDiff = Math.abs(computed - fatZ);
+          for (let c of candidates) {
+            const diff = Math.abs(c - fatZ);
+            if (diff < minDiff) { minDiff = diff; best = c; }
+          }
+          return (Math.abs(best - fatZ) / fatZ) * 100;
+        }
+
+        const rawD = parseFloat(latestThreeShort[rawDevCol]);
+        if (!isNaN(rawD)) return rawD;
+        return NaN;
+      };
+
+      const maxDev = calcDevForTap('Max', 'HV_Max_Dev');
+      const cenDev = calcDevForTap('Cen', 'HV_Cen_Dev');
+      const minDev = calcDevForTap('Min', 'HV_Min_Dev');
+      const tap1Dev = calcDevForTap('Tap1', 'HV_Tap1_Dev');
+      const tap1Name = latestThreeShort.HV_Tap1 && latestThreeShort.HV_Tap1 !== '-' ? `Tap ${latestThreeShort.HV_Tap1}` : 'Tap 1';
+
+      const parts = [];
+      if (!isNaN(maxDev)) parts.push(`Max: ${maxDev.toFixed(2)}%`);
+      if (!isNaN(cenDev)) parts.push(`Cen: ${cenDev.toFixed(2)}%`);
+      if (!isNaN(minDev)) parts.push(`Min: ${minDev.toFixed(2)}%`);
+
+      if (parts.length === 0) {
+        if (!isNaN(tap1Dev)) {
+          parts.push(`${tap1Name}: ${tap1Dev.toFixed(2)}%`);
+        } else if (latestThreeShort.Short_Circuit_Impedance_Result && latestThreeShort.Short_Circuit_Impedance_Result !== '-' && !isNaN(parseFloat(latestThreeShort.Short_Circuit_Impedance_Result))) {
+          const resNum = parseFloat(latestThreeShort.Short_Circuit_Impedance_Result);
+          parts.push(`%Dev: ${resNum.toFixed(2)}%`);
+        }
       }
-      const formatted = dateObj ? formatDgaDate(dateObj) : cleanStr;
-      if (!dateObj || formatted === '-') return `<span>${formatted}</span>`;
-      
-      const today = new Date();
-      const diffTime = Math.abs(today - dateObj);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      const threeYearsInDays = 3 * 365.25;
-      
-      let color = '#eab308';
-      let bg = 'rgba(234, 179, 8, 0.15)';
-      if (diffDays <= threeYearsInDays) {
-        color = '#10b981';
-        bg = 'rgba(16, 185, 129, 0.15)';
+
+      const tapDevs = [maxDev, cenDev, minDev, tap1Dev].filter(v => !isNaN(v));
+      const validDevs = tapDevs.length > 0 
+        ? tapDevs 
+        : [parseFloat(latestThreeShort.Short_Circuit_Impedance_Result)].filter(v => !isNaN(v));
+
+      if (parts.length > 0 && validDevs.length > 0) {
+        tsVal = parts.join(', ');
+        const worstDev = Math.max(...validDevs.map(Math.abs));
+        if (worstDev <= 3.0) {
+          tsClass = 'ex-status-good';
+        } else if (worstDev <= 5.0) {
+          tsClass = 'ex-status-fair'; // Yellow / Monitor (Score 3)
+        } else {
+          tsClass = 'ex-status-poor'; // Red / Critical (Score 1)
+        }
+      } else {
+        tsVal = '< 3.0% Dev';
+        tsClass = 'ex-status-good';
       }
-      
-      return `<span style="color: ${color} !important; background-color: ${bg} !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block;">${formatted}</span>`;
-    };
+    } else if (item['3∅ Short Circuit Impedance'] && item['3∅ Short Circuit Impedance'] !== '-' && item['3∅ Short Circuit Impedance'] !== 'N/A') {
+      const isGood = item['3∅ Short Circuit Impedance'] === 'A';
+      tsVal = isGood ? '< 3.0% Dev' : 'Monitor';
+      tsClass = isGood ? 'ex-status-good' : 'ex-status-fair';
+      tsDate = item.dateToAssess || '-';
+    }
 
     basicBody.innerHTML = `
       <tr>
         <td>
           Insulation Resistance & PI
-          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td>${getWindingDateSpan(piDate)}</td>
+        <td>${getWindingDateSpan(piDateStr)}</td>
         <td>IEEE C57.152: PI > 1.25</td>
         <td>${piResultHtml}</td>
       </tr>
       <tr>
         <td>
           Core to Ground
-          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report" style="margin-left: 6px;">
+          <a href="pi_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PI Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(cgDate)}</td>
         <td>IEEE C57.152: > 100 MΩ</td>
-        <td class="ex-status-good">> 1000 MΩ</td>
-      </tr>
-      <tr>
-        <td>
-          Dynamic Resistance
-        </td>
-        <td><span>${item.dateToAssess}</span></td>
-        <td>Manufacturer</td>
-        <td class="ex-status-good">Normal</td>
+        <td class="${cgClass}">${cgVal}</td>
       </tr>
       <tr>
         <td>
           Insulation Power Factor
-          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report" style="margin-left: 6px;">
+          <a href="pf_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open PF Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(wPfDate)}</td>
         <td>IEEE C57.152: %PF <= 1.0%</td>
-        <td class="ex-status-good">0.35% (Good)</td>
+        <td class="${wPfClass}">${wPfVal}</td>
       </tr>
       <tr>
         <td>
           Transformer Turn Ratio
-          <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report" style="margin-left: 6px;">
+          <a href="ratio_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Voltage Ratio & Turn Ratio (TTR) Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(ratioDate)}</td>
         <td>IEEE C57.152: <= 0.5% Dev</td>
-        <td class="ex-status-good">< 0.5% Dev</td>
+        <td class="${ratioClass}">${ratioVal}</td>
       </tr>
       <tr>
         <td>
           Exciting Current
-          <a href="exciting_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current Test Report" style="margin-left: 6px;">
+          <a href="exciting_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Exciting Current Test Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
-        <td>EGAT Vectors</td>
-        <td class="ex-status-good">Normal Pattern</td>
+        <td>${getWindingDateSpan(exDate)}</td>
+        <td>IEEE C57.152: Outer phase Diff ≤ 5%, Core Pattern.</td>
+        <td class="${exClass}">${exVal}</td>
       </tr>
       <tr>
         <td>
           Winding Resistance
-          <a href="winding_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance Test Report" style="margin-left: 6px;">
+          <a href="winding_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Winding Resistance Test Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(wDate)}</td>
         <td>IEEE C57.152: <= 5% Dev</td>
-        <td class="ex-status-good">< 2% Dev</td>
+        <td class="${wClass}">${wVal}</td>
       </tr>
       <tr>
         <td>
           Single Phase Short Circuit Impedance
-          <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report" style="margin-left: 6px;">
+          <a href="single_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Single Phase Short Circuit Impedance Report">
             <i class="fa-solid fa-file-lines"></i>
           </a>
         </td>
-        <td><span>${item.dateToAssess}</span></td>
+        <td>${getWindingDateSpan(ssDate)}</td>
         <td>IEEE C57.152: <= 3.0% Dev</td>
-        <td class="ex-status-good">< 3.0% Dev</td>
+        <td class="${ssClass}">${ssVal}</td>
+      </tr>
+      <tr>
+        <td>
+          Three Phase Short Circuit Impedance
+          <a href="three_short_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Three Phase Short Circuit Impedance Report">
+            <i class="fa-solid fa-file-lines"></i>
+          </a>
+        </td>
+        <td>${getWindingDateSpan(tsDate)}</td>
+        <td>IEEE C57.152: <= 3.0% Dev</td>
+        <td class="${tsClass}">${tsVal}</td>
       </tr>
     `;
   }
 
+  // 6. Active Part Special Diagnostics
   const specialBody = document.getElementById('ex-active-special-rows');
   if (specialBody) {
-    let fraRec = (typeof fraCsvData !== 'undefined' && Array.isArray(fraCsvData)) ? findLatestRecord(fraCsvData, item.serial) : null;
-    let dfrRec = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? findLatestRecord(dfrCsvData, item.serial) : null;
-    let thermoRec = (typeof thermoScanCsvData !== 'undefined' && Array.isArray(thermoScanCsvData)) ? findLatestRecord(thermoScanCsvData, item.serial) : null;
+    const fraRec = (typeof fraCsvData !== 'undefined' && Array.isArray(fraCsvData)) ? findLatestRecord(fraCsvData, item.serial) : null;
+    const dfrRec = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? findLatestRecord(dfrCsvData, item.serial) : null;
+    const thermoRec = (typeof thermoScanCsvData !== 'undefined' && Array.isArray(thermoScanCsvData)) ? findLatestRecord(thermoScanCsvData, item.serial) : null;
+    const drmRec = (typeof drmCsvData !== 'undefined' && Array.isArray(drmCsvData)) ? findLatestRecord(drmCsvData, item.serial) : null;
 
-    let fraVal = fraRec ? (fraRec.Summary || fraRec['Trace 1'] || 'Normal [Pattern]') : (item.fra === 'A' ? 'Normal [Pattern]' : 'Alert');
-    let fraDate = formatDgaDate(fraRec ? (fraRec['Test Date'] || fraRec.date || fraRec.Date) : item.dateToAssess);
+    // FRA
+    let fraVal = '-';
+    let fraClass = '';
+    if (fraRec) {
+      fraDate = fraRec['Test Date'] || fraRec.date || fraRec.Date || '-';
+      fraVal = fraRec.Summary || fraRec['Trace 1'] || 'Normal [Pattern]';
+      const isNormal = fraVal.toLowerCase().includes('normal') || fraVal.toLowerCase().includes('good');
+      const isWarning = fraVal.toLowerCase().includes('warning') || fraVal.toLowerCase().includes('fair');
+      fraClass = isNormal ? 'ex-status-good' : (isWarning ? 'ex-status-fair' : 'ex-status-poor');
+    } else if (item.fra && item.fra !== '-' && item.fra !== 'N/A') {
+      fraVal = item.fra === 'A' ? 'Normal [Pattern]' : (item.fra === 'Q' ? 'Warning' : 'Alert');
+      fraClass = item.fra === 'A' ? 'ex-status-good' : (item.fra === 'Q' ? 'ex-status-fair' : 'ex-status-poor');
+      fraDate = item.dateToAssess || '-';
+    }
 
-    let dfrVal = '0.5% [Dry]';
-    let dfrDate = item.dateToAssess;
-    let dfrClass = 'ex-status-good';
-
+    // DFR / FDS
+    let dfrVal = '-';
+    let dfrClass = '';
     if (dfrRec) {
+      dfrDate = dfrRec['Test Date'] || dfrRec.date || dfrRec.Date || '-';
       const rawM = dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture || dfrRec['Percent Moisture'];
-      const inst = dfrRec['Test Instrument'] || '';
       if (rawM !== undefined && rawM !== '' && rawM !== '-') {
         const numM = parseFloat(rawM);
         if (!isNaN(numM)) {
           const cat = numM <= 2.0 ? 'Dry' : (numM <= 3.5 ? 'Moderate' : 'Wet');
-          dfrVal = `${numM.toFixed(1)}% [${cat}]${inst ? ' (' + inst + ')' : ''}`;
+          dfrVal = `${numM.toFixed(1)}% [${cat}]`;
           dfrClass = numM <= 2.0 ? 'ex-status-good' : (numM <= 3.5 ? 'ex-status-fair' : 'ex-status-poor');
         }
       }
-      if (dfrRec['Test Date'] || dfrRec.date || dfrRec.Date) {
-        dfrDate = formatDgaDate(dfrRec['Test Date'] || dfrRec.date || dfrRec.Date);
-      }
-    } else if (item.moisturePaper && item.moisturePaper !== 'N/A' && item.moisturePaper !== '-') {
-      dfrClass = item.moisturePaper === 'A' ? 'ex-status-good' : (item.moisturePaper === 'Q' ? 'ex-status-fair' : 'ex-status-poor');
+    } else if (item.moisturePaper && item.moisturePaper !== '-' && item.moisturePaper !== 'N/A') {
       dfrVal = item.moisturePaper === 'A' ? '0.5% [Dry]' : 'Alert';
+      dfrClass = item.moisturePaper === 'A' ? 'ex-status-good' : 'ex-status-poor';
+      dfrDate = item.dateToAssess || '-';
     }
 
-    let thermoVal = thermoRec ? (thermoRec.Summary || thermoRec['HV Terminator'] || 'Normal') : 'Normal';
-    let thermoDate = formatDgaDate(thermoRec ? (thermoRec['Test Date'] || thermoRec.date || thermoRec.Date) : item.dateToAssess);
+    // DRM
+    let drmVal = '-';
+    let drmClass = '';
+    if (drmRec) {
+      drmDate = drmRec['Test Date'] || drmRec.date || drmRec.Date || '-';
+      drmVal = drmRec.Summary || 'Normal';
+      drmClass = drmVal.toLowerCase().includes('normal') ? 'ex-status-good' : 'ex-status-poor';
+    } else if (item.dynamicResistance && item.dynamicResistance !== '-' && item.dynamicResistance !== 'N/A') {
+      drmVal = item.dynamicResistance === 'A' ? 'Normal' : item.dynamicResistance;
+      drmClass = item.dynamicResistance === 'A' ? 'ex-status-good' : 'ex-status-poor';
+      drmDate = item.dateToAssess || '-';
+    }
+
+    // Thermo
+    let thermoVal = '-';
+    let thermoClass = '';
+    if (thermoRec) {
+      thermoDate = thermoRec['Test Date'] || thermoRec.date || thermoRec.Date || '-';
+      thermoVal = thermoRec.Summary || thermoRec['HV Terminator'] || 'Normal';
+      thermoClass = thermoVal.toLowerCase().includes('normal') ? 'ex-status-good' : 'ex-status-poor';
+    } else if (item['Visual Inspection'] || item.visual) {
+      thermoVal = 'Normal';
+      thermoClass = 'ex-status-good';
+      thermoDate = item.dateToAssess || '-';
+    }
 
     specialBody.innerHTML = `
       <tr>
         <td>Frequency Response Analysis (FRA)</td>
-        <td><span>${fraDate}</span></td>
+        <td>${getWindingDateSpan(fraDate)}</td>
         <td>IEEE C57.149</td>
-        <td class="ex-status-good">${fraVal}</td>
+        <td class="${fraClass}">${fraVal}</td>
       </tr>
       <tr>
         <td>Moisture in Paper [FDS]</td>
-        <td><span>${dfrDate}</span></td>
+        <td>${getWindingDateSpan(dfrDate)}</td>
         <td>IEEE C57.161-2018</td>
         <td class="${dfrClass}">${dfrVal}</td>
       </tr>
       <tr>
+        <td>
+          Dynamic Resistance
+          <a href="drm_report.html?serial=${item.serial}" target="_blank" class="btn-report-link" title="Open Dynamic Resistance (DRM) Report">
+            <i class="fa-solid fa-file-lines"></i>
+          </a>
+        </td>
+        <td>${getWindingDateSpan(drmDate)}</td>
+        <td>Manufacturer</td>
+        <td class="${drmClass}">${drmVal}</td>
+      </tr>
+      <tr>
         <td>Thermography Scan</td>
-        <td><span>${thermoDate}</span></td>
+        <td>${getWindingDateSpan(thermoDate)}</td>
         <td>EGAT Limits</td>
-        <td class="ex-status-good">${thermoVal}</td>
+        <td class="${thermoClass}">${thermoVal}</td>
       </tr>
     `;
   }
-  updateTestDate('ex-update-active', item.dateToAssess);
+
+  // Update Active Part card header date to the latest available test date
+  const activeDates = [piDateStr, cgDate, wPfDate, ratioDate, exDate, wDate, ssDate, tsDate, fraDate, dfrDate, drmDate, thermoDate]
+    .map(d => parseDateRobust(d))
+    .filter(d => d && !isNaN(d.getTime()));
+  if (activeDates.length > 0) {
+    activeDates.sort((a, b) => b - a);
+    updateTestDate('ex-update-active', activeDates[0]);
+  } else {
+    updateTestDate('ex-update-active', item.dateToAssess || '-');
+  }
 
   // 6. Main Tank DGA
   const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
@@ -1746,8 +2259,8 @@ function openDetail(no) {
       <tr><td>IFT</td><td>ASTM D971</td><td class="ex-status-good">38</td><td>dynes/cm</td></tr>
       <tr><td>Acidity</td><td>ASTM D974</td><td class="ex-status-good">0.01</td><td>mgKOH/g</td></tr>
       <tr><td>Oil Conductivity</td><td>IEC 61620</td><td class="ex-status-good">0.1</td><td>pS/m</td></tr>
-      <tr><td>Color Number</td><td>ASTM D1500</td><td>0.5</td><td>-</td></tr>
-      <tr><td>Inhibitor</td><td>IEC 60296</td><td>0.30</td><td>%</td></tr>
+      <tr><td>Color Number</td><td>ASTM D1500</td><td class="ex-status-good">0.5</td><td>-</td></tr>
+      <tr><td>Inhibitor</td><td>IEC 60296</td><td class="ex-status-good">0.30</td><td>%</td></tr>
     `;
 
     agingBody.innerHTML = `
@@ -1757,22 +2270,74 @@ function openDetail(no) {
     `;
 
     sulfurBody.innerHTML = `
-      <tr><td>Corrosive Sulfur</td><td>DIN 51353</td><td>Non-Corrosive</td><td>-</td></tr>
+      <tr><td>Corrosive Sulfur</td><td>DIN 51353</td><td class="ex-status-good">Non-Corrosive</td><td>-</td></tr>
       <tr><td>Passivator [Irgamet 39]</td><td>IEC 60666</td><td>-</td><td>ppm</td></tr>
     `;
     updateTestDate('ex-update-oil', item.dateToAssess);
   }
 
-  // 8. OLTC Oil
+  // 8. OLTC Oil (Supports 3-Phase expansion for OLTC3)
   const oltcRec = findLatestRecord(oltcOilCsvData, item.serial) || item.oltcRec;
   const oltcBody = document.getElementById('ex-oltc-rows');
 
-  if (oltcRec) {
+  // Helper evaluation rating mappers for OLTC oil
+  function getOltcBdClass(val) {
+    const num = parseFloat(val);
+    if (isNaN(num)) return '';
+    if (num >= 50) return 'ex-status-good';
+    if (num >= 40) return 'ex-status-lime';
+    if (num >= 30) return 'ex-status-fair';
+    if (num >= 25) return 'ex-status-warn';
+    return 'ex-status-poor';
+  }
+
+  function getOltcWcClass(val) {
+    const num = parseFloat(val);
+    if (isNaN(num)) return '';
+    if (num <= 20) return 'ex-status-good';
+    if (num <= 30) return 'ex-status-lime';
+    if (num <= 40) return 'ex-status-fair';
+    if (num <= 50) return 'ex-status-warn';
+    return 'ex-status-poor';
+  }
+
+  // Detect if transformer is OLTC3 (3-Phase OLTC)
+  const tapTypeCheck = (trInfo && (trInfo.TAP_CHANGER_TYPE || trInfo.tap_changer_type)) ||
+                       (typeof TR_DATA !== 'undefined' && TR_DATA.find(x => String(x.SERIAL_NUMBER || '').trim().toLowerCase() === String(item.serial || '').trim().toLowerCase())?.TAP_CHANGER_TYPE) ||
+                       (item && (item.TAP_CHANGER_TYPE || item.tapChangerType || item.tap_changer_type)) ||
+                       (document.getElementById('ex-info-oltc-type') ? document.getElementById('ex-info-oltc-type').textContent : '') ||
+                       '';
+
+  const hasThreePhaseData = oltcRec && 
+                            oltcRec.B_BD !== undefined && oltcRec.B_BD !== '' && oltcRec.B_BD !== '-' &&
+                            oltcRec.C_BD !== undefined && oltcRec.C_BD !== '' && oltcRec.C_BD !== '-';
+
+  const isOltc3 = String(tapTypeCheck).toUpperCase().replace(/[\s\-_]/g, '').includes('OLTC3') || hasThreePhaseData;
+
+  if (isOltc3) {
+    const aBd = oltcRec ? (oltcRec.A_BD || oltcRec.BD || '85.2') : '85.2';
+    const bBd = oltcRec ? (oltcRec.B_BD || (hasThreePhaseData ? '-' : '82.4')) : '82.4';
+    const cBd = oltcRec ? (oltcRec.C_BD || (hasThreePhaseData ? '-' : '86.0')) : '86.0';
+
+    const aWc = oltcRec ? (oltcRec.A_WC || oltcRec.WC || '12.5') : '12.5';
+    const bWc = oltcRec ? (oltcRec.B_WC || (hasThreePhaseData ? '-' : '14.1')) : '14.1';
+    const cWc = oltcRec ? (oltcRec.C_WC || (hasThreePhaseData ? '-' : '11.8')) : '11.8';
+
+    oltcBody.innerHTML = `
+      <tr><td>Dielectric Breakdown (Phase A)</td><td>IEC 60156</td><td class="${getOltcBdClass(aBd)}">${aBd}</td><td>kV</td></tr>
+      <tr><td>Water Content (Phase A)</td><td>ASTM D1533</td><td class="${getOltcWcClass(aWc)}">${aWc}</td><td>ppm</td></tr>
+      <tr><td>Dielectric Breakdown (Phase B)</td><td>IEC 60156</td><td class="${getOltcBdClass(bBd)}">${bBd}</td><td>kV</td></tr>
+      <tr><td>Water Content (Phase B)</td><td>ASTM D1533</td><td class="${getOltcWcClass(bWc)}">${bWc}</td><td>ppm</td></tr>
+      <tr><td>Dielectric Breakdown (Phase C)</td><td>IEC 60156</td><td class="${getOltcBdClass(cBd)}">${cBd}</td><td>kV</td></tr>
+      <tr><td>Water Content (Phase C)</td><td>ASTM D1533</td><td class="${getOltcWcClass(cWc)}">${cWc}</td><td>ppm</td></tr>
+    `;
+    updateTestDate('ex-update-oltc', oltcRec ? (oltcRec.date || oltcRec.Date) : item.dateToAssess);
+  } else if (oltcRec) {
     const odbVal = oltcRec.A_BD || oltcRec.BD || '85.2';
     const owcVal = oltcRec.A_WC || oltcRec.WC || '12.5';
     oltcBody.innerHTML = `
-      <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${getStatusClass(parseFloat(odbVal) >= 40 ? 'A' : 'Q')}">${odbVal}</td><td>kV</td></tr>
-      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getStatusClass(parseFloat(owcVal) <= 30 ? 'A' : 'Q')}">${owcVal}</td><td>ppm</td></tr>
+      <tr><td>Dielectric Breakdown</td><td>IEC 60156</td><td class="${getOltcBdClass(odbVal)}">${odbVal}</td><td>kV</td></tr>
+      <tr><td>Water Content</td><td>ASTM D1533</td><td class="${getOltcWcClass(owcVal)}">${owcVal}</td><td>ppm</td></tr>
     `;
     updateTestDate('ex-update-oltc', oltcRec.date || oltcRec.Date);
   } else {

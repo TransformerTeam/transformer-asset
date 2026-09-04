@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -17,11 +17,11 @@
   <style>
     /* Global Variables matching main dashboard theme */
     :root {
-      --bg-dark: #0a0f1d;
-      --panel-dark: rgba(255, 255, 255, 0.04);
-      --border-dark: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-sub: #9ca3af;
+      --bg-dark: #f1f5f9;
+      --panel-dark: #ffffff;
+      --border-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
       --primary: #4f46e5;
       --primary-hover: #6366f1;
       --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -439,7 +439,7 @@
     }
 
     .trending-panel {
-      background: #353839;
+      background: #ffffff;
       border: 1px solid var(--border-dark);
       border-radius: 8px;
       padding: 16px;
@@ -596,6 +596,9 @@
       }
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 
 <body>
@@ -610,9 +613,6 @@
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
-        <i class="fa-solid fa-moon" id="theme-icon"></i> Theme
-      </button>
       <button class="btn btn-secondary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print Report
       </button>
@@ -949,7 +949,7 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       // Initialize theme
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      const savedTheme = 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
@@ -1882,6 +1882,7 @@
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
+      if (!icon) return;
       if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     }
 
@@ -1900,6 +1901,8 @@
       });
     }
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 
 </html>

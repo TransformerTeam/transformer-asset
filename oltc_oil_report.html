@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,11 @@
   <style>
     /* Global Variables matching main dashboard theme */
     :root {
-      --bg-dark: #0a0f1d;
-      --panel-dark: rgba(255, 255, 255, 0.04);
-      --border-dark: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-sub: #9ca3af;
+      --bg-dark: #f1f5f9;
+      --panel-dark: #ffffff;
+      --border-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
       --primary: #4f46e5;
       --primary-hover: #6366f1;
       --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -388,6 +388,83 @@
     .tag-fair { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
     .tag-poor { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
 
+    /* OLTC3 Specific Styles */
+    .badge-oltc3 {
+      background: #b2ff66;
+      color: #1a4d00;
+      font-weight: 700;
+      font-size: 9px;
+      padding: 1.5px 7px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      vertical-align: middle;
+      border: 1px solid #84cc16;
+      letter-spacing: 0.3px;
+    }
+
+    .phase-btn-group {
+      display: inline-flex;
+      gap: 2px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .btn-phase-sub {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 3px;
+      font-size: 8.5px;
+      font-weight: 600;
+      padding: 1.5px 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn-phase-sub:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    .btn-phase-sub.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #818cf8;
+      font-weight: 700;
+    }
+
+    .btn-phase-sub[data-phase="A"].active {
+      background: #1e3a8a !important;
+      color: #ffffff !important;
+      border-color: #60a5fa !important;
+    }
+
+    .btn-phase-sub[data-phase="B"].active {
+      background: #92400e !important;
+      color: #ffffff !important;
+      border-color: #f59e0b !important;
+    }
+
+    .btn-phase-sub[data-phase="C"].active {
+      background: #166534 !important;
+      color: #ffffff !important;
+      border-color: #4ade80 !important;
+    }
+
+    .row-phase-divider {
+      background-color: #f8fafc;
+      font-weight: 700;
+      font-size: 8.5px;
+      color: #1e3a8a;
+      text-align: left !important;
+      padding: 2px 6px !important;
+      border-top: 1.5px solid #cbd5e1 !important;
+    }
+
     /* Diagnostic Box */
     .diag-box {
       border: 1px solid var(--report-border);
@@ -535,6 +612,9 @@
       }
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -554,15 +634,23 @@
       <select id="test-date-select" class="search-select" style="min-width: 140px; max-width: 180px;" onchange="switchTestDate(this.value)">
         <option value="">Latest Test</option>
       </select>
+
+      <!-- OLTC3 Phase Selector (Visible for OLTC3 units) -->
+      <div id="phase-selector-container" class="selector-group" style="display: none; margin-left: 8px;">
+        <label class="selector-label"><i class="fa-solid fa-code-branch" style="color: #38bdf8;"></i> OLTC3 Phase:</label>
+        <div class="phase-btn-group">
+          <button type="button" class="btn-phase-sub active" data-phase="ALL" onclick="setOltcReportPhase('ALL')">3-Phase View</button>
+          <button type="button" class="btn-phase-sub" data-phase="A" onclick="setOltcReportPhase('A')">Phase A</button>
+          <button type="button" class="btn-phase-sub" data-phase="B" onclick="setOltcReportPhase('B')">Phase B</button>
+          <button type="button" class="btn-phase-sub" data-phase="C" onclick="setOltcReportPhase('C')">Phase C</button>
+        </div>
+      </div>
     </div>
     
     <div class="btn-group">
       <a href="assessment.html" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i> Assessment
       </a>
-      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
-        <i class="fa-solid fa-sun" id="theme-icon"></i> Theme
-      </button>
       <button class="btn btn-secondary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print / PDF
       </button>
@@ -581,7 +669,10 @@
       <!-- Document Header -->
       <div class="report-header">
         <div class="report-title-container">
-          <div class="report-title">ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT</div>
+          <div class="report-title">
+            ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT
+            <span id="badge-oltc3-p1" class="badge-oltc3" style="display: none;"><i class="fa-solid fa-bolt"></i> OLTC3 (3-Phase)</span>
+          </div>
           <div class="report-subtitle">
             <span>Standards: IEEE C57.106 / IEEE C57.152-2013 / IEEE C57.139 / IEC 60422 / IEC 60156</span>
             <span class="page-indicator">Page 1 of 2</span>
@@ -725,7 +816,7 @@
             <th style="width: 10%;">Previous 3<br><span id="date-col-p3" style="font-weight:400; font-size:8.5px;">-</span></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tbl-oil-props-body">
           <tr>
             <td class="lbl">Dielectric Breakdown Voltage (BDV)</td>
             <td class="std-col">IEC 60156 / ASTM D1816</td>
@@ -782,10 +873,18 @@
       <!-- 6. OLTC Dissolved Gas Analysis (DGA) -->
       <div class="section-title">
         <span>6. OLTC Dissolved Gas Analysis (DGA)</span>
-        <span class="badge-info">IEEE C57.139 / IEC 60599</span>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <div class="phase-btn-group" id="oltc3-phase-btn-group-s6" style="display: none;">
+            <button type="button" class="btn-phase-sub active" data-phase="ALL" onclick="setOltcReportPhase('ALL')">3-Phase View</button>
+            <button type="button" class="btn-phase-sub" data-phase="A" onclick="setOltcReportPhase('A')">Ph. A</button>
+            <button type="button" class="btn-phase-sub" data-phase="B" onclick="setOltcReportPhase('B')">Ph. B</button>
+            <button type="button" class="btn-phase-sub" data-phase="C" onclick="setOltcReportPhase('C')">Ph. C</button>
+          </div>
+          <span class="badge-info">IEEE C57.139 / IEC 60599</span>
+        </div>
       </div>
       <table class="report-table tbl-results">
-        <thead>
+        <thead id="tbl-dga-head">
           <tr>
             <th style="width: 26%; text-align: left;">Gas Component (ppm)</th>
             <th style="width: 12%;">Symbol</th>
@@ -797,7 +896,7 @@
             <th style="width: 10%;">Previous 3</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tbl-dga-body">
           <tr>
             <td class="lbl">Hydrogen</td>
             <td class="std-col">H<sub>2</sub></td>
@@ -958,7 +1057,10 @@
       <!-- Document Header -->
       <div class="report-header">
         <div class="report-title-container">
-          <div class="report-title">ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT</div>
+          <div class="report-title">
+            ON-LOAD TAP CHANGER (OLTC) OIL TEST REPORT
+            <span id="badge-oltc3-p2" class="badge-oltc3" style="display: none;"><i class="fa-solid fa-bolt"></i> OLTC3 (3-Phase)</span>
+          </div>
           <div class="report-subtitle">
             <span>Historical Multi-Cycle Diagnostic Trending &amp; Formal Authorization</span>
             <span class="page-indicator">Page 2 of 2</span>
@@ -1439,8 +1541,22 @@
       });
     }
 
+    let currentOltcPhase = 'ALL';
+    let currentAllRecords = [];
+
+    function setOltcReportPhase(phase) {
+      currentOltcPhase = phase;
+      document.querySelectorAll('.btn-phase-sub').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-phase') === phase);
+      });
+      if (currentRecord) {
+        renderOltcOilReport(currentRecord, currentAllRecords);
+      }
+    }
+
     function switchTransformer(serial) {
       currentSerial = serial;
+      currentOltcPhase = 'ALL';
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       loadReportBySerial(serial);
@@ -1467,6 +1583,7 @@
       };
 
       rawRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      currentAllRecords = rawRecords;
 
       // Populate Date selector
       const dateSelect = document.getElementById('test-date-select');
@@ -1567,6 +1684,59 @@
         setElText('oltc-maint', '-');
       }
 
+      // Multi-Cycle Records (Up to 4: Current, Prev1, Prev2, Prev3)
+      let recs = (allRecords && allRecords.length > 0) ? allRecords : (record ? [record] : []);
+
+      const r0 = recs[0] || null;
+      const r1 = recs[1] || null;
+      const r2 = recs[2] || null;
+      const r3 = recs[3] || null;
+
+      // Dates
+      setElText('date-col-curr', r0 ? formatDate_ddMmmyyyy(r0.date) : '-');
+      setElText('date-col-p1', r1 ? formatDate_ddMmmyyyy(r1.date) : '-');
+      setElText('date-col-p2', r2 ? formatDate_ddMmmyyyy(r2.date) : '-');
+      setElText('date-col-p3', r3 ? formatDate_ddMmmyyyy(r3.date) : '-');
+
+      // Detect if transformer is OLTC3 (3-Phase OLTC)
+      const tapTypeCheck = (rawMeta && (rawMeta.TAP_CHANGER_TYPE || rawMeta.tap_changer)) ||
+                           (meta && (meta.TAP_CHANGER_TYPE || meta['Tap Changer'])) ||
+                           (oltcAsset && (oltcAsset.oltcModelType || oltcAsset.tapChangerType)) ||
+                           '';
+
+      const isExplicitOltc1 = String(tapTypeCheck).toUpperCase().includes('OLTC1');
+      const hasDistinctThreePhase = Boolean(
+        r0 && 
+        r0.B_BD !== undefined && r0.B_BD !== '' && r0.B_BD !== '-' &&
+        r0.C_BD !== undefined && r0.C_BD !== '' && r0.C_BD !== '-' &&
+        (r0.B_BD !== r0.A_BD || r0.C_BD !== r0.A_BD || r0.B_WC !== r0.A_WC || r0.C_WC !== r0.A_WC)
+      );
+      const isOltc3 = (!isExplicitOltc1 && (String(tapTypeCheck).toUpperCase().replace(/[\s\-_]/g, '').includes('OLTC3') || hasDistinctThreePhase));
+
+      // Toggle Phase UI & badges for OLTC3
+      const pCont = document.getElementById('phase-selector-container');
+      const pBtnS6 = document.getElementById('oltc3-phase-btn-group-s6');
+      const bP1 = document.getElementById('badge-oltc3-p1');
+      const bP2 = document.getElementById('badge-oltc3-p2');
+
+      if (isOltc3) {
+        if (pCont) pCont.style.display = 'flex';
+        if (pBtnS6) pBtnS6.style.display = 'inline-flex';
+        if (bP1) bP1.style.display = 'inline-flex';
+        if (bP2) bP2.style.display = 'inline-flex';
+        oltcSummary = `${oltcSummary} [OLTC3 3-Phase]`;
+        setElText('oltc-model', (oltcAsset && oltcAsset.oltcModelType) ? `${oltcAsset.oltcModelType} (OLTC3 3-Phase)` : 'OLTC3 (Three-Phase Mechanism)');
+      } else {
+        if (pCont) pCont.style.display = 'none';
+        if (pBtnS6) pBtnS6.style.display = 'none';
+        if (bP1) bP1.style.display = 'none';
+        if (bP2) bP2.style.display = 'none';
+      }
+
+      document.querySelectorAll('.btn-phase-sub').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-phase') === currentOltcPhase);
+      });
+
       // Populate Section 1
       setElText('info-eq-name', eqName);
       setElText('info-site', site);
@@ -1586,21 +1756,7 @@
       setElText('env-winding', (record && record.Winding_Temp) ? `${record.Winding_Temp} °C` : '-');
       setElText('env-humidity', (record && record.Humidity) ? `${record.Humidity}%` : '-');
 
-      // Multi-Cycle Records (Up to 4: Current, Prev1, Prev2, Prev3)
-      let recs = (allRecords && allRecords.length > 0) ? allRecords : (record ? [record] : []);
-
-      const r0 = recs[0] || null;
-      const r1 = recs[1] || null;
-      const r2 = recs[2] || null;
-      const r3 = recs[3] || null;
-
-      // Dates
-      setElText('date-col-curr', r0 ? formatDate_ddMmmyyyy(r0.date) : '-');
-      setElText('date-col-p1', r1 ? formatDate_ddMmmyyyy(r1.date) : '-');
-      setElText('date-col-p2', r2 ? formatDate_ddMmmyyyy(r2.date) : '-');
-      setElText('date-col-p3', r3 ? formatDate_ddMmmyyyy(r3.date) : '-');
-
-      // Helper for extraction (Supports A_*, B_*, C_* or general)
+      // Helper for extraction
       const getVal = (r, key) => {
         if (!r) return '-';
         const val = r[`A_${key}`] || r[key] || r[`B_${key}`] || r[`C_${key}`];
@@ -1608,207 +1764,671 @@
         return val;
       };
 
+      const getPhVal = (r, ph, key) => {
+        if (!r) return '-';
+        const v = r[`${ph}_${key}`];
+        if (v !== undefined && v !== null && v !== '') return v;
+        return '-';
+      };
+
       const formatNum = (v, dec = 1) => {
         if (v === '-' || isNaN(parseFloat(v))) return v;
         return parseFloat(v).toFixed(dec);
       };
 
-      // 5. Oil Properties
-      const bd0 = getVal(r0, 'BD'); const bd1 = getVal(r1, 'BD'); const bd2 = getVal(r2, 'BD'); const bd3 = getVal(r3, 'BD');
-      const wc0 = getVal(r0, 'WC'); const wc1 = getVal(r1, 'WC'); const wc2 = getVal(r2, 'WC'); const wc3 = getVal(r3, 'WC');
-      const pf25_0 = getVal(r0, 'PF_25'); const pf25_1 = getVal(r1, 'PF_25'); const pf25_2 = getVal(r2, 'PF_25'); const pf25_3 = getVal(r3, 'PF_25');
-      const pf100_0 = getVal(r0, 'PF_100'); const pf100_1 = getVal(r1, 'PF_100'); const pf100_2 = getVal(r2, 'PF_100'); const pf100_3 = getVal(r3, 'PF_100');
-      const st0 = getVal(r0, 'Test_Result') || (parseFloat(bd0) >= 40 && parseFloat(wc0) <= 20 ? 'NORMAL' : '-');
+      // 5. Oil Properties Table Population
+      const oilPropsTbody = document.getElementById('tbl-oil-props-body');
+      if (oilPropsTbody) {
+        if (isOltc3) {
+          const renderStatusTag = (bdVal, wcVal, customSt) => {
+            if (customSt && customSt !== '-') {
+              const c = String(customSt).toUpperCase();
+              const cls = (c === 'NORMAL' || c === 'GOOD' || c === 'A') ? 'tag-normal' : (c === 'POOR' || c === 'CRITICAL' || c === 'U') ? 'tag-poor' : 'tag-fair';
+              return `<span class="tag-badge ${cls}">${customSt}</span>`;
+            }
+            const b = parseFloat(bdVal);
+            const w = parseFloat(wcVal);
+            if (isNaN(b) && isNaN(w)) return '-';
+            let tag = 'NORMAL', cls = 'tag-normal';
+            if (b < 30 || w > 30) { tag = 'POOR'; cls = 'tag-poor'; }
+            else if (b < 40 || w > 20) { tag = 'FAIR'; cls = 'tag-fair'; }
+            return `<span class="tag-badge ${cls}">${tag}</span>`;
+          };
 
-      setElText('val-bd-curr', formatNum(bd0, 1));
-      setElText('val-bd-p1', formatNum(bd1, 1));
-      setElText('val-bd-p2', formatNum(bd2, 1));
-      setElText('val-bd-p3', formatNum(bd3, 1));
+          oilPropsTbody.innerHTML = `
+            <!-- Phase A -->
+            <tr style="background: rgba(239, 246, 255, 0.4);">
+              <td class="lbl" style="font-weight:700; color:#1e3a8a;"><i class="fa-solid fa-bolt" style="font-size:8px; color:#3b82f6;"></i> Dielectric Breakdown Voltage (Phase A)</td>
+              <td class="std-col">IEC 60156 / ASTM D1816</td>
+              <td class="crit-col">&ge; 40 kV (Good) / &ge; 30 kV (Min)</td>
+              <td>kV</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'A', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'A', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'A', 'BD'), 1)}</td>
+            </tr>
+            <tr style="background: rgba(239, 246, 255, 0.4);">
+              <td class="lbl" style="font-weight:700; color:#1e3a8a;"><i class="fa-solid fa-droplet" style="font-size:8px; color:#38bdf8;"></i> Water Content (Phase A)</td>
+              <td class="std-col">ASTM D1533 / IEC 60814</td>
+              <td class="crit-col">&le; 20 ppm (Good) / &le; 30 ppm (Limit)</td>
+              <td>ppm</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'A', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'A', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'A', 'WC'), 1)}</td>
+            </tr>
+            <!-- Phase B -->
+            <tr style="background: rgba(254, 243, 199, 0.3);">
+              <td class="lbl" style="font-weight:700; color:#92400e;"><i class="fa-solid fa-bolt" style="font-size:8px; color:#f59e0b;"></i> Dielectric Breakdown Voltage (Phase B)</td>
+              <td class="std-col">IEC 60156 / ASTM D1816</td>
+              <td class="crit-col">&ge; 40 kV (Good) / &ge; 30 kV (Min)</td>
+              <td>kV</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'B', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'B', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'B', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'B', 'BD'), 1)}</td>
+            </tr>
+            <tr style="background: rgba(254, 243, 199, 0.3);">
+              <td class="lbl" style="font-weight:700; color:#92400e;"><i class="fa-solid fa-droplet" style="font-size:8px; color:#f59e0b;"></i> Water Content (Phase B)</td>
+              <td class="std-col">ASTM D1533 / IEC 60814</td>
+              <td class="crit-col">&le; 20 ppm (Good) / &le; 30 ppm (Limit)</td>
+              <td>ppm</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'B', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'B', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'B', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'B', 'WC'), 1)}</td>
+            </tr>
+            <!-- Phase C -->
+            <tr style="background: rgba(240, 253, 244, 0.4);">
+              <td class="lbl" style="font-weight:700; color:#166534;"><i class="fa-solid fa-bolt" style="font-size:8px; color:#10b981;"></i> Dielectric Breakdown Voltage (Phase C)</td>
+              <td class="std-col">IEC 60156 / ASTM D1816</td>
+              <td class="crit-col">&ge; 40 kV (Good) / &ge; 30 kV (Min)</td>
+              <td>kV</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'C', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'C', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'C', 'BD'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'C', 'BD'), 1)}</td>
+            </tr>
+            <tr style="background: rgba(240, 253, 244, 0.4);">
+              <td class="lbl" style="font-weight:700; color:#166534;"><i class="fa-solid fa-droplet" style="font-size:8px; color:#10b981;"></i> Water Content (Phase C)</td>
+              <td class="std-col">ASTM D1533 / IEC 60814</td>
+              <td class="crit-col">&le; 20 ppm (Good) / &le; 30 ppm (Limit)</td>
+              <td>ppm</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'C', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'C', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'C', 'WC'), 1)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'C', 'WC'), 1)}</td>
+            </tr>
+            <!-- Power Factor & Test Result -->
+            <tr>
+              <td class="lbl">Power Factor at 25 °C (Ph. A / B / C)</td>
+              <td class="std-col">ASTM D924 / IEC 60247</td>
+              <td class="crit-col">&le; 0.50 %</td>
+              <td>%</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'A', 'PF_25'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'PF_25'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'A', 'PF_25'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'A', 'PF_25'), 3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Power Factor at 100 °C (Ph. A / B / C)</td>
+              <td class="std-col">ASTM D924 / IEC 60247</td>
+              <td class="crit-col">&le; 5.0 %</td>
+              <td>%</td>
+              <td class="val-col">${formatNum(getPhVal(r0, 'A', 'PF_100'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'PF_100'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r2, 'A', 'PF_100'), 3)}</td>
+              <td class="val-col">${formatNum(getPhVal(r3, 'A', 'PF_100'), 3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Overall Oil Test Result (Ph. A / B / C)</td>
+              <td class="std-col">IEEE C57.152 Table 12</td>
+              <td class="crit-col">Satisfactory Condition</td>
+              <td>Status</td>
+              <td class="val-col" style="white-space:nowrap;">
+                ${renderStatusTag(getPhVal(r0, 'A', 'BD'), getPhVal(r0, 'A', 'WC'), getPhVal(r0, 'A', 'Test_Result'))}
+                ${renderStatusTag(getPhVal(r0, 'B', 'BD'), getPhVal(r0, 'B', 'WC'), getPhVal(r0, 'B', 'Test_Result'))}
+                ${renderStatusTag(getPhVal(r0, 'C', 'BD'), getPhVal(r0, 'C', 'WC'), getPhVal(r0, 'C', 'Test_Result'))}
+              </td>
+              <td class="val-col" style="white-space:nowrap;">${renderStatusTag(getPhVal(r1, 'A', 'BD'), getPhVal(r1, 'A', 'WC'), getPhVal(r1, 'A', 'Test_Result'))}</td>
+              <td class="val-col" style="white-space:nowrap;">${renderStatusTag(getPhVal(r2, 'A', 'BD'), getPhVal(r2, 'A', 'WC'), getPhVal(r2, 'A', 'Test_Result'))}</td>
+              <td class="val-col" style="white-space:nowrap;">${renderStatusTag(getPhVal(r3, 'A', 'BD'), getPhVal(r3, 'A', 'WC'), getPhVal(r3, 'A', 'Test_Result'))}</td>
+            </tr>
+          `;
+        } else {
+          // Standard Single-Phase Table
+          const bd0 = getVal(r0, 'BD'); const bd1 = getVal(r1, 'BD'); const bd2 = getVal(r2, 'BD'); const bd3 = getVal(r3, 'BD');
+          const wc0 = getVal(r0, 'WC'); const wc1 = getVal(r1, 'WC'); const wc2 = getVal(r2, 'WC'); const wc3 = getVal(r3, 'WC');
+          const pf25_0 = getVal(r0, 'PF_25'); const pf25_1 = getVal(r1, 'PF_25'); const pf25_2 = getVal(r2, 'PF_25'); const pf25_3 = getVal(r3, 'PF_25');
+          const pf100_0 = getVal(r0, 'PF_100'); const pf100_1 = getVal(r1, 'PF_100'); const pf100_2 = getVal(r2, 'PF_100'); const pf100_3 = getVal(r3, 'PF_100');
+          const st0 = getVal(r0, 'Test_Result');
 
-      setElText('val-wc-curr', formatNum(wc0, 1));
-      setElText('val-wc-p1', formatNum(wc1, 1));
-      setElText('val-wc-p2', formatNum(wc2, 1));
-      setElText('val-wc-p3', formatNum(wc3, 1));
+          const renderStatusCell = (id, st, bdv, wc) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if ((st === '-' || !st) && (bdv === '-' || !bdv)) {
+              el.innerHTML = '-';
+              return;
+            }
+            const b = parseFloat(bdv);
+            const w = parseFloat(wc);
+            let tag = 'NORMAL';
+            let cls = 'tag-normal';
+            if (b < 30 || w > 30) {
+              tag = 'POOR'; cls = 'tag-poor';
+            } else if (b < 40 || w > 20) {
+              tag = 'FAIR'; cls = 'tag-fair';
+            }
+            el.innerHTML = `<span class="tag-badge ${cls}">${st !== '-' && st ? st : tag}</span>`;
+          };
 
-      setElText('val-pf25-curr', formatNum(pf25_0, 3));
-      setElText('val-pf25-p1', formatNum(pf25_1, 3));
-      setElText('val-pf25-p2', formatNum(pf25_2, 3));
-      setElText('val-pf25-p3', formatNum(pf25_3, 3));
-
-      setElText('val-pf100-curr', formatNum(pf100_0, 3));
-      setElText('val-pf100-p1', formatNum(pf100_1, 3));
-      setElText('val-pf100-p2', formatNum(pf100_2, 3));
-      setElText('val-pf100-p3', formatNum(pf100_3, 3));
-
-      const renderStatusCell = (id, st, bdv, wc) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if ((st === '-' || !st) && (bdv === '-' || !bdv)) {
-          el.innerHTML = '-';
-          return;
+          oilPropsTbody.innerHTML = `
+            <tr>
+              <td class="lbl">Dielectric Breakdown Voltage (BDV)</td>
+              <td class="std-col">IEC 60156 / ASTM D1816</td>
+              <td class="crit-col">&ge; 40 kV (Good) / &ge; 30 kV (Min)</td>
+              <td>kV</td>
+              <td class="val-col">${formatNum(bd0, 1)}</td>
+              <td class="val-col">${formatNum(bd1, 1)}</td>
+              <td class="val-col">${formatNum(bd2, 1)}</td>
+              <td class="val-col">${formatNum(bd3, 1)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Water Content (Moisture in Oil)</td>
+              <td class="std-col">ASTM D1533 / IEC 60814</td>
+              <td class="crit-col">&le; 20 ppm (Good) / &le; 30 ppm (Limit)</td>
+              <td>ppm</td>
+              <td class="val-col">${formatNum(wc0, 1)}</td>
+              <td class="val-col">${formatNum(wc1, 1)}</td>
+              <td class="val-col">${formatNum(wc2, 1)}</td>
+              <td class="val-col">${formatNum(wc3, 1)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Power Factor at 25 °C</td>
+              <td class="std-col">ASTM D924 / IEC 60247</td>
+              <td class="crit-col">&le; 0.50 %</td>
+              <td>%</td>
+              <td class="val-col">${formatNum(pf25_0, 3)}</td>
+              <td class="val-col">${formatNum(pf25_1, 3)}</td>
+              <td class="val-col">${formatNum(pf25_2, 3)}</td>
+              <td class="val-col">${formatNum(pf25_3, 3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Power Factor at 100 °C</td>
+              <td class="std-col">ASTM D924 / IEC 60247</td>
+              <td class="crit-col">&le; 5.0 %</td>
+              <td>%</td>
+              <td class="val-col">${formatNum(pf100_0, 3)}</td>
+              <td class="val-col">${formatNum(pf100_1, 3)}</td>
+              <td class="val-col">${formatNum(pf100_2, 3)}</td>
+              <td class="val-col">${formatNum(pf100_3, 3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Overall Oil Test Result</td>
+              <td class="std-col">IEEE C57.152 Table 12</td>
+              <td class="crit-col">Satisfactory Condition</td>
+              <td>Status</td>
+              <td class="val-col" id="val-status-curr">-</td>
+              <td class="val-col" id="val-status-p1">-</td>
+              <td class="val-col" id="val-status-p2">-</td>
+              <td class="val-col" id="val-status-p3">-</td>
+            </tr>
+          `;
+          renderStatusCell('val-status-curr', st0, bd0, wc0);
+          renderStatusCell('val-status-p1', getVal(r1, 'Test_Result'), bd1, wc1);
+          renderStatusCell('val-status-p2', getVal(r2, 'Test_Result'), bd2, wc2);
+          renderStatusCell('val-status-p3', getVal(r3, 'Test_Result'), bd3, wc3);
         }
-        const b = parseFloat(bdv);
-        const w = parseFloat(wc);
-        let tag = 'NORMAL';
-        let cls = 'tag-normal';
-        if (b < 30 || w > 30) {
-          tag = 'POOR'; cls = 'tag-poor';
-        } else if (b < 40 || w > 20) {
-          tag = 'FAIR'; cls = 'tag-fair';
+      }
+
+      // 6. Section 6: DGA Table Population
+      const dgaHead = document.getElementById('tbl-dga-head');
+      const dgaBody = document.getElementById('tbl-dga-body');
+
+      if (dgaHead && dgaBody) {
+        if (isOltc3 && currentOltcPhase === 'ALL') {
+          // 3-Phase Comparison View
+          const calcTCG_ph = (r, ph) => {
+            if (!r) return '-';
+            const h2 = parseFloat(getPhVal(r, ph, 'H2')) || 0;
+            const ch4 = parseFloat(getPhVal(r, ph, 'CH4')) || 0;
+            const c2h2 = parseFloat(getPhVal(r, ph, 'C2H2')) || 0;
+            const c2h4 = parseFloat(getPhVal(r, ph, 'C2H4')) || 0;
+            const c2h6 = parseFloat(getPhVal(r, ph, 'C2H6')) || 0;
+            const co = parseFloat(getPhVal(r, ph, 'CO')) || 0;
+            const sum = h2 + ch4 + c2h2 + c2h4 + c2h6 + co;
+            if (sum === 0 && getPhVal(r, ph, 'C2H2') === '-') return '-';
+            return Math.round(sum).toLocaleString();
+          };
+
+          const calcC3_ph = (r, ph) => {
+            if (!r) return '-';
+            const c3h6 = parseFloat(getPhVal(r, ph, 'C3H6')) || 0;
+            const c3h8 = parseFloat(getPhVal(r, ph, 'C3H8')) || 0;
+            if (getPhVal(r, ph, 'C3H6') === '-' && getPhVal(r, ph, 'C3H8') === '-') return '-';
+            return (c3h6 + c3h8).toFixed(0);
+          };
+
+          const calcCO_ph = (r, ph) => {
+            if (!r) return '-';
+            const co = getPhVal(r, ph, 'CO');
+            const co2 = getPhVal(r, ph, 'CO2');
+            if (co === '-' && co2 === '-') return '-';
+            return `${co || 0} / ${co2 || 0}`;
+          };
+
+          dgaHead.innerHTML = `
+            <tr>
+              <th style="width: 25%; text-align: left;">Gas Component (ppm)</th>
+              <th style="width: 10%;">Symbol</th>
+              <th style="width: 16%;">OLTC Pattern</th>
+              <th style="width: 6%;">Unit</th>
+              <th style="width: 11%; background: #1e3a8a; color: #ffffff;">
+                <i class="fa-solid fa-bolt" style="font-size:8px; color:#60a5fa;"></i> Phase A<br>
+                <span style="font-size:8px; font-weight:400; color:#bfdbfe;">Current</span>
+              </th>
+              <th style="width: 11%; background: #92400e; color: #ffffff;">
+                <i class="fa-solid fa-bolt" style="font-size:8px; color:#fbbf24;"></i> Phase B<br>
+                <span style="font-size:8px; font-weight:400; color:#fde68a;">Current</span>
+              </th>
+              <th style="width: 11%; background: #166534; color: #ffffff;">
+                <i class="fa-solid fa-bolt" style="font-size:8px; color:#86efac;"></i> Phase C<br>
+                <span style="font-size:8px; font-weight:400; color:#bbf7d0;">Current</span>
+              </th>
+              <th style="width: 10%;">Previous 1<br><span style="font-size:8px;font-weight:400;">${r1 ? formatDate_ddMmmyyyy(r1.date) : '-'}</span></th>
+            </tr>
+          `;
+
+          dgaBody.innerHTML = `
+            <tr>
+              <td class="lbl">Hydrogen</td>
+              <td class="std-col">H<sub>2</sub></td>
+              <td class="crit-col">Arcing / Partial Discharge</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${formatNum(getPhVal(r0, 'A', 'H2'), 0)}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${formatNum(getPhVal(r0, 'B', 'H2'), 0)}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${formatNum(getPhVal(r0, 'C', 'H2'), 0)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'H2'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Methane</td>
+              <td class="std-col">CH<sub>4</sub></td>
+              <td class="crit-col">Low temp thermal decomposition</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${formatNum(getPhVal(r0, 'A', 'CH4'), 0)}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${formatNum(getPhVal(r0, 'B', 'CH4'), 0)}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${formatNum(getPhVal(r0, 'C', 'CH4'), 0)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'CH4'), 0)}</td>
+            </tr>
+            <tr style="background: rgba(254, 242, 242, 0.6);">
+              <td class="lbl" style="font-weight: 700; color: #991b1b;">Acetylene (Key Arc Gas)</td>
+              <td class="std-col" style="font-weight: 700; color: #991b1b;">C<sub>2</sub>H<sub>2</sub></td>
+              <td class="crit-col">Normal switching arc by-product</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.7); color: #b91c1c; font-weight: 700;">${formatNum(getPhVal(r0, 'A', 'C2H2'), 0)}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.65); color: #b91c1c; font-weight: 700;">${formatNum(getPhVal(r0, 'B', 'C2H2'), 0)}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.7); color: #b91c1c; font-weight: 700;">${formatNum(getPhVal(r0, 'C', 'C2H2'), 0)}</td>
+              <td class="val-col" style="color: #b91c1c; font-weight: 700;">${formatNum(getPhVal(r1, 'A', 'C2H2'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Ethylene</td>
+              <td class="std-col">C<sub>2</sub>H<sub>4</sub></td>
+              <td class="crit-col">High temp thermal fault (&gt;700°C)</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${formatNum(getPhVal(r0, 'A', 'C2H4'), 0)}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${formatNum(getPhVal(r0, 'B', 'C2H4'), 0)}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${formatNum(getPhVal(r0, 'C', 'C2H4'), 0)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'C2H4'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Ethane</td>
+              <td class="std-col">C<sub>2</sub>H<sub>6</sub></td>
+              <td class="crit-col">Moderate temp thermal fault</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${formatNum(getPhVal(r0, 'A', 'C2H6'), 0)}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${formatNum(getPhVal(r0, 'B', 'C2H6'), 0)}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${formatNum(getPhVal(r0, 'C', 'C2H6'), 0)}</td>
+              <td class="val-col">${formatNum(getPhVal(r1, 'A', 'C2H6'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Propene &amp; Propane</td>
+              <td class="std-col">C<sub>3</sub>H<sub>6</sub> + C<sub>3</sub>H<sub>8</sub></td>
+              <td class="crit-col">Heavy hydrocarbon traces</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${calcC3_ph(r0, 'A')}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${calcC3_ph(r0, 'B')}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${calcC3_ph(r0, 'C')}</td>
+              <td class="val-col">${calcC3_ph(r1, 'A')}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Carbon Monoxide &amp; Dioxide</td>
+              <td class="std-col">CO / CO<sub>2</sub></td>
+              <td class="crit-col">Insulation board degradation</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.45); color: #1e3a8a; font-weight: 600;">${calcCO_ph(r0, 'A')}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.35); color: #92400e; font-weight: 600;">${calcCO_ph(r0, 'B')}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.45); color: #166534; font-weight: 600;">${calcCO_ph(r0, 'C')}</td>
+              <td class="val-col">${calcCO_ph(r1, 'A')}</td>
+            </tr>
+            <tr>
+              <td class="lbl" style="font-weight:700;">Total Combustible Gas (TCG)</td>
+              <td class="std-col" style="font-weight:700;">TCG</td>
+              <td class="crit-col">Sum of combustible gases</td>
+              <td>ppm</td>
+              <td class="val-col" style="background: rgba(239, 246, 255, 0.6); color: #1e3a8a; font-weight: 700;">${calcTCG_ph(r0, 'A')}</td>
+              <td class="val-col" style="background: rgba(254, 243, 199, 0.5); color: #92400e; font-weight: 700;">${calcTCG_ph(r0, 'B')}</td>
+              <td class="val-col" style="background: rgba(240, 253, 244, 0.6); color: #166534; font-weight: 700;">${calcTCG_ph(r0, 'C')}</td>
+              <td class="val-col" style="font-weight: 700;">${calcTCG_ph(r1, 'A')}</td>
+            </tr>
+          `;
+        } else {
+          // Single-Phase View (or specific Phase selected)
+          const targetPh = (isOltc3 && currentOltcPhase !== 'ALL') ? currentOltcPhase : null;
+          const phLabel = targetPh ? ` (Ph. ${targetPh})` : '';
+
+          let phHeaderStyle = '';
+          let phCellBg = '';
+          let phCellColor = '';
+          if (targetPh === 'A') {
+            phHeaderStyle = 'background: #1e3a8a; color: #ffffff;';
+            phCellBg = 'background: rgba(239, 246, 255, 0.45);';
+            phCellColor = 'color: #1e3a8a; font-weight: 600;';
+          } else if (targetPh === 'B') {
+            phHeaderStyle = 'background: #92400e; color: #ffffff;';
+            phCellBg = 'background: rgba(254, 243, 199, 0.35);';
+            phCellColor = 'color: #92400e; font-weight: 600;';
+          } else if (targetPh === 'C') {
+            phHeaderStyle = 'background: #166534; color: #ffffff;';
+            phCellBg = 'background: rgba(240, 253, 244, 0.45);';
+            phCellColor = 'color: #166534; font-weight: 600;';
+          }
+
+          const getG_single = (r, g) => targetPh ? getPhVal(r, targetPh, g) : getVal(r, g);
+          const calcTCG_single = (r) => {
+            if (!r) return '-';
+            const h2 = parseFloat(getG_single(r, 'H2')) || 0;
+            const ch4 = parseFloat(getG_single(r, 'CH4')) || 0;
+            const c2h2 = parseFloat(getG_single(r, 'C2H2')) || 0;
+            const c2h4 = parseFloat(getG_single(r, 'C2H4')) || 0;
+            const c2h6 = parseFloat(getG_single(r, 'C2H6')) || 0;
+            const co = parseFloat(getG_single(r, 'CO')) || 0;
+            const sum = h2 + ch4 + c2h2 + c2h4 + c2h6 + co;
+            if (sum === 0 && getG_single(r, 'C2H2') === '-') return '-';
+            return Math.round(sum).toLocaleString();
+          };
+
+          const calcC3_single = (r) => {
+            if (!r) return '-';
+            const c3h6 = parseFloat(getG_single(r, 'C3H6')) || 0;
+            const c3h8 = parseFloat(getG_single(r, 'C3H8')) || 0;
+            if (getG_single(r, 'C3H6') === '-' && getG_single(r, 'C3H8') === '-') return '-';
+            return (c3h6 + c3h8).toFixed(0);
+          };
+
+          const calcCO_single = (r) => {
+            if (!r) return '-';
+            const co = getG_single(r, 'CO');
+            const co2 = getG_single(r, 'CO2');
+            if (co === '-' && co2 === '-') return '-';
+            return `${co || 0} / ${co2 || 0}`;
+          };
+
+          dgaHead.innerHTML = `
+            <tr>
+              <th style="width: 26%; text-align: left;">Gas Component (ppm)</th>
+              <th style="width: 12%;">Symbol</th>
+              <th style="width: 15%;">OLTC Typical Pattern</th>
+              <th style="width: 7%;">Unit</th>
+              <th style="width: 10%; ${phHeaderStyle}">Current${phLabel}</th>
+              <th style="width: 10%;">Previous 1${phLabel}</th>
+              <th style="width: 10%;">Previous 2${phLabel}</th>
+              <th style="width: 10%;">Previous 3${phLabel}</th>
+            </tr>
+          `;
+
+          dgaBody.innerHTML = `
+            <tr>
+              <td class="lbl">Hydrogen</td>
+              <td class="std-col">H<sub>2</sub></td>
+              <td class="crit-col">Arcing / Partial Discharge</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${formatNum(getG_single(r0, 'H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r1, 'H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r2, 'H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r3, 'H2'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Methane</td>
+              <td class="std-col">CH<sub>4</sub></td>
+              <td class="crit-col">Low temp thermal decomposition</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${formatNum(getG_single(r0, 'CH4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r1, 'CH4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r2, 'CH4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r3, 'CH4'), 0)}</td>
+            </tr>
+            <tr style="background: rgba(254, 242, 242, 0.6);">
+              <td class="lbl" style="font-weight: 700; color: #991b1b;">Acetylene (Key Arc Gas)</td>
+              <td class="std-col" style="font-weight: 700; color: #991b1b;">C<sub>2</sub>H<sub>2</sub></td>
+              <td class="crit-col">Normal switching arc by-product</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} color: #b91c1c; font-weight:700;">${formatNum(getG_single(r0, 'C2H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r1, 'C2H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r2, 'C2H2'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r3, 'C2H2'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Ethylene</td>
+              <td class="std-col">C<sub>2</sub>H<sub>4</sub></td>
+              <td class="crit-col">High temp thermal fault (&gt;700°C)</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${formatNum(getG_single(r0, 'C2H4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r1, 'C2H4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r2, 'C2H4'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r3, 'C2H4'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Ethane</td>
+              <td class="std-col">C<sub>2</sub>H<sub>6</sub></td>
+              <td class="crit-col">Moderate temp thermal fault</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${formatNum(getG_single(r0, 'C2H6'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r1, 'C2H6'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r2, 'C2H6'), 0)}</td>
+              <td class="val-col">${formatNum(getG_single(r3, 'C2H6'), 0)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Propene &amp; Propane</td>
+              <td class="std-col">C<sub>3</sub>H<sub>6</sub> + C<sub>3</sub>H<sub>8</sub></td>
+              <td class="crit-col">Heavy hydrocarbon traces</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${calcC3_single(r0)}</td>
+              <td class="val-col">${calcC3_single(r1)}</td>
+              <td class="val-col">${calcC3_single(r2)}</td>
+              <td class="val-col">${calcC3_single(r3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl">Carbon Monoxide &amp; Dioxide</td>
+              <td class="std-col">CO / CO<sub>2</sub></td>
+              <td class="crit-col">Insulation board degradation</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${calcCO_single(r0)}</td>
+              <td class="val-col">${calcCO_single(r1)}</td>
+              <td class="val-col">${calcCO_single(r2)}</td>
+              <td class="val-col">${calcCO_single(r3)}</td>
+            </tr>
+            <tr>
+              <td class="lbl" style="font-weight:700;">Total Combustible Gas (TCG)</td>
+              <td class="std-col" style="font-weight:700;">TCG</td>
+              <td class="crit-col">Sum of combustible gases</td>
+              <td>ppm</td>
+              <td class="val-col" style="${phCellBg} ${phCellColor}">${calcTCG_single(r0)}</td>
+              <td class="val-col" style="font-weight:700;">${calcTCG_single(r1)}</td>
+              <td class="val-col" style="font-weight:700;">${calcTCG_single(r2)}</td>
+              <td class="val-col" style="font-weight:700;">${calcTCG_single(r3)}</td>
+            </tr>
+          `;
         }
-        el.innerHTML = `<span class="tag-badge ${cls}">${st !== '-' && st ? st : tag}</span>`;
-      };
-
-      renderStatusCell('val-status-curr', st0, bd0, wc0);
-      renderStatusCell('val-status-p1', getVal(r1, 'Test_Result'), bd1, wc1);
-      renderStatusCell('val-status-p2', getVal(r2, 'Test_Result'), bd2, wc2);
-      renderStatusCell('val-status-p3', getVal(r3, 'Test_Result'), bd3, wc3);
-
-      // 6. DGA Gases
-      const gases = ['H2', 'CH4', 'C2H2', 'C2H4', 'C2H6'];
-      gases.forEach(g => {
-        setElText(`dga-${g.toLowerCase()}-curr`, formatNum(getVal(r0, g), 0));
-        setElText(`dga-${g.toLowerCase()}-p1`, formatNum(getVal(r1, g), 0));
-        setElText(`dga-${g.toLowerCase()}-p2`, formatNum(getVal(r2, g), 0));
-        setElText(`dga-${g.toLowerCase()}-p3`, formatNum(getVal(r3, g), 0));
-      });
-
-      // Propene & Propane C3
-      const getC3 = (r) => {
-        if (!r) return '-';
-        const c3h6 = parseFloat(getVal(r, 'C3H6')) || 0;
-        const c3h8 = parseFloat(getVal(r, 'C3H8')) || 0;
-        if (getVal(r, 'C3H6') === '-' && getVal(r, 'C3H8') === '-') return '-';
-        return (c3h6 + c3h8).toFixed(0);
-      };
-      setElText('dga-c3-curr', getC3(r0));
-      setElText('dga-c3-p1', getC3(r1));
-      setElText('dga-c3-p2', getC3(r2));
-      setElText('dga-c3-p3', getC3(r3));
-
-      // CO & CO2
-      const getCO = (r) => {
-        if (!r) return '-';
-        const co = getVal(r, 'CO');
-        const co2 = getVal(r, 'CO2');
-        if (co === '-' && co2 === '-') return '-';
-        return `${co || 0} / ${co2 || 0}`;
-      };
-      setElText('dga-co-curr', getCO(r0));
-      setElText('dga-co-p1', getCO(r1));
-      setElText('dga-co-p2', getCO(r2));
-      setElText('dga-co-p3', getCO(r3));
-
-      // Total Combustible Gas (TCG = H2 + CH4 + C2H2 + C2H4 + C2H6 + CO)
-      const getTCG = (r) => {
-        if (!r) return '-';
-        const h2 = parseFloat(getVal(r, 'H2')) || 0;
-        const ch4 = parseFloat(getVal(r, 'CH4')) || 0;
-        const c2h2 = parseFloat(getVal(r, 'C2H2')) || 0;
-        const c2h4 = parseFloat(getVal(r, 'C2H4')) || 0;
-        const c2h6 = parseFloat(getVal(r, 'C2H6')) || 0;
-        const co = parseFloat(getVal(r, 'CO')) || 0;
-        const sum = h2 + ch4 + c2h2 + c2h4 + c2h6 + co;
-        if (sum === 0 && getVal(r, 'C2H2') === '-') return '-';
-        return Math.round(sum).toLocaleString();
-      };
-      setElText('dga-tcg-curr', getTCG(r0));
-      setElText('dga-tcg-p1', getTCG(r1));
-      setElText('dga-tcg-p2', getTCG(r2));
-      setElText('dga-tcg-p3', getTCG(r3));
+      }
 
       // 7. Comprehensive Diagnostic Assessment (IEEE C57.139 / CIGRE 761 & TB 443)
-      const bdvNum = parseFloat(bd0);
-      const wcNum = parseFloat(wc0);
-      const c2h2Num = parseFloat(getVal(r0, 'C2H2')) || 0;
-      const c2h4Num = parseFloat(getVal(r0, 'C2H4')) || 0;
-      const ch4Num = parseFloat(getVal(r0, 'CH4')) || 0;
-      const h2Num = parseFloat(getVal(r0, 'H2')) || 0;
+      if (isOltc3) {
+        const c2h2_A = parseFloat(getPhVal(r0, 'A', 'C2H2')) || 0;
+        const c2h2_B = parseFloat(getPhVal(r0, 'B', 'C2H2')) || 0;
+        const c2h2_C = parseFloat(getPhVal(r0, 'C', 'C2H2')) || 0;
+        const maxC2H2 = Math.max(c2h2_A, c2h2_B, c2h2_C);
 
-      // Step 1: Gas Pattern & C2H2 Level (CIGRE 761 Condition Levels A-F)
-      let step1Level = 'Level B (Normal)';
-      let step1Text = '';
-      if (getVal(r0, 'C2H2') === '-' && !record) {
-        step1Text = 'No OLTC DGA test data recorded for this unit.';
-      } else if (c2h2Num <= 0) {
-        step1Level = 'Level A (Excellent)';
-        step1Text = `C₂H₂ is 0 ppm (${step1Level}). No LTC arcing byproducts detected.`;
-      } else if (c2h2Num <= 100) {
-        step1Level = 'Level B (Normal)';
-        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Stable gas evolution matching normal LTC switching arcing.`;
-      } else if (c2h2Num <= 300) {
-        step1Level = 'Level C (Suspicious / Watch)';
-        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Increased concentration; monitor rate of rise with regular trending.`;
-      } else if (c2h2Num <= 500) {
-        step1Level = 'Level D (Poor / Warning)';
-        step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Indication of possible contact coking or excessive arcing.`;
-      } else {
-        step1Level = 'Level E/F (Severe / Danger)';
-        step1Text = `C₂H₂ is critical at ${c2h2Num.toLocaleString()} ppm (${step1Level}). Risk of severe contact coking or thermal runaway.`;
-      }
-      setElText('diag-dga-text', step1Text);
+        const getC2H2Lvl = (val) => {
+          if (val <= 0) return 'Level A (Excellent)';
+          if (val <= 100) return 'Level B (Normal)';
+          if (val <= 300) return 'Level C (Watch)';
+          if (val <= 500) return 'Level D (Warning)';
+          return 'Level E/F (Severe)';
+        };
 
-      // Step 2: Duval Triangle 2 for LTC (CH4, C2H4, C2H2)
-      const totalTriangle = ch4Num + c2h4Num + c2h2Num;
-      let step2Text = '';
-      if (totalTriangle > 0) {
-        const pctCH4 = (ch4Num / totalTriangle) * 100;
-        const pctC2H4 = (c2h4Num / totalTriangle) * 100;
-        const pctC2H2 = (c2h2Num / totalTriangle) * 100;
-        if (pctC2H2 >= 70) {
-          step2Text = `Duval Triangle 2: Normal Arcing in Liquid (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). No abnormal thermal fault.`;
-        } else if (pctC2H4 > 25 || pctCH4 > 30) {
-          step2Text = `Duval Triangle 2: Thermal Fault / Contact Coking (T1/T2) indicated (C₂H₄: ${pctC2H4.toFixed(0)}%, CH₄: ${pctCH4.toFixed(0)}%). Overheating.`;
+        const step1Text = `3-Phase Pattern: Ph. A: ${c2h2_A} ppm (${getC2H2Lvl(c2h2_A)}) • Ph. B: ${c2h2_B} ppm (${getC2H2Lvl(c2h2_B)}) • Ph. C: ${c2h2_C} ppm (${getC2H2Lvl(c2h2_C)}). Normal switching arcing across phases.`;
+        setElText('diag-dga-text', step1Text);
+
+        const ch4_A = parseFloat(getPhVal(r0, 'A', 'CH4')) || 0;
+        const c2h4_A = parseFloat(getPhVal(r0, 'A', 'C2H4')) || 0;
+        const totTri = ch4_A + c2h4_A + c2h2_A;
+        let step2Text = 'Duval Triangle 2: Normal Arcing in Liquid. No abnormal thermal faults across tap selectors.';
+        if (totTri > 0 && ((c2h4_A / totTri) > 0.25 || (ch4_A / totTri) > 0.3)) {
+          step2Text = 'Duval Triangle 2: Contact Coking / Thermal trace indicated. Inspect selector contacts during PM.';
+        }
+        setElText('diag-duval-text', step2Text);
+
+        // Step 3: Migration
+        let step3Text = 'Barrier Board & gasket integrity satisfactory across all 3 OLTC phases. No C₂H₂ migration into Main Tank.';
+        if (typeof DGA_DATA !== 'undefined' && Array.isArray(DGA_DATA)) {
+          const mtDga = DGA_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x.serial, serial));
+          if (mtDga && parseFloat(mtDga.C2H2 || mtDga.A_C2H2) > 3) {
+            step3Text = `Warning: Detectable C₂H₂ (${mtDga.C2H2} ppm) in Main Tank! Possible barrier board leak or gasket migration from OLTC3.`;
+          }
+        }
+        setElText('diag-migration-text', step3Text);
+
+        // Step 4: Dielectric
+        const bdA = parseFloat(getPhVal(r0, 'A', 'BD')), wcA = parseFloat(getPhVal(r0, 'A', 'WC'));
+        const bdB = parseFloat(getPhVal(r0, 'B', 'BD')), wcB = parseFloat(getPhVal(r0, 'B', 'WC'));
+        const bdC = parseFloat(getPhVal(r0, 'C', 'BD')), wcC = parseFloat(getPhVal(r0, 'C', 'WC'));
+        const minBD = Math.min(...[bdA, bdB, bdC].filter(x => !isNaN(x)));
+        const maxWC = Math.max(...[wcA, wcB, wcC].filter(x => !isNaN(x)));
+
+        let step4Text = `Ph. A: BDV ${isNaN(bdA) ? '-' : bdA.toFixed(1)} kV, WC ${isNaN(wcA) ? '-' : wcA.toFixed(1)} ppm • Ph. B: BDV ${isNaN(bdB) ? '-' : bdB.toFixed(1)} kV, WC ${isNaN(wcB) ? '-' : wcB.toFixed(1)} ppm • Ph. C: BDV ${isNaN(bdC) ? '-' : bdC.toFixed(1)} kV, WC ${isNaN(wcC) ? '-' : wcC.toFixed(1)} ppm.`;
+        if (minBD < 30 || maxWC > 50) {
+          step4Text += ' ⚠️ Critical dielectric limit exceeded in one or more phases.';
+        } else if (minBD < 40 || maxWC > 30) {
+          step4Text += ' ⚠️ Warning: Dielectric breakdown or moisture exceeds recommended limit.';
         } else {
-          step2Text = `Duval Triangle 2: Mixed Arcing & Thermal traces (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). Stable pattern.`;
+          step4Text += ' All 3 phases meet IEEE C57.152 Table 5 limits.';
         }
+        setElText('diag-dielectric-text', step4Text);
+
+        // Recommendation
+        let overallRec = 'Recommendation: Continue routine periodic 3-phase oil sampling and inspection according to scheduled PM cycle (IEEE C57.139 / IEC 60422).';
+        if (maxC2H2 > 500 || minBD < 30 || maxWC > 50) {
+          overallRec = 'Action Required: Schedule urgent OLTC oil reclamation/dehydration and perform 3-phase DRM & contact resistance measurement.';
+        } else if (maxC2H2 > 300 || minBD < 40 || maxWC > 30) {
+          overallRec = 'Caution: Plan OLTC oil filtration and monthly DGA trending to verify 3-phase gas evolution rate and transition resistor condition.';
+        }
+        setElText('diag-overall-recommendation', overallRec);
       } else {
-        step2Text = 'Duval Triangle 2: Baseline / No fault gas concentration.';
-      }
-      setElText('diag-duval-text', step2Text);
+        // Standard Single-Phase Diagnostic
+        const bd0 = getVal(r0, 'BD');
+        const wc0 = getVal(r0, 'WC');
+        const bdvNum = parseFloat(bd0);
+        const wcNum = parseFloat(wc0);
+        const c2h2Num = parseFloat(getVal(r0, 'C2H2')) || 0;
+        const c2h4Num = parseFloat(getVal(r0, 'C2H4')) || 0;
+        const ch4Num = parseFloat(getVal(r0, 'CH4')) || 0;
+        const h2Num = parseFloat(getVal(r0, 'H2')) || 0;
 
-      // Step 3: Internal Leaks & Oil Migration
-      let step3Text = 'Barrier Board & gasket integrity satisfactory. No C₂H₂ or carbon soot migration into Main Tank detected.';
-      if (typeof DGA_DATA !== 'undefined' && Array.isArray(DGA_DATA)) {
-        const mtDga = DGA_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x.serial, serial));
-        if (mtDga && parseFloat(mtDga.C2H2 || mtDga.A_C2H2) > 3) {
-          step3Text = `Warning: Detectable C₂H₂ (${mtDga.C2H2} ppm) in Main Tank! Possible barrier board leak or gasket oil migration from OLTC.`;
+        // Step 1: Gas Pattern & C2H2 Level
+        let step1Level = 'Level B (Normal)';
+        let step1Text = '';
+        if (getVal(r0, 'C2H2') === '-' && !record) {
+          step1Text = 'No OLTC DGA test data recorded for this unit.';
+        } else if (c2h2Num <= 0) {
+          step1Level = 'Level A (Excellent)';
+          step1Text = `C₂H₂ is 0 ppm (${step1Level}). No LTC arcing byproducts detected.`;
+        } else if (c2h2Num <= 100) {
+          step1Level = 'Level B (Normal)';
+          step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Stable gas evolution matching normal LTC switching arcing.`;
+        } else if (c2h2Num <= 300) {
+          step1Level = 'Level C (Suspicious / Watch)';
+          step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Increased concentration; monitor rate of rise with regular trending.`;
+        } else if (c2h2Num <= 500) {
+          step1Level = 'Level D (Poor / Warning)';
+          step1Text = `C₂H₂ is ${c2h2Num.toLocaleString()} ppm (${step1Level}). Indication of possible contact coking or excessive arcing.`;
+        } else {
+          step1Level = 'Level E/F (Severe / Danger)';
+          step1Text = `C₂H₂ is critical at ${c2h2Num.toLocaleString()} ppm (${step1Level}). Risk of severe contact coking or thermal runaway.`;
         }
-      }
-      setElText('diag-migration-text', step3Text);
+        setElText('diag-dga-text', step1Text);
 
-      // Step 4: Dielectric Strength & Complementary Tests
-      let step4Parts = [];
-      if (!isNaN(bdvNum) && bdvNum < 30) {
-        step4Parts.push(`BDV Critical (${bdvNum.toFixed(1)} kV < 30 kV)`);
-      } else if (!isNaN(bdvNum) && bdvNum < 40) {
-        step4Parts.push(`BDV Fair (${bdvNum.toFixed(1)} kV)`);
-      } else if (!isNaN(bdvNum)) {
-        step4Parts.push(`BDV Satisfactory (${bdvNum.toFixed(1)} kV ≥ 40 kV)`);
-      }
+        // Step 2: Duval Triangle 2 for LTC
+        const totalTriangle = ch4Num + c2h4Num + c2h2Num;
+        let step2Text = '';
+        if (totalTriangle > 0) {
+          const pctCH4 = (ch4Num / totalTriangle) * 100;
+          const pctC2H4 = (c2h4Num / totalTriangle) * 100;
+          const pctC2H2 = (c2h2Num / totalTriangle) * 100;
+          if (pctC2H2 >= 70) {
+            step2Text = `Duval Triangle 2: Normal Arcing in Liquid (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). No abnormal thermal fault.`;
+          } else if (pctC2H4 > 25 || pctCH4 > 30) {
+            step2Text = `Duval Triangle 2: Thermal Fault / Contact Coking (T1/T2) indicated (C₂H₄: ${pctC2H4.toFixed(0)}%, CH₄: ${pctCH4.toFixed(0)}%). Overheating.`;
+          } else {
+            step2Text = `Duval Triangle 2: Mixed Arcing & Thermal traces (C₂H₂ ${pctC2H2.toFixed(0)}%, C₂H₄ ${pctC2H4.toFixed(0)}%). Stable pattern.`;
+          }
+        } else {
+          step2Text = 'Duval Triangle 2: Baseline / No fault gas concentration.';
+        }
+        setElText('diag-duval-text', step2Text);
 
-      if (!isNaN(wcNum) && wcNum > 50) {
-        step4Parts.push(`Moisture DANGER (${wcNum.toFixed(1)} ppm > 50 ppm: Risk of flashover)`);
-      } else if (!isNaN(wcNum) && wcNum > 30) {
-        step4Parts.push(`Moisture elevated (${wcNum.toFixed(1)} ppm > 30 ppm)`);
-      } else if (!isNaN(wcNum)) {
-        step4Parts.push(`Moisture Normal (${wcNum.toFixed(1)} ppm ≤ 20 ppm)`);
-      }
+        // Step 3: Internal Leaks & Oil Migration
+        let step3Text = 'Barrier Board & gasket integrity satisfactory. No C₂H₂ or carbon soot migration into Main Tank detected.';
+        if (typeof DGA_DATA !== 'undefined' && Array.isArray(DGA_DATA)) {
+          const mtDga = DGA_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.Serial_No || x.serial, serial));
+          if (mtDga && parseFloat(mtDga.C2H2 || mtDga.A_C2H2) > 3) {
+            step3Text = `Warning: Detectable C₂H₂ (${mtDga.C2H2} ppm) in Main Tank! Possible barrier board leak or gasket oil migration from OLTC.`;
+          }
+        }
+        setElText('diag-migration-text', step3Text);
 
-      if (step4Parts.length === 0) {
-        step4Parts.push('Dielectric properties not tested yet');
-      }
-      step4Parts.push('DRM & IR Thermography recommended during PM');
-      setElText('diag-dielectric-text', step4Parts.join(' • '));
+        // Step 4: Dielectric
+        let step4Parts = [];
+        if (!isNaN(bdvNum) && bdvNum < 30) {
+          step4Parts.push(`BDV Critical (${bdvNum.toFixed(1)} kV < 30 kV)`);
+        } else if (!isNaN(bdvNum) && bdvNum < 40) {
+          step4Parts.push(`BDV Fair (${bdvNum.toFixed(1)} kV)`);
+        } else if (!isNaN(bdvNum)) {
+          step4Parts.push(`BDV Satisfactory (${bdvNum.toFixed(1)} kV ≥ 40 kV)`);
+        }
 
-      // Overall Recommendation
-      let overallRec = 'Recommendation: Continue routine periodic oil sampling and inspection according to scheduled PM cycle (IEEE C57.139 / IEC 60422).';
-      if (c2h2Num > 500 || (!isNaN(bdvNum) && bdvNum < 30) || (!isNaN(wcNum) && wcNum > 50)) {
-        overallRec = 'Action Required: Schedule urgent OLTC oil reclamation/dehydration and perform DRM & IR thermal scan to inspect contact wear/coking.';
-      } else if (c2h2Num > 300 || (!isNaN(bdvNum) && bdvNum < 40) || (!isNaN(wcNum) && wcNum > 30)) {
-        overallRec = 'Caution: Plan OLTC oil filtration and monthly DGA trending to verify gas evolution rate and transition resistor condition.';
+        if (!isNaN(wcNum) && wcNum > 50) {
+          step4Parts.push(`Moisture DANGER (${wcNum.toFixed(1)} ppm > 50 ppm: Risk of flashover)`);
+        } else if (!isNaN(wcNum) && wcNum > 30) {
+          step4Parts.push(`Moisture elevated (${wcNum.toFixed(1)} ppm > 30 ppm)`);
+        } else if (!isNaN(wcNum)) {
+          step4Parts.push(`Moisture Normal (${wcNum.toFixed(1)} ppm ≤ 20 ppm)`);
+        }
+
+        if (step4Parts.length === 0) {
+          step4Parts.push('Dielectric properties not tested yet');
+        }
+        step4Parts.push('DRM & IR Thermography recommended during PM');
+        setElText('diag-dielectric-text', step4Parts.join(' • '));
+
+        // Overall Recommendation
+        let overallRec = 'Recommendation: Continue routine periodic oil sampling and inspection according to scheduled PM cycle (IEEE C57.139 / IEC 60422).';
+        if (c2h2Num > 500 || (!isNaN(bdvNum) && bdvNum < 30) || (!isNaN(wcNum) && wcNum > 50)) {
+          overallRec = 'Action Required: Schedule urgent OLTC oil reclamation/dehydration and perform DRM & IR thermal scan to inspect contact wear/coking.';
+        } else if (c2h2Num > 300 || (!isNaN(bdvNum) && bdvNum < 40) || (!isNaN(wcNum) && wcNum > 30)) {
+          overallRec = 'Caution: Plan OLTC oil filtration and monthly DGA trending to verify gas evolution rate and transition resistor condition.';
+        }
+        setElText('diag-overall-recommendation', overallRec);
       }
-      setElText('diag-overall-recommendation', overallRec);
 
       // 8. Dynamic Signatures Binding (strictly actual data, blank if missing)
       const cleanSig = (v) => {
@@ -1844,72 +2464,133 @@
       document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = nameApproved ? dateVal : '');
 
       // 9. Render Charts on Page 2
-      renderTrendCharts(recs);
+      renderTrendCharts(recs, isOltc3);
     }
 
     // Chart.js Rendering for Page 2
-    function renderTrendCharts(records) {
+    function renderTrendCharts(records, isOltc3 = false) {
       if (!records || records.length === 0) return;
 
       // Chronological order (Oldest -> Newest)
       const chronological = [...records].reverse();
       const labels = chronological.map(r => r.date ? formatDate_ddMmmyyyy(r.date) : 'Test');
 
-      const getValNum = (r, key) => {
+      const getValNum = (r, key, phase) => {
         if (!r) return 0;
-        const v = r[`A_${key}`] || r[key] || r[`B_${key}`] || r[`C_${key}`];
+        const k = phase ? `${phase}_${key}` : `A_${key}`;
+        const v = r[k] || r[key] || r[`B_${key}`] || r[`C_${key}`];
         if (v === undefined || v === null || v === '' || v === '-') return 0;
         return parseFloat(v) || 0;
       };
 
-      const bdvData = chronological.map(r => getValNum(r, 'BD'));
-      const wcData = chronological.map(r => getValNum(r, 'WC'));
-      const c2h2Data = chronological.map(r => getValNum(r, 'C2H2'));
-      const h2Data = chronological.map(r => getValNum(r, 'H2'));
-      const c2h4Data = chronological.map(r => getValNum(r, 'C2H4'));
-      const ch4Data = chronological.map(r => getValNum(r, 'CH4'));
-      const pf25Data = chronological.map(r => getValNum(r, 'PF_25'));
-      const pf100Data = chronological.map(r => getValNum(r, 'PF_100'));
-
       // 1. Chart BDV & Water Content
       if (chartBdvWcInstance) chartBdvWcInstance.destroy();
       const ctx1 = document.getElementById('chart-bdv-wc').getContext('2d');
+
+      let chart1Datasets = [];
+      if (isOltc3) {
+        chart1Datasets = [
+          {
+            label: 'BDV Phase A (kV)',
+            data: chronological.map(r => getValNum(r, 'BD', 'A')),
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            yAxisID: 'y',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2.5
+          },
+          {
+            label: 'BDV Phase B (kV)',
+            data: chronological.map(r => getValNum(r, 'BD', 'B')),
+            borderColor: '#ea580c',
+            backgroundColor: 'rgba(234, 88, 12, 0.1)',
+            yAxisID: 'y',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2.5
+          },
+          {
+            label: 'BDV Phase C (kV)',
+            data: chronological.map(r => getValNum(r, 'BD', 'C')),
+            borderColor: '#16a34a',
+            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+            yAxisID: 'y',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2.5
+          },
+          {
+            label: 'Moisture Ph. A (ppm)',
+            data: chronological.map(r => getValNum(r, 'WC', 'A')),
+            borderColor: '#38bdf8',
+            borderDash: [4, 4],
+            yAxisID: 'y1',
+            borderWidth: 1.5,
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'Moisture Ph. B (ppm)',
+            data: chronological.map(r => getValNum(r, 'WC', 'B')),
+            borderColor: '#fbbf24',
+            borderDash: [4, 4],
+            yAxisID: 'y1',
+            borderWidth: 1.5,
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'Moisture Ph. C (ppm)',
+            data: chronological.map(r => getValNum(r, 'WC', 'C')),
+            borderColor: '#4ade80',
+            borderDash: [4, 4],
+            yAxisID: 'y1',
+            borderWidth: 1.5,
+            tension: 0.2,
+            pointRadius: 2
+          }
+        ];
+      } else {
+        chart1Datasets = [
+          {
+            label: 'Breakdown Voltage (kV)',
+            data: chronological.map(r => getValNum(r, 'BD')),
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            yAxisID: 'y',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2.5,
+            pointHoverRadius: 4.5,
+            fill: false
+          },
+          {
+            label: 'Water Content (ppm)',
+            data: chronological.map(r => getValNum(r, 'WC')),
+            borderColor: '#0284c7',
+            backgroundColor: 'rgba(2, 132, 199, 0.1)',
+            yAxisID: 'y1',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2.5,
+            pointHoverRadius: 4.5,
+            fill: false
+          }
+        ];
+      }
+
       chartBdvWcInstance = new Chart(ctx1, {
         type: 'line',
         data: {
           labels: labels,
-          datasets: [
-            {
-              label: 'Breakdown Voltage (kV)',
-              data: bdvData,
-              borderColor: '#2563eb',
-              backgroundColor: 'rgba(37, 99, 235, 0.1)',
-              yAxisID: 'y',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2.5,
-              pointHoverRadius: 4.5,
-              fill: false
-            },
-            {
-              label: 'Water Content (ppm)',
-              data: wcData,
-              borderColor: '#0284c7',
-              backgroundColor: 'rgba(2, 132, 199, 0.1)',
-              yAxisID: 'y1',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2.5,
-              pointHoverRadius: 4.5,
-              fill: false
-            }
-          ]
+          datasets: chart1Datasets
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'top', labels: { font: { size: 9, family: 'Inter' } } }
+            legend: { position: 'top', labels: { font: { size: 8.5, family: 'Inter' }, boxWidth: 8 } }
           },
           scales: {
             x: { ticks: { font: { size: 8.5 } } },
@@ -1937,60 +2618,126 @@
       // 2. Chart DGA Gases (Line Chart per gas)
       if (chartDgaGasesInstance) chartDgaGasesInstance.destroy();
       const ctx2 = document.getElementById('chart-dga-gases').getContext('2d');
+
+      let chart2Datasets = [];
+      if (isOltc3) {
+        chart2Datasets = [
+          {
+            label: 'C2H2 Ph. A (Acetylene)',
+            data: chronological.map(r => getValNum(r, 'C2H2', 'A')),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'C2H2 Ph. B (Acetylene)',
+            data: chronological.map(r => getValNum(r, 'C2H2', 'B')),
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'C2H2 Ph. C (Acetylene)',
+            data: chronological.map(r => getValNum(r, 'C2H2', 'C')),
+            borderColor: '#eab308',
+            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'H2 Ph. A (Hydrogen)',
+            data: chronological.map(r => getValNum(r, 'H2', 'A')),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'H2 Ph. B (Hydrogen)',
+            data: chronological.map(r => getValNum(r, 'H2', 'B')),
+            borderColor: '#06b6d4',
+            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            tension: 0.2,
+            pointRadius: 2
+          },
+          {
+            label: 'H2 Ph. C (Hydrogen)',
+            data: chronological.map(r => getValNum(r, 'H2', 'C')),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 1.5,
+            borderDash: [3, 3],
+            tension: 0.2,
+            pointRadius: 2
+          }
+        ];
+      } else {
+        chart2Datasets = [
+          {
+            label: 'C2H2 (Acetylene)',
+            data: chronological.map(r => getValNum(r, 'C2H2')),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#ef4444',
+            fill: false
+          },
+          {
+            label: 'H2 (Hydrogen)',
+            data: chronological.map(r => getValNum(r, 'H2')),
+            borderColor: '#eab308',
+            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#eab308',
+            fill: false
+          },
+          {
+            label: 'C2H4 (Ethylene)',
+            data: chronological.map(r => getValNum(r, 'C2H4')),
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#f97316',
+            fill: false
+          },
+          {
+            label: 'CH4 (Methane)',
+            data: chronological.map(r => getValNum(r, 'CH4')),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 1.8,
+            tension: 0.2,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#3b82f6',
+            fill: false
+          }
+        ];
+      }
+
       chartDgaGasesInstance = new Chart(ctx2, {
         type: 'line',
         data: {
           labels: labels,
-          datasets: [
-            {
-              label: 'C2H2 (Acetylene)',
-              data: c2h2Data,
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              pointBackgroundColor: '#ef4444',
-              fill: false
-            },
-            {
-              label: 'H2 (Hydrogen)',
-              data: h2Data,
-              borderColor: '#eab308',
-              backgroundColor: 'rgba(234, 179, 8, 0.1)',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              pointBackgroundColor: '#eab308',
-              fill: false
-            },
-            {
-              label: 'C2H4 (Ethylene)',
-              data: c2h4Data,
-              borderColor: '#f97316',
-              backgroundColor: 'rgba(249, 115, 22, 0.1)',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              pointBackgroundColor: '#f97316',
-              fill: false
-            },
-            {
-              label: 'CH4 (Methane)',
-              data: ch4Data,
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              borderWidth: 1.8,
-              tension: 0.2,
-              pointRadius: 2,
-              pointHoverRadius: 4,
-              pointBackgroundColor: '#3b82f6',
-              fill: false
-            }
-          ]
+          datasets: chart2Datasets
         },
         options: {
           responsive: true,
@@ -2165,7 +2912,7 @@
     // Initial Data Fetch & Load
     document.addEventListener('DOMContentLoaded', async () => {
       // Set saved theme
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      const savedTheme = 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       const icon = document.getElementById('theme-icon');
       if (icon) {
@@ -2225,5 +2972,7 @@
       }
     });
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

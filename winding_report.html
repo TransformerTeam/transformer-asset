@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -538,6 +538,9 @@
       }
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -563,9 +566,6 @@
       <a href="assessment.html" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i> Assessment
       </a>
-      <button class="btn btn-secondary" onclick="toggleTheme()">
-        <i class="fa-solid fa-sun" id="theme-icon"></i> Theme
-      </button>
       <button class="btn btn-primary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print / PDF
       </button>
@@ -970,7 +970,7 @@
 
     // Startup Initialization
     window.addEventListener('DOMContentLoaded', async () => {
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      const savedTheme = 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
@@ -1676,6 +1676,7 @@
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
       if (!icon) return;
+      if (!icon) return;
       if (theme === 'dark') {
         icon.className = 'fa-solid fa-sun';
       } else {
@@ -1683,5 +1684,7 @@
       }
     }
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

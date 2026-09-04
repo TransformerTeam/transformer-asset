@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +18,11 @@
   <style>
     /* Global Variables matching main dashboard theme */
     :root {
-      --bg-dark: #0a0f1d;
-      --panel-dark: rgba(255, 255, 255, 0.04);
-      --border-dark: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-sub: #9ca3af;
+      --bg-dark: #f1f5f9;
+      --panel-dark: #ffffff;
+      --border-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
       --primary: #4f46e5;
       --primary-hover: #6366f1;
       --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -583,6 +583,9 @@
       }
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -608,9 +611,6 @@
       <a href="assessment.html" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i> Assessment
       </a>
-      <button class="btn btn-secondary" onclick="toggleTheme()" id="btn-theme">
-        <i class="fa-solid fa-sun" id="theme-icon"></i> Theme
-      </button>
       <button class="btn btn-secondary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print / PDF
       </button>
@@ -1383,7 +1383,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       // Setup UI themes
-      const activeTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      const activeTheme = 'light';
       document.documentElement.setAttribute('data-theme', activeTheme);
       updateThemeIcon(activeTheme);
 
@@ -2129,6 +2129,7 @@
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
+      if (!icon) return;
       if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     }
 
@@ -2169,5 +2170,7 @@
       }
     }
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

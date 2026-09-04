@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,6 +34,9 @@
     .status-poor { color: #ef4444; font-weight: bold; }
     .header-actions { display: flex; gap: 10px; align-items: center; }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -46,10 +49,7 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
-          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
-          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
-        </button>
+        
       </div>
     </header>
     <div class="main-workspace">
@@ -198,7 +198,7 @@
     }
 
     // Initialize Theme
-    const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+    const savedTheme = 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
 
@@ -216,5 +216,7 @@
       }
     });
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

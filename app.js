@@ -48,7 +48,8 @@ function setupEventListeners() {
   }
   
   // Theme Toggle button
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
   
   // Sidebar Collapse Toggle
   const sidebar = document.getElementById('sidebar');
@@ -1008,19 +1009,23 @@ function exportFilteredToCSV() {
 
 // Handle Theme Toggles (Dark / Light)
 function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('tr-dashboard-theme', theme);
+  if (window.ThemeEngine && window.ThemeEngine.mode !== theme) {
+    window.ThemeEngine.setMode(theme);
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('tr-dashboard-theme', theme);
+  }
   
   const darkIcon = document.getElementById('theme-icon-dark');
   const lightIcon = document.getElementById('theme-icon-light');
   
   if (theme === 'dark') {
-    darkIcon.style.display = 'inline-block';
-    lightIcon.style.display = 'none';
+    if (darkIcon) darkIcon.style.display = 'inline-block';
+    if (lightIcon) lightIcon.style.display = 'none';
     updateMapLayer(true);
   } else {
-    darkIcon.style.display = 'none';
-    lightIcon.style.display = 'inline-block';
+    if (darkIcon) darkIcon.style.display = 'none';
+    if (lightIcon) lightIcon.style.display = 'inline-block';
     updateMapLayer(false);
   }
 }

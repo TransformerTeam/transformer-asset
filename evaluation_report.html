@@ -1323,6 +1323,10 @@
       50% { transform: scale(1.15); opacity: 0.85; }
     }
   </style>
+
+  <!-- Theme Editor & Engine -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -5911,7 +5915,7 @@
               }
             }
           </style>
-        </head><body><div class="all-reports-container" id="print-container"></div></body></html>`);
+        </head><body><div class="all-reports-container" id="print-container"></div><\/body><\/html>`);
         iframeDoc.close();
 
         const container = iframeDoc.getElementById('print-container');
@@ -6094,5 +6098,8 @@
     <i class="fa-solid fa-circle-check"></i>
     <span>อัปเดตข้อมูลเรียบร้อยแล้ว!</span>
   </div>
+
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

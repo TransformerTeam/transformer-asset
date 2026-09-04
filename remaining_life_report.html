@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +15,11 @@
 
   <style>
     :root {
-      --bg-dark: #0a0f1d;
-      --panel-dark: rgba(255, 255, 255, 0.04);
-      --border-dark: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-sub: #9ca3af;
+      --bg-dark: #f1f5f9;
+      --panel-dark: #ffffff;
+      --border-dark: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
       --primary: #4f46e5;
       --primary-hover: #6366f1;
       --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -636,6 +636,9 @@
       color: #15803d;
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -650,7 +653,6 @@
 
     <div style="display: flex; gap: 10px;">
       <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
-      <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i> Theme</button>
       <button class="btn-action btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
     </div>
   </div>
@@ -1199,7 +1201,7 @@
     let pofChartInstance = null;
 
     window.addEventListener('DOMContentLoaded', async () => {
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
+      const savedTheme = 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
@@ -2351,6 +2353,7 @@
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
+      if (!icon) return;
       if (icon) {
         icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
       }
@@ -2391,5 +2394,7 @@
       await exportSinglePageJPG('page-1', 'Page1_Summary');
     }
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

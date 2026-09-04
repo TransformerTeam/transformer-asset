@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -22,31 +22,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
-    :root {
-      --bg-page: #0b0f19;
-      --card-bg: #131b2e;
-      --card-header-bg: linear-gradient(135deg, #1e293b, #0f172a);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-      --table-th-bg: #192338;
-      --table-td-border: rgba(255, 255, 255, 0.08);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary-blue: #3b82f6;
-      --primary-indigo: #4f46e5;
-      --primary-teal: #0ea5e9;
+    * {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
 
-    [data-theme="light"] {
-      --bg-page: #f1f5f9;
+    :root {
+      --bg-page: #181c27;
       --card-bg: #ffffff;
       --card-header-bg: linear-gradient(135deg, #1e3a8a, #2563eb);
       --card-border: #cbd5e1;
-      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-      --table-th-bg: #f8fafc;
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      --table-th-bg: #f1f5f9;
       --table-td-border: #e2e8f0;
       --text-main: #0f172a;
       --text-muted: #64748b;
+      --primary-blue: #3b82f6;
+      --primary-indigo: #4f46e5;
+      --primary-teal: #0ea5e9;
     }
 
     html, body {
@@ -56,8 +49,10 @@
       max-width: 100%;
       overflow-x: hidden;
       box-sizing: border-box;
-      background-color: var(--bg-page);
-      color: var(--text-main);
+      background: #181c27 !important;
+      background-color: #181c27 !important;
+      background-image: none !important;
+      color: #0f172a;
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
@@ -66,24 +61,19 @@
 
     /* Top Navigation Bar */
     .detail-topbar {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, #11141c 0%, #181c27 100%) !important;
       color: #ffffff;
       padding: 8px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
       z-index: 20;
       width: 100%;
       box-sizing: border-box;
       position: sticky;
       top: 0;
-    }
-
-    [data-theme="light"] .detail-topbar {
-      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-      border-bottom: 1px solid #1e3a8a;
     }
 
     .detail-topbar-left {
@@ -240,6 +230,7 @@
     }
 
     /* Content Area */
+    /* Content Area */
     .detail-content-wrapper {
       flex: 1;
       padding: 12px;
@@ -247,6 +238,9 @@
       overflow-y: auto;
       overflow-x: hidden;
       width: 100%;
+      background: #181c27 !important;
+      background-color: #181c27 !important;
+      background-image: none !important;
     }
 
     .detail-page-window {
@@ -258,6 +252,9 @@
       box-shadow: none !important;
       box-sizing: border-box !important;
       margin: 0 !important;
+      background: #181c27 !important;
+      background-color: #181c27 !important;
+      background-image: none !important;
     }
 
     .excel-body {
@@ -268,6 +265,9 @@
       grid-template-columns: minmax(0, 22fr) minmax(0, 48fr) minmax(0, 30fr) !important;
       gap: 12px !important;
       padding: 4px !important;
+      background: #181c27 !important;
+      background-color: #181c27 !important;
+      background-image: none !important;
     }
 
     @media (max-width: 1280px) {
@@ -290,27 +290,32 @@
       box-sizing: border-box !important;
     }
 
-    /* Modern Card Styles */
+    /* Sub-boxes & Cards: Clean White (บ็อกย่อยสีขาวใส) */
     .excel-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: var(--card-shadow);
-      transition: border-color 0.2s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+      color: #0f172a !important;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .excel-card:hover {
-      border-color: rgba(96, 165, 250, 0.4);
+      border-color: #94a3b8 !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
     }
 
+    [data-theme="light"] .excel-card-header,
     .excel-card-header {
-      background: var(--card-header-bg);
-      color: #ffffff;
+      background: #1e293b !important;
+      background-color: #1e293b !important;
+      background-image: none !important;
+      color: #ffffff !important;
       font-weight: 700;
       padding: 7px 12px;
       font-size: 0.82rem;
-      border-bottom: 1px solid var(--card-border);
+      border-bottom: 1px solid #0f172a !important;
       letter-spacing: 0.02em;
       display: flex;
       align-items: center;
@@ -339,84 +344,145 @@
     }
 
     .btn-report-link {
-      color: #38bdf8 !important;
+      color: #ffffff !important;
       font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       text-decoration: none;
-      padding: 2px 6px;
+      padding: 3px 6px;
       border-radius: 4px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(255, 255, 255, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.35) !important;
       transition: all 0.2s ease;
+      line-height: 1;
+      margin-left: 6px;
+      vertical-align: middle;
     }
 
     .btn-report-link:hover {
-      background: rgba(56, 189, 248, 0.25);
+      background: rgba(255, 255, 255, 0.35) !important;
       color: #ffffff !important;
+      transform: scale(1.08);
     }
 
-    [data-theme="light"] .btn-report-link {
-      color: #ffffff !important;
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.4);
+    .excel-table td .btn-report-link {
+      color: #0284c7 !important;
+      background: rgba(2, 132, 199, 0.08) !important;
+      border: 1px solid rgba(2, 132, 199, 0.25) !important;
+    }
+    .excel-table td .btn-report-link:hover {
+      background: rgba(2, 132, 199, 0.2) !important;
+      color: #0369a1 !important;
+    }
+    body.dark-theme .excel-table td .btn-report-link,
+    body.dark-mode .excel-table td .btn-report-link,
+    [data-theme="dark"] .excel-table td .btn-report-link {
+      color: #38bdf8 !important;
+      background: rgba(56, 189, 248, 0.15) !important;
+      border: 1px solid rgba(56, 189, 248, 0.3) !important;
     }
 
-    /* Tables Styling */
+    /* Tables Styling: Crisp White with Clean Borders */
     .excel-table {
       width: 100% !important;
       border-collapse: collapse;
       font-size: 10.5px;
       box-sizing: border-box !important;
+      background: #ffffff !important;
     }
 
     .excel-table th, .excel-table td {
-      border: 1px solid var(--table-td-border);
+      border: 1px solid #e2e8f0;
       padding: 4px 6px;
       text-align: left;
       vertical-align: middle;
-      color: var(--text-main);
+      color: #0f172a;
+      background: #ffffff;
     }
 
     .excel-table th {
-      background: var(--table-th-bg);
-      font-weight: 700;
-      color: #cbd5e1;
+      background: #f1f5f9 !important;
+      font-weight: 700 !important;
+      color: #1e293b !important;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.02em;
+      border-top: 1px solid #cbd5e1 !important;
+      border-bottom: 1px solid #cbd5e1 !important;
     }
 
-    [data-theme="light"] .excel-table th {
-      color: #334155 !important;
-      background: #f1f5f9 !important;
+    /* Main Tank Oil & OLTC Oil Tables: Explicit Column Widths and Perfect Vertical Alignment */
+    .oil-table {
+      table-layout: fixed !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+
+    .oil-table th,
+    .oil-table td {
+      box-sizing: border-box !important;
+    }
+
+    .oil-table th:nth-child(1),
+    .oil-table td:nth-child(1) {
+      width: 44% !important;
+      max-width: 44% !important;
+      text-align: left !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      padding: 4px 6px !important;
+    }
+
+    .oil-table th:nth-child(2),
+    .oil-table td:nth-child(2) {
+      width: 32% !important;
+      max-width: 32% !important;
+      text-align: left !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      padding: 4px 6px !important;
+    }
+
+    .oil-table th:nth-child(3),
+    .oil-table td:nth-child(3) {
+      width: 12% !important;
+      max-width: 12% !important;
+      text-align: center !important;
+      white-space: nowrap !important;
+      padding: 4px 2px !important;
+    }
+
+    .oil-table th:nth-child(4),
+    .oil-table td:nth-child(4) {
+      width: 12% !important;
+      max-width: 12% !important;
+      text-align: center !important;
+      white-space: nowrap !important;
+      padding: 4px 2px !important;
     }
 
     .info-table td:first-child {
-      font-weight: 600;
+      font-weight: 600 !important;
       width: 42%;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    [data-theme="light"] .info-table td:first-child {
       color: #475569 !important;
       background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
     }
 
     .info-table td:last-child {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    [data-theme="light"] .info-table td:last-child {
+      font-weight: 700 !important;
       color: #1e3a8a !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
     }
 
     /* Center Top Life & Gauge Section */
     .excel-center-top-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 200px 1fr;
       gap: 10px;
       align-items: stretch;
     }
@@ -425,23 +491,25 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      width: 200px;
+      max-width: 200px;
     }
 
     .life-kpi-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
       border-radius: 8px;
       padding: 8px 12px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       position: relative;
-      box-shadow: var(--card-shadow);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
       transition: all 0.2s ease;
     }
 
     .life-kpi-card:hover {
-      border-color: #38bdf8;
+      border-color: #38bdf8 !important;
       transform: translateY(-1px);
     }
 
@@ -451,9 +519,19 @@
       align-items: center;
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--text-muted);
+      color: #0284c7 !important;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+    }
+
+    .icon-dp-paper {
+      --kpi-paper-bg: #ffffff;
+      transition: all 0.2s ease;
+    }
+    body.dark-theme .icon-dp-paper,
+    body.dark-mode .icon-dp-paper,
+    [data-theme="dark"] .icon-dp-paper {
+      --kpi-paper-bg: #1e293b;
     }
 
     .life-kpi-value-row {
@@ -467,27 +545,40 @@
       font-family: 'Outfit', sans-serif;
       font-size: 1.45rem;
       font-weight: 800;
-      color: #38bdf8;
-      line-height: 1.1;
-    }
-
-    [data-theme="light"] .life-kpi-value {
       color: #0284c7;
+      line-height: 1.1;
+      transition: color 0.2s ease;
     }
 
-    .life-kpi-sub {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: #10b981;
-      background: rgba(16, 185, 129, 0.12);
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid rgba(16, 185, 129, 0.25);
+    .kpi-val-green {
+      color: #16a34a !important;
+    }
+    .kpi-val-yellow {
+      color: #ca8a04 !important;
+    }
+    .kpi-val-orange {
+      color: #ea580c !important;
+    }
+    .kpi-val-red {
+      color: #dc2626 !important;
+    }
+
+    body.dark-theme .kpi-val-green, body.dark-mode .kpi-val-green, [data-theme="dark"] .kpi-val-green {
+      color: #22c55e !important;
+    }
+    body.dark-theme .kpi-val-yellow, body.dark-mode .kpi-val-yellow, [data-theme="dark"] .kpi-val-yellow {
+      color: #facc15 !important;
+    }
+    body.dark-theme .kpi-val-orange, body.dark-mode .kpi-val-orange, [data-theme="dark"] .kpi-val-orange {
+      color: #fb923c !important;
+    }
+    body.dark-theme .kpi-val-red, body.dark-mode .kpi-val-red, [data-theme="dark"] .kpi-val-red {
+      color: #f87171 !important;
     }
 
     .gauge-kpi-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
       border-radius: 8px;
       padding: 8px;
       display: flex;
@@ -495,15 +586,15 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      box-shadow: var(--card-shadow);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
 
     .excel-model-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: var(--card-shadow);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -512,9 +603,13 @@
     }
 
     .excel-model-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin: auto;
+      padding: 4px;
       display: block;
       transition: transform 0.3s ease;
     }
@@ -523,20 +618,54 @@
       transform: scale(1.03);
     }
 
-    /* Status Badges */
+    /* Status Badges & Evaluation Score Cell Colors - Exact User Hex Palette (#6f6, #b2ff66, #feff66, #ffb266, #f66) */
+    .excel-table td.ex-status-good,
     .ex-status-good {
-      color: #10b981 !important;
-      font-weight: 700;
+      background-color: #66ff66 !important;
+      color: #064e18 !important;
+      font-weight: 700 !important;
+      border-color: #4ce64c !important;
+      text-align: center !important;
     }
 
+    .excel-table td.ex-status-lime,
+    .ex-status-lime {
+      background-color: #b2ff66 !important;
+      color: #1a4d00 !important;
+      font-weight: 700 !important;
+      border-color: #99e64c !important;
+      text-align: center !important;
+    }
+
+    .excel-table td.ex-status-fair,
     .ex-status-fair {
-      color: #f59e0b !important;
-      font-weight: 700;
+      background-color: #feff66 !important;
+      color: #5c5200 !important;
+      font-weight: 700 !important;
+      border-color: #e6e64c !important;
+      text-align: center !important;
     }
 
-    .ex-status-poor {
-      color: #ef4444 !important;
-      font-weight: 700;
+    .excel-table td.ex-status-warn,
+    .ex-status-warn,
+    .excel-table td.ex-status-warning,
+    .ex-status-warning {
+      background-color: #ffb266 !important;
+      color: #7c2d00 !important;
+      font-weight: 700 !important;
+      border-color: #e6994c !important;
+      text-align: center !important;
+    }
+
+    .excel-table td.ex-status-poor,
+    .ex-status-poor,
+    .excel-table td.ex-status-critical,
+    .ex-status-critical {
+      background-color: #ff6666 !important;
+      color: #5c0000 !important;
+      font-weight: 700 !important;
+      border-color: #e64c4c !important;
+      text-align: center !important;
     }
 
     .excel-visual-box {
@@ -552,28 +681,49 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      padding: 4px 8px;
-      background: rgba(255, 255, 255, 0.04);
-      color: #38bdf8;
-      border-top: 1px solid var(--card-border);
-      border-bottom: 1px solid var(--card-border);
+      padding: 5px 10px;
+      background: #f8fafc !important;
+      color: #0369a1 !important;
+      border-top: 1px solid #e2e8f0 !important;
+      border-bottom: 1px solid #e2e8f0 !important;
     }
 
-    [data-theme="light"] .active-part-sub-title {
-      background: #f8fafc;
-      color: #0284c7;
-    }
-
+    /* DGA Diagnostics Container: Clean White Background with High Contrast Labels */
     .dga-diag-container {
-      padding: 8px 10px;
-      font-size: 10px;
+      padding: 10px 12px !important;
+      font-size: 0.73rem !important;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      background: rgba(0, 0, 0, 0.15);
-      border-top: 1px solid var(--card-border);
+      gap: 5px;
+      background: #ffffff !important;
+      border-top: 1px solid #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    .dga-diag-container div {
+      line-height: 1.5;
+      color: #0f172a !important;
+    }
+
+    .dga-diag-container strong {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+      margin-right: 4px;
+    }
+
+    #ex-recommendation-text {
+      background: #ffffff !important;
+      color: #1e293b !important;
+    }
+
+    .excel-visual-box {
+      background: #ffffff !important;
+      color: #0f172a !important;
     }
   </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 
 <body>
@@ -596,10 +746,6 @@
         </select>
       </div>
 
-      <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
-      <a id="btn-eval-report" href="evaluation_report.html" class="btn-action btn-indigo" title="Open Evaluation &amp; Criteria Report"><i class="fa-solid fa-clipboard-check"></i> Evaluation Report</a>
-      <a id="btn-rem-life-report" href="remaining_life_report.html" class="btn-action btn-sky" title="Open Remaining Life Assessment Report"><i class="fa-solid fa-hourglass-half"></i> Remaining Life</a>
-      <button class="btn-action" onclick="toggleTheme()"><i class="fa-solid fa-sun" id="theme-icon"></i> Theme</button>
       <button class="btn-action btn-primary" onclick="exportToJPG()"><i class="fa-solid fa-camera"></i> Export JPG</button>
       <button class="btn-action" onclick="window.close()"><i class="fa-solid fa-xmark"></i> Close</button>
     </div>
@@ -674,63 +820,13 @@
             </table>
           </div>
 
-          <!-- On-Load Tap Changer (OLTC) Information Card -->
-          <div class="excel-card" id="card-oltc-info">
-            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e3a8a, #1d4ed8);">
-              <span><i class="fa-solid fa-sliders" style="color: #93c5fd;"></i> Tap Changer (OLTC / DETC) Information</span>
-            </div>
-            <table class="excel-table info-table">
-              <tbody>
-                <tr>
-                  <td>OLTC Manufacturer</td>
-                  <td id="ex-oltc-mfg">-</td>
-                </tr>
-                <tr>
-                  <td>Model Type</td>
-                  <td id="ex-oltc-model">-</td>
-                </tr>
-                <tr>
-                  <td>Model Year</td>
-                  <td id="ex-oltc-year">-</td>
-                </tr>
-                <tr>
-                  <td>Serial No.</td>
-                  <td id="ex-oltc-serial">-</td>
-                </tr>
-                <tr>
-                  <td>Motor Drive Unit</td>
-                  <td id="ex-oltc-motor">-</td>
-                </tr>
-                <tr>
-                  <td>Counter Operated</td>
-                  <td id="ex-oltc-counter">-</td>
-                </tr>
-                <tr>
-                  <td>Tap Positions</td>
-                  <td id="ex-oltc-taps">-</td>
-                </tr>
-                <tr>
-                  <td>Transition Resistor</td>
-                  <td id="ex-oltc-resistor">-</td>
-                </tr>
-                <tr>
-                  <td>Maintenance Interval</td>
-                  <td id="ex-oltc-maint-spec">-</td>
-                </tr>
-                <tr>
-                  <td>Last / Next Inspection</td>
-                  <td id="ex-oltc-schedule">-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
           <!-- Recommendation -->
           <div class="excel-card">
-            <div class="excel-card-header" style="background: linear-gradient(135deg, #1e293b, #334155); color: #38bdf8;">
+            <div class="excel-card-header">
               <span><i class="fa-solid fa-clipboard-check"></i> Interpretation &amp; Recommendations</span>
             </div>
-            <div style="padding: 10px 12px; font-size: 0.78rem; line-height: 1.5; color: var(--text-main); background: rgba(0, 0, 0, 0.15); border-radius: 0 0 6px 6px; min-height: 70px; white-space: pre-line;" id="ex-recommendation-text">
+            <div style="padding: 10px 12px; font-size: 0.78rem; line-height: 1.5; color: #1e293b; background: #ffffff; border-radius: 0 0 6px 6px; min-height: 70px; white-space: pre-line;" id="ex-recommendation-text">
               -
             </div>
           </div>
@@ -740,7 +836,7 @@
             <div class="excel-card-header">
               <span><i class="fa-solid fa-eye" style="color: #38bdf8;"></i> Visual Inspection</span>
               <a id="ex-visual-link" href="visual_report.html" target="_blank" class="btn-report-link" title="Open Visual Inspection Report">
-                <i class="fa-solid fa-file-invoice"></i> Report
+                <i class="fa-solid fa-file-invoice"></i>
               </a>
             </div>
             <div class="excel-visual-box" id="ex-visual-text">Normal</div>
@@ -792,19 +888,21 @@
                 </div>
                 <div class="life-kpi-value-row">
                   <span class="life-kpi-value" id="ex-est-life">-</span>
-                  <span class="life-kpi-sub" id="ex-est-life-sub">To DP = 300</span>
                 </div>
               </a>
 
               <!-- Estimated DP Box -->
               <div class="life-kpi-card">
                 <div class="life-kpi-header">
-                  <span><i class="fa-solid fa-atom" style="color: #38bdf8;"></i> Estimated DP</span>
-                  <span style="font-size: 0.65rem; color: #94a3b8;">Furan 2-FAL</span>
+                  <span>
+                    <svg class="icon-dp-paper" viewBox="0 0 100 100" width="16" height="16" fill="currentColor" style="color: #38bdf8; vertical-align: -2.5px; margin-right: 4px; display: inline-block;">
+                      <path d="M66 10h13v1h-13ZM61 11h22v1h-22ZM57 12h28v1h-28ZM54 13h12v1h-12ZM78 13h10v1h-10ZM50 14h11v1h-11ZM82 14h7v1h-7ZM48 15h10v1h-10ZM85 15h5v1h-5ZM45 16h9v1h-9ZM87 16h3v1h-3ZM5 17h2v1h-2ZM42 17h9v1h-9ZM87 17h3v1h-3ZM4 18h5v1h-5ZM39 18h9v1h-9ZM87 18h3v1h-3ZM4 19h7v1h-7ZM35 19h10v1h-10ZM87 19h3v1h-3ZM4 20h10v1h-10ZM31 20h12v1h-12ZM87 20h3v1h-3ZM4 21h17v1h-17ZM23 21h16v1h-16ZM87 21h3v1h-3ZM4 22h4v1h-4ZM10 22h26v1h-26ZM72 22h12v1h-12ZM87 22h3v1h-3ZM4 23h4v1h-4ZM13 23h19v1h-19ZM67 23h23v1h-23ZM4 24h4v1h-4ZM20 24h4v1h-4ZM63 24h28v1h-28ZM4 25h4v1h-4ZM60 25h13v1h-13ZM74 25h4v1h-4ZM83 25h11v1h-11ZM4 26h4v1h-4ZM57 26h11v1h-11ZM73 26h4v1h-4ZM88 26h7v1h-7ZM4 27h4v1h-4ZM54 27h10v1h-10ZM72 27h4v1h-4ZM89 27h7v1h-7ZM4 28h4v1h-4ZM51 28h12v1h-12ZM71 28h4v1h-4ZM88 28h4v1h-4ZM93 28h4v1h-4ZM4 29h4v1h-4ZM12 29h1v1h-1ZM48 29h14v1h-14ZM70 29h4v1h-4ZM87 29h5v1h-5ZM93 29h4v1h-4ZM4 30h4v1h-4ZM11 30h4v1h-4ZM45 30h10v1h-10ZM57 30h4v1h-4ZM69 30h4v1h-4ZM86 30h4v1h-4ZM93 30h4v1h-4ZM4 31h4v1h-4ZM11 31h6v1h-6ZM42 31h10v1h-10ZM56 31h4v1h-4ZM68 31h4v1h-4ZM85 31h4v1h-4ZM93 31h4v1h-4ZM4 32h4v1h-4ZM11 32h9v1h-9ZM38 32h11v1h-11ZM55 32h4v1h-4ZM67 32h4v1h-4ZM84 32h5v1h-5ZM93 32h4v1h-4ZM4 33h4v1h-4ZM11 33h15v1h-15ZM31 33h15v1h-15ZM54 33h4v1h-4ZM66 33h4v1h-4ZM83 33h4v1h-4ZM93 33h4v1h-4ZM4 34h4v1h-4ZM11 34h3v1h-3ZM16 34h27v1h-27ZM53 34h4v1h-4ZM65 34h4v1h-4ZM82 34h5v1h-5ZM93 34h4v1h-4ZM4 35h4v1h-4ZM11 35h3v1h-3ZM19 35h20v1h-20ZM52 35h4v1h-4ZM64 35h4v1h-4ZM81 35h4v1h-4ZM93 35h4v1h-4ZM4 36h4v1h-4ZM11 36h3v1h-3ZM22 36h16v1h-16ZM51 36h4v1h-4ZM63 36h4v1h-4ZM80 36h5v1h-5ZM92 36h5v1h-5ZM4 37h4v1h-4ZM11 37h3v1h-3ZM21 37h4v1h-4ZM32 37h5v1h-5ZM50 37h4v1h-4ZM62 37h4v1h-4ZM79 37h4v1h-4ZM91 37h6v1h-6ZM4 38h4v1h-4ZM11 38h3v1h-3ZM20 38h4v1h-4ZM31 38h5v1h-5ZM49 38h4v1h-4ZM61 38h4v1h-4ZM79 38h3v1h-3ZM90 38h7v1h-7ZM4 39h4v1h-4ZM11 39h3v1h-3ZM19 39h4v1h-4ZM30 39h5v1h-5ZM48 39h4v1h-4ZM60 39h4v1h-4ZM80 39h1v1h-1ZM89 39h8v1h-8ZM4 40h4v1h-4ZM11 40h3v1h-3ZM18 40h4v1h-4ZM29 40h5v1h-5ZM47 40h4v1h-4ZM59 40h4v1h-4ZM88 40h4v1h-4ZM93 40h4v1h-4ZM4 41h4v1h-4ZM11 41h3v1h-3ZM17 41h4v1h-4ZM28 41h5v1h-5ZM46 41h4v1h-4ZM58 41h4v1h-4ZM87 41h4v1h-4ZM93 41h4v1h-4ZM4 42h4v1h-4ZM11 42h3v1h-3ZM16 42h4v1h-4ZM27 42h5v1h-5ZM45 42h4v1h-4ZM57 42h4v1h-4ZM86 42h4v1h-4ZM93 42h4v1h-4ZM4 43h4v1h-4ZM11 43h3v1h-3ZM15 43h4v1h-4ZM26 43h5v1h-5ZM44 43h4v1h-4ZM56 43h4v1h-4ZM73 43h3v1h-3ZM85 43h4v1h-4ZM93 43h4v1h-4ZM4 44h4v1h-4ZM11 44h7v1h-7ZM25 44h5v1h-5ZM43 44h4v1h-4ZM55 44h4v1h-4ZM72 44h4v1h-4ZM84 44h4v1h-4ZM93 44h4v1h-4ZM4 45h4v1h-4ZM11 45h6v1h-6ZM24 45h5v1h-5ZM42 45h4v1h-4ZM54 45h4v1h-4ZM71 45h4v1h-4ZM83 45h4v1h-4ZM93 45h4v1h-4ZM4 46h4v1h-4ZM11 46h5v1h-5ZM23 46h5v1h-5ZM41 46h4v1h-4ZM53 46h4v1h-4ZM70 46h5v1h-5ZM82 46h4v1h-4ZM93 46h4v1h-4ZM4 47h4v1h-4ZM11 47h4v1h-4ZM22 47h5v1h-5ZM40 47h4v1h-4ZM52 47h4v1h-4ZM70 47h3v1h-3ZM81 47h4v1h-4ZM93 47h4v1h-4ZM4 48h4v1h-4ZM11 48h3v1h-3ZM21 48h5v1h-5ZM39 48h4v1h-4ZM51 48h4v1h-4ZM71 48h2v1h-2ZM80 48h4v1h-4ZM93 48h4v1h-4ZM4 49h4v1h-4ZM11 49h3v1h-3ZM20 49h5v1h-5ZM38 49h4v1h-4ZM50 49h4v1h-4ZM79 49h4v1h-4ZM93 49h4v1h-4ZM4 50h4v1h-4ZM11 50h3v1h-3ZM19 50h5v1h-5ZM37 50h4v1h-4ZM49 50h4v1h-4ZM78 50h4v1h-4ZM93 50h4v1h-4ZM4 51h4v1h-4ZM11 51h3v1h-3ZM18 51h5v1h-5ZM36 51h4v1h-4ZM48 51h4v1h-4ZM77 51h4v1h-4ZM93 51h4v1h-4ZM4 52h4v1h-4ZM11 52h3v1h-3ZM17 52h5v1h-5ZM35 52h4v1h-4ZM47 52h4v1h-4ZM64 52h3v1h-3ZM76 52h4v1h-4ZM93 52h4v1h-4ZM4 53h4v1h-4ZM11 53h3v1h-3ZM16 53h5v1h-5ZM34 53h4v1h-4ZM46 53h4v1h-4ZM63 53h4v1h-4ZM75 53h4v1h-4ZM92 53h5v1h-5ZM4 54h4v1h-4ZM11 54h3v1h-3ZM15 54h5v1h-5ZM33 54h4v1h-4ZM45 54h4v1h-4ZM62 54h4v1h-4ZM74 54h4v1h-4ZM91 54h6v1h-6ZM4 55h4v1h-4ZM11 55h8v1h-8ZM32 55h4v1h-4ZM44 55h4v1h-4ZM61 55h5v1h-5ZM73 55h4v1h-4ZM90 55h7v1h-7ZM4 56h4v1h-4ZM11 56h7v1h-7ZM31 56h4v1h-4ZM43 56h4v1h-4ZM61 56h3v1h-3ZM72 56h4v1h-4ZM89 56h8v1h-8ZM4 57h4v1h-4ZM11 57h6v1h-6ZM30 57h4v1h-4ZM42 57h4v1h-4ZM62 57h1v1h-1ZM71 57h4v1h-4ZM88 57h9v1h-9ZM4 58h4v1h-4ZM11 58h5v1h-5ZM29 58h4v1h-4ZM41 58h4v1h-4ZM70 58h4v1h-4ZM87 58h5v1h-5ZM93 58h4v1h-4ZM4 59h4v1h-4ZM11 59h4v1h-4ZM28 59h4v1h-4ZM40 59h4v1h-4ZM69 59h4v1h-4ZM86 59h5v1h-5ZM93 59h4v1h-4ZM4 60h4v1h-4ZM11 60h3v1h-3ZM27 60h4v1h-4ZM39 60h4v1h-4ZM68 60h4v1h-4ZM85 60h5v1h-5ZM93 60h4v1h-4ZM4 61h4v1h-4ZM11 61h3v1h-3ZM26 61h4v1h-4ZM38 61h4v1h-4ZM55 61h3v1h-3ZM67 61h4v1h-4ZM84 61h5v1h-5ZM93 61h4v1h-4ZM4 62h4v1h-4ZM11 62h3v1h-3ZM25 62h4v1h-4ZM37 62h4v1h-4ZM54 62h4v1h-4ZM66 62h4v1h-4ZM83 62h5v1h-5ZM93 62h4v1h-4ZM4 63h4v1h-4ZM11 63h3v1h-3ZM24 63h4v1h-4ZM36 63h4v1h-4ZM53 63h4v1h-4ZM65 63h4v1h-4ZM82 63h5v1h-5ZM93 63h4v1h-4ZM4 64h4v1h-4ZM11 64h3v1h-3ZM23 64h4v1h-4ZM35 64h4v1h-4ZM52 64h4v1h-4ZM64 64h4v1h-4ZM81 64h5v1h-5ZM93 64h4v1h-4ZM4 65h4v1h-4ZM11 65h3v1h-3ZM22 65h4v1h-4ZM34 65h4v1h-4ZM52 65h4v1h-4ZM63 65h4v1h-4ZM80 65h5v1h-5ZM92 65h5v1h-5ZM4 66h4v1h-4ZM11 66h3v1h-3ZM21 66h4v1h-4ZM33 66h4v1h-4ZM52 66h2v1h-2ZM62 66h4v1h-4ZM79 66h5v1h-5ZM91 66h6v1h-6ZM4 67h4v1h-4ZM11 67h3v1h-3ZM20 67h4v1h-4ZM32 67h4v1h-4ZM61 67h4v1h-4ZM78 67h5v1h-5ZM90 67h7v1h-7ZM4 68h4v1h-4ZM11 68h3v1h-3ZM19 68h4v1h-4ZM31 68h4v1h-4ZM60 68h4v1h-4ZM77 68h5v1h-5ZM89 68h8v1h-8ZM4 69h4v1h-4ZM11 69h3v1h-3ZM18 69h4v1h-4ZM30 69h4v1h-4ZM59 69h4v1h-4ZM76 69h5v1h-5ZM88 69h9v1h-9ZM4 70h4v1h-4ZM11 70h3v1h-3ZM17 70h4v1h-4ZM29 70h4v1h-4ZM46 70h2v1h-2ZM58 70h4v1h-4ZM75 70h5v1h-5ZM87 70h5v1h-5ZM93 70h4v1h-4ZM4 71h4v1h-4ZM11 71h3v1h-3ZM16 71h4v1h-4ZM28 71h4v1h-4ZM45 71h4v1h-4ZM57 71h4v1h-4ZM74 71h5v1h-5ZM86 71h5v1h-5ZM93 71h4v1h-4ZM4 72h4v1h-4ZM11 72h3v1h-3ZM15 72h4v1h-4ZM27 72h4v1h-4ZM44 72h5v1h-5ZM56 72h4v1h-4ZM73 72h5v1h-5ZM85 72h5v1h-5ZM93 72h4v1h-4ZM4 73h5v1h-5ZM11 73h7v1h-7ZM26 73h4v1h-4ZM43 73h4v1h-4ZM55 73h4v1h-4ZM72 73h5v1h-5ZM84 73h5v1h-5ZM93 73h4v1h-4ZM5 74h12v1h-12ZM25 74h4v1h-4ZM42 74h5v1h-5ZM54 74h4v1h-4ZM71 74h5v1h-5ZM83 74h5v1h-5ZM93 74h4v1h-4ZM6 75h10v1h-10ZM24 75h4v1h-4ZM41 75h4v1h-4ZM53 75h4v1h-4ZM70 75h5v1h-5ZM82 75h5v1h-5ZM93 75h4v1h-4ZM8 76h7v1h-7ZM23 76h4v1h-4ZM40 76h5v1h-5ZM52 76h4v1h-4ZM69 76h5v1h-5ZM81 76h5v1h-5ZM93 76h4v1h-4ZM10 77h4v1h-4ZM22 77h4v1h-4ZM39 77h5v1h-5ZM51 77h4v1h-4ZM68 77h17v1h-17ZM93 77h4v1h-4ZM11 78h3v1h-3ZM21 78h4v1h-4ZM38 78h4v1h-4ZM50 78h4v1h-4ZM67 78h22v1h-22ZM93 78h4v1h-4ZM11 79h3v1h-3ZM20 79h4v1h-4ZM37 79h5v1h-5ZM49 79h4v1h-4ZM63 79h28v1h-28ZM93 79h4v1h-4ZM11 80h3v1h-3ZM19 80h4v1h-4ZM36 80h4v1h-4ZM48 80h4v1h-4ZM60 80h13v1h-13ZM84 80h13v1h-13ZM11 81h3v1h-3ZM18 81h4v1h-4ZM35 81h5v1h-5ZM47 81h4v1h-4ZM57 81h11v1h-11ZM88 81h9v1h-9ZM11 82h3v1h-3ZM17 82h4v1h-4ZM34 82h4v1h-4ZM46 82h4v1h-4ZM54 82h10v1h-10ZM91 82h6v1h-6ZM11 83h3v1h-3ZM16 83h4v1h-4ZM33 83h4v1h-4ZM45 83h4v1h-4ZM51 83h9v1h-9ZM93 83h3v1h-3ZM11 84h3v1h-3ZM15 84h4v1h-4ZM32 84h5v1h-5ZM44 84h14v1h-14ZM94 84h2v1h-2ZM11 85h7v1h-7ZM31 85h4v1h-4ZM43 85h12v1h-12ZM11 86h6v1h-6ZM30 86h5v1h-5ZM42 86h10v1h-10ZM12 87h8v1h-8ZM29 87h4v1h-4ZM37 87h12v1h-12ZM14 88h9v1h-9ZM28 88h18v1h-18ZM16 89h7v1h-7ZM28 89h14v1h-14ZM19 90h4v1h-4ZM29 90h9v1h-9Z"/>
+                    </svg>
+                    Estimated DP
+                  </span>
                 </div>
                 <div class="life-kpi-value-row">
                   <span class="life-kpi-value" id="ex-est-dp">0</span>
-                  <span class="life-kpi-sub" id="ex-est-dp-sub" style="color: #38bdf8; background: rgba(56,189,248,0.12); border-color: rgba(56,189,248,0.25);">Dominelli Model</span>
                 </div>
               </div>
             </div>
@@ -822,7 +920,7 @@
               <span>
                 <i class="fa-solid fa-plug" style="color: #60a5fa;"></i> Bushing
                 <a id="ex-bushing-link" href="bushing_pf_report.html" target="_blank" class="btn-report-link" title="Open Bushing Report">
-                  <i class="fa-solid fa-file-invoice"></i> Report
+                  <i class="fa-solid fa-file-invoice"></i>
                 </a>
               </span>
               <span class="card-update-time" id="ex-update-bushing">-</span>
@@ -852,7 +950,7 @@
               <span>
                 <i class="fa-solid fa-bolt-lightning" style="color: #facc15;"></i> Surge Arrester
                 <a id="ex-surge-link" href="surge_report.html" target="_blank" class="btn-report-link" title="Open Surge Arrester Report">
-                  <i class="fa-solid fa-file-invoice"></i> Report
+                  <i class="fa-solid fa-file-invoice"></i>
                 </a>
               </span>
               <span class="card-update-time" id="ex-update-arrester">-</span>
@@ -927,8 +1025,8 @@
             <div class="excel-card-header">
               <span>
                 <i class="fa-solid fa-fire-flame-curved" style="color: #f97316;"></i> Main Tank DGA
-                <a href="#" id="ex-dga-link" target="_blank" class="btn-report-link" title="Open DGA Report">
-                  <i class="fa-solid fa-file-invoice"></i> Report
+                <a href="dga_report.html" id="ex-dga-link" target="_blank" class="btn-report-link" title="Open DGA Report">
+                  <i class="fa-solid fa-file-invoice"></i>
                 </a>
               </span>
               <span class="card-update-time" id="ex-update-dga">-</span>
@@ -980,20 +1078,26 @@
               <span>
                 <i class="fa-solid fa-droplet" style="color: #38bdf8;"></i> Main Tank Oil Properties
                 <a id="ex-oil-link" href="oil_report.html" target="_blank" class="btn-report-link" title="Open Main Tank Oil Report">
-                  <i class="fa-solid fa-file-invoice"></i> Report
+                  <i class="fa-solid fa-file-invoice"></i>
                 </a>
               </span>
               <span class="card-update-time" id="ex-update-oil">-</span>
             </div>
 
             <div class="active-part-sub-title">1. Physical &amp; Electrical Properties</div>
-            <table class="excel-table test-table">
+            <table class="excel-table test-table oil-table">
+              <colgroup>
+                <col style="width: 44%;">
+                <col style="width: 32%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+              </colgroup>
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Value</th>
-                  <th>Unit</th>
+                  <th style="text-align: center;">Value</th>
+                  <th style="text-align: center;">Unit</th>
                 </tr>
               </thead>
               <tbody id="ex-oil-physical-rows">
@@ -1002,13 +1106,19 @@
             </table>
 
             <div class="active-part-sub-title">2. Paper &amp; Oil Aging Degradation</div>
-            <table class="excel-table test-table">
+            <table class="excel-table test-table oil-table">
+              <colgroup>
+                <col style="width: 44%;">
+                <col style="width: 32%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+              </colgroup>
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Value</th>
-                  <th>Unit</th>
+                  <th style="text-align: center;">Value</th>
+                  <th style="text-align: center;">Unit</th>
                 </tr>
               </thead>
               <tbody id="ex-oil-aging-rows">
@@ -1017,13 +1127,19 @@
             </table>
 
             <div class="active-part-sub-title">3. Corrosive Sulfur &amp; Passivator</div>
-            <table class="excel-table test-table">
+            <table class="excel-table test-table oil-table">
+              <colgroup>
+                <col style="width: 44%;">
+                <col style="width: 32%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+              </colgroup>
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Value</th>
-                  <th>Unit</th>
+                  <th style="text-align: center;">Value</th>
+                  <th style="text-align: center;">Unit</th>
                 </tr>
               </thead>
               <tbody id="ex-oil-sulfur-rows">
@@ -1038,18 +1154,24 @@
               <span>
                 <i class="fa-solid fa-oil-can" style="color: #facc15;"></i> OLTC Oil Properties
                 <a id="ex-oltc-link" href="oltc_oil_report.html" target="_blank" class="btn-report-link" title="Open OLTC Oil Report">
-                  <i class="fa-solid fa-file-invoice"></i> Report
+                  <i class="fa-solid fa-file-invoice"></i>
                 </a>
               </span>
               <span class="card-update-time" id="ex-update-oltc">-</span>
             </div>
-            <table class="excel-table test-table">
+            <table class="excel-table test-table oil-table">
+              <colgroup>
+                <col style="width: 44%;">
+                <col style="width: 32%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+              </colgroup>
               <thead>
                 <tr>
                   <th>Item Test</th>
                   <th>Standard</th>
-                  <th>Value</th>
-                  <th>Unit</th>
+                  <th style="text-align: center;">Value</th>
+                  <th style="text-align: center;">Unit</th>
                 </tr>
               </thead>
               <tbody id="ex-oltc-rows">
@@ -1170,9 +1292,7 @@
     }
 
     function initDetailPageWrapper() {
-      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcon(savedTheme);
+      document.documentElement.setAttribute('data-theme', 'light');
 
       initDetailPage();
 
@@ -1232,37 +1352,294 @@
 
     function updateThemeIcon(theme) {
       const icon = document.getElementById('theme-icon');
+      if (!icon) return;
       if (icon) {
         icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
       }
     }
 
-    function exportToJPG() {
+    async function exportToJPG() {
       const paper = document.getElementById('detail-paper');
+      if (!paper) return;
+
       const originalHeight = paper.style.height;
       const originalOverflow = paper.style.overflowY;
       paper.style.height = 'auto';
       paper.style.overflowY = 'visible';
       
-      html2canvas(paper, {
-        scale: 2,
-        useCORS: true,
-        windowHeight: paper.scrollHeight,
-        backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0b0f19' : '#f8fafc'
-      }).then(canvas => {
+      const bgExportColor = '#181c27';
+
+      try {
+        const canvas = await html2canvas(paper, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: bgExportColor,
+          logging: false,
+          onclone: (clonedDoc) => {
+            // Force light theme attribute
+            clonedDoc.documentElement.setAttribute('data-theme', 'light');
+
+            // Strip any backdrop-filter to prevent milky/cloudy rendering in html2canvas
+            clonedDoc.querySelectorAll('*').forEach(el => {
+              if (el.style) {
+                el.style.backdropFilter = 'none';
+                el.style.webkitBackdropFilter = 'none';
+              }
+            });
+
+            // Ensure body and wrapper have solid #181c27 background
+            if (clonedDoc.body) {
+              clonedDoc.body.style.backgroundColor = bgExportColor;
+              clonedDoc.body.style.backgroundImage = 'none';
+            }
+
+            const clonedPaper = clonedDoc.getElementById('detail-paper');
+            if (clonedPaper) {
+              clonedPaper.style.height = 'auto';
+              clonedPaper.style.overflow = 'visible';
+              clonedPaper.style.backgroundColor = bgExportColor;
+              clonedPaper.style.backgroundImage = 'none';
+            }
+
+            const clonedWindow = clonedDoc.querySelector('.detail-page-window');
+            if (clonedWindow) {
+              clonedWindow.style.backgroundColor = bgExportColor;
+              clonedWindow.style.backgroundImage = 'none';
+            }
+
+            const clonedBody = clonedDoc.querySelector('.excel-body');
+            if (clonedBody) {
+              clonedBody.style.backgroundColor = bgExportColor;
+              clonedBody.style.backgroundImage = 'none';
+            }
+
+            // 1. Force vibrant, rich solid colors for all card headers
+            const headerSolid = '#1e293b';
+
+            clonedDoc.querySelectorAll('.excel-card-header').forEach(h => {
+              h.style.setProperty('background', headerSolid, 'important');
+              h.style.setProperty('background-color', headerSolid, 'important');
+              h.style.setProperty('background-image', 'none', 'important');
+              h.style.setProperty('color', '#ffffff', 'important');
+              h.style.setProperty('border-bottom', '1px solid #0f172a', 'important');
+              h.style.setProperty('opacity', '1', 'important');
+            });
+            clonedDoc.querySelectorAll('.excel-card-header span, .excel-card-header i, .excel-card-header a').forEach(el => {
+              el.style.setProperty('color', '#ffffff', 'important');
+              el.style.setProperty('opacity', '1', 'important');
+            });
+
+            // 2. Ensure all cards and sub-boxes have 100% solid, opaque pure white backgrounds
+            clonedDoc.querySelectorAll('.excel-card').forEach(c => {
+              c.style.setProperty('background', '#ffffff', 'important');
+              c.style.setProperty('background-color', '#ffffff', 'important');
+              c.style.setProperty('border-color', '#cbd5e1', 'important');
+              c.style.setProperty('box-shadow', '0 4px 16px rgba(0,0,0,0.18)', 'important');
+              c.style.setProperty('color', '#0f172a', 'important');
+              c.style.setProperty('opacity', '1', 'important');
+            });
+
+            clonedDoc.querySelectorAll('.gauge-kpi-box, .life-kpi-card, .excel-model-container').forEach(c => {
+              c.style.setProperty('background', '#ffffff', 'important');
+              c.style.setProperty('background-color', '#ffffff', 'important');
+              c.style.setProperty('border-color', '#cbd5e1', 'important');
+              c.style.setProperty('opacity', '1', 'important');
+            });
+
+            // 3. Fix Transformer Photo so html2canvas renders exact original aspect ratio without distortion or zoom-in
+            const origImg = document.getElementById('ex-model-img');
+            const clonedImg = clonedDoc.getElementById('ex-model-img');
+            if (origImg && clonedImg) {
+              const origContainer = origImg.parentElement;
+              const cW = origContainer.clientWidth || 360;
+              const cH = origContainer.clientHeight || 190;
+              
+              try {
+                // Render full original image onto high-res offscreen canvas with aspect-ratio letterboxing
+                const cvs = document.createElement('canvas');
+                const scale = 2;
+                cvs.width = cW * scale;
+                cvs.height = cH * scale;
+                const ctx = cvs.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+                const nw = origImg.naturalWidth || 4;
+                const nh = origImg.naturalHeight || 3;
+                const imgAspect = nw / nh;
+                const boxAspect = cvs.width / cvs.height;
+
+                let dW, dH, dX, dY;
+                if (imgAspect > boxAspect) {
+                  dW = cvs.width;
+                  dH = dW / imgAspect;
+                  dX = 0;
+                  dY = (cvs.height - dH) / 2;
+                } else {
+                  dH = cvs.height;
+                  dW = dH * imgAspect;
+                  dY = 0;
+                  dX = (cvs.width - dW) / 2;
+                }
+
+                ctx.drawImage(origImg, dX, dY, dW, dH);
+                
+                clonedImg.src = cvs.toDataURL('image/jpeg', 0.98);
+                clonedImg.style.setProperty('width', '100%', 'important');
+                clonedImg.style.setProperty('height', '100%', 'important');
+                clonedImg.style.setProperty('max-width', '100%', 'important');
+                clonedImg.style.setProperty('max-height', '100%', 'important');
+                clonedImg.style.setProperty('object-fit', 'contain', 'important');
+                clonedImg.style.display = 'block';
+                clonedImg.style.margin = 'auto';
+              } catch (e) {
+                console.warn('Canvas letterbox fallback:', e);
+              }
+
+              const clonedContainer = clonedImg.parentElement;
+              if (clonedContainer) {
+                clonedContainer.style.display = 'flex';
+                clonedContainer.style.justifyContent = 'center';
+                clonedContainer.style.alignItems = 'center';
+                clonedContainer.style.backgroundColor = '#ffffff';
+                clonedContainer.style.borderColor = '#cbd5e1';
+              }
+            }
+
+            // 4. Ensure table headers and text contrast
+            clonedDoc.querySelectorAll('.excel-table').forEach(tbl => {
+              tbl.style.backgroundColor = '#ffffff';
+            });
+            clonedDoc.querySelectorAll('.excel-table th').forEach(th => {
+              th.style.backgroundColor = '#f1f5f9';
+              th.style.color = '#1e293b';
+              th.style.borderColor = '#cbd5e1';
+              th.style.fontWeight = '700';
+              th.style.opacity = '1';
+            });
+
+            clonedDoc.querySelectorAll('.excel-table td').forEach(td => {
+              if (td.classList.contains('ex-status-good')) {
+                td.style.setProperty('background', '#66ff66', 'important');
+                td.style.setProperty('background-color', '#66ff66', 'important');
+                td.style.setProperty('color', '#064e18', 'important');
+                td.style.setProperty('font-weight', '700', 'important');
+                td.style.setProperty('border-color', '#4ce64c', 'important');
+              } else if (td.classList.contains('ex-status-lime')) {
+                td.style.setProperty('background', '#b2ff66', 'important');
+                td.style.setProperty('background-color', '#b2ff66', 'important');
+                td.style.setProperty('color', '#1a4d00', 'important');
+                td.style.setProperty('font-weight', '700', 'important');
+                td.style.setProperty('border-color', '#99e64c', 'important');
+              } else if (td.classList.contains('ex-status-fair')) {
+                td.style.setProperty('background', '#feff66', 'important');
+                td.style.setProperty('background-color', '#feff66', 'important');
+                td.style.setProperty('color', '#5c5200', 'important');
+                td.style.setProperty('font-weight', '700', 'important');
+                td.style.setProperty('border-color', '#e6e64c', 'important');
+              } else if (td.classList.contains('ex-status-warn') || td.classList.contains('ex-status-warning')) {
+                td.style.setProperty('background', '#ffb266', 'important');
+                td.style.setProperty('background-color', '#ffb266', 'important');
+                td.style.setProperty('color', '#7c2d00', 'important');
+                td.style.setProperty('font-weight', '700', 'important');
+                td.style.setProperty('border-color', '#e6994c', 'important');
+              } else if (td.classList.contains('ex-status-poor') || td.classList.contains('ex-status-critical')) {
+                td.style.setProperty('background', '#ff6666', 'important');
+                td.style.setProperty('background-color', '#ff6666', 'important');
+                td.style.setProperty('color', '#5c0000', 'important');
+                td.style.setProperty('font-weight', '700', 'important');
+                td.style.setProperty('border-color', '#e64c4c', 'important');
+              } else {
+                td.style.setProperty('background-color', '#ffffff', 'important');
+                td.style.setProperty('color', '#0f172a', 'important');
+                td.style.setProperty('border-color', '#cbd5e1', 'important');
+              }
+              td.style.setProperty('opacity', '1', 'important');
+            });
+
+            // Ensure oil-table keeps fixed layout and aligned columns in export
+            clonedDoc.querySelectorAll('.oil-table').forEach(tbl => {
+              tbl.style.tableLayout = 'fixed';
+              tbl.style.width = '100%';
+            });
+            clonedDoc.querySelectorAll('.oil-table th:nth-child(1), .oil-table td:nth-child(1)').forEach(el => {
+              el.style.width = '44%';
+              el.style.textAlign = 'left';
+            });
+            clonedDoc.querySelectorAll('.oil-table th:nth-child(2), .oil-table td:nth-child(2)').forEach(el => {
+              el.style.width = '32%';
+              el.style.textAlign = 'left';
+            });
+            clonedDoc.querySelectorAll('.oil-table th:nth-child(3), .oil-table td:nth-child(3)').forEach(el => {
+              el.style.width = '12%';
+              el.style.textAlign = 'center';
+            });
+            clonedDoc.querySelectorAll('.oil-table th:nth-child(4), .oil-table td:nth-child(4)').forEach(el => {
+              el.style.width = '12%';
+              el.style.textAlign = 'center';
+            });
+
+            clonedDoc.querySelectorAll('.info-table td:first-child').forEach(td => {
+              td.style.backgroundColor = '#f8fafc';
+              td.style.color = '#475569';
+              td.style.fontWeight = '600';
+              td.style.borderColor = '#e2e8f0';
+            });
+
+            clonedDoc.querySelectorAll('.info-table td:last-child').forEach(td => {
+              td.style.backgroundColor = '#ffffff';
+              td.style.color = '#1e3a8a';
+              td.style.fontWeight = '700';
+              td.style.borderColor = '#e2e8f0';
+            });
+
+            // 5. Ensure DGA diagnosis box & sub-containers are pure white with sharp dark text
+            clonedDoc.querySelectorAll('.dga-diag-container').forEach(d => {
+              d.style.backgroundColor = '#ffffff';
+              d.style.color = '#0f172a';
+              d.style.borderTop = '1px solid #e2e8f0';
+              d.style.opacity = '1';
+            });
+            clonedDoc.querySelectorAll('.dga-diag-container div').forEach(d => {
+              d.style.color = '#0f172a';
+            });
+            clonedDoc.querySelectorAll('.dga-diag-container strong').forEach(s => {
+              s.style.color = '#0f172a';
+              s.style.fontWeight = '700';
+            });
+            clonedDoc.querySelectorAll('#ex-recommendation-text, .excel-visual-box').forEach(el => {
+              el.style.backgroundColor = '#ffffff';
+              el.style.color = '#1e293b';
+              el.style.opacity = '1';
+            });
+            clonedDoc.querySelectorAll('.active-part-sub-title').forEach(st => {
+              st.style.backgroundColor = '#f8fafc';
+              st.style.color = '#0369a1';
+              st.style.borderTop = '1px solid #e2e8f0';
+              st.style.borderBottom = '1px solid #e2e8f0';
+              st.style.opacity = '1';
+            });
+          }
+        });
+
         paper.style.height = originalHeight;
         paper.style.overflowY = originalOverflow;
+
+        const serialTxt = document.getElementById('ex-info-serial') ? document.getElementById('ex-info-serial').textContent.trim() : 'Report';
         const link = document.createElement('a');
-        link.download = `Transformer_Detail_${document.getElementById('ex-info-serial').textContent || 'Report'}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.download = `Transformer_Detail_${serialTxt || 'Report'}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 1.0);
         link.click();
-      }).catch(err => {
+      } catch (err) {
         paper.style.height = originalHeight;
         paper.style.overflowY = originalOverflow;
         console.error('Export failed', err);
-      });
+      }
     }
   </script>
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 
 </html>
