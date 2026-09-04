@@ -405,8 +405,8 @@
             <div class="filter-group">
               <label for="filter-plant"><i class="fa-solid fa-industry"></i> Plant / Site</label>
               <select id="filter-plant" onchange="applyFilters()" class="filter-select" style="border-color: var(--primary); font-weight: 600;">
-                <option value="ALL">🏢 All Plants</option>
-                <option value="CUP-1" selected>CUP-1</option>
+                <option value="ALL" selected>🏢 All Plants</option>
+                <option value="CUP-1">CUP-1</option>
                 <option value="CUP-2">CUP-2</option>
                 <option value="CUP-3">CUP-3</option>
                 <option value="CUP-4">CUP-4</option>
@@ -468,7 +468,7 @@
           <div style="margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem;">
             <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent);">
               <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-good, #10b981); box-shadow: 0 0 6px var(--color-good);"></span>
-              <span id="filter-status-text">Calendar filtered by: Plant CUP-1 (Main WBS Only)</span>
+              <span id="filter-status-text">Calendar filtered by: All Plants (Main WBS Only)</span>
             </div>
           </div>
         </section>
@@ -879,7 +879,7 @@
       const p = document.getElementById('filter-plant').value;
       const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
       const lvlText = lvl === 'MAIN' ? ' (Main WBS Only)' : (lvl === 'SUB' ? ' (Sub-tasks Only)' : ' (All WBS)');
-      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: Plant ' + (p === 'ALL' ? 'All' : p) + lvlText;
+      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: ' + (p === 'ALL' ? 'All Plants' : 'Plant ' + p) + lvlText;
       renderAll(); saveTasksToStorage();
     }
 
