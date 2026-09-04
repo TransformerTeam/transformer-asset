@@ -526,9 +526,9 @@
               <label for="filter-cat"><i class="fa-solid fa-tags"></i> Category</label>
               <select id="filter-cat" onchange="applyFilters()" class="filter-select">
                 <option value="ALL">All Categories</option>
-                <option value="1.Transformer Outage">1. Transformer Outage</option>
-                <option value="2.Life Assessment">2. Life Assessment</option>
-                <option value="3.Plant Assessment">3. Plant Assessment</option>
+                <option value="Transformer Outage">Transformer Outage</option>
+                <option value="Life Assessment">Life Assessment</option>
+                <option value="Plant Assessment">Plant Assessment</option>
                 <option value="Oil Analysis">Oil Analysis</option>
                 <option value="3M Visual">3M Visual</option>
                 <option value="OLTC Inspection">OLTC Inspection</option>
@@ -622,9 +622,9 @@
 
             <!-- Calendar Legend -->
             <div class="flex flex-wrap items-center gap-3 text-[11px]">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> 1. Transformer Outage</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span> 2. Life Assessment</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span> 3. Plant Assessment</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> Transformer Outage</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span> Life Assessment</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span> Plant Assessment</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Oil Analysis</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span> 3M Visual</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span> OLTC Inspection</span>
@@ -739,9 +739,9 @@
           <div>
             <label class="block text-slate-400 font-medium mb-1">Category</label>
             <select id="form-cat" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none">
-              <option value="1.Transformer Outage">1. Transformer Outage</option>
-              <option value="2.Life Assessment">2. Life Assessment</option>
-              <option value="3.Plant Assessment">3. Plant Assessment</option>
+              <option value="Transformer Outage">Transformer Outage</option>
+              <option value="Life Assessment">Life Assessment</option>
+              <option value="Plant Assessment">Plant Assessment</option>
               <option value="Oil Analysis">Oil Analysis</option>
               <option value="3M Visual">3M Visual</option>
               <option value="OLTC Inspection">OLTC Inspection</option>
@@ -823,37 +823,37 @@
     // Initial Plan Dataset (Derived from user's Excel sheet with WBS Hierarchies)
     let tasks = [
       // 1.1 GHECO-ONE Outage
-      { id: '1.1', wbs: '1.1', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: '1.Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
+      { id: '1.1', wbs: '1.1', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: 'Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
       
       // 1.2 GT42 (GEN Ph.2) + Sub-tasks (1.2.1, 1.2.2)
-      { id: '1.2', wbs: '1.2', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
-      { id: '1.2.1', wbs: '1.2.1', parentId: '1.2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
-      { id: '1.2.2', wbs: '1.2.2', parentId: '1.2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
+      { id: '1.2', wbs: '1.2', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
+      { id: '1.2.1', wbs: '1.2.1', parentId: '1.2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
+      { id: '1.2.2', wbs: '1.2.2', parentId: '1.2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
 
       // 1.3 CUP-1 GTG16 + Sub-tasks (1.3.1, 1.3.2)
-      { id: '1.3', wbs: '1.3', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
-      { id: '1.3.1', wbs: '1.3.1', parentId: '1.3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
-      { id: '1.3.2', wbs: '1.3.2', parentId: '1.3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '1.Transformer Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
+      { id: '1.3', wbs: '1.3', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
+      { id: '1.3.1', wbs: '1.3.1', parentId: '1.3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
+      { id: '1.3.2', wbs: '1.3.2', parentId: '1.3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
 
       // 1.4 GEN Ph.2
-      { id: '1.4', wbs: '1.4', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
+      { id: '1.4', wbs: '1.4', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
 
       // 1.5 GEN Ph.2 GT62 + Sub-tasks (1.5.1, 1.5.2)
-      { id: '1.5', wbs: '1.5', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
-      { id: '1.5.1', wbs: '1.5.1', parentId: '1.5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
-      { id: '1.5.2', wbs: '1.5.2', parentId: '1.5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
+      { id: '1.5', wbs: '1.5', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
+      { id: '1.5.1', wbs: '1.5.1', parentId: '1.5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
+      { id: '1.5.2', wbs: '1.5.2', parentId: '1.5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
 
       // 1.6 GSPP2&3 + Sub-tasks (1.6.1, 1.6.2)
-      { id: '1.6', wbs: '1.6', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
-      { id: '1.6.1', wbs: '1.6.1', parentId: '1.6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
-      { id: '1.6.2', wbs: '1.6.2', parentId: '1.6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: '1.Transformer Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
+      { id: '1.6', wbs: '1.6', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
+      { id: '1.6.1', wbs: '1.6.1', parentId: '1.6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
+      { id: '1.6.2', wbs: '1.6.2', parentId: '1.6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
 
       // 1.7 Plant Assessment
-      { id: '1.7', wbs: '1.7', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: '3.Plant Assessment', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
-      { id: '0.1', wbs: '0.1', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: '1.Transformer Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
+      { id: '1.7', wbs: '1.7', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: 'Plant Assessment', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
+      { id: '0.1', wbs: '0.1', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
 
-      // 2.x Life Assessment & OLTC Inspection
-      { id: '2.1', wbs: '2.1', parentId: null, task: 'CUP-1: Transformer Life Assessment', lead: 'MMT', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: '2.Life Assessment', start: '2026-02-15', end: '2026-02-28', days: 14, progress: 100, cost: 45000 },
+      // Life Assessment & OLTC Inspection
+      { id: '2.1', wbs: '2.1', parentId: null, task: 'CUP-1: Transformer Life Assessment', lead: 'MMT', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Life Assessment', start: '2026-02-15', end: '2026-02-28', days: 14, progress: 100, cost: 45000 },
       { id: '2.2', wbs: '2.2', parentId: null, task: 'GEN Ph.2: OLTC Diagnostic & Inspection', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'OLTC Inspection', start: '2026-03-10', end: '2026-03-18', days: 8, progress: 50, cost: 28000 },
 
       // 3M Visual & Oil Analysis
@@ -875,15 +875,15 @@
     let calendarSpan = 'week'; // Default to Week view
     let collapsedParents = new Set();
 
-    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V2';
+    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V3';
 
     function migrateTaskCategory(t) {
-      if (!t.cat) t.cat = '1.Transformer Outage';
-      const c = t.cat.toLowerCase();
+      if (!t.cat) t.cat = 'Transformer Outage';
+      let c = t.cat.toLowerCase().replace(/^[0-9.]+\s*/, '').trim();
       if (c === 'outage' || c.includes('outage')) {
-        t.cat = '1.Transformer Outage';
+        t.cat = 'Transformer Outage';
       } else if (c.includes('life')) {
-        t.cat = '2.Life Assessment';
+        t.cat = 'Life Assessment';
       } else if (c.includes('oltc')) {
         t.cat = 'OLTC Inspection';
       } else if (c.includes('visual')) {
@@ -891,11 +891,13 @@
       } else if (c.includes('oil')) {
         t.cat = 'Oil Analysis';
       } else if (c.includes('plant') || c === 'assessment' || c === 'assess') {
-        t.cat = '3.Plant Assessment';
+        t.cat = 'Plant Assessment';
       } else if (c === '52week') {
         if ((t.task || '').toLowerCase().includes('visual')) t.cat = '3M Visual';
         else if ((t.task || '').toLowerCase().includes('oil')) t.cat = 'Oil Analysis';
-        else t.cat = '3.Plant Assessment';
+        else t.cat = 'Plant Assessment';
+      } else {
+        t.cat = t.cat.replace(/^[0-9.]+\s*/, '').trim();
       }
     }
 
@@ -903,7 +905,7 @@
       try {
         let saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) {
-          saved = localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V1');
+          saved = localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V2') || localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V1');
         }
         if (saved) {
           const parsed = JSON.parse(saved);
