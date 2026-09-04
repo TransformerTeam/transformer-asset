@@ -21,6 +21,10 @@
   
   <!-- Assessment Styles -->
   <link rel="stylesheet" href="assessment.css">
+
+  <!-- Theme Editor & Engine -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -43,10 +47,7 @@
       </div>
       <div class="header-actions">
         <button class="btn" id="btn-export-report"><i class="fa-solid fa-file-export"></i> Export Report</button>
-        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
-          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
-          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
-        </button>
+        <button class="btn theme-studio-btn" id="theme-studio-btn" title="Theme Studio (Alt+T)"><i class="fa-solid fa-palette"></i> Theme Studio</button>
       </div>
     </header>
 
@@ -748,5 +749,8 @@
   <script src="evaluation_criteria.js"></script>
   <script src="evaluation_engine.js?v=20260816_v1"></script>
   <script src="assessment.js?v=20260816_v1"></script>
+
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 </body>
 </html>

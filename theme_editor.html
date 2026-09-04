@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Theme Studio - GPSC Transformer Asset Management</title>
+  
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Base Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Theme Editor Stylesheet -->
+  <link rel="stylesheet" href="theme_editor.css">
+
+  <!-- Immediate Theme Engine Boot (prevents flash) -->
+  <script src="theme_engine.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Marquee -->
+    <div class="scada-footer">
+      <div class="marquee-content">
+        <span>🎨 INTERACTIVE THEME STUDIO | ระบบปรับแต่งรูปลักษณ์และธีมสีระบบวิเคราะห์สภาพหม้อแปลงไฟฟ้ากำลัง GPSC | Real-time Visual Palette & SCADA Customization</span>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>THEME STUDIO & VISUAL CUSTOMIZER</h1>
+          <p>INTERACTIVE SYSTEM PALETTES & REAL-TIME DESIGN ENGINE</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="assessment.html" class="btn"><i class="fa-solid fa-clipboard-check"></i> Assessment</a>
+        <a href="single_line.html" class="btn"><i class="fa-solid fa-network-wired"></i> SCADA Diagram</a>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
+        <a href="dashboard.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-gauge-high"></i> <span class="nav-label">Fleet Dashboard</span>
+        </a>
+        <a href="assessment.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">Health Assessment</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">Overall Transformer</span>
+        </a>
+        <a href="evaluation_report.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">Evaluation & Criteria</span>
+        </a>
+        <a href="remaining_life_report.html" class="sidebar-nav-btn">
+          <i class="fa-solid fa-hourglass-half"></i> <span class="nav-label">Remaining Life</span>
+        </a>
+      </aside>
+
+      <main class="scada-content" style="padding: 0;">
+        <!-- Container for Standalone Theme Studio App -->
+        <div id="theme-studio-app"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Theme Editor UI Engine -->
+  <script src="theme_editor.js"></script>
+
+  <!-- Sidebar & Theme Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Sidebar Toggle
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+      const sidebarToggleIcon = document.getElementById('sidebar-toggle-icon');
+      
+      if (sidebarToggleBtn && sidebar) {
+        sidebarToggleBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('collapsed');
+          if (sidebar.classList.contains('collapsed')) {
+            sidebarToggleIcon.classList.remove('fa-chevron-left');
+            sidebarToggleIcon.classList.add('fa-chevron-right');
+          } else {
+            sidebarToggleIcon.classList.remove('fa-chevron-right');
+            sidebarToggleIcon.classList.add('fa-chevron-left');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

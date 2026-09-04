@@ -17,6 +17,10 @@
   
   <!-- ApexCharts JS -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <!-- Theme Editor & Engine -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
 <body>
 
@@ -48,10 +52,7 @@
         <button class="btn btn-primary" id="btn-export-filtered"><i class="fa-solid fa-file-export"></i> Export CSV</button>
         <button class="btn" id="btn-export-pptx" style="background-color: #d24726; border-color: #d24726; color: #ffffff;"><i class="fa-solid fa-file-powerpoint"></i> Export PPTX</button>
         <button class="btn" id="btn-reset-filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-        <button class="btn theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
-          <i class="fa-solid fa-sun" id="theme-icon-light" style="display:none;"></i>
-          <i class="fa-solid fa-moon" id="theme-icon-dark"></i>
-        </button>
+        <button class="btn theme-studio-btn" id="theme-studio-btn" title="Theme Studio (Alt+T)"><i class="fa-solid fa-palette"></i> Theme Studio</button>
       </div>
     </header>
 
@@ -529,6 +530,9 @@
   
   <!-- Dashboard core script -->
   <script src="app.js"></script>
+
+  <!-- Interactive Theme Editor UI -->
+  <script src="theme_editor.js"></script>
 
 </body>
 </html>
