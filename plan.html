@@ -325,12 +325,6 @@
           <span class="hidden md:inline">Export CSV</span>
         </button>
 
-        <!-- Add Task Button -->
-        <button onclick="openModal('add')" class="btn btn-primary" title="Add New Task">
-          <i class="fa-solid fa-plus-circle"></i>
-          <span>Add Task</span>
-        </button>
-
         <!-- Theme Studio Button -->
         <button class="btn theme-studio-btn" id="theme-studio-btn" title="Theme Studio (Alt+T)">
           <i class="fa-solid fa-palette"></i>
@@ -573,6 +567,10 @@
               </p>
             </div>
             <div class="flex items-center gap-2">
+              <button onclick="openModal('add')" class="btn btn-primary" title="Add New Task" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Add Task</span>
+              </button>
               <button id="btn-toggle-all" onclick="toggleAllExpand()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
                 <i class="fa-solid fa-layer-group text-indigo-400"></i>
                 <span id="toggle-all-text">Collapse All Subs</span>
