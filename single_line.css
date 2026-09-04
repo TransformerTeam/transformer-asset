@@ -234,11 +234,11 @@ header p {
 /* Sidebar Styling */
 .sidebar {
   width: 240px;
-  background: var(--bg-card);
+  background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -246,6 +246,7 @@ header p {
   height: fit-content;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .sidebar.collapsed {
@@ -257,7 +258,7 @@ header p {
   display: flex;
   justify-content: flex-end;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--glass-border);
   margin-bottom: 0.5rem;
 }
 

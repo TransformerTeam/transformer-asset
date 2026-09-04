@@ -1193,11 +1193,11 @@ header p {
 /* Sidebar Styling */
 .sidebar {
   width: 240px;
-  background: var(--bg-card);
+  background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -1205,6 +1205,7 @@ header p {
   height: fit-content;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .sidebar.collapsed {
@@ -1216,7 +1217,7 @@ header p {
   display: flex;
   justify-content: flex-end;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--glass-border);
   margin-bottom: 0.5rem;
 }
 
@@ -1905,24 +1906,33 @@ header p {
   text-align: center !important;
 }
 
-/* Specific column widths for 4-column Oil Tables (Item Test, Standards, Result, Unit) to prevent Unit column overflow */
+/* Specific column widths for 4-column Oil Tables (Item Test, Standards, Result, Unit) to align perfectly */
+.oil-table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
 .oil-table th:first-child,
 .oil-table td:first-child {
-  width: 40% !important;
+  width: 44% !important;
   min-width: unset !important;
-  white-space: normal !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: left !important;
 }
 .oil-table th:nth-child(2),
 .oil-table td:nth-child(2) {
-  width: 30% !important;
+  width: 32% !important;
   min-width: unset !important;
   max-width: unset !important;
   text-align: left !important;
-  white-space: normal !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 .oil-table th:nth-child(3),
 .oil-table td:nth-child(3) {
-  width: 15% !important;
+  width: 12% !important;
   min-width: unset !important;
   max-width: unset !important;
   text-align: center !important;
@@ -1930,7 +1940,7 @@ header p {
 }
 .oil-table th:nth-child(4),
 .oil-table td:nth-child(4) {
-  width: 15% !important;
+  width: 12% !important;
   min-width: unset !important;
   max-width: unset !important;
   text-align: center !important;
@@ -1977,31 +1987,38 @@ header p {
   color: #0284c7 !important;
 }
 
-/* Result cell status styling */
+/* Result cell status styling - Exact User Hex Palette (#6f6, #b2ff66, #feff66, #ffb266, #f66) */
 .ex-status-good {
-  background-color: rgba(16, 185, 129, 0.2) !important;
-  color: #10b981 !important;
+  background-color: #66ff66 !important;
+  color: #064e18 !important;
+  font-weight: bold;
+  text-align: center;
+}
+
+.ex-status-lime {
+  background-color: #b2ff66 !important;
+  color: #1a4d00 !important;
   font-weight: bold;
   text-align: center;
 }
 
 .ex-status-fair {
-  background-color: rgba(234, 179, 8, 0.2) !important;
-  color: #eab308 !important;
+  background-color: #feff66 !important;
+  color: #5c5200 !important;
   font-weight: bold;
   text-align: center;
 }
 
-.ex-status-poor {
-  background-color: rgba(249, 115, 22, 0.2) !important;
-  color: #f97316 !important;
+.ex-status-warn, .ex-status-warning {
+  background-color: #ffb266 !important;
+  color: #7c2d00 !important;
   font-weight: bold;
   text-align: center;
 }
 
-.ex-status-critical, .status-critical {
-  background-color: rgba(239, 68, 68, 0.2) !important;
-  color: #ef4444 !important;
+.ex-status-poor, .ex-status-critical, .status-critical {
+  background-color: #ff6666 !important;
+  color: #5c0000 !important;
   font-weight: bold;
   text-align: center;
 }
