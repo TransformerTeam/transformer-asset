@@ -2149,8 +2149,8 @@
       const bucketDates = [];
 
       if (isWeekly) {
-        // Step every 2 weeks from 0 to 38 (matching 0, 4, 8, 12, 16, 20, 24, 28, 32, 36 in reference diagram)
-        for (let w = 0; w <= 38; w += 2) {
+        // Step every 2 weeks from 0 to 52 (Full 52 Weeks Plan)
+        for (let w = 0; w <= 52; w += 2) {
           categories.push(String(w));
           bucketDates.push(new Date(2026, 0, 1 + (w * 7)));
         }
@@ -2411,7 +2411,7 @@
                   fontWeight: 700,
                   padding: { left: 6, right: 6, top: 2, bottom: 2 }
                 },
-                text: `Variance: ${data.variance > 0 ? '+' : ''}${data.variance}${unit} (W${data.statusLabel})`
+                text: `Variance: ${data.variance > 0 ? '+' : ''}${data.variance}${unit} (${scurveScale === 'week' ? 'W' : ''}${data.statusLabel})`
               }
             }
           ],
@@ -3060,6 +3060,12 @@
       if (urlParams.has('view')) {
         const v = urlParams.get('view');
         switchView(v === 'table' ? 'tbl' : (v === 'calendar' ? 'cal' : v));
+      }
+      if (urlParams.has('metric')) {
+        setSCurveMetric(urlParams.get('metric'));
+      }
+      if (urlParams.has('scale')) {
+        setSCurveScale(urlParams.get('scale'));
       }
       if (urlParams.has('today')) {
         calToday();
