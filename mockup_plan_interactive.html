@@ -24,13 +24,17 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(rgba(8, 12, 20, 0.88), rgba(8, 12, 20, 0.88)), url('background.jpg') no-repeat center center fixed;
+      background: linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.88)), url('plan_bg.jpg') no-repeat center center fixed;
       background-color: #0d111a;
       background-size: cover;
       color: var(--text-primary, #f1f5f9);
       line-height: 1.5;
       transition: background-color var(--transition-normal, 0.3s), color var(--transition-normal, 0.3s);
       min-height: 100vh;
+    }
+    [data-theme="light"] body {
+      background: linear-gradient(rgba(248, 250, 252, 0.88), rgba(241, 245, 249, 0.92)), url('plan_bg.jpg') no-repeat center center fixed;
+      background-size: cover;
     }
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Outfit', sans-serif;
