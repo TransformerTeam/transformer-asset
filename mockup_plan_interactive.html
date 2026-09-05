@@ -2394,11 +2394,6 @@
             <div class="flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full ${getCategoryColorDot(p.cat)}"></span>
               <span class="${isDone ? 'line-through opacity-70' : ''}">${p.task}</span>
-              ${hasSubs ? `
-                <span class="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-indigo-950 text-indigo-300 border border-indigo-700/60 flex items-center gap-1">
-                  <i class="fa-solid fa-sitemap text-[9px]"></i> ${children.length} subs
-                </span>
-              ` : ''}
             </div>
           </td>
           <td class="py-2.5 px-2 text-center text-slate-300 font-semibold">${p.lead || '-'}</td>
