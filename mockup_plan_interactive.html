@@ -897,7 +897,12 @@
             <input type="range" id="form-progress" min="0" max="100" step="10" value="0" oninput="document.getElementById('form-prog-val').textContent = this.value + '%'" class="w-full accent-sky-500 cursor-pointer">
           </div>
           <div>
-            <label class="block text-slate-400 font-medium mb-1">Cost (THB)</label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-slate-400 font-medium">Cost (THB)</label>
+              <span id="form-cost-hint" class="hidden text-[11px] text-amber-400 font-medium items-center gap-1">
+                <i class="fa-solid fa-calculator"></i> Auto-sum from subs
+              </span>
+            </div>
             <input type="number" id="form-cost" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none" placeholder="0">
           </div>
         </div>
@@ -1306,16 +1311,23 @@
       renderTable();
     }
 
-    // Helper: Recalculate parent progress from subtasks
-    function recalculateParentProgress(parentId) {
+    // Helper: Recalculate parent progress and cost from subtasks
+    function recalculateParent(parentId) {
       if (!parentId) return;
       const parent = tasks.find(t => t.id === parentId);
       if (!parent) return;
       const subs = tasks.filter(t => t.parentId === parentId);
       if (subs.length > 0) {
-        const avg = Math.round(subs.reduce((sum, s) => sum + (s.progress || 0), 0) / subs.length);
+        const avg = Math.round(subs.reduce((sum, s) => sum + (Number(s.progress) || 0), 0) / subs.length);
         parent.progress = avg;
+        parent.cost = subs.reduce((sum, s) => sum + (Number(s.cost) || 0), 0);
       }
+    }
+    const recalculateParentProgress = recalculateParent;
+
+    function recalculateAllParents() {
+      const parentIds = new Set(tasks.filter(t => t.parentId).map(t => t.parentId));
+      parentIds.forEach(pId => recalculateParent(pId));
     }
 
     // Finish Action Button
@@ -1332,9 +1344,9 @@
         subs.forEach(s => { s.progress = newProg; });
       }
 
-      // If sub-task is toggled, recalculate parent progress
+      // If sub-task is toggled, recalculate parent progress & cost
       if (task.parentId) {
-        recalculateParentProgress(task.parentId);
+        recalculateParent(task.parentId);
       }
 
       renderAll(); saveTasksToStorage();
@@ -1351,7 +1363,7 @@
         const task = tasks.find(t => t.id === id);
         const parentId = task ? task.parentId : null;
         tasks = tasks.filter(t => t.id !== id && t.parentId !== id);
-        if (parentId) recalculateParentProgress(parentId);
+        if (parentId) recalculateParent(parentId);
         renderAll(); saveTasksToStorage();
       }
     }
@@ -1394,26 +1406,60 @@
       }
     }
 
+    // Helper: Lock or unlock Cost field in modal based on whether task is a parent with sub-tasks
+    function updateCostFieldLock(taskId, isSub) {
+      const costInput = document.getElementById('form-cost');
+      const costHint = document.getElementById('form-cost-hint');
+      if (!costInput) return;
+
+      const hasSubs = taskId && !isSub && tasks.some(x => x.parentId === taskId);
+      if (hasSubs) {
+        const sumSubsCost = tasks.filter(x => x.parentId === taskId).reduce((sum, s) => sum + (Number(s.cost) || 0), 0);
+        costInput.value = sumSubsCost;
+        costInput.readOnly = true;
+        costInput.classList.add('bg-slate-900', 'text-amber-300', 'border-amber-500/50', 'cursor-not-allowed');
+        costInput.classList.remove('bg-slate-800', 'text-white', 'border-slate-700');
+        costInput.title = 'Cost is automatically calculated as the sum of sub-tasks';
+        if (costHint) {
+          costHint.classList.remove('hidden');
+          costHint.classList.add('flex');
+        }
+      } else {
+        costInput.readOnly = false;
+        costInput.classList.remove('bg-slate-900', 'text-amber-300', 'border-amber-500/50', 'cursor-not-allowed');
+        costInput.classList.add('bg-slate-800', 'text-white', 'border-slate-700');
+        costInput.title = '';
+        if (costHint) {
+          costHint.classList.add('hidden');
+          costHint.classList.remove('flex');
+        }
+      }
+    }
+
     // Add / Edit Modal Controls
     function toggleHierarchyLevel(isSub) {
       const parentContainer = document.getElementById('parent-select-container');
       const parentRadio = document.getElementById('level-parent');
       const subRadio = document.getElementById('level-sub');
+      const isEdit = !!document.getElementById('form-id').value;
 
       if (isSub) {
         subRadio.checked = true;
         parentContainer.classList.remove('hidden');
-        populateParentSelect();
-        onParentTaskSelected();
+        if (!isEdit) {
+          populateParentSelect();
+          onParentTaskSelected();
+        }
       } else {
         parentRadio.checked = true;
         parentContainer.classList.add('hidden');
-        const isEdit = !!document.getElementById('form-id').value;
         if (!isEdit) {
           const cat = document.getElementById('form-cat').value;
           document.getElementById('form-wbs').value = getNextMainWBS(cat);
         }
       }
+      const curId = document.getElementById('form-id').value;
+      updateCostFieldLock(curId, isSub);
     }
 
     function populateParentSelect(selectedParentId = null) {
@@ -1664,6 +1710,7 @@
         } else {
           toggleHierarchyLevel(false);
         }
+        updateCostFieldLock(t.id, !!t.parentId);
       } else {
         title.innerHTML = '<i class="fa-solid fa-plus-circle text-emerald-400"></i> Add New Task';
         document.getElementById('task-form').reset();
@@ -1675,6 +1722,7 @@
         toggleHierarchyLevel(false);
         const curCat = document.getElementById('form-cat').value;
         document.getElementById('form-wbs').value = getNextMainWBS(curCat);
+        updateCostFieldLock(null, false);
       }
     }
 
@@ -1688,6 +1736,7 @@
       toggleHierarchyLevel(true);
       populateParentSelect(parentId);
       onParentTaskSelected();
+      updateCostFieldLock(null, true);
     }
 
     function closeModal() {
@@ -1718,14 +1767,30 @@
 
       if (id) {
         const item = tasks.find(t => t.id === id);
-        Object.assign(item, { wbs, cat, task: taskName, plant, tr, lead, start, end, days, progress, cost, parentId });
+        const oldParentId = item ? item.parentId : null;
+        const subs = tasks.filter(t => t.parentId === id);
+        const hasSubs = subs.length > 0 && !isSub;
+
+        // If parent has subtasks, its cost and progress are derived from subtasks
+        const finalCost = hasSubs 
+          ? subs.reduce((sum, s) => sum + (Number(s.cost) || 0), 0)
+          : cost;
+        const finalProg = hasSubs
+          ? Math.round(subs.reduce((sum, s) => sum + (Number(s.progress) || 0), 0) / subs.length)
+          : progress;
+
+        Object.assign(item, { wbs, cat, task: taskName, plant, tr, lead, start, end, days, progress: finalProg, cost: finalCost, parentId });
+
+        if (oldParentId && oldParentId !== parentId) {
+          recalculateParent(oldParentId);
+        }
       } else {
         const newId = 'gen_' + Date.now();
         tasks.push({ id: newId, wbs, cat, task: taskName, plant, tr, lead, start, end, days, progress, cost, parentId });
       }
 
       if (parentId) {
-        recalculateParentProgress(parentId);
+        recalculateParent(parentId);
       }
 
       closeModal();
@@ -1885,7 +1950,15 @@
       const totalTasks = filtered.length;
       const completedTasks = filtered.filter(t => t.progress >= 100).length;
       const inProgTasks = filtered.filter(t => t.progress > 0 && t.progress < 100).length;
-      const totalCost = filtered.reduce((sum, t) => sum + (t.cost || 0), 0);
+
+      // Avoid double-counting parent and sub-task costs when viewing ALL level
+      const filteredIds = new Set(filtered.map(t => t.id));
+      const totalCost = filtered.reduce((sum, t) => {
+        if (t.parentId && filteredIds.has(t.parentId)) {
+          return sum; // Sub-task cost is already rolled up into its parent
+        }
+        return sum + (Number(t.cost) || 0);
+      }, 0);
 
       document.getElementById('kpi-total').textContent = totalTasks;
       document.getElementById('kpi-done').textContent = completedTasks;
@@ -2295,10 +2368,11 @@
         const isCollapsed = collapsedParents.has(p.id);
         const isDone = p.progress >= 100;
 
-        // Auto-calculate parent progress if has subtasks
+        // Auto-calculate parent progress and cost if has subtasks
         if (hasSubs) {
           const avg = Math.round(children.reduce((acc, c) => acc + (c.progress || 0), 0) / children.length);
           p.progress = avg;
+          p.cost = children.reduce((acc, c) => acc + (Number(c.cost) || 0), 0);
         }
 
         // --- PARENT ROW ---
@@ -2476,6 +2550,7 @@
       });
 
       loadSavedTasks();
+      recalculateAllParents();
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('theme')) {
         document.documentElement.setAttribute('data-theme', urlParams.get('theme'));
@@ -2501,13 +2576,16 @@
       }
       applyFilters();
       if (urlParams.has('view')) {
-        switchView(urlParams.get('view'));
+        const v = urlParams.get('view');
+        switchView(v === 'table' ? 'tbl' : (v === 'calendar' ? 'cal' : v));
       }
       if (urlParams.has('today')) {
         calToday();
       }
       if (urlParams.get('modal') === 'sub') {
         openModalForSub(urlParams.get('parent') || 'TO3');
+      } else if (urlParams.get('modal') === 'edit') {
+        openModal('edit', urlParams.get('id') || 'TO3');
       }
       if (urlParams.get('drop') === 'open') {
         toggleTrDropdown(true);
