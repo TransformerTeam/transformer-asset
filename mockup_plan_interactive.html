@@ -472,6 +472,45 @@
       color: #2563eb !important;
     }
 
+    /* SAP MO Input Field inside WBS Table */
+    .sap-mo-input {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #38bdf8;
+      font-family: 'Outfit', monospace;
+      -moz-appearance: textfield;
+    }
+    .sap-mo-input::-webkit-outer-spin-button,
+    .sap-mo-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .sap-mo-input:hover {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(56, 189, 248, 0.5);
+    }
+    .sap-mo-input:focus {
+      background: #0f172a;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px #38bdf8;
+      color: #ffffff;
+    }
+    [data-theme="light"] .sap-mo-input {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #0369a1;
+    }
+    [data-theme="light"] .sap-mo-input:hover {
+      background: #ffffff;
+      border-color: #0284c7;
+    }
+    [data-theme="light"] .sap-mo-input:focus {
+      background: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 1px #0284c7;
+      color: #0f172a;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
@@ -793,7 +832,8 @@
               <thead class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-700 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th class="py-2.5 px-3 w-20">WBS</th>
-                  <th class="py-2.5 px-3 min-w-[240px]">Task Description</th>
+                  <th class="py-2.5 px-2 w-28 text-center">SAP (MO)</th>
+                  <th class="py-2.5 px-3 min-w-[220px]">Task Description</th>
                   <th class="py-2.5 px-2 w-16 text-center">Lead</th>
                   <th class="py-2.5 px-2 min-w-[100px]">Transformer</th>
                   <th class="py-2.5 px-2 w-24">Plant</th>
@@ -960,10 +1000,17 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block text-slate-400 font-medium mb-1">WBS Code</label>
-            <input type="text" id="form-wbs" required class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none" placeholder="e.g. TO1 or TO1.1">
+            <input type="text" id="form-wbs" required class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none font-mono" placeholder="e.g. TO1 or TO1.1">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1 flex items-center justify-between">
+              <span>SAP (MO)</span>
+              <span class="text-[10px] text-sky-400 font-normal">ตัวเลข MO</span>
+            </label>
+            <input type="number" id="form-sap" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-sky-300 focus:border-sky-500 focus:outline-none font-mono" placeholder="e.g. 40001001">
           </div>
           <div>
             <label class="block text-slate-400 font-medium mb-1">Category</label>
@@ -1186,48 +1233,48 @@
     // Initial Plan Dataset (Derived from user's Excel sheet with WBS Hierarchies)
     let tasks = [
       // Transformer Outage: TO1..TO7 + Sub-tasks
-      { id: 'TO1', wbs: 'TO1', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: 'Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
+      { id: 'TO1', wbs: 'TO1', sapMo: '40001001', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: 'Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
       
-      { id: 'TO2', wbs: 'TO2', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
-      { id: 'TO2.1', wbs: 'TO2.1', parentId: 'TO2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
-      { id: 'TO2.2', wbs: 'TO2.2', parentId: 'TO2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
+      { id: 'TO2', wbs: 'TO2', sapMo: '40001002', parentId: null, task: 'GT42 3Y PM 2026', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-09', days: 4, progress: 100, cost: 0 },
+      { id: 'TO2.1', wbs: 'TO2.1', sapMo: '40001003', parentId: 'TO2', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-06', end: '2026-01-07', days: 2, progress: 100, cost: 0 },
+      { id: 'TO2.2', wbs: 'TO2.2', sapMo: '40001004', parentId: 'TO2', task: 'Preventive Program by EMM', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-07', end: '2026-01-09', days: 3, progress: 100, cost: 0 },
 
-      { id: 'TO3', wbs: 'TO3', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
-      { id: 'TO3.1', wbs: 'TO3.1', parentId: 'TO3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
-      { id: 'TO3.2', wbs: 'TO3.2', parentId: 'TO3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
+      { id: 'TO3', wbs: 'TO3', sapMo: '40001005', parentId: null, task: 'CUP-1: GTG16 3Y PM 2026', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-12', days: 4, progress: 100, cost: 35800 },
+      { id: 'TO3.1', wbs: 'TO3.1', sapMo: '40001006', parentId: 'TO3', task: 'Install Scaffolding', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-09', end: '2026-01-10', days: 2, progress: 100, cost: 15000 },
+      { id: 'TO3.2', wbs: 'TO3.2', sapMo: '40001007', parentId: 'TO3', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Transformer Outage', start: '2026-01-10', end: '2026-01-12', days: 3, progress: 100, cost: 20800 },
 
-      { id: 'TO4', wbs: 'TO4', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
+      { id: 'TO4', wbs: 'TO4', sapMo: '40001008', parentId: null, task: 'GEN: GT61 3Y PM 2026', lead: 'PIP', tr: 'GT61 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-01-23', end: '2026-01-27', days: 5, progress: 100, cost: 0 },
 
-      { id: 'TO5', wbs: 'TO5', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
-      { id: 'TO5.1', wbs: 'TO5.1', parentId: 'TO5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
-      { id: 'TO5.2', wbs: 'TO5.2', parentId: 'TO5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
+      { id: 'TO5', wbs: 'TO5', sapMo: '40001009', parentId: null, task: 'GEN: GT62 3Y PM 2026', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-14', days: 5, progress: 0, cost: 0 },
+      { id: 'TO5.1', wbs: 'TO5.1', sapMo: '40001010', parentId: 'TO5', task: 'Install Scaffolding', lead: 'PIP', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-10', end: '2026-02-11', days: 2, progress: 0, cost: 0 },
+      { id: 'TO5.2', wbs: 'TO5.2', sapMo: '40001011', parentId: 'TO5', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'GT62 GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-02-11', end: '2026-02-14', days: 4, progress: 0, cost: 0 },
 
-      { id: 'TO6', wbs: 'TO6', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
-      { id: 'TO6.1', wbs: 'TO6.1', parentId: 'TO6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
-      { id: 'TO6.2', wbs: 'TO6.2', parentId: 'TO6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
+      { id: 'TO6', wbs: 'TO6', sapMo: '40001012', parentId: null, task: 'GSPP2&3: STG3C GSUT 3Y PM 2026', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-07', days: 5, progress: 0, cost: 0 },
+      { id: 'TO6.1', wbs: 'TO6.1', sapMo: '40001013', parentId: 'TO6', task: 'Install Scaffolding', lead: 'PIP', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-03', end: '2026-03-04', days: 2, progress: 0, cost: 0 },
+      { id: 'TO6.2', wbs: 'TO6.2', sapMo: '40001014', parentId: 'TO6', task: 'Preventive Program by EMM', lead: 'JIS', tr: 'STG3C GSUT', plant: 'GSPP2&3', cat: 'Transformer Outage', start: '2026-03-04', end: '2026-03-07', days: 4, progress: 0, cost: 0 },
 
-      { id: 'TO7', wbs: 'TO7', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
+      { id: 'TO7', wbs: 'TO7', sapMo: '40001015', parentId: null, task: 'GEN: GT2B 3Y PM 2026', lead: 'PIP', tr: 'GT2B GSUT', plant: 'GEN Ph.2', cat: 'Transformer Outage', start: '2026-04-27', end: '2026-05-01', days: 5, progress: 40, cost: 0 },
 
       // Plant Assessment: PA1, PA2...
-      { id: 'PA1', wbs: 'PA1', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: 'Plant Assessment', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
+      { id: 'PA1', wbs: 'PA1', sapMo: '40001016', parentId: null, task: '11BAT10 PM&Assessment 2026', lead: 'PIP', tr: '11BAT10', plant: 'GIPP', cat: 'Plant Assessment', start: '2026-03-01', end: '2026-03-05', days: 5, progress: 100, cost: 0 },
 
       // Life Assessment: LA1, LA2...
-      { id: 'LA1', wbs: 'LA1', parentId: null, task: 'CUP-1: Transformer Life Assessment', lead: 'MMT', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Life Assessment', start: '2026-02-15', end: '2026-02-28', days: 14, progress: 100, cost: 45000 },
+      { id: 'LA1', wbs: 'LA1', sapMo: '40001017', parentId: null, task: 'CUP-1: Transformer Life Assessment', lead: 'MMT', tr: 'GTG16 GSUT', plant: 'CUP-1', cat: 'Life Assessment', start: '2026-02-15', end: '2026-02-28', days: 14, progress: 100, cost: 45000 },
 
       // OLTC Inspection: OL1, OL2...
-      { id: 'OL1', wbs: 'OL1', parentId: null, task: 'GEN Ph.2: OLTC Diagnostic & Inspection', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'OLTC Inspection', start: '2026-03-10', end: '2026-03-18', days: 8, progress: 50, cost: 28000 },
+      { id: 'OL1', wbs: 'OL1', sapMo: '40001018', parentId: null, task: 'GEN Ph.2: OLTC Diagnostic & Inspection', lead: 'PIP', tr: 'GT42 GSUT', plant: 'GEN Ph.2', cat: 'OLTC Inspection', start: '2026-03-10', end: '2026-03-18', days: 8, progress: 50, cost: 28000 },
 
       // 3M Visual: VS1, VS2, VS3, VS4, VS5...
-      { id: 'VS1', wbs: 'VS1', parentId: null, task: '3 Months Visual CUP-1_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
-      { id: 'VS2', wbs: 'VS2', parentId: null, task: '3 Months Visual CUP-2_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-2', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
-      { id: 'VS3', wbs: 'VS3', parentId: null, task: '3 Months Visual CUP-1_Q2', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
-      { id: 'VS4', wbs: 'VS4', parentId: null, task: '3 Months Visual CUP-1_Q3', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-07-01', end: '2026-07-31', days: 31, progress: 0, cost: 0 },
-      { id: 'VS5', wbs: 'VS5', parentId: null, task: '3 Months Visual CUP-1_Q4', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 0, cost: 0 },
+      { id: 'VS1', wbs: 'VS1', sapMo: '40001019', parentId: null, task: '3 Months Visual CUP-1_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
+      { id: 'VS2', wbs: 'VS2', sapMo: '40001020', parentId: null, task: '3 Months Visual CUP-2_Q1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-2', cat: '3M Visual', start: '2026-01-01', end: '2026-01-31', days: 31, progress: 0, cost: 0 },
+      { id: 'VS3', wbs: 'VS3', sapMo: '40001021', parentId: null, task: '3 Months Visual CUP-1_Q2', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
+      { id: 'VS4', wbs: 'VS4', sapMo: '40001022', parentId: null, task: '3 Months Visual CUP-1_Q3', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-07-01', end: '2026-07-31', days: 31, progress: 0, cost: 0 },
+      { id: 'VS5', wbs: 'VS5', sapMo: '40001023', parentId: null, task: '3 Months Visual CUP-1_Q4', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: '3M Visual', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 0, cost: 0 },
 
       // Oil Analysis: OA1, OA2 + Sub OA2.1
-      { id: 'OA1', wbs: 'OA1', parentId: null, task: '6 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'Main TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
-      { id: 'OA2', wbs: 'OA2', parentId: null, task: '12 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 },
-      { id: 'OA2.1', wbs: 'OA2.1', parentId: 'OA2', task: 'PR for Oil sampling CUP-1', lead: 'PIP', tr: 'Sampling', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 }
+      { id: 'OA1', wbs: 'OA1', sapMo: '40001024', parentId: null, task: '6 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'Main TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-04-01', end: '2026-04-30', days: 30, progress: 0, cost: 0 },
+      { id: 'OA2', wbs: 'OA2', sapMo: '40001025', parentId: null, task: '12 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 },
+      { id: 'OA2.1', wbs: 'OA2.1', sapMo: '40001026', parentId: 'OA2', task: 'PR for Oil sampling CUP-1', lead: 'PIP', tr: 'Sampling', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 }
     ];
 
     let currentYear = 2026;
@@ -1236,7 +1283,7 @@
     let calendarSpan = 'week'; // Default to Week view
     let collapsedParents = new Set();
 
-    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V4';
+    const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V5';
 
     const legacyWBSMap = {
       '1.1': 'TO1', '1.2': 'TO2', '1.2.1': 'TO2.1', '1.2.2': 'TO2.2',
@@ -1288,12 +1335,18 @@
       try {
         let saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) {
-          saved = localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V3') || localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V2') || localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V1');
+          saved = localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V4') || localStorage.getItem('GPSC_TRANSFORMER_PLAN_DATA_V3');
         }
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            parsed.forEach(migrateTaskCategory);
+            parsed.forEach(t => {
+              migrateTaskCategory(t);
+              if (t.sapMo === undefined) {
+                const initT = tasks.find(x => x.id === t.id);
+                t.sapMo = initT ? (initT.sapMo || '') : '';
+              }
+            });
             tasks = parsed;
           }
         }
@@ -1309,15 +1362,17 @@
     function resetPlanData() {
       if (confirm('Reset to initial master dataset? Any custom tasks will be cleared.')) {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V4');
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V3');
         location.reload();
       }
     }
 
     function exportPlanCSV() {
-      const headers = ['WBS', 'Parent_WBS', 'Task_Description', 'Lead', 'Transformer_Tag', 'Plant', 'Category', 'Start_Date', 'End_Date', 'Days', 'Progress', 'Cost'];
+      const headers = ['WBS', 'SAP_MO', 'Parent_WBS', 'Task_Description', 'Lead', 'Transformer_Tag', 'Plant', 'Category', 'Start_Date', 'End_Date', 'Days', 'Progress', 'Cost'];
       const rows = tasks.map(t => [
         t.wbs,
+        t.sapMo || '',
         t.parentId || '',
         '"' + (t.task || '').replace(/"/g, '""') + '"',
         t.lead || '',
@@ -1883,6 +1938,7 @@
         title.innerHTML = '<i class="fa-solid fa-pen-to-square text-sky-400"></i> Edit Task: ' + t.wbs;
         document.getElementById('form-id').value = t.id;
         document.getElementById('form-wbs').value = t.wbs;
+        document.getElementById('form-sap').value = t.sapMo || '';
         const catSelect = document.getElementById('form-cat');
         for (let opt of catSelect.options) {
           if (matchCategory(opt.value, t.cat)) {
@@ -1911,6 +1967,7 @@
         title.innerHTML = '<i class="fa-solid fa-plus-circle text-emerald-400"></i> Add New Task';
         document.getElementById('task-form').reset();
         document.getElementById('form-id').value = '';
+        document.getElementById('form-sap').value = '';
         document.getElementById('form-prog-val').textContent = '0%';
         document.getElementById('form-start').value = '2026-01-09';
         document.getElementById('form-end').value = '2026-01-12';
@@ -1947,6 +2004,7 @@
       const parentId = isSub ? document.getElementById('form-parent-id').value : null;
 
       const wbs = document.getElementById('form-wbs').value;
+      const sapMo = document.getElementById('form-sap').value.trim();
       const cat = document.getElementById('form-cat').value;
       const taskName = document.getElementById('form-task').value;
       const plant = document.getElementById('form-plant').value;
@@ -1975,14 +2033,14 @@
           ? Math.round(subs.reduce((sum, s) => sum + (Number(s.progress) || 0), 0) / subs.length)
           : progress;
 
-        Object.assign(item, { wbs, cat, task: taskName, plant, tr, lead, start, end, days, progress: finalProg, cost: finalCost, parentId });
+        Object.assign(item, { wbs, sapMo, cat, task: taskName, plant, tr, lead, start, end, days, progress: finalProg, cost: finalCost, parentId });
 
         if (oldParentId && oldParentId !== parentId) {
           recalculateParent(oldParentId);
         }
       } else {
         const newId = 'gen_' + Date.now();
-        tasks.push({ id: newId, wbs, cat, task: taskName, plant, tr, lead, start, end, days, progress, cost, parentId });
+        tasks.push({ id: newId, wbs, sapMo, cat, task: taskName, plant, tr, lead, start, end, days, progress, cost, parentId });
       }
 
       if (parentId) {
@@ -1991,6 +2049,15 @@
 
       closeModal();
       renderAll(); saveTasksToStorage();
+    }
+
+    // Inline editor for SAP Maintenance Order number
+    function updateTaskSapMo(id, val) {
+      const t = tasks.find(x => x.id === id);
+      if (t) {
+        t.sapMo = String(val || '').trim();
+        saveTasksToStorage();
+      }
     }
 
     // Calendar Navigation
@@ -2905,7 +2972,7 @@
       tbody.innerHTML = '';
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="11" class="py-6 text-center text-slate-500">No tasks found matching current plant and filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="py-6 text-center text-slate-500">No tasks found matching current plant and filters.</td></tr>';
         return;
       }
 
@@ -2947,6 +3014,14 @@
               ` : '<span class="w-5"></span>'}
               <span class="text-xs">${p.wbs}</span>
             </div>
+          </td>
+          <td class="py-2.5 px-2 text-center">
+            <input type="number" 
+                   value="${p.sapMo || ''}" 
+                   placeholder="Enter MO..." 
+                   onchange="updateTaskSapMo('${p.id}', this.value)"
+                   class="sap-mo-input w-24 rounded px-2 py-1 text-xs outline-none transition text-center"
+                   title="SAP Maintenance Order (MO) - คลิกเพื่อกรอกหรือแก้ไขตัวเลข">
           </td>
           <td class="py-2.5 px-3 font-semibold text-white">
             <div class="flex items-center gap-2">
@@ -3010,6 +3085,14 @@
                   <span class="text-slate-500 font-mono text-xs">↳</span>
                   <span class="text-[11px] font-bold bg-indigo-950/80 text-indigo-300 border border-indigo-800/80 px-1.5 py-0.2 rounded">${c.wbs}</span>
                 </div>
+              </td>
+              <td class="py-2 px-2 text-center">
+                <input type="number" 
+                       value="${c.sapMo || ''}" 
+                       placeholder="Enter MO..." 
+                       onchange="updateTaskSapMo('${c.id}', this.value)"
+                       class="sap-mo-input w-24 rounded px-2 py-1 text-[11px] outline-none transition text-center"
+                       title="SAP Maintenance Order (MO) - คลิกเพื่อกรอกหรือแก้ไขตัวเลข">
               </td>
               <td class="py-2 px-3 text-slate-200">
                 <div class="flex items-center gap-2">
