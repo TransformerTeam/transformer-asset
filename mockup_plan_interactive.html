@@ -801,7 +801,7 @@
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block text-slate-400 font-medium mb-1">Plant / Site</label>
-            <select id="form-plant" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none">
+            <select id="form-plant" onchange="onPlantChanged()" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none">
               <option value="CUP-1">CUP-1</option>
               <option value="CUP-2">CUP-2</option>
               <option value="CUP-3">CUP-3</option>
@@ -815,9 +815,57 @@
               <option value="MTP-3">MTP-3</option>
             </select>
           </div>
-          <div>
-            <label class="block text-slate-400 font-medium mb-1">Transformer Tag</label>
-            <input type="text" id="form-tr" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-white focus:border-sky-500 focus:outline-none" placeholder="e.g. GTG16 GSUT">
+          <div class="relative">
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-slate-400 font-medium">Transformer Tag(s)</label>
+              <span id="tr-selected-badge" class="text-[10px] font-bold text-sky-400 bg-sky-950/80 border border-sky-800/60 px-1.5 py-0.2 rounded">0 selected</span>
+            </div>
+            <!-- Hidden input for standard form submission and backward compatibility -->
+            <input type="hidden" id="form-tr" value="">
+            
+            <!-- Multi-Select Trigger Button -->
+            <button type="button" id="tr-dropdown-btn" onclick="toggleTrDropdown()" class="w-full bg-slate-800 border border-slate-700 hover:border-sky-500 rounded-md px-2.5 py-1.5 text-white text-left flex items-center justify-between transition focus:outline-none focus:border-sky-500 cursor-pointer">
+              <span id="tr-dropdown-label" class="truncate text-slate-400">Select Transformer(s)...</span>
+              <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1 shrink-0"></i>
+            </button>
+
+            <!-- Multi-Select Popover Menu -->
+            <div id="tr-dropdown-menu" class="hidden absolute top-full left-0 right-0 mt-1 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-lg shadow-2xl p-2.5 z-50 space-y-2 min-w-[280px] max-w-[340px]">
+              <!-- Search Bar & Quick Actions -->
+              <div class="space-y-1.5 pb-1.5 border-b border-slate-800">
+                <div class="relative">
+                  <i class="fa-solid fa-search absolute left-2.5 top-2 text-slate-500 text-[10px]"></i>
+                  <input type="text" id="tr-search-input" oninput="filterTrList(this.value)" placeholder="Search tag or enter custom..." class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 pl-7 py-1 text-[11px] text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div class="flex items-center justify-between gap-1 text-[10px]">
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="selectAllTr()" class="px-1.5 py-0.5 rounded bg-sky-950 hover:bg-sky-800 text-sky-300 border border-sky-800/60 font-semibold cursor-pointer">All</button>
+                    <button type="button" onclick="clearAllTr()" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer">Clear</button>
+                  </div>
+                  <!-- Quick Preset Tags -->
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="addCustomTrTag('All TRs')" class="px-1.5 py-0.5 rounded bg-purple-950/80 hover:bg-purple-800 text-purple-300 border border-purple-800/60 font-medium cursor-pointer">+ All TRs</button>
+                    <button type="button" onclick="addCustomTrTag('Main TRs')" class="px-1.5 py-0.5 rounded bg-purple-950/80 hover:bg-purple-800 text-purple-300 border border-purple-800/60 font-medium cursor-pointer">+ Main</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transformer Options List with Checkboxes -->
+              <div id="tr-checkbox-list" class="max-h-44 overflow-y-auto space-y-1 pr-1 custom-scrollbar text-[11px]">
+                <!-- Options populated dynamically based on Plant -->
+              </div>
+
+              <!-- Add Custom Tag Row -->
+              <div class="pt-1.5 border-t border-slate-800 flex items-center gap-1">
+                <input type="text" id="tr-custom-input" placeholder="Custom tag name..." class="flex-1 bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-[11px] text-white focus:outline-none focus:border-sky-500">
+                <button type="button" onclick="addCustomTrFromInput()" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold cursor-pointer">Add</button>
+              </div>
+            </div>
+
+            <!-- Selected Tags Chips Container -->
+            <div id="tr-chips-container" class="flex flex-wrap gap-1 mt-1.5 max-h-16 overflow-y-auto pr-0.5">
+              <!-- Rendered as badges with close button -->
+            </div>
           </div>
           <div>
             <label class="block text-slate-400 font-medium mb-1">Lead Team</label>
@@ -864,6 +912,87 @@
 
   <!-- SCRIPT ENGINE -->
   <script>
+    // Transformer Master Data organized by Plant / Site (Derived from HealthIndexSum.csv)
+    const PLANT_TRANSFORMERS = {
+      "CUP-1": [
+        "10060-TR-001 (GTG15)", "10060-TR-002 (GTG16)", "10060-TR-101", "10060-TR-102",
+        "10060-TR-201", "10060-TR-202", "14100-TR-001 (GTG11)", "14100-TR-002 (GTG12)",
+        "14100-TR-003", "14100-TR-004", "14100-TR-005 (GTG13)", "14100-TR-006 (GTG14)",
+        "16120-TR-001", "16120-TR-002A", "16120-TR-002B", "16120-TR-003",
+        "16120-TR-004", "16120-TR-005A", "16120-TR-005B", "16120-TR-006"
+      ],
+      "CUP-2": [
+        "23901-TR-011 (GTG21)", "23902-TR-012 (GTG22)", "23911-TR-010 (STG21)",
+        "24201-TR-011", "24201-TR-012", "24201-TR-111", "24201-TR-112",
+        "24201-TR-121", "24201-TR-122"
+      ],
+      "CUP-3": [
+        "34101-TR-001", "34101-TR-002", "36120-TR-103 (STG31)",
+        "36120-TR-201", "36120-TR-202", "36120-TR-301", "36120-TR-302",
+        "36120-TR-303", "36120-TR-304"
+      ],
+      "CUP-4": [
+        "41BAT01 (GTG41)", "41BAT02", "41BBT20GT001", "41BFT20GT001", "41BFT80GT001"
+      ],
+      "GEN Ph.2": [
+        "21-90-ED-XT-TR1", "21-90-ED-XT-TR2", "21-90-ED-XT-TR3", "21-90-ED-XT-TR4",
+        "2BBFT20", "2CBFT20", "40BFT10", "40BFT20", "41BAT10 (GTG41)", "41BBT10",
+        "41BFT30 (Starting TR)", "42BAT10 (GTG42)", "42BBT10", "42BFT30 (Starting TR)",
+        "60BFT10", "60BFT20", "61BAT10 (GTG61)", "61BBT10", "61BFT30 (Starting TR)",
+        "62BAT10 (GTG62)", "62BBT10", "62BFT30 (Starting TR)",
+        "EDTRF-TCC1 (TR7)", "EDTRF-TCC2 (TR6)", "EDTRF-TCC3 (TR5)",
+        "ETR1", "ETR2", "ETR3", "GT2B Bleeding", "GT2B GSUT",
+        "GT2C Bleeding", "GT2C GSUT", "GT42 GSUT", "GT61 GSUT", "GT62 GSUT", "TR1", "TR2", "TR3"
+      ],
+      "GHECO-ONE": [
+        "61BAT01 (GH1 GSUT)", "61BBT01 (GH1 UAT1)", "61BBT02 (GH1 UAT2)", "61BBT03 (GH1 Excitation)",
+        "61BFT01 (LV TR-1)", "61BFT02 (LV TR-2)", "61BFT03 (LV TR-3)", "61BFT04 (LV TR-4)",
+        "61BFT05 (LV TR-5)", "61BFT06 (LV TR-6)", "61BGT01 (LV ESP-1)", "61BGT02 (LV ESP-2)",
+        "61BGT03 (LV CHS-3)", "61BGT04 (LV CHS-4)", "61BGT05 (LV CHS-1)", "61BGT06 (LV CHS-2)",
+        "61BGT07 (LV ASH-1)", "61BGT08 (LV ASH-2)", "61BGT09 (LV SWFGD-1)", "61BGT10 (LV SWFGD-2)",
+        "61BMT03 (Back Up)", "KT1A", "KT1B", "ST1A"
+      ],
+      "GIPP": [
+        "11BAT10", "11BBT20", "11BFT10", "11BFT20", "11BFT30", "11MKC50 (Excitation)",
+        "21BAT10", "21BBT20", "21BFT10", "21BFT20", "21BFT30", "21MKC50 (Excitation)"
+      ],
+      "GSPP11": [
+        "DT-3", "GE-TR1", "GE-TR1 Aux.", "GE-TR2", "GE-TR2 Aux.", "GSUT-1", "GSUT-2",
+        "SAT-1", "SAT-2", "SST-1", "SST-2", "TR-101", "TR-1501", "TR-1502",
+        "TR-201", "TR-301", "TR-40001", "TR-40002", "TR-401", "TR-501", "TR-601"
+      ],
+      "GSPP2&3": [
+        "1APC-XF-11 (Block1 SUS11)", "1APC-XF-12 (Block1 SUS12)", "1APC-XF-21 (Block1 SUS21)",
+        "1APC-XF-22 (Block1 SUS22)", "1APC-XF-23 (Block1 SUS23)", "1APC-XF-24 (Block1 SUS24)",
+        "2APC-XF-11 (Block2 SUS11)", "2APC-XF-12 (Block2 SUS12)", "2APC-XF-21 (Block2 SUS21)",
+        "2APC-XF-22 (Block2 SUS22)", "2APC-XF-23  (Block2 SUS23)", "2APC-XF-24 (Block2 SUS24)",
+        "31BAT10 (CTG3A GSUT)", "31BBT10 (CTG3A UAT)", "31BFT10 (CTG3A SUS)",
+        "32BAT10 (CTG3B GSUT)", "32BBT10 (CTG3B UAT)", "32BFT10 (CTG3B SUS)",
+        "50BAT10 (CTG5 GSUT)", "50MBJ01 (CTG5 SFC)", "50MKC01 (CTG5 SEE)",
+        "51BBT01 (CTG5 GSUT)", "51BFT11 (CTG5 SUS11)", "51BFT12 (CTG5 SUS12)",
+        "51BFT13 (Electrochlorination Plant)", "51PBQ20", "52BAT01 (STG5 GSUT)", "52MKC01 (STG5 SEE)",
+        "70BFT10 (CTG7A Aux.)", "70BFT20 (CTG7B Aux.)", "71BAT10 (CTG7A GSUT)", "71BBT10 (CTG7A UAT)",
+        "71BFT30 (Starting Transformer)", "72BAT10 (CTG7B GSUT)", "72BBT10 (CTG7B UAT)",
+        "72BFT30 (Starting Transformer)", "Admin Building SST", "CFB3 Back Up",
+        "CFB3 SUS11", "CFB3 SUS12", "COGEN GSUT (CTG1&2)", "COGEN SUS11", "COGEN SUS12", "COGEN UAT",
+        "CTG1 Aux.", "CTG1A Aux.", "CTG1A&1B GSUT", "CTG1B Aux.", "CTG2 Aux.", "CTG2A Aux.",
+        "CTG2A&2B GSUT", "CTG2B Aux.", "Coal Harbor Tower 1", "Coal Harbor Tower 2",
+        "KT12A", "KT13A", "KT14A", "KT2A", "KT4A", "KT5A", "KT6A", "KT7A",
+        "KW1A", "KW2A", "KW3A", "KW4A", "KW5A", "REC-TR1 (Rectifier)", "REC-TR2 (Rectifier)",
+        "STG1C GSUT", "STG1C UAT", "STG2C GSUT", "STG2C UAT1", "STG2C UAT2", "STG3C GSUT", "STG3C UAT",
+        "TR-1 (Coal Handling)", "TR-103 (WTP SST)", "TR-2 (Coal Handling)", "TR-3 (Coal Handling)",
+        "TR-4 (Coal Handling)", "TR-5 (Coal Handling)", "Wharehouse SST"
+      ],
+      "MTP-1": [ "EKT51A", "KT51A" ],
+      "MTP-3": [ "TR141" ],
+      "RDF": [ "1BDT10GT001", "1BFT11GT001", "1BFT12GT001", "TR1" ],
+      "Scrap": [ "SPARE  3 MVA 22/11 kV (Scrap)", "SPARE 0.315 MVA 22/0.4 kV (Scrap)" ],
+      "SPARE GSPP2&3": [ "SPARE 50 MVA 123/11 kV", "SPARE 63.5 MVA 123/11 kV" ]
+    };
+
+    // State for Multi-Select Transformers
+    let selectedTrTags = [];
+
     // Initial Plan Dataset (Derived from user's Excel sheet with WBS Hierarchies)
     let tasks = [
       // Transformer Outage: TO1..TO7 + Sub-tasks
@@ -1300,6 +1429,182 @@
       });
     }
 
+    // --- Multi-Select Transformer Tag Functions ---
+    function getPlantTransformers(plant) {
+      return PLANT_TRANSFORMERS[plant] || [];
+    }
+
+    function toggleTrDropdown(forceState = null) {
+      const menu = document.getElementById('tr-dropdown-menu');
+      if (!menu) return;
+      const shouldOpen = (forceState !== null) ? forceState : menu.classList.contains('hidden');
+      if (shouldOpen) {
+        menu.classList.remove('hidden');
+        renderTrOptions();
+        const searchInput = document.getElementById('tr-search-input');
+        if (searchInput) {
+          searchInput.value = '';
+          setTimeout(() => searchInput.focus(), 50);
+        }
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+
+    function renderTrOptions(filterKeyword = '') {
+      const plant = document.getElementById('form-plant').value;
+      const listEl = document.getElementById('tr-checkbox-list');
+      if (!listEl) return;
+
+      const availTrs = getPlantTransformers(plant);
+      const kw = (filterKeyword || '').trim().toLowerCase();
+
+      // Gather all tags to show: available from plant + any currently selected tags
+      const allTagsSet = new Set([...availTrs, ...selectedTrTags]);
+      const allTags = Array.from(allTagsSet);
+
+      const filtered = kw ? allTags.filter(t => t.toLowerCase().includes(kw)) : allTags;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="py-2 text-center text-slate-500 text-[11px] italic">No transformers found for ${plant} matching "${filterKeyword}".</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(tag => {
+        const isChecked = selectedTrTags.includes(tag);
+        const safeVal = encodeURIComponent(tag);
+        return `
+          <label class="flex items-center gap-2 p-1.5 rounded hover:bg-slate-800/90 cursor-pointer text-slate-200 select-none ${isChecked ? 'bg-sky-950/40 text-sky-200' : ''}">
+            <input type="checkbox" value="${safeVal}" ${isChecked ? 'checked' : ''} onchange="toggleTrTag(decodeURIComponent('${safeVal}'), this.checked)" class="rounded border-slate-700 text-sky-500 focus:ring-0 cursor-pointer accent-sky-500">
+            <span class="font-mono truncate">${tag}</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function filterTrList(kw) {
+      renderTrOptions(kw);
+    }
+
+    function toggleTrTag(tag, isChecked) {
+      if (isChecked) {
+        if (!selectedTrTags.includes(tag)) selectedTrTags.push(tag);
+      } else {
+        selectedTrTags = selectedTrTags.filter(t => t !== tag);
+      }
+      syncTrUI();
+    }
+
+    function addCustomTrTag(tag) {
+      const clean = (tag || '').trim();
+      if (!clean) return;
+      if (!selectedTrTags.includes(clean)) {
+        selectedTrTags.push(clean);
+        syncTrUI();
+      }
+    }
+
+    function addCustomTrFromInput() {
+      const input = document.getElementById('tr-custom-input');
+      if (!input) return;
+      addCustomTrTag(input.value);
+      input.value = '';
+    }
+
+    function selectAllTr() {
+      const plant = document.getElementById('form-plant').value;
+      const availTrs = getPlantTransformers(plant);
+      availTrs.forEach(t => {
+        if (!selectedTrTags.includes(t)) selectedTrTags.push(t);
+      });
+      syncTrUI();
+    }
+
+    function clearAllTr() {
+      selectedTrTags = [];
+      syncTrUI();
+    }
+
+    function removeTrTag(tag) {
+      selectedTrTags = selectedTrTags.filter(t => t !== tag);
+      syncTrUI();
+    }
+
+    function syncTrUI() {
+      // 1. Sync hidden form-tr input
+      const hiddenInput = document.getElementById('form-tr');
+      if (hiddenInput) {
+        hiddenInput.value = selectedTrTags.join(', ');
+      }
+
+      // 2. Sync badge & dropdown button label
+      const badge = document.getElementById('tr-selected-badge');
+      const label = document.getElementById('tr-dropdown-label');
+      const count = selectedTrTags.length;
+
+      if (badge) {
+        badge.textContent = `${count} selected`;
+        badge.className = count > 0 
+          ? 'text-[10px] font-bold text-sky-300 bg-sky-950/80 border border-sky-800/80 px-1.5 py-0.2 rounded'
+          : 'text-[10px] font-bold text-slate-500 bg-slate-800 border border-slate-700 px-1.5 py-0.2 rounded';
+      }
+
+      if (label) {
+        if (count === 0) {
+          label.textContent = 'Select Transformer(s)...';
+          label.className = 'truncate text-slate-400';
+        } else if (count === 1) {
+          label.textContent = selectedTrTags[0];
+          label.className = 'truncate text-white font-medium';
+        } else {
+          label.textContent = `${selectedTrTags[0]} (+${count - 1} more)`;
+          label.className = 'truncate text-sky-300 font-semibold';
+        }
+      }
+
+      // 3. Render Chips below dropdown
+      const chipsContainer = document.getElementById('tr-chips-container');
+      if (chipsContainer) {
+        if (count === 0) {
+          chipsContainer.innerHTML = '';
+        } else {
+          chipsContainer.innerHTML = selectedTrTags.map(tag => {
+            const safeVal = encodeURIComponent(tag);
+            return `
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-sky-950 text-sky-200 border border-sky-800/80 shadow-sm animate-fadeIn">
+                <span class="truncate max-w-[130px]">${tag}</span>
+                <button type="button" onclick="removeTrTag(decodeURIComponent('${safeVal}'))" class="hover:text-rose-400 p-0.5 rounded-full text-[9px] cursor-pointer" title="Remove ${tag}">
+                  <i class="fa-solid fa-times"></i>
+                </button>
+              </span>
+            `;
+          }).join('');
+        }
+      }
+
+      // 4. Update checkboxes state if menu is currently open
+      const menu = document.getElementById('tr-dropdown-menu');
+      if (menu && !menu.classList.contains('hidden')) {
+        const searchInput = document.getElementById('tr-search-input');
+        renderTrOptions(searchInput ? searchInput.value : '');
+      }
+    }
+
+    function onPlantChanged() {
+      // Re-render transformer options for the new plant
+      renderTrOptions();
+      syncTrUI();
+    }
+
+    function setFormTransformers(trString) {
+      if (!trString) {
+        selectedTrTags = [];
+      } else {
+        selectedTrTags = trString.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      syncTrUI();
+    }
+
     function onParentTaskSelected() {
       const parentId = document.getElementById('form-parent-id').value;
       const parent = tasks.find(t => t.id === parentId);
@@ -1313,7 +1618,7 @@
             break;
           }
         }
-        document.getElementById('form-tr').value = parent.tr;
+        setFormTransformers(parent.tr || '');
         document.getElementById('form-start').value = parent.start;
         document.getElementById('form-end').value = parent.end;
 
@@ -1329,6 +1634,7 @@
       const modal = document.getElementById('task-modal');
       const title = document.getElementById('modal-title');
       modal.classList.remove('hidden');
+      toggleTrDropdown(false); // Ensure dropdown is closed initially
 
       if (mode === 'edit' && id) {
         const t = tasks.find(x => x.id === id);
@@ -1344,7 +1650,7 @@
         }
         document.getElementById('form-task').value = t.task;
         document.getElementById('form-plant').value = t.plant;
-        document.getElementById('form-tr').value = t.tr;
+        setFormTransformers(t.tr || '');
         document.getElementById('form-lead').value = t.lead;
         document.getElementById('form-start').value = t.start;
         document.getElementById('form-end').value = t.end;
@@ -1365,6 +1671,7 @@
         document.getElementById('form-prog-val').textContent = '0%';
         document.getElementById('form-start').value = '2026-01-09';
         document.getElementById('form-end').value = '2026-01-12';
+        setFormTransformers('');
         toggleHierarchyLevel(false);
         const curCat = document.getElementById('form-cat').value;
         document.getElementById('form-wbs').value = getNextMainWBS(curCat);
@@ -1385,6 +1692,7 @@
 
     function closeModal() {
       document.getElementById('task-modal').classList.add('hidden');
+      toggleTrDropdown(false);
     }
 
     function saveTask(e) {
@@ -1690,7 +1998,11 @@
                 <div class="flex items-center gap-1.5 truncate">
                   ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[9px] opacity-70"></i>' : ''}
                   <span class="font-mono font-black text-[11px] opacity-95">${displayTitle}</span>
-                  ${t.tr ? `<span class="opacity-75 text-[10px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
+                  ${t.tr ? (() => {
+                    const parts = t.tr.split(',').map(s => s.trim()).filter(Boolean);
+                    if (parts.length <= 1) return `<span class="opacity-75 text-[10px] hidden sm:inline font-normal">(${t.tr})</span>`;
+                    return `<span class="opacity-80 text-[10px] hidden sm:inline font-normal bg-black/25 px-1 rounded">(${parts[0]} +${parts.length - 1})</span>`;
+                  })() : ''}
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0 ml-1 text-[10px]">
                   <span class="font-bold opacity-80">${t.progress}%</span>
@@ -1936,6 +2248,22 @@
       return dateStr;
     }
 
+    // Helper to format transformer tags nicely in tables
+    function formatTrBadges(trStr) {
+      if (!trStr || trStr === '-' || trStr === 'N/A') return '<span class="text-slate-500 font-mono text-[11px]">-</span>';
+      const tags = String(trStr).split(',').map(s => s.trim()).filter(Boolean);
+      if (tags.length === 0) return '<span class="text-slate-500 font-mono text-[11px]">-</span>';
+      if (tags.length === 1) {
+        return `<span class="font-mono text-[11px] text-slate-300" title="${tags[0]}">${tags[0]}</span>`;
+      }
+      return `
+        <div class="flex items-center gap-1 flex-wrap" title="${trStr}">
+          <span class="font-mono text-[11px] text-slate-300 truncate max-w-[130px]">${tags[0]}</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-sky-950 text-sky-300 border border-sky-800/80 shadow-sm">+${tags.length - 1}</span>
+        </div>
+      `;
+    }
+
     // ==========================================
     // HIERARCHICAL WBS TREE TABLE RENDERING
     // ==========================================
@@ -2000,7 +2328,7 @@
             </div>
           </td>
           <td class="py-2.5 px-2 text-center text-slate-300 font-semibold">${p.lead || '-'}</td>
-          <td class="py-2.5 px-2 text-slate-300 font-medium">${p.tr || '-'}</td>
+          <td class="py-2.5 px-2 text-slate-300 font-medium">${formatTrBadges(p.tr)}</td>
           <td class="py-2.5 px-2">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-sky-300 border border-slate-700">${p.plant}</span>
           </td>
@@ -2063,7 +2391,7 @@
                 </div>
               </td>
               <td class="py-2 px-2 text-center text-slate-400 text-[11px]">${c.lead || '-'}</td>
-              <td class="py-2 px-2 text-slate-400 text-[11px]">${c.tr || '-'}</td>
+              <td class="py-2 px-2 text-slate-400 text-[11px]">${formatTrBadges(c.tr)}</td>
               <td class="py-2 px-2">
                 <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-900 text-slate-400 border border-slate-800">${c.plant}</span>
               </td>
@@ -2136,6 +2464,17 @@
         });
       }
 
+      // Close multi-select dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        const dropdownMenu = document.getElementById('tr-dropdown-menu');
+        const dropdownBtn = document.getElementById('tr-dropdown-btn');
+        if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
+          if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+          }
+        }
+      });
+
       loadSavedTasks();
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('theme')) {
@@ -2169,6 +2508,9 @@
       }
       if (urlParams.get('modal') === 'sub') {
         openModalForSub(urlParams.get('parent') || 'TO3');
+      }
+      if (urlParams.get('drop') === 'open') {
+        toggleTrDropdown(true);
       }
     });
   </script>
