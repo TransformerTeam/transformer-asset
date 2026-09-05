@@ -472,43 +472,23 @@
       color: #2563eb !important;
     }
 
-    /* SAP MO Input Field inside WBS Table */
-    .sap-mo-input {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #38bdf8;
+    /* SAP MO Badge inside WBS Table */
+    .sap-mo-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
       font-family: 'Outfit', monospace;
-      -moz-appearance: textfield;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(14, 165, 233, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      letter-spacing: 0.02em;
     }
-    .sap-mo-input::-webkit-outer-spin-button,
-    .sap-mo-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .sap-mo-input:hover {
-      background: rgba(15, 23, 42, 0.95);
-      border-color: rgba(56, 189, 248, 0.5);
-    }
-    .sap-mo-input:focus {
-      background: #0f172a;
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 1px #38bdf8;
-      color: #ffffff;
-    }
-    [data-theme="light"] .sap-mo-input {
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
+    [data-theme="light"] .sap-mo-badge {
+      background: #e0f2fe;
       color: #0369a1;
-    }
-    [data-theme="light"] .sap-mo-input:hover {
-      background: #ffffff;
-      border-color: #0284c7;
-    }
-    [data-theme="light"] .sap-mo-input:focus {
-      background: #ffffff;
-      border-color: #0284c7;
-      box-shadow: 0 0 0 1px #0284c7;
-      color: #0f172a;
+      border: 1px solid #7dd3fc;
     }
 
     /* Scrollbar */
@@ -3016,12 +2996,11 @@
             </div>
           </td>
           <td class="py-2.5 px-2 text-center">
-            <input type="number" 
-                   value="${p.sapMo || ''}" 
-                   placeholder="Enter MO..." 
-                   onchange="updateTaskSapMo('${p.id}', this.value)"
-                   class="sap-mo-input w-24 rounded px-2 py-1 text-xs outline-none transition text-center"
-                   title="SAP Maintenance Order (MO) - คลิกเพื่อกรอกหรือแก้ไขตัวเลข">
+            ${p.sapMo ? `
+              <span class="sap-mo-badge" title="SAP Maintenance Order: ${p.sapMo} (แก้ไขได้ที่ Task)">
+                ${p.sapMo}
+              </span>
+            ` : `<span class="text-slate-500 font-mono text-xs">-</span>`}
           </td>
           <td class="py-2.5 px-3 font-semibold text-white">
             <div class="flex items-center gap-2">
@@ -3087,12 +3066,11 @@
                 </div>
               </td>
               <td class="py-2 px-2 text-center">
-                <input type="number" 
-                       value="${c.sapMo || ''}" 
-                       placeholder="Enter MO..." 
-                       onchange="updateTaskSapMo('${c.id}', this.value)"
-                       class="sap-mo-input w-24 rounded px-2 py-1 text-[11px] outline-none transition text-center"
-                       title="SAP Maintenance Order (MO) - คลิกเพื่อกรอกหรือแก้ไขตัวเลข">
+                ${c.sapMo ? `
+                  <span class="sap-mo-badge text-[10px] py-0.5 px-1.5" title="SAP Maintenance Order: ${c.sapMo} (แก้ไขได้ที่ Task)">
+                    ${c.sapMo}
+                  </span>
+                ` : `<span class="text-slate-500 font-mono text-[11px]">-</span>`}
               </td>
               <td class="py-2 px-3 text-slate-200">
                 <div class="flex items-center gap-2">
