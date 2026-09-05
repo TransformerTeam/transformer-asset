@@ -17,6 +17,9 @@
   <!-- Assessment Stylesheet (Design System & CSS Variables) -->
   <link rel="stylesheet" href="assessment.css">
 
+  <!-- ApexCharts JS -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
   <!-- Theme Editor & Engine -->
   <link rel="stylesheet" href="theme_editor.css">
   <script src="theme_engine.js"></script>
@@ -79,6 +82,7 @@
     [data-theme="light"] .glass-card,
     [data-theme="light"] #view-calendar,
     [data-theme="light"] #view-table,
+    [data-theme="light"] #view-scurve,
     [data-theme="light"] .filters-card,
     [data-theme="light"] .kpi-card {
       background: rgba(255, 255, 255, 0.60) !important;
@@ -435,6 +439,9 @@
           <button id="btn-view-both" onclick="switchView('both')" class="view-btn" title="Show Both Calendar &amp; Table">
             <i class="fa-solid fa-table-columns"></i> Both
           </button>
+          <button id="btn-view-scurve" onclick="switchView('scurve')" class="view-btn" title="Switch to S-Curve Progress &amp; Cost Chart">
+            <i class="fa-solid fa-chart-line"></i> S-Curve
+          </button>
         </div>
 
         <!-- Reset Button -->
@@ -731,6 +738,113 @@
                 <!-- Dynamically populated rows -->
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- 3. S-CURVE PROGRESS & COST OVER TIME VIEW -->
+        <div id="view-scurve" class="glass-card p-4 space-y-4 hidden">
+          <!-- S-Curve Header & Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/50">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-chart-line text-sky-400"></i>
+                  <span>Cumulative Progress / Cost vs Time (S-Curve)</span>
+                </h2>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                  Earned Value &amp; Schedule Performance
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Baseline Planned Schedule vs Actual Realized Progress across Year 2026
+              </p>
+            </div>
+
+            <!-- Controls: Metric Mode & Granularity -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Metric Type Selector (% Progress vs Cost THB) -->
+              <div class="inline-flex rounded-lg border border-slate-700 bg-slate-900/80 p-0.5 text-xs font-semibold">
+                <button type="button" id="scurve-mode-progress" onclick="setSCurveMetric('progress')" class="px-2.5 py-1 rounded-md transition text-white bg-sky-600 shadow-sm cursor-pointer">
+                  <i class="fa-solid fa-percent mr-1"></i> Progress (%)
+                </button>
+                <button type="button" id="scurve-mode-cost" onclick="setSCurveMetric('cost')" class="px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer">
+                  <i class="fa-solid fa-coins mr-1"></i> Cost (THB)
+                </button>
+              </div>
+
+              <!-- Time Scale Selector (Weekly vs Monthly) -->
+              <div class="inline-flex rounded-lg border border-slate-700 bg-slate-900/80 p-0.5 text-xs font-medium">
+                <button type="button" id="scurve-scale-week" onclick="setSCurveScale('week')" class="px-2.5 py-1 rounded-md transition text-white bg-indigo-600 cursor-pointer">
+                  Weekly (W1-W52)
+                </button>
+                <button type="button" id="scurve-scale-month" onclick="setSCurveScale('month')" class="px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer">
+                  Monthly (Jan-Dec)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- S-Curve KPI Stat Badges / Metrics Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Planned to Date
+              </div>
+              <div class="text-xl font-bold font-mono text-sky-400 mt-1" id="scurve-kpi-planned">0%</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Baseline Target</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Actual to Date
+              </div>
+              <div class="text-xl font-bold font-mono text-emerald-400 mt-1" id="scurve-kpi-actual">0%</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Earned Realized</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-arrows-up-down text-rose-400"></i> Schedule Variance (SV)
+              </div>
+              <div class="text-xl font-bold font-mono mt-1" id="scurve-kpi-variance">0%</div>
+              <div class="text-[10px] mt-0.5 font-medium" id="scurve-kpi-status-badge">On Schedule</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-gauge-high text-indigo-400"></i> Schedule Index (SPI)
+              </div>
+              <div class="text-xl font-bold font-mono text-indigo-300 mt-1" id="scurve-kpi-spi">1.00</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Actual / Planned Ratio</div>
+            </div>
+          </div>
+
+          <!-- ApexCharts Render Canvas -->
+          <div class="relative w-full rounded-xl border border-slate-800/80 bg-slate-950/50 p-3 shadow-inner">
+            <div id="scurve-apex-chart" class="w-full" style="min-height: 420px;"></div>
+          </div>
+
+          <!-- Legend & Notes matching Reference Diagram -->
+          <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-1 px-1">
+            <div class="flex items-center gap-4 flex-wrap">
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-0.5 bg-sky-500 rounded"></span>
+                <span class="w-2 h-2 rounded-full bg-sky-500 inline-block"></span>
+                <strong class="text-slate-200">Planned Progress</strong>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-0.5 bg-emerald-500 rounded"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                <strong class="text-slate-200">Actual Progress</strong>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-arrows-up-down text-rose-400 font-bold"></i>
+                <strong class="text-rose-300">Variance Gap</strong> (Status Week)
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-500">
+              * Filter-synchronized with active Plant &amp; Category
+            </div>
           </div>
         </div>
 
@@ -1184,32 +1298,43 @@
       renderCalendar();
     }
 
-    // Switch Views (Fixed toggle between Calendar, Table, and Both)
+    // Active view state
+    let currentActiveView = 'cal';
+
+    // Switch Views (Fixed toggle between Calendar, Table, Both, and S-Curve)
     function switchView(view) {
+      currentActiveView = view;
       const btnCal = document.getElementById('btn-view-cal');
       const btnTbl = document.getElementById('btn-view-tbl');
       const btnBoth = document.getElementById('btn-view-both');
+      const btnScurve = document.getElementById('btn-view-scurve');
+
       const viewCal = document.getElementById('view-calendar');
       const viewTbl = document.getElementById('view-table');
+      const viewScurve = document.getElementById('view-scurve');
+
+      if (btnCal) btnCal.className = (view === 'cal') ? 'view-btn active' : 'view-btn';
+      if (btnTbl) btnTbl.className = (view === 'tbl') ? 'view-btn active' : 'view-btn';
+      if (btnBoth) btnBoth.className = (view === 'both') ? 'view-btn active' : 'view-btn';
+      if (btnScurve) btnScurve.className = (view === 'scurve') ? 'view-btn active' : 'view-btn';
 
       if (view === 'cal') {
-        if (btnCal) btnCal.className = 'view-btn active';
-        if (btnTbl) btnTbl.className = 'view-btn';
-        if (btnBoth) btnBoth.className = 'view-btn';
-        viewCal.classList.remove('hidden');
-        viewTbl.classList.add('hidden');
+        if (viewCal) viewCal.classList.remove('hidden');
+        if (viewTbl) viewTbl.classList.add('hidden');
+        if (viewScurve) viewScurve.classList.add('hidden');
       } else if (view === 'tbl') {
-        if (btnTbl) btnTbl.className = 'view-btn active';
-        if (btnCal) btnCal.className = 'view-btn';
-        if (btnBoth) btnBoth.className = 'view-btn';
-        viewCal.classList.add('hidden');
-        viewTbl.classList.remove('hidden');
+        if (viewCal) viewCal.classList.add('hidden');
+        if (viewTbl) viewTbl.classList.remove('hidden');
+        if (viewScurve) viewScurve.classList.add('hidden');
       } else if (view === 'both') {
-        if (btnBoth) btnBoth.className = 'view-btn active';
-        if (btnCal) btnCal.className = 'view-btn';
-        if (btnTbl) btnTbl.className = 'view-btn';
-        viewCal.classList.remove('hidden');
-        viewTbl.classList.remove('hidden');
+        if (viewCal) viewCal.classList.remove('hidden');
+        if (viewTbl) viewTbl.classList.remove('hidden');
+        if (viewScurve) viewScurve.classList.add('hidden');
+      } else if (view === 'scurve') {
+        if (viewCal) viewCal.classList.add('hidden');
+        if (viewTbl) viewTbl.classList.add('hidden');
+        if (viewScurve) viewScurve.classList.remove('hidden');
+        setTimeout(() => renderSCurveChart(), 50);
       }
     }
 
@@ -1968,6 +2093,368 @@
 
       renderCalendar(filtered);
       renderTable(filtered);
+      if (currentActiveView === 'scurve' || scurveChartInstance) {
+        renderSCurveChart(filtered);
+      }
+    }
+
+    // ==========================================
+    // S-CURVE (CUMULATIVE PROGRESS & COST VS TIME) ENGINE
+    // ==========================================
+    let scurveChartInstance = null;
+    let scurveMetric = 'progress'; // 'progress' | 'cost'
+    let scurveScale = 'week';      // 'week' | 'month'
+
+    function setSCurveMetric(metric) {
+      scurveMetric = metric;
+      const btnProg = document.getElementById('scurve-mode-progress');
+      const btnCost = document.getElementById('scurve-mode-cost');
+      if (btnProg && btnCost) {
+        if (metric === 'progress') {
+          btnProg.className = 'px-2.5 py-1 rounded-md transition text-white bg-sky-600 shadow-sm cursor-pointer';
+          btnCost.className = 'px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        } else {
+          btnCost.className = 'px-2.5 py-1 rounded-md transition text-white bg-sky-600 shadow-sm cursor-pointer';
+          btnProg.className = 'px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        }
+      }
+      renderSCurveChart();
+    }
+
+    function setSCurveScale(scale) {
+      scurveScale = scale;
+      const btnWeek = document.getElementById('scurve-scale-week');
+      const btnMonth = document.getElementById('scurve-scale-month');
+      if (btnWeek && btnMonth) {
+        if (scale === 'week') {
+          btnWeek.className = 'px-2.5 py-1 rounded-md transition text-white bg-indigo-600 cursor-pointer';
+          btnMonth.className = 'px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        } else {
+          btnMonth.className = 'px-2.5 py-1 rounded-md transition text-white bg-indigo-600 cursor-pointer';
+          btnWeek.className = 'px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        }
+      }
+      renderSCurveChart();
+    }
+
+    function calculateSCurveData(filteredList = null) {
+      const filtered = filteredList || getFilteredTasks();
+      const filteredIds = new Set(filtered.map(t => t.id));
+      const activeTasks = filtered.filter(t => !t.parentId || !filteredIds.has(t.parentId));
+
+      const isWeekly = (scurveScale === 'week');
+      const isProgress = (scurveMetric === 'progress');
+
+      const categories = [];
+      const bucketDates = [];
+
+      if (isWeekly) {
+        // Step every 2 weeks from 0 to 38 (matching 0, 4, 8, 12, 16, 20, 24, 28, 32, 36 in reference diagram)
+        for (let w = 0; w <= 38; w += 2) {
+          categories.push(String(w));
+          bucketDates.push(new Date(2026, 0, 1 + (w * 7)));
+        }
+      } else {
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        monthNames.forEach((m, idx) => {
+          categories.push(m);
+          bucketDates.push(new Date(2026, idx + 1, 0, 23, 59, 59));
+        });
+      }
+
+      if (activeTasks.length === 0) {
+        return {
+          categories,
+          plannedData: categories.map(() => 0),
+          actualData: categories.map(() => 0),
+          statusIndex: isWeekly ? categories.indexOf('16') : 3,
+          statusLabel: isWeekly ? '16' : 'Apr',
+          plannedToDate: 0,
+          actualToDate: 0,
+          variance: 0,
+          spi: '1.00',
+          isProgress,
+          totalCostBudget: 0
+        };
+      }
+
+      const totalCostBudget = activeTasks.reduce((sum, t) => sum + (Number(t.cost) || 0), 0);
+      const getWeight = (t) => {
+        if (!isProgress) {
+          const c = Number(t.cost) || 0;
+          return totalCostBudget > 0 ? c : Math.max(1, t.days || 1);
+        }
+        if (t.cat && (t.cat.includes('Visual') || t.cat.includes('Oil'))) return 6;
+        return Math.max(3, t.days || 1);
+      };
+
+      const totalWeight = activeTasks.reduce((sum, tw) => sum + getWeight(tw), 0) || 1;
+
+      // Status Date: Week 16 (mid-April 2026) as highlighted in reference image
+      const statusIndex = isWeekly ? categories.indexOf('16') : 3;
+      const statusDate = bucketDates[statusIndex] || new Date(2026, 3, 20);
+      const statusLabel = categories[statusIndex] || (isWeekly ? '16' : 'Apr');
+
+      const plannedData = [];
+      const actualData = [];
+
+      bucketDates.forEach((bDate) => {
+        let bucketPlannedWeight = 0;
+        let bucketActualWeight = 0;
+
+        activeTasks.forEach(task => {
+          const tStart = new Date(task.start);
+          const tEnd = new Date(task.end);
+          const tDurMs = Math.max(86400000, tEnd - tStart);
+          const weight = getWeight(task);
+
+          // Planned fraction
+          let plannedFrac = 0;
+          if (bDate >= tEnd) plannedFrac = 1.0;
+          else if (bDate <= tStart) plannedFrac = 0.0;
+          else plannedFrac = Math.max(0, Math.min(1, (bDate - tStart) / tDurMs));
+          bucketPlannedWeight += weight * plannedFrac;
+
+          // Actual fraction up to statusDate
+          if (bDate <= statusDate) {
+            const taskProg = (Number(task.progress) || 0) / 100;
+            let actualFrac = 0;
+            if (tStart <= statusDate) {
+              const effEnd = Math.min(tEnd.getTime(), statusDate.getTime());
+              const effDur = Math.max(86400000, effEnd - tStart.getTime());
+              if (bDate >= effEnd) actualFrac = taskProg;
+              else if (bDate <= tStart) actualFrac = 0.0;
+              else actualFrac = taskProg * ((bDate.getTime() - tStart.getTime()) / effDur);
+            }
+            bucketActualWeight += weight * actualFrac;
+          }
+        });
+
+        if (isProgress) {
+          const plannedPct = Math.min(100, Math.round((bucketPlannedWeight / totalWeight) * 1000) / 10);
+          plannedData.push(plannedPct);
+          if (bDate <= statusDate) {
+            const actualPct = Math.min(100, Math.round((bucketActualWeight / totalWeight) * 1000) / 10);
+            actualData.push(actualPct);
+          }
+        } else {
+          const pCost = Math.min(totalCostBudget, Math.round(bucketPlannedWeight));
+          plannedData.push(pCost);
+          if (bDate <= statusDate) {
+            const aCost = Math.round(bucketActualWeight);
+            actualData.push(aCost);
+          }
+        }
+      });
+
+      // EVM projection for bDate > statusDate
+      const pAtStatus = plannedData[statusIndex] || 0;
+      const aAtStatus = actualData[statusIndex] || 0;
+      const spi = pAtStatus > 0 ? (aAtStatus / pAtStatus) : 1.0;
+
+      for (let i = statusIndex + 1; i < plannedData.length; i++) {
+        let proj = Math.round((aAtStatus + spi * (plannedData[i] - pAtStatus)) * 10) / 10;
+        if (!isProgress) proj = Math.min(totalCostBudget, Math.round(proj));
+        else proj = Math.min(100, proj);
+        actualData.push(proj);
+      }
+
+      // Clamp planned 100% (or total cost) at end
+      if (plannedData.length > 0) {
+        plannedData[plannedData.length - 1] = isProgress ? 100 : totalCostBudget;
+      }
+
+      const plannedToDate = plannedData[statusIndex] || 0;
+      const actualToDate = actualData[statusIndex] || 0;
+      const variance = Math.round((actualToDate - plannedToDate) * 10) / 10;
+      const spiStr = pAtStatus > 0 ? spi.toFixed(2) : '1.00';
+
+      return {
+        categories,
+        plannedData,
+        actualData,
+        statusIndex,
+        statusLabel,
+        plannedToDate,
+        actualToDate,
+        variance,
+        spi: spiStr,
+        isProgress,
+        totalCostBudget
+      };
+    }
+
+    function renderSCurveChart(filteredList = null) {
+      const container = document.getElementById('scurve-apex-chart');
+      if (!container || typeof ApexCharts === 'undefined') return;
+
+      const data = calculateSCurveData(filteredList);
+
+      // Update KPI Stat Badges in S-Curve header
+      const elPlanned = document.getElementById('scurve-kpi-planned');
+      const elActual = document.getElementById('scurve-kpi-actual');
+      const elVar = document.getElementById('scurve-kpi-variance');
+      const elBadge = document.getElementById('scurve-kpi-status-badge');
+      const elSpi = document.getElementById('scurve-kpi-spi');
+
+      const unit = data.isProgress ? '%' : ' THB';
+      const formatVal = (v) => data.isProgress ? `${v}%` : `${Number(v).toLocaleString()} ฿`;
+
+      if (elPlanned) elPlanned.textContent = formatVal(data.plannedToDate);
+      if (elActual) elActual.textContent = formatVal(data.actualToDate);
+      if (elSpi) elSpi.textContent = data.spi;
+
+      if (elVar && elBadge) {
+        if (data.variance < 0) {
+          elVar.textContent = `${data.variance}${unit}`;
+          elVar.className = 'text-xl font-bold font-mono mt-1 text-rose-400';
+          elBadge.textContent = '⚠️ Behind Schedule (ล่าช้ากว่าแผน)';
+          elBadge.className = 'text-[10px] mt-0.5 font-bold text-rose-400';
+        } else if (data.variance > 0) {
+          elVar.textContent = `+${data.variance}${unit}`;
+          elVar.className = 'text-xl font-bold font-mono mt-1 text-emerald-400';
+          elBadge.textContent = '🚀 Ahead of Schedule (เร็วกว่าแผน)';
+          elBadge.className = 'text-[10px] mt-0.5 font-bold text-emerald-400';
+        } else {
+          elVar.textContent = `0${unit}`;
+          elVar.className = 'text-xl font-bold font-mono mt-1 text-sky-400';
+          elBadge.textContent = '✓ On Schedule (ตามแผน)';
+          elBadge.className = 'text-[10px] mt-0.5 font-medium text-sky-400';
+        }
+      }
+
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+      const legendTextColor = isDark ? '#f1f5f9' : '#0f172a';
+
+      const options = {
+        chart: {
+          type: 'line',
+          height: 420,
+          background: 'transparent',
+          fontFamily: "'Inter', sans-serif",
+          toolbar: {
+            show: true,
+            tools: {
+              download: true,
+              selection: false,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: false,
+              reset: true
+            }
+          },
+          animations: {
+            enabled: false
+          }
+        },
+        colors: ['#2563eb', '#16a34a'], // Blue (Planned), Green (Actual) exactly matching reference
+        stroke: {
+          curve: 'smooth',
+          width: [3.5, 3.5]
+        },
+        markers: {
+          size: scurveScale === 'week' ? 3.5 : 5,
+          strokeWidth: 2,
+          strokeColors: '#ffffff',
+          hover: { size: 7 }
+        },
+        grid: {
+          borderColor: gridColor,
+          strokeDashArray: 3,
+          xaxis: { lines: { show: true } },
+          yaxis: { lines: { show: true } }
+        },
+        xaxis: {
+          categories: data.categories,
+          title: {
+            text: scurveScale === 'week' ? 'Time (Weeks)' : 'Time (Months)',
+            style: { color: textColor, fontSize: '13px', fontWeight: 600 }
+          },
+          labels: {
+            style: { colors: textColor, fontSize: '11px', fontFamily: "'Outfit', monospace" },
+            rotate: 0,
+            hideOverlappingLabels: true
+          },
+          axisBorder: { color: gridColor },
+          axisTicks: { color: gridColor }
+        },
+        yaxis: {
+          min: 0,
+          max: data.isProgress ? 100 : undefined,
+          tickAmount: 5,
+          title: {
+            text: data.isProgress ? 'Cumulative Progress (%)' : 'Cumulative Cost (THB)',
+            style: { color: textColor, fontSize: '13px', fontWeight: 600 }
+          },
+          labels: {
+            formatter: (val) => data.isProgress ? `${Math.round(val)}%` : `${Math.round(val).toLocaleString()} ฿`,
+            style: { colors: textColor, fontSize: '11px', fontFamily: "'Outfit', monospace" }
+          }
+        },
+        annotations: {
+          xaxis: [
+            {
+              x: data.statusLabel,
+              strokeDashArray: 4,
+              borderColor: '#dc2626',
+              borderWidth: 2,
+              label: {
+                borderColor: '#dc2626',
+                orientation: 'horizontal',
+                style: {
+                  color: '#ffffff',
+                  background: '#dc2626',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: { left: 6, right: 6, top: 2, bottom: 2 }
+                },
+                text: `Variance: ${data.variance > 0 ? '+' : ''}${data.variance}${unit} (W${data.statusLabel})`
+              }
+            }
+          ],
+          points: [
+            {
+              x: data.statusLabel,
+              y: data.plannedToDate,
+              marker: { size: 6, fillColor: '#2563eb', strokeColor: '#ffffff', strokeWidth: 2 }
+            },
+            {
+              x: data.statusLabel,
+              y: data.actualToDate,
+              marker: { size: 6, fillColor: '#16a34a', strokeColor: '#ffffff', strokeWidth: 2 }
+            }
+          ]
+        },
+        tooltip: {
+          theme: isDark ? 'dark' : 'light',
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: (val) => data.isProgress ? `${val.toFixed(1)}%` : `${Number(val).toLocaleString()} THB`
+          }
+        },
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'right',
+          labels: { colors: legendTextColor },
+          markers: { width: 14, height: 14, radius: 7 },
+          itemMargin: { horizontal: 12, vertical: 6 }
+        },
+        series: [
+          { name: 'Planned Progress', data: data.plannedData },
+          { name: 'Actual Progress', data: data.actualData }
+        ]
+      };
+
+      if (scurveChartInstance) {
+        scurveChartInstance.updateOptions(options);
+      } else {
+        scurveChartInstance = new ApexCharts(container, options);
+        scurveChartInstance.render();
+      }
     }
 
     function renderCalendar(filteredList = null) {
