@@ -24,7 +24,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(rgba(8, 12, 20, 0.82), rgba(8, 12, 20, 0.88)), url('plan_bg.jpg') no-repeat center center fixed;
+      background: linear-gradient(rgba(6, 10, 18, 0.65), rgba(6, 10, 18, 0.72)), url('plan_bg.jpg') no-repeat center center fixed;
       background-color: #0d111a;
       background-size: cover;
       color: var(--text-primary, #f1f5f9);
@@ -33,30 +33,70 @@
       min-height: 100vh;
     }
     [data-theme="light"] body {
-      background: linear-gradient(rgba(248, 250, 252, 0.88), rgba(241, 245, 249, 0.92)), url('plan_bg.jpg') no-repeat center center fixed;
+      background: linear-gradient(rgba(248, 250, 252, 0.75), rgba(241, 245, 249, 0.82)), url('plan_bg.jpg') no-repeat center center fixed;
       background-size: cover;
     }
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Outfit', sans-serif;
     }
+    .sidebar {
+      background: rgba(13, 19, 33, 0.50) !important;
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    [data-theme="light"] .sidebar {
+      background: rgba(255, 255, 255, 0.65) !important;
+      border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+    }
     .glass-card {
-      background: #171c27 !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(13, 20, 36, 0.45) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
       border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.30) !important;
     }
     #view-calendar, #view-table {
-      background: #171c27 !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+      background: rgba(13, 20, 36, 0.42) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35) !important;
     }
     .filters-card {
-      background: #171c27 !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(13, 20, 36, 0.45) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
     }
     .kpi-card {
-      background: #171c27 !important;
+      background: rgba(13, 20, 36, 0.45) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+    [data-theme="light"] .glass-card,
+    [data-theme="light"] #view-calendar,
+    [data-theme="light"] #view-table,
+    [data-theme="light"] .filters-card,
+    [data-theme="light"] .kpi-card {
+      background: rgba(255, 255, 255, 0.60) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.50) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+    }
+    .month-calendar-card, .week-calendar-card {
+      background: rgba(11, 18, 33, 0.35) !important;
+      backdrop-filter: blur(10px) saturate(160%);
+      -webkit-backdrop-filter: blur(10px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    [data-theme="light"] .month-calendar-card, 
+    [data-theme="light"] .week-calendar-card {
+      background: rgba(255, 255, 255, 0.55) !important;
+      border: 1px solid rgba(0, 0, 0, 0.08) !important;
     }
     .pill-outage { background: rgba(37, 99, 235, 0.9); border-left: 3px solid #93c5fd; }
     .pill-routine { background: rgba(234, 88, 12, 0.9); border-left: 3px solid #fdba74; }
@@ -1579,7 +1619,7 @@
         `;
 
         const weekCard = document.createElement('div');
-        weekCard.className = 'bg-[#111622] border border-slate-700/70 rounded-xl p-4 shadow-xl space-y-3';
+        weekCard.className = 'week-calendar-card rounded-xl p-4 shadow-xl space-y-3';
 
         const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -1742,7 +1782,7 @@
         const mIdx = ((absM % 12) + 12) % 12;
 
         const monthCard = document.createElement('div');
-        monthCard.className = 'bg-[#111622] border border-slate-700/70 rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
+        monthCard.className = 'month-calendar-card rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
 
         const weekRows = getWeekRowsForMonth(yIdx, mIdx);
 
