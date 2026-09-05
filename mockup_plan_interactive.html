@@ -401,6 +401,77 @@
       color: #1e293b;
     }
 
+    /* ApexCharts Toolbar & Dropdown Menu Styling (High Contrast) */
+    .apexcharts-toolbar {
+      background: rgba(15, 23, 42, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 8px !important;
+      padding: 2px 4px !important;
+      backdrop-filter: blur(8px) !important;
+      z-index: 20 !important;
+    }
+    .apexcharts-toolbar svg {
+      fill: #94a3b8 !important;
+      transition: fill 0.15s ease !important;
+    }
+    .apexcharts-toolbar svg:hover {
+      fill: #38bdf8 !important;
+    }
+    .apexcharts-toolbar .apexcharts-selected svg {
+      fill: #38bdf8 !important;
+    }
+    .apexcharts-menu {
+      background: #0f172a !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-radius: 8px !important;
+      padding: 6px !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
+      min-width: 135px !important;
+      z-index: 30 !important;
+    }
+    .apexcharts-menu-item {
+      color: #f8fafc !important;
+      padding: 8px 14px !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      font-family: 'Inter', sans-serif !important;
+      border-radius: 6px !important;
+      transition: all 0.15s ease !important;
+      cursor: pointer !important;
+      text-align: left !important;
+    }
+    .apexcharts-menu-item:hover {
+      background: #1e293b !important;
+      color: #38bdf8 !important;
+    }
+
+    [data-theme="light"] .apexcharts-toolbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    }
+    [data-theme="light"] .apexcharts-toolbar svg {
+      fill: #475569 !important;
+    }
+    [data-theme="light"] .apexcharts-toolbar svg:hover {
+      fill: #2563eb !important;
+    }
+    [data-theme="light"] .apexcharts-toolbar .apexcharts-selected svg {
+      fill: #2563eb !important;
+    }
+    [data-theme="light"] .apexcharts-menu {
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+    }
+    [data-theme="light"] .apexcharts-menu-item {
+      color: #0f172a !important;
+    }
+    [data-theme="light"] .apexcharts-menu-item:hover {
+      background: #f1f5f9 !important;
+      color: #2563eb !important;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
@@ -3077,6 +3148,12 @@
       }
       if (urlParams.get('drop') === 'open') {
         toggleTrDropdown(true);
+      }
+      if (urlParams.has('menu')) {
+        setTimeout(() => {
+          const menuIcon = document.querySelector('.apexcharts-menu-icon');
+          if (menuIcon) menuIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }, 150);
       }
     });
   </script>
