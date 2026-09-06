@@ -156,8 +156,11 @@ function setupEventListeners() {
     if (e.key === 'Escape') closeModal();
   });
   
-  // CSV Import File Input
-  document.getElementById('csv-file-input').addEventListener('change', handleCSVImport);
+  // CSV Import File Input (if present)
+  const csvInput = document.getElementById('csv-file-input');
+  if (csvInput) {
+    csvInput.addEventListener('change', handleCSVImport);
+  }
 }
 
 function isExcludedSite(site) {
