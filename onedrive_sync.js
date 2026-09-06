@@ -9,9 +9,9 @@
   const STORAGE_CONFIG_KEY = 'GPSC_ONEDRIVE_SYNC_CONFIG';
   const DEFAULT_CONFIG = {
     mode: 'auto', // 'auto', 'cloud', 'lan', 'standalone'
-    webhookUrl: '',
+    webhookUrl: 'https://defaultc6445630e6024993a6057e41f70338.e8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/03/workflows/4a6d80323dda4e4f817d96bb96eda5d6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dFq0nn4ZY7e71R9fySVGOw3VjUrLCdOCvaDxDsIJeTk',
     autoSync: true,
-    lastSyncTime: null,
+    lastSyncTime: new Date().toISOString(),
     syncIntervalSec: 60
   };
 
@@ -156,7 +156,7 @@
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'PING', timestamp: new Date().toISOString() })
+        body: JSON.stringify({ action: 'SAVE_PLAN', test: true, timestamp: new Date().toISOString() })
       });
       return { success: res.ok, status: res.status, message: res.ok ? 'Connection Successful! Power Automate responded.' : 'HTTP ' + res.status };
     } catch (err) {
