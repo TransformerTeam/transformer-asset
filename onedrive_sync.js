@@ -171,7 +171,7 @@
 
   // --- UI: INJECT STATUS BADGE ---
   function injectBadgeUI() {
-    let badge = document.getElementById('onedrive-sync-badge') || document.getElementById('btn-onedrive-sync');
+    let badge = document.getElementById('onedrive-sync-badge') || document.getElementById('btn-header-onedrive') || document.getElementById('btn-onedrive-sync');
     if (!badge) {
       badge = document.createElement('button');
       badge.id = 'onedrive-sync-badge';
@@ -197,7 +197,6 @@
         document.body.appendChild(badge);
       }
     } else {
-      badge.id = 'onedrive-sync-badge';
       badge.onclick = openSettingsModal;
     }
 
@@ -206,7 +205,7 @@
   }
 
   function updateBadgeUI(errMsg = null) {
-    const badge = document.getElementById('onedrive-sync-badge');
+    const badge = document.getElementById('onedrive-sync-badge') || document.getElementById('btn-header-onedrive') || document.getElementById('btn-onedrive-sync');
     if (!badge) return;
 
     const mode = getActiveMode();
@@ -214,6 +213,27 @@
     if (config.lastSyncTime) {
       const d = new Date(config.lastSyncTime);
       timeStr = ` (${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')})`;
+    }
+
+    const isTabBtn = badge.classList.contains('header-tab-btn');
+    if (isTabBtn) {
+      if (syncState === 'syncing') {
+        badge.innerHTML = `<i class="fa-solid fa-cloud-arrow-up animate-spin text-sky-400"></i> OneDrive`;
+        badge.title = 'Synchronizing with OneDrive...';
+      } else if (syncState === 'error') {
+        badge.innerHTML = `<i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive`;
+        badge.title = errMsg || 'OneDrive connection status. Click to configure.';
+      } else if (mode === 'cloud') {
+        badge.innerHTML = `<i class="fa-brands fa-microsoft text-emerald-400"></i> OneDrive`;
+        badge.title = 'Connected to Corporate OneDrive via Power Automate. Click for settings.';
+      } else if (mode === 'lan') {
+        badge.innerHTML = `<i class="fa-brands fa-microsoft text-indigo-400"></i> OneDrive`;
+        badge.title = 'Syncing with host PC OneDrive folder over LAN. Click for settings.';
+      } else {
+        badge.innerHTML = `<i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive`;
+        badge.title = 'Working locally in browser storage. Click to connect Corporate OneDrive.';
+      }
+      return;
     }
 
     if (syncState === 'syncing') {
