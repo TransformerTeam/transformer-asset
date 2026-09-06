@@ -408,6 +408,16 @@ header p {
   overflow-y: auto;
 }
 
+/* Site Toolbar Row - Aligns Site Selector & Action Tabs on the Same Line (แนวเดียวกัน) */
+.site-toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 /* Site Selector Buttons - Unified Tab Menu Styling Matching Plan Page */
 .site-selector-bar {
   display: inline-flex;

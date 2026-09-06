@@ -38,25 +38,6 @@
           <p>HV NETWORK MAINTENANCE</p>
         </div>
       </div>
-      
-      <div class="header-actions">
-        <!-- Unified Header Tab Menu Matching Plan Page -->
-        <div class="unified-header-tabs">
-          <button id="btn-header-reset-zoom" onclick="document.getElementById('btn-zoom-reset')?.click()" class="header-tab-btn" title="Reset SCADA Zoom">
-            <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
-          </button>
-          <button id="btn-header-capture" onclick="document.getElementById('btn-capture-scada')?.click()" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
-            <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
-          </button>
-          <div class="tab-divider"></div>
-          <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
-            <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
-          </button>
-          <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
-            <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
-          </button>
-        </div>
-      </div>
     </header>
 
     <!-- Main Workspace -->
@@ -86,9 +67,27 @@
       </aside>
 
       <main class="scada-content">
-        <!-- Site Selector Bar -->
-        <section class="site-selector-bar" id="site-tabs">
-          <!-- Site buttons dynamically added here -->
+        <!-- Site Selector & Action Tabs Row (แนวเดียวกันกับ SITE) -->
+        <section class="site-toolbar-row">
+          <div class="site-selector-bar" id="site-tabs">
+            <!-- Site buttons dynamically added here -->
+          </div>
+
+          <div class="unified-header-tabs">
+            <button id="btn-header-reset-zoom" onclick="document.getElementById('btn-zoom-reset')?.click()" class="header-tab-btn" title="Reset SCADA Zoom">
+              <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
+            </button>
+            <button id="btn-header-capture" onclick="document.getElementById('btn-capture-scada')?.click()" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
+              <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
+            </button>
+            <div class="tab-divider"></div>
+            <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
+              <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
+            </button>
+            <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
+              <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
+            </button>
+          </div>
         </section>
 
         <!-- Search and Controls Row -->
