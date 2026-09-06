@@ -137,7 +137,15 @@ header {
   color: var(--text-primary);
 }
 
-.header-controls-row,
+.header-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap !important;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .header-top-row {
   display: flex;
   justify-content: space-between;
@@ -187,30 +195,32 @@ header p {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 /* Unified Header Action Tab Menu (Matching Plan Page) */
 .unified-header-tabs {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.35rem;
+  gap: 0.2rem;
+  padding: 0.2rem 0.25rem;
   background: var(--bg-secondary, rgba(15, 23, 42, 0.75));
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
   border-radius: 0.65rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
 }
 
 .header-tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.45rem;
-  font-size: 0.825rem;
+  gap: 0.35rem;
+  padding: 0.32rem 0.55rem;
+  border-radius: 0.4rem;
+  font-size: 0.76rem;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   color: var(--text-secondary, #94a3b8);
@@ -220,6 +230,7 @@ header p {
   white-space: nowrap;
   transition: all 0.15s ease;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .header-tab-btn:hover {
@@ -237,24 +248,24 @@ header p {
 
 .unified-header-tabs .tab-divider {
   width: 1px;
-  height: 1.25rem;
+  height: 1.1rem;
   background: var(--border-color, rgba(255, 255, 255, 0.12));
-  margin: 0 0.2rem;
+  margin: 0 0.15rem;
 }
 
 .unified-header-tabs .zoom-level {
-  font-size: 0.825rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--text-primary);
-  min-width: 44px;
+  min-width: 36px;
   text-align: center;
   font-family: 'Outfit', sans-serif;
   user-select: none;
-  padding: 0 0.15rem;
+  padding: 0 0.1rem;
 }
 
 .unified-header-tabs .btn-zoom {
-  padding: 0.45rem 0.65rem !important;
+  padding: 0.32rem 0.45rem !important;
 }
 
 .btn {
@@ -435,8 +446,8 @@ header p {
 .site-selector-bar {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.35rem;
+  gap: 0.15rem;
+  padding: 0.2rem 0.25rem;
   background: var(--bg-secondary, rgba(15, 23, 42, 0.75));
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
   border-radius: 0.65rem;
@@ -446,15 +457,15 @@ header p {
   width: fit-content;
   max-width: 100%;
   overflow-x: auto;
+  flex-shrink: 1;
 }
 
 .site-tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.45rem;
-  font-size: 0.825rem;
+  padding: 0.32rem 0.55rem;
+  border-radius: 0.4rem;
+  font-size: 0.76rem;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: var(--text-secondary, #94a3b8);
@@ -463,6 +474,7 @@ header p {
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .site-tab-btn:hover {
