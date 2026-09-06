@@ -444,28 +444,30 @@ header p {
 
 /* Site Selector Buttons - Unified Tab Menu Styling Matching Plan Page */
 .site-selector-bar {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.15rem;
-  padding: 0.2rem 0.25rem;
+  gap: 0.25rem;
+  padding: 0.25rem 0.35rem;
   background: var(--bg-secondary, rgba(15, 23, 42, 0.75));
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
   border-radius: 0.65rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  width: fit-content;
-  max-width: 100%;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
-  flex-shrink: 1;
 }
 
 .site-tab-btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.32rem 0.55rem;
+  justify-content: center;
+  text-align: center;
+  flex: 1 1 0%;
+  padding: 0.36rem 0.65rem;
   border-radius: 0.4rem;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: var(--text-secondary, #94a3b8);
@@ -474,7 +476,7 @@ header p {
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
-  flex-shrink: 0;
+  min-width: fit-content;
 }
 
 .site-tab-btn:hover {
