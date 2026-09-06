@@ -31,19 +31,25 @@
 
     <!-- Header -->
     <header>
-      <div class="header-top-row">
-        <div class="header-title-section">
-          <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
-          <div>
-            <h1>TRANSFORMER SINGLE-LINE DIAGRAM</h1>
-            <p>HV NETWORK MAINTENANCE</p>
-          </div>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+        <div>
+          <h1>TRANSFORMER SINGLE-LINE DIAGRAM</h1>
+          <p>HV NETWORK MAINTENANCE</p>
         </div>
-        
+      </div>
+
+      <!-- Controls Row: Site Selector Tabs on Left, Action Tabs on Right (อยู่แนวเดียวกันกับ SITE) -->
+      <div class="header-controls-row">
+        <!-- Site Selector Bar -->
+        <section class="site-selector-bar" id="site-tabs">
+          <!-- Site buttons dynamically added here -->
+        </section>
+
         <div class="header-actions">
           <!-- Unified Header Tab Menu Matching Plan Page -->
           <div class="unified-header-tabs">
-            <!-- Zoom Controls (ย้ายมาอยู่หน้า Reset View) -->
+            <!-- Zoom Controls -->
             <button class="header-tab-btn btn-zoom" id="btn-zoom-out" title="Zoom Out">
               <i class="fa-solid fa-magnifying-glass-minus"></i>
             </button>
@@ -68,11 +74,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Site Selector Bar (ย้ายมาอยู่ใต้หัวข้อ) -->
-      <section class="site-selector-bar" id="site-tabs">
-        <!-- Site buttons dynamically added here -->
-      </section>
     </header>
 
     <!-- Main Workspace -->
