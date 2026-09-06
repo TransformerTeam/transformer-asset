@@ -38,6 +38,34 @@
           <p>HV NETWORK MAINTENANCE</p>
         </div>
       </div>
+      
+      <div class="header-actions">
+        <!-- Unified Header Tab Menu Matching Plan Page -->
+        <div class="unified-header-tabs">
+          <!-- Zoom Controls (ย้ายมาอยู่หน้า Reset View) -->
+          <button class="header-tab-btn btn-zoom" id="btn-zoom-out" title="Zoom Out">
+            <i class="fa-solid fa-magnifying-glass-minus"></i>
+          </button>
+          <span class="zoom-level" id="zoom-level-val">100%</span>
+          <button class="header-tab-btn btn-zoom" id="btn-zoom-in" title="Zoom In">
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+          </button>
+
+          <button id="btn-zoom-reset" class="header-tab-btn" title="Reset SCADA Zoom (100%)">
+            <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
+          </button>
+          <button id="btn-capture-scada" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
+            <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
+          </button>
+          <div class="tab-divider"></div>
+          <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
+            <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
+          </button>
+          <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
+            <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
+          </button>
+        </div>
+      </div>
     </header>
 
     <!-- Main Workspace -->
@@ -67,27 +95,9 @@
       </aside>
 
       <main class="scada-content">
-        <!-- Site Selector & Action Tabs Row (แนวเดียวกันกับ SITE) -->
-        <section class="site-toolbar-row">
-          <div class="site-selector-bar" id="site-tabs">
-            <!-- Site buttons dynamically added here -->
-          </div>
-
-          <div class="unified-header-tabs">
-            <button id="btn-header-reset-zoom" onclick="document.getElementById('btn-zoom-reset')?.click()" class="header-tab-btn" title="Reset SCADA Zoom">
-              <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
-            </button>
-            <button id="btn-header-capture" onclick="document.getElementById('btn-capture-scada')?.click()" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
-              <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
-            </button>
-            <div class="tab-divider"></div>
-            <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
-              <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
-            </button>
-            <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
-              <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
-            </button>
-          </div>
+        <!-- Site Selector Bar -->
+        <section class="site-selector-bar" id="site-tabs">
+          <!-- Site buttons dynamically added here -->
         </section>
 
         <!-- Search and Controls Row -->
@@ -102,15 +112,6 @@
             <span class="search-stat-item"><span class="stat-lbl">Total:</span> <strong id="search-stat-total">0 Units</strong></span>
             <span class="search-stat-item"><span class="stat-lbl">Assessed:</span> <strong id="search-stat-assessed" style="color: #10b981;">0%</strong></span>
             <span class="search-stat-item"><span class="stat-lbl">No Assess:</span> <strong id="search-stat-noassess" style="color: #94a3b8;">0%</strong></span>
-          </div>
-          
-          <!-- Zoom Controls -->
-          <div class="scada-zoom-controls">
-            <button class="btn btn-zoom" id="btn-zoom-out" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-            <span class="zoom-level" id="zoom-level-val">100%</span>
-            <button class="btn btn-zoom" id="btn-zoom-in" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-            <button class="btn btn-zoom" id="btn-zoom-reset" title="Reset Zoom"><i class="fa-solid fa-arrows-to-eye"></i></button>
-            <button class="btn btn-zoom" id="btn-capture-scada" title="Capture to PNG (Transparent)"><i class="fa-solid fa-camera"></i></button>
           </div>
         </section>
 

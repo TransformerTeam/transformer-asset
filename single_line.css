@@ -234,6 +234,21 @@ header p {
   margin: 0 0.2rem;
 }
 
+.unified-header-tabs .zoom-level {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 44px;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  user-select: none;
+  padding: 0 0.15rem;
+}
+
+.unified-header-tabs .btn-zoom {
+  padding: 0.45rem 0.65rem !important;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -406,16 +421,6 @@ header p {
   padding: 0 1.25rem 1.25rem 1.25rem;
   gap: 1.25rem;
   overflow-y: auto;
-}
-
-/* Site Toolbar Row - Aligns Site Selector & Action Tabs on the Same Line (แนวเดียวกัน) */
-.site-toolbar-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  width: 100%;
 }
 
 /* Site Selector Buttons - Unified Tab Menu Styling Matching Plan Page */
