@@ -259,6 +259,81 @@
       border: 1px solid #0f766e;
       border-radius: 2px;
     }
+
+    /* Finished Tasks (100% Executed): Deep Solid Saturated Colors (สีเข้มเด่นชัด) */
+    .gantt-bar.gantt-bar-finished {
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+    }
+    .gantt-bar.gantt-bar-finished:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-outage {
+      background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
+      border-color: #ef4444 !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-outage.has-start-handle::before {
+      background: #fca5a5 !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-life {
+      background: linear-gradient(135deg, #6d28d9, #5b21b6) !important;
+      border-color: #a855f7 !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-life.has-start-handle::before {
+      background: #d8b4fe !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-plant {
+      background: linear-gradient(135deg, #0f766e, #115e59) !important;
+      border-color: #2dd4bf !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-plant.has-start-handle::before {
+      background: #99f6e4 !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-oil {
+      background: linear-gradient(135deg, #b45309, #92400e) !important;
+      border-color: #f59e0b !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-oil.has-start-handle::before {
+      background: #fde68a !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-visual {
+      background: linear-gradient(135deg, #0369a1, #075985) !important;
+      border-color: #38bdf8 !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-visual.has-start-handle::before {
+      background: #bae6fd !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-oltc {
+      background: linear-gradient(135deg, #be185d, #9d174d) !important;
+      border-color: #f472b6 !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-oltc.has-start-handle::before {
+      background: #fbcfe8 !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-52week {
+      background: linear-gradient(135deg, #0369a1, #075985) !important;
+      border-color: #38bdf8 !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-52week.has-start-handle::before {
+      background: #bae6fd !important;
+      border-color: #ffffff !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-assess {
+      background: linear-gradient(135deg, #0f766e, #115e59) !important;
+      border-color: #2dd4bf !important;
+    }
+    .gantt-bar.gantt-bar-finished.gantt-bar-assess.has-start-handle::before {
+      background: #99f6e4 !important;
+      border-color: #ffffff !important;
+    }
+
     /* Continuation Arrows */
     .gantt-bar.cont-left {
       border-top-left-radius: 0;
@@ -762,13 +837,14 @@
             </div>
 
             <!-- Calendar Legend -->
-            <div class="flex flex-wrap items-center gap-3 text-[11px]">
+            <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 font-medium">
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> Transformer Outage</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span> Life Assessment</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span> Plant Assessment</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Oil Analysis</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span> 3M Visual</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span> OLTC Inspection</span>
+              <span class="flex items-center gap-1.5 border-l border-slate-700/60 pl-2.5"><span class="w-2.5 h-2.5 rounded bg-slate-900 border border-slate-500 shadow-sm flex items-center justify-center text-[7px] text-emerald-400 font-bold"><i class="fa-solid fa-check"></i></span> Finished (แถบสีเข้ม / 100%)</span>
             </div>
           </div>
 
@@ -2668,12 +2744,13 @@
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
             const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
             const handleClass = hasStartHandle ? 'has-start-handle' : '';
+            const doneClass = isDone ? 'gantt-bar-finished' : '';
             const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
 
             const bar = document.createElement('div');
             bar.onclick = () => openModal('edit', t.id);
             bar.title = `${t.wbs}: ${t.task} (${t.plant} - ${t.tr || 'TR'}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%`;
-            bar.className = `gantt-bar ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group`;
+            bar.className = `gantt-bar ${catClass} ${doneClass} ${handleClass} ${contLeftClass} ${contRightClass} group`;
             bar.style.gridColumn = `${pt.startCol} / span ${pt.span}`;
             bar.style.gridRow = `${pt.trackRow + 1}`;
 
@@ -2689,8 +2766,8 @@
                   })() : ''}
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0 ml-1 text-[10px]">
-                  <span class="font-bold opacity-80">${t.progress}%</span>
-                  ${isDone ? '<i class="fa-solid fa-circle-check text-emerald-700 text-[11px]"></i>' : ''}
+                  <span class="font-bold opacity-90">${t.progress}%</span>
+                  ${isDone ? '<i class="fa-solid fa-circle-check text-emerald-300 text-[11px] drop-shadow-sm"></i>' : ''}
                   ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>' : ''}
                 </div>
               </div>
@@ -2844,6 +2921,7 @@
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
             const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
             const handleClass = hasStartHandle ? 'has-start-handle' : '';
+            const doneClass = isDone ? 'gantt-bar-finished' : '';
             const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
 
             // Text rendering based on view density
@@ -2857,8 +2935,8 @@
                     ${t.tr ? `<span class="opacity-75 text-[9.5px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
                   </div>
                   <div class="flex items-center gap-1 shrink-0 ml-1 text-[9.5px]">
-                    <span class="font-bold opacity-80">${t.progress}%</span>
-                    ${isDone ? '<i class="fa-solid fa-check text-emerald-700 text-[10px]"></i>' : ''}
+                    <span class="font-bold opacity-90">${t.progress}%</span>
+                    ${isDone ? '<i class="fa-solid fa-check text-emerald-300 text-[10px] drop-shadow-sm"></i>' : ''}
                     ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[8px] opacity-70"></i>' : ''}
                   </div>
                 </div>
@@ -2871,7 +2949,7 @@
                     <span class="font-mono font-black opacity-95">${pt.span >= 2 ? displayTitle : t.wbs}</span>
                   </div>
                   <div class="flex items-center gap-0.5 shrink-0 text-[8.5px]">
-                    ${isDone ? '<i class="fa-solid fa-check text-emerald-700 text-[9px]"></i>' : `<span class="font-bold opacity-75">${t.progress}%</span>`}
+                    ${isDone ? '<i class="fa-solid fa-check text-emerald-300 text-[9px] drop-shadow-sm"></i>' : `<span class="font-bold opacity-75">${t.progress}%</span>`}
                     ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[7px] opacity-70"></i>' : ''}
                   </div>
                 </div>
@@ -2892,7 +2970,7 @@
             trackLayerHTML += `
               <div onclick="openModal('edit', '${t.id}')"
                    title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%"
-                   class="gantt-bar ${barVariantClass} ${catClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
+                   class="gantt-bar ${barVariantClass} ${catClass} ${doneClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
                    style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
                 ${barContent}
               </div>
@@ -3207,6 +3285,22 @@
       }
       if (urlParams.has('today')) {
         calToday();
+      }
+      if (urlParams.has('date')) {
+        const dParts = urlParams.get('date').split('-').map(Number);
+        if (dParts.length === 3) {
+          currentYear = dParts[0];
+          startMonth = dParts[1] - 1;
+          currentWeekDate = new Date(currentYear, startMonth, dParts[2]);
+          renderCalendar();
+        }
+      } else if (urlParams.has('month')) {
+        const m = parseInt(urlParams.get('month'));
+        if (!isNaN(m)) {
+          startMonth = m - 1;
+          currentWeekDate = new Date(currentYear, startMonth, 1);
+          renderCalendar();
+        }
       }
       if (urlParams.get('modal') === 'sub') {
         openModalForSub(urlParams.get('parent') || 'TO3');
