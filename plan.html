@@ -67,6 +67,54 @@
       letter-spacing: 0.08em;
       opacity: 0.9;
     }
+
+    /* Unified Header Action Tab Menu (รวมเป็น แท็บเมนู เดียวกัน) */
+    .unified-header-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.35rem;
+      background: var(--bg-secondary, rgba(15, 23, 42, 0.75));
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+      border-radius: 0.65rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .header-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.45rem;
+      font-size: 0.825rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-secondary, #94a3b8);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast, 0.15s ease);
+      text-decoration: none;
+    }
+    .header-tab-btn:hover {
+      background: var(--bg-tertiary, rgba(255, 255, 255, 0.08));
+      color: var(--text-primary, #ffffff);
+    }
+    .header-tab-btn.active {
+      background: var(--primary, #4f46e5);
+      border-color: var(--primary, #4f46e5);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
+    }
+    .unified-header-tabs .tab-divider {
+      width: 1px;
+      height: 1.25rem;
+      background: var(--border-color, rgba(255, 255, 255, 0.12));
+      margin: 0 0.2rem;
+    }
     .sidebar {
       background: rgba(13, 19, 33, 0.50) !important;
       backdrop-filter: blur(16px) saturate(160%);
@@ -618,45 +666,39 @@
       </div>
 
       <div class="header-actions">
-        <!-- View Switcher -->
-        <div class="p-1 rounded-lg border flex items-center gap-1 text-xs font-medium" style="background: var(--bg-secondary); border-color: var(--border-color);">
-          <button id="btn-view-cal" onclick="switchView('cal')" class="view-btn active" title="Switch to Calendar View">
+        <!-- Unified Tab Menu: View Switching & Quick Actions (รวมเป็นแท็บเมนูเดียวกัน) -->
+        <div class="unified-header-tabs">
+          <!-- Views Segment -->
+          <button id="btn-view-cal" onclick="switchView('cal')" class="header-tab-btn active" title="Switch to Calendar View">
             <i class="fa-solid fa-calendar-days"></i> Calendar
           </button>
-          <button id="btn-view-tbl" onclick="switchView('tbl')" class="view-btn" title="Switch to WBS Table View">
+          <button id="btn-view-tbl" onclick="switchView('tbl')" class="header-tab-btn" title="Switch to WBS Table View">
             <i class="fa-solid fa-table-list"></i> Table
           </button>
-          <button id="btn-view-both" onclick="switchView('both')" class="view-btn" title="Show Both Calendar &amp; Table">
+          <button id="btn-view-both" onclick="switchView('both')" class="header-tab-btn" title="Show Both Calendar &amp; Table">
             <i class="fa-solid fa-table-columns"></i> Both
           </button>
-          <button id="btn-view-scurve" onclick="switchView('scurve')" class="view-btn" title="Switch to S-Curve Progress &amp; Cost Chart">
+          <button id="btn-view-scurve" onclick="switchView('scurve')" class="header-tab-btn" title="Switch to S-Curve Progress &amp; Cost Chart">
             <i class="fa-solid fa-chart-line"></i> S-Curve
           </button>
+
+          <!-- Divider -->
+          <div class="tab-divider"></div>
+
+          <!-- Actions Segment -->
+          <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
+            <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
+          </button>
+          <button id="btn-header-reset" onclick="resetPlanData()" class="header-tab-btn" title="Reset to initial data">
+            <i class="fa-solid fa-rotate-left" style="color: var(--accent, #60a5fa);"></i> Reset
+          </button>
+          <button id="btn-header-export" onclick="exportPlanCSV()" class="header-tab-btn" title="Export to CSV">
+            <i class="fa-solid fa-file-csv" style="color: var(--color-good, #10b981);"></i> Export CSV
+          </button>
+          <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
+            <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
+          </button>
         </div>
-
-        <!-- OneDrive Enterprise Sync Button -->
-        <button onclick="OneDriveSync.openSettingsModal()" title="OneDrive / SharePoint Enterprise Sync" class="btn">
-          <i class="fa-brands fa-microsoft text-sky-400"></i>
-          <span class="hidden md:inline">OneDrive</span>
-        </button>
-
-        <!-- Reset Button -->
-        <button onclick="resetPlanData()" title="Reset to initial data" class="btn">
-          <i class="fa-solid fa-rotate-left" style="color: var(--accent);"></i>
-          <span class="hidden md:inline">Reset</span>
-        </button>
-
-        <!-- Export CSV Button -->
-        <button onclick="exportPlanCSV()" title="Export to CSV" class="btn">
-          <i class="fa-solid fa-file-csv" style="color: var(--color-good, #10b981);"></i>
-          <span class="hidden md:inline">Export CSV</span>
-        </button>
-
-        <!-- Theme Studio Button -->
-        <button class="btn theme-studio-btn" id="theme-studio-btn" title="Theme Studio (Alt+T)">
-          <i class="fa-solid fa-palette"></i>
-          <span>Theme Studio</span>
-        </button>
       </div>
     </header>
 
@@ -1579,10 +1621,10 @@
       const viewTbl = document.getElementById('view-table');
       const viewScurve = document.getElementById('view-scurve');
 
-      if (btnCal) btnCal.className = (view === 'cal') ? 'view-btn active' : 'view-btn';
-      if (btnTbl) btnTbl.className = (view === 'tbl') ? 'view-btn active' : 'view-btn';
-      if (btnBoth) btnBoth.className = (view === 'both') ? 'view-btn active' : 'view-btn';
-      if (btnScurve) btnScurve.className = (view === 'scurve') ? 'view-btn active' : 'view-btn';
+      if (btnCal) btnCal.className = (view === 'cal') ? 'header-tab-btn active' : 'header-tab-btn';
+      if (btnTbl) btnTbl.className = (view === 'tbl') ? 'header-tab-btn active' : 'header-tab-btn';
+      if (btnBoth) btnBoth.className = (view === 'both') ? 'header-tab-btn active' : 'header-tab-btn';
+      if (btnScurve) btnScurve.className = (view === 'scurve') ? 'header-tab-btn active' : 'header-tab-btn';
 
       if (view === 'cal') {
         if (viewCal) viewCal.classList.remove('hidden');
