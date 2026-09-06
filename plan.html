@@ -609,6 +609,12 @@
           </button>
         </div>
 
+        <!-- OneDrive Enterprise Sync Button -->
+        <button onclick="OneDriveSync.openSettingsModal()" title="OneDrive / SharePoint Enterprise Sync" class="btn">
+          <i class="fa-brands fa-microsoft text-sky-400"></i>
+          <span class="hidden md:inline">OneDrive</span>
+        </button>
+
         <!-- Reset Button -->
         <button onclick="resetPlanData()" title="Reset to initial data" class="btn">
           <i class="fa-solid fa-rotate-left" style="color: var(--accent);"></i>
@@ -1455,6 +1461,9 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
       } catch (err) {}
+      if (window.OneDriveSync && typeof window.OneDriveSync.pushPlanData === 'function') {
+        window.OneDriveSync.pushPlanData(tasks);
+      }
     }
 
     function resetPlanData() {
@@ -3360,8 +3369,26 @@
           if (menuIcon) menuIcon.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         }, 150);
       }
+
+      // Hook up OneDrive Sync Listener for real-time team updates
+      if (window.OneDriveSync && typeof window.OneDriveSync.init === 'function') {
+        window.OneDriveSync.init({
+          pageType: 'plan',
+          onDataUpdated: (event, remoteTasks) => {
+            if (event === 'PLAN_UPDATED' && Array.isArray(remoteTasks) && remoteTasks.length > 0) {
+              tasks = remoteTasks;
+              recalculateAllParents();
+              renderAll();
+              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); } catch (e) {}
+            }
+          }
+        });
+      }
     });
   </script>
+
+  <!-- Enterprise OneDrive / SharePoint Sync Module -->
+  <script src="onedrive_sync.js"></script>
 
   <!-- Interactive Theme Editor UI -->
   <script src="theme_editor.js"></script>
