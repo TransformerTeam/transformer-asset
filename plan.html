@@ -1287,7 +1287,7 @@
     let selectedTrTags = [];
 
     // Initial Plan Dataset (Derived from user's Excel sheet with WBS Hierarchies)
-    let tasks = [
+    const INITIAL_TASKS = [
       // Transformer Outage: TO1..TO7 + Sub-tasks
       { id: 'TO1', wbs: 'TO1', sapMo: '40001001', parentId: null, task: 'GHECO-ONE: Outage Year 2026', lead: 'MMT', tr: 'KT1A', plant: 'GHECO-ONE', cat: 'Transformer Outage', start: '2026-01-05', end: '2026-01-27', days: 22, progress: 100, cost: 75260 },
       
@@ -1332,6 +1332,8 @@
       { id: 'OA2', wbs: 'OA2', sapMo: '40001025', parentId: null, task: '12 Months Oil Analysis CUP-1', lead: 'JIS', tr: 'All TRs', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 },
       { id: 'OA2.1', wbs: 'OA2.1', sapMo: '40001026', parentId: 'OA2', task: 'PR for Oil sampling CUP-1', lead: 'PIP', tr: 'Sampling', plant: 'CUP-1', cat: 'Oil Analysis', start: '2026-10-01', end: '2026-10-31', days: 31, progress: 100, cost: 0 }
     ];
+
+    let tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
 
     const initToday = new Date();
     let currentYear = initToday.getFullYear();
@@ -1399,15 +1401,54 @@
           if (Array.isArray(parsed) && parsed.length > 0) {
             parsed.forEach(t => {
               migrateTaskCategory(t);
-              if (t.sapMo === undefined) {
-                const initT = tasks.find(x => x.id === t.id);
-                t.sapMo = initT ? (initT.sapMo || '') : '';
+            });
+
+            // --- SMART MERGE (Keep user custom edits & sync any new tasks from GitHub master) ---
+            const savedMapById = new Map();
+            const savedMapByWbs = new Map();
+            parsed.forEach(t => {
+              if (t.id) savedMapById.set(t.id, t);
+              if (t.wbs) savedMapByWbs.set(t.wbs, t);
+            });
+
+            const merged = [...parsed];
+            let hasNewTasks = false;
+
+            INITIAL_TASKS.forEach((initT, idx) => {
+              const existing = (initT.id && savedMapById.get(initT.id)) || (initT.wbs && savedMapByWbs.get(initT.wbs));
+              if (!existing) {
+                // New task from GitHub: insert after its preceding sibling/parent to maintain natural WBS structure
+                let inserted = false;
+                for (let i = idx - 1; i >= 0; i--) {
+                  const prevInit = INITIAL_TASKS[i];
+                  const prevIdxInMerged = merged.findIndex(m => (m.id && m.id === prevInit.id) || (m.wbs && m.wbs === prevInit.wbs));
+                  if (prevIdxInMerged !== -1) {
+                    merged.splice(prevIdxInMerged + 1, 0, JSON.parse(JSON.stringify(initT)));
+                    inserted = true;
+                    break;
+                  }
+                }
+                if (!inserted) {
+                  merged.push(JSON.parse(JSON.stringify(initT)));
+                }
+                hasNewTasks = true;
+              } else {
+                // Task already exists in user's storage: backfill sapMo if missing
+                if (existing.sapMo === undefined && initT.sapMo) {
+                  existing.sapMo = initT.sapMo;
+                }
               }
             });
-            tasks = parsed;
+
+            tasks = merged;
+            if (hasNewTasks) {
+              saveTasksToStorage();
+            }
           }
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error('Error loading saved tasks:', err);
+      }
     }
 
     function saveTasksToStorage() {
@@ -1421,6 +1462,9 @@
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V4');
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V3');
+        tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
+        recalculateAllParents();
+        saveTasksToStorage();
         location.reload();
       }
     }
