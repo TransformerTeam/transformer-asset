@@ -31,41 +31,48 @@
 
     <!-- Header -->
     <header>
-      <div class="header-title-section">
-        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
-        <div>
-          <h1>TRANSFORMER SINGLE-LINE DIAGRAM</h1>
-          <p>HV NETWORK MAINTENANCE</p>
+      <div class="header-top-row">
+        <div class="header-title-section">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
+          <div>
+            <h1>TRANSFORMER SINGLE-LINE DIAGRAM</h1>
+            <p>HV NETWORK MAINTENANCE</p>
+          </div>
         </div>
-      </div>
-      
-      <div class="header-actions">
-        <!-- Unified Header Tab Menu Matching Plan Page -->
-        <div class="unified-header-tabs">
-          <!-- Zoom Controls (ย้ายมาอยู่หน้า Reset View) -->
-          <button class="header-tab-btn btn-zoom" id="btn-zoom-out" title="Zoom Out">
-            <i class="fa-solid fa-magnifying-glass-minus"></i>
-          </button>
-          <span class="zoom-level" id="zoom-level-val">100%</span>
-          <button class="header-tab-btn btn-zoom" id="btn-zoom-in" title="Zoom In">
-            <i class="fa-solid fa-magnifying-glass-plus"></i>
-          </button>
+        
+        <div class="header-actions">
+          <!-- Unified Header Tab Menu Matching Plan Page -->
+          <div class="unified-header-tabs">
+            <!-- Zoom Controls (ย้ายมาอยู่หน้า Reset View) -->
+            <button class="header-tab-btn btn-zoom" id="btn-zoom-out" title="Zoom Out">
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <span class="zoom-level" id="zoom-level-val">100%</span>
+            <button class="header-tab-btn btn-zoom" id="btn-zoom-in" title="Zoom In">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
 
-          <button id="btn-zoom-reset" class="header-tab-btn" title="Reset SCADA Zoom (100%)">
-            <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
-          </button>
-          <button id="btn-capture-scada" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
-            <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
-          </button>
-          <div class="tab-divider"></div>
-          <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
-            <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
-          </button>
-          <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
-            <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
-          </button>
+            <button id="btn-zoom-reset" class="header-tab-btn" title="Reset SCADA Zoom (100%)">
+              <i class="fa-solid fa-arrows-to-eye" style="color: var(--accent, #60a5fa);"></i> Reset View
+            </button>
+            <button id="btn-capture-scada" class="header-tab-btn" title="Capture Single Line Diagram (PNG)">
+              <i class="fa-solid fa-camera" style="color: var(--color-good, #10b981);"></i> Capture PNG
+            </button>
+            <div class="tab-divider"></div>
+            <button id="btn-header-onedrive" onclick="OneDriveSync.openSettingsModal()" class="header-tab-btn" title="OneDrive / SharePoint Enterprise Sync">
+              <i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive
+            </button>
+            <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
+              <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
+            </button>
+          </div>
         </div>
       </div>
+
+      <!-- Site Selector Bar (ย้ายมาอยู่ใต้หัวข้อ) -->
+      <section class="site-selector-bar" id="site-tabs">
+        <!-- Site buttons dynamically added here -->
+      </section>
     </header>
 
     <!-- Main Workspace -->
@@ -95,11 +102,6 @@
       </aside>
 
       <main class="scada-content">
-        <!-- Site Selector Bar -->
-        <section class="site-selector-bar" id="site-tabs">
-          <!-- Site buttons dynamically added here -->
-        </section>
-
         <!-- SCADA Canvas -->
         <section class="scada-panel">
           <div class="scada-zoom-container" id="scada-zoom-container" style="transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: top left; width: max-content; min-width: 100%;">
