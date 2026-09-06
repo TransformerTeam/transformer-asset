@@ -72,10 +72,12 @@ function setupEventListeners() {
   }
   
   // Search Input
-  searchInput.addEventListener('input', (e) => {
-    currentSearch = e.target.value.toLowerCase().trim();
-    applySearchFilter();
-  });
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentSearch = e.target.value.toLowerCase().trim();
+      applySearchFilter();
+    });
+  }
   
   // Zoom Controls
   const btnZoomIn = document.getElementById('btn-zoom-in');
