@@ -3,7 +3,7 @@
     {
       "id": "TO1",
       "wbs": "TO1",
-      "sapMo": "",
+      "sapMo": "40001001",
       "parentId": null,
       "task": "GHECO-ONE: Outage Year 2026",
       "lead": "MMT",
@@ -12,7 +12,7 @@
       "cat": "Transformer Outage",
       "start": "2026-01-05",
       "end": "2026-01-27",
-      "days": 23,
+      "days": 22,
       "progress": 100,
       "cost": 75260
     },
@@ -641,5 +641,5 @@
       "sapMo": ""
     }
   ],
-  "timestamp": "2026-09-07T09:10:28.997Z"
+  "timestamp": "2026-09-07T09:10:46.083Z"
 }
