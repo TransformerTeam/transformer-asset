@@ -1133,8 +1133,8 @@ header p {
 }
 
 .modal-window {
-  background-color: var(--scada-bg-secondary);
-  border: 1px solid var(--scada-border);
+  background-color: #171c27;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   width: 90%;
   max-width: 850px;
@@ -1145,13 +1145,23 @@ header p {
   transition: transform 0.3s ease;
 }
 
+[data-theme="dark"] .modal-window {
+  background-color: #171c27 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="light"] .modal-window {
+  background-color: rgba(248, 250, 252, 0.98) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
 .modal-overlay.active .modal-window {
   transform: scale(1);
 }
 
 .modal-header {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--scada-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1214,12 +1224,17 @@ header p {
   display: flex;
   flex-direction: column;
   padding: 0.6rem 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
 }
 [data-theme="dark"] .spec-item {
-  background: #1A3B70;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="light"] .spec-item {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .spec-label {
@@ -1244,13 +1259,18 @@ header p {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1rem;
   border-radius: 12px;
 }
 [data-theme="dark"] .health-gauge-box {
-  background: #1A3B70;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="light"] .health-gauge-box {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .gauge-chart-container {
@@ -1350,7 +1370,7 @@ header p {
 
 .progress-bar-bg {
   height: 6px;
-  background-color: var(--scada-bg-primary);
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -1365,14 +1385,19 @@ header p {
 /* Recommendation card inside Modal */
 .recommendation-card {
   border-left: 4px solid var(--scada-text-muted);
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.04);
   padding: 0.75rem;
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-left-width: 4px;
 }
 [data-theme="dark"] .recommendation-card {
-  background: #1A3B70;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="light"] .recommendation-card {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .recommendation-card.good, .recommendation-card.healthy { border-left-color: var(--color-good); }
