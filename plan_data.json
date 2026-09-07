@@ -61,13 +61,13 @@
       "start": "2026-01-09",
       "end": "2026-01-12",
       "days": 4,
-      "progress": 0,
+      "progress": 50,
       "cost": 36000
     },
     {
       "id": "TO3.1",
       "wbs": "TO3.1",
-      "sapMo": "",
+      "sapMo": "1300018640",
       "parentId": "TO3",
       "task": "Install Scaffolding",
       "lead": "JIS",
@@ -77,7 +77,7 @@
       "start": "2026-01-09",
       "end": "2026-01-10",
       "days": 2,
-      "progress": 0,
+      "progress": 100,
       "cost": 36000
     },
     {
@@ -641,5 +641,5 @@
       "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T09:45:28.416Z"
+  "timestamp": "2026-09-07T09:46:00.694Z"
 }
