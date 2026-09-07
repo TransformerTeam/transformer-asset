@@ -735,7 +735,23 @@
       "progress": 0,
       "cost": 0,
       "parentId": null
+    },
+    {
+      "id": "gen_1788798701346",
+      "wbs": "TO10",
+      "sapMo": "30000083460",
+      "cat": "Transformer Outage",
+      "task": "GT2C&Bleeding 3Y PM 2026",
+      "plant": "CUP-1",
+      "tr": "",
+      "lead": "JIS",
+      "start": "2026-03-27",
+      "end": "2026-03-30",
+      "days": 4,
+      "progress": 0,
+      "cost": 0,
+      "parentId": null
     }
   ],
-  "timestamp": "2026-09-07T16:29:42.505Z"
+  "timestamp": "2026-09-07T16:31:41.934Z"
 }
