@@ -639,7 +639,23 @@
       "progress": 100,
       "cost": 39450,
       "parentId": "TO4"
+    },
+    {
+      "id": "gen_1788797448102",
+      "wbs": "TO8",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "TR2&ETR2 3Y PM 2026",
+      "plant": "GEN Ph.2",
+      "tr": "TR2, ETR2",
+      "lead": "JIS",
+      "start": "2026-03-19",
+      "end": "2026-03-25",
+      "days": 7,
+      "progress": 0,
+      "cost": 0,
+      "parentId": null
     }
   ],
-  "timestamp": "2026-09-07T16:08:21.968Z"
+  "timestamp": "2026-09-07T16:10:48.739Z"
 }
