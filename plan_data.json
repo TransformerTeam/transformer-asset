@@ -53,7 +53,7 @@
       "wbs": "TO3",
       "sapMo": "30000079580",
       "parentId": null,
-      "task": "CUP-1: GTG16 3Y PM 2026",
+      "task": "GTG16 3Y PM 2026",
       "lead": "JIS",
       "tr": "GTG16 GSUT",
       "plant": "CUP-1",
@@ -641,5 +641,5 @@
       "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T15:29:51.588Z"
+  "timestamp": "2026-09-07T15:29:59.125Z"
 }
