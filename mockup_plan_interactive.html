@@ -206,6 +206,103 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
       z-index: 20;
     }
+    /* Table Column Header Filters */
+    .table-col-filter-input {
+      width: 100%;
+      padding: 3px 6px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 6px;
+      color: #f1f5f9;
+      outline: none;
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+    .table-col-filter-input::placeholder {
+      color: #64748b;
+      font-size: 10px;
+    }
+    .table-col-filter-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+      background: rgba(15, 23, 42, 1);
+    }
+    .table-col-filter-input.active-filter {
+      border-color: #38bdf8;
+      background: rgba(14, 116, 144, 0.25);
+      color: #38bdf8;
+      font-weight: 600;
+      box-shadow: 0 0 4px rgba(56, 189, 248, 0.3);
+    }
+    .table-col-filter-select {
+      width: 100%;
+      padding: 3px 4px;
+      font-size: 11px;
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 6px;
+      color: #f1f5f9;
+      outline: none;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .table-col-filter-select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+    }
+    .table-col-filter-select.active-filter {
+      border-color: #38bdf8;
+      background: rgba(14, 116, 144, 0.25);
+      color: #38bdf8;
+      font-weight: 600;
+      box-shadow: 0 0 4px rgba(56, 189, 248, 0.3);
+    }
+    .table-col-filter-select option {
+      background: #0f172a;
+      color: #f1f5f9;
+    }
+    html[data-theme="light"] .table-col-filter-input,
+    html[data-theme="light"] .table-col-filter-select {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    html[data-theme="light"] .table-col-filter-input::placeholder {
+      color: #94a3b8;
+    }
+    html[data-theme="light"] .table-col-filter-select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+    html[data-theme="light"] .table-col-filter-input.active-filter,
+    html[data-theme="light"] .table-col-filter-select.active-filter {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      color: #0369a1;
+      box-shadow: 0 0 4px rgba(2, 132, 199, 0.25);
+    }
+    .btn-clear-col-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-clear-col-filter:hover {
+      background: rgba(244, 63, 94, 0.3);
+      color: #ffffff;
+      border-color: #fb7185;
+    }
     /* Distinct Category Themes */
     .gantt-bar-outage {
       background: #fde8e4;
@@ -950,6 +1047,10 @@
                 <i class="fa-solid fa-plus-circle"></i>
                 <span>Add Task</span>
               </button>
+              <button id="btn-toggle-filters" onclick="toggleTableFilterRow()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition cursor-pointer" title="Toggle Table Header Filters">
+                <i class="fa-solid fa-filter text-sky-400"></i>
+                <span id="toggle-filter-text">Filter Columns</span>
+              </button>
               <button id="btn-toggle-all" onclick="toggleAllExpand()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
                 <i class="fa-solid fa-layer-group text-indigo-400"></i>
                 <span id="toggle-all-text">Collapse All Subs</span>
@@ -962,19 +1063,127 @@
           <div class="overflow-x-auto rounded-lg border border-slate-700/50">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-700 uppercase tracking-wider text-[10px]">
-                <tr>
-                  <th class="py-2.5 px-3 w-20">WBS</th>
-                  <th class="py-2.5 px-2 w-28 text-center">SAP (MO)</th>
-                  <th class="py-2.5 px-3 min-w-[220px]">Task Description</th>
-                  <th class="py-2.5 px-2 w-16 text-center">Lead</th>
-                  <th class="py-2.5 px-2 min-w-[100px]">Transformer</th>
-                  <th class="py-2.5 px-2 w-24">Plant</th>
-                  <th class="py-2.5 px-2 min-w-[100px]">Start</th>
-                  <th class="py-2.5 px-2 min-w-[100px]">End</th>
-                  <th class="py-2.5 px-2 w-12 text-center">Days</th>
-                  <th class="py-2.5 px-3 w-28 text-center">% Done</th>
-                  <th class="py-2.5 px-2 w-24 text-right">Cost (THB)</th>
+                <tr class="header-sort-row">
+                  <th class="py-2.5 px-3 w-20 cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('wbs')" title="Click to sort by WBS">
+                    <div class="flex items-center justify-between">
+                      <span>WBS</span>
+                      <i id="sort-icon-wbs" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-28 text-center cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('sapMo')" title="Click to sort by SAP MO">
+                    <div class="flex items-center justify-center gap-1">
+                      <span>SAP (MO)</span>
+                      <i id="sort-icon-sapMo" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-3 min-w-[220px] cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('task')" title="Click to sort by Task Description">
+                    <div class="flex items-center justify-between">
+                      <span>Task Description</span>
+                      <i id="sort-icon-task" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-16 text-center cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('lead')" title="Click to sort by Lead">
+                    <div class="flex items-center justify-center gap-1">
+                      <span>Lead</span>
+                      <i id="sort-icon-lead" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 min-w-[100px] cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('tr')" title="Click to sort by Transformer">
+                    <div class="flex items-center justify-between">
+                      <span>Transformer</span>
+                      <i id="sort-icon-tr" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-24 cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('plant')" title="Click to sort by Plant">
+                    <div class="flex items-center justify-between">
+                      <span>Plant</span>
+                      <i id="sort-icon-plant" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 min-w-[100px] cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('start')" title="Click to sort by Start Date">
+                    <div class="flex items-center justify-between">
+                      <span>Start</span>
+                      <i id="sort-icon-start" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 min-w-[100px] cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('end')" title="Click to sort by End Date">
+                    <div class="flex items-center justify-between">
+                      <span>End</span>
+                      <i id="sort-icon-end" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-12 text-center cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('days')" title="Click to sort by Days">
+                    <div class="flex items-center justify-center gap-1">
+                      <span>Days</span>
+                      <i id="sort-icon-days" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-3 w-28 text-center cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('progress')" title="Click to sort by % Done">
+                    <div class="flex items-center justify-center gap-1">
+                      <span>% Done</span>
+                      <i id="sort-icon-progress" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-24 text-right cursor-pointer hover:text-white select-none transition" onclick="toggleColSort('cost')" title="Click to sort by Cost">
+                    <div class="flex items-center justify-end gap-1">
+                      <span>Cost (THB)</span>
+                      <i id="sort-icon-cost" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
                   <th class="py-2.5 px-3 min-w-[155px] text-center">Actions</th>
+                </tr>
+                <!-- Integrated Header Filter Row -->
+                <tr id="table-filter-row" class="bg-slate-950/80 border-t border-slate-700/60 font-normal">
+                  <th class="p-1">
+                    <input type="text" id="col-filter-wbs" oninput="onColFilterInput()" placeholder="🔍 WBS..." class="table-col-filter-input" title="Filter by WBS code">
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-sap" oninput="onColFilterInput()" placeholder="🔍 MO..." class="table-col-filter-input text-center" title="Filter by SAP MO">
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-task" oninput="onColFilterInput()" placeholder="🔍 Search task..." class="table-col-filter-input" title="Search task description">
+                  </th>
+                  <th class="p-1">
+                    <select id="col-filter-lead" onchange="onColFilterInput()" class="table-col-filter-select text-center" title="Filter by Lead">
+                      <option value="">All</option>
+                      <option value="MMT">MMT</option>
+                      <option value="PIP">PIP</option>
+                      <option value="JIS">JIS</option>
+                    </select>
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-tr" oninput="onColFilterInput()" placeholder="🔍 TR Tag..." class="table-col-filter-input" title="Filter by Transformer tag">
+                  </th>
+                  <th class="p-1">
+                    <select id="col-filter-plant" onchange="onColFilterInput()" class="table-col-filter-select" title="Filter by Plant">
+                      <option value="">All Plants</option>
+                    </select>
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-start" oninput="onColFilterInput()" placeholder="YYYY-MM..." class="table-col-filter-input font-mono text-[10px]" title="Filter by Start date">
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-end" oninput="onColFilterInput()" placeholder="YYYY-MM..." class="table-col-filter-input font-mono text-[10px]" title="Filter by End date">
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-days" oninput="onColFilterInput()" placeholder="Days" class="table-col-filter-input text-center text-[10px]" title="Filter by duration days">
+                  </th>
+                  <th class="p-1">
+                    <select id="col-filter-progress" onchange="onColFilterInput()" class="table-col-filter-select text-center text-[10px]" title="Filter by % Done">
+                      <option value="">All</option>
+                      <option value="100">100% Finish</option>
+                      <option value="prog">&gt;0% In Prog</option>
+                      <option value="0">0% Planned</option>
+                    </select>
+                  </th>
+                  <th class="p-1">
+                    <input type="text" id="col-filter-cost" oninput="onColFilterInput()" placeholder="Cost..." class="table-col-filter-input text-right font-mono text-[10px]" title="Filter by Cost">
+                  </th>
+                  <th class="p-1 text-center">
+                    <button type="button" onclick="clearAllColFilters()" class="btn-clear-col-filter" title="Clear all column filters">
+                      <i class="fa-solid fa-filter-circle-xmark"></i> Clear
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody id="wbs-tbody" class="divide-y divide-slate-800/80 bg-slate-950/50">
@@ -3251,21 +3460,153 @@
     }
 
     // ==========================================
+    // COLUMN HEADER FILTERING & SORTING
+    // ==========================================
+    const colFilters = {
+      wbs: '',
+      sap: '',
+      task: '',
+      lead: '',
+      tr: '',
+      plant: '',
+      start: '',
+      end: '',
+      days: '',
+      progress: '',
+      cost: ''
+    };
+
+    let colSort = {
+      column: '',
+      direction: 'asc'
+    };
+
+    function toggleColSort(column) {
+      if (colSort.column === column) {
+        colSort.direction = colSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        colSort.column = column;
+        colSort.direction = 'asc';
+      }
+      // Update icons
+      ['wbs', 'sapMo', 'task', 'lead', 'tr', 'plant', 'start', 'end', 'days', 'progress', 'cost'].forEach(col => {
+        const icon = document.getElementById(`sort-icon-${col}`);
+        if (icon) {
+          if (colSort.column === col) {
+            icon.className = colSort.direction === 'asc' 
+              ? 'fa-solid fa-arrow-down-short-wide text-[10px] text-sky-400' 
+              : 'fa-solid fa-arrow-up-wide-short text-[10px] text-sky-400';
+          } else {
+            icon.className = 'fa-solid fa-sort text-[9px] text-slate-500';
+          }
+        }
+      });
+      renderTable();
+    }
+
+    function onColFilterInput() {
+      colFilters.wbs = (document.getElementById('col-filter-wbs')?.value || '').trim().toLowerCase();
+      colFilters.sap = (document.getElementById('col-filter-sap')?.value || '').trim().toLowerCase();
+      colFilters.task = (document.getElementById('col-filter-task')?.value || '').trim().toLowerCase();
+      colFilters.lead = document.getElementById('col-filter-lead')?.value || '';
+      colFilters.tr = (document.getElementById('col-filter-tr')?.value || '').trim().toLowerCase();
+      colFilters.plant = document.getElementById('col-filter-plant')?.value || '';
+      colFilters.start = (document.getElementById('col-filter-start')?.value || '').trim().toLowerCase();
+      colFilters.end = (document.getElementById('col-filter-end')?.value || '').trim().toLowerCase();
+      colFilters.days = (document.getElementById('col-filter-days')?.value || '').trim();
+      colFilters.progress = document.getElementById('col-filter-progress')?.value || '';
+      colFilters.cost = (document.getElementById('col-filter-cost')?.value || '').trim().replace(/,/g, '');
+
+      // Highlight active filters visually
+      Object.keys(colFilters).forEach(key => {
+        const el = document.getElementById(`col-filter-${key}`);
+        if (el) {
+          if (colFilters[key]) {
+            el.classList.add('active-filter');
+          } else {
+            el.classList.remove('active-filter');
+          }
+        }
+      });
+
+      renderTable();
+    }
+
+    function clearAllColFilters() {
+      Object.keys(colFilters).forEach(key => {
+        colFilters[key] = '';
+        const el = document.getElementById(`col-filter-${key}`);
+        if (el) {
+          el.value = '';
+          el.classList.remove('active-filter');
+        }
+      });
+      renderTable();
+    }
+
+    function toggleTableFilterRow() {
+      const row = document.getElementById('table-filter-row');
+      if (!row) return;
+      const isHidden = row.classList.contains('hidden');
+      if (isHidden) {
+        row.classList.remove('hidden');
+        const text = document.getElementById('toggle-filter-text');
+        if (text) text.textContent = 'Hide Filters';
+      } else {
+        row.classList.add('hidden');
+        const text = document.getElementById('toggle-filter-text');
+        if (text) text.textContent = 'Filter Columns';
+      }
+    }
+
+    function populateColFilterOptions() {
+      const plantSelect = document.getElementById('col-filter-plant');
+      if (plantSelect && plantSelect.options.length <= 1) {
+        const uniquePlants = Array.from(new Set(tasks.map(t => t.plant).filter(Boolean))).sort();
+        uniquePlants.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p;
+          opt.textContent = p;
+          plantSelect.appendChild(opt);
+        });
+      }
+    }
+
+    function taskMatchesColFilters(t) {
+      if (colFilters.wbs && !((t.wbs || '').toLowerCase().includes(colFilters.wbs))) return false;
+      if (colFilters.sap && !((t.sapMo || '').toLowerCase().includes(colFilters.sap))) return false;
+      if (colFilters.task && !((t.task || '').toLowerCase().includes(colFilters.task))) return false;
+      if (colFilters.lead && t.lead !== colFilters.lead) return false;
+      if (colFilters.tr && !((t.tr || '').toLowerCase().includes(colFilters.tr))) return false;
+      if (colFilters.plant && t.plant !== colFilters.plant) return false;
+      if (colFilters.start && !(t.start || '').toLowerCase().includes(colFilters.start)) return false;
+      if (colFilters.end && !(t.end || '').toLowerCase().includes(colFilters.end)) return false;
+      if (colFilters.days && !String(t.days || '').includes(colFilters.days)) return false;
+      if (colFilters.progress) {
+        if (colFilters.progress === '100' && (t.progress || 0) < 100) return false;
+        if (colFilters.progress === 'prog' && ((t.progress || 0) <= 0 || (t.progress || 0) >= 100)) return false;
+        if (colFilters.progress === '0' && (t.progress || 0) > 0) return false;
+      }
+      if (colFilters.cost && !String(t.cost || '').includes(colFilters.cost)) return false;
+      return true;
+    }
+
+    // ==========================================
     // HIERARCHICAL WBS TREE TABLE RENDERING
     // ==========================================
     function renderTable(filteredList = null) {
-      const filtered = filteredList || getFilteredTasks();
+      populateColFilterOptions();
+      const baseFiltered = filteredList || getFilteredTasks();
       const tbody = document.getElementById('wbs-tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="12" class="py-6 text-center text-slate-500">No tasks found matching current plant and filters.</td></tr>';
-        return;
-      }
+      // Check if any column filter is active
+      const activeFilterCount = Object.values(colFilters).filter(Boolean).length;
+      const hasActiveColFilters = activeFilterCount > 0;
 
       // Group tasks into parents and sub-tasks
-      const parents = filtered.filter(t => !t.parentId);
+      const parents = baseFiltered.filter(t => !t.parentId);
       const subTasksMap = new Map();
 
       // Collect all subtasks that belong to visible parents or matching filters
@@ -3274,9 +3615,59 @@
         subTasksMap.get(sub.parentId).push(sub);
       });
 
-      // Render each parent and its children
+      // Filter parents & subtasks with column filters
+      let visibleParents = [];
       parents.forEach(p => {
         const children = subTasksMap.get(p.id) || [];
+        const pMatches = !hasActiveColFilters || taskMatchesColFilters(p);
+        const matchingChildren = hasActiveColFilters ? children.filter(c => taskMatchesColFilters(c)) : children;
+
+        if (pMatches || matchingChildren.length > 0) {
+          visibleParents.push({ parent: p, children: matchingChildren, pMatches });
+        }
+      });
+
+      // Apply Column Sorting if specified
+      if (colSort.column) {
+        const col = colSort.column;
+        const dir = colSort.direction === 'asc' ? 1 : -1;
+        visibleParents.sort((a, b) => {
+          const valA = a.parent[col];
+          const valB = b.parent[col];
+          if (typeof valA === 'number' && typeof valB === 'number') {
+            return dir * (valA - valB);
+          }
+          return dir * String(valA || '').localeCompare(String(valB || ''), undefined, { numeric: true });
+        });
+      }
+
+      // Update task count badge in toolbar
+      const countBadge = document.getElementById('table-count-badge');
+      if (countBadge) {
+        if (hasActiveColFilters) {
+          countBadge.innerHTML = `<span class="text-sky-400 font-bold">Filtered: ${visibleParents.length} Tasks</span> <span class="opacity-75 text-[10px]">(${activeFilterCount} active)</span>`;
+          countBadge.classList.add('border-sky-500/50');
+        } else {
+          countBadge.textContent = `Showing ${visibleParents.length} Tasks`;
+          countBadge.classList.remove('border-sky-500/50');
+        }
+      }
+
+      if (visibleParents.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="12" class="py-8 text-center text-slate-400">
+          <div class="flex flex-col items-center justify-center gap-2">
+            <i class="fa-solid fa-filter text-2xl text-slate-500"></i>
+            <span>No tasks match the active filters.</span>
+            ${hasActiveColFilters ? '<button onclick="clearAllColFilters()" class="text-xs text-sky-400 hover:underline cursor-pointer mt-1">Clear all column filters</button>' : ''}
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      // Render each parent and its children
+      visibleParents.forEach(item => {
+        const p = item.parent;
+        const children = item.children;
         const hasSubs = children.length > 0;
         const isCollapsed = collapsedParents.has(p.id);
         const isDone = p.progress >= 100;
