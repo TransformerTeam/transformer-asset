@@ -684,75 +684,75 @@ header p {
   -webkit-backdrop-filter: var(--glass-blur, blur(12px));
 }
 
-/* Glassmorphism by Health Index Condition - Transparent Status Tinted Backgrounds ("แบบใส") */
-/* Healthy (HI >= 80%) - Emerald Transparent Glass */
+/* Glassmorphism by Health Index Condition - Softer & More Transparent Status Tinted Backgrounds ("ใสสบายตา") */
+/* Healthy (HI >= 80%) - Softer Emerald Transparent Glass */
 .tr-scada-card.healthy .tr-card-body,
 .tr-scada-card.good .tr-card-body {
-  background: linear-gradient(145deg, rgba(16, 185, 129, 0.14) 0%, rgba(6, 78, 59, 0.24) 100%);
-  border: 1px solid rgba(52, 211, 153, 0.45);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 10px rgba(16, 185, 129, 0.15);
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.07) 0%, rgba(6, 78, 59, 0.12) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), 0 0 8px rgba(16, 185, 129, 0.08);
 }
 .tr-scada-card.healthy:hover .tr-card-body,
 .tr-scada-card.good:hover .tr-card-body {
-  background: linear-gradient(145deg, rgba(16, 185, 129, 0.24) 0%, rgba(6, 78, 59, 0.36) 100%);
-  border-color: rgba(52, 211, 153, 0.85);
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.4), 0 0 18px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.14) 0%, rgba(6, 78, 59, 0.22) 100%);
+  border-color: rgba(52, 211, 153, 0.75);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.35), 0 0 14px rgba(16, 185, 129, 0.25);
   transform: translateY(-2px);
 }
 
-/* Monitoring (70% <= HI <= 79%) - Yellow / Gold Transparent Glass */
+/* Monitoring (70% <= HI <= 79%) - Softer Yellow / Gold Transparent Glass */
 .tr-scada-card.monitoring .tr-card-body,
 .tr-scada-card.fair .tr-card-body {
-  background: linear-gradient(145deg, rgba(234, 179, 8, 0.14) 0%, rgba(113, 63, 18, 0.24) 100%);
-  border: 1px solid rgba(250, 204, 21, 0.45);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 10px rgba(234, 179, 8, 0.15);
+  background: linear-gradient(145deg, rgba(234, 179, 8, 0.07) 0%, rgba(113, 63, 18, 0.12) 100%);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), 0 0 8px rgba(234, 179, 8, 0.08);
 }
 .tr-scada-card.monitoring:hover .tr-card-body,
 .tr-scada-card.fair:hover .tr-card-body {
-  background: linear-gradient(145deg, rgba(234, 179, 8, 0.24) 0%, rgba(113, 63, 18, 0.36) 100%);
-  border-color: rgba(250, 204, 21, 0.85);
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.4), 0 0 18px rgba(234, 179, 8, 0.35);
+  background: linear-gradient(145deg, rgba(234, 179, 8, 0.14) 0%, rgba(113, 63, 18, 0.22) 100%);
+  border-color: rgba(250, 204, 21, 0.75);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.35), 0 0 14px rgba(234, 179, 8, 0.25);
   transform: translateY(-2px);
 }
 
-/* Warning (50% <= HI <= 69%) - Orange / Amber Transparent Glass */
+/* Warning (50% <= HI <= 69%) - Softer Orange / Amber Transparent Glass */
 .tr-scada-card.warning .tr-card-body,
 .tr-scada-card.poor .tr-card-body {
-  background: linear-gradient(145deg, rgba(249, 115, 22, 0.15) 0%, rgba(124, 45, 18, 0.25) 100%);
-  border: 1px solid rgba(251, 146, 60, 0.45);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 10px rgba(249, 115, 22, 0.15);
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.08) 0%, rgba(124, 45, 18, 0.13) 100%);
+  border: 1px solid rgba(251, 146, 60, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), 0 0 8px rgba(249, 115, 22, 0.08);
 }
 .tr-scada-card.warning:hover .tr-card-body,
 .tr-scada-card.poor:hover .tr-card-body {
-  background: linear-gradient(145deg, rgba(249, 115, 22, 0.25) 0%, rgba(124, 45, 18, 0.38) 100%);
-  border-color: rgba(251, 146, 60, 0.85);
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.4), 0 0 18px rgba(249, 115, 22, 0.35);
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.15) 0%, rgba(124, 45, 18, 0.24) 100%);
+  border-color: rgba(251, 146, 60, 0.75);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.35), 0 0 14px rgba(249, 115, 22, 0.25);
   transform: translateY(-2px);
 }
 
-/* Critical (HI < 50%) - Crimson / Red Transparent Glass */
+/* Critical (HI < 50%) - Softer Crimson / Red Transparent Glass */
 .tr-scada-card.critical .tr-card-body {
-  background: linear-gradient(145deg, rgba(239, 68, 68, 0.18) 0%, rgba(127, 29, 29, 0.30) 100%);
-  border: 1px solid rgba(248, 113, 113, 0.55);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 0 12px rgba(239, 68, 68, 0.2);
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.09) 0%, rgba(127, 29, 29, 0.15) 100%);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), 0 0 10px rgba(239, 68, 68, 0.1);
 }
 .tr-scada-card.critical:hover .tr-card-body {
-  background: linear-gradient(145deg, rgba(239, 68, 68, 0.28) 0%, rgba(127, 29, 29, 0.42) 100%);
-  border-color: rgba(248, 113, 113, 0.9);
-  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.4), 0 0 20px rgba(239, 68, 68, 0.45);
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.16) 0%, rgba(127, 29, 29, 0.26) 100%);
+  border-color: rgba(248, 113, 113, 0.8);
+  box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.35), 0 0 16px rgba(239, 68, 68, 0.3);
   transform: translateY(-2px);
 }
 
-/* No Assess (HI = 0%) - Slate Transparent Glass */
+/* No Assess (HI = 0%) - Softer Slate Transparent Glass */
 .tr-scada-card.no-assess .tr-card-body {
-  background: linear-gradient(145deg, rgba(71, 85, 105, 0.15) 0%, rgba(30, 41, 59, 0.28) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: linear-gradient(145deg, rgba(71, 85, 105, 0.08) 0%, rgba(30, 41, 59, 0.14) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .tr-scada-card.no-assess:hover .tr-card-body {
-  background: linear-gradient(145deg, rgba(71, 85, 105, 0.25) 0%, rgba(30, 41, 59, 0.42) 100%);
-  border-color: rgba(148, 163, 184, 0.6);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(145deg, rgba(71, 85, 105, 0.15) 0%, rgba(30, 41, 59, 0.24) 100%);
+  border-color: rgba(148, 163, 184, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   transform: translateY(-2px);
 }
 
