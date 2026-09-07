@@ -61,7 +61,7 @@
       "start": "2026-01-09",
       "end": "2026-01-12",
       "days": 4,
-      "progress": 100,
+      "progress": 0,
       "cost": 36000
     },
     {
@@ -77,7 +77,7 @@
       "start": "2026-01-09",
       "end": "2026-01-10",
       "days": 2,
-      "progress": 100,
+      "progress": 0,
       "cost": 36000
     },
     {
@@ -93,7 +93,7 @@
       "start": "2026-01-10",
       "end": "2026-01-12",
       "days": 3,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -109,7 +109,7 @@
       "start": "2026-01-23",
       "end": "2026-01-27",
       "days": 5,
-      "progress": 100,
+      "progress": 0,
       "cost": 39450
     },
     {
@@ -587,7 +587,7 @@
       "start": "2026-01-23",
       "end": "2026-01-27",
       "days": 5,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": "TO4",
       "sapMo": ""
@@ -636,10 +636,10 @@
       "start": "2026-01-23",
       "end": "2026-01-27",
       "days": 5,
-      "progress": 100,
+      "progress": 0,
       "cost": 39450,
       "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T09:40:47.973Z"
+  "timestamp": "2026-09-07T09:40:49.386Z"
 }
