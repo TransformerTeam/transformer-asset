@@ -110,7 +110,7 @@
       "end": "2026-01-27",
       "days": 5,
       "progress": 100,
-      "cost": 0
+      "cost": 39450
     },
     {
       "id": "TO5",
@@ -623,7 +623,23 @@
       "cost": 0,
       "parentId": "TO7",
       "sapMo": ""
+    },
+    {
+      "id": "gen_1788774044005",
+      "wbs": "TO4.2",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "Install Scaffolding",
+      "plant": "GEN Ph.2",
+      "tr": "GT61 GSUT",
+      "lead": "JIS",
+      "start": "2026-01-23",
+      "end": "2026-01-27",
+      "days": 5,
+      "progress": 100,
+      "cost": 39450,
+      "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T09:40:02.332Z"
+  "timestamp": "2026-09-07T09:40:44.805Z"
 }
