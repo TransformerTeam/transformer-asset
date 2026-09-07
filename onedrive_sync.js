@@ -24,8 +24,18 @@
     ]
   };
 
+  function utf8ToBase64(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }));
+  }
+
   const DEFAULT_CONFIG = {
-    mode: 'auto', // 'auto', 'cloud', 'lan', 'standalone'
+    mode: 'auto', // 'auto', 'github', 'lan', 'standalone'
+    githubToken: '',
+    githubRepo: 'TransformerTeam/transformer-asset',
+    githubBranch: 'main',
+    githubPath: 'plan_data.json',
     webhookUrl: '',
     autoSync: true,
     lastSyncTime: new Date().toISOString(),
@@ -49,10 +59,10 @@
   }
 
   function getActiveMode() {
-    // Top Priority: If running on local server or company LAN, ALWAYS use LAN for instant, 100% reliable direct sync
+    // Top Priority: If running on local server or company LAN, ALWAYS use LAN for instant direct sync
     if (isLanServer()) return 'lan';
     if (config.mode === 'standalone') return 'standalone';
-    return 'cloud';
+    return 'github'; // Default for GitHub Pages & web
   }
 
   function saveConfig() {
@@ -85,48 +95,71 @@
         config.lastSyncTime = new Date().toISOString();
         saveConfig();
         setSyncState('synced');
-        showToast('Saved & Synced with LAN OneDrive folder', 'success');
+        showToast('Saved & Synced with LAN Host', 'success');
         return { success: true, mode: 'lan' };
-      } else if (mode === 'cloud') {
-        // Chunk full plan JSON to fit within Microsoft Forms 4,000 char question limit
-        const jsonStr = JSON.stringify({ tasks: tasks, timestamp: new Date().toISOString() });
-        const chunkSize = 3500;
-        const chunks = [];
-        for (let i = 0; i < jsonStr.length; i += chunkSize) {
-          chunks.push(jsonStr.slice(i, i + chunkSize));
+      } else if (mode === 'github') {
+        const token = (config.githubToken || '').trim();
+        if (!token) {
+          setSyncState('error', 'Missing GitHub Token');
+          openSettingsModal();
+          showToast('กรุณาใส่ GitHub Token เพื่อบันทึกข้อมูลส่วนกลางบน GitHub Pages', 'warning');
+          return { success: false, needToken: true };
         }
 
-        const answers = FORM_GATEWAY.questionIds.map((qid, idx) => ({
-          questionId: qid,
-          answer1: chunks[idx] || ""
-        }));
+        const repo = (config.githubRepo || 'TransformerTeam/transformer-asset').trim();
+        const path = (config.githubPath || 'plan_data.json').trim();
+        const branch = (config.githubBranch || 'main').trim();
 
-        const payload = {
-          startDate: new Date().toISOString(),
-          submitDate: new Date().toISOString(),
-          answers: JSON.stringify(answers)
-        };
-
-        const targetUrl = (window.location.origin.includes('sharepoint.com') || window.location.origin.includes('office.com'))
-          ? FORM_GATEWAY.endpoint
-          : (FORM_GATEWAY.corsProxy + FORM_GATEWAY.endpoint);
-
-        const res = await fetch(targetUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        // 1. Get latest file SHA
+        const getUrl = `https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}&_t=${Date.now()}`;
+        const getRes = await fetch(getUrl, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
         });
-        if (!res.ok) throw new Error('Cloud Gateway HTTP ' + res.status);
+        if (!getRes.ok) {
+          if (getRes.status === 401 || getRes.status === 403) {
+            throw new Error('GitHub Token ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง Repository');
+          }
+          throw new Error('GitHub API Error: HTTP ' + getRes.status);
+        }
+        const fileMeta = await getRes.json();
+        const latestSha = fileMeta.sha;
+
+        // 2. Commit updated JSON to GitHub
+        const jsonStr = JSON.stringify({ tasks: tasks, timestamp: new Date().toISOString() }, null, 2);
+        const putUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+        const putRes = await fetch(putUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'sync: update plan_data.json from web dashboard [skip ci]',
+            content: utf8ToBase64(jsonStr),
+            sha: latestSha,
+            branch: branch
+          })
+        });
+
+        if (!putRes.ok) {
+          const errData = await putRes.json().catch(() => ({}));
+          throw new Error(errData.message || ('GitHub Commit failed: HTTP ' + putRes.status));
+        }
+
         config.lastSyncTime = new Date().toISOString();
         saveConfig();
         setSyncState('synced');
-        showToast('Saved & Synced with Corporate OneDrive (M365)', 'success');
-        return { success: true, mode: 'cloud' };
+        showToast('Saved & Committed to GitHub repository successfully!', 'success');
+        return { success: true, mode: 'github' };
       }
     } catch (err) {
-      console.warn('OneDriveSync push error:', err);
+      console.warn('Sync push error:', err);
       setSyncState('error', err.message);
-      showToast('Sync failed, saved locally in browser', 'warning');
+      showToast(err.message.includes('Token') ? err.message : 'Sync failed, saved locally in browser', 'warning');
       return { success: false, error: err.message };
     }
   }
@@ -185,18 +218,29 @@
   }
 
   // --- API: TEST CONNECTION ---
-  async function testConnection(customUrl = null) {
-    const url = customUrl !== null ? customUrl : config.webhookUrl;
-    if (url) {
+  async function testConnection(customToken = null) {
+    const token = customToken !== null ? customToken : (config.githubToken || '').trim();
+    if (token) {
       try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'SAVE_PLAN', test: true, timestamp: new Date().toISOString() })
+        const repo = (config.githubRepo || 'TransformerTeam/transformer-asset').trim();
+        const path = (config.githubPath || 'plan_data.json').trim();
+        const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?_t=${Date.now()}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
         });
-        return { success: res.ok, status: res.status, message: res.ok ? 'Connection Successful! Power Automate responded.' : 'HTTP ' + res.status };
+        if (res.ok) {
+          return { success: true, message: `เชื่อมต่อสำเร็จ! เข้าถึง ${repo}/${path} ได้เรียบร้อย (มีสิทธิ์เขียน)` };
+        } else if (res.status === 401) {
+          return { success: false, message: 'Token ไม่ถูกต้อง หรือหมดอายุ (HTTP 401 Unauthorized)' };
+        } else if (res.status === 403) {
+          return { success: false, message: 'Token ไม่มีสิทธิ์เข้าถึง repo (ต้องติ๊กถูกที่ช่อง repo)' };
+        } else {
+          return { success: false, message: 'GitHub API Error: HTTP ' + res.status };
+        }
       } catch (err) {
-        return { success: false, message: 'Connection failed: ' + err.message };
+        return { success: false, message: 'การเชื่อมต่อล้มเหลว: ' + err.message };
       }
     }
 
@@ -209,22 +253,7 @@
       }
     }
 
-    // Ping Microsoft Forms Gateway
-    try {
-      const targetUrl = FORM_GATEWAY.corsProxy + FORM_GATEWAY.endpoint;
-      const res = await fetch(targetUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          startDate: new Date().toISOString(),
-          submitDate: new Date().toISOString(),
-          answers: JSON.stringify([{ questionId: FORM_GATEWAY.questionIds[0], answer1: 'ping-test' }])
-        })
-      });
-      return { success: res.ok, message: res.ok ? 'Connection Successful! Power Automate Gateway is ready.' : 'Gateway HTTP ' + res.status };
-    } catch (err) {
-      return { success: false, message: 'Gateway check failed: ' + err.message };
-    }
+    return { success: false, message: 'กรุณากรอก GitHub Personal Access Token' };
   }
 
   function setSyncState(state, err = null) {
@@ -242,7 +271,6 @@
       badge.className = 'onedrive-badge-btn';
       badge.onclick = openSettingsModal;
 
-      // Look for best insertion container (topbar, header-right, actions)
       const headerRight = document.querySelector('.header-right') ||
                           document.querySelector('.top-bar-right') ||
                           document.querySelector('.header-actions') ||
@@ -252,7 +280,6 @@
       if (headerRight) {
         headerRight.prepend(badge);
       } else {
-        // Floating fixed badge at bottom right
         badge.style.position = 'fixed';
         badge.style.bottom = '16px';
         badge.style.right = '16px';
@@ -281,44 +308,41 @@
     const isTabBtn = badge.classList.contains('header-tab-btn');
     if (isTabBtn) {
       if (syncState === 'syncing') {
-        badge.innerHTML = `<i class="fa-solid fa-cloud-arrow-up animate-spin text-sky-400"></i> OneDrive`;
-        badge.title = 'Synchronizing with OneDrive...';
-      } else if (syncState === 'error') {
-        badge.innerHTML = `<i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive`;
-        badge.title = errMsg || 'OneDrive connection status. Click to configure.';
-      } else if (mode === 'cloud') {
-        badge.innerHTML = `<i class="fa-brands fa-microsoft text-emerald-400"></i> OneDrive`;
-        badge.title = 'Connected to Corporate OneDrive via Power Automate. Click for settings.';
+        badge.innerHTML = `<i class="fa-solid fa-rotate animate-spin text-sky-400"></i> Syncing`;
+        badge.title = 'กำลังซิงค์ข้อมูลกับ GitHub Repository...';
       } else if (mode === 'lan') {
-        badge.innerHTML = `<i class="fa-brands fa-microsoft text-indigo-400"></i> OneDrive`;
-        badge.title = 'Syncing with host PC OneDrive folder over LAN. Click for settings.';
+        badge.innerHTML = `<i class="fa-solid fa-network-wired text-indigo-400"></i> LAN Host`;
+        badge.title = 'เชื่อมต่อกับเครื่อง Host ในเครือข่ายบริษัท (Port 8888)';
+      } else if (config.githubToken) {
+        badge.innerHTML = `<i class="fa-brands fa-github text-emerald-400"></i> GitHub Sync`;
+        badge.title = 'เชื่อมต่อกับ GitHub Repository สำเร็จ (บันทึกข้อมูลกลางอัตโนมัติ)';
       } else {
-        badge.innerHTML = `<i class="fa-brands fa-microsoft text-sky-400"></i> OneDrive`;
-        badge.title = 'Working locally in browser storage. Click to connect Corporate OneDrive.';
+        badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> ตั้งค่า Token`;
+        badge.title = 'คลิกเพื่อใส่ GitHub Token สำหรับบันทึกข้อมูลส่วนกลาง';
       }
       return;
     }
 
     if (syncState === 'syncing') {
-      badge.innerHTML = `<i class="fa-solid fa-cloud-arrow-up animate-spin text-sky-400"></i> <span>OneDrive: Syncing...</span>`;
+      badge.innerHTML = `<i class="fa-solid fa-rotate animate-spin text-sky-400"></i> <span>GitHub: Syncing...</span>`;
       badge.className = 'onedrive-badge-btn sync-active';
-      badge.title = 'Synchronizing with OneDrive...';
+      badge.title = 'กำลัง Commit ข้อมูลลง GitHub Repository...';
     } else if (syncState === 'error') {
-      badge.innerHTML = `<i class="fa-solid fa-cloud-slash text-rose-400"></i> <span>OneDrive: Offline</span>`;
+      badge.innerHTML = `<i class="fa-brands fa-github text-rose-400"></i> <span>GitHub: Offline</span>`;
       badge.className = 'onedrive-badge-btn sync-error';
-      badge.title = errMsg || 'OneDrive connection error. Click to configure.';
-    } else if (mode === 'cloud') {
-      badge.innerHTML = `<i class="fa-solid fa-cloud text-emerald-400"></i> <span>OneDrive: Synced${timeStr}</span>`;
-      badge.className = 'onedrive-badge-btn sync-online';
-      badge.title = 'Connected to Corporate OneDrive via Power Automate. Click for settings.';
+      badge.title = errMsg || 'การเชื่อมต่อมีปัญหา คลิกเพื่อตรวจสอบ';
     } else if (mode === 'lan') {
       badge.innerHTML = `<i class="fa-solid fa-network-wired text-indigo-400"></i> <span>LAN Host: Active${timeStr}</span>`;
       badge.className = 'onedrive-badge-btn sync-lan';
-      badge.title = 'Syncing with host PC OneDrive folder over LAN. Click for settings.';
+      badge.title = 'Syncing with host PC & OneDrive folder over LAN.';
+    } else if (config.githubToken) {
+      badge.innerHTML = `<i class="fa-brands fa-github text-emerald-400"></i> <span>GitHub: Synced${timeStr}</span>`;
+      badge.className = 'onedrive-badge-btn sync-online';
+      badge.title = 'เชื่อมต่อกับ GitHub Repository สำเร็จ (ข้อมูลกลางอัปเดตอัตโนมัติ)';
     } else {
-      badge.innerHTML = `<i class="fa-solid fa-laptop text-amber-400"></i> <span>OneDrive: Local</span>`;
+      badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> <span>GitHub: ใส่ Token</span>`;
       badge.className = 'onedrive-badge-btn sync-local';
-      badge.title = 'Working locally in browser storage. Click to connect Corporate OneDrive.';
+      badge.title = 'คลิกเพื่อใส่ GitHub Personal Access Token สำหรับบันทึกข้อมูลกลาง';
     }
   }
 
@@ -334,22 +358,23 @@
 
     const mode = getActiveMode();
     const lastSyncFormatted = config.lastSyncTime ? new Date(config.lastSyncTime).toLocaleString('th-TH') : 'ยังไม่มีการซิงค์';
+    const hasToken = !!(config.githubToken && config.githubToken.trim());
 
     modal.innerHTML = `
       <div class="onedrive-modal-card">
         <div class="onedrive-modal-header">
           <div class="flex items-center gap-3">
-            <div class="p-2.5 bg-sky-500/10 text-sky-400 rounded-xl border border-sky-500/20">
-              <i class="fa-brands fa-microsoft text-xl"></i>
+            <div class="p-2.5 bg-slate-800 text-white rounded-xl border border-slate-700">
+              <i class="fa-brands fa-github text-2xl"></i>
             </div>
             <div>
               <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">
-                OneDrive / SharePoint Enterprise Sync
-                <span class="text-xs px-2 py-0.5 rounded-full font-normal ${mode === 'cloud' ? 'bg-emerald-500/20 text-emerald-300' : (mode === 'lan' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-amber-500/20 text-amber-300')}">
-                  ${mode === 'cloud' ? 'Cloud Webhook' : (mode === 'lan' ? 'LAN Host' : 'Local Standalone')}
+                GitHub Pages Cloud Sync
+                <span class="text-xs px-2 py-0.5 rounded-full font-normal ${hasToken ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}">
+                  ${hasToken ? 'Connected' : 'Need Token'}
                 </span>
               </h3>
-              <p class="text-xs text-slate-400">เชื่อมต่อและซิงค์ข้อมูลส่วนกลางกับ Microsoft 365 ขององค์กร</p>
+              <p class="text-xs text-slate-400">บันทึกข้อมูล Task ลง GitHub ส่วนกลางอัตโนมัติ เพื่อให้ทุกคนเห็นงานตรงกัน</p>
             </div>
           </div>
           <button type="button" class="text-slate-400 hover:text-white p-1 rounded-lg" onclick="OneDriveSync.closeSettingsModal()">
@@ -359,47 +384,28 @@
 
         <div class="onedrive-modal-body space-y-4">
           <!-- Status Banner -->
-          <div class="p-3.5 rounded-xl border ${mode === 'cloud' ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : (mode === 'lan' ? 'bg-indigo-950/30 border-indigo-500/30 text-indigo-200' : 'bg-slate-800/80 border-slate-700 text-slate-300')} text-xs flex justify-between items-center">
+          <div class="p-3.5 rounded-xl border ${hasToken ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : 'bg-amber-950/30 border-amber-500/30 text-amber-200'} text-xs flex justify-between items-center">
             <div>
               <span class="font-semibold">สถานะการซิงค์ล่าสุด:</span> ${lastSyncFormatted}
+              <div class="text-[11px] opacity-80 mt-0.5">เป้าหมาย: <code class="bg-black/30 px-1 py-0.5 rounded">${config.githubRepo || 'TransformerTeam/transformer-asset'}</code></div>
             </div>
             <button type="button" class="btn-sm-action" onclick="OneDriveSync.syncNow(this)">
               <i class="fa-solid fa-rotate mr-1"></i> Sync Now
             </button>
           </div>
 
-          <!-- Mode Selector -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">รูปแบบการเชื่อมต่อ (Sync Mode)</label>
-            <div class="grid grid-cols-3 gap-2">
-              <label class="mode-card ${config.mode === 'auto' ? 'active' : ''}">
-                <input type="radio" name="od-mode" value="auto" ${config.mode === 'auto' ? 'checked' : ''} onchange="OneDriveSync.setMode('auto')">
-                <span class="font-semibold text-xs">Auto Detect</span>
-                <span class="text-[10px] text-slate-400">อัตโนมัติ</span>
-              </label>
-              <label class="mode-card ${config.mode === 'cloud' ? 'active' : ''}">
-                <input type="radio" name="od-mode" value="cloud" ${config.mode === 'cloud' ? 'checked' : ''} onchange="OneDriveSync.setMode('cloud')">
-                <span class="font-semibold text-xs">Cloud Flow</span>
-                <span class="text-[10px] text-slate-400">M365 Webhook</span>
-              </label>
-              <label class="mode-card ${config.mode === 'lan' ? 'active' : ''}">
-                <input type="radio" name="od-mode" value="lan" ${config.mode === 'lan' ? 'checked' : ''} onchange="OneDriveSync.setMode('lan')">
-                <span class="font-semibold text-xs">LAN Host</span>
-                <span class="text-[10px] text-slate-400">PC Port 8888</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Webhook URL Input -->
+          <!-- Token Input Section -->
           <div>
             <div class="flex justify-between items-center mb-1.5">
-              <label class="text-xs font-semibold text-slate-300">Power Automate HTTP Webhook URL</label>
-              <button type="button" class="text-xs text-sky-400 hover:underline flex items-center gap-1" onclick="OneDriveSync.toggleGuide()">
-                <i class="fa-solid fa-circle-question"></i> วิธีรับ URL ใน 3 นาที
-              </button>
+              <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                <i class="fa-solid fa-key text-amber-400"></i> GitHub Personal Access Token (PAT)
+              </label>
+              <a href="https://github.com/settings/tokens/new?description=GPSC-Transformer-Dashboard-Sync&scopes=repo" target="_blank" class="text-xs text-sky-400 hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> สร้าง Token ใน 1 นาที
+              </a>
             </div>
             <div class="flex gap-2">
-              <input type="url" id="od-webhook-url" class="od-input" placeholder="https://prod-XX.southeastasia.logic.azure.com:443/workflows/..." value="${config.webhookUrl || ''}">
+              <input type="password" id="gh-token-input" class="od-input font-mono" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="${config.githubToken || ''}">
               <button type="button" class="btn-secondary" onclick="OneDriveSync.handleTest(this)">
                 <i class="fa-solid fa-plug"></i> Test
               </button>
@@ -407,32 +413,24 @@
             <div id="od-test-result" class="text-xs mt-1.5 hidden"></div>
           </div>
 
-          <!-- 3-Minute Setup Guide (Collapsible) -->
-          <div id="od-guide-box" class="hidden p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs space-y-2 text-slate-300">
+          <!-- 3-Step Token Guide -->
+          <div class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs space-y-2 text-slate-300">
             <div class="font-bold text-sky-400 flex items-center gap-2">
-              <i class="fa-solid fa-bolt"></i> วิธีตั้งค่า Power Automate Flow เชื่อมกับ OneDrive (ไม่ต้องขอสิทธิ์ IT):
+              <i class="fa-solid fa-circle-question"></i> วิธีสร้าง GitHub Token (ทำเพียงครั้งเดียว):
             </div>
-            <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
-              <li>เปิดเว็บ <a href="https://make.powerautomate.com" target="_blank" class="text-sky-400 underline">make.powerautomate.com</a> ด้วยบัญชี Microsoft องค์กร (@gpscgroup.com)</li>
-              <li>กด <strong>Create</strong> &rarr; เลือก <strong>Instant cloud flow</strong> &rarr; เลือก Trigger เป็น <strong>"When an HTTP request is received"</strong></li>
-              <li>เพิ่ม Action <strong>"Update a row" (Excel Online - OneDrive)</strong> หรือ <strong>"Get file content"</strong> ชี้ไปยังไฟล์ <code class="bg-slate-800 px-1 rounded text-amber-300">GPSC_Transformer_Asset_Master.xlsx</code> ใน OneDrive ของทีม</li>
-              <li>เพิ่ม Action <strong>"Response"</strong> (Status 200) แล้วกด <strong>Save</strong></li>
-              <li>คัดลอก <strong>"HTTP POST URL"</strong> ที่ Flow สร้างให้ มาวางในช่องด้านบนนี้ แล้วกด Save</li>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-300 text-[11px]">
+              <li>คลิกที่ลิงก์ <a href="https://github.com/settings/tokens/new?description=GPSC-Transformer-Dashboard-Sync&scopes=repo" target="_blank" class="text-sky-400 underline font-semibold">สร้าง Token บน GitHub</a> (ระบบจะเปิดแท็บใหม่ให้พร้อมตั้งค่า)</li>
+              <li>ตรงหัวข้อ <strong>Expiration</strong> แนะนำเลือก <code>No expiration</code> (หรือ 90 days)</li>
+              <li>ตรวจสอบว่ามีเครื่องหมายติ๊กถูกที่ช่อง <code class="bg-slate-800 text-emerald-300 px-1 rounded font-bold">repo</code> (Full control of private/public repositories)</li>
+              <li>เลื่อนลงล่างสุด กดปุ่มสีเขียว <strong>Generate token</strong></li>
+              <li>คัดลอกรหัสที่ขึ้นต้นด้วย <code class="bg-slate-800 text-amber-300 px-1 rounded">ghp_...</code> มาวางในช่องด้านบน แล้วกด <strong>Test</strong> จากนั้นกด <strong>บันทึกการตั้งค่า</strong></li>
             </ol>
           </div>
 
-          <!-- Master Excel Downloader -->
-          <div class="p-3 bg-slate-800/50 border border-slate-700/60 rounded-xl flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-              <i class="fa-solid fa-file-excel text-emerald-400 text-lg"></i>
-              <div>
-                <div class="text-xs font-semibold text-slate-200">ไฟล์ Master Dataset (Excel .xlsx)</div>
-                <div class="text-[11px] text-slate-400">ดาวน์โหลดเพื่อนำไปวางใน OneDrive / Teams กลางของทีม</div>
-              </div>
-            </div>
-            <a href="GPSC_Transformer_Asset_Master.xlsx" download class="btn-sm-secondary">
-              <i class="fa-solid fa-download mr-1"></i> ดาวน์โหลด Excel
-            </a>
+          <!-- LAN Host Alternative Notice -->
+          <div class="p-2.5 bg-slate-800/40 border border-slate-700/50 rounded-xl text-[11px] text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-network-wired text-indigo-400 text-sm"></i>
+            <span>หรือหากรันผ่านเครื่องในบริษัท (Port 8888) ระบบจะบันทึกตรงเข้าเครื่องและ OneDrive ให้อัตโนมัติ</span>
           </div>
         </div>
 
@@ -455,17 +453,18 @@
 
   function setMode(m) {
     config.mode = m;
-    openSettingsModal(); // re-render modal with active selection
+    openSettingsModal();
   }
 
   async function handleTest(btn) {
-    const url = document.getElementById('od-webhook-url').value.trim();
+    const tokenInput = document.getElementById('gh-token-input');
+    const token = tokenInput ? tokenInput.value.trim() : '';
     const resBox = document.getElementById('od-test-result');
     btn.disabled = true;
     btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Testing`;
     resBox.classList.remove('hidden', 'text-emerald-400', 'text-rose-400');
 
-    const result = await testConnection(url);
+    const result = await testConnection(token);
     btn.disabled = false;
     btn.innerHTML = `<i class="fa-solid fa-plug"></i> Test`;
     resBox.classList.remove('hidden');
@@ -485,16 +484,16 @@
   }
 
   function saveSettingsFromModal() {
-    const urlInput = document.getElementById('od-webhook-url');
-    if (urlInput) config.webhookUrl = urlInput.value.trim();
+    const tokenInput = document.getElementById('gh-token-input');
+    if (tokenInput) {
+      config.githubToken = tokenInput.value.trim();
+    }
     saveConfig();
     closeSettingsModal();
-    showToast('OneDrive settings saved!', 'success');
+    showToast('บันทึกการตั้งค่า GitHub Sync เรียบร้อย!', 'success');
 
-    // Trigger initial pull if configured
-    if (config.webhookUrl || getActiveMode() === 'lan') {
-      pullPlanData();
-    }
+    // Trigger initial pull
+    pullPlanData();
   }
 
   async function syncNow(btn = null) {
