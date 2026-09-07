@@ -33,22 +33,6 @@
       "cost": 0
     },
     {
-      "id": "TO2.1",
-      "wbs": "TO2.1",
-      "sapMo": "",
-      "parentId": "TO2",
-      "task": "Install Scaffolding",
-      "lead": "PIP",
-      "tr": "GT42 GSUT",
-      "plant": "GEN Ph.2",
-      "cat": "Transformer Outage",
-      "start": "2026-01-06",
-      "end": "2026-01-07",
-      "days": 2,
-      "progress": 100,
-      "cost": 0
-    },
-    {
       "id": "TO2.2",
       "wbs": "TO2.2",
       "sapMo": "",
@@ -641,5 +625,5 @@
       "sapMo": ""
     }
   ],
-  "timestamp": "2026-09-07T09:26:34.838Z"
+  "timestamp": "2026-09-07T09:32:21.011Z"
 }
