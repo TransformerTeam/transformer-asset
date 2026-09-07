@@ -3,7 +3,7 @@
     {
       "id": "TO1",
       "wbs": "TO1",
-      "sapMo": "",
+      "sapMo": "40001001",
       "parentId": null,
       "task": "GHECO-ONE: Outage Year 2026",
       "lead": "MMT",
@@ -12,14 +12,14 @@
       "cat": "Transformer Outage",
       "start": "2026-01-05",
       "end": "2026-01-27",
-      "days": 23,
+      "days": 22,
       "progress": 100,
       "cost": 75260
     },
     {
       "id": "TO2",
       "wbs": "TO2",
-      "sapMo": "30000081541",
+      "sapMo": "40001002",
       "parentId": null,
       "task": "GT42 3Y PM 2026",
       "lead": "PIP",
@@ -51,7 +51,7 @@
     {
       "id": "TO2.2",
       "wbs": "TO2.2",
-      "sapMo": "",
+      "sapMo": "40001004",
       "parentId": "TO2",
       "task": "Preventive Program by EMM",
       "lead": "PIP",
@@ -67,7 +67,7 @@
     {
       "id": "TO3",
       "wbs": "TO3",
-      "sapMo": "30000079580",
+      "sapMo": "40001005",
       "parentId": null,
       "task": "CUP-1: GTG16 3Y PM 2026",
       "lead": "JIS",
@@ -78,12 +78,12 @@
       "end": "2026-01-12",
       "days": 4,
       "progress": 100,
-      "cost": 36000
+      "cost": 35800
     },
     {
       "id": "TO3.1",
       "wbs": "TO3.1",
-      "sapMo": "1300018640",
+      "sapMo": "40001006",
       "parentId": "TO3",
       "task": "Install Scaffolding",
       "lead": "JIS",
@@ -94,12 +94,12 @@
       "end": "2026-01-10",
       "days": 2,
       "progress": 100,
-      "cost": 36000
+      "cost": 15000
     },
     {
       "id": "TO3.2",
       "wbs": "TO3.2",
-      "sapMo": "",
+      "sapMo": "40001007",
       "parentId": "TO3",
       "task": "Preventive Program by EMM",
       "lead": "JIS",
@@ -110,12 +110,12 @@
       "end": "2026-01-12",
       "days": 3,
       "progress": 100,
-      "cost": 0
+      "cost": 20800
     },
     {
       "id": "TO4",
       "wbs": "TO4",
-      "sapMo": "30000081542",
+      "sapMo": "40001008",
       "parentId": null,
       "task": "GEN: GT61 3Y PM 2026",
       "lead": "PIP",
@@ -253,7 +253,7 @@
       "start": "2026-03-01",
       "end": "2026-03-05",
       "days": 5,
-      "progress": 0,
+      "progress": 100,
       "cost": 0
     },
     {
@@ -269,7 +269,7 @@
       "start": "2026-02-15",
       "end": "2026-02-28",
       "days": 14,
-      "progress": 0,
+      "progress": 100,
       "cost": 45000
     },
     {
@@ -573,7 +573,7 @@
       "start": "2026-10-01",
       "end": "2026-10-31",
       "days": 31,
-      "progress": 0,
+      "progress": 100,
       "cost": 0
     },
     {
@@ -589,7 +589,7 @@
       "start": "2026-10-01",
       "end": "2026-10-31",
       "days": 31,
-      "progress": 0,
+      "progress": 100,
       "cost": 0
     },
     {
@@ -657,5 +657,5 @@
       "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T09:50:49.678Z"
+  "timestamp": "2026-09-07T09:53:42.301Z"
 }
