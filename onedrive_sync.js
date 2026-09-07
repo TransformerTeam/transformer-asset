@@ -39,13 +39,16 @@
     webhookUrl: '',
     autoSync: true,
     lastSyncTime: new Date().toISOString(),
-    syncIntervalSec: 60
+    syncIntervalSec: 15
   };
 
   let config = Object.assign({}, DEFAULT_CONFIG);
   try {
     const saved = localStorage.getItem(STORAGE_CONFIG_KEY);
     if (saved) config = Object.assign({}, DEFAULT_CONFIG, JSON.parse(saved));
+    if (!config.syncIntervalSec || config.syncIntervalSec > 30) {
+      config.syncIntervalSec = 15;
+    }
   } catch (e) {}
 
   let syncState = 'idle'; // 'idle', 'syncing', 'synced', 'error'
@@ -72,9 +75,9 @@
     updateBadgeUI();
   }
 
-  function notifyListeners(eventType, data) {
+  function notifyListeners(eventType, data, extra) {
     listeners.forEach(fn => {
-      try { fn(eventType, data); } catch (err) { console.error('OneDriveSync listener error:', err); }
+      try { fn(eventType, data, extra); } catch (err) { console.error('OneDriveSync listener error:', err); }
     });
   }
 
@@ -150,6 +153,7 @@
         }
 
         config.lastSyncTime = new Date().toISOString();
+        try { localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', config.lastSyncTime); } catch (e) {}
         saveConfig();
         setSyncState('synced');
         showToast('Saved & Committed to GitHub repository successfully!', 'success');
@@ -178,16 +182,56 @@
           config.lastSyncTime = new Date().toISOString();
           saveConfig();
           setSyncState('synced');
-          notifyListeners('PLAN_UPDATED', data.tasks);
+          notifyListeners('PLAN_UPDATED', data.tasks, data.timestamp);
           return data.tasks;
         }
-      } else if (mode === 'cloud') {
+      } else if (mode === 'github' || mode === 'cloud') {
         let data = null;
-        try {
-          const res = await fetch('plan_data.json?t=' + Date.now());
-          if (res.ok) data = await res.json();
-        } catch (e) {}
+        const repo = (config.githubRepo || 'TransformerTeam/transformer-asset').trim();
+        const path = (config.githubPath || 'plan_data.json').trim();
+        const branch = (config.githubBranch || 'main').trim();
+        const token = (config.githubToken || '').trim();
 
+        // 1. If GitHub Token is available, fetch via GitHub API raw (instant commit sync)
+        if (token) {
+          try {
+            const ghUrl = `https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}&_t=${Date.now()}`;
+            const res = await fetch(ghUrl, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3.raw'
+              },
+              cache: 'no-store'
+            });
+            if (res.ok) {
+              data = await res.json();
+            }
+          } catch (e) {}
+        }
+
+        // 2. Fetch raw.githubusercontent.com (fast, global CDN, zero rate limit)
+        if (!data) {
+          try {
+            const rawUrl = `https://raw.githubusercontent.com/${repo}/${branch}/${path}?_t=${Date.now()}`;
+            const res = await fetch(rawUrl, { cache: 'no-store' });
+            if (res.ok) {
+              data = await res.json();
+            }
+          } catch (e) {}
+        }
+
+        // 3. Fallback to relative URL
+        if (!data) {
+          try {
+            const relUrl = `${path}?_t=${Date.now()}`;
+            const res = await fetch(relUrl, { cache: 'no-store' });
+            if (res.ok) {
+              data = await res.json();
+            }
+          } catch (e) {}
+        }
+
+        // 4. Fallback to Webhook if present
         if (!data && config.webhookUrl) {
           try {
             const res = await fetch(config.webhookUrl, {
@@ -203,7 +247,7 @@
           config.lastSyncTime = new Date().toISOString();
           saveConfig();
           setSyncState('synced');
-          notifyListeners('PLAN_UPDATED', data.tasks);
+          notifyListeners('PLAN_UPDATED', data.tasks, data.timestamp);
           return data.tasks;
         }
       }
@@ -771,7 +815,9 @@
   // --- AUTO INIT ---
   function init(options = {}) {
     if (options.onDataUpdated && typeof options.onDataUpdated === 'function') {
-      listeners.push(options.onDataUpdated);
+      if (!listeners.includes(options.onDataUpdated)) {
+        listeners.push(options.onDataUpdated);
+      }
     }
 
     if (document.readyState === 'loading') {

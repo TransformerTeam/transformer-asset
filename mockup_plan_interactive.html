@@ -24,6 +24,9 @@
   <link rel="stylesheet" href="theme_editor.css">
   <script src="theme_engine.js"></script>
 
+  <!-- Enterprise OneDrive / SharePoint / GitHub Sync Module -->
+  <script src="onedrive_sync.js"></script>
+
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -1465,26 +1468,56 @@
 
     async function loadMasterPlanDataAsync() {
       try {
-        const res = await fetch('plan_data.json?t=' + Date.now());
-        if (res.ok) {
-          const json = await res.json();
-          if (json && Array.isArray(json.tasks) && json.tasks.length > 0) {
-            INITIAL_TASKS.length = 0;
-            json.tasks.forEach(t => INITIAL_TASKS.push(t));
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (!saved) {
-              tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
-              recalculateAllParents();
-              saveTasksToStorage();
-              renderAll();
-            } else {
-              loadSavedTasks();
-              recalculateAllParents();
-              renderAll();
-            }
+        let json = null;
+        const repo = 'TransformerTeam/transformer-asset';
+        const branch = 'main';
+        const path = 'plan_data.json';
+
+        // 1. Unauthenticated fast fetch directly from raw.githubusercontent.com with cache-buster
+        try {
+          const rawRes = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/${path}?_t=${Date.now()}`, { cache: 'no-store' });
+          if (rawRes.ok) json = await rawRes.json();
+        } catch (e) {}
+
+        // 2. Relative path fallback
+        if (!json) {
+          try {
+            const relRes = await fetch(`${path}?_t=${Date.now()}`, { cache: 'no-store' });
+            if (relRes.ok) json = await relRes.json();
+          } catch (e) {}
+        }
+
+        if (json && Array.isArray(json.tasks) && json.tasks.length > 0) {
+          console.log('Successfully loaded master plan dataset from cloud:', json.tasks.length, 'tasks');
+          INITIAL_TASKS.length = 0;
+          json.tasks.forEach(t => INITIAL_TASKS.push(t));
+
+          const remoteTimestamp = json.timestamp || '';
+          const localTimestamp = localStorage.getItem('GPSC_PLAN_LAST_MODIFIED') || '';
+          const saved = localStorage.getItem(STORAGE_KEY);
+
+          // If no local storage exists, OR no local timestamp exists, OR remote timestamp is newer/equal:
+          // Remote master dataset takes precedence!
+          if (!saved || !localTimestamp || (remoteTimestamp && remoteTimestamp >= localTimestamp)) {
+            tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
+            recalculateAllParents();
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+              if (remoteTimestamp) {
+                localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', remoteTimestamp);
+              }
+            } catch (e) {}
+            renderAll();
+          } else {
+            // User on this browser made newer local edits; smart merge
+            loadSavedTasks();
+            recalculateAllParents();
+            renderAll();
           }
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('Could not load plan_data.json over network, using local storage/fallback:', err);
+      }
     }
 
     function loadSavedTasks() {
@@ -1537,7 +1570,7 @@
 
             tasks = merged;
             if (hasNewTasks) {
-              saveTasksToStorage();
+              saveTasksToStorage(false);
             }
           }
         }
@@ -1546,9 +1579,13 @@
       }
     }
 
-    function saveTasksToStorage() {
+    function saveTasksToStorage(updateTimestamp = true) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        if (updateTimestamp) {
+          const nowIso = new Date().toISOString();
+          localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', nowIso);
+        }
       } catch (err) {}
       if (window.OneDriveSync && typeof window.OneDriveSync.pushPlanData === 'function') {
         window.OneDriveSync.pushPlanData(tasks);
@@ -2228,6 +2265,22 @@
     function closeModal() {
       document.getElementById('task-modal').classList.add('hidden');
       toggleTrDropdown(false);
+      if (window._pendingRemoteTasks) {
+        const pending = window._pendingRemoteTasks;
+        window._pendingRemoteTasks = null;
+        tasks = pending.remoteTasks;
+        recalculateAllParents();
+        renderAll();
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+          if (pending.remoteTimestamp) {
+            localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', pending.remoteTimestamp);
+          }
+        } catch (e) {}
+        if (window.OneDriveSync && typeof window.OneDriveSync.showToast === 'function') {
+          window.OneDriveSync.showToast('อัปเดตข้อมูลล่าสุดจากส่วนกลางแล้ว (Real-time)', 'success');
+        }
+      }
     }
 
     function saveTask(e) {
@@ -3493,21 +3546,39 @@
       if (window.OneDriveSync && typeof window.OneDriveSync.init === 'function') {
         window.OneDriveSync.init({
           pageType: 'plan',
-          onDataUpdated: (event, remoteTasks) => {
+          onDataUpdated: (event, remoteTasks, remoteTimestamp) => {
             if (event === 'PLAN_UPDATED' && Array.isArray(remoteTasks) && remoteTasks.length > 0) {
+              const currentStr = JSON.stringify(tasks);
+              const remoteStr = JSON.stringify(remoteTasks);
+              if (currentStr === remoteStr) return; // Exact match, skip
+
+              // Check if modal is open
+              const taskModal = document.getElementById('task-modal');
+              const isModalOpen = taskModal && !taskModal.classList.contains('hidden');
+              if (isModalOpen) {
+                window._pendingRemoteTasks = { remoteTasks, remoteTimestamp };
+                return;
+              }
+
               tasks = remoteTasks;
               recalculateAllParents();
               renderAll();
-              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); } catch (e) {}
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+                if (remoteTimestamp) {
+                  localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', remoteTimestamp);
+                }
+              } catch (e) {}
+
+              if (window.OneDriveSync && typeof window.OneDriveSync.showToast === 'function') {
+                window.OneDriveSync.showToast('อัปเดตข้อมูลล่าสุดจากส่วนกลางแล้ว (Real-time)', 'success');
+              }
             }
           }
         });
       }
     });
   </script>
-
-  <!-- Enterprise OneDrive / SharePoint Sync Module -->
-  <script src="onedrive_sync.js"></script>
 
   <!-- Interactive Theme Editor UI -->
   <script src="theme_editor.js"></script>
