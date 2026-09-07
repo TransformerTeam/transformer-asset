@@ -396,7 +396,7 @@
       "start": "2026-03-02",
       "end": "2026-03-31",
       "days": 30,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": null
     },
@@ -412,7 +412,7 @@
       "start": "2026-03-02",
       "end": "2026-03-03",
       "days": 2,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": "gen_1788672925355"
     },
@@ -428,7 +428,7 @@
       "start": "2026-03-09",
       "end": "2026-03-13",
       "days": 5,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": "gen_1788672925355"
     },
@@ -444,7 +444,7 @@
       "start": "2026-03-09",
       "end": "2026-03-13",
       "days": 5,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": "gen_1788672925355"
     },
@@ -460,7 +460,7 @@
       "start": "2026-03-04",
       "end": "2026-03-05",
       "days": 2,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": "gen_1788672925355"
     },
@@ -508,7 +508,7 @@
       "start": "2026-03-16",
       "end": "2026-03-17",
       "days": 2,
-      "progress": 100,
+      "progress": 0,
       "cost": 0,
       "parentId": null
     },
@@ -641,5 +641,5 @@
       "parentId": "TO4"
     }
   ],
-  "timestamp": "2026-09-07T09:40:53.794Z"
+  "timestamp": "2026-09-07T09:40:57.395Z"
 }
