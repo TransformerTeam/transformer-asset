@@ -49,12 +49,10 @@
   }
 
   function getActiveMode() {
-    if (config.mode === 'cloud') return 'cloud';
-    if (config.mode === 'lan') return 'lan';
-    if (config.mode === 'standalone') return 'standalone';
-    // Auto detection
+    // Top Priority: If running on local server or company LAN, ALWAYS use LAN for instant, 100% reliable direct sync
     if (isLanServer()) return 'lan';
-    return 'cloud'; // Default to Microsoft 365 Cloud Gateway
+    if (config.mode === 'standalone') return 'standalone';
+    return 'cloud';
   }
 
   function saveConfig() {
