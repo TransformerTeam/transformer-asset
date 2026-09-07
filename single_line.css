@@ -513,10 +513,10 @@ header p {
    SCADA CANVAS PANEL
    ========================================================================== */
 .scada-panel {
-  background: var(--glass-bg);
+  background: #171c27;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 2rem 1.5rem;
   position: relative;
@@ -527,6 +527,11 @@ header p {
   min-width: 1000px;
   box-shadow: var(--shadow-lg);
   transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="light"] .scada-panel {
+  background: var(--glass-bg, rgba(237, 237, 237, 0.95));
+  border-color: var(--glass-border, rgba(0, 0, 0, 0.10));
 }
 
 /* Busbars */
