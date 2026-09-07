@@ -695,6 +695,9 @@
           <button id="btn-header-export" onclick="exportPlanCSV()" class="header-tab-btn" title="Export to CSV">
             <i class="fa-solid fa-file-csv" style="color: var(--color-good, #10b981);"></i> Export CSV
           </button>
+          <button id="btn-header-export-json" onclick="exportPlanJSON()" class="header-tab-btn" title="Export plan_data.json (for OneDrive & GitHub sync)">
+            <i class="fa-solid fa-file-code" style="color: #38bdf8;"></i> Export JSON
+          </button>
           <button id="theme-studio-btn" class="header-tab-btn theme-studio-btn" title="Theme Studio (Alt+T)">
             <i class="fa-solid fa-palette text-amber-400"></i> Theme Studio
           </button>
@@ -1463,6 +1466,30 @@
       }
     }
 
+    async function loadMasterPlanDataAsync() {
+      try {
+        const res = await fetch('plan_data.json?t=' + Date.now());
+        if (res.ok) {
+          const json = await res.json();
+          if (json && Array.isArray(json.tasks) && json.tasks.length > 0) {
+            INITIAL_TASKS.length = 0;
+            json.tasks.forEach(t => INITIAL_TASKS.push(t));
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) {
+              tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
+              recalculateAllParents();
+              saveTasksToStorage();
+              renderAll();
+            } else {
+              loadSavedTasks();
+              recalculateAllParents();
+              renderAll();
+            }
+          }
+        }
+      } catch (err) {}
+    }
+
     function loadSavedTasks() {
       try {
         let saved = localStorage.getItem(STORAGE_KEY);
@@ -1476,7 +1503,7 @@
               migrateTaskCategory(t);
             });
 
-            // --- SMART MERGE (Keep user custom edits & sync any new tasks from GitHub master) ---
+            // --- SMART MERGE (Keep user custom edits & sync any new tasks from master) ---
             const savedMapById = new Map();
             const savedMapByWbs = new Map();
             parsed.forEach(t => {
@@ -1490,7 +1517,6 @@
             INITIAL_TASKS.forEach((initT, idx) => {
               const existing = (initT.id && savedMapById.get(initT.id)) || (initT.wbs && savedMapByWbs.get(initT.wbs));
               if (!existing) {
-                // New task from GitHub: insert after its preceding sibling/parent to maintain natural WBS structure
                 let inserted = false;
                 for (let i = idx - 1; i >= 0; i--) {
                   const prevInit = INITIAL_TASKS[i];
@@ -1506,7 +1532,6 @@
                 }
                 hasNewTasks = true;
               } else {
-                // Task already exists in user's storage: backfill sapMo if missing
                 if (existing.sapMo === undefined && initT.sapMo) {
                   existing.sapMo = initT.sapMo;
                 }
@@ -1533,16 +1558,45 @@
       }
     }
 
-    function resetPlanData() {
-      if (confirm('Reset to initial master dataset? Any custom tasks will be cleared.')) {
+    async function resetPlanData() {
+      if (confirm('Reset to master dataset from OneDrive / GitHub? Any local browser customizations will be refreshed.')) {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V4');
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V3');
+        try {
+          const res = await fetch('plan_data.json?t=' + Date.now());
+          if (res.ok) {
+            const json = await res.json();
+            if (json && Array.isArray(json.tasks) && json.tasks.length > 0) {
+              tasks = JSON.parse(JSON.stringify(json.tasks));
+              recalculateAllParents();
+              saveTasksToStorage();
+              location.reload();
+              return;
+            }
+          }
+        } catch (e) {}
         tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
         recalculateAllParents();
         saveTasksToStorage();
         location.reload();
       }
+    }
+
+    function exportPlanJSON() {
+      const exportObj = {
+        tasks: tasks,
+        timestamp: new Date().toISOString()
+      };
+      const jsonStr = JSON.stringify(exportObj, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'plan_data.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function exportPlanCSV() {
@@ -3369,6 +3423,7 @@
 
       loadSavedTasks();
       recalculateAllParents();
+      loadMasterPlanDataAsync();
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('theme')) {
         document.documentElement.setAttribute('data-theme', urlParams.get('theme'));
