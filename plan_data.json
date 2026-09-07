@@ -719,7 +719,23 @@
       "progress": 100,
       "cost": 42000,
       "parentId": "gen_1788797448102"
+    },
+    {
+      "id": "gen_1788798581929",
+      "wbs": "TO9",
+      "sapMo": "30000083459",
+      "cat": "Transformer Outage",
+      "task": "GT2B&Bleeding 3Y PM 2026",
+      "plant": "GEN Ph.2",
+      "tr": "GT2B GSUT, GT2C Bleeding",
+      "lead": "JIS",
+      "start": "2026-04-20",
+      "end": "2026-04-24",
+      "days": 5,
+      "progress": 0,
+      "cost": 0,
+      "parentId": null
     }
   ],
-  "timestamp": "2026-09-07T16:25:07.597Z"
+  "timestamp": "2026-09-07T16:29:42.505Z"
 }
