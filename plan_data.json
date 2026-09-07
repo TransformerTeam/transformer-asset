@@ -221,7 +221,7 @@
       "start": "2026-04-27",
       "end": "2026-05-01",
       "days": 5,
-      "progress": 0,
+      "progress": 50,
       "cost": 0
     },
     {
@@ -639,7 +639,23 @@
       "progress": 100,
       "cost": 39450,
       "parentId": "TO4"
+    },
+    {
+      "id": "gen_1788795098532",
+      "wbs": "TO7.2",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "Preventive Program by EMM",
+      "plant": "GEN Ph.2",
+      "tr": "GT2B GSUT",
+      "lead": "JIS",
+      "start": "2026-04-27",
+      "end": "2026-05-01",
+      "days": 5,
+      "progress": 100,
+      "cost": 0,
+      "parentId": "TO7"
     }
   ],
-  "timestamp": "2026-09-07T15:31:18.876Z"
+  "timestamp": "2026-09-07T15:31:39.395Z"
 }
