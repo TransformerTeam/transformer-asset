@@ -170,9 +170,9 @@
       "tr": "STG3C GSUT, STG3C UAT, CFB3 SUS11, CFB3 SUS12",
       "plant": "GSPP2&3",
       "cat": "Transformer Outage",
-      "start": "2026-03-03",
-      "end": "2026-03-07",
-      "days": 5,
+      "start": "2026-03-11",
+      "end": "2026-03-16",
+      "days": 6,
       "progress": 100,
       "cost": 39120
     },
@@ -657,5 +657,5 @@
       "parentId": "TO7"
     }
   ],
-  "timestamp": "2026-09-07T15:31:39.395Z"
+  "timestamp": "2026-09-07T15:32:21.443Z"
 }
