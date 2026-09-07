@@ -653,7 +653,7 @@
       "end": "2026-03-25",
       "days": 7,
       "progress": 0,
-      "cost": 55440,
+      "cost": 220440,
       "parentId": null
     },
     {
@@ -671,7 +671,23 @@
       "progress": 0,
       "cost": 55440,
       "parentId": "gen_1788797448102"
+    },
+    {
+      "id": "gen_1788798032964",
+      "wbs": "TO8.2",
+      "sapMo": "1300019442",
+      "cat": "Transformer Outage",
+      "task": "Replace 22 kV Busbar insulation",
+      "plant": "GEN Ph.2",
+      "tr": "TR2",
+      "lead": "JIS",
+      "start": "2026-03-19",
+      "end": "2026-03-25",
+      "days": 7,
+      "progress": 0,
+      "cost": 165000,
+      "parentId": "gen_1788797448102"
     }
   ],
-  "timestamp": "2026-09-07T16:14:36.604Z"
+  "timestamp": "2026-09-07T16:20:33.732Z"
 }
