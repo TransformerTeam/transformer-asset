@@ -954,6 +954,10 @@
                 <i class="fa-solid fa-layer-group text-indigo-400"></i>
                 <span id="toggle-all-text">Collapse All Subs</span>
               </button>
+              <span id="table-sort-badge" class="text-xs bg-indigo-950/80 px-2.5 py-1.5 rounded-lg text-indigo-300 border border-indigo-700/60 font-medium flex items-center gap-1.5 cursor-pointer hover:bg-indigo-900 transition" onclick="toggleTableSort('cat_start')" title="Click to reset sort: Category → Start Date">
+                <i class="fa-solid fa-arrow-down-short-wide text-sky-400"></i>
+                <span id="table-sort-text">Category → Start Date</span>
+              </span>
               <span id="table-count-badge" class="text-xs bg-slate-900 px-3 py-1.5 rounded-lg text-slate-300 border border-slate-700 font-medium">Showing Tasks</span>
             </div>
           </div>
@@ -963,17 +967,53 @@
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-700 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th class="py-2.5 px-3 w-20">WBS</th>
+                  <th class="py-2.5 px-3 w-20 cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('wbs')" title="Sort by WBS">
+                    <div class="flex items-center gap-1">
+                      <span>WBS</span>
+                      <i id="sort-icon-wbs" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
                   <th class="py-2.5 px-2 w-28 text-center">SAP (MO)</th>
-                  <th class="py-2.5 px-3 min-w-[220px]">Task Description</th>
+                  <th class="py-2.5 px-2 min-w-[130px] cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('cat')" title="Sort by Category">
+                    <div class="flex items-center gap-1">
+                      <span>Category</span>
+                      <i id="sort-icon-cat" class="fa-solid fa-arrow-down-a-z text-[10px] text-indigo-400"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-3 min-w-[220px] cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('task')" title="Sort by Task Description">
+                    <div class="flex items-center gap-1">
+                      <span>Task Description</span>
+                      <i id="sort-icon-task" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
                   <th class="py-2.5 px-2 w-16 text-center">Lead</th>
                   <th class="py-2.5 px-2 min-w-[100px]">Transformer</th>
-                  <th class="py-2.5 px-2 w-24">Plant</th>
-                  <th class="py-2.5 px-2 min-w-[100px]">Start</th>
+                  <th class="py-2.5 px-2 w-24 cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('plant')" title="Sort by Plant">
+                    <div class="flex items-center gap-1">
+                      <span>Plant</span>
+                      <i id="sort-icon-plant" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 min-w-[100px] cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('start')" title="Sort by Start Date">
+                    <div class="flex items-center gap-1">
+                      <span>Start</span>
+                      <i id="sort-icon-start" class="fa-solid fa-arrow-down-1-9 text-[10px] text-indigo-400"></i>
+                    </div>
+                  </th>
                   <th class="py-2.5 px-2 min-w-[100px]">End</th>
                   <th class="py-2.5 px-2 w-12 text-center">Days</th>
-                  <th class="py-2.5 px-3 w-28 text-center">% Done</th>
-                  <th class="py-2.5 px-2 w-24 text-right">Cost (THB)</th>
+                  <th class="py-2.5 px-3 w-28 text-center cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('progress')" title="Sort by % Done">
+                    <div class="flex items-center justify-center gap-1">
+                      <span>% Done</span>
+                      <i id="sort-icon-progress" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
+                  <th class="py-2.5 px-2 w-24 text-right cursor-pointer hover:text-white select-none transition" onclick="toggleTableSort('cost')" title="Sort by Cost">
+                    <div class="flex items-center justify-end gap-1">
+                      <span>Cost (THB)</span>
+                      <i id="sort-icon-cost" class="fa-solid fa-sort text-[9px] text-slate-500"></i>
+                    </div>
+                  </th>
                   <th class="py-2.5 px-3 min-w-[155px] text-center">Actions</th>
                 </tr>
               </thead>
@@ -3253,14 +3293,84 @@
     // ==========================================
     // HIERARCHICAL WBS TREE TABLE RENDERING
     // ==========================================
+    let tableSort = {
+      column: 'cat_start',
+      direction: 'asc'
+    };
+
+    function getCategoryBadgeClass(cat) {
+      const c = (cat || '').toLowerCase();
+      if (c.includes('outage')) return 'bg-rose-500/20 text-rose-300 border border-rose-500/40';
+      if (c.includes('life')) return 'bg-purple-500/20 text-purple-300 border border-purple-500/40';
+      if (c.includes('plant')) return 'bg-teal-500/20 text-teal-300 border border-teal-500/40';
+      if (c.includes('oil')) return 'bg-amber-500/20 text-amber-300 border border-amber-500/40';
+      if (c.includes('visual')) return 'bg-sky-500/20 text-sky-300 border border-sky-500/40';
+      if (c.includes('oltc')) return 'bg-pink-500/20 text-pink-300 border border-pink-500/40';
+      return 'bg-slate-800 text-slate-300 border border-slate-700';
+    }
+
+    const CATEGORY_PRIORITY = {
+      'transformer outage': 1,
+      'life assessment': 2,
+      'plant assessment': 3,
+      'oltc inspection': 4,
+      'oil analysis': 5,
+      '3m visual': 6
+    };
+
+    function getCatRank(cat) {
+      const c = (cat || '').toLowerCase().trim();
+      for (const [key, rank] of Object.entries(CATEGORY_PRIORITY)) {
+        if (c.includes(key) || key.includes(c)) return rank;
+      }
+      return 99;
+    }
+
+    function toggleTableSort(column) {
+      if (tableSort.column === column) {
+        tableSort.direction = tableSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        tableSort.column = column;
+        tableSort.direction = 'asc';
+      }
+      renderTable();
+    }
+
     function renderTable(filteredList = null) {
       const filtered = filteredList || getFilteredTasks();
       const tbody = document.getElementById('wbs-tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
 
+      // Update sort badge and header icons
+      const sortBadgeText = document.getElementById('table-sort-text');
+      if (sortBadgeText) {
+        if (tableSort.column === 'cat_start') {
+          sortBadgeText.textContent = tableSort.direction === 'asc' ? 'Category → Start Date' : 'Category (Desc) → Start';
+        } else if (tableSort.column === 'cat') {
+          sortBadgeText.textContent = tableSort.direction === 'asc' ? 'Category (A-Z)' : 'Category (Z-A)';
+        } else if (tableSort.column === 'start') {
+          sortBadgeText.textContent = tableSort.direction === 'asc' ? 'Start Date (Earliest)' : 'Start Date (Latest)';
+        } else if (tableSort.column === 'wbs') {
+          sortBadgeText.textContent = tableSort.direction === 'asc' ? 'WBS (Asc)' : 'WBS (Desc)';
+        } else {
+          sortBadgeText.textContent = `Sorted: ${tableSort.column} (${tableSort.direction})`;
+        }
+      }
+
+      ['wbs', 'cat', 'task', 'plant', 'start', 'progress', 'cost'].forEach(col => {
+        const icon = document.getElementById(`sort-icon-${col}`);
+        if (icon) {
+          if (tableSort.column === col || (tableSort.column === 'cat_start' && (col === 'cat' || col === 'start'))) {
+            icon.className = tableSort.direction === 'asc' ? 'fa-solid fa-arrow-down-short-wide text-[10px] text-sky-400' : 'fa-solid fa-arrow-up-wide-short text-[10px] text-sky-400';
+          } else {
+            icon.className = 'fa-solid fa-sort text-[9px] text-slate-500';
+          }
+        }
+      });
+
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="12" class="py-6 text-center text-slate-500">No tasks found matching current plant and filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="13" class="py-6 text-center text-slate-500">No tasks found matching current plant and filters.</td></tr>';
         return;
       }
 
@@ -3272,6 +3382,62 @@
       tasks.filter(t => t.parentId).forEach(sub => {
         if (!subTasksMap.has(sub.parentId)) subTasksMap.set(sub.parentId, []);
         subTasksMap.get(sub.parentId).push(sub);
+      });
+
+      // --- SORT PARENTS: BY CATEGORY THEN START DATE ---
+      parents.sort((a, b) => {
+        const dir = tableSort.direction === 'asc' ? 1 : -1;
+        if (tableSort.column === 'cat_start') {
+          const rankDiff = getCatRank(a.cat) - getCatRank(b.cat);
+          if (rankDiff !== 0) return dir * rankDiff;
+
+          // Secondary sort: Start Date ASC
+          const startA = a.start || '';
+          const startB = b.start || '';
+          if (startA !== startB) return startA.localeCompare(startB);
+
+          return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        } else if (tableSort.column === 'cat') {
+          const catA = (a.cat || '').trim();
+          const catB = (b.cat || '').trim();
+          const catComp = catA.localeCompare(catB);
+          if (catComp !== 0) return dir * catComp;
+
+          // Secondary sort: Start Date ASC
+          const startA = a.start || '';
+          const startB = b.start || '';
+          if (startA !== startB) return startA.localeCompare(startB);
+
+          return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        } else if (tableSort.column === 'start') {
+          const startA = a.start || '';
+          const startB = b.start || '';
+          if (startA !== startB) return dir * startA.localeCompare(startB);
+          return (a.cat || '').localeCompare(b.cat || '');
+        } else if (tableSort.column === 'wbs') {
+          return dir * (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        } else if (tableSort.column === 'task') {
+          return dir * (a.task || '').localeCompare(b.task || '');
+        } else if (tableSort.column === 'plant') {
+          const plantComp = (a.plant || '').localeCompare(b.plant || '');
+          if (plantComp !== 0) return dir * plantComp;
+          return (a.start || '').localeCompare(b.start || '');
+        } else if (tableSort.column === 'progress') {
+          return dir * ((a.progress || 0) - (b.progress || 0));
+        } else if (tableSort.column === 'cost') {
+          return dir * ((a.cost || 0) - (b.cost || 0));
+        }
+        return 0;
+      });
+
+      // --- SUB-TASKS UNDER PARENT: SORT CHRONOLOGICALLY BY START DATE ---
+      subTasksMap.forEach(children => {
+        children.sort((a, b) => {
+          const startA = a.start || '';
+          const startB = b.start || '';
+          if (startA !== startB) return startA.localeCompare(startB);
+          return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        });
       });
 
       // Render each parent and its children
@@ -3309,6 +3475,11 @@
                 ${p.sapMo}
               </span>
             ` : `<span class="text-slate-500 font-mono text-xs">-</span>`}
+          </td>
+          <td class="py-2.5 px-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${getCategoryBadgeClass(p.cat)}">
+              ${p.cat}
+            </span>
           </td>
           <td class="py-2.5 px-3 font-semibold text-white">
             <div class="flex items-center gap-2">
@@ -3379,6 +3550,11 @@
                     ${c.sapMo}
                   </span>
                 ` : `<span class="text-slate-500 font-mono text-[11px]">-</span>`}
+              </td>
+              <td class="py-2 px-2">
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-medium opacity-75 ${getCategoryBadgeClass(c.cat || p.cat)}">
+                  ${c.cat || p.cat}
+                </span>
               </td>
               <td class="py-2 px-3 text-slate-200">
                 <div class="flex items-center gap-2">
