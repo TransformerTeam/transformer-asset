@@ -7,9 +7,26 @@
   'use strict';
 
   const STORAGE_CONFIG_KEY = 'GPSC_ONEDRIVE_SYNC_CONFIG';
+  const FORM_GATEWAY = {
+    endpoint: "https://forms.cloud.microsoft/formapi/api/c6445630-e602-4993-a605-7e41f70338e8/users/f244955f-9e46-408c-8d9a-8f160c8806d0/forms('MFZExgLmk0mmBX5B9wM46F-VRPJGnoxAjZqPFgyIBtBUOVVMNkhPU0hQVDQ1MzNZOTcxU0Y2WEFJTC4u')/responses",
+    corsProxy: "https://cors.eu.org/",
+    questionIds: [
+      "rc840ba0799a94ccfa5c70b993bdfe90f", // plan_json
+      "rb151399b92ed45c690bedd70b5d79842", // plan_json_2
+      "r96042bb6bb3c4c398d01e41e9f3f746e", // plan_json_3
+      "r3605fdd383ce4c3492184a0114dc0382", // plan_json_4
+      "ra9c2f2d9e3524b5cb07733bc00a7ef63", // plan_json_5
+      "rdd8b17c7d2184035b14567ab3bd5874c", // plan_json_6
+      "r950173ea58d049b6bce63df468ace553", // plan_json_7
+      "r73a274ca77194c23baf74f113511da64", // plan_json_8
+      "rca97ebc4420346a1bdf5169320d086b5", // plan_json_9
+      "r777e6e486ede4fdeb13a52ab381127e5"  // plan_json_10
+    ]
+  };
+
   const DEFAULT_CONFIG = {
     mode: 'auto', // 'auto', 'cloud', 'lan', 'standalone'
-    webhookUrl: 'https://defaultc6445630e6024993a6057e41f70338.e8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/03/workflows/4a6d80323dda4e4f817d96bb96eda5d6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dFq0nn4ZY7e71R9fySVGOw3VjUrLCdOCvaDxDsIJeTk',
+    webhookUrl: '',
     autoSync: true,
     lastSyncTime: new Date().toISOString(),
     syncIntervalSec: 60
@@ -32,13 +49,12 @@
   }
 
   function getActiveMode() {
-    if (config.mode === 'cloud' && config.webhookUrl) return 'cloud';
+    if (config.mode === 'cloud') return 'cloud';
     if (config.mode === 'lan') return 'lan';
     if (config.mode === 'standalone') return 'standalone';
     // Auto detection
-    if (config.webhookUrl) return 'cloud';
     if (isLanServer()) return 'lan';
-    return 'standalone';
+    return 'cloud'; // Default to Microsoft 365 Cloud Gateway
   }
 
   function saveConfig() {
@@ -74,12 +90,35 @@
         showToast('Saved & Synced with LAN OneDrive folder', 'success');
         return { success: true, mode: 'lan' };
       } else if (mode === 'cloud') {
-        const res = await fetch(config.webhookUrl, {
+        // Chunk full plan JSON to fit within Microsoft Forms 4,000 char question limit
+        const jsonStr = JSON.stringify({ tasks: tasks, timestamp: new Date().toISOString() });
+        const chunkSize = 3500;
+        const chunks = [];
+        for (let i = 0; i < jsonStr.length; i += chunkSize) {
+          chunks.push(jsonStr.slice(i, i + chunkSize));
+        }
+
+        const answers = FORM_GATEWAY.questionIds.map((qid, idx) => ({
+          questionId: qid,
+          answer1: chunks[idx] || ""
+        }));
+
+        const payload = {
+          startDate: new Date().toISOString(),
+          submitDate: new Date().toISOString(),
+          answers: JSON.stringify(answers)
+        };
+
+        const targetUrl = (window.location.origin.includes('sharepoint.com') || window.location.origin.includes('office.com'))
+          ? FORM_GATEWAY.endpoint
+          : (FORM_GATEWAY.corsProxy + FORM_GATEWAY.endpoint);
+
+        const res = await fetch(targetUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'SAVE_PLAN', tasks: tasks, timestamp: new Date().toISOString() })
+          body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Power Automate Webhook error: ' + res.status);
+        if (!res.ok) throw new Error('Cloud Gateway HTTP ' + res.status);
         config.lastSyncTime = new Date().toISOString();
         saveConfig();
         setSyncState('synced');
@@ -113,13 +152,23 @@
           return data.tasks;
         }
       } else if (mode === 'cloud') {
-        const res = await fetch(config.webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'GET_PLAN', timestamp: new Date().toISOString() })
-        });
-        if (!res.ok) throw new Error('Cloud HTTP ' + res.status);
-        const data = await res.json();
+        let data = null;
+        try {
+          const res = await fetch('plan_data.json?t=' + Date.now());
+          if (res.ok) data = await res.json();
+        } catch (e) {}
+
+        if (!data && config.webhookUrl) {
+          try {
+            const res = await fetch(config.webhookUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'GET_PLAN', timestamp: new Date().toISOString() })
+            });
+            if (res.ok) data = await res.json();
+          } catch (e) {}
+        }
+
         if (data && Array.isArray(data.tasks)) {
           config.lastSyncTime = new Date().toISOString();
           saveConfig();
@@ -140,27 +189,43 @@
   // --- API: TEST CONNECTION ---
   async function testConnection(customUrl = null) {
     const url = customUrl !== null ? customUrl : config.webhookUrl;
-    if (!url) {
-      if (isLanServer()) {
-        try {
-          const res = await fetch('/api/plan?test=1');
-          return { success: res.ok, message: 'LAN Server endpoint active on port ' + (window.location.port || '8888') };
-        } catch (e) {
-          return { success: false, message: 'LAN Server not reachable' };
-        }
+    if (url) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'SAVE_PLAN', test: true, timestamp: new Date().toISOString() })
+        });
+        return { success: res.ok, status: res.status, message: res.ok ? 'Connection Successful! Power Automate responded.' : 'HTTP ' + res.status };
+      } catch (err) {
+        return { success: false, message: 'Connection failed: ' + err.message };
       }
-      return { success: false, message: 'Webhook URL is not configured' };
     }
 
+    if (isLanServer()) {
+      try {
+        const res = await fetch('/api/plan?test=1');
+        return { success: res.ok, message: 'LAN Server endpoint active on port ' + (window.location.port || '8888') };
+      } catch (e) {
+        return { success: false, message: 'LAN Server not reachable' };
+      }
+    }
+
+    // Ping Microsoft Forms Gateway
     try {
-      const res = await fetch(url, {
+      const targetUrl = FORM_GATEWAY.corsProxy + FORM_GATEWAY.endpoint;
+      const res = await fetch(targetUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'SAVE_PLAN', test: true, timestamp: new Date().toISOString() })
+        body: JSON.stringify({
+          startDate: new Date().toISOString(),
+          submitDate: new Date().toISOString(),
+          answers: JSON.stringify([{ questionId: FORM_GATEWAY.questionIds[0], answer1: 'ping-test' }])
+        })
       });
-      return { success: res.ok, status: res.status, message: res.ok ? 'Connection Successful! Power Automate responded.' : 'HTTP ' + res.status };
+      return { success: res.ok, message: res.ok ? 'Connection Successful! Power Automate Gateway is ready.' : 'Gateway HTTP ' + res.status };
     } catch (err) {
-      return { success: false, message: 'Connection failed: ' + err.message };
+      return { success: false, message: 'Gateway check failed: ' + err.message };
     }
   }
 
