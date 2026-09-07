@@ -100,10 +100,9 @@
       } else if (mode === 'github') {
         const token = (config.githubToken || '').trim();
         if (!token) {
-          setSyncState('error', 'Missing GitHub Token');
-          openSettingsModal();
-          showToast('กรุณาใส่ GitHub Token เพื่อบันทึกข้อมูลส่วนกลางบน GitHub Pages', 'warning');
-          return { success: false, needToken: true };
+          // Do not pop up modal automatically! Save locally without annoying the user.
+          setSyncState('idle');
+          return { success: true, mode: 'local' };
         }
 
         const repo = (config.githubRepo || 'TransformerTeam/transformer-asset').trim();
