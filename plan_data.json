@@ -653,7 +653,7 @@
       "end": "2026-03-25",
       "days": 7,
       "progress": 0,
-      "cost": 220440,
+      "cost": 1086940,
       "parentId": null
     },
     {
@@ -687,7 +687,23 @@
       "progress": 0,
       "cost": 165000,
       "parentId": "gen_1788797448102"
+    },
+    {
+      "id": "gen_1788798139250",
+      "wbs": "TO8.3",
+      "sapMo": "1300019697",
+      "cat": "Transformer Outage",
+      "task": "Insulation paper sampling and re-gasket",
+      "plant": "GEN Ph.2",
+      "tr": "TR2",
+      "lead": "JIS",
+      "start": "2026-03-19",
+      "end": "2026-03-25",
+      "days": 7,
+      "progress": 0,
+      "cost": 866500,
+      "parentId": "gen_1788797448102"
     }
   ],
-  "timestamp": "2026-09-07T16:20:33.732Z"
+  "timestamp": "2026-09-07T16:22:19.875Z"
 }
