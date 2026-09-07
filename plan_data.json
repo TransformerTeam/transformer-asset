@@ -637,9 +637,9 @@
       "end": "2026-03-18",
       "days": 1,
       "progress": 100,
-      "cost": 0,
+      "cost": 100,
       "parentId": null
     }
   ],
-  "timestamp": "2026-09-07T08:26:58.169Z"
+  "timestamp": "2026-09-07T08:27:14.530Z"
 }
