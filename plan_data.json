@@ -823,7 +823,7 @@
       "cat": "Transformer Outage",
       "task": "OLTC oil top up",
       "plant": "GEN Ph.2",
-      "tr": "TR2, ETR2",
+      "tr": "TR2",
       "lead": "JIS",
       "start": "2026-03-19",
       "end": "2026-03-25",
@@ -836,5 +836,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T02:23:24.788Z"
+  "timestamp": "2026-09-08T02:23:51.482Z"
 }
