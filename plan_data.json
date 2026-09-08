@@ -732,7 +732,7 @@
       "start": "2026-03-27",
       "end": "2026-03-30",
       "days": 4,
-      "progress": 100,
+      "progress": 50,
       "cost": 27090,
       "parentId": null
     },
@@ -748,7 +748,7 @@
       "start": "2026-03-27",
       "end": "2026-03-30",
       "days": 4,
-      "progress": 100,
+      "progress": 0,
       "cost": 27090,
       "parentId": "gen_1788798701346"
     },
@@ -868,5 +868,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:42:59.800Z"
+  "timestamp": "2026-09-08T03:43:13.365Z"
 }
