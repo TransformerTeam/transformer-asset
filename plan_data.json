@@ -732,7 +732,7 @@
       "start": "2026-04-20",
       "end": "2026-04-24",
       "days": 5,
-      "progress": 0,
+      "progress": 50,
       "cost": 27090,
       "parentId": null
     },
@@ -796,7 +796,7 @@
       "start": "2026-04-20",
       "end": "2026-04-24",
       "days": 5,
-      "progress": 0,
+      "progress": 100,
       "cost": 27090,
       "parentId": "gen_1788798581929"
     },
@@ -817,5 +817,5 @@
       "parentId": "gen_1788798581929"
     }
   ],
-  "timestamp": "2026-09-08T01:46:56.636Z"
+  "timestamp": "2026-09-08T01:46:59.037Z"
 }
