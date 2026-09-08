@@ -813,7 +813,7 @@
       "end": "2026-05-10",
       "days": 7,
       "progress": 0,
-      "cost": 417000,
+      "cost": 908000,
       "parentId": null
     },
     {
@@ -965,7 +965,7 @@
       "wbs": "TO11.4",
       "sapMo": "",
       "cat": "Transformer Outage",
-      "task": "Insulation paper sampling and re-gasket by Hitachi",
+      "task": "Insulation paper sampling, re-gasket and oil processed by Hitachi",
       "plant": "GEN Ph.2",
       "tr": "TR3",
       "lead": "MMT",
@@ -973,7 +973,7 @@
       "end": "2026-05-10",
       "days": 7,
       "progress": 0,
-      "cost": 0,
+      "cost": 491000,
       "parentId": "gen_1788834063251"
     },
     {
@@ -998,5 +998,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T09:44:34.760Z"
+  "timestamp": "2026-09-08T09:47:45.262Z"
 }
