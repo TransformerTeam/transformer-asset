@@ -895,10 +895,10 @@
               <span class="text-[11px] font-bold px-2 flex items-center gap-1" style="color: var(--text-secondary);">
                 <i class="fa-solid fa-clock"></i> Range:
               </span>
-              <button id="btn-span-week" onclick="setCalendarSpan('week')" class="span-btn active">
+              <button id="btn-span-week" onclick="setCalendarSpan('week')" class="span-btn">
                 1 Week
               </button>
-              <button id="btn-span-1" onclick="setCalendarSpan(1)" class="span-btn">
+              <button id="btn-span-1" onclick="setCalendarSpan(1)" class="span-btn active">
                 1 Month
               </button>
               <button id="btn-span-3" onclick="setCalendarSpan(3)" class="span-btn">
@@ -2204,7 +2204,7 @@
     let currentYear = initToday.getFullYear();
     let startMonth = initToday.getMonth();
     let currentWeekDate = new Date(initToday);
-    let calendarSpan = 'week'; // Default to Week view
+    let calendarSpan = 1; // Default to 1 Month view
     let collapsedParents = new Set();
 
     const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V5';
@@ -4137,14 +4137,14 @@
         dayNumSize = 'text-[9px]';
         titleSize = 'text-xs';
       } else if (spanCount === 12) {
-        gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
+        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
         barVariantClass = 'gantt-bar-xs';
-        autoRowHeight = 17;
-        minRowBaseHeight = 26;
-        defaultRowHeight = 52;
-        dayHeaderSize = 'text-[9px]';
-        dayNumSize = 'text-[8.5px]';
-        titleSize = 'text-xs';
+        autoRowHeight = 18;
+        minRowBaseHeight = 28;
+        defaultRowHeight = 60;
+        dayHeaderSize = 'text-[9.5px]';
+        dayNumSize = 'text-[9px]';
+        titleSize = 'text-xs md:text-sm';
       }
 
       const monthsGrid = document.createElement('div');
@@ -4608,7 +4608,7 @@
         const s = urlParams.get('span');
         setCalendarSpan(s === 'week' ? 'week' : parseInt(s));
       } else {
-        setCalendarSpan('week');
+        setCalendarSpan(1);
       }
       if (urlParams.has('cat')) {
         const catParam = urlParams.get('cat');
