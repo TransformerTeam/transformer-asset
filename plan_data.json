@@ -637,7 +637,7 @@
       "end": "2026-03-25",
       "days": 7,
       "progress": 0,
-      "cost": 1528940,
+      "cost": 1128940,
       "parentId": null
     },
     {
@@ -943,26 +943,12 @@
       "progress": 0,
       "cost": 400000,
       "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788843000750",
-      "wbs": "TO8.7",
-      "sapMo": "1200019021",
-      "cat": "Transformer Outage",
-      "task": "Transformer Life Assessment",
-      "plant": "GEN Ph.2",
-      "tr": "TR2",
-      "lead": "MMT",
-      "start": "2026-03-19",
-      "end": "2026-03-25",
-      "days": 7,
-      "progress": 0,
-      "cost": 400000,
-      "parentId": "gen_1788797448102"
     }
   ],
   "deletedIds": [
-    "OL1"
+    "OL1",
+    "gen_1788843000750",
+    "TO8.7"
   ],
-  "timestamp": "2026-09-08T04:50:01.682Z"
+  "timestamp": "2026-09-08T04:50:21.345Z"
 }
