@@ -901,7 +901,7 @@
       "wbs": "TO12.2",
       "sapMo": "1300022158",
       "cat": "Transformer Outage",
-      "task": "Power Int: Oil Regen",
+      "task": "(PR) Power Int: Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
       "lead": "PIP",
@@ -916,5 +916,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:48:02.475Z"
+  "timestamp": "2026-09-08T03:48:37.987Z"
 }
