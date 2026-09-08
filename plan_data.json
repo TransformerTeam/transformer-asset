@@ -927,22 +927,6 @@
       "progress": 0,
       "cost": 0,
       "parentId": "gen_1788839142479"
-    },
-    {
-      "id": "gen_1788855473093",
-      "wbs": "TO11.2",
-      "sapMo": "",
-      "cat": "Transformer Outage",
-      "task": "Preventive Program by EMM",
-      "plant": "GEN Ph.2",
-      "tr": "TR3, ETR3",
-      "lead": "JIS",
-      "start": "2026-05-04",
-      "end": "2026-05-10",
-      "days": 7,
-      "progress": 0,
-      "cost": 0,
-      "parentId": "gen_1788834063251"
     }
   ],
   "deletedIds": [
@@ -952,5 +936,5 @@
     "gen_1788842740896",
     "TO11.2"
   ],
-  "timestamp": "2026-09-08T08:17:53.976Z"
+  "timestamp": "2026-09-08T08:18:08.378Z"
 }
