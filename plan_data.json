@@ -273,22 +273,6 @@
       "cost": 45000
     },
     {
-      "id": "OL1",
-      "wbs": "OL1",
-      "sapMo": "40001018",
-      "parentId": null,
-      "task": "GEN Ph.2: OLTC Diagnostic & Inspection",
-      "lead": "PIP",
-      "tr": "GT42 GSUT",
-      "plant": "GEN Ph.2",
-      "cat": "OLTC Inspection",
-      "start": "2026-03-10",
-      "end": "2026-03-18",
-      "days": 8,
-      "progress": 50,
-      "cost": 28000
-    },
-    {
       "id": "VS1",
       "wbs": "VS1",
       "sapMo": "40001019",
@@ -817,5 +801,5 @@
       "parentId": "gen_1788798581929"
     }
   ],
-  "timestamp": "2026-09-08T02:00:31.711Z"
+  "timestamp": "2026-09-08T02:01:00.112Z"
 }
