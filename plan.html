@@ -862,14 +862,6 @@
               </select>
             </div>
           </div>
-
-          <!-- Active Filter Status Indicator -->
-          <div style="margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent);">
-              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-good, #10b981); box-shadow: 0 0 6px var(--color-good);"></span>
-              <span id="filter-status-text">Calendar filtered by: All Plants (Main WBS Only)</span>
-            </div>
-          </div>
         </section>
 
         <!-- 1. CALENDAR VIEW -->
@@ -2632,12 +2624,6 @@
     }
 
     function applyFilters() {
-      const p = document.getElementById('filter-plant').value;
-      const c = document.getElementById('filter-cat').value;
-      const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
-      const lvlText = lvl === 'MAIN' ? ' (Main WBS Only)' : (lvl === 'SUB' ? ' (Sub-tasks Only)' : ' (All WBS)');
-      const catText = c !== 'ALL' ? ` | Category: ${c}` : '';
-      document.getElementById('filter-status-text').textContent = 'Calendar filtered by: ' + (p === 'ALL' ? 'All Plants' : 'Plant ' + p) + catText + lvlText;
       renderAll(); saveTasksToStorage();
     }
 
