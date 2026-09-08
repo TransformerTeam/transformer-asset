@@ -812,7 +812,7 @@
       "start": "2026-01-09",
       "end": "2026-01-12",
       "days": 4,
-      "progress": 0,
+      "progress": 100,
       "cost": 0,
       "parentId": null
     },
@@ -852,5 +852,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T02:41:34.811Z"
+  "timestamp": "2026-09-08T02:41:56.940Z"
 }
