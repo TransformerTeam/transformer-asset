@@ -2491,15 +2491,19 @@
           const allDeletedIds = new Set(getDeletedTaskIds());
 
           INITIAL_TASKS.length = 0;
-          json.tasks.filter(t => !allDeletedIds.has(t.id) && !allDeletedIds.has(t.wbs)).forEach(t => INITIAL_TASKS.push(t));
+          json.tasks.filter(t => !allDeletedIds.has(t.id)).forEach(t => INITIAL_TASKS.push(t));
 
           const remoteTimestamp = json.timestamp || '';
           const localTimestamp = localStorage.getItem('GPSC_PLAN_LAST_MODIFIED') || '';
           const saved = localStorage.getItem(STORAGE_KEY);
 
-          // If no local storage exists, OR no local timestamp exists, OR remote timestamp is newer/equal:
-          // Remote master dataset takes precedence!
-          if (!saved || !localTimestamp || (remoteTimestamp && remoteTimestamp >= localTimestamp)) {
+          // If local storage exists, ALWAYS smart merge to preserve locally added tasks across refresh
+          if (saved) {
+            loadSavedTasks();
+            recalculateAllParents();
+            if (!userToggledCollapseManually) collapseAllSubs();
+            renderAll();
+          } else {
             tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
             recalculateAllParents();
             try {
@@ -2508,12 +2512,6 @@
                 localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', remoteTimestamp);
               }
             } catch (e) {}
-            if (!userToggledCollapseManually) collapseAllSubs();
-            renderAll();
-          } else {
-            // User on this browser made newer local edits; smart merge
-            loadSavedTasks();
-            recalculateAllParents();
             if (!userToggledCollapseManually) collapseAllSubs();
             renderAll();
           }
@@ -2527,7 +2525,18 @@
     function getDeletedTaskIds() {
       try {
         const d = localStorage.getItem('GPSC_PLAN_DELETED_IDS');
-        return d ? JSON.parse(d) : [];
+        let list = d ? JSON.parse(d) : [];
+        if (!Array.isArray(list)) list = [];
+        // Sanitize: never blacklist sub-task WBS (contains dot) or any active task in memory
+        const activeIds = new Set(tasks.map(t => t.id));
+        const activeWbs = new Set(tasks.map(t => t.wbs));
+        list = list.filter(id => {
+          if (typeof id !== 'string') return false;
+          if (id.includes('.')) return false;
+          if (activeIds.has(id) || activeWbs.has(id)) return false;
+          return true;
+        });
+        return list;
       } catch (e) {
         return [];
       }
@@ -2537,8 +2546,23 @@
       try {
         const current = getDeletedTaskIds();
         const set = new Set(current);
-        ids.flat().forEach(id => { if (id) set.add(id); });
+        const activeIds = new Set(tasks.map(t => t.id));
+        const activeWbs = new Set(tasks.map(t => t.wbs));
+        ids.flat().forEach(id => { 
+          if (id && typeof id === 'string' && !id.includes('.') && !activeIds.has(id) && !activeWbs.has(id)) {
+            set.add(id); 
+          }
+        });
         localStorage.setItem('GPSC_PLAN_DELETED_IDS', JSON.stringify([...set]));
+      } catch (e) {}
+    }
+
+    function removeDeletedTaskIds(...ids) {
+      try {
+        const current = getDeletedTaskIds();
+        const toRemove = new Set(ids.flat().filter(Boolean));
+        const updated = current.filter(x => !toRemove.has(x));
+        localStorage.setItem('GPSC_PLAN_DELETED_IDS', JSON.stringify(updated));
       } catch (e) {}
     }
 
@@ -2568,7 +2592,7 @@
             const deletedIds = new Set(getDeletedTaskIds());
 
             INITIAL_TASKS.forEach((initT, idx) => {
-              if (deletedIds.has(initT.id) || (initT.wbs && deletedIds.has(initT.wbs))) {
+              if (deletedIds.has(initT.id)) {
                 return; // User explicitly deleted this task; DO NOT resurrect!
               }
               const existing = (initT.id && savedMapById.get(initT.id)) || (initT.wbs && savedMapByWbs.get(initT.wbs));
@@ -2595,7 +2619,7 @@
               }
             });
 
-            tasks = merged.filter(t => !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+            tasks = merged.filter(t => !deletedIds.has(t.id));
             if (hasNewTasks) {
               saveTasksToStorage(false);
             }
@@ -2942,10 +2966,8 @@
 
         // Record deleted task ID and all child sub-task IDs in persistent tombstone
         const toDeleteIds = [id];
-        if (task && task.wbs) toDeleteIds.push(task.wbs);
         subs.forEach(s => {
           if (s.id) toDeleteIds.push(s.id);
-          if (s.wbs) toDeleteIds.push(s.wbs);
         });
         addDeletedTaskIds(...toDeleteIds);
 
@@ -3346,8 +3368,7 @@
         // Smart merge: keep local tasks that are not deleted and not in remote yet
         const deletedIds = new Set(getDeletedTaskIds());
         const remoteIds = new Set(pending.remoteTasks.map(t => t.id));
-        const remoteWbs = new Set(pending.remoteTasks.map(t => t.wbs));
-        const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !remoteWbs.has(t.wbs) && !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+        const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !deletedIds.has(t.id));
 
         tasks = [...pending.remoteTasks, ...localOnly];
         recalculateAllParents();
@@ -3386,6 +3407,7 @@
       const d2 = new Date(end);
       const days = Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1);
 
+      let savedId = id;
       if (id) {
         const item = tasks.find(t => t.id === id);
         const oldParentId = item ? item.parentId : null;
@@ -3407,12 +3429,18 @@
         }
       } else {
         const newId = 'gen_' + Date.now();
+        savedId = newId;
         tasks.push({ id: newId, wbs, sapMo, cat, task: taskName, plant, tr, lead, start, end, days, progress, cost, parentId });
       }
 
       if (parentId) {
         recalculateParent(parentId);
+        collapsedParents.delete(parentId);
+        userToggledCollapseManually = true;
       }
+
+      // Ensure newly saved task is un-blacklisted from deletedIds
+      removeDeletedTaskIds(savedId, wbs);
 
       // CRITICAL: clear any pending remote tasks so closeModal will NOT overwrite newly saved task!
       window._pendingRemoteTasks = null;
@@ -4932,12 +4960,11 @@
                 addDeletedTaskIds(...remoteDeletedIds);
               }
               const deletedIds = new Set(getDeletedTaskIds());
-              const cleanedRemote = remoteTasks.filter(t => !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+              const cleanedRemote = remoteTasks.filter(t => !deletedIds.has(t.id));
 
               // 3. Smart Merge: preserve newly-created local tasks that are not yet in remote and not deleted
               const remoteIds = new Set(cleanedRemote.map(t => t.id));
-              const remoteWbs = new Set(cleanedRemote.map(t => t.wbs));
-              const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !remoteWbs.has(t.wbs) && !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+              const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !deletedIds.has(t.id));
               const mergedRemote = [...cleanedRemote, ...localOnly];
 
               const currentStr = JSON.stringify(tasks);

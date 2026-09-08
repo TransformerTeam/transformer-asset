@@ -95,6 +95,9 @@
         currentDeletedIds = [];
       }
     }
+    const activeIds = new Set((tasks || []).map(t => t.id));
+    const activeWbs = new Set((tasks || []).map(t => t.wbs));
+    currentDeletedIds = (currentDeletedIds || []).filter(id => typeof id === 'string' && !id.includes('.') && !activeIds.has(id) && !activeWbs.has(id));
 
     setSyncState('syncing');
     try {
@@ -262,7 +265,11 @@
             try {
               const localD = localStorage.getItem('GPSC_PLAN_DELETED_IDS');
               const localList = localD ? JSON.parse(localD) : [];
-              const mergedSet = new Set([...localList, ...data.deletedIds]);
+              const activeIds = new Set(data.tasks.map(t => t.id));
+              const activeWbs = new Set(data.tasks.map(t => t.wbs));
+              const validDeleted = data.deletedIds.filter(id => typeof id === 'string' && !id.includes('.') && !activeIds.has(id) && !activeWbs.has(id));
+              const cleanedLocal = localList.filter(id => typeof id === 'string' && !id.includes('.') && !activeIds.has(id) && !activeWbs.has(id));
+              const mergedSet = new Set([...cleanedLocal, ...validDeleted]);
               localStorage.setItem('GPSC_PLAN_DELETED_IDS', JSON.stringify([...mergedSet]));
             } catch (e) {}
           }
