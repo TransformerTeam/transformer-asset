@@ -999,7 +999,7 @@
       "cat": "Transformer Outage",
       "task": "Add Passivator by Hitachi",
       "plant": "GEN Ph.2",
-      "tr": "TR3, ETR3",
+      "tr": "TR3",
       "lead": "JIS",
       "start": "2026-05-04",
       "end": "2026-05-10",
@@ -1014,5 +1014,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T09:59:33.250Z"
+  "timestamp": "2026-09-08T10:06:34.759Z"
 }
