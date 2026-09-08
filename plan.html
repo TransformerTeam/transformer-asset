@@ -1061,10 +1061,10 @@
               <div class="flex items-center justify-between">
                 <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
                   <i class="fa-solid fa-chart-bar text-sky-400"></i>
-                  <span>Outaged Transformers Count by Plant</span>
+                  <span>Outaged Transformers: Plan vs Actual by Plant</span>
                 </h3>
               </div>
-              <div id="outage-chart-container" class="w-full min-h-[310px]"></div>
+              <div id="outage-chart-container" class="w-full min-h-[330px]"></div>
             </div>
 
             <!-- Right: Plant Transformers Directory Cards -->
@@ -3497,20 +3497,27 @@
       }
 
       const categories = plantList.map(p => p.plant);
-      const dataValues = plantList.map(p => p.trs.size);
+      const planValues = plantList.map(p => p.trs.size);
+      const actualValues = plantList.map(p => p.completedTrs.size);
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const textColor = isLight ? '#334155' : '#cbd5e1';
       const gridColor = isLight ? '#e2e8f0' : '#1e293b';
 
       const options = {
-        series: [{
-          name: 'Transformers Outaged',
-          data: dataValues
-        }],
+        series: [
+          {
+            name: 'Plan',
+            data: planValues
+          },
+          {
+            name: 'Actual',
+            data: actualValues
+          }
+        ],
         chart: {
           type: 'bar',
-          height: 310,
+          height: 330,
           toolbar: { show: false },
           background: 'transparent',
           fontFamily: 'Inter, Prompt, sans-serif'
@@ -3519,19 +3526,18 @@
         plotOptions: {
           bar: {
             horizontal: true,
-            borderRadius: 6,
-            barHeight: '52%',
-            distributed: true,
+            borderRadius: 4,
+            barHeight: '68%',
             dataLabels: { position: 'top' }
           }
         },
-        colors: ['#38bdf8', '#818cf8', '#34d399', '#f59e0b', '#ec4899', '#a855f7'],
+        colors: ['#38bdf8', '#10b981'], // Plan: Sky Blue, Actual: Emerald Green
         dataLabels: {
           enabled: true,
           formatter: function(val) {
             return val + ' Units';
           },
-          offsetX: 28,
+          offsetX: 24,
           style: {
             fontSize: '11px',
             fontWeight: 700,
@@ -3562,14 +3568,29 @@
         tooltip: {
           theme: isLight ? 'light' : 'dark',
           y: {
-            formatter: function (val, { dataPointIndex }) {
+            formatter: function (val, { seriesIndex, dataPointIndex }) {
               const item = plantList[dataPointIndex];
               if (!item) return val + ' Units';
-              return val + ' Units: ' + Array.from(item.trs).join(', ');
+              if (seriesIndex === 0) {
+                const trsStr = Array.from(item.trs).join(', ');
+                return `${val} Units (Planned): ${trsStr || 'None'}`;
+              } else {
+                const doneStr = Array.from(item.completedTrs).join(', ');
+                return `${val} Units (Completed): ${doneStr || 'None'}`;
+              }
             }
           }
         },
-        legend: { show: false }
+        legend: {
+          show: true,
+          position: 'top',
+          horizontalAlign: 'right',
+          fontSize: '12px',
+          fontWeight: 600,
+          labels: { colors: textColor },
+          markers: { radius: 4, width: 12, height: 12 },
+          itemMargin: { horizontal: 10, vertical: 0 }
+        }
       };
 
       outageChartInstance = new ApexCharts(container, options);
