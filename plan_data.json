@@ -901,7 +901,7 @@
       "wbs": "TO12.2",
       "sapMo": "1300022158",
       "cat": "Transformer Outage",
-      "task": "(PR) Power Int: Oil Regen",
+      "task": "Oil Regeneration by Power Int.",
       "plant": "GSPP11",
       "tr": "DT-3",
       "lead": "PIP",
@@ -1030,5 +1030,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T10:43:44.114Z"
+  "timestamp": "2026-09-08T10:44:22.341Z"
 }
