@@ -807,7 +807,7 @@
       "cat": "Transformer Outage",
       "task": "TR3 3Y PM 2026",
       "plant": "GEN Ph.2",
-      "tr": "",
+      "tr": "TR3, ETR3",
       "lead": "JIS",
       "start": "2026-01-09",
       "end": "2026-01-12",
@@ -852,5 +852,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:10:31.270Z"
+  "timestamp": "2026-09-08T03:11:07.119Z"
 }
