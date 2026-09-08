@@ -2607,6 +2607,7 @@
     }
 
     function saveTasksToStorage(updateTimestamp = true) {
+      window._lastLocalEditTime = Date.now();
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
         if (updateTimestamp) {
@@ -3333,7 +3334,22 @@
       if (window._pendingRemoteTasks) {
         const pending = window._pendingRemoteTasks;
         window._pendingRemoteTasks = null;
-        tasks = pending.remoteTasks;
+
+        // Verify remote timestamp is genuinely newer than local modifications
+        const localLastMod = localStorage.getItem('GPSC_PLAN_LAST_MODIFIED');
+        if (localLastMod && pending.remoteTimestamp) {
+          const localTime = new Date(localLastMod).getTime();
+          const remoteTime = new Date(pending.remoteTimestamp).getTime();
+          if (remoteTime < localTime) return;
+        }
+
+        // Smart merge: keep local tasks that are not deleted and not in remote yet
+        const deletedIds = new Set(getDeletedTaskIds());
+        const remoteIds = new Set(pending.remoteTasks.map(t => t.id));
+        const remoteWbs = new Set(pending.remoteTasks.map(t => t.wbs));
+        const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !remoteWbs.has(t.wbs) && !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+
+        tasks = [...pending.remoteTasks, ...localOnly];
         recalculateAllParents();
         renderAll();
         try {
@@ -3398,8 +3414,13 @@
         recalculateParent(parentId);
       }
 
+      // CRITICAL: clear any pending remote tasks so closeModal will NOT overwrite newly saved task!
+      window._pendingRemoteTasks = null;
+      window._lastLocalEditTime = Date.now();
+
       closeModal();
-      renderAll(); saveTasksToStorage();
+      renderAll(); 
+      saveTasksToStorage();
     }
 
     // Inline editor for SAP Maintenance Order number
@@ -4892,25 +4913,46 @@
           pageType: 'plan',
           onDataUpdated: (event, remoteTasks, remoteTimestamp, remoteDeletedIds = []) => {
             if (event === 'PLAN_UPDATED' && Array.isArray(remoteTasks) && remoteTasks.length > 0) {
+              // 1. Guard: If user recently edited locally within 15 seconds, skip incoming poll to avoid race condition
+              if (window._lastLocalEditTime && (Date.now() - window._lastLocalEditTime < 15000)) {
+                return;
+              }
+
+              // 2. Guard: Verify remote timestamp is genuinely newer than local modifications
+              const localLastMod = localStorage.getItem('GPSC_PLAN_LAST_MODIFIED');
+              if (localLastMod && remoteTimestamp) {
+                const localTime = new Date(localLastMod).getTime();
+                const remoteTime = new Date(remoteTimestamp).getTime();
+                if (remoteTime < localTime) {
+                  return; // Remote payload is stale CDN cache, reject!
+                }
+              }
+
               if (Array.isArray(remoteDeletedIds) && remoteDeletedIds.length > 0) {
                 addDeletedTaskIds(...remoteDeletedIds);
               }
               const deletedIds = new Set(getDeletedTaskIds());
               const cleanedRemote = remoteTasks.filter(t => !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
 
+              // 3. Smart Merge: preserve newly-created local tasks that are not yet in remote and not deleted
+              const remoteIds = new Set(cleanedRemote.map(t => t.id));
+              const remoteWbs = new Set(cleanedRemote.map(t => t.wbs));
+              const localOnly = tasks.filter(t => !remoteIds.has(t.id) && !remoteWbs.has(t.wbs) && !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+              const mergedRemote = [...cleanedRemote, ...localOnly];
+
               const currentStr = JSON.stringify(tasks);
-              const remoteStr = JSON.stringify(cleanedRemote);
-              if (currentStr === remoteStr) return; // Exact match, skip
+              const mergedStr = JSON.stringify(mergedRemote);
+              if (currentStr === mergedStr) return; // Exact match, skip
 
               // Check if modal is open
               const taskModal = document.getElementById('task-modal');
               const isModalOpen = taskModal && !taskModal.classList.contains('hidden');
               if (isModalOpen) {
-                window._pendingRemoteTasks = { remoteTasks: cleanedRemote, remoteTimestamp };
+                window._pendingRemoteTasks = { remoteTasks: mergedRemote, remoteTimestamp };
                 return;
               }
 
-              tasks = cleanedRemote;
+              tasks = mergedRemote;
               recalculateAllParents();
               renderAll();
               try {
