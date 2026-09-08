@@ -959,6 +959,22 @@
       "progress": 0,
       "cost": 0,
       "parentId": "gen_1788834063251"
+    },
+    {
+      "id": "gen_1788857996902",
+      "wbs": "TO11.4",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "Insulation paper sampling and re-gasket by Hitachi",
+      "plant": "GEN Ph.2",
+      "tr": "TR3",
+      "lead": "JIS",
+      "start": "2026-05-04",
+      "end": "2026-05-10",
+      "days": 7,
+      "progress": 0,
+      "cost": 0,
+      "parentId": "gen_1788834063251"
     }
   ],
   "deletedIds": [
@@ -966,5 +982,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T08:51:31.883Z"
+  "timestamp": "2026-09-08T08:59:57.659Z"
 }
