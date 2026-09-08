@@ -733,7 +733,7 @@
       "end": "2026-04-24",
       "days": 5,
       "progress": 0,
-      "cost": 0,
+      "cost": 27090,
       "parentId": null
     },
     {
@@ -783,7 +783,23 @@
       "progress": 100,
       "cost": 0,
       "parentId": "gen_1788798701346"
+    },
+    {
+      "id": "gen_1788832002430",
+      "wbs": "TO9.1",
+      "sapMo": "1300020471",
+      "cat": "Transformer Outage",
+      "task": "Install Scaffolding",
+      "plant": "GEN Ph.2",
+      "tr": "GT2B GSUT, GT2C Bleeding",
+      "lead": "JIS",
+      "start": "2026-04-20",
+      "end": "2026-04-24",
+      "days": 5,
+      "progress": 0,
+      "cost": 27090,
+      "parentId": "gen_1788798581929"
     }
   ],
-  "timestamp": "2026-09-08T01:46:06.554Z"
+  "timestamp": "2026-09-08T01:46:43.337Z"
 }
