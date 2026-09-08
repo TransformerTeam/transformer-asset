@@ -951,7 +951,7 @@
       "cat": "Transformer Outage",
       "task": "TR3 Overhaul OLTC",
       "plant": "GEN Ph.2",
-      "tr": "TR3, ETR3",
+      "tr": "TR3",
       "lead": "MMT",
       "start": "2026-05-04",
       "end": "2026-05-10",
@@ -982,5 +982,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T08:59:57.659Z"
+  "timestamp": "2026-09-08T09:00:03.756Z"
 }
