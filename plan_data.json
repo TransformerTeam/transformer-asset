@@ -949,7 +949,7 @@
       "wbs": "TO11.3",
       "sapMo": "1300019912",
       "cat": "Transformer Outage",
-      "task": "TR3 Overhaul OLTC",
+      "task": "TR3 Overhaul OLTC by Hitachi",
       "plant": "GEN Ph.2",
       "tr": "TR3",
       "lead": "MMT",
@@ -1014,5 +1014,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T10:25:46.140Z"
+  "timestamp": "2026-09-08T10:26:05.260Z"
 }
