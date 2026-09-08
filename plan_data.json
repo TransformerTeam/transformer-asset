@@ -917,7 +917,7 @@
       "wbs": "TO12.3",
       "sapMo": "",
       "cat": "Transformer Outage",
-      "task": "(MOC): Oil Regen",
+      "task": "(MOC) Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
       "lead": "PIP",
@@ -1030,5 +1030,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T10:35:07.711Z"
+  "timestamp": "2026-09-08T10:43:44.114Z"
 }
