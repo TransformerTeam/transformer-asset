@@ -813,7 +813,7 @@
       "end": "2026-01-12",
       "days": 4,
       "progress": 0,
-      "cost": 400000,
+      "cost": 467000,
       "parentId": null
     },
     {
@@ -851,7 +851,7 @@
     {
       "id": "gen_1788838979128",
       "wbs": "TO11.1",
-      "sapMo": "",
+      "sapMo": "1300020719",
       "cat": "Transformer Outage",
       "task": "Install Scaffolding",
       "plant": "GEN Ph.2",
@@ -861,7 +861,7 @@
       "end": "2026-01-12",
       "days": 4,
       "progress": 0,
-      "cost": 0,
+      "cost": 67000,
       "parentId": "gen_1788834063251"
     },
     {
@@ -948,5 +948,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T04:45:54.472Z"
+  "timestamp": "2026-09-08T04:46:36.883Z"
 }
