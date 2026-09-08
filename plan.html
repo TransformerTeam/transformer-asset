@@ -74,7 +74,7 @@
       opacity: 0.9;
     }
 
-    /* Unified Header Action Tab Menu (รวมเป็น แท็บเมนู เดียวกัน) */
+    /* Unified Header Action Tab Menu */
     .unified-header-tabs {
       display: inline-flex;
       align-items: center;
@@ -339,7 +339,7 @@
       border-radius: 2px;
     }
 
-    /* Finished Tasks (100% Executed): Deep Solid Saturated Colors (สีเข้มเด่นชัด) */
+    /* Finished Tasks (100% Executed): Deep Solid Saturated Colors */
     .gantt-bar.gantt-bar-finished {
       font-weight: 700 !important;
       color: #ffffff !important;
@@ -657,7 +657,7 @@
     <!-- Top Marquee Ticker Matching Assessment -->
     <div class="scada-footer">
       <div class="marquee-content">
-        <span>⚡ ระบบติดตามและประเมินสภาพความพร้อมใช้งานของหม้อแปลงไฟฟ้ากำลัง (Transformer Condition Monitoring System) | พัฒนาสนับสนุนสถิติด้านการบำรุงรักษาเชิงป้องกัน (Preventive Maintenance) ของกลุ่มบริษัท โกลบอล เพาเวอร์ ซินเนอร์ยี่ จำกัด (มหาชน) - GPSC</span>
+        <span>⚡ GPSC Transformer Condition Monitoring System | Fleet Reliability & Preventive Maintenance Analytics - Global Power Synergy Public Company Limited</span>
       </div>
     </div>
 
@@ -672,7 +672,7 @@
       </div>
 
       <div class="header-actions">
-        <!-- Unified Tab Menu: View Switching & Quick Actions (รวมเป็นแท็บเมนูเดียวกัน) -->
+        <!-- Unified Tab Menu: View Switching & Quick Actions -->
         <div class="unified-header-tabs">
           <!-- Views Segment -->
           <button id="btn-view-cal" onclick="switchView('cal')" class="header-tab-btn active" title="Switch to Calendar View">
@@ -857,7 +857,7 @@
               <label for="filter-level"><i class="fa-solid fa-sitemap"></i> WBS Level</label>
               <select id="filter-level" onchange="applyFilters()" class="filter-select" style="border-color: var(--primary); font-weight: 600;">
                 <option value="MAIN" selected>📌 Main WBS Only</option>
-                <option value="ALL">📑 All (รวม Sub-tasks)</option>
+                <option value="ALL">📑 All (Include Sub-tasks)</option>
                 <option value="SUB">↳ Sub-tasks Only</option>
               </select>
             </div>
@@ -923,7 +923,7 @@
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Oil Analysis</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span> 3M Visual</span>
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span> OLTC Inspection</span>
-              <span class="flex items-center gap-1.5 border-l border-slate-700/60 pl-2.5"><span class="w-2.5 h-2.5 rounded bg-slate-900 border border-slate-500 shadow-sm flex items-center justify-center text-[7px] text-emerald-400 font-bold"><i class="fa-solid fa-check"></i></span> Finished (แถบสีเข้ม / 100%)</span>
+              <span class="flex items-center gap-1.5 border-l border-slate-700/60 pl-2.5"><span class="w-2.5 h-2.5 rounded bg-slate-900 border border-slate-500 shadow-sm flex items-center justify-center text-[7px] text-emerald-400 font-bold"><i class="fa-solid fa-check"></i></span> Finished (Solid Color / 100%)</span>
             </div>
           </div>
 
@@ -1025,7 +1025,7 @@
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Total Outage TRs
               </div>
-              <div id="outage-stat-total-trs" class="text-xl font-bold font-mono text-white mt-1">15 <span class="text-xs font-normal text-slate-400">ลูก</span></div>
+              <div id="outage-stat-total-trs" class="text-xl font-bold font-mono text-white mt-1">15 <span class="text-xs font-normal text-slate-400">Units</span></div>
               <div class="text-[10px] text-slate-500 mt-0.5">Across all plants in plan</div>
             </div>
 
@@ -1033,7 +1033,7 @@
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed Outage
               </div>
-              <div id="outage-stat-completed-trs" class="text-xl font-bold font-mono text-emerald-400 mt-1">15 <span class="text-xs font-normal text-slate-400">ลูก (100%)</span></div>
+              <div id="outage-stat-completed-trs" class="text-xl font-bold font-mono text-emerald-400 mt-1">15 <span class="text-xs font-normal text-slate-400">Units (100%)</span></div>
               <div class="text-[10px] text-slate-500 mt-0.5">Finished 100% Progress</div>
             </div>
 
@@ -1061,7 +1061,7 @@
               <div class="flex items-center justify-between">
                 <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
                   <i class="fa-solid fa-chart-bar text-sky-400"></i>
-                  <span>Outaged Transformers Count by Plant (จำนวนลูกหม้อแปลง)</span>
+                  <span>Outaged Transformers Count by Plant</span>
                 </h3>
               </div>
               <div id="outage-chart-container" class="w-full min-h-[310px]"></div>
@@ -1072,7 +1072,7 @@
               <div class="flex items-center justify-between">
                 <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
                   <i class="fa-solid fa-list-check text-emerald-400"></i>
-                  <span>Transformer Units Directory (รายชื่อหม้อแปลง)</span>
+                  <span>Transformer Units Directory</span>
                 </h3>
               </div>
               <div id="outage-plant-cards" class="space-y-2 max-h-[320px] overflow-y-auto custom-scrollbar pr-1">
@@ -1223,7 +1223,7 @@
           </div>
 
           <div id="parent-select-container" class="hidden pt-2 border-t border-slate-700/60">
-            <label class="block text-[11px] font-semibold text-indigo-300 mb-1">Select Parent WBS Task (เลือกงานหลัก):</label>
+            <label class="block text-[11px] font-semibold text-indigo-300 mb-1">Select Parent WBS Task:</label>
             <select id="form-parent-id" onchange="onParentTaskSelected()" class="w-full bg-slate-900 border border-indigo-500/50 rounded-md px-3 py-1.5 text-white text-xs focus:border-indigo-400 focus:outline-none cursor-pointer">
               <!-- Dynamically populated -->
             </select>
@@ -1238,7 +1238,7 @@
           <div>
             <label class="block text-slate-400 font-medium mb-1 flex items-center justify-between">
               <span>SAP (MO)</span>
-              <span class="text-[10px] text-sky-400 font-normal">ตัวเลข MO</span>
+              <span class="text-[10px] text-sky-400 font-normal">MO Number</span>
             </label>
             <input type="number" id="form-sap" class="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-sky-300 focus:border-sky-500 focus:outline-none font-mono" placeholder="e.g. 40001001">
           </div>
@@ -3121,7 +3121,7 @@
           }
         } catch (e) {}
         if (window.OneDriveSync && typeof window.OneDriveSync.showToast === 'function') {
-          window.OneDriveSync.showToast('อัปเดตข้อมูลล่าสุดจากส่วนกลางแล้ว (Real-time)', 'success');
+          window.OneDriveSync.showToast('Updated latest data from repository (Real-time)', 'success');
         }
       }
     }
@@ -3431,12 +3431,12 @@
       if (filterLbl) filterLbl.textContent = 'Showing: ' + (activePlantFilter === 'ALL' ? 'All Plants' : `Plant ${activePlantFilter}`);
 
       const statTotal = document.getElementById('outage-stat-total-trs');
-      if (statTotal) statTotal.innerHTML = `${totalUniqueTrs.size} <span class="text-xs font-normal text-slate-400">ลูก</span>`;
+      if (statTotal) statTotal.innerHTML = `${totalUniqueTrs.size} <span class="text-xs font-normal text-slate-400">Units</span>`;
 
       const statDone = document.getElementById('outage-stat-completed-trs');
       if (statDone) {
         const pct = totalUniqueTrs.size > 0 ? Math.round((completedUniqueTrs.size / totalUniqueTrs.size) * 100) : 0;
-        statDone.innerHTML = `${completedUniqueTrs.size} <span class="text-xs font-normal text-slate-400">ลูก (${pct}%)</span>`;
+        statDone.innerHTML = `${completedUniqueTrs.size} <span class="text-xs font-normal text-slate-400">Units (${pct}%)</span>`;
       }
 
       const statTasks = document.getElementById('outage-stat-tasks');
@@ -3469,7 +3469,7 @@
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
                       ${p.plant}
                     </span>
-                    <span class="text-xs font-semibold text-white">${p.trs.size} ลูก</span>
+                    <span class="text-xs font-semibold text-white">${p.trs.size} Units</span>
                   </div>
                   <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.2 rounded border border-emerald-800/50">
                     <i class="fa-solid fa-check mr-0.5"></i> ${p.completedTrs.size}/${p.trs.size} Done
@@ -3529,7 +3529,7 @@
         dataLabels: {
           enabled: true,
           formatter: function(val) {
-            return val + ' ลูก';
+            return val + ' Units';
           },
           offsetX: 28,
           style: {
@@ -3550,7 +3550,7 @@
             style: { colors: textColor, fontSize: '11px' }
           },
           title: {
-            text: 'Number of Transformers (ลูก)',
+            text: 'Number of Transformers (Units)',
             style: { color: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           }
         },
@@ -3564,8 +3564,8 @@
           y: {
             formatter: function (val, { dataPointIndex }) {
               const item = plantList[dataPointIndex];
-              if (!item) return val + ' ลูก';
-              return val + ' ลูก: ' + Array.from(item.trs).join(', ');
+              if (!item) return val + ' Units';
+              return val + ' Units: ' + Array.from(item.trs).join(', ');
             }
           }
         },
@@ -3776,7 +3776,7 @@
       const elSpi = document.getElementById('scurve-kpi-spi');
 
       const unit = data.isProgress ? '%' : ' THB';
-      const formatVal = (v) => data.isProgress ? `${v}%` : `${Number(v).toLocaleString()} ฿`;
+      const formatVal = (v) => data.isProgress ? `${v}%` : `${Number(v).toLocaleString()} THB`;
 
       if (elPlanned) elPlanned.textContent = formatVal(data.plannedToDate);
       if (elActual) elActual.textContent = formatVal(data.actualToDate);
@@ -3786,17 +3786,17 @@
         if (data.variance < 0) {
           elVar.textContent = `${data.variance}${unit}`;
           elVar.className = 'text-xl font-bold font-mono mt-1 text-rose-400';
-          elBadge.textContent = '⚠️ Behind Schedule (ล่าช้ากว่าแผน)';
+          elBadge.textContent = '⚠️ Behind Schedule';
           elBadge.className = 'text-[10px] mt-0.5 font-bold text-rose-400';
         } else if (data.variance > 0) {
           elVar.textContent = `+${data.variance}${unit}`;
           elVar.className = 'text-xl font-bold font-mono mt-1 text-emerald-400';
-          elBadge.textContent = '🚀 Ahead of Schedule (เร็วกว่าแผน)';
+          elBadge.textContent = '🚀 Ahead of Schedule';
           elBadge.className = 'text-[10px] mt-0.5 font-bold text-emerald-400';
         } else {
           elVar.textContent = `0${unit}`;
           elVar.className = 'text-xl font-bold font-mono mt-1 text-sky-400';
-          elBadge.textContent = '✓ On Schedule (ตามแผน)';
+          elBadge.textContent = '✓ On Schedule';
           elBadge.className = 'text-[10px] mt-0.5 font-medium text-sky-400';
         }
       }
@@ -3868,7 +3868,7 @@
             style: { color: textColor, fontSize: '13px', fontWeight: 600 }
           },
           labels: {
-            formatter: (val) => data.isProgress ? `${Math.round(val)}%` : `${Math.round(val).toLocaleString()} ฿`,
+            formatter: (val) => data.isProgress ? `${Math.round(val)}%` : `${Math.round(val).toLocaleString()} THB`,
             style: { colors: textColor, fontSize: '11px', fontFamily: "'Outfit', monospace" }
           }
         },
@@ -4404,7 +4404,7 @@
           </td>
           <td class="py-2.5 px-2 text-center">
             ${p.sapMo ? `
-              <span class="sap-mo-badge" title="SAP Maintenance Order: ${p.sapMo} (แก้ไขได้ที่ Task)">
+              <span class="sap-mo-badge" title="SAP Maintenance Order: ${p.sapMo} (Editable in Task)">
                 ${p.sapMo}
               </span>
             ` : `<span class="text-slate-500 font-mono text-xs">-</span>`}
@@ -4474,7 +4474,7 @@
               </td>
               <td class="py-2 px-2 text-center">
                 ${c.sapMo ? `
-                  <span class="sap-mo-badge text-[10px] py-0.5 px-1.5" title="SAP Maintenance Order: ${c.sapMo} (แก้ไขได้ที่ Task)">
+                  <span class="sap-mo-badge text-[10px] py-0.5 px-1.5" title="SAP Maintenance Order: ${c.sapMo} (Editable in Task)">
                     ${c.sapMo}
                   </span>
                 ` : `<span class="text-slate-500 font-mono text-[11px]">-</span>`}
@@ -4677,7 +4677,7 @@
               } catch (e) {}
 
               if (window.OneDriveSync && typeof window.OneDriveSync.showToast === 'function') {
-                window.OneDriveSync.showToast('อัปเดตข้อมูลล่าสุดจากส่วนกลางแล้ว (Real-time)', 'success');
+                window.OneDriveSync.showToast('Updated latest data from repository (Real-time)', 'success');
               }
             }
           }

@@ -539,7 +539,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 87,
     "category": "Impact Index",
     "item": "Financial losses (MTHB/Day)",
-    "criteria": "มูลค่าความเสียหายจากการขายไฟฟ้าให้ลูกค้าไม่ได้ (ลบ./วัน)",
+    "criteria": "Loss of revenue from unsupplied electrical energy to customers (MTHB/day)",
     "standard": "",
     "recommendation": ""
   },
@@ -547,7 +547,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 88,
     "category": "Impact Index",
     "item": "Equipment damage cost (MTHB)",
-    "criteria": "มูลค่าความเสียหายของหม้อแปลงไฟฟ้า",
+    "criteria": "Direct transformer physical damage and replacement cost (MTHB)",
     "standard": "",
     "recommendation": ""
   },
@@ -555,7 +555,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 89,
     "category": "Impact Index",
     "item": "N-1 Criteria",
-    "criteria": "แหล่งพลังงานไฟฟ้ามีกำลังสำรองหรือมีเครือข่ายที่เพียงพอกับความต้องการใช้ไฟฟ้าและสามารถจ่ายไฟได้แม้ว่าอุปกรณ์ตัวใดตัวหนึ่งหรือส่วนใดส่วนหนึ่งของระบบเกิดชำรุดเสียหายจนไม่สามารถใช้งานได้",
+    "criteria": "Power source has sufficient reserve margin or network redundancy to maintain supply under single outage contingency (N-1)",
     "standard": "",
     "recommendation": "Yes"
   },
@@ -563,7 +563,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 90,
     "category": "Impact Index",
     "item": "Feeder Importance",
-    "criteria": "ความสำคัญของหม้อแปลงไฟฟ้า แบ่งตามความสำคัญและการใช้งาน",
+    "criteria": "Criticality classification based on load profile and operational importance",
     "standard": "",
     "recommendation": "Auxiliary"
   },
@@ -571,7 +571,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 91,
     "category": "Impact Index",
     "item": "Recovery Time (Week)",
-    "criteria": "เวลาในการนำหม้อแปลงไฟฟ้ากลับเข้าระบบ",
+    "criteria": "Estimated recovery time required to restore transformer back into service (Weeks)",
     "standard": "",
     "recommendation": ""
   },
@@ -579,41 +579,41 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 92,
     "category": "Impact Index",
     "item": "Network Stability",
-    "criteria": "สเถียรภาพของระบบส่งจ่ายกำลังไฟฟ้า",
+    "criteria": "Transmission and distribution grid power system stability impact",
     "standard": "",
-    "recommendation": "ไม่กระทบกับสเถียรภาพของระบบส่งจ่ายกำลังไฟฟ้า"
+    "recommendation": "No adverse impact on grid power system stability"
   },
   {
     "row": 93,
     "category": "Impact Index",
     "item": "Customer impact",
-    "criteria": "ผลกระทบกับระบบไฟฟ้าของลูกค้า",
+    "criteria": "Electrical power disruption and quality impact on customers",
     "standard": "",
-    "recommendation": "ไม่กระทบกับลูกค้า"
+    "recommendation": "No customer power supply interruption"
   },
   {
     "row": 94,
     "category": "Impact Index",
     "item": "Image and Media Relations",
-    "criteria": "ภาพลักษณ์และสื่อโซเชียล",
+    "criteria": "Corporate reputation, media, and public relations impact",
     "standard": "",
-    "recommendation": "ไม่กระทบกับภาพลักษณ์บริษัท"
+    "recommendation": "No adverse corporate reputation impact"
   },
   {
     "row": 95,
     "category": "Impact Index",
     "item": "Enviroment",
-    "criteria": "ผลกระทบด้านสิ่งแวดล้อมขณะหม้อแปลงผิดปกติ",
+    "criteria": "Environmental impact during transformer failure or abnormality",
     "standard": "",
-    "recommendation": "ไม่เกิดผลกระทบด้านสิ่งแวดล้อม (ไม่มีควันดำปกคลุมพื้นที่ ไม่มีน้ำมันหกรั่วไหล)"
+    "recommendation": "No environmental impact (no oil spill, no black smoke dispersion)"
   },
   {
     "row": 96,
     "category": "Impact Index",
     "item": "Safety",
-    "criteria": "ผลกระทบด้านความปลอดภัยขณะหม้อแปลงผิดปกติ",
+    "criteria": "Personnel and public safety impact during abnormal operation or explosion",
     "standard": "",
-    "recommendation": "ไม่เกิดอันตรายต่อบุคคลและทรัพย์สิน (มีระบบป้องกันที่ดี อยู่ในพื้นที่ปิด มีระบบดับเพลิงครบ)"
+    "recommendation": "No hazard to personnel or property (adequate fire protection, containment & enclosed area)"
   }
 ];
 if (typeof window !== 'undefined') { window.EVALUATION_CRITERIA_DATA = EVALUATION_CRITERIA_DATA; }

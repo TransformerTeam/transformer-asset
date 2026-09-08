@@ -1819,7 +1819,7 @@
 
           let tapHv = cenHv;
           if (isDETC) {
-            // เฉพาะ DETC เท่านั้น: Tap 2 (+2.5%), Tap 4 (-2.5%) ของ Center Tap
+            // DETC only: Tap 2 (+2.5%), Tap 4 (-2.5%) of Center Tap
             if (tapNum === 2) {
               tapHv = cenHv * 1.025;
             } else if (tapNum === 4) {
@@ -1832,7 +1832,7 @@
               tapHv = cenHv;
             }
           } else {
-            // กรณี OLTC หรือประเภทอื่น
+            // OLTC or other types
             tapHv = cenHv;
           }
 

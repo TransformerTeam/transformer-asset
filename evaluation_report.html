@@ -3823,11 +3823,11 @@
           }
 
           // Calculate score 1-5 based on user specified thresholds for Magnetic Core Insulation Resistance:
-          // Score 5 (เขียวเข้ม #16a34a): IR >= 500 MΩ
-          // Score 4 (เขียวสด #22c55e): 300 <= IR < 500 MΩ
-          // Score 3 (ส้มเหลือง #d97706): 100 <= IR < 300 MΩ
-          // Score 2 (ส้มอิฐ #ea580c): 10 <= IR < 100 MΩ
-          // Score 1 (แดง #dc2626): IR < 10 MΩ
+          // Score 5 (Dark Green #16a34a): IR >= 500 MΩ
+          // Score 4 (Bright Green #22c55e): 300 <= IR < 500 MΩ
+          // Score 3 (Orange-Yellow #d97706): 100 <= IR < 300 MΩ
+          // Score 2 (Amber-Red #ea580c): 10 <= IR < 100 MΩ
+          // Score 1 (Red #dc2626): IR < 10 MΩ
           const evaluateIrScore = (numIr) => {
             if (numIr < 10) return 1;
             if (numIr < 100) return 2;
@@ -5513,19 +5513,19 @@
       modal.classList.add('active');
       if (spinIcon) spinIcon.classList.add('fa-spin');
       bar.style.width = '15%';
-      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังเชื่อมต่อข้อมูลและเตรียมโหลดไฟล์...';
+      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Connecting data and preparing to load files...';
 
       try {
         // 2. Step 1: Attempt backend sync if running on web server
         bar.style.width = '35%';
-        statusText.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> กำลังอัปเดตข้อมูลทดสอบล่าสุด...';
+        statusText.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> Updating latest diagnostic test data...';
         try {
           await fetch('/api/refresh-data', { method: 'POST' }).catch(() => {});
         } catch (e) {}
 
         // 3. Step 2: Dynamically re-fetch & load health_data.js with timestamp
         bar.style.width = '60%';
-        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> กำลังโหลดไฟล์ health_data.js และอัปเดตชุดข้อมูล...';
+        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> Loading health_data.js and updating dataset...';
 
         await new Promise((resolve) => {
           const oldScript = document.getElementById('health-data-script');
@@ -5541,7 +5541,7 @@
 
         // 4. Step 3: Re-evaluate assessment data & recalculate Health Index
         bar.style.width = '85%';
-        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> กำลังคำนวณ Health Index และอัปเดตรายงาน...';
+        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> Calculating Health Index and updating report...';
 
         ensureAssessmentData();
         populateEvalDropdown();
@@ -5552,7 +5552,7 @@
 
         // 5. Complete Step 4 (100%) - ONLY AFTER data update is fully finished
         bar.style.width = '100%';
-        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> โหลดข้อมูลเรียบร้อยแล้ว!';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Data loaded successfully!';
 
         // 6. Wait briefly so user sees 100% completion status, then hide modal & show toast
         await new Promise(r => setTimeout(r, 600));
@@ -5568,7 +5568,7 @@
       } catch (err) {
         console.error('Refresh error:', err);
         bar.style.width = '100%';
-        statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> เกิดข้อผิดพลาดในการอัปเดตข้อมูล';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> An error occurred while updating data';
         setTimeout(() => {
           modal.classList.remove('active');
           if (spinIcon) spinIcon.classList.remove('fa-spin');
@@ -5582,7 +5582,7 @@
     async function printAllReports() {
       const serial = currentSerial || (document.getElementById('eval-transformer-select') ? document.getElementById('eval-transformer-select').value : '');
       if (!serial) {
-        alert('กรุณาเลือกหม้อแปลงก่อนพิมพ์รายงาน');
+        alert('Please select a transformer before printing the report');
         return;
       }
 
@@ -5956,7 +5956,7 @@
         }
 
         // 1. Report 1 (Evaluation Report)
-        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลด: 1. Evaluation Report...`;
+        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> Loading: 1. Evaluation Report...`;
         if (bar) bar.style.width = '8%';
         const evalPaper = document.getElementById('evaluation-paper');
         if (evalPaper) {
@@ -5972,7 +5972,7 @@
           const rep = REPORT_DEFS[i];
           const stepPct = Math.round(((i + 1) / REPORT_DEFS.length) * 95);
           if (bar) bar.style.width = `${stepPct}%`;
-          if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลด: ${rep.title}...`;
+          if (statusText) statusText.innerHTML = `<i class="fa-solid fa-arrows-rotate fa-spin"></i> Loading: ${rep.title}...`;
 
           await new Promise((resolve) => {
             const tempIframe = document.createElement('iframe');
@@ -6037,7 +6037,7 @@
         }
 
         if (bar) bar.style.width = '100%';
-        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> จัดเตรียมรายงานครบถ้วนเรียบร้อยแล้ว!`;
+        if (statusText) statusText.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> All reports compiled successfully!`;
 
         await new Promise(r => setTimeout(r, 500));
         if (modal) modal.classList.remove('active');
@@ -6048,7 +6048,7 @@
       } catch (err) {
         console.error('Print All Error:', err);
         if (modal) modal.classList.remove('active');
-        alert('เกิดข้อผิดพลาดในการรวบรวมรายงาน: ' + err.message);
+        alert('Error compiling reports: ' + err.message);
       }
     }
   </script>
@@ -6060,7 +6060,7 @@
         <div class="loading-spinner"></div>
         <i class="fa-solid fa-file-pdf loading-center-icon"></i>
       </div>
-      <h3 class="loading-modal-title">กำลังจัดเตรียมชุดรายงานทั้งหมด (12 ฉบับ)</h3>
+      <h3 class="loading-modal-title">Preparing Complete Report Package (12 Reports)</h3>
       <p class="loading-modal-subtitle">Compiling All Transformer Diagnostic Reports...</p>
       
       <div class="loading-progress-track">
@@ -6068,7 +6068,7 @@
       </div>
       
       <div class="loading-status-text" id="print-all-status-text">
-        <i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังโหลดรายงานฉบับที่ 1/12...
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Loading report 1/12...
       </div>
     </div>
   </div>
@@ -6080,7 +6080,7 @@
         <div class="loading-spinner"></div>
         <i class="fa-solid fa-bolt loading-center-icon"></i>
       </div>
-      <h3 class="loading-modal-title">กำลังอัปเดตและประมวลผลข้อมูล</h3>
+      <h3 class="loading-modal-title">Updating & Processing Data</h3>
       <p class="loading-modal-subtitle">Refreshing & Recalculating Transformer Asset Data...</p>
       
       <div class="loading-progress-track">
@@ -6088,7 +6088,7 @@
       </div>
       
       <div class="loading-status-text" id="refresh-status-text">
-        <i class="fa-solid fa-arrows-rotate fa-spin"></i> กำลังเชื่อมต่อข้อมูล CSV & Re-evaluating Criteria...
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Connecting CSV Data & Re-evaluating Criteria...
       </div>
     </div>
   </div>
@@ -6096,7 +6096,7 @@
   <!-- Success Toast Notification -->
   <div id="refresh-toast" class="toast-toast">
     <i class="fa-solid fa-circle-check"></i>
-    <span>อัปเดตข้อมูลเรียบร้อยแล้ว!</span>
+    <span>Data updated successfully!</span>
   </div>
 
   <!-- Interactive Theme Editor UI -->

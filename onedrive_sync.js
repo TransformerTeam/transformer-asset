@@ -132,7 +132,7 @@
         });
         if (!getRes.ok) {
           if (getRes.status === 401 || getRes.status === 403) {
-            throw new Error('GitHub Token ไม่ถูกต้อง หรือไม่มีสิทธิ์เข้าถึง Repository');
+            throw new Error('GitHub Token is invalid or lacks access to Repository');
           }
           throw new Error('GitHub API Error: HTTP ' + getRes.status);
         }
@@ -296,16 +296,16 @@
           }
         });
         if (res.ok) {
-          return { success: true, message: `เชื่อมต่อสำเร็จ! เข้าถึง ${repo}/${path} ได้เรียบร้อย (มีสิทธิ์เขียน)` };
+          return { success: true, message: `Connection successful! Access to ${repo}/${path} verified (write permission granted).` };
         } else if (res.status === 401) {
-          return { success: false, message: 'Token ไม่ถูกต้อง หรือหมดอายุ (HTTP 401 Unauthorized)' };
+          return { success: false, message: 'Invalid or expired Token (HTTP 401 Unauthorized)' };
         } else if (res.status === 403) {
-          return { success: false, message: 'Token ไม่มีสิทธิ์เข้าถึง repo (ต้องติ๊กถูกที่ช่อง repo)' };
+          return { success: false, message: 'Token lacks repo scope (ensure repo checkbox is checked)' };
         } else {
           return { success: false, message: 'GitHub API Error: HTTP ' + res.status };
         }
       } catch (err) {
-        return { success: false, message: 'การเชื่อมต่อล้มเหลว: ' + err.message };
+        return { success: false, message: 'Connection failed: ' + err.message };
       }
     }
 
@@ -318,7 +318,7 @@
       }
     }
 
-    return { success: false, message: 'กรุณากรอก GitHub Personal Access Token' };
+    return { success: false, message: 'Please enter a GitHub Personal Access Token' };
   }
 
   function setSyncState(state, err = null) {
@@ -374,16 +374,16 @@
     if (isTabBtn) {
       if (syncState === 'syncing') {
         badge.innerHTML = `<i class="fa-solid fa-rotate animate-spin text-sky-400"></i> Syncing`;
-        badge.title = 'กำลังซิงค์ข้อมูลกับ GitHub Repository...';
+        badge.title = 'Syncing data with GitHub Repository...';
       } else if (mode === 'lan') {
         badge.innerHTML = `<i class="fa-solid fa-network-wired text-indigo-400"></i> LAN Host`;
-        badge.title = 'เชื่อมต่อกับเครื่อง Host ในเครือข่ายบริษัท (Port 8888)';
+        badge.title = 'Connected to Corporate Host (Port 8888)';
       } else if (config.githubToken) {
         badge.innerHTML = `<i class="fa-brands fa-github text-emerald-400"></i> GitHub Sync`;
-        badge.title = 'เชื่อมต่อกับ GitHub Repository สำเร็จ (บันทึกข้อมูลกลางอัตโนมัติ)';
+        badge.title = 'Connected to GitHub Repository (Auto Central Sync)';
       } else {
-        badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> ตั้งค่า Token`;
-        badge.title = 'คลิกเพื่อใส่ GitHub Token สำหรับบันทึกข้อมูลส่วนกลาง';
+        badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> Configure Token`;
+        badge.title = 'Click to configure GitHub Token for central data sync';
       }
       return;
     }
@@ -391,11 +391,11 @@
     if (syncState === 'syncing') {
       badge.innerHTML = `<i class="fa-solid fa-rotate animate-spin text-sky-400"></i> <span>GitHub: Syncing...</span>`;
       badge.className = 'onedrive-badge-btn sync-active';
-      badge.title = 'กำลัง Commit ข้อมูลลง GitHub Repository...';
+      badge.title = 'Committing changes to GitHub Repository...';
     } else if (syncState === 'error') {
       badge.innerHTML = `<i class="fa-brands fa-github text-rose-400"></i> <span>GitHub: Offline</span>`;
       badge.className = 'onedrive-badge-btn sync-error';
-      badge.title = errMsg || 'การเชื่อมต่อมีปัญหา คลิกเพื่อตรวจสอบ';
+      badge.title = errMsg || 'Connection issue. Click to inspect';
     } else if (mode === 'lan') {
       badge.innerHTML = `<i class="fa-solid fa-network-wired text-indigo-400"></i> <span>LAN Host: Active${timeStr}</span>`;
       badge.className = 'onedrive-badge-btn sync-lan';
@@ -403,11 +403,11 @@
     } else if (config.githubToken) {
       badge.innerHTML = `<i class="fa-brands fa-github text-emerald-400"></i> <span>GitHub: Synced${timeStr}</span>`;
       badge.className = 'onedrive-badge-btn sync-online';
-      badge.title = 'เชื่อมต่อกับ GitHub Repository สำเร็จ (ข้อมูลกลางอัปเดตอัตโนมัติ)';
+      badge.title = 'Connected to GitHub Repository (Auto Central Sync)';
     } else {
-      badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> <span>GitHub: ใส่ Token</span>`;
+      badge.innerHTML = `<i class="fa-brands fa-github text-amber-400"></i> <span>GitHub: Set Token</span>`;
       badge.className = 'onedrive-badge-btn sync-local';
-      badge.title = 'คลิกเพื่อใส่ GitHub Personal Access Token สำหรับบันทึกข้อมูลกลาง';
+      badge.title = 'Click to enter GitHub Personal Access Token for central sync';
     }
   }
 
@@ -422,7 +422,7 @@
     }
 
     const mode = getActiveMode();
-    const lastSyncFormatted = config.lastSyncTime ? new Date(config.lastSyncTime).toLocaleString('th-TH') : 'ยังไม่มีการซิงค์';
+    const lastSyncFormatted = config.lastSyncTime ? new Date(config.lastSyncTime).toLocaleString('en-US') : 'Not synced yet';
     const hasToken = !!(config.githubToken && config.githubToken.trim());
 
     modal.innerHTML = `
@@ -439,7 +439,7 @@
                   ${hasToken ? 'Connected' : 'Need Token'}
                 </span>
               </h3>
-              <p class="text-xs text-slate-400">บันทึกข้อมูล Task ลง GitHub ส่วนกลางอัตโนมัติ เพื่อให้ทุกคนเห็นงานตรงกัน</p>
+              <p class="text-xs text-slate-400">Automatically synchronize Task data to central GitHub repository across the fleet team</p>
             </div>
           </div>
           <button type="button" class="text-slate-400 hover:text-white p-1 rounded-lg" onclick="OneDriveSync.closeSettingsModal()">
@@ -451,8 +451,8 @@
           <!-- Status Banner -->
           <div class="p-3.5 rounded-xl border ${hasToken ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : 'bg-amber-950/30 border-amber-500/30 text-amber-200'} text-xs flex justify-between items-center">
             <div>
-              <span class="font-semibold">สถานะการซิงค์ล่าสุด:</span> ${lastSyncFormatted}
-              <div class="text-[11px] opacity-80 mt-0.5">เป้าหมาย: <code class="bg-black/30 px-1 py-0.5 rounded">${config.githubRepo || 'TransformerTeam/transformer-asset'}</code></div>
+              <span class="font-semibold">Last Sync Status:</span> ${lastSyncFormatted}
+              <div class="text-[11px] opacity-80 mt-0.5">Target: <code class="bg-black/30 px-1 py-0.5 rounded">${config.githubRepo || 'TransformerTeam/transformer-asset'}</code></div>
             </div>
             <button type="button" class="btn-sm-action" onclick="OneDriveSync.syncNow(this)">
               <i class="fa-solid fa-rotate mr-1"></i> Sync Now
@@ -466,7 +466,7 @@
                 <i class="fa-solid fa-key text-amber-400"></i> GitHub Personal Access Token (PAT)
               </label>
               <a href="https://github.com/settings/tokens/new?description=GPSC-Transformer-Dashboard-Sync&scopes=repo" target="_blank" class="text-xs text-sky-400 hover:underline flex items-center gap-1">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> สร้าง Token ใน 1 นาที
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Generate Token in 1 min
               </a>
             </div>
             <div class="flex gap-2">
@@ -481,28 +481,28 @@
           <!-- 3-Step Token Guide -->
           <div class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl text-xs space-y-2 text-slate-300">
             <div class="font-bold text-sky-400 flex items-center gap-2">
-              <i class="fa-solid fa-circle-question"></i> วิธีสร้าง GitHub Token (ทำเพียงครั้งเดียว):
+              <i class="fa-solid fa-circle-question"></i> How to generate a GitHub Token (one-time setup):
             </div>
             <ol class="list-decimal list-inside space-y-1.5 text-slate-300 text-[11px]">
-              <li>คลิกที่ลิงก์ <a href="https://github.com/settings/tokens/new?description=GPSC-Transformer-Dashboard-Sync&scopes=repo" target="_blank" class="text-sky-400 underline font-semibold">สร้าง Token บน GitHub</a> (ระบบจะเปิดแท็บใหม่ให้พร้อมตั้งค่า)</li>
-              <li>ตรงหัวข้อ <strong>Expiration</strong> แนะนำเลือก <code>No expiration</code> (หรือ 90 days)</li>
-              <li>ตรวจสอบว่ามีเครื่องหมายติ๊กถูกที่ช่อง <code class="bg-slate-800 text-emerald-300 px-1 rounded font-bold">repo</code> (Full control of private/public repositories)</li>
-              <li>เลื่อนลงล่างสุด กดปุ่มสีเขียว <strong>Generate token</strong></li>
-              <li>คัดลอกรหัสที่ขึ้นต้นด้วย <code class="bg-slate-800 text-amber-300 px-1 rounded">ghp_...</code> มาวางในช่องด้านบน แล้วกด <strong>Test</strong> จากนั้นกด <strong>บันทึกการตั้งค่า</strong></li>
+              <li>Click the link <a href="https://github.com/settings/tokens/new?description=GPSC-Transformer-Dashboard-Sync&scopes=repo" target="_blank" class="text-sky-400 underline font-semibold">Generate Token on GitHub</a> (opens pre-configured in new tab)</li>
+              <li>Under <strong>Expiration</strong>, choose <code>No expiration</code> (or 90 days)</li>
+              <li>Ensure the checkbox <code class="bg-slate-800 text-emerald-300 px-1 rounded font-bold">repo</code> (Full control of private/public repositories) is checked</li>
+              <li>Scroll down and click the green <strong>Generate token</strong> button</li>
+              <li>Copy the token starting with <code class="bg-slate-800 text-amber-300 px-1 rounded">ghp_...</code>, paste in the field above, click <strong>Test</strong>, then click <strong>Save Settings</strong></li>
             </ol>
           </div>
 
           <!-- LAN Host Alternative Notice -->
           <div class="p-2.5 bg-slate-800/40 border border-slate-700/50 rounded-xl text-[11px] text-slate-400 flex items-center gap-2">
             <i class="fa-solid fa-network-wired text-indigo-400 text-sm"></i>
-            <span>หรือหากรันผ่านเครื่องในบริษัท (Port 8888) ระบบจะบันทึกตรงเข้าเครื่องและ OneDrive ให้อัตโนมัติ</span>
+            <span>If running on corporate network (Port 8888), changes will save directly to host & OneDrive.</span>
           </div>
         </div>
 
         <div class="onedrive-modal-footer">
-          <button type="button" class="btn-cancel" onclick="OneDriveSync.closeSettingsModal()">ยกเลิก</button>
+          <button type="button" class="btn-cancel" onclick="OneDriveSync.closeSettingsModal()">Cancel</button>
           <button type="button" class="btn-primary" onclick="OneDriveSync.saveSettingsFromModal()">
-            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกการตั้งค่า
+            <i class="fa-solid fa-floppy-disk mr-1"></i> Save Settings
           </button>
         </div>
       </div>
@@ -555,7 +555,7 @@
     }
     saveConfig();
     closeSettingsModal();
-    showToast('บันทึกการตั้งค่า GitHub Sync เรียบร้อย!', 'success');
+    showToast('GitHub Sync configuration saved successfully!', 'success');
 
     // Trigger initial pull
     pullPlanData();
