@@ -943,6 +943,22 @@
       "progress": 0,
       "cost": 0,
       "parentId": "gen_1788834063251"
+    },
+    {
+      "id": "gen_1788857458325",
+      "wbs": "TO11.3",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "TR3 Overhaul OLTC",
+      "plant": "GEN Ph.2",
+      "tr": "TR3, ETR3",
+      "lead": "MMT",
+      "start": "2026-05-04",
+      "end": "2026-05-10",
+      "days": 7,
+      "progress": 0,
+      "cost": 0,
+      "parentId": "gen_1788834063251"
     }
   ],
   "deletedIds": [
@@ -950,5 +966,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T08:50:18.936Z"
+  "timestamp": "2026-09-08T08:50:59.072Z"
 }
