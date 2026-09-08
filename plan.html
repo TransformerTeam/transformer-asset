@@ -952,7 +952,7 @@
               </button>
               <button id="btn-toggle-all" onclick="toggleAllExpand()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
                 <i class="fa-solid fa-layer-group text-indigo-400"></i>
-                <span id="toggle-all-text">Collapse All Subs</span>
+                <span id="toggle-all-text">Expand All Subs</span>
               </button>
               <span id="table-count-badge" class="text-xs bg-slate-900 px-3 py-1.5 rounded-lg text-slate-300 border border-slate-700 font-medium">Showing Tasks</span>
             </div>
@@ -2296,11 +2296,13 @@
                 localStorage.setItem('GPSC_PLAN_LAST_MODIFIED', remoteTimestamp);
               }
             } catch (e) {}
+            if (!userToggledCollapseManually) collapseAllSubs();
             renderAll();
           } else {
             // User on this browser made newer local edits; smart merge
             loadSavedTasks();
             recalculateAllParents();
+            if (!userToggledCollapseManually) collapseAllSubs();
             renderAll();
           }
         }
@@ -2628,25 +2630,40 @@
     }
 
     // Expand / Collapse Toggles
+    let userToggledCollapseManually = false;
+
+    function collapseAllSubs() {
+      const parentsWithChildren = tasks.filter(t => !t.parentId && tasks.some(c => c.parentId === t.id));
+      parentsWithChildren.forEach(p => collapsedParents.add(p.id));
+      const toggleBtnText = document.getElementById('toggle-all-text');
+      if (toggleBtnText) toggleBtnText.textContent = 'Expand All Subs';
+    }
+
     function toggleCollapse(parentId) {
+      userToggledCollapseManually = true;
       if (collapsedParents.has(parentId)) {
         collapsedParents.delete(parentId);
       } else {
         collapsedParents.add(parentId);
       }
+      const toggleBtnText = document.getElementById('toggle-all-text');
+      if (toggleBtnText) {
+        toggleBtnText.textContent = (collapsedParents.size > 0) ? 'Expand All Subs' : 'Collapse All Subs';
+      }
       renderTable();
     }
 
     function toggleAllExpand() {
+      userToggledCollapseManually = true;
       const toggleBtnText = document.getElementById('toggle-all-text');
       const parentsWithChildren = tasks.filter(t => !t.parentId && tasks.some(c => c.parentId === t.id));
 
       if (collapsedParents.size > 0) {
         collapsedParents.clear();
-        toggleBtnText.textContent = 'Collapse All Subs';
+        if (toggleBtnText) toggleBtnText.textContent = 'Collapse All Subs';
       } else {
         parentsWithChildren.forEach(p => collapsedParents.add(p.id));
-        toggleBtnText.textContent = 'Expand All Subs';
+        if (toggleBtnText) toggleBtnText.textContent = 'Expand All Subs';
       }
       renderTable();
     }
@@ -4579,6 +4596,7 @@
 
       loadSavedTasks();
       recalculateAllParents();
+      collapseAllSubs();
       // Asynchronously fetch latest master dataset from plan_data.json (GitHub / SharePoint sync)
       loadMasterPlanDataAsync();
       const urlParams = new URLSearchParams(window.location.search);
