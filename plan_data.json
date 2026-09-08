@@ -920,10 +920,10 @@
       "task": "(MOC): Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
-      "lead": "JIS",
-      "start": "2026-12-05",
-      "end": "2026-12-05",
-      "days": 1,
+      "lead": "PIP",
+      "start": "2026-09-08",
+      "end": "2026-10-30",
+      "days": 53,
       "progress": 0,
       "cost": 0,
       "parentId": "gen_1788839142479"
@@ -932,5 +932,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:51:19.204Z"
+  "timestamp": "2026-09-08T03:51:45.562Z"
 }
