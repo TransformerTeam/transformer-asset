@@ -857,14 +857,29 @@
               </select>
             </div>
 
-            <!-- WBS Level Filter (Main Only vs All) -->
+            <!-- Search Filter -->
             <div class="filter-group">
-              <label for="filter-level"><i class="fa-solid fa-sitemap"></i> WBS Level</label>
-              <select id="filter-level" onchange="applyFilters()" class="filter-select" style="border-color: var(--primary); font-weight: 600;">
-                <option value="MAIN" selected>📌 Main WBS Only</option>
-                <option value="ALL">📑 All (Include Sub-tasks)</option>
-                <option value="SUB">↳ Sub-tasks Only</option>
-              </select>
+              <label for="filter-search"><i class="fa-solid fa-magnifying-glass"></i> Search</label>
+              <div class="relative flex items-center">
+                <input 
+                  type="text" 
+                  id="filter-search" 
+                  oninput="applyFilters()" 
+                  onkeydown="if(event.key === 'Escape') clearSearchFilter()"
+                  placeholder="Search task, WBS, MO, TR..." 
+                  class="filter-select pr-8" 
+                  autocomplete="off"
+                />
+                <button 
+                  type="button" 
+                  id="btn-clear-search" 
+                  onclick="clearSearchFilter()" 
+                  class="absolute right-2.5 text-slate-400 hover:text-white hidden transition cursor-pointer text-xs" 
+                  title="Clear search"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -2848,29 +2863,85 @@
       return 'bg-blue-400';
     }
 
+    function taskMatchesSearch(t, q) {
+      if (!q) return true;
+      const term = q.toLowerCase();
+      return (
+        (t.task && t.task.toLowerCase().includes(term)) ||
+        (t.wbs && t.wbs.toLowerCase().includes(term)) ||
+        (t.sapMo && String(t.sapMo).toLowerCase().includes(term)) ||
+        (t.tr && t.tr.toLowerCase().includes(term)) ||
+        (t.plant && t.plant.toLowerCase().includes(term)) ||
+        (t.lead && t.lead.toLowerCase().includes(term)) ||
+        (t.cat && t.cat.toLowerCase().includes(term))
+      );
+    }
+
     // Filter Logic
     function getFilteredTasks() {
-      const p = document.getElementById('filter-plant').value;
-      const c = document.getElementById('filter-cat').value;
-      const l = document.getElementById('filter-lead').value;
-      const s = document.getElementById('filter-status').value;
-      const lvl = document.getElementById('filter-level') ? document.getElementById('filter-level').value : 'MAIN';
+      const p = document.getElementById('filter-plant') ? document.getElementById('filter-plant').value : 'ALL';
+      const c = document.getElementById('filter-cat') ? document.getElementById('filter-cat').value : 'ALL';
+      const l = document.getElementById('filter-lead') ? document.getElementById('filter-lead').value : 'ALL';
+      const s = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'ALL';
+      const searchInput = document.getElementById('filter-search');
+      const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-      return tasks.filter(t => {
+      const clearBtn = document.getElementById('btn-clear-search');
+      if (clearBtn) {
+        if (q) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      const baseFiltered = tasks.filter(t => {
         if (p !== 'ALL' && t.plant !== p) return false;
         if (c !== 'ALL' && !matchCategory(c, t.cat)) return false;
         if (l !== 'ALL' && t.lead !== l) return false;
         if (s === 'DONE' && t.progress < 100) return false;
         if (s === 'PROG' && (t.progress <= 0 || t.progress >= 100)) return false;
         if (s === 'PLAN' && t.progress > 0) return false;
-        if (lvl === 'MAIN' && t.parentId) return false; // Hide Sub-tasks, show only Main WBS
-        if (lvl === 'SUB' && !t.parentId) return false;  // Show only Sub-tasks
         return true;
+      });
+
+      if (!q) {
+        return baseFiltered;
+      }
+
+      // Identify matching tasks
+      const matchingIds = new Set();
+      const parentIdsToInclude = new Set();
+
+      baseFiltered.forEach(t => {
+        if (taskMatchesSearch(t, q)) {
+          matchingIds.add(t.id);
+          if (t.parentId) {
+            parentIdsToInclude.add(t.parentId);
+            // Automatically expand parent of matching sub-task so it is visibly shown!
+            collapsedParents.delete(t.parentId);
+          }
+        }
+      });
+
+      return tasks.filter(t => {
+        if (matchingIds.has(t.id)) return true;
+        if (parentIdsToInclude.has(t.id)) return true;
+        if (t.parentId && matchingIds.has(t.parentId)) return true;
+        return false;
       });
     }
 
+    function clearSearchFilter() {
+      const input = document.getElementById('filter-search');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      const clearBtn = document.getElementById('btn-clear-search');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      applyFilters();
+    }
+
     function applyFilters() {
-      renderAll(); saveTasksToStorage();
+      renderAll();
     }
 
     // Expand / Collapse Toggles
@@ -4615,7 +4686,7 @@
       const subTasksMap = new Map();
 
       // Collect all subtasks that belong to visible parents or matching filters
-      tasks.filter(t => t.parentId).forEach(sub => {
+      filtered.filter(t => t.parentId).forEach(sub => {
         if (!subTasksMap.has(sub.parentId)) subTasksMap.set(sub.parentId, []);
         subTasksMap.get(sub.parentId).push(sub);
       });
@@ -4673,10 +4744,11 @@
         const isDone = p.progress >= 100;
 
         // Auto-calculate parent progress and cost if has subtasks
-        if (hasSubs) {
-          const avg = Math.round(children.reduce((acc, c) => acc + (c.progress || 0), 0) / children.length);
+        const allParentSubs = tasks.filter(t => t.parentId === p.id);
+        if (allParentSubs.length > 0) {
+          const avg = Math.round(allParentSubs.reduce((acc, c) => acc + (c.progress || 0), 0) / allParentSubs.length);
           p.progress = avg;
-          p.cost = children.reduce((acc, c) => acc + (Number(c.cost) || 0), 0);
+          p.cost = allParentSubs.reduce((acc, c) => acc + (Number(c.cost) || 0), 0);
         }
 
         // --- PARENT ROW ---
@@ -4889,6 +4961,11 @@
             break;
           }
         }
+      }
+      if (urlParams.has('search') || urlParams.has('q')) {
+        const qVal = urlParams.get('search') || urlParams.get('q');
+        const sInput = document.getElementById('filter-search');
+        if (sInput) sInput.value = qVal;
       }
       applyFilters();
       if (urlParams.has('view')) {
