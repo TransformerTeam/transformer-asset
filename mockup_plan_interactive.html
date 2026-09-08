@@ -3983,6 +3983,49 @@
         subTasksMap.get(sub.parentId).push(sub);
       });
 
+      // --- AUTOMATIC CATEGORY SEQUENCE SORTING ---
+      // 1. Transformer Outage, 2. Life Assessment, 3. Plant Assessment, 4. Oil Analysis, 5. 3M Visual, 6. OLTC Inspection
+      const CATEGORY_ORDER = [
+        'transformer outage',
+        'life assessment',
+        'plant assessment',
+        'oil analysis',
+        '3m visual',
+        'oltc inspection'
+      ];
+
+      function getCategoryRank(cat) {
+        if (!cat) return 999;
+        const c = cat.toLowerCase().trim();
+        for (let i = 0; i < CATEGORY_ORDER.length; i++) {
+          if (c.includes(CATEGORY_ORDER[i]) || CATEGORY_ORDER[i].includes(c)) return i;
+        }
+        return 999;
+      }
+
+      // Sort parents: Category Order -> Start Date (ASC) -> WBS
+      parents.sort((a, b) => {
+        const rankA = getCategoryRank(a.cat);
+        const rankB = getCategoryRank(b.cat);
+        if (rankA !== rankB) return rankA - rankB;
+
+        const startA = a.start || '';
+        const startB = b.start || '';
+        if (startA !== startB) return startA.localeCompare(startB);
+
+        return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+      });
+
+      // Sort sub-tasks under each parent chronologically by start date, then WBS
+      subTasksMap.forEach(children => {
+        children.sort((a, b) => {
+          const startA = a.start || '';
+          const startB = b.start || '';
+          if (startA !== startB) return startA.localeCompare(startB);
+          return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        });
+      });
+
       // Render each parent and its children
       parents.forEach(p => {
         const children = subTasksMap.get(p.id) || [];
