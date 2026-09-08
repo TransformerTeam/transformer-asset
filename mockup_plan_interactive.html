@@ -4032,26 +4032,28 @@
         return 999;
       }
 
-      // Sort parents: Category Order -> Start Date (ASC) -> WBS
+      // Sort parents: Category Order -> WBS (numeric: TO1..TO9..TO10) -> Start Date (ASC)
       parents.sort((a, b) => {
         const rankA = getCategoryRank(a.cat);
         const rankB = getCategoryRank(b.cat);
         if (rankA !== rankB) return rankA - rankB;
 
+        const wbsComp = (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        if (wbsComp !== 0) return wbsComp;
+
         const startA = a.start || '';
         const startB = b.start || '';
-        if (startA !== startB) return startA.localeCompare(startB);
-
-        return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+        return startA.localeCompare(startB);
       });
 
-      // Sort sub-tasks under each parent chronologically by start date, then WBS
+      // Sort sub-tasks under each parent: WBS (numeric) -> Start Date
       subTasksMap.forEach(children => {
         children.sort((a, b) => {
+          const wbsComp = (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+          if (wbsComp !== 0) return wbsComp;
           const startA = a.start || '';
           const startB = b.start || '';
-          if (startA !== startB) return startA.localeCompare(startB);
-          return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+          return startA.localeCompare(startB);
         });
       });
 
