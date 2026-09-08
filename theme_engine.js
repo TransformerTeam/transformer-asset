@@ -52,14 +52,14 @@
       mode: 'light',
       badge: 'Clean Light',
       colors: {
-        '--bg-primary': '#f8fafc',
-        '--bg-secondary': '#edf2f7',
-        '--bg-tertiary': '#e2e8f0',
-        '--bg-card': 'rgba(255, 255, 255, 0.95)',
-        '--border-color': 'rgba(0, 0, 0, 0.1)',
+        '--bg-primary': '#f1f5f9',
+        '--bg-secondary': '#ffffff',
+        '--bg-tertiary': '#f8fafc',
+        '--bg-card': '#ffffff',
+        '--border-color': '#e2e8f0',
         '--text-primary': '#0f172a',
-        '--text-secondary': '#475569',
-        '--text-muted': '#94a3b8',
+        '--text-secondary': '#334155',
+        '--text-muted': '#64748b',
         '--primary': '#4f46e5',
         '--primary-hover': '#4338ca',
         '--primary-glow': 'rgba(79, 70, 229, 0.25)',
@@ -73,7 +73,7 @@
         '--scada-yellow-bus': '#ca8a04',
         '--scada-orange-bus': '#ea580c',
         '--scada-grey-line': '#94a3b8',
-        '--glass-blur': '8px',
+        '--glass-blur': '0px',
         '--card-radius': '12px'
       }
     },
@@ -290,6 +290,8 @@
           if (parsed && parsed.colors) {
             this.currentPresetId = parsed.presetId || 'custom';
             this.customColors = parsed.colors;
+            const presetDef = THEME_PRESETS[this.currentPresetId];
+            this.mode = (presetDef && presetDef.mode) ? presetDef.mode : (parsed.mode || 'dark');
             this.applyToDOM(this.customColors);
             return;
           }
@@ -314,8 +316,13 @@
         return;
       }
 
-      // Ensure dark base attribute on dashboard & main workspace
-      root.setAttribute('data-theme', 'dark');
+      // Dynamically assign theme mode and preset
+      const presetDef = THEME_PRESETS[this.currentPresetId];
+      const activeMode = (presetDef && presetDef.mode) ? presetDef.mode : (this.mode || 'dark');
+      root.setAttribute('data-theme', activeMode);
+      if (this.currentPresetId) {
+        root.setAttribute('data-preset', this.currentPresetId);
+      }
 
       // Apply CSS properties to root element inline style
       Object.entries(colors).forEach(([property, value]) => {
@@ -340,6 +347,7 @@
       if (!preset) return false;
 
       this.currentPresetId = presetId;
+      this.mode = preset.mode || 'dark';
       this.customColors = { ...preset.colors };
 
       this.applyToDOM(this.customColors);

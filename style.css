@@ -49,15 +49,15 @@
 
 /* Light Theme Variables */
 [data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ededed;
-  --bg-tertiary: #f1f5f9;
-  --bg-card: rgba(237, 237, 237, 0.95);
-  --border-color: rgba(0, 0, 0, 0.08);
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
   
   --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   
   --primary: #4f46e5;
   --primary-glow: rgba(79, 70, 229, 0.15);
@@ -69,14 +69,14 @@
   --color-poor-glow: rgba(249, 115, 22, 0.15);
   --color-critical-glow: rgba(239, 68, 68, 0.15);
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
   --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.1);
   
-  --glass-bg: rgba(237, 237, 237, 0.95);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --sidebar-bg: rgba(237, 237, 237, 0.95);
+  --glass-bg: #ffffff;
+  --glass-border: #e2e8f0;
+  --sidebar-bg: #ffffff;
 }
 
 /* Reset & Base Styles */
