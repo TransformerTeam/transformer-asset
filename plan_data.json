@@ -904,7 +904,7 @@
       "task": "Power Int: Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
-      "lead": "JIS",
+      "lead": "PIP",
       "start": "2026-12-05",
       "end": "2026-12-05",
       "days": 1,
@@ -916,5 +916,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:47:54.467Z"
+  "timestamp": "2026-09-08T03:48:02.475Z"
 }
