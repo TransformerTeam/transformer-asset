@@ -678,8 +678,8 @@
           <button id="btn-view-tbl" onclick="switchView('tbl')" class="header-tab-btn" title="Switch to WBS Table View">
             <i class="fa-solid fa-table-list"></i> Table
           </button>
-          <button id="btn-view-both" onclick="switchView('both')" class="header-tab-btn" title="Show Both Calendar &amp; Table">
-            <i class="fa-solid fa-table-columns"></i> Both
+          <button id="btn-view-outage" onclick="switchView('outage')" class="header-tab-btn" title="Switch to Outaged Transformers Analytics Chart">
+            <i class="fa-solid fa-chart-column text-amber-400"></i> Outage Chart
           </button>
           <button id="btn-view-scurve" onclick="switchView('scurve')" class="header-tab-btn" title="Switch to S-Curve Progress &amp; Cost Chart">
             <i class="fa-solid fa-chart-line"></i> S-Curve
@@ -989,7 +989,97 @@
           </div>
         </div>
 
-        <!-- 3. S-CURVE PROGRESS & COST OVER TIME VIEW -->
+        <!-- 3. OUTAGED TRANSFORMERS ANALYTICS BY PLANT VIEW -->
+        <div id="view-outage" class="glass-card p-4 space-y-4 hidden">
+          <!-- Outage View Header & Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/50">
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-bolt text-amber-400"></i>
+                  <span>Outaged Transformers by Plant</span>
+                </h2>
+                <span id="outage-total-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  15 Transformers
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Summary of physical transformer units outaged and completed across fleet power plants
+              </p>
+            </div>
+
+            <!-- Active Filter Indication -->
+            <div class="flex items-center gap-2">
+              <span id="outage-filter-label" class="text-xs text-slate-300 font-medium bg-slate-900/80 border border-slate-700/80 px-2.5 py-1 rounded-lg">
+                Showing: All Plants
+              </span>
+            </div>
+          </div>
+
+          <!-- Quick Stats Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Total Outage TRs
+              </div>
+              <div id="outage-stat-total-trs" class="text-xl font-bold font-mono text-white mt-1">15 <span class="text-xs font-normal text-slate-400">ลูก</span></div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Across all plants in plan</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed Outage
+              </div>
+              <div id="outage-stat-completed-trs" class="text-xl font-bold font-mono text-emerald-400 mt-1">15 <span class="text-xs font-normal text-slate-400">ลูก (100%)</span></div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Finished 100% Progress</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Outage Main Tasks
+              </div>
+              <div id="outage-stat-tasks" class="text-xl font-bold font-mono text-sky-400 mt-1">10 <span class="text-xs font-normal text-slate-400">Tasks</span></div>
+              <div class="text-[10px] text-slate-500 mt-0.5">WBS TO1 - TO10</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Outage Total Budget
+              </div>
+              <div id="outage-stat-cost" class="text-xl font-bold font-mono text-amber-300 mt-1">0 <span class="text-xs font-normal text-slate-400">THB</span></div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Approved budget allocation</div>
+            </div>
+          </div>
+
+          <!-- Main Chart & Fleet Directory Side-by-Side -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <!-- Left: ApexChart Horizontal Bar -->
+            <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-chart-bar text-sky-400"></i>
+                  <span>Outaged Transformers Count by Plant (จำนวนลูกหม้อแปลง)</span>
+                </h3>
+              </div>
+              <div id="outage-chart-container" class="w-full min-h-[310px]"></div>
+            </div>
+
+            <!-- Right: Plant Transformers Directory Cards -->
+            <div class="lg:col-span-5 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-list-check text-emerald-400"></i>
+                  <span>Transformer Units Directory (รายชื่อหม้อแปลง)</span>
+                </h3>
+              </div>
+              <div id="outage-plant-cards" class="space-y-2 max-h-[320px] overflow-y-auto custom-scrollbar pr-1">
+                <!-- Dynamically injected plant cards with TR chips -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. S-CURVE PROGRESS & COST OVER TIME VIEW -->
         <div id="view-scurve" class="glass-card p-4 space-y-4 hidden">
           <!-- S-Curve Header & Controls -->
           <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/50">
@@ -2431,38 +2521,44 @@
     // Active view state
     let currentActiveView = 'cal';
 
-    // Switch Views (Fixed toggle between Calendar, Table, Both, and S-Curve)
+    // Switch Views (Toggle between Calendar, Table, Outage Chart, and S-Curve)
     function switchView(view) {
       currentActiveView = view;
       const btnCal = document.getElementById('btn-view-cal');
       const btnTbl = document.getElementById('btn-view-tbl');
-      const btnBoth = document.getElementById('btn-view-both');
+      const btnOutage = document.getElementById('btn-view-outage');
       const btnScurve = document.getElementById('btn-view-scurve');
 
       const viewCal = document.getElementById('view-calendar');
       const viewTbl = document.getElementById('view-table');
+      const viewOutage = document.getElementById('view-outage');
       const viewScurve = document.getElementById('view-scurve');
 
       if (btnCal) btnCal.className = (view === 'cal') ? 'header-tab-btn active' : 'header-tab-btn';
       if (btnTbl) btnTbl.className = (view === 'tbl') ? 'header-tab-btn active' : 'header-tab-btn';
-      if (btnBoth) btnBoth.className = (view === 'both') ? 'header-tab-btn active' : 'header-tab-btn';
+      if (btnOutage) btnOutage.className = (view === 'outage') ? 'header-tab-btn active' : 'header-tab-btn';
       if (btnScurve) btnScurve.className = (view === 'scurve') ? 'header-tab-btn active' : 'header-tab-btn';
 
       if (view === 'cal') {
         if (viewCal) viewCal.classList.remove('hidden');
         if (viewTbl) viewTbl.classList.add('hidden');
+        if (viewOutage) viewOutage.classList.add('hidden');
         if (viewScurve) viewScurve.classList.add('hidden');
       } else if (view === 'tbl') {
         if (viewCal) viewCal.classList.add('hidden');
         if (viewTbl) viewTbl.classList.remove('hidden');
+        if (viewOutage) viewOutage.classList.add('hidden');
         if (viewScurve) viewScurve.classList.add('hidden');
-      } else if (view === 'both') {
-        if (viewCal) viewCal.classList.remove('hidden');
-        if (viewTbl) viewTbl.classList.remove('hidden');
+      } else if (view === 'outage') {
+        if (viewCal) viewCal.classList.add('hidden');
+        if (viewTbl) viewTbl.classList.add('hidden');
+        if (viewOutage) viewOutage.classList.remove('hidden');
         if (viewScurve) viewScurve.classList.add('hidden');
+        setTimeout(() => renderOutageChart(), 50);
       } else if (view === 'scurve') {
         if (viewCal) viewCal.classList.add('hidden');
         if (viewTbl) viewTbl.classList.add('hidden');
+        if (viewOutage) viewOutage.classList.add('hidden');
         if (viewScurve) viewScurve.classList.remove('hidden');
         setTimeout(() => renderSCurveChart(), 50);
       }
@@ -3264,6 +3360,217 @@
       if (currentActiveView === 'scurve' || scurveChartInstance) {
         renderSCurveChart(filtered);
       }
+      if (currentActiveView === 'outage' || outageChartInstance) {
+        renderOutageChart(filtered);
+      }
+    }
+
+    // ==========================================
+    // OUTAGED TRANSFORMERS BY PLANT ANALYTICS ENGINE
+    // ==========================================
+    let outageChartInstance = null;
+
+    function renderOutageChart(filteredList = null) {
+      const container = document.getElementById('outage-chart-container');
+      if (!container) return;
+
+      // Extract Outage tasks
+      const allTasks = tasks.filter(t => !t.parentId && (t.cat || '').toLowerCase().includes('outage'));
+      const activePlantFilter = document.getElementById('filter-plant') ? document.getElementById('filter-plant').value : 'ALL';
+
+      // Group by plant
+      const plantMap = {};
+      allTasks.forEach(t => {
+        if (activePlantFilter !== 'ALL' && t.plant !== activePlantFilter) return;
+        const p = t.plant || 'Unknown';
+        if (!plantMap[p]) {
+          plantMap[p] = {
+            plant: p,
+            trs: new Set(),
+            completedTrs: new Set(),
+            inProgTrs: new Set(),
+            tasks: [],
+            cost: 0
+          };
+        }
+        plantMap[p].tasks.push(t);
+        plantMap[p].cost += (Number(t.cost) || 0);
+
+        const trList = (t.tr || '').split(',').map(s => s.trim()).filter(s => s && s !== '-' && s !== 'N/A' && s !== 'All TRs');
+        trList.forEach(tr => {
+          plantMap[p].trs.add(tr);
+          if (t.progress >= 100) plantMap[p].completedTrs.add(tr);
+          else if (t.progress > 0) plantMap[p].inProgTrs.add(tr);
+        });
+      });
+
+      // Sort plants by number of TRs desc
+      const plantList = Object.values(plantMap).sort((a, b) => b.trs.size - a.trs.size);
+
+      // Calculate totals
+      const totalUniqueTrs = new Set();
+      const completedUniqueTrs = new Set();
+      let totalTasksCount = 0;
+      let totalCost = 0;
+
+      plantList.forEach(p => {
+        p.trs.forEach(tr => totalUniqueTrs.add(tr));
+        p.completedTrs.forEach(tr => completedUniqueTrs.add(tr));
+        totalTasksCount += p.tasks.length;
+        totalCost += p.cost;
+      });
+
+      // Update Top Stats
+      const badge = document.getElementById('outage-total-badge');
+      if (badge) badge.textContent = `${totalUniqueTrs.size} Transformers`;
+
+      const filterLbl = document.getElementById('outage-filter-label');
+      if (filterLbl) filterLbl.textContent = 'Showing: ' + (activePlantFilter === 'ALL' ? 'All Plants' : `Plant ${activePlantFilter}`);
+
+      const statTotal = document.getElementById('outage-stat-total-trs');
+      if (statTotal) statTotal.innerHTML = `${totalUniqueTrs.size} <span class="text-xs font-normal text-slate-400">ลูก</span>`;
+
+      const statDone = document.getElementById('outage-stat-completed-trs');
+      if (statDone) {
+        const pct = totalUniqueTrs.size > 0 ? Math.round((completedUniqueTrs.size / totalUniqueTrs.size) * 100) : 0;
+        statDone.innerHTML = `${completedUniqueTrs.size} <span class="text-xs font-normal text-slate-400">ลูก (${pct}%)</span>`;
+      }
+
+      const statTasks = document.getElementById('outage-stat-tasks');
+      if (statTasks) statTasks.innerHTML = `${totalTasksCount} <span class="text-xs font-normal text-slate-400">Tasks</span>`;
+
+      const statCost = document.getElementById('outage-stat-cost');
+      if (statCost) statCost.innerHTML = totalCost.toLocaleString() + ' <span class="text-xs font-normal text-slate-400">THB</span>';
+
+      // Render Directory Cards
+      const dirContainer = document.getElementById('outage-plant-cards');
+      if (dirContainer) {
+        if (plantList.length === 0) {
+          dirContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">No Outage tasks found for current plant.</div>';
+        } else {
+          dirContainer.innerHTML = plantList.map(p => {
+            const trChips = Array.from(p.trs).map(tr => {
+              const isDone = p.completedTrs.has(tr);
+              return `
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium ${isDone ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/70' : 'bg-slate-900 text-slate-300 border border-slate-700'}">
+                  <span class="w-1.5 h-1.5 rounded-full ${isDone ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}"></span>
+                  ${tr}
+                </span>
+              `;
+            }).join('');
+
+            return `
+              <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 hover:border-indigo-500/50 transition">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
+                      ${p.plant}
+                    </span>
+                    <span class="text-xs font-semibold text-white">${p.trs.size} ลูก</span>
+                  </div>
+                  <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.2 rounded border border-emerald-800/50">
+                    <i class="fa-solid fa-check mr-0.5"></i> ${p.completedTrs.size}/${p.trs.size} Done
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  ${trChips}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render ApexCharts
+      if (typeof ApexCharts === 'undefined') return;
+      if (outageChartInstance) {
+        outageChartInstance.destroy();
+        outageChartInstance = null;
+      }
+
+      if (plantList.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-500 py-12 text-center">No data to display in chart.</div>';
+        return;
+      }
+
+      const categories = plantList.map(p => p.plant);
+      const dataValues = plantList.map(p => p.trs.size);
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const textColor = isLight ? '#334155' : '#cbd5e1';
+      const gridColor = isLight ? '#e2e8f0' : '#1e293b';
+
+      const options = {
+        series: [{
+          name: 'Transformers Outaged',
+          data: dataValues
+        }],
+        chart: {
+          type: 'bar',
+          height: 310,
+          toolbar: { show: false },
+          background: 'transparent',
+          fontFamily: 'Inter, Prompt, sans-serif'
+        },
+        theme: { mode: isLight ? 'light' : 'dark' },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            borderRadius: 6,
+            barHeight: '52%',
+            distributed: true,
+            dataLabels: { position: 'top' }
+          }
+        },
+        colors: ['#38bdf8', '#818cf8', '#34d399', '#f59e0b', '#ec4899', '#a855f7'],
+        dataLabels: {
+          enabled: true,
+          formatter: function(val) {
+            return val + ' ลูก';
+          },
+          offsetX: 28,
+          style: {
+            fontSize: '11px',
+            fontWeight: 700,
+            colors: [textColor]
+          }
+        },
+        grid: {
+          borderColor: gridColor,
+          strokeDashArray: 3,
+          xaxis: { lines: { show: true } },
+          yaxis: { lines: { show: false } }
+        },
+        xaxis: {
+          categories: categories,
+          labels: {
+            style: { colors: textColor, fontSize: '11px' }
+          },
+          title: {
+            text: 'Number of Transformers (ลูก)',
+            style: { color: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
+          }
+        },
+        yaxis: {
+          labels: {
+            style: { colors: textColor, fontSize: '12px', fontWeight: 600 }
+          }
+        },
+        tooltip: {
+          theme: isLight ? 'light' : 'dark',
+          y: {
+            formatter: function (val, { dataPointIndex }) {
+              const item = plantList[dataPointIndex];
+              if (!item) return val + ' ลูก';
+              return val + ' ลูก: ' + Array.from(item.trs).join(', ');
+            }
+          }
+        },
+        legend: { show: false }
+      };
+
+      outageChartInstance = new ApexCharts(container, options);
+      outageChartInstance.render();
     }
 
     // ==========================================
