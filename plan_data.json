@@ -1015,7 +1015,7 @@
       "cat": "Transformer Outage",
       "task": "OLTC oil top up by Hitachi",
       "plant": "GEN Ph.2",
-      "tr": "TR2, ETR2",
+      "tr": "TR2",
       "lead": "JIS",
       "start": "2026-03-19",
       "end": "2026-03-25",
@@ -1030,5 +1030,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T10:27:33.009Z"
+  "timestamp": "2026-09-08T10:34:48.499Z"
 }
