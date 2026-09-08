@@ -748,7 +748,7 @@
       "start": "2026-03-27",
       "end": "2026-03-30",
       "days": 4,
-      "progress": 0,
+      "progress": 50,
       "cost": 0,
       "parentId": null
     },
@@ -764,7 +764,7 @@
       "start": "2026-03-27",
       "end": "2026-03-30",
       "days": 4,
-      "progress": 0,
+      "progress": 100,
       "cost": 0,
       "parentId": "gen_1788798701346"
     },
@@ -785,5 +785,5 @@
       "parentId": "gen_1788798701346"
     }
   ],
-  "timestamp": "2026-09-08T01:45:55.666Z"
+  "timestamp": "2026-09-08T01:45:58.317Z"
 }
