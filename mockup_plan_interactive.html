@@ -1641,22 +1641,7 @@
     "progress": 0,
     "cost": 45000
   },
-  {
-    "id": "OL1",
-    "wbs": "OL1",
-    "sapMo": "40001018",
-    "parentId": null,
-    "task": "GEN Ph.2: OLTC Diagnostic & Inspection",
-    "lead": "PIP",
-    "tr": "GT42 GSUT",
-    "plant": "GEN Ph.2",
-    "cat": "OLTC Inspection",
-    "start": "2026-03-10",
-    "end": "2026-03-18",
-    "days": 8,
-    "progress": 50,
-    "cost": 28000
-  },
+
   {
     "id": "VS1",
     "wbs": "VS1",
@@ -2203,8 +2188,13 @@
 
         if (json && Array.isArray(json.tasks) && json.tasks.length > 0) {
           console.log('Successfully loaded master plan dataset from cloud:', json.tasks.length, 'tasks');
+          if (Array.isArray(json.deletedIds) && json.deletedIds.length > 0) {
+            addDeletedTaskIds(...json.deletedIds);
+          }
+          const allDeletedIds = new Set(getDeletedTaskIds());
+
           INITIAL_TASKS.length = 0;
-          json.tasks.forEach(t => INITIAL_TASKS.push(t));
+          json.tasks.filter(t => !allDeletedIds.has(t.id) && !allDeletedIds.has(t.wbs)).forEach(t => INITIAL_TASKS.push(t));
 
           const remoteTimestamp = json.timestamp || '';
           const localTimestamp = localStorage.getItem('GPSC_PLAN_LAST_MODIFIED') || '';
@@ -2234,6 +2224,25 @@
       }
     }
 
+    // Persistent Tombstone for permanently deleted tasks
+    function getDeletedTaskIds() {
+      try {
+        const d = localStorage.getItem('GPSC_PLAN_DELETED_IDS');
+        return d ? JSON.parse(d) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function addDeletedTaskIds(...ids) {
+      try {
+        const current = getDeletedTaskIds();
+        const set = new Set(current);
+        ids.flat().forEach(id => { if (id) set.add(id); });
+        localStorage.setItem('GPSC_PLAN_DELETED_IDS', JSON.stringify([...set]));
+      } catch (e) {}
+    }
+
     function loadSavedTasks() {
       try {
         let saved = localStorage.getItem(STORAGE_KEY);
@@ -2257,8 +2266,12 @@
 
             const merged = [...parsed];
             let hasNewTasks = false;
+            const deletedIds = new Set(getDeletedTaskIds());
 
             INITIAL_TASKS.forEach((initT, idx) => {
+              if (deletedIds.has(initT.id) || (initT.wbs && deletedIds.has(initT.wbs))) {
+                return; // User explicitly deleted this task; DO NOT resurrect!
+              }
               const existing = (initT.id && savedMapById.get(initT.id)) || (initT.wbs && savedMapByWbs.get(initT.wbs));
               if (!existing) {
                 let inserted = false;
@@ -2282,7 +2295,7 @@
               }
             });
 
-            tasks = merged;
+            tasks = merged.filter(t => !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
             if (hasNewTasks) {
               saveTasksToStorage(false);
             }
@@ -2302,7 +2315,7 @@
         }
       } catch (err) {}
       if (window.OneDriveSync && typeof window.OneDriveSync.pushPlanData === 'function') {
-        window.OneDriveSync.pushPlanData(tasks);
+        window.OneDriveSync.pushPlanData(tasks, getDeletedTaskIds());
       }
     }
 
@@ -2311,6 +2324,7 @@
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V4');
         localStorage.removeItem('GPSC_TRANSFORMER_PLAN_DATA_V3');
+        localStorage.removeItem('GPSC_PLAN_DELETED_IDS');
         try {
           const res = await fetch('plan_data.json?t=' + Date.now());
           if (res.ok) {
@@ -2597,6 +2611,16 @@
       if (confirm(msg)) {
         const task = tasks.find(t => t.id === id);
         const parentId = task ? task.parentId : null;
+
+        // Record deleted task ID and all child sub-task IDs in persistent tombstone
+        const toDeleteIds = [id];
+        if (task && task.wbs) toDeleteIds.push(task.wbs);
+        subs.forEach(s => {
+          if (s.id) toDeleteIds.push(s.id);
+          if (s.wbs) toDeleteIds.push(s.wbs);
+        });
+        addDeletedTaskIds(...toDeleteIds);
+
         tasks = tasks.filter(t => t.id !== id && t.parentId !== id);
         if (parentId) recalculateParent(parentId);
         renderAll(); saveTasksToStorage();
@@ -4303,21 +4327,27 @@
       if (window.OneDriveSync && typeof window.OneDriveSync.init === 'function') {
         window.OneDriveSync.init({
           pageType: 'plan',
-          onDataUpdated: (event, remoteTasks, remoteTimestamp) => {
+          onDataUpdated: (event, remoteTasks, remoteTimestamp, remoteDeletedIds = []) => {
             if (event === 'PLAN_UPDATED' && Array.isArray(remoteTasks) && remoteTasks.length > 0) {
+              if (Array.isArray(remoteDeletedIds) && remoteDeletedIds.length > 0) {
+                addDeletedTaskIds(...remoteDeletedIds);
+              }
+              const deletedIds = new Set(getDeletedTaskIds());
+              const cleanedRemote = remoteTasks.filter(t => !deletedIds.has(t.id) && !deletedIds.has(t.wbs));
+
               const currentStr = JSON.stringify(tasks);
-              const remoteStr = JSON.stringify(remoteTasks);
+              const remoteStr = JSON.stringify(cleanedRemote);
               if (currentStr === remoteStr) return; // Exact match, skip
 
               // Check if modal is open
               const taskModal = document.getElementById('task-modal');
               const isModalOpen = taskModal && !taskModal.classList.contains('hidden');
               if (isModalOpen) {
-                window._pendingRemoteTasks = { remoteTasks, remoteTimestamp };
+                window._pendingRemoteTasks = { remoteTasks: cleanedRemote, remoteTimestamp };
                 return;
               }
 
-              tasks = remoteTasks;
+              tasks = cleanedRemote;
               recalculateAllParents();
               renderAll();
               try {

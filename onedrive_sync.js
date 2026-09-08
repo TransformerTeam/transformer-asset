@@ -82,9 +82,19 @@
   }
 
   // --- API: PUSH PLAN DATA ---
-  async function pushPlanData(tasks) {
+  async function pushPlanData(tasks, deletedIds = null) {
     const mode = getActiveMode();
     if (mode === 'standalone') return { success: true, mode: 'standalone' };
+
+    let currentDeletedIds = deletedIds;
+    if (!currentDeletedIds) {
+      try {
+        const d = localStorage.getItem('GPSC_PLAN_DELETED_IDS');
+        currentDeletedIds = d ? JSON.parse(d) : [];
+      } catch (e) {
+        currentDeletedIds = [];
+      }
+    }
 
     setSyncState('syncing');
     try {
@@ -92,7 +102,7 @@
         const res = await fetch('/api/plan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tasks: tasks, timestamp: new Date().toISOString() })
+          body: JSON.stringify({ tasks: tasks, deletedIds: currentDeletedIds, timestamp: new Date().toISOString() })
         });
         if (!res.ok) throw new Error('LAN Server responded with HTTP ' + res.status);
         config.lastSyncTime = new Date().toISOString();
@@ -130,7 +140,11 @@
         const latestSha = fileMeta.sha;
 
         // 2. Commit updated JSON to GitHub
-        const jsonStr = JSON.stringify({ tasks: tasks, timestamp: new Date().toISOString() }, null, 2);
+        const jsonStr = JSON.stringify({ 
+          tasks: tasks, 
+          deletedIds: currentDeletedIds, 
+          timestamp: new Date().toISOString() 
+        }, null, 2);
         const putUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
         const putRes = await fetch(putUrl, {
           method: 'PUT',
@@ -244,10 +258,18 @@
         }
 
         if (data && Array.isArray(data.tasks)) {
+          if (Array.isArray(data.deletedIds) && data.deletedIds.length > 0) {
+            try {
+              const localD = localStorage.getItem('GPSC_PLAN_DELETED_IDS');
+              const localList = localD ? JSON.parse(localD) : [];
+              const mergedSet = new Set([...localList, ...data.deletedIds]);
+              localStorage.setItem('GPSC_PLAN_DELETED_IDS', JSON.stringify([...mergedSet]));
+            } catch (e) {}
+          }
           config.lastSyncTime = new Date().toISOString();
           saveConfig();
           setSyncState('synced');
-          notifyListeners('PLAN_UPDATED', data.tasks, data.timestamp);
+          notifyListeners('PLAN_UPDATED', data.tasks, data.timestamp, data.deletedIds || []);
           return data.tasks;
         }
       }
