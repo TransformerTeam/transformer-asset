@@ -968,7 +968,7 @@
       "task": "Insulation paper sampling and re-gasket by Hitachi",
       "plant": "GEN Ph.2",
       "tr": "TR3",
-      "lead": "JIS",
+      "lead": "MMT",
       "start": "2026-05-04",
       "end": "2026-05-10",
       "days": 7,
@@ -998,5 +998,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T09:01:01.037Z"
+  "timestamp": "2026-09-08T09:01:09.309Z"
 }
