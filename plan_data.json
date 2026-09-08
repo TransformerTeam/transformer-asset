@@ -877,7 +877,7 @@
       "end": "2026-12-05",
       "days": 1,
       "progress": 0,
-      "cost": 604540,
+      "cost": 2368540,
       "parentId": null
     },
     {
@@ -895,10 +895,26 @@
       "progress": 0,
       "cost": 604540,
       "parentId": "gen_1788839142479"
+    },
+    {
+      "id": "gen_1788839273563",
+      "wbs": "TO12.2",
+      "sapMo": "1300022158",
+      "cat": "Transformer Outage",
+      "task": "Power Int: Oil Regen",
+      "plant": "GSPP11",
+      "tr": "DT-3",
+      "lead": "JIS",
+      "start": "2026-12-05",
+      "end": "2026-12-05",
+      "days": 1,
+      "progress": 0,
+      "cost": 1764000,
+      "parentId": "gen_1788839142479"
     }
   ],
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:47:04.453Z"
+  "timestamp": "2026-09-08T03:47:54.467Z"
 }
