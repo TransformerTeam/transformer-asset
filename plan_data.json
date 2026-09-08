@@ -876,7 +876,7 @@
       "start": "2026-12-05",
       "end": "2026-12-05",
       "days": 1,
-      "progress": 100,
+      "progress": 0,
       "cost": 604540,
       "parentId": null
     },
@@ -892,7 +892,7 @@
       "start": "2026-12-05",
       "end": "2026-12-05",
       "days": 1,
-      "progress": 100,
+      "progress": 0,
       "cost": 604540,
       "parentId": "gen_1788839142479"
     }
@@ -900,5 +900,5 @@
   "deletedIds": [
     "OL1"
   ],
-  "timestamp": "2026-09-08T03:47:02.303Z"
+  "timestamp": "2026-09-08T03:47:04.453Z"
 }
