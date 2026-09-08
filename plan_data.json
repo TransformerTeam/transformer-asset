@@ -813,7 +813,7 @@
       "end": "2026-05-10",
       "days": 7,
       "progress": 0,
-      "cost": 1504000,
+      "cost": 1600000,
       "parentId": null
     },
     {
@@ -991,6 +991,22 @@
       "progress": 0,
       "cost": 400000,
       "parentId": "gen_1788834063251"
+    },
+    {
+      "id": "gen_1788861232308",
+      "wbs": "TO11.6",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "Add Passivator by Hitachi",
+      "plant": "GEN Ph.2",
+      "tr": "TR3, ETR3",
+      "lead": "JIS",
+      "start": "2026-05-04",
+      "end": "2026-05-10",
+      "days": 7,
+      "progress": 0,
+      "cost": 96000,
+      "parentId": "gen_1788834063251"
     }
   ],
   "deletedIds": [
@@ -998,5 +1014,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T09:51:35.464Z"
+  "timestamp": "2026-09-08T09:53:52.979Z"
 }
