@@ -948,7 +948,7 @@
       "id": "gen_1788857458325",
       "wbs": "TO11.3",
       "sapMo": "",
-      "cat": "OLTC Inspection",
+      "cat": "Transformer Outage",
       "task": "TR3 Overhaul OLTC",
       "plant": "GEN Ph.2",
       "tr": "TR3, ETR3",
@@ -966,5 +966,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-08T08:51:11.233Z"
+  "timestamp": "2026-09-08T08:51:31.883Z"
 }
