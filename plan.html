@@ -4548,27 +4548,37 @@
       }
 
       const categories = plantList.map(p => p.plant);
-      const planValues = plantList.map(p => p.trs.size);
-      const actualValues = plantList.map(p => p.completedTrs.size);
+      const pctValues = plantList.map(p => {
+        return p.trs.size > 0 ? Math.round((p.completedTrs.size / p.trs.size) * 100) : 0;
+      });
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
       const textColor = isLight ? '#0f172a' : '#cbd5e1';
-      const gridColor = isLight ? '#e2e8f0' : '#1e293b';
+      const gridColor = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+      const trackBgColor = isLight ? '#e5e7eb' : '#27272a';
+
+      // Palette matching user reference: Pink/Red, Amber/Orange, Mint/Green, Sky Blue, Purple, Cyan
+      const palette = [
+        '#f43f5e', // Red / Rose
+        '#f59e0b', // Amber / Orange
+        '#10b981', // Emerald / Mint
+        '#0ea5e9', // Sky Blue
+        '#8b5cf6', // Violet / Purple
+        '#06b6d4', // Cyan
+        '#ec4899', // Pink
+        '#14b8a6'  // Teal
+      ];
 
       const options = {
         series: [
           {
-            name: 'Plan',
-            data: planValues
-          },
-          {
-            name: 'Actual',
-            data: actualValues
+            name: 'Completed Outage',
+            data: pctValues
           }
         ],
         chart: {
           type: 'bar',
-          height: 330,
+          height: Math.max(320, plantList.length * 48 + 35),
           toolbar: { show: false },
           background: 'transparent',
           fontFamily: 'Inter, Prompt, sans-serif',
@@ -4578,22 +4588,45 @@
         plotOptions: {
           bar: {
             horizontal: true,
+            distributed: true,
             borderRadius: 4,
             barHeight: '68%',
-            dataLabels: { position: 'top' }
+            colors: {
+              backgroundBarColors: [trackBgColor],
+              backgroundBarOpacity: 1,
+              backgroundBarRadius: 4
+            },
+            dataLabels: {
+              position: 'center'
+            }
           }
         },
-        colors: ['#38bdf8', '#10b981'], // Plan: Sky Blue, Actual: Emerald Green
+        colors: palette,
         dataLabels: {
           enabled: true,
-          formatter: function(val) {
-            return val + ' Units';
+          formatter: function (val, opts) {
+            const item = plantList[opts.dataPointIndex];
+            if (!item) return val + '%';
+            if (val === 0) return `0/${item.trs.size} Units (0%)`;
+            return `${item.completedTrs.size}/${item.trs.size} Units (${val}%)`;
           },
-          offsetX: 24,
           style: {
             fontSize: '11px',
             fontWeight: 700,
-            colors: [textColor]
+            colors: [
+              function ({ dataPointIndex }) {
+                const item = plantList[dataPointIndex];
+                const pct = item && item.trs.size > 0 ? (item.completedTrs.size / item.trs.size) * 100 : 0;
+                return pct < 20 ? (isLight ? '#475569' : '#cbd5e1') : '#ffffff';
+              }
+            ]
+          },
+          dropShadow: {
+            enabled: true,
+            top: 1,
+            left: 1,
+            blur: 1,
+            opacity: 0.35
           }
         },
         grid: {
@@ -4604,44 +4637,36 @@
         },
         xaxis: {
           categories: categories,
+          min: 0,
+          max: 100,
           labels: {
-            style: { colors: textColor, fontSize: '11px' }
+            formatter: v => v + '%',
+            style: { colors: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           },
           title: {
-            text: 'Number of Transformers (Units)',
+            text: 'Outage Realization Progress (% of Planned TR Units)',
             style: { color: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           }
         },
         yaxis: {
           labels: {
-            style: { colors: textColor, fontSize: '12px', fontWeight: 600 }
+            style: { colors: textColor, fontSize: '12px', fontWeight: 700 }
           }
         },
         tooltip: {
           theme: isLight ? 'light' : 'dark',
           y: {
-            formatter: function (val, { seriesIndex, dataPointIndex }) {
+            formatter: function (val, { dataPointIndex }) {
               const item = plantList[dataPointIndex];
-              if (!item) return val + ' Units';
-              if (seriesIndex === 0) {
-                const trsStr = Array.from(item.trs).join(', ');
-                return `${val} Units (Planned): ${trsStr || 'None'}`;
-              } else {
-                const doneStr = Array.from(item.completedTrs).join(', ');
-                return `${val} Units (Completed): ${doneStr || 'None'}`;
-              }
+              if (!item) return val + '%';
+              const trsStr = Array.from(item.trs).join(', ');
+              const doneStr = Array.from(item.completedTrs).join(', ');
+              return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${val}%)\nDone: ${doneStr || 'None'}\nPlanned: ${trsStr}`;
             }
           }
         },
         legend: {
-          show: true,
-          position: 'top',
-          horizontalAlign: 'right',
-          fontSize: '12px',
-          fontWeight: 600,
-          labels: { colors: textColor },
-          markers: { radius: 4, width: 12, height: 12 },
-          itemMargin: { horizontal: 10, vertical: 0 }
+          show: false
         }
       };
 
