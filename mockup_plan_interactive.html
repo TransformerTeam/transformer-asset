@@ -654,6 +654,48 @@
     [data-preset="slate-light"] #view-scurve h2 span {
       color: #0f172a !important;
     }
+
+    /* Outage & S-Curve Section Titles (H3) */
+    [data-theme="light"] #view-outage h3,
+    [data-theme="light"] #view-outage h3 span,
+    [data-theme="light"] #view-outage .outage-box-title,
+    [data-theme="light"] #view-outage .outage-box-title span,
+    [data-preset="slate-light"] #view-outage h3,
+    [data-preset="slate-light"] #view-outage h3 span,
+    [data-preset="slate-light"] #view-outage .outage-box-title,
+    [data-preset="slate-light"] #view-outage .outage-box-title span {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+
+    /* Outage & S-Curve Subtitles */
+    [data-theme="light"] #view-outage p.text-slate-400,
+    [data-preset="slate-light"] #view-outage p.text-slate-400,
+    [data-theme="light"] #view-scurve p.text-slate-400,
+    [data-preset="slate-light"] #view-scurve p.text-slate-400 {
+      color: #334155 !important;
+      font-weight: 500 !important;
+    }
+
+    /* Outage Total Top Badge */
+    [data-theme="light"] #outage-total-badge,
+    [data-preset="slate-light"] #outage-total-badge {
+      background: #fef3c7 !important;
+      color: #92400e !important;
+      border: 1px solid #fcd34d !important;
+      font-weight: 700 !important;
+    }
+
+    /* Outage Filter Label */
+    [data-theme="light"] #outage-filter-label,
+    [data-preset="slate-light"] #outage-filter-label {
+      background: #f1f5f9 !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+      font-weight: 600 !important;
+    }
+
+    /* Outage & S-Curve Stat Cards */
     [data-theme="light"] #view-outage .bg-slate-900\/60,
     [data-theme="light"] #view-scurve .bg-slate-900\/60,
     [data-preset="slate-light"] #view-outage .bg-slate-900\/60,
@@ -661,26 +703,49 @@
       background: #f8fafc !important;
       border: 1px solid #e2e8f0 !important;
     }
+
+    /* Outage & S-Curve Stat Card Labels */
+    [data-theme="light"] #view-outage .bg-slate-900\/60 .text-slate-400,
+    [data-preset="slate-light"] #view-outage .bg-slate-900\/60 .text-slate-400,
+    [data-theme="light"] #view-scurve .bg-slate-900\/60 .text-slate-400,
+    [data-preset="slate-light"] #view-scurve .bg-slate-900\/60 .text-slate-400 {
+      color: #334155 !important;
+      font-weight: 600 !important;
+    }
+    [data-theme="light"] #view-outage .bg-slate-900\/60 .text-slate-500,
+    [data-preset="slate-light"] #view-outage .bg-slate-900\/60 .text-slate-500,
+    [data-theme="light"] #view-scurve .bg-slate-900\/60 .text-slate-500,
+    [data-preset="slate-light"] #view-scurve .bg-slate-900\/60 .text-slate-500 {
+      color: #64748b !important;
+      font-weight: 500 !important;
+    }
+    [data-theme="light"] #view-outage .font-mono span,
+    [data-preset="slate-light"] #view-outage .font-mono span,
+    [data-theme="light"] #view-scurve .font-mono span,
+    [data-preset="slate-light"] #view-scurve .font-mono span {
+      color: #64748b !important;
+      font-weight: 600 !important;
+    }
+
+    /* Outage Stat Values High Contrast */
     [data-theme="light"] #outage-stat-total-trs,
     [data-preset="slate-light"] #outage-stat-total-trs {
       color: #0f172a !important;
     }
-    [data-theme="light"] #outage-filter-label,
-    [data-preset="slate-light"] #outage-filter-label {
-      background: #f1f5f9 !important;
-      color: #0f172a !important;
-      border: 1px solid #cbd5e1 !important;
+    [data-theme="light"] #outage-stat-completed-trs,
+    [data-preset="slate-light"] #outage-stat-completed-trs {
+      color: #047857 !important;
     }
-    [data-theme="light"] #view-scurve .border-slate-700,
-    [data-preset="slate-light"] #view-scurve .border-slate-700 {
-      border-color: #cbd5e1 !important;
-      background: #f8fafc !important;
+    [data-theme="light"] #outage-stat-tasks,
+    [data-preset="slate-light"] #outage-stat-tasks {
+      color: #0284c7 !important;
     }
-    [data-theme="light"] #view-scurve .bg-slate-950\/50,
-    [data-preset="slate-light"] #view-scurve .bg-slate-950\/50 {
-      background: #ffffff !important;
-      border: 1px solid #e2e8f0 !important;
+    [data-theme="light"] #outage-stat-cost,
+    [data-preset="slate-light"] #outage-stat-cost {
+      color: #b45309 !important;
     }
+
+    /* Outage Chart & Directory Card Wrapper */
     [data-theme="light"] #view-outage .bg-slate-900\/40,
     [data-preset="slate-light"] #view-outage .bg-slate-900\/40 {
       background: #ffffff !important;
@@ -691,29 +756,101 @@
       background: #f8fafc !important;
       border: 1px solid #e2e8f0 !important;
     }
+
+    /* Directory Card: Plant Units (${p.trs.size} Units) */
+    [data-theme="light"] #outage-plant-cards .text-white,
+    [data-preset="slate-light"] #outage-plant-cards .text-white,
+    [data-theme="light"] #view-outage .outage-plant-units,
+    [data-preset="slate-light"] #view-outage .outage-plant-units {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+    }
+
+    /* Directory Card: Chips & Badges */
     [data-theme="light"] #view-outage .bg-slate-900,
     [data-preset="slate-light"] #view-outage .bg-slate-900 {
       background: #f1f5f9 !important;
-      color: #1e293b !important;
-      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+      font-weight: 600 !important;
+    }
+    [data-theme="light"] #view-outage .bg-slate-900 .text-slate-300,
+    [data-preset="slate-light"] #view-outage .bg-slate-900 .text-slate-300 {
+      color: #0f172a !important;
     }
     [data-theme="light"] #view-outage .bg-indigo-950,
     [data-preset="slate-light"] #view-outage .bg-indigo-950 {
       background: #ede9fe !important;
       color: #4338ca !important;
-      border-color: #c7d2fe !important;
+      border: 1px solid #c7d2fe !important;
+      font-weight: 700 !important;
     }
     [data-theme="light"] #view-outage .bg-emerald-950\/80,
     [data-preset="slate-light"] #view-outage .bg-emerald-950\/80 {
       background: #dcfce7 !important;
       color: #15803d !important;
-      border-color: #86efac !important;
+      border: 1px solid #86efac !important;
+      font-weight: 600 !important;
+    }
+    [data-theme="light"] #view-outage .bg-emerald-950\/80 .text-emerald-300,
+    [data-preset="slate-light"] #view-outage .bg-emerald-950\/80 .text-emerald-300 {
+      color: #15803d !important;
     }
     [data-theme="light"] #view-outage .bg-emerald-950\/50,
     [data-preset="slate-light"] #view-outage .bg-emerald-950\/50 {
       background: #dcfce7 !important;
       color: #15803d !important;
-      border-color: #86efac !important;
+      border: 1px solid #86efac !important;
+      font-weight: 700 !important;
+    }
+
+    /* S-Curve Light Theme Controls & KPIs */
+    [data-theme="light"] #view-scurve .border-slate-700,
+    [data-preset="slate-light"] #view-scurve .border-slate-700 {
+      border-color: #cbd5e1 !important;
+      background: #f8fafc !important;
+    }
+    [data-theme="light"] #view-scurve .bg-slate-950\/50,
+    [data-preset="slate-light"] #view-scurve .bg-slate-950\/50 {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    [data-theme="light"] #view-scurve .bg-sky-500\/20,
+    [data-preset="slate-light"] #view-scurve .bg-sky-500\/20 {
+      background: #e0f2fe !important;
+      color: #0369a1 !important;
+      border: 1px solid #7dd3fc !important;
+      font-weight: 700 !important;
+    }
+    [data-theme="light"] #scurve-kpi-planned,
+    [data-preset="slate-light"] #scurve-kpi-planned {
+      color: #0284c7 !important;
+    }
+    [data-theme="light"] #scurve-kpi-actual,
+    [data-preset="slate-light"] #scurve-kpi-actual {
+      color: #047857 !important;
+    }
+    [data-theme="light"] #scurve-kpi-spi,
+    [data-preset="slate-light"] #scurve-kpi-spi {
+      color: #4338ca !important;
+    }
+    [data-theme="light"] #view-scurve .text-slate-200,
+    [data-preset="slate-light"] #view-scurve .text-slate-200 {
+      color: #0f172a !important;
+      font-weight: 600 !important;
+    }
+    [data-theme="light"] #view-scurve .text-slate-400,
+    [data-preset="slate-light"] #view-scurve .text-slate-400 {
+      color: #334155 !important;
+    }
+    [data-theme="light"] #view-scurve .text-rose-300,
+    [data-preset="slate-light"] #view-scurve .text-rose-300 {
+      color: #b91c1c !important;
+      font-weight: 700 !important;
+    }
+    [data-theme="light"] #view-scurve .text-slate-500,
+    [data-preset="slate-light"] #view-scurve .text-slate-500 {
+      color: #64748b !important;
     }
     /* Calendar Nav & Range Bar Controls in Light Theme */
     [data-theme="light"] #view-calendar .bg-slate-900\/80,
@@ -1643,7 +1780,7 @@
             <!-- Left: ApexChart Horizontal Bar -->
             <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2">
               <div class="flex items-center justify-between">
-                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 outage-box-title">
                   <i class="fa-solid fa-chart-bar text-sky-400"></i>
                   <span>Outaged Transformers: Plan vs Actual by Plant</span>
                 </h3>
@@ -1654,7 +1791,7 @@
             <!-- Right: Plant Transformers Directory Cards -->
             <div class="lg:col-span-5 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2.5">
               <div class="flex items-center justify-between">
-                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 outage-box-title">
                   <i class="fa-solid fa-list-check text-emerald-400"></i>
                   <span>Transformer Units Directory</span>
                 </h3>
@@ -4377,7 +4514,7 @@
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
                       ${p.plant}
                     </span>
-                    <span class="text-xs font-semibold text-white">${p.trs.size} Units</span>
+                    <span class="text-xs font-semibold text-white outage-plant-units">${p.trs.size} Units</span>
                   </div>
                   <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.2 rounded border border-emerald-800/50">
                     <i class="fa-solid fa-check mr-0.5"></i> ${p.completedTrs.size}/${p.trs.size} Done
@@ -4408,8 +4545,8 @@
       const planValues = plantList.map(p => p.trs.size);
       const actualValues = plantList.map(p => p.completedTrs.size);
 
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const textColor = isLight ? '#334155' : '#cbd5e1';
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
+      const textColor = isLight ? '#0f172a' : '#cbd5e1';
       const gridColor = isLight ? '#e2e8f0' : '#1e293b';
 
       const options = {
@@ -4428,7 +4565,8 @@
           height: 330,
           toolbar: { show: false },
           background: 'transparent',
-          fontFamily: 'Inter, Prompt, sans-serif'
+          fontFamily: 'Inter, Prompt, sans-serif',
+          animations: { enabled: false }
         },
         theme: { mode: isLight ? 'light' : 'dark' },
         plotOptions: {
