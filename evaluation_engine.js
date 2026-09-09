@@ -52,6 +52,223 @@ function isExcludedSite(site) {
 }
 
 // ==========================================
+// IEEE Std C57.104-2019 Clause 6 Norms Tables & Evaluation Engine
+// ==========================================
+const IEEE_C57_104_T1 = {
+  low: {
+    'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
+    '1-9':     { H2: 75, CH4: 45, C2H6: 30, C2H4: 20, C2H2: 1, CO: 900, CO2: 5000 },
+    '10-30':   { H2: 75, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 10000 },
+    '>30':     { H2: 100, CH4: 110, C2H6: 150, C2H4: 90, C2H2: 1, CO: 900, CO2: 10000 }
+  },
+  high: {
+    'Unknown': { H2: 40, CH4: 20, C2H6: 15, C2H4: 50, C2H2: 2, CO: 500, CO2: 5000 },
+    '1-9':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 25, C2H2: 2, CO: 500, CO2: 3500 },
+    '10-30':   { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 },
+    '>30':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 }
+  }
+};
+
+const IEEE_C57_104_T2 = {
+  low: {
+    'Unknown': { H2: 200, CH4: 150, C2H6: 175, C2H4: 100, C2H2: 2, CO: 1100, CO2: 12500 },
+    '1-9':     { H2: 200, CH4: 100, C2H6: 70,  C2H4: 40,  C2H2: 2, CO: 1100, CO2: 7000 },
+    '10-30':   { H2: 200, CH4: 150, C2H6: 175, C2H4: 95,  C2H2: 2, CO: 1100, CO2: 14000 },
+    '>30':     { H2: 200, CH4: 200, C2H6: 250, C2H4: 175, C2H2: 4, CO: 1100, CO2: 14000 }
+  },
+  high: {
+    'Unknown': { H2: 90, CH4: 50, C2H6: 40, C2H4: 100, C2H2: 7, CO: 600, CO2: 7000 },
+    '1-9':     { H2: 90, CH4: 60, C2H6: 30, C2H4: 80,  C2H2: 7, CO: 600, CO2: 5000 },
+    '10-30':   { H2: 90, CH4: 60, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 },
+    '>30':     { H2: 90, CH4: 30, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 }
+  }
+};
+
+const IEEE_C57_104_T3 = {
+  low:  { H2: 40, CH4: 30, C2H6: 25, C2H4: 20, C2H2: 0.5, CO: 250, CO2: 2500 },
+  high: { H2: 25, CH4: 10, C2H6: 7,  C2H4: 20, C2H2: 0.5, CO: 175, CO2: 1750 }
+};
+
+const IEEE_C57_104_T4 = {
+  low: {
+    short: { H2: 50, CH4: 15, C2H6: 15, C2H4: 10, C2H2: 0.1, CO: 200, CO2: 1750 },
+    long:  { H2: 20, CH4: 10, C2H6: 9,  C2H4: 7,  C2H2: 0.1, CO: 100, CO2: 1000 }
+  },
+  high: {
+    short: { H2: 25, CH4: 4, C2H6: 3, C2H4: 7, C2H2: 0.1, CO: 100, CO2: 1000 },
+    long:  { H2: 10, CH4: 3, C2H6: 2, C2H4: 5, C2H2: 0.1, CO: 80,  CO2: 800 }
+  }
+};
+
+function getIEEENormsCore(o2n2Ratio, ageYears) {
+  const isLowRatio = (o2n2Ratio !== null && o2n2Ratio !== undefined && o2n2Ratio <= 0.2);
+  let ageCat = 'Unknown';
+  if (ageYears !== null && ageYears !== undefined && !isNaN(ageYears) && ageYears >= 1) {
+    if (ageYears <= 9) ageCat = '1-9';
+    else if (ageYears <= 30) ageCat = '10-30';
+    else ageCat = '>30';
+  }
+  const catKey = isLowRatio ? 'low' : 'high';
+  return {
+    table1: IEEE_C57_104_T1[catKey][ageCat],
+    table2: IEEE_C57_104_T2[catKey][ageCat],
+    table3: IEEE_C57_104_T3[catKey],
+    table4: IEEE_C57_104_T4[catKey],
+    isLowRatio,
+    ageCategory: ageCat
+  };
+}
+
+function calcLinearRegressionRateCore(points) {
+  if (!points || points.length < 3) return null;
+  const xVals = points.map(p => p[0] / 365.25);
+  const yVals = points.map(p => p[1]);
+  const n = points.length;
+  const meanX = xVals.reduce((a, b) => a + b, 0) / n;
+  const meanY = yVals.reduce((a, b) => a + b, 0) / n;
+  const denom = xVals.reduce((sum, x) => sum + Math.pow(x - meanX, 2), 0);
+  if (denom === 0) return 0;
+  const numer = xVals.reduce((sum, x, i) => sum + (x - meanX) * (yVals[i] - meanY), 0);
+  return numer / denom;
+}
+
+function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
+  if (!curr) return null;
+  const o2Val = parseFloat(curr.O2 || 0);
+  const n2Val = parseFloat(curr.N2 || 0);
+  const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+
+  let ageYears = null;
+  const mfgDate = (trInfoItem && trInfoItem.MANUFACTURING_DATE) || curr.MANUFACTURING_DATE || curr.mfgYear;
+  if (mfgDate) {
+    const s = String(mfgDate).trim();
+    const yMatch = s.match(/\b(19\d\d|20\d\d)\b/);
+    if (yMatch) {
+      const sampleY = curr.Date || curr.date ? new Date(curr.Date || curr.date).getFullYear() : 2026;
+      ageYears = (sampleY || 2026) - parseInt(yMatch[1], 10);
+    }
+  }
+
+  const norms = getIEEENormsCore(o2n2Ratio, ageYears);
+
+  // Multi-point rate
+  const itemsList = Array.isArray(allItems) ? allItems : [curr];
+  const rateItems = itemsList.slice(0, Math.min(6, itemsList.length));
+  const rates = {};
+  let durMonths = null;
+  let t4DurKey = 'long';
+
+  if (rateItems.length >= 3) {
+    const chromItems = [...rateItems].reverse();
+    const parseD = (dStr) => {
+      if (!dStr) return new Date(0);
+      return new Date(dStr);
+    };
+    const baseDt = parseD(chromItems[0].Date || chromItems[0].date).getTime();
+    const lastDt = parseD(chromItems[chromItems.length - 1].Date || chromItems[chromItems.length - 1].date).getTime();
+    const durDays = Math.max(0, (lastDt - baseDt) / (1000 * 3600 * 24));
+    durMonths = durDays / 30.4375;
+    t4DurKey = durMonths <= 9.5 ? 'short' : 'long';
+
+    const gKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+    gKeys.forEach(g => {
+      const pts = chromItems.map(r => [
+        (parseD(r.Date || r.date).getTime() - baseDt) / (1000 * 3600 * 24),
+        parseFloat(r[g] || 0)
+      ]);
+      rates[g] = calcLinearRegressionRateCore(pts);
+    });
+  }
+
+  const t4Limits = norms.table4[t4DurKey];
+  const gKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+
+  let allGasLtT1 = true;
+  let allDeltaLtT3 = true;
+  let allRateLtT4 = true;
+
+  let anyGasGtT2 = false;
+  let anyRateGtT4 = false;
+  let anyC2H2Increasing = false;
+
+  const triggerReasons = [];
+  const cautionReasons = [];
+
+  gKeys.forEach(k => {
+    const cVal = parseFloat(curr[k] || 0);
+    const pVal = prev1 ? parseFloat(prev1[k] || 0) : null;
+    const delta = pVal !== null ? Math.max(0, cVal - pVal) : 0;
+    const rate = rates[k] !== undefined ? rates[k] : null;
+
+    const t1 = norms.table1[k];
+    const t2 = norms.table2[k];
+    const t3 = norms.table3[k];
+    const t4 = t4Limits[k];
+
+    if (cVal > t1) {
+      allGasLtT1 = false;
+      cautionReasons.push(`${k} level (${cVal} > T1: ${t1})`);
+    }
+    if (pVal !== null) {
+      if (k === 'C2H2' && delta > 0.5 && cVal > 1) {
+        allDeltaLtT3 = false;
+        cautionReasons.push(`C2H2 increasing (Δ=${delta.toFixed(1)})`);
+      } else if (delta > t3) {
+        allDeltaLtT3 = false;
+        cautionReasons.push(`${k} Δ (${delta.toFixed(1)} > T3: ${t3})`);
+      }
+    }
+    if (rate !== null) {
+      if (k === 'C2H2' && rate > 0.1 && cVal > 0) {
+        allRateLtT4 = false;
+        anyC2H2Increasing = true;
+        triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+      } else if (rate > t4) {
+        allRateLtT4 = false;
+        anyRateGtT4 = true;
+        triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+      }
+    }
+
+    if (cVal > t2) {
+      anyGasGtT2 = true;
+      triggerReasons.push(`${k} level (${cVal} > T2: ${t2})`);
+    }
+  });
+
+  const condD = allGasLtT1 && allDeltaLtT3 && allRateLtT4;
+  let overallStatus = 1;
+  let statusText = 'Status 1 (Normal)';
+  let recommendation = 'Routine periodic screening (6–12 months)';
+
+  if (condD) {
+    overallStatus = 1;
+    statusText = 'Status 1 (Normal)';
+    recommendation = 'Unit is operating normally. Routine sampling (6–12 months) recommended.';
+  } else {
+    const condG = anyGasGtT2 || anyRateGtT4 || anyC2H2Increasing;
+    if (condG) {
+      overallStatus = 3;
+      statusText = 'Status 3 (Active Fault)';
+      recommendation = `Active fault detected (${triggerReasons.slice(0, 2).join(', ')}). Perform Fault Identification (Duval/Rogers) & electrical tests.`;
+    } else {
+      overallStatus = 2;
+      statusText = 'Status 2 (Suspicious)';
+      recommendation = `Gas or Delta exceeds baseline (${cautionReasons.slice(0, 2).join(', ')}). Resample within 1 month, increase frequency to 1–3 months.`;
+    }
+  }
+
+  return {
+    overallStatus,
+    statusText,
+    recommendation,
+    triggerReasons,
+    cautionReasons,
+    norms
+  };
+}
+
+// ==========================================
 // buildPtStructure: Returns PT component data
 // (shared across Assessment Dashboard & Evaluation Report)
 // ==========================================
@@ -1705,44 +1922,62 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const fluidType = String((item && (item.TYPE_OF_INSULATION || item.fluid)) || (trInfoItem && (trInfoItem.TYPE_OF_INSULATION || trInfoItem.WINDING_INSULATION)) || '').trim().toLowerCase();
       const isEster = fluidType.includes('ester') || fluidType.includes('fr3') || fluidType.includes('natural');
 
-      let isCritical = false;
-      let isCaution = false;
-
       if (isEster) {
         // IEEE C57.155-2014 (Natural Ester & Synthetic Ester)
-        // Arcing/Thermal Fault (Status 3): C2H2 > 35 or C2H4 > 200 or H2 > 1000 or CH4 > 300 or C2H6 > 600
-        // Caution/Monitoring (Status 2): C2H2 > 1 or C2H4 > 40 or H2 > 300 or CH4 > 50 or C2H6 > 250 or CO > 500
-        isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 1000 || ch4 > 300 || c2h6 > 600 || c2h4 > 200 || c2h2 > 35;
-        isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 300 || ch4 > 50 || c2h6 > 250 || c2h4 > 40 || c2h2 > 1 || co > 500;
+        const isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 1000 || ch4 > 300 || c2h6 > 600 || c2h4 > 200 || c2h2 > 35;
+        const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 300 || ch4 > 50 || c2h6 > 250 || c2h4 > 40 || c2h2 > 1 || co > 500;
+        if (isCritical) {
+          return { value: 'Critical (IEEE C57.155 Status 3 Fault)', testDate: date, ratingScore: 1, recommendation: 'Perform DGA trend & fault investigation' };
+        } else if (isCaution) {
+          return { value: 'Monitoring (IEEE C57.155 Gas Exceed Table 1)', testDate: date, ratingScore: 3, recommendation: 'Perform DGA trend analysis & monitor gas generation' };
+        } else {
+          return { value: 'Normal (No Fault Detected)', testDate: date, ratingScore: 5, recommendation: '-' };
+        }
       } else {
-        // IEEE C57.104-2019 (Mineral Oil)
-        // Status 3 Fault: C2H2 > 35 or C2H4 > 200 or H2 > 700 or CH4 > 400
-        // Status 2 Caution: C2H2 > 1 or C2H4 > 50 or H2 > 100 or CH4 > 120 or C2H6 > 65 or CO > 350
-        isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
-        isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
-      }
+        // Mineral Oil: IEEE C57.104-2019 Clause 6 Flowchart Interpretation Engine
+        const allMtRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && serialVal)
+          ? mtOilCsvData.filter(d => {
+              const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
+              if (!s) return false;
+              const s1 = String(s).trim().toLowerCase();
+              const s2 = String(serialVal).trim().toLowerCase();
+              if (s1 === s2) return true;
+              const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+              const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
+              return cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS));
+            })
+          : [];
+        allMtRecords.sort((a, b) => {
+          const dA = new Date(a.date || a.Date || a.DATE || 0);
+          const dB = new Date(b.date || b.Date || b.DATE || 0);
+          return dB - dA;
+        });
 
-      if (isCritical) {
-        return { 
-          value: isEster ? 'Critical (IEEE C57.155 Status 3 Fault)' : 'Critical (IEEE C57.104 Status 3 Fault)', 
-          testDate: date, 
-          ratingScore: 1, 
-          recommendation: 'Perform DGA trend & fault investigation' 
-        };
-      } else if (isCaution) {
-        return { 
-          value: isEster ? 'Monitoring (IEEE C57.155 Gas Exceed Table 1)' : 'Monitoring (IEEE C57.104 Gas Exceed Table 2)', 
-          testDate: date, 
-          ratingScore: 3, 
-          recommendation: 'Perform DGA trend analysis & monitor gas generation' 
-        };
-      } else {
-        return { 
-          value: 'Normal (No Fault Detected)', 
-          testDate: date, 
-          ratingScore: 5, 
-          recommendation: '-' 
-        };
+        const dgaEval = evaluateDGAFlowchartCore(latestMt, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
+        if (dgaEval) {
+          if (dgaEval.overallStatus === 3) {
+            return {
+              value: `Critical (IEEE C57.104 ${dgaEval.statusText})`,
+              testDate: date,
+              ratingScore: 1,
+              recommendation: dgaEval.recommendation
+            };
+          } else if (dgaEval.overallStatus === 2) {
+            return {
+              value: `Monitoring (IEEE C57.104 ${dgaEval.statusText})`,
+              testDate: date,
+              ratingScore: 3,
+              recommendation: dgaEval.recommendation
+            };
+          } else {
+            return {
+              value: `Normal (IEEE C57.104 Status 1: Normal)`,
+              testDate: date,
+              ratingScore: 5,
+              recommendation: dgaEval.recommendation
+            };
+          }
+        }
       }
     }
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
@@ -2854,4 +3089,10 @@ if (typeof window !== 'undefined') {
   window.generateDetailedRecommendation = generateDetailedRecommendation;
   window.formatDateToDdMmmYyyy = formatDateToDdMmmYyyy;
   window.formatDate = formatDateToDdMmmYyyy;
+  window.evaluateDGAFlowchartCore = evaluateDGAFlowchartCore;
+  window.getIEEENormsCore = getIEEENormsCore;
+  window.IEEE_C57_104_T1 = IEEE_C57_104_T1;
+  window.IEEE_C57_104_T2 = IEEE_C57_104_T2;
+  window.IEEE_C57_104_T3 = IEEE_C57_104_T3;
+  window.IEEE_C57_104_T4 = IEEE_C57_104_T4;
 }

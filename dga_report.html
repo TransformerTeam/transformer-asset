@@ -910,28 +910,36 @@
 
       <div class="section-title">Dissolve Gas Analysis</div>
 
-      <!-- IEEE C57.104-2019 Summary Section BEFORE Test Result (as requested) -->
-      <div class="criteria-box-summary">
+      <!-- IEEE C57.104-2019 Summary Section BEFORE Test Result (Flowchart Analysis Engine) -->
+      <div class="criteria-box-summary" id="dga-summary-card">
         <div class="criteria-header-row">
-          <span class="criteria-title-txt"><i class="fa-solid fa-shield-halved"></i> DGA Evaluation Summary according to IEEE Std C57.104-2019</span>
-          <span class="status-pill status-a" id="summary-status-pill">Normal</span>
+          <span class="criteria-title-txt"><i class="fa-solid fa-shield-halved"></i> DGA Interpretation & Evaluation Summary (IEEE Std C57.104-2019 Clause 6)</span>
+          <span class="status-pill status-a" id="summary-status-pill">DGA Status 1: Normal</span>
         </div>
-        <p style="margin-bottom:6px; color:#334155;" id="summary-text-desc">
-          DGA evaluation per IEEE Std C57.104-2019 indicates all combustible gas levels are within the 90th percentile baseline limits.
+        <div style="font-size:9px; font-weight:700; color:#1e293b; margin-top:3px; margin-bottom:2px;" id="summary-decision-trail">
+          Decision 1: All combustible gases < Table 1, Δ < Table 3, and Multi-point Rates < Table 4 → DGA Status 1 (Normal)
+        </div>
+        <p style="margin-bottom:4px; font-size:8.5px; color:#334155; line-height:1.35;" id="summary-text-desc">
+          Unit is operating normally. Routine periodic sampling schedule (6–12 months) recommended.
         </p>
-        <table class="report-table" style="margin-bottom:0; background:#ffffff;">
+        <div style="font-size:8px; color:#64748b; background:rgba(0,0,0,0.03); border:1px solid #e2e8f0; border-radius:4px; padding:3px 8px; margin-bottom:5px;" id="summary-operating-baseline">
+          Operating Baseline: O<sub>2</sub>/N<sub>2</sub> Ratio = - | Age = - Years | Multi-point Rate Window = -
+        </div>
+        <table class="report-table" style="margin-bottom:0; background:#ffffff; font-size:7.5px;">
           <thead>
             <tr>
-              <th style="width:18%; white-space:nowrap;">Gas</th>
-              <th style="width:13%; white-space:nowrap; text-align:right;">Measured (ppm)</th>
-              <th style="width:14%; white-space:nowrap; text-align:right;">Table 1 Limit</th>
-              <th style="width:14%; white-space:nowrap; text-align:right;">Table 2 Limit</th>
-              <th style="width:15%; white-space:nowrap; text-align:center;">DGA Status</th>
-              <th style="width:26%;">Recommendation</th>
+              <th style="width:14%; white-space:nowrap;">Gas Symbol</th>
+              <th style="width:11%; white-space:nowrap; text-align:right;">Measured (ppm)</th>
+              <th style="width:11%; white-space:nowrap; text-align:right;" title="Table 1: 90th Percentile Concentration">Table 1 (90%)</th>
+              <th style="width:11%; white-space:nowrap; text-align:right;" title="Table 2: 95th Percentile Concentration">Table 2 (95%)</th>
+              <th style="width:13%; white-space:nowrap; text-align:right;" title="Table 3: Consecutive Delta Change (ppm)">Δ Delta (T3 Limit)</th>
+              <th style="width:15%; white-space:nowrap; text-align:right;" title="Table 4: Multi-point Rate 3-6 points linear regression (ppm/yr)">Rate/Yr (T4 Limit)</th>
+              <th style="width:11%; white-space:nowrap; text-align:center;">Gas Status</th>
+              <th style="width:14%;">Flow Finding</th>
             </tr>
           </thead>
           <tbody id="summary-table-body">
-            <!-- Dynamic rows -->
+            <!-- Dynamic rows populated by evaluateDGAFlowchart -->
           </tbody>
         </table>
       </div>
@@ -1262,7 +1270,10 @@
       </div>
 
       <!-- Duval Triangles & Pentagons Section -->
-      <div class="section-title" style="margin-top:8px;">Dissolve Gas Analysis - Duval Triangles & Pentagons</div>
+      <div class="section-title" style="margin-top:8px;">Dissolve Gas Analysis - Duval Triangles & Pentagons (IEEE C57.104 Step K)</div>
+      <div id="duval-stepk-banner" style="font-size:8.5px; padding:4px 8px; border-radius:4px; margin-bottom:5px; font-weight:600; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af;">
+        <i class="fa-solid fa-info-circle"></i> <span id="duval-stepk-text">Evaluating fault identification per IEEE C57.104 Step K...</span>
+      </div>
 
       <div class="duval-grid">
         <!-- Duval Triangle 1 -->
@@ -1372,7 +1383,44 @@
       </table>
 
       <!-- Section 1: Flowchart -->
-      <div class="section-title">1. DGA Interpretation Decision Flowchart (IEEE Std C57.104-2019 Clause 6)</div>
+      <div class="section-title">1. DGA Interpretation Decision Flowchart & Execution Engine (IEEE Std C57.104-2019 Clause 6)</div>
+      
+      <!-- Active Execution Trace Card for Selected Equipment -->
+      <div class="active-flow-card" id="active-flow-summary-card" style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:8px; padding:8px 12px; margin-top:5px; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+          <span style="font-weight:700; font-size:10px; color:#1e3a8a;">
+            <i class="fa-solid fa-route"></i> Unit Decision Execution: <span id="flow-unit-name">-</span> (<span id="flow-unit-serial">-</span>)
+          </span>
+          <span class="status-pill status-a" id="flow-final-status-pill">DGA Status 1: Normal</span>
+        </div>
+        
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; font-size:7.5px; margin-bottom:5px;">
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+            <div style="color:#64748b; font-weight:600;"><i class="fa-solid fa-database"></i> 1. Baseline Context</div>
+            <div style="font-weight:700; color:#0f172a; margin-top:2px;" id="flow-ctx-ratio">-</div>
+            <div style="color:#475569;" id="flow-ctx-age">-</div>
+          </div>
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+            <div style="color:#64748b; font-weight:600;"><i class="fa-solid fa-diamond"></i> 2. Decision 1 (Diamond D)</div>
+            <div style="font-weight:700;" id="flow-step-d-result">-</div>
+            <div style="color:#475569;" id="flow-step-d-detail">-</div>
+          </div>
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+            <div style="color:#64748b; font-weight:600;"><i class="fa-solid fa-diamond"></i> 3. Decision 2 (Diamond G)</div>
+            <div style="font-weight:700;" id="flow-step-g-result">-</div>
+            <div style="color:#475569;" id="flow-step-g-detail">-</div>
+          </div>
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:5px; padding:5px 7px;">
+            <div style="color:#64748b; font-weight:600;"><i class="fa-solid fa-circle-check"></i> 4. Assigned Action</div>
+            <div style="font-weight:700;" id="flow-step-action-result">-</div>
+            <div style="color:#475569;" id="flow-step-action-detail">-</div>
+          </div>
+        </div>
+
+        <div style="font-size:7.5px; color:#334155; line-height:1.35; background:#ffffff; border:1px dashed #cbd5e1; border-radius:4px; padding:4px 7px;">
+          <strong>Flow Pathway:</strong> <span id="flow-decision-trail-text">-</span>
+        </div>
+      </div>
       <div class="report-flowchart-card">
         <div class="mermaid" id="report-mermaid">
 graph TD
@@ -1973,10 +2021,10 @@ graph TD
         const num = parseFloat(val);
         if (isNaN(num)) return 'Normal';
         const norms = getGasNormsForRecord(rec);
-        const limit = (norms && norms.table1 && norms.table1[gas] !== undefined) ? norms.table1[gas] : (IEEE_LIMITS_90TH[gas] || 50);
-        if (num <= limit) return 'Normal';
-        if (num <= limit * 1.5) return 'Monitoring';
-        if (num <= limit * 2.5) return 'Warning';
+        const t1 = (norms && norms.table1 && norms.table1[gas] !== undefined) ? norms.table1[gas] : (IEEE_LIMITS_90TH[gas] || 50);
+        const t2 = (norms && norms.table2 && norms.table2[gas] !== undefined) ? norms.table2[gas] : (t1 * 2);
+        if (num <= t1) return 'Normal';
+        if (num <= t2) return 'Monitoring';
         return 'Critical';
       };
 
@@ -2000,8 +2048,9 @@ graph TD
       setStatus('st-c2h2-curr', 'C2H2', curr.C2H2, curr); setStatus('st-c2h2-p1', 'C2H2', prev1.C2H2, prev1); setStatus('st-c2h2-p2', 'C2H2', prev2.C2H2, prev2);
       setStatus('st-co-curr', 'CO', curr.CO, curr); setStatus('st-co-p1', 'CO', prev1.CO, prev1); setStatus('st-co-p2', 'CO', prev2.CO, prev2);
 
-      // Render IEEE C57.104-2019 Summary Section (Clause 6)
-      const norms = renderSummarySection(curr, prev1);
+      // Render IEEE C57.104-2019 Summary Section (Clause 6 Flowchart Engine)
+      const evalRes = renderSummarySection(curr, prev1, items);
+      const norms = evalRes.norms;
 
       // Render Key Gas Bar Chart
       renderKeyGasBars(curr, norms);
@@ -2145,17 +2194,27 @@ graph TD
       return null;
     }
 
-    // Render IEEE C57.104-2019 Clause 6 Suggested Interpretation Procedure
-    function renderSummarySection(curr, prev1) {
-      const tbody = document.getElementById('summary-table-body');
-      tbody.innerHTML = '';
+    // Linear regression helper for multi-point rate analysis
+    function calcLinearRegressionRate(points) {
+      if (!points || points.length < 3) return null;
+      const xVals = points.map(p => p[0] / 365.25); // time in years
+      const yVals = points.map(p => p[1]);          // gas concentration ppm
+      const n = points.length;
+      const meanX = xVals.reduce((a, b) => a + b, 0) / n;
+      const meanY = yVals.reduce((a, b) => a + b, 0) / n;
+      const denom = xVals.reduce((sum, x) => sum + Math.pow(x - meanX, 2), 0);
+      if (denom === 0) return 0;
+      const numer = xVals.reduce((sum, x, i) => sum + (x - meanX) * (yVals[i] - meanY), 0);
+      return numer / denom;
+    }
 
-      // Calculate O2/N2 ratio
+    // Comprehensive IEEE Std C57.104-2019 Clause 6 Interpretation Engine
+    function evaluateDGAFlowchart(curr, prev1, allItems) {
       const o2Val = parseFloat(curr.O2 || 0);
       const n2Val = parseFloat(curr.N2 || 0);
       const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+      const isLowRatio = (o2n2Ratio <= 0.2);
 
-      // Calculate transformer age from TRInfo MANUFACTURING_DATE
       const mfgYear = parseMfgYear(curr.MANUFACTURING_DATE || curr.mfgYear);
       let ageYears = null;
       const sampleYear = curr.date ? (new Date(curr.date).getFullYear() || 2026) : 2026;
@@ -2164,6 +2223,41 @@ graph TD
       }
 
       const norms = getIEEENorms(o2n2Ratio, ageYears);
+
+      // Multi-point Rate analysis: select 3 to 6 latest valid laboratory samples
+      const itemsList = Array.isArray(allItems) ? allItems : [curr];
+      const rateItems = itemsList.slice(0, Math.min(6, itemsList.length));
+      const rates = {};
+      let durMonths = null;
+      let t4DurKey = 'long';
+
+      if (rateItems.length >= 3) {
+        const chromItems = [...rateItems].reverse(); // oldest to newest
+        const parseD = (dStr) => {
+          if (!dStr) return new Date(0);
+          if (dStr.includes('/')) {
+            const pts = dStr.split('/');
+            if (pts.length === 3) return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+          }
+          return new Date(dStr);
+        };
+        const baseDt = parseD(chromItems[0].date).getTime();
+        const lastDt = parseD(chromItems[chromItems.length - 1].date).getTime();
+        const durDays = Math.max(0, (lastDt - baseDt) / (1000 * 3600 * 24));
+        durMonths = durDays / 30.4375;
+        t4DurKey = durMonths <= 9.5 ? 'short' : 'long';
+
+        const gKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+        gKeys.forEach(g => {
+          const pts = chromItems.map(r => [
+            (parseD(r.date).getTime() - baseDt) / (1000 * 3600 * 24),
+            parseFloat(r[g] || 0)
+          ]);
+          rates[g] = calcLinearRegressionRate(pts);
+        });
+      }
+
+      const t4Limits = norms.table4[t4DurKey];
 
       const gases = [
         { name: 'Hydrogen', symbol: 'H2', val: curr.H2, key: 'H2' },
@@ -2175,75 +2269,389 @@ graph TD
         { name: 'Carbon Dioxide', symbol: 'CO2', val: curr.CO2, key: 'CO2' }
       ];
 
-      let maxDGAStatus = 1;
+      let allGasLtT1 = true;
+      let allDeltaLtT3 = true;
+      let allRateLtT4 = true;
+
+      let anyGasGtT2 = false;
+      let anyRateGtT4 = false;
+      let anyC2H2Increasing = false;
+
+      const stepDExceeds = [];
+      const stepGTriggers = [];
+
+      const gasDetails = [];
 
       gases.forEach(g => {
         const num = parseFloat(g.val || 0);
         const prevNum = (prev1 && prev1[g.key] !== undefined && prev1[g.key] !== null) ? parseFloat(prev1[g.key] || 0) : null;
         const delta = prevNum !== null ? Math.max(0, num - prevNum) : 0;
+        const rate = (rates[g.key] !== undefined && rates[g.key] !== null) ? rates[g.key] : null;
 
-        const t1Norm = norms.table1[g.key];
-        const t2Norm = norms.table2[g.key];
-        const t3Norm = norms.table3[g.key];
+        const t1 = norms.table1[g.key];
+        const t2 = norms.table2[g.key];
+        const t3 = norms.table3[g.key];
+        const t4 = t4Limits[g.key];
 
-        let gasStatus = 1;
-        let statusPillText = 'DGA Status 1';
-        let statusClass = 'status-a';
-        let rec = 'Normal';
+        // Status per individual gas
+        let gStatus = 1;
+        let findings = [];
 
-        // IEEE C57.104-2019 Clause 6.1.1 Flowchart Logic (Step 4, 5, 6)
-        if (num > t2Norm) {
-          gasStatus = 3;
-          statusPillText = 'DGA Status 3';
-          statusClass = 'status-d';
-          rec = `Critical - Concentration (${formatNum(num)} ppm) exceeds Table 2 limit (${formatNum(t2Norm)} ppm). Perform fault identification.`;
-        } else if (num > t1Norm) {
-          gasStatus = 2;
-          statusPillText = 'DGA Status 2';
-          statusClass = 'status-b';
-          rec = `Caution - Concentration (${formatNum(num)} ppm) exceeds Table 1 limit (${formatNum(t1Norm)} ppm). Increased sampling recommended.`;
-        } else if (prevNum !== null && delta > t3Norm) {
-          gasStatus = 2;
-          statusPillText = 'DGA Status 2';
-          statusClass = 'status-b';
-          rec = `Caution - Level within Table 1, but cumulative delta (Δ = ${formatNum(delta)} ppm) exceeds Table 3 limit (${formatNum(t3Norm)} ppm). Confirmation sample recommended.`;
+        // Check Condition D elements
+        if (num > t1) {
+          allGasLtT1 = false;
+          stepDExceeds.push(`${g.symbol} level (${formatNum(num)} ppm) > T1 (${t1} ppm)`);
+          findings.push(`Concentration > T1 (${t1})`);
+          gStatus = Math.max(gStatus, 2);
+        }
+        if (prevNum !== null) {
+          if (g.key === 'C2H2') {
+            if (delta > 0.5 && num > 1) {
+              allDeltaLtT3 = false;
+              stepDExceeds.push(`C2H2 increasing (Δ = ${formatNum(delta)} ppm)`);
+              findings.push(`Δ > 0`);
+              gStatus = Math.max(gStatus, 2);
+            }
+          } else if (delta > t3) {
+            allDeltaLtT3 = false;
+            stepDExceeds.push(`${g.symbol} Δ (${formatNum(delta)} ppm) > T3 (${t3} ppm)`);
+            findings.push(`Δ (${formatNum(delta)}) > T3 (${t3})`);
+            gStatus = Math.max(gStatus, 2);
+          }
+        }
+        if (rate !== null) {
+          if (g.key === 'C2H2') {
+            if (rate > 0.1 && num > 0) {
+              allRateLtT4 = false;
+              anyC2H2Increasing = true;
+              stepGTriggers.push(`C2H2 increasing rate (${rate.toFixed(2)} ppm/yr)`);
+              findings.push(`Rate > 0 (Active generation)`);
+              gStatus = 3;
+            }
+          } else if (rate > t4) {
+            allRateLtT4 = false;
+            anyRateGtT4 = true;
+            stepGTriggers.push(`${g.symbol} rate (${rate.toFixed(1)} ppm/yr) > T4 (${t4} ppm/yr)`);
+            findings.push(`Rate (${rate.toFixed(1)}) > T4 (${t4})`);
+            gStatus = 3;
+          }
         }
 
-        if (gasStatus > maxDGAStatus) {
-          maxDGAStatus = gasStatus;
+        // Check Condition G elements
+        if (num > t2) {
+          anyGasGtT2 = true;
+          stepGTriggers.push(`${g.symbol} level (${formatNum(num)} ppm) > T2 (${t2} ppm)`);
+          findings.push(`Level > T2 (${t2})`);
+          gStatus = 3;
         }
+
+        gasDetails.push({
+          name: g.name,
+          symbol: g.symbol,
+          key: g.key,
+          val: num,
+          prevVal: prevNum,
+          delta: delta,
+          rate: rate,
+          t1: t1,
+          t2: t2,
+          t3: t3,
+          t4: t4,
+          status: gStatus,
+          finding: findings.length > 0 ? findings.join(', ') : 'Normal (Below T1, T3, T4)'
+        });
+      });
+
+      // Flowchart Decision 1 (Condition D):
+      // ก๊าซทุกตัว < Table 1 AND Delta ทุกตัว < Table 3 AND Rate ทุกตัว < Table 4 ?
+      const condD = allGasLtT1 && allDeltaLtT3 && allRateLtT4;
+
+      let overallStatus = 1;
+      let statusText = 'DGA Status 1: Normal';
+      let badgeClass = 'status-a';
+      let decisionTrail = '';
+      let recommendation = '';
+      let stepDResult = 'Passed';
+      let stepDDetail = 'All gases < T1, Δ < T3, Rate < T4';
+      let stepGResult = 'Skipped';
+      let stepGDetail = 'Not required (Condition D satisfied)';
+
+      if (condD) {
+        overallStatus = 1;
+        statusText = 'DGA Status 1: Normal';
+        badgeClass = 'status-a';
+        decisionTrail = 'Decision 1 (Pass): All gases < Table 1 AND all Δ < Table 3 AND all Rates < Table 4 → DGA Status 1 (Normal).';
+        recommendation = 'เปิดใช้งานหม้อแปลงตามปกติ และสุ่มเก็บตัวอย่างตามรอบวาระปกติ (Routine periodic screening 6–12 months)';
+      } else {
+        stepDResult = 'Failed';
+        stepDDetail = stepDExceeds.slice(0, 2).join('; ') + (stepDExceeds.length > 2 ? ` (+${stepDExceeds.length - 2} more)` : '');
+
+        // Flowchart Decision 2 (Condition G):
+        // มีก๊าซตัวใดตัวหนึ่ง > Table 2 OR Rate ตัวใดตัวหนึ่ง > Table 4 ?
+        const condG = anyGasGtT2 || anyRateGtT4 || anyC2H2Increasing;
+
+        if (condG) {
+          overallStatus = 3;
+          statusText = 'DGA Status 3: High Risk / Active Fault';
+          badgeClass = 'status-d';
+          stepGResult = 'Triggered Status 3';
+          stepGDetail = stepGTriggers.slice(0, 2).join('; ') + (stepGTriggers.length > 2 ? ` (+${stepGTriggers.length - 2} more)` : '');
+          decisionTrail = `Decision 1 Failed → Decision 2 (Triggered): ${stepGTriggers.join(', ')} → High Risk / Active Fault Detected.`;
+          recommendation = 'เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification (Duval Triangles/Pentagons, Rogers Ratios), ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไขเร่งด่วน';
+        } else {
+          overallStatus = 2;
+          statusText = 'DGA Status 2: Intermediate / Suspicious';
+          badgeClass = 'status-b';
+          stepGResult = 'Passed (Not Status 3)';
+          stepGDetail = 'No gas > Table 2 AND no rate > Table 4';
+          decisionTrail = `Decision 1 Failed (${stepDExceeds.join(', ')}) → Decision 2: Within Table 2 and Table 4 → DGA Status 2 (Suspicious).`;
+          recommendation = 'เพิ่มความถี่ในการสุ่มเก็บตัวอย่างน้ำมัน (1–3 เดือน) และเก็บตัวอย่างยืนยันผลภายใน 1 เดือน (Confirmation sample within 1 month)';
+        }
+      }
+
+      return {
+        overallStatus,
+        statusText,
+        badgeClass,
+        decisionTrail,
+        recommendation,
+        stepDResult,
+        stepDDetail,
+        stepGResult,
+        stepGDetail,
+        gasDetails,
+        norms,
+        ratio: o2n2Ratio,
+        isLowRatio,
+        ageYears,
+        ageCategory: norms.ageCategory,
+        ratePointsCount: rateItems.length,
+        durMonths,
+        t4DurKey
+      };
+    }
+
+    // Render IEEE C57.104-2019 Clause 6 Flowchart Interpretation Procedure
+    function renderSummarySection(curr, prev1, allItems) {
+      const evalRes = evaluateDGAFlowchart(curr, prev1, allItems);
+      
+      const tbody = document.getElementById('summary-table-body');
+      tbody.innerHTML = '';
+
+      evalRes.gasDetails.forEach(g => {
+        let statusBadge = `<span class="status-pill status-a">Status 1</span>`;
+        if (g.status === 2) statusBadge = `<span class="status-pill status-b">Status 2</span>`;
+        if (g.status === 3) statusBadge = `<span class="status-pill status-d">Status 3</span>`;
+
+        const deltaDisplay = (g.prevVal !== null)
+          ? `${formatNum(g.delta)} <span style="font-size:7px;color:#64748b;">(≤${g.t3})</span>`
+          : `-`;
+        
+        const rateDisplay = (g.rate !== null)
+          ? `${g.rate.toFixed(1)} <span style="font-size:7px;color:#64748b;">(≤${g.t4})</span>`
+          : `<span style="font-size:7px;color:#94a3b8;">N/A (&lt;3pts)</span>`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="white-space:nowrap;"><strong>${g.name} [${g.symbol}]</strong></td>
           <td style="text-align:right; font-weight:700; white-space:nowrap;">${formatNum(g.val)}</td>
-          <td style="text-align:right; white-space:nowrap;">${t1Norm}</td>
-          <td style="text-align:right; white-space:nowrap;">${t2Norm}</td>
-          <td style="text-align:center; white-space:nowrap;"><span class="status-pill ${statusClass}">${statusPillText}</span></td>
-          <td style="font-size:8.5px; color:#334155; line-height:1.35;">${rec}</td>
+          <td style="text-align:right; white-space:nowrap;">${g.t1}</td>
+          <td style="text-align:right; white-space:nowrap;">${g.t2}</td>
+          <td style="text-align:right; white-space:nowrap;">${deltaDisplay}</td>
+          <td style="text-align:right; white-space:nowrap;">${rateDisplay}</td>
+          <td style="text-align:center; white-space:nowrap;">${statusBadge}</td>
+          <td style="font-size:7.5px; color:#334155; line-height:1.25;">${g.finding}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      // Overall DGA Status Pill and Clause 6 Description
+      // Overall DGA Status Pill and Description
       const pill = document.getElementById('summary-status-pill');
+      const trailEl = document.getElementById('summary-decision-trail');
       const desc = document.getElementById('summary-text-desc');
+      const baselineEl = document.getElementById('summary-operating-baseline');
 
-      if (maxDGAStatus === 1) {
-        pill.className = 'status-pill status-a';
-        pill.textContent = 'DGA Status 1';
-        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates all combustible gas levels are normal (DGA Status 1: Unexceptional DGA). 6-Month Routine Sampling recommended.`;
-      } else if (maxDGAStatus === 2) {
-        pill.className = 'status-pill status-b';
-        pill.textContent = 'DGA Status 2';
-        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates caution state (DGA Status 2: Possibly Suspicious DGA) due to gas concentration exceeding Table 1 (90th%) or cumulative rate (Delta) exceeding Table 3. Increased sampling frequency recommended.`;
-      } else {
-        pill.className = 'status-pill status-d';
-        pill.textContent = 'DGA Status 3';
-        desc.textContent = `DGA evaluation per IEEE Std C57.104-2019 indicates critical state (DGA Status 3: Probably Suspicious DGA) due to gas concentration exceeding Table 2 (95th%). Perform fault identification via Duval Triangle/Pentagon and close surveillance.`;
+      if (pill) {
+        pill.className = `status-pill ${evalRes.badgeClass}`;
+        pill.textContent = evalRes.statusText;
+      }
+      if (trailEl) {
+        trailEl.textContent = evalRes.decisionTrail;
+      }
+      if (desc) {
+        desc.textContent = `Recommended Action: ${evalRes.recommendation}`;
+      }
+      if (baselineEl) {
+        const durStr = evalRes.durMonths ? `${evalRes.durMonths.toFixed(1)} months (${evalRes.t4DurKey})` : 'N/A';
+        baselineEl.innerHTML = `<strong>Operating Baseline:</strong> O<sub>2</sub>/N<sub>2</sub> = <strong>${evalRes.ratio.toFixed(2)}</strong> (${evalRes.isLowRatio ? '≤ 0.2 Low Oxygen' : '&gt; 0.2 High Oxygen'}) | Age = <strong>${evalRes.ageYears !== null ? evalRes.ageYears + ' Years' : 'Unknown'}</strong> (Cat: ${evalRes.ageCategory}) | Multi-point Rate Window = <strong>${evalRes.ratePointsCount} points</strong> (${durStr})`;
       }
 
-      return norms;
+      // Update Page 3 Duval Step K Banner
+      const stepKBanner = document.getElementById('duval-stepk-banner');
+      const stepKText = document.getElementById('duval-stepk-text');
+      if (stepKBanner && stepKText) {
+        if (evalRes.overallStatus === 3) {
+          stepKBanner.style.background = '#fef2f2';
+          stepKBanner.style.borderColor = '#fca5a5';
+          stepKBanner.style.color = '#991b1b';
+          stepKText.innerHTML = `<strong>⚡ IEEE C57.104 Step K Active (Fault Identification Triggered):</strong> High combustible gas concentration or rate detected (${evalRes.stepGDetail}). Analyze Duval Triangles 1, 4, Pentagons 1, 2, and Gas Patterns below to identify active fault mechanism.`;
+        } else if (evalRes.overallStatus === 2) {
+          stepKBanner.style.background = '#fefce8';
+          stepKBanner.style.borderColor = '#fde047';
+          stepKBanner.style.color = '#854d0e';
+          stepKText.innerHTML = `<strong>⚠️ DGA Status 2 (Intermediate / Suspicious):</strong> Gas concentration or delta exceeds Table 1/3 limits. Resampling within 1 month recommended; fault diagnosis charts shown for trend evaluation.`;
+        } else {
+          stepKBanner.style.background = '#f0fdf4';
+          stepKBanner.style.borderColor = '#bbf7d0';
+          stepKBanner.style.color = '#166534';
+          stepKText.innerHTML = `<strong>ℹ️ DGA Status 1 (Normal Baseline):</strong> All combustible gas concentrations, deltas, and rates are within normal baseline. Diagnostic diagrams shown for reference.`;
+        }
+      }
+
+      // Update Page 4 Active Execution Card & Mermaid Flowchart
+      renderPage4FlowchartExecution(curr, evalRes);
+
+      return evalRes;
+    }
+
+    // Populate Page 4 Live Decision Trail Card and update Mermaid flowchart
+    let mermaidRenderCount = 0;
+    async function renderPage4FlowchartExecution(curr, evalRes) {
+      const nameEl = document.getElementById('flow-unit-name');
+      const serialEl = document.getElementById('flow-unit-serial');
+      const pillEl = document.getElementById('flow-final-status-pill');
+      
+      const ctxRatioEl = document.getElementById('flow-ctx-ratio');
+      const ctxAgeEl = document.getElementById('flow-ctx-age');
+      
+      const stepDResEl = document.getElementById('flow-step-d-result');
+      const stepDDetailEl = document.getElementById('flow-step-d-detail');
+      
+      const stepGResEl = document.getElementById('flow-step-g-result');
+      const stepGDetailEl = document.getElementById('flow-step-g-detail');
+      
+      const stepActResEl = document.getElementById('flow-step-action-result');
+      const stepActDetailEl = document.getElementById('flow-step-action-detail');
+      
+      const trailTextEl = document.getElementById('flow-decision-trail-text');
+
+      if (nameEl) nameEl.textContent = curr.name || curr.serial || '-';
+      if (serialEl) serialEl.textContent = curr.serial || '-';
+      if (pillEl) {
+        pillEl.className = `status-pill ${evalRes.badgeClass}`;
+        pillEl.textContent = evalRes.statusText;
+      }
+
+      if (ctxRatioEl) ctxRatioEl.textContent = `O2/N2: ${evalRes.ratio.toFixed(2)} (${evalRes.isLowRatio ? '≤ 0.2' : '> 0.2'})`;
+      if (ctxAgeEl) ctxAgeEl.textContent = `Age: ${evalRes.ageYears !== null ? evalRes.ageYears + ' yrs' : 'Unknown'} (${evalRes.ageCategory})`;
+
+      if (stepDResEl) {
+        stepDResEl.textContent = evalRes.stepDResult;
+        stepDResEl.style.color = evalRes.stepDResult === 'Passed' ? '#15803d' : '#b91c1c';
+      }
+      if (stepDDetailEl) stepDDetailEl.textContent = evalRes.stepDDetail;
+
+      if (stepGResEl) {
+        stepGResEl.textContent = evalRes.stepGResult;
+        stepGResEl.style.color = evalRes.overallStatus === 3 ? '#b91c1c' : (evalRes.overallStatus === 2 ? '#a16207' : '#64748b');
+      }
+      if (stepGDetailEl) stepGDetailEl.textContent = evalRes.stepGDetail;
+
+      if (stepActResEl) {
+        stepActResEl.textContent = evalRes.overallStatus === 1 ? 'Routine Sampling (6–12m)' : (evalRes.overallStatus === 2 ? 'Resample in 1 Month' : 'Fault Identification (Step K)');
+        stepActResEl.style.color = evalRes.overallStatus === 1 ? '#15803d' : (evalRes.overallStatus === 2 ? '#a16207' : '#b91c1c');
+      }
+      if (stepActDetailEl) stepActDetailEl.textContent = evalRes.recommendation;
+
+      if (trailTextEl) trailTextEl.textContent = evalRes.decisionTrail;
+
+      // Update Mermaid Active Highlight
+      await updateMermaidActivePath(evalRes.overallStatus);
+    }
+
+    async function updateMermaidActivePath(status) {
+      const container = document.getElementById('report-mermaid');
+      if (!container || !window.mermaid) return;
+
+      let activeStyles = '';
+      if (status === 1) {
+        activeStyles = `
+    style A stroke:#10b981,stroke-width:2.5px;
+    style B stroke:#10b981,stroke-width:2.5px;
+    style C stroke:#10b981,stroke-width:2.5px;
+    style D stroke:#10b981,stroke-width:3px;
+    style E stroke:#10b981,stroke-width:4px,fill:#d1fae5;
+    style F stroke:#10b981,stroke-width:2.5px,fill:#ecfdf5;
+        `;
+      } else if (status === 2) {
+        activeStyles = `
+    style A stroke:#f59e0b,stroke-width:2.5px;
+    style B stroke:#f59e0b,stroke-width:2.5px;
+    style C stroke:#f59e0b,stroke-width:2.5px;
+    style D stroke:#f59e0b,stroke-width:3px;
+    style G stroke:#f59e0b,stroke-width:3px;
+    style H stroke:#f59e0b,stroke-width:4px,fill:#fef3c7;
+    style I stroke:#f59e0b,stroke-width:2.5px,fill:#fefce8;
+        `;
+      } else {
+        activeStyles = `
+    style A stroke:#ef4444,stroke-width:2.5px;
+    style B stroke:#ef4444,stroke-width:2.5px;
+    style C stroke:#ef4444,stroke-width:2.5px;
+    style D stroke:#ef4444,stroke-width:3px;
+    style G stroke:#ef4444,stroke-width:3px;
+    style J stroke:#ef4444,stroke-width:4px,fill:#fee2e2;
+    style K stroke:#ef4444,stroke-width:3px,fill:#eff6ff;
+    style L stroke:#ef4444,stroke-width:2.5px,fill:#fef2f2;
+        `;
+      }
+
+      const graphDef = `
+graph TD
+    A["เริ่มกระบวนการ DGA Periodic Screening"] --> B["สุ่มเก็บตัวอย่างน้ำมันและวิเคราะห์ค่า DGA ในห้องปฏิบัติการ"]
+    B --> C["ประมวลผลข้อมูล: คำนวณอัตราส่วน O2/N2, ผลต่าง Delta, และ Multi-point Rate 3-6 จุด"]
+    C --> D{"ก๊าซทุกตัว &lt; Table 1<br/>AND Delta ทุกตัว &lt; Table 3<br/>AND Rate ทุกตัว &lt; Table 4 ?"}
+    
+    D -- "ใช่ (Yes)" --> E["DGA Status 1: Normal"]
+    E --> F["เปิดใช้งานหม้อแปลงตามปกติ และสุ่มเก็บตัวอย่างตามรอบวาระปกติ"]
+    F --> B
+    
+    D -- "ไม่ใช่ (No)" --> G{"มีก๊าซตัวใดตัวหนึ่ง &gt; Table 2<br/>OR Rate ตัวใดตัวหนึ่ง &gt; Table 4 ?"}
+    
+    G -- "ไม่ใช่ (No)" --> H["DGA Status 2: Intermediate / Suspicious"]
+    H --> I["เพิ่มความถี่ในการสุ่มเก็บตัวอย่าง และเก็บตัวอย่างยืนยันผลภายใน 1 เดือน"]
+    I --> B
+    
+    G -- "ใช่ (Yes)" --> J["DGA Status 3: High / Active Fault"]
+    J --> K["เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification<br/>Duval Triangles / Pentagons / Rogers Ratios"]
+    K --> L["ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม<br/>ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไข"]
+    L --> B
+
+    classDef startEnd fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a;
+    classDef process fill:#eff6ff,stroke:#3b82f6,stroke-width:1.5px,color:#1e3a8a;
+    classDef decision fill:#ede9fe,stroke:#6366f1,stroke-width:1.5px,color:#312e81;
+    classDef status1 fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
+    classDef status2 fill:#fefce8,stroke:#f59e0b,stroke-width:2px,color:#854d0e;
+    classDef status3 fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
+
+    class A startEnd;
+    class B,C,F,I,K,L process;
+    class D,G decision;
+    class E status1;
+    class H status2;
+    class J status3;
+
+    ${activeStyles}
+      `;
+
+      try {
+        mermaidRenderCount++;
+        const id = `report-mermaid-svg-${mermaidRenderCount}`;
+        const { svg } = await mermaid.render(id, graphDef);
+        container.innerHTML = svg;
+      } catch (err) {
+        console.warn("Mermaid dynamic render fallback:", err);
+      }
     }
 
     // Render IEC 60599 Gas Ratio Analysis & Fault Diagnosis
