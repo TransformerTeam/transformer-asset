@@ -4542,13 +4542,13 @@
       }
 
       const categories = plantList.map(p => p.plant);
-      const actualValues = plantList.map(p => p.completedTrs.size);
       const maxUnits = Math.max(...plantList.map(p => p.trs.size), 10);
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
       const textColor = isLight ? '#0f172a' : '#cbd5e1';
       const gridColor = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
-      const trackBgColor = isLight ? '#e5e7eb' : '#27272a';
+      // Gray track color for uncompleted planned transformers (varying length per plant)
+      const trackBgColor = isLight ? '#cbd5e1' : '#475569';
 
       // Palette matching user reference: Pink/Red, Amber/Orange, Mint/Green, Sky Blue, Purple, Cyan
       const palette = [
@@ -4562,16 +4562,35 @@
         '#14b8a6'  // Teal
       ];
 
+      // Actual completed units per plant (Colored)
+      const actualSeriesData = plantList.map((p, idx) => ({
+        x: p.plant,
+        y: p.completedTrs.size,
+        fillColor: palette[idx % palette.length]
+      }));
+
+      // Remaining planned units per plant (Gray bar representing the plan length)
+      const remainingSeriesData = plantList.map(p => ({
+        x: p.plant,
+        y: Math.max(0, p.trs.size - p.completedTrs.size),
+        fillColor: trackBgColor
+      }));
+
       const options = {
         series: [
           {
-            name: 'Completed Outage',
-            data: actualValues
+            name: 'Actual (Completed)',
+            data: actualSeriesData
+          },
+          {
+            name: 'Plan (Remaining)',
+            data: remainingSeriesData
           }
         ],
         chart: {
           type: 'bar',
           height: Math.max(320, plantList.length * 48 + 35),
+          stacked: true,
           toolbar: { show: false },
           background: 'transparent',
           fontFamily: 'Inter, Prompt, sans-serif',
@@ -4581,35 +4600,35 @@
         plotOptions: {
           bar: {
             horizontal: true,
-            distributed: true,
             borderRadius: 4,
-            barHeight: '68%',
-            colors: {
-              backgroundBarColors: [trackBgColor],
-              backgroundBarOpacity: 1,
-              backgroundBarRadius: 4
-            },
-            dataLabels: {
-              position: 'center'
-            }
+            barHeight: '68%'
           }
         },
-        colors: palette,
         dataLabels: {
           enabled: true,
           formatter: function (val, opts) {
-            const item = plantList[opts.dataPointIndex];
+            if (val === 0) return '';
+            const idx = opts.dataPointIndex;
+            const item = plantList[idx];
             if (!item) return val + ' Units';
-            return `${val}/${item.trs.size} Units`;
+            if (opts.seriesIndex === 0) {
+              return `${item.completedTrs.size}/${item.trs.size} Units`;
+            } else {
+              // Only show label on gray bar if no actual units completed
+              if (item.completedTrs.size === 0) {
+                return `0/${item.trs.size} Units`;
+              }
+              return '';
+            }
           },
           style: {
             fontSize: '11px',
             fontWeight: 700,
             colors: [
-              function ({ val, dataPointIndex }) {
+              function ({ seriesIndex, dataPointIndex }) {
                 const item = plantList[dataPointIndex];
-                if (val === 0 || (val / maxUnits) < 0.15) {
-                  return isLight ? '#334155' : '#e2e8f0';
+                if (seriesIndex === 1 || (item && item.completedTrs.size === 0)) {
+                  return isLight ? '#0f172a' : '#f8fafc';
                 }
                 return '#ffffff';
               }
@@ -4651,18 +4670,35 @@
         tooltip: {
           theme: isLight ? 'light' : 'dark',
           y: {
-            formatter: function (val, { dataPointIndex }) {
+            formatter: function (val, { seriesIndex, dataPointIndex }) {
               const item = plantList[dataPointIndex];
               if (!item) return val + ' Units';
               const trsStr = Array.from(item.trs).join(', ');
               const doneStr = Array.from(item.completedTrs).join(', ');
-              const pct = item.trs.size > 0 ? Math.round((val / item.trs.size) * 100) : 0;
-              return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${pct}%)\nDone: ${doneStr || 'None'}\nPlanned: ${trsStr}`;
+              const pct = item.trs.size > 0 ? Math.round((item.completedTrs.size / item.trs.size) * 100) : 0;
+              if (seriesIndex === 0) {
+                return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${pct}%)\nDone: ${doneStr || 'None'}`;
+              } else {
+                const rem = Math.max(0, item.trs.size - item.completedTrs.size);
+                return `${rem} of ${item.trs.size} Units Remaining in Plan\nPlanned: ${trsStr}`;
+              }
             }
           }
         },
         legend: {
-          show: false
+          show: true,
+          position: 'top',
+          horizontalAlign: 'right',
+          fontSize: '12px',
+          fontWeight: 600,
+          labels: { colors: textColor },
+          markers: {
+            fillColors: ['#10b981', trackBgColor],
+            radius: 4,
+            width: 12,
+            height: 12
+          },
+          itemMargin: { horizontal: 10, vertical: 0 }
         }
       };
 
