@@ -4548,9 +4548,8 @@
       }
 
       const categories = plantList.map(p => p.plant);
-      const pctValues = plantList.map(p => {
-        return p.trs.size > 0 ? Math.round((p.completedTrs.size / p.trs.size) * 100) : 0;
-      });
+      const actualValues = plantList.map(p => p.completedTrs.size);
+      const maxUnits = Math.max(...plantList.map(p => p.trs.size), 10);
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
       const textColor = isLight ? '#0f172a' : '#cbd5e1';
@@ -4573,7 +4572,7 @@
         series: [
           {
             name: 'Completed Outage',
-            data: pctValues
+            data: actualValues
           }
         ],
         chart: {
@@ -4606,18 +4605,19 @@
           enabled: true,
           formatter: function (val, opts) {
             const item = plantList[opts.dataPointIndex];
-            if (!item) return val + '%';
-            if (val === 0) return `0/${item.trs.size} Units (0%)`;
-            return `${item.completedTrs.size}/${item.trs.size} Units (${val}%)`;
+            if (!item) return val + ' Units';
+            return `${val}/${item.trs.size} Units`;
           },
           style: {
             fontSize: '11px',
             fontWeight: 700,
             colors: [
-              function ({ dataPointIndex }) {
+              function ({ val, dataPointIndex }) {
                 const item = plantList[dataPointIndex];
-                const pct = item && item.trs.size > 0 ? (item.completedTrs.size / item.trs.size) * 100 : 0;
-                return pct < 20 ? (isLight ? '#475569' : '#cbd5e1') : '#ffffff';
+                if (val === 0 || (val / maxUnits) < 0.15) {
+                  return isLight ? '#334155' : '#e2e8f0';
+                }
+                return '#ffffff';
               }
             ]
           },
@@ -4638,13 +4638,14 @@
         xaxis: {
           categories: categories,
           min: 0,
-          max: 100,
+          max: maxUnits,
+          tickAmount: Math.min(maxUnits, 10),
           labels: {
-            formatter: v => v + '%',
+            formatter: v => Math.round(v) + ' Units',
             style: { colors: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           },
           title: {
-            text: 'Outage Realization Progress (% of Planned TR Units)',
+            text: 'Number of Transformers (Units)',
             style: { color: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           }
         },
@@ -4658,10 +4659,11 @@
           y: {
             formatter: function (val, { dataPointIndex }) {
               const item = plantList[dataPointIndex];
-              if (!item) return val + '%';
+              if (!item) return val + ' Units';
               const trsStr = Array.from(item.trs).join(', ');
               const doneStr = Array.from(item.completedTrs).join(', ');
-              return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${val}%)\nDone: ${doneStr || 'None'}\nPlanned: ${trsStr}`;
+              const pct = item.trs.size > 0 ? Math.round((val / item.trs.size) * 100) : 0;
+              return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${pct}%)\nDone: ${doneStr || 'None'}\nPlanned: ${trsStr}`;
             }
           }
         },
