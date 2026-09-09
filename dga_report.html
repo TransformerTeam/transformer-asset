@@ -12,6 +12,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <!-- ApexCharts JS -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <!-- Mermaid JS for Flowchart -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
   <style>
     /* Global Variables matching main dashboard theme */
@@ -520,6 +522,56 @@
       height: 35px;
     }
 
+    /* Page 4 Styles: Flowchart & Norms Tabs */
+    .report-flowchart-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .report-flowchart-card .mermaid {
+      display: flex;
+      justify-content: center;
+      min-width: 620px;
+    }
+    .report-tab-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .rpt-tab-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .rpt-tab-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .rpt-tab-btn.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+    .rpt-table-panel {
+      display: none;
+      overflow-x: auto;
+    }
+    .rpt-table-panel.active {
+      display: block;
+    }
+
     /* Print Overrides */
     @media print {
       @page {
@@ -796,6 +848,12 @@
     </div>
     
     <div class="btn-group">
+      <a href="#page-4" class="btn btn-secondary" style="text-decoration: none;">
+        <i class="fa-solid fa-diagram-project"></i> DGA Flowchart & Norms
+      </a>
+      <a href="dga_audio_player.html" target="_blank" class="btn btn-secondary" style="text-decoration: none; background: rgba(79, 70, 229, 0.1); color: #4f46e5; border: 1px solid #c7d2fe;">
+        <i class="fa-solid fa-volume-high"></i> Voice Guide
+      </a>
       <button class="btn btn-secondary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print Report
       </button>
@@ -1279,6 +1337,290 @@
       </table>
     </div>
 
+    <!-- PAGE 4: DGA Interpretation Flowchart & IEEE C57.104-2019 Norms Tables -->
+    <div class="report-page" id="page-4">
+      <div class="report-header">
+        <div class="report-title-container">
+          <div class="report-title">MAIN TANK OIL ANALYSIS REPORT</div>
+          <div class="report-subtitle">DGA INTERPRETATION FLOWCHART & NORMS TABLES (IEEE Std C57.104-2019)</div>
+        </div>
+        <div class="logo-container">
+          <img src="GPSC_logo_ART.png" alt="GPSC Logo" onerror="this.outerHTML='<strong style=\'color:#1e3a8a;font-size:16px;\'>GPSC</strong>'">
+        </div>
+      </div>
+
+      <!-- Equipment Metadata Table -->
+      <table class="report-table tbl-meta" style="margin-top:6px;">
+        <tbody>
+          <tr>
+            <td class="lbl">Equipment Name</td><td class="val p4-meta-name">-</td>
+            <td class="lbl">Site</td><td class="val p4-meta-site">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Serial No.</td><td class="val p4-meta-serial">-</td>
+            <td class="lbl">Power Rating (MVA)</td><td class="val p4-meta-power">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Manufacture</td><td class="val p4-meta-mfg">-</td>
+            <td class="lbl">Voltage Rating (kV)</td><td class="val p4-meta-voltage">-</td>
+          </tr>
+          <tr>
+            <td class="lbl">Fluid Type</td><td class="val">Mineral Oil</td>
+            <td class="lbl">Service Type</td><td class="val p4-meta-service">-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Section 1: Flowchart -->
+      <div class="section-title">1. DGA Interpretation Decision Flowchart (IEEE Std C57.104-2019 Clause 6)</div>
+      <div class="report-flowchart-card">
+        <div class="mermaid" id="report-mermaid">
+graph TD
+    A["เริ่มกระบวนการ DGA Periodic Screening"] --> B["สุ่มเก็บตัวอย่างน้ำมันและวิเคราะห์ค่า DGA ในห้องปฏิบัติการ"]
+    B --> C["ประมวลผลข้อมูล: คำนวณอัตราส่วน O2/N2, ผลต่าง Delta, และ Multi-point Rate 3-6 จุด"]
+    C --> D{"ก๊าซทุกตัว &lt; Table 1<br/>AND Delta ทุกตัว &lt; Table 3<br/>AND Rate ทุกตัว &lt; Table 4 ?"}
+    
+    D -- "ใช่ (Yes)" --> E["DGA Status 1: Normal"]
+    E --> F["เปิดใช้งานหม้อแปลงตามปกติ และสุ่มเก็บตัวอย่างตามรอบวาระปกติ"]
+    F --> B
+    
+    D -- "ไม่ใช่ (No)" --> G{"มีก๊าซตัวใดตัวหนึ่ง &gt; Table 2<br/>OR Rate ตัวใดตัวหนึ่ง &gt; Table 4 ?"}
+    
+    G -- "ไม่ใช่ (No)" --> H["DGA Status 2: Intermediate / Suspicious"]
+    H --> I["เพิ่มความถี่ในการสุ่มเก็บตัวอย่าง และเก็บตัวอย่างยืนยันผลภายใน 1 เดือน"]
+    I --> B
+    
+    G -- "ใช่ (Yes)" --> J["DGA Status 3: High / Active Fault"]
+    J --> K["เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification<br/>Duval Triangles / Pentagons / Rogers Ratios"]
+    K --> L["ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม<br/>ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไข"]
+    L --> B
+
+    classDef startEnd fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a;
+    classDef process fill:#eff6ff,stroke:#3b82f6,stroke-width:1.5px,color:#1e3a8a;
+    classDef decision fill:#ede9fe,stroke:#6366f1,stroke-width:1.5px,color:#312e81;
+    classDef status1 fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
+    classDef status2 fill:#fefce8,stroke:#f59e0b,stroke-width:2px,color:#854d0e;
+    classDef status3 fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
+
+    class A startEnd;
+    class B,C,F,I,K,L process;
+    class D,G decision;
+    class E status1;
+    class H status2;
+    class J status3;
+        </div>
+      </div>
+
+      <!-- Section 2: Norms Tables 1-4 Tabs -->
+      <div class="section-title" style="margin-top:6px;">2. IEEE Std C57.104-2019 Norms Tables Architecture (Tables 1 – 4)</div>
+      
+      <div class="report-tab-row no-print">
+        <button type="button" class="rpt-tab-btn active" onclick="switchReportTab(event, 'rpt-tab-t1')">Table 1 (90th Baseline)</button>
+        <button type="button" class="rpt-tab-btn" onclick="switchReportTab(event, 'rpt-tab-t2')">Table 2 (95th High Level)</button>
+        <button type="button" class="rpt-tab-btn" onclick="switchReportTab(event, 'rpt-tab-t3')">Table 3 (95th &Delta; Delta)</button>
+        <button type="button" class="rpt-tab-btn" onclick="switchReportTab(event, 'rpt-tab-t4')">Table 4 (95th Multi-point Rate)</button>
+      </div>
+
+      <!-- Tab 1 Panel -->
+      <div id="rpt-tab-t1" class="rpt-table-panel active">
+        <div style="font-weight:700; font-size:9px; margin-bottom:3px; color:#1e3a8a;">
+          Table 1 — 90<sup>th</sup> percentile gas concentrations as a function of O<sub>2</sub>/N<sub>2</sub> ratio and age in &micro;L/L (ppm)
+        </div>
+        <table class="report-table" style="background:#ffffff; font-size:7.5px;">
+          <thead>
+            <tr>
+              <th rowspan="3" style="width:20%;">Gas</th>
+              <th colspan="4" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+              <th colspan="4" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+            </tr>
+            <tr>
+              <th colspan="4" style="text-align:center;">Transformer Age in Years</th>
+              <th colspan="4" style="text-align:center;">Transformer Age in Years</th>
+            </tr>
+            <tr>
+              <th style="text-align:center; width:10%;">Unknown</th>
+              <th style="text-align:center; width:10%;">1 – 9</th>
+              <th style="text-align:center; width:10%;">10 – 30</th>
+              <th style="text-align:center; width:10%;">&gt; 30</th>
+              <th style="text-align:center; width:10%;">Unknown</th>
+              <th style="text-align:center; width:10%;">1 – 9</th>
+              <th style="text-align:center; width:10%;">10 – 30</th>
+              <th style="text-align:center; width:10%;">&gt; 30</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Hydrogen (H<sub>2</sub>)</strong></td><td style="text-align:center;">80</td><td colspan="2" style="text-align:center;">75</td><td style="text-align:center;">100</td><td style="text-align:center;">40</td><td colspan="3" style="text-align:center;">40</td></tr>
+            <tr><td><strong>Methane (CH<sub>4</sub>)</strong></td><td style="text-align:center;">90</td><td style="text-align:center;">45</td><td style="text-align:center;">90</td><td style="text-align:center;">110</td><td style="text-align:center;">20</td><td colspan="3" style="text-align:center;">20</td></tr>
+            <tr><td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td><td style="text-align:center;">90</td><td style="text-align:center;">30</td><td style="text-align:center;">90</td><td style="text-align:center;">150</td><td style="text-align:center;">15</td><td colspan="3" style="text-align:center;">15</td></tr>
+            <tr><td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td><td style="text-align:center;">50</td><td style="text-align:center;">20</td><td style="text-align:center;">50</td><td style="text-align:center;">90</td><td style="text-align:center;">50</td><td style="text-align:center;">25</td><td colspan="2" style="text-align:center;">60</td></tr>
+            <tr><td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td><td style="text-align:center;">1</td><td colspan="3" style="text-align:center;">1</td><td style="text-align:center;">2</td><td colspan="3" style="text-align:center;">2</td></tr>
+            <tr><td><strong>Carbon monoxide (CO)</strong></td><td style="text-align:center;">900</td><td colspan="3" style="text-align:center;">900</td><td style="text-align:center;">500</td><td colspan="3" style="text-align:center;">500</td></tr>
+            <tr><td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td><td style="text-align:center;">9000</td><td style="text-align:center;">5000</td><td colspan="2" style="text-align:center;">10000</td><td style="text-align:center;">5000</td><td style="text-align:center;">3500</td><td colspan="2" style="text-align:center;">5500</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:7.5px; color:#64748b; font-style:italic; margin-top:2px;">
+          NOTE: During data analysis, voltage class, MVA, and mineral oil volume in the unit did not contribute in significant way to Table 1 limits.
+        </div>
+      </div>
+
+      <!-- Tab 2 Panel -->
+      <div id="rpt-tab-t2" class="rpt-table-panel">
+        <div style="font-weight:700; font-size:9px; margin-bottom:3px; color:#1e3a8a;">
+          Table 2 — 95<sup>th</sup> percentile gas concentrations as a function of O<sub>2</sub>/N<sub>2</sub> and age in &micro;L/L (ppm)
+        </div>
+        <table class="report-table" style="background:#ffffff; font-size:7.5px;">
+          <thead>
+            <tr>
+              <th rowspan="3" style="width:20%;">Gas</th>
+              <th colspan="4" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+              <th colspan="4" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+            </tr>
+            <tr>
+              <th colspan="4" style="text-align:center;">Transformer Age in Years</th>
+              <th colspan="4" style="text-align:center;">Transformer Age in Years</th>
+            </tr>
+            <tr>
+              <th style="text-align:center; width:10%;">Unknown</th>
+              <th style="text-align:center; width:10%;">1 – 9</th>
+              <th style="text-align:center; width:10%;">10 – 30</th>
+              <th style="text-align:center; width:10%;">&gt; 30</th>
+              <th style="text-align:center; width:10%;">Unknown</th>
+              <th style="text-align:center; width:10%;">1 – 9</th>
+              <th style="text-align:center; width:10%;">10 – 30</th>
+              <th style="text-align:center; width:10%;">&gt; 30</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Hydrogen (H<sub>2</sub>)</strong></td><td style="text-align:center;">200</td><td colspan="3" style="text-align:center;">200</td><td style="text-align:center;">90</td><td colspan="3" style="text-align:center;">90</td></tr>
+            <tr><td><strong>Methane (CH<sub>4</sub>)</strong></td><td style="text-align:center;">150</td><td style="text-align:center;">100</td><td style="text-align:center;">150</td><td style="text-align:center;">200</td><td style="text-align:center;">50</td><td colspan="2" style="text-align:center;">60</td><td style="text-align:center;">30</td></tr>
+            <tr><td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td><td style="text-align:center;">175</td><td style="text-align:center;">70</td><td style="text-align:center;">175</td><td style="text-align:center;">250</td><td style="text-align:center;">40</td><td style="text-align:center;">30</td><td colspan="2" style="text-align:center;">40</td></tr>
+            <tr><td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td><td style="text-align:center;">100</td><td style="text-align:center;">40</td><td style="text-align:center;">95</td><td style="text-align:center;">175</td><td style="text-align:center;">100</td><td style="text-align:center;">80</td><td colspan="2" style="text-align:center;">125</td></tr>
+            <tr><td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td><td style="text-align:center;">2</td><td colspan="2" style="text-align:center;">2</td><td style="text-align:center;">4</td><td style="text-align:center;">7</td><td colspan="3" style="text-align:center;">7</td></tr>
+            <tr><td><strong>Carbon monoxide (CO)</strong></td><td style="text-align:center;">1100</td><td colspan="3" style="text-align:center;">1100</td><td style="text-align:center;">600</td><td colspan="3" style="text-align:center;">600</td></tr>
+            <tr><td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td><td style="text-align:center;">12500</td><td style="text-align:center;">7000</td><td colspan="2" style="text-align:center;">14000</td><td style="text-align:center;">7000</td><td style="text-align:center;">5000</td><td colspan="2" style="text-align:center;">8000</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:7.5px; color:#64748b; font-style:italic; margin-top:2px;">
+          NOTE: Concentrations exceeding Table 2 trigger DGA Status 3 and require immediate fault investigation.
+        </div>
+      </div>
+
+      <!-- Tab 3 Panel -->
+      <div id="rpt-tab-t3" class="rpt-table-panel">
+        <div style="font-weight:700; font-size:9px; margin-bottom:3px; color:#1e3a8a;">
+          Table 3 — 95<sup>th</sup> percentile values for absolute level change between successive laboratory DGA samples in &micro;L/L (ppm)
+        </div>
+        <table class="report-table" style="background:#ffffff; font-size:7.5px;">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width:30%;">Gas</th>
+              <th colspan="2" style="text-align:center;">Maximum &micro;L/L (ppm) variation between consecutive samples</th>
+            </tr>
+            <tr>
+              <th style="text-align:center; width:35%;">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+              <th style="text-align:center; width:35%;">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Hydrogen (H<sub>2</sub>)</strong></td><td style="text-align:center;">40</td><td style="text-align:center;">25</td></tr>
+            <tr><td><strong>Methane (CH<sub>4</sub>)</strong></td><td style="text-align:center;">30</td><td style="text-align:center;">10</td></tr>
+            <tr><td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td><td style="text-align:center;">25</td><td style="text-align:center;">7</td></tr>
+            <tr><td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td><td colspan="2" style="text-align:center;">20</td></tr>
+            <tr><td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td><td colspan="2" style="text-align:center; font-weight:700; color:#dc2626;">Any Increase</td></tr>
+            <tr><td><strong>Carbon monoxide (CO)</strong></td><td style="text-align:center;">250</td><td style="text-align:center;">175</td></tr>
+            <tr><td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td><td style="text-align:center;">2500</td><td style="text-align:center;">1750</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:7.5px; color:#64748b; font-style:italic; margin-top:2px;">
+          NOTE: Detects sudden abnormal gas surge between 2 consecutive sampling intervals.
+        </div>
+      </div>
+
+      <!-- Tab 4 Panel -->
+      <div id="rpt-tab-t4" class="rpt-table-panel">
+        <div style="font-weight:700; font-size:9px; margin-bottom:3px; color:#1e3a8a;">
+          Table 4 — 95<sup>th</sup> percentile values from multi-points (3-6 points) rate analysis, in &micro;L/L/year (ppm/year)
+        </div>
+        <table class="report-table" style="background:#ffffff; font-size:7.5px;">
+          <thead>
+            <tr>
+              <th rowspan="3" style="width:28%;">Gas</th>
+              <th colspan="4" style="text-align:center;">Maximum &micro;L/L/year (ppm/year) rate in function of sampling period (3 to 6 samples)</th>
+            </tr>
+            <tr>
+              <th colspan="2" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+              <th colspan="2" style="text-align:center;">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+            </tr>
+            <tr>
+              <th style="text-align:center; width:18%;">4 – 9 Months</th>
+              <th style="text-align:center; width:18%;">10 – 24 Months</th>
+              <th style="text-align:center; width:18%;">4 – 9 Months</th>
+              <th style="text-align:center; width:18%;">10 – 24 Months</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Hydrogen (H<sub>2</sub>)</strong></td><td style="text-align:center;">50</td><td style="text-align:center;">20</td><td style="text-align:center;">25</td><td style="text-align:center;">10</td></tr>
+            <tr><td><strong>Methane (CH<sub>4</sub>)</strong></td><td style="text-align:center;">15</td><td style="text-align:center;">10</td><td style="text-align:center;">4</td><td style="text-align:center;">3</td></tr>
+            <tr><td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td><td style="text-align:center;">15</td><td style="text-align:center;">9</td><td style="text-align:center;">3</td><td style="text-align:center;">2</td></tr>
+            <tr><td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td><td style="text-align:center;">10</td><td style="text-align:center;">7</td><td style="text-align:center;">7</td><td style="text-align:center;">5</td></tr>
+            <tr><td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td><td colspan="4" style="text-align:center; font-weight:700; color:#dc2626;">Any increasing rate</td></tr>
+            <tr><td><strong>Carbon monoxide (CO)</strong></td><td style="text-align:center;">200</td><td style="text-align:center;">100</td><td style="text-align:center;">100</td><td style="text-align:center;">80</td></tr>
+            <tr><td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td><td style="text-align:center;">1750</td><td style="text-align:center;">1000</td><td style="text-align:center;">1000</td><td style="text-align:center;">800</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:7.5px; color:#64748b; font-style:italic; margin-top:2px;">
+          NOTE: Multi-point linear regression rate confirms active gassing condition over 4-24 months.
+        </div>
+      </div>
+
+      <!-- Section 3: Summary Classification & Actions -->
+      <div class="section-title" style="margin-top:6px;">3. DGA Status Classification & Operational Actions Summary</div>
+      <table class="report-table" style="background:#ffffff; font-size:7.5px; margin-bottom:4px;">
+        <thead>
+          <tr>
+            <th style="width:18%;">DGA Status</th>
+            <th style="width:40%;">Classification Criteria (IEEE C57.104 Clause 6)</th>
+            <th style="width:42%;">Recommended Engineering Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-pill status-a">Status 1 (Normal)</span></td>
+            <td>All gases &lt; Table 1 AND all &Delta; &lt; Table 3 AND all Multi-point Rates &lt; Table 4</td>
+            <td>Unit is operating normally. Continue routine DGA periodic screening schedule (6–12 months).</td>
+          </tr>
+          <tr>
+            <td><span class="status-pill status-b">Status 2 (Suspicious)</span></td>
+            <td>Table 1 &lt; Gas &le; Table 2, OR (Gas &lt; Table 1 with &Delta; &gt; Table 3 or Rate &gt; Table 4)</td>
+            <td>Perform confirmation sample within 1 month. Increase sampling frequency (1–3 months). Monitor trends.</td>
+          </tr>
+          <tr>
+            <td><span class="status-pill status-d">Status 3 (Active Fault)</span></td>
+            <td>Any gas &gt; Table 2 OR Multi-point Rate &gt; Table 4 OR any increasing C<sub>2</sub>H<sub>2</sub></td>
+            <td>High risk condition. Perform fault identification (Duval & Rogers Ratios), electrical tests, consult OEM.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Signatures Block -->
+      <div class="section-title" style="margin-top:6px;">Signatures / Approval</div>
+      <table class="report-table response-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="width: 33.3%;">Tested By</th>
+            <th style="width: 33.3%;">Reviewed By</th>
+            <th style="width: 33.4%;">Approved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="sig-cell"></td><td class="sig-cell"></td><td class="sig-cell"></td></tr>
+          <tr><td class="val p4-resp-name-tested"></td><td class="val p4-resp-name-reviewed"></td><td class="val p4-resp-name-approved"></td></tr>
+          <tr><td class="val p4-resp-company-tested" style="font-size: 8.5px; color: #64748b;"></td><td class="val p4-resp-company-reviewed" style="font-size: 8.5px; color: #64748b;"></td><td class="val p4-resp-company-approved" style="font-size: 8.5px; color: #64748b;"></td></tr>
+          <tr><td class="val p4-resp-date-tested" style="font-size: 8.5px;"></td><td class="val p4-resp-date-reviewed" style="font-size: 8.5px;"></td><td class="val p4-resp-date-approved" style="font-size: 8.5px;"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
   <!-- Load Scripts -->
@@ -1321,6 +1663,16 @@
         console.error("Failed to load FactoryData.csv", e);
       }
 
+      // Initialize Mermaid for DGA Flowchart
+      if (window.mermaid) {
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: 'default',
+          securityLevel: 'loose',
+          flowchart: { curve: 'basis', htmlLabels: true }
+        });
+      }
+
       populateTransformerSelect();
 
       // Get serial from URL parameter
@@ -1334,6 +1686,17 @@
         loadReportBySerial(dgaDataList[0].serial);
       }
     });
+
+    // Page 4 Table Tabs switching
+    function switchReportTab(evt, tabId) {
+      document.querySelectorAll('.rpt-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.rpt-table-panel').forEach(p => p.classList.remove('active'));
+      if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add('active');
+      }
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    }
 
     // Simple CSV parser
     function parseCSV(text) {
@@ -1709,12 +2072,12 @@
         'low': {
           'Unknown': { H2: 80, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 9000 },
           '1-9':     { H2: 75, CH4: 45, C2H6: 30, C2H4: 20, C2H2: 1, CO: 900, CO2: 5000 },
-          '10-30':   { H2: 100, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 10000 },
-          '>30':     { H2: 110, CH4: 110, C2H6: 150, C2H4: 90, C2H2: 2, CO: 900, CO2: 10000 }
+          '10-30':   { H2: 75, CH4: 90, C2H6: 90, C2H4: 50, C2H2: 1, CO: 900, CO2: 10000 },
+          '>30':     { H2: 100, CH4: 110, C2H6: 150, C2H4: 90, C2H2: 1, CO: 900, CO2: 10000 }
         },
         'high': {
           'Unknown': { H2: 40, CH4: 20, C2H6: 15, C2H4: 50, C2H2: 2, CO: 500, CO2: 5000 },
-          '1-9':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 25, C2H2: 1, CO: 500, CO2: 3500 },
+          '1-9':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 25, C2H2: 2, CO: 500, CO2: 3500 },
           '10-30':   { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 },
           '>30':     { H2: 40, CH4: 20, C2H6: 15, C2H4: 60, C2H2: 2, CO: 500, CO2: 5500 }
         }
@@ -1730,7 +2093,7 @@
         },
         'high': {
           'Unknown': { H2: 90, CH4: 50, C2H6: 40, C2H4: 100, C2H2: 7, CO: 600, CO2: 7000 },
-          '1-9':     { H2: 90, CH4: 30, C2H6: 30, C2H4: 80, C2H2: 2, CO: 600, CO2: 5000 },
+          '1-9':     { H2: 90, CH4: 60, C2H6: 30, C2H4: 80, C2H2: 7, CO: 600, CO2: 5000 },
           '10-30':   { H2: 90, CH4: 60, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 },
           '>30':     { H2: 90, CH4: 30, C2H6: 40, C2H4: 125, C2H2: 7, CO: 600, CO2: 8000 }
         }
@@ -1741,11 +2104,24 @@
         ? { H2: 40, CH4: 30, C2H6: 25, C2H4: 20, C2H2: 1, CO: 250, CO2: 2500 }
         : { H2: 25, CH4: 10, C2H6: 7, C2H4: 20, C2H2: 1, CO: 175, CO2: 1750 };
 
+      // Table 4: 95th percentile multi-point rate analysis (ppm/year)
+      const T4 = {
+        'low': {
+          'short': { H2: 50, CH4: 15, C2H6: 15, C2H4: 10, C2H2: 1, CO: 200, CO2: 1750 },
+          'long':  { H2: 20, CH4: 10, C2H6: 9,  C2H4: 7,  C2H2: 1, CO: 100, CO2: 1000 }
+        },
+        'high': {
+          'short': { H2: 25, CH4: 4, C2H6: 3, C2H4: 7, C2H2: 1, CO: 100, CO2: 1000 },
+          'long':  { H2: 10, CH4: 3, C2H6: 2, C2H4: 5, C2H2: 1, CO: 80,  CO2: 800 }
+        }
+      };
+
       const catKey = isLowRatio ? 'low' : 'high';
       return {
         table1: T1[catKey][ageCat],
         table2: T2[catKey][ageCat],
         table3: T3,
+        table4: T4[catKey],
         isLowRatio: isLowRatio,
         ageCategory: ageCat
       };

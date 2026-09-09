@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DGA Voice Guide | GPSC Transformer Asset Management</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Mermaid.js for Flowchart rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #4f46e5;
+      --primary-light: #6366f1;
+      --accent: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Prompt', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      transition: background 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .header-text h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    /* Player Card */
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 16px;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .player-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(79, 70, 229, 0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(79, 70, 229, 0.3);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .voice-badge {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Waveform Animation */
+    .waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 38px;
+      margin-bottom: 16px;
+    }
+
+    .wave-bar {
+      width: 4px;
+      background: var(--primary-light);
+      border-radius: 4px;
+      height: 8px;
+      transition: height 0.15s ease;
+    }
+
+    .playing .wave-bar:nth-child(2n) { animation: wave 1.2s infinite ease-in-out; }
+    .playing .wave-bar:nth-child(3n) { animation: wave 0.8s infinite ease-in-out; }
+    .playing .wave-bar:nth-child(5n) { animation: wave 1.5s infinite ease-in-out; }
+
+    @keyframes wave {
+      0%, 100% { height: 6px; }
+      50% { height: 32px; }
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .play-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+      transition: transform 0.15s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .play-btn:hover {
+      background: var(--primary-light);
+      transform: scale(1.05);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--card-border);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      border-radius: 3px;
+      width: 0%;
+      position: relative;
+      transition: width 0.1s linear;
+    }
+
+    .speed-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .speed-btn:hover {
+      border-color: var(--primary);
+    }
+
+    /* Steps Flow Cards */
+    .flow-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .step-card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .step-card.active {
+      border-color: var(--primary-light);
+      background: linear-gradient(145deg, rgba(79, 70, 229, 0.08), transparent);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25), 0 8px 20px -4px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary-light);
+    }
+
+    .timestamp-badge {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    .tag.green { color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+    .tag.yellow { color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
+    .tag.red { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    .btn-report {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-report:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .section-title i {
+      color: var(--primary-light);
+      font-size: 1.2rem;
+    }
+
+    /* Flowchart Card */
+    .flowchart-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+      text-align: center;
+    }
+    .flowchart-card .mermaid {
+      display: flex;
+      justify-content: center;
+      min-width: 700px;
+    }
+
+    /* Sub-items in Step Cards */
+    .sub-item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .sub-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--primary-light);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+    [data-theme="light"] .sub-item {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    .sub-item strong {
+      color: var(--primary-light);
+    }
+    .sub-item.yellow {
+      border-left-color: var(--warning);
+    }
+    .sub-item.yellow strong {
+      color: var(--warning);
+    }
+    .sub-item.red {
+      border-left-color: var(--danger);
+    }
+    .sub-item.red strong {
+      color: var(--danger);
+    }
+    .sub-item.green {
+      border-left-color: var(--accent);
+    }
+    .sub-item.green strong {
+      color: var(--accent);
+    }
+
+    /* Mini Table inside Step Card */
+    .step-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.82rem;
+    }
+    .step-table th, .step-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--card-border);
+      text-align: left;
+    }
+    .step-table th {
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+    .step-table td {
+      color: var(--text-main);
+    }
+
+    /* Table Tabs inside Step 2 */
+    .tab-btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .table-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .table-tab-btn:hover {
+      color: var(--text-main);
+      border-color: var(--primary-light);
+    }
+    .table-tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    }
+    .table-panel {
+      display: none;
+      overflow-x: auto;
+    }
+    .table-panel.active {
+      display: block;
+    }
+    .table-note {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 8px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+      border-left: 2px solid var(--primary-light);
+    }
+    .step-table th.center, .step-table td.center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="title-group">
+        <div class="logo-icon">
+          <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="header-text">
+          <h1>เสียงบรรยาย Flow การคำนวณและวิเคราะห์ DGA</h1>
+          <p>GPSC Transformer Asset Management — Official Diagnostic Voice Guide</p>
+        </div>
+      </div>
+      <button class="theme-toggle" id="theme-btn" title="Toggle Theme">
+        <i class="fa-solid fa-sun" id="theme-icon"></i>
+      </button>
+    </header>
+
+    <!-- Player Card -->
+    <div class="player-card">
+      <div class="player-top">
+        <span class="status-badge">
+          <span class="pulse-dot"></span>
+          <span id="player-status-text">พร้อมเล่นเสียงบรรยาย</span>
+        </span>
+        <span class="voice-badge">
+          <i class="fa-solid fa-microphone-lines"></i>
+          Microsoft Niwat Neural (Thai AI Voice)
+        </span>
+      </div>
+
+      <!-- Waveform Animation -->
+      <div class="waveform" id="waveform">
+        <!-- 36 bars -->
+        <script>
+          for (let i = 0; i < 36; i++) {
+            document.write('<div class="wave-bar"></div>');
+          }
+        </script>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="play-btn" id="btn-play">
+          <i class="fa-solid fa-play" id="play-icon"></i>
+        </button>
+
+        <div class="progress-container">
+          <div class="time-row">
+            <span id="current-time">0:00</span>
+            <span id="duration-time">1:42</span>
+          </div>
+          <div class="progress-bar-bg" id="progress-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <button class="speed-btn" id="btn-speed">1.0x</button>
+      </div>
+
+      <!-- Audio Element -->
+      <audio id="dga-audio" preload="metadata">
+        <source src="dga_explanation.mp3" type="audio/mp3">
+      </audio>
+    </div>
+
+    <!-- Section 1: Flowchart -->
+    <div class="section-title">
+      <i class="fa-solid fa-diagram-project"></i>
+      <span>1. แผนผังขั้นตอนการตัดสินใจ (DGA Interpretation Flowchart)</span>
+    </div>
+
+    <div class="flowchart-card">
+      <div class="mermaid" id="dga-mermaid">
+graph TD
+    A["เริ่มกระบวนการ DGA Periodic Screening"] --> B["สุ่มเก็บตัวอย่างน้ำมันและวิเคราะห์ค่า DGA ในห้องปฏิบัติการ"]
+    B --> C["ประมวลผลข้อมูล: คำนวณอัตราส่วน O2/N2, ผลต่าง Delta, และ Multi-point Rate 3-6 จุด"]
+    C --> D{"ก๊าซทุกตัว &lt; Table 1<br/>AND Delta ทุกตัว &lt; Table 3<br/>AND Rate ทุกตัว &lt; Table 4 ?"}
+    
+    D -- "ใช่ (Yes)" --> E["DGA Status 1: Normal"]
+    E --> F["เปิดใช้งานหม้อแปลงตามปกติ และสุ่มเก็บตัวอย่างตามรอบวาระปกติ"]
+    F --> B
+    
+    D -- "ไม่ใช่ (No)" --> G{"มีก๊าซตัวใดตัวหนึ่ง &gt; Table 2<br/>OR Rate ตัวใดตัวหนึ่ง &gt; Table 4 ?"}
+    
+    G -- "ไม่ใช่ (No)" --> H["DGA Status 2: Intermediate / Suspicious"]
+    H --> I["เพิ่มความถี่ในการสุ่มเก็บตัวอย่าง และเก็บตัวอย่างยืนยันผลภายใน 1 เดือน"]
+    I --> B
+    
+    G -- "ใช่ (Yes)" --> J["DGA Status 3: High / Active Fault"]
+    J --> K["เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification<br/>Duval Triangles / Pentagons / Rogers Ratios"]
+    K --> L["ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม<br/>ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไข"]
+    L --> B
+
+    classDef startEnd fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#f8fafc;
+    classDef process fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#e0e7ff;
+    classDef decision fill:#312e81,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef status1 fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#d1fae5;
+    classDef status2 fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#fef3c7;
+    classDef status3 fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fee2e2;
+
+    class A startEnd;
+    class B,C,F,I,K,L process;
+    class D,G decision;
+    class E status1;
+    class H status2;
+    class J status3;
+      </div>
+    </div>
+
+    <!-- Section 2: Step-by-Step Procedure -->
+    <div class="section-title">
+      <i class="fa-solid fa-list-check"></i>
+      <span>2. รายละเอียดขั้นตอนการประเมินตามมาตรฐาน (Step-by-Step Procedure)</span>
+    </div>
+
+    <!-- Flow Steps Cards -->
+    <div class="flow-list">
+      
+      <!-- Step 1 Card -->
+      <div class="step-card" data-start="8" data-end="35" onclick="seekTo(8)">
+        <div class="step-header">
+          <span class="step-badge">
+            <i class="fa-solid fa-circle-1"></i>
+            ขั้นตอนที่ 1 : การเก็บตัวอย่างและการประมวลผลข้อมูล (Data Computation)
+          </span>
+          <span class="timestamp-badge"><i class="fa-solid fa-clock"></i> 0:08 - 0:35</span>
+        </div>
+        <div class="step-title">Sampling & Mathematical Computation</div>
+        <p class="step-desc">
+          การเตรียมข้อมูลและคำนวณตัวแปรทางสถิติเพื่อกำจัดความคลาดเคลื่อนและเลือกใช้ตารางเกณฑ์ตัดสินได้อย่างถูกต้อง:
+        </p>
+        <div class="sub-item-list">
+          <div class="sub-item">
+            <strong>• สุ่มเก็บตัวอย่างน้ำมัน (Sampling):</strong> ดำเนินการตามรอบวาระการทดสอบปกติขององค์กร
+          </div>
+          <div class="sub-item">
+            <strong>• คำนวณอัตราส่วน O<sub>2</sub>/N<sub>2</sub>:</strong> เพื่อเลือกใช้ตารางเกณฑ์ตัดสินที่ถูกต้อง โดยแบ่งเป็นกรณี O<sub>2</sub>/N<sub>2</sub> &le; 0.2 (Sealed Tank / Low Oxygen) และ O<sub>2</sub>/N<sub>2</sub> &gt; 0.2 (Free Breathing / High Oxygen)
+          </div>
+          <div class="sub-item">
+            <strong>• คำนวณค่าการเปลี่ยนแปลงสัมบูรณ์ (&Delta; Delta):</strong> หาผลต่างความเข้มข้นก๊าซแต่ละตัวเทียบกับผลทดสอบครั้งก่อนหน้า (&Delta; = Gas<sub>Current</sub> - Gas<sub>Previous</sub>)
+          </div>
+          <div class="sub-item">
+            <strong>• คำนวณอัตราการเกิดก๊าซสะสม (Multi-point Rate):</strong> คำนวณความชันด้วยวิธี Linear Regression จากผลทดสอบ 3 ถึง 6 จุดล่าสุด ในช่วงระยะเวลา 4 ถึง 24 เดือน (ไม่เกิน 2 ปี) เพื่อขจัดความคลาดเคลื่อนจากการสุ่มทดสอบของห้องปฏิบัติการ
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 Card -->
+      <div class="step-card" data-start="35" data-end="60">
+        <div class="step-header" onclick="seekTo(35)" style="cursor:pointer;">
+          <span class="step-badge">
+            <i class="fa-solid fa-circle-2"></i>
+            ขั้นตอนที่ 2 : ตารางเกณฑ์อ้างอิง (Norms Tables 1–4 ตามมาตรฐาน IEEE C57.104-2019)
+          </span>
+          <span class="timestamp-badge"><i class="fa-solid fa-clock"></i> 0:35 - 1:00</span>
+        </div>
+        <div class="step-title">IEEE C57.104-2019 Norms Tables Architecture</div>
+        <p class="step-desc">
+          ตารางบรรทัดฐาน 4 ตารางหลักที่ใช้เป็นเกณฑ์ตัดสินระดับสภาวะก๊าซในน้ำมันหม้อแปลง (หน่วย &micro;L/L หรือ ppm):
+        </p>
+
+        <!-- Tab Buttons -->
+        <div class="tab-btn-row">
+          <button type="button" class="table-tab-btn active" onclick="switchTableTab(event, 'tab-table1')">Table 1 (90th Baseline)</button>
+          <button type="button" class="table-tab-btn" onclick="switchTableTab(event, 'tab-table2')">Table 2 (95th High Level)</button>
+          <button type="button" class="table-tab-btn" onclick="switchTableTab(event, 'tab-table3')">Table 3 (95th &Delta; Delta)</button>
+          <button type="button" class="table-tab-btn" onclick="switchTableTab(event, 'tab-table4')">Table 4 (95th Multi-point Rate)</button>
+        </div>
+
+        <!-- Panel Table 1 -->
+        <div id="tab-table1" class="table-panel active">
+          <div style="font-weight:600; font-size:0.86rem; margin-bottom:6px; color:var(--primary-light);">
+            Table 1 — 90<sup>th</sup> percentile gas concentrations as a function of O<sub>2</sub>/N<sub>2</sub> ratio and age in &micro;L/L (ppm)
+          </div>
+          <table class="step-table">
+            <thead>
+              <tr>
+                <th rowspan="3">Gas</th>
+                <th colspan="4" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+                <th colspan="4" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+              </tr>
+              <tr>
+                <th colspan="4" class="center">Transformer Age in Years</th>
+                <th colspan="4" class="center">Transformer Age in Years</th>
+              </tr>
+              <tr>
+                <th class="center">Unknown</th>
+                <th class="center">1 – 9</th>
+                <th class="center">10 – 30</th>
+                <th class="center">&gt; 30</th>
+                <th class="center">Unknown</th>
+                <th class="center">1 – 9</th>
+                <th class="center">10 – 30</th>
+                <th class="center">&gt; 30</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hydrogen (H<sub>2</sub>)</strong></td>
+                <td class="center">80</td>
+                <td colspan="2" class="center">75</td>
+                <td class="center">100</td>
+                <td class="center">40</td>
+                <td colspan="3" class="center">40</td>
+              </tr>
+              <tr>
+                <td><strong>Methane (CH<sub>4</sub>)</strong></td>
+                <td class="center">90</td>
+                <td class="center">45</td>
+                <td class="center">90</td>
+                <td class="center">110</td>
+                <td class="center">20</td>
+                <td colspan="3" class="center">20</td>
+              </tr>
+              <tr>
+                <td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td>
+                <td class="center">90</td>
+                <td class="center">30</td>
+                <td class="center">90</td>
+                <td class="center">150</td>
+                <td class="center">15</td>
+                <td colspan="3" class="center">15</td>
+              </tr>
+              <tr>
+                <td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td>
+                <td class="center">50</td>
+                <td class="center">20</td>
+                <td class="center">50</td>
+                <td class="center">90</td>
+                <td class="center">50</td>
+                <td class="center">25</td>
+                <td colspan="2" class="center">60</td>
+              </tr>
+              <tr>
+                <td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td>
+                <td class="center">1</td>
+                <td colspan="3" class="center">1</td>
+                <td class="center">2</td>
+                <td colspan="3" class="center">2</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon monoxide (CO)</strong></td>
+                <td class="center">900</td>
+                <td colspan="3" class="center">900</td>
+                <td class="center">500</td>
+                <td colspan="3" class="center">500</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td>
+                <td class="center">9000</td>
+                <td class="center">5000</td>
+                <td colspan="2" class="center">10000</td>
+                <td class="center">5000</td>
+                <td class="center">3500</td>
+                <td colspan="2" class="center">5500</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">
+            <strong>NOTE:</strong> During the data analysis, it was determined that voltage class, MVA, and volume of mineral oil in the unit did not contribute in significant way to the determination of values provided in Table 1.
+          </div>
+        </div>
+
+        <!-- Panel Table 2 -->
+        <div id="tab-table2" class="table-panel">
+          <div style="font-weight:600; font-size:0.86rem; margin-bottom:6px; color:var(--primary-light);">
+            Table 2 — 95<sup>th</sup> percentile gas concentrations as a function of O<sub>2</sub>/N<sub>2</sub> and age in &micro;L/L (ppm)
+          </div>
+          <table class="step-table">
+            <thead>
+              <tr>
+                <th rowspan="3">Gas</th>
+                <th colspan="4" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+                <th colspan="4" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+              </tr>
+              <tr>
+                <th colspan="4" class="center">Transformer Age in Years</th>
+                <th colspan="4" class="center">Transformer Age in Years</th>
+              </tr>
+              <tr>
+                <th class="center">Unknown</th>
+                <th class="center">1 – 9</th>
+                <th class="center">10 – 30</th>
+                <th class="center">&gt; 30</th>
+                <th class="center">Unknown</th>
+                <th class="center">1 – 9</th>
+                <th class="center">10 – 30</th>
+                <th class="center">&gt; 30</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hydrogen (H<sub>2</sub>)</strong></td>
+                <td class="center">200</td>
+                <td colspan="3" class="center">200</td>
+                <td class="center">90</td>
+                <td colspan="3" class="center">90</td>
+              </tr>
+              <tr>
+                <td><strong>Methane (CH<sub>4</sub>)</strong></td>
+                <td class="center">150</td>
+                <td class="center">100</td>
+                <td class="center">150</td>
+                <td class="center">200</td>
+                <td class="center">50</td>
+                <td colspan="2" class="center">60</td>
+                <td class="center">30</td>
+              </tr>
+              <tr>
+                <td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td>
+                <td class="center">175</td>
+                <td class="center">70</td>
+                <td class="center">175</td>
+                <td class="center">250</td>
+                <td class="center">40</td>
+                <td class="center">30</td>
+                <td colspan="2" class="center">40</td>
+              </tr>
+              <tr>
+                <td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td>
+                <td class="center">100</td>
+                <td class="center">40</td>
+                <td class="center">95</td>
+                <td class="center">175</td>
+                <td class="center">100</td>
+                <td class="center">80</td>
+                <td colspan="2" class="center">125</td>
+              </tr>
+              <tr>
+                <td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td>
+                <td class="center">2</td>
+                <td colspan="2" class="center">2</td>
+                <td class="center">4</td>
+                <td class="center">7</td>
+                <td colspan="3" class="center">7</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon monoxide (CO)</strong></td>
+                <td class="center">1100</td>
+                <td colspan="3" class="center">1100</td>
+                <td class="center">600</td>
+                <td colspan="3" class="center">600</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td>
+                <td class="center">12500</td>
+                <td class="center">7000</td>
+                <td colspan="2" class="center">14000</td>
+                <td class="center">7000</td>
+                <td class="center">5000</td>
+                <td colspan="2" class="center">8000</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">
+            <strong>NOTE:</strong> During the data analysis, it was determined that voltage class, MVA, and volume of mineral oil in the unit did not contribute in significant way to the determination of values provided in Table 2.
+          </div>
+        </div>
+
+        <!-- Panel Table 3 -->
+        <div id="tab-table3" class="table-panel">
+          <div style="font-weight:600; font-size:0.86rem; margin-bottom:6px; color:var(--primary-light);">
+            Table 3 — 95<sup>th</sup> percentile values for absolute level change between successive laboratory DGA samples in &micro;L/L (ppm)
+          </div>
+          <table class="step-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Gas</th>
+                <th colspan="2" class="center">Maximum &micro;L/L (ppm) variation between consecutive laboratory DGA samples</th>
+              </tr>
+              <tr>
+                <th class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+                <th class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hydrogen (H<sub>2</sub>)</strong></td>
+                <td class="center">40</td>
+                <td class="center">25</td>
+              </tr>
+              <tr>
+                <td><strong>Methane (CH<sub>4</sub>)</strong></td>
+                <td class="center">30</td>
+                <td class="center">10</td>
+              </tr>
+              <tr>
+                <td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td>
+                <td class="center">25</td>
+                <td class="center">7</td>
+              </tr>
+              <tr>
+                <td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td>
+                <td colspan="2" class="center">20</td>
+              </tr>
+              <tr>
+                <td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td>
+                <td colspan="2" class="center" style="font-weight:600; color:var(--danger);">Any Increase</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon monoxide (CO)</strong></td>
+                <td class="center">250</td>
+                <td class="center">175</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td>
+                <td class="center">2500</td>
+                <td class="center">1750</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">
+            <strong>NOTE:</strong> Contribution of voltage class, MVA, and volume of mineral oil in the unit was not studied for Table 3 as they have not been retained for Table 1 and Table 2. Data was insufficient to study age influence.
+          </div>
+        </div>
+
+        <!-- Panel Table 4 -->
+        <div id="tab-table4" class="table-panel">
+          <div style="font-weight:600; font-size:0.86rem; margin-bottom:6px; color:var(--primary-light);">
+            Table 4 — 95<sup>th</sup> percentile values from multi-points (3-6 points) rate analysis of laboratory DGA samples with all gas levels below Table 1 values, in &micro;L/L/year (ppm/year)
+          </div>
+          <table class="step-table">
+            <thead>
+              <tr>
+                <th rowspan="3">Gas</th>
+                <th colspan="4" class="center">Maximum &micro;L/L/year (ppm/year) rate in function of the period between first and last point of the laboratory DGA series (3 to 6 samples)</th>
+              </tr>
+              <tr>
+                <th colspan="2" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &le; 0.2</th>
+                <th colspan="2" class="center">O<sub>2</sub>/N<sub>2</sub> Ratio &gt; 0.2</th>
+              </tr>
+              <tr>
+                <th class="center">4 – 9 Months</th>
+                <th class="center">10 – 24 Months</th>
+                <th class="center">4 – 9 Months</th>
+                <th class="center">10 – 24 Months</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hydrogen (H<sub>2</sub>)</strong></td>
+                <td class="center">50</td>
+                <td class="center">20</td>
+                <td class="center">25</td>
+                <td class="center">10</td>
+              </tr>
+              <tr>
+                <td><strong>Methane (CH<sub>4</sub>)</strong></td>
+                <td class="center">15</td>
+                <td class="center">10</td>
+                <td class="center">4</td>
+                <td class="center">3</td>
+              </tr>
+              <tr>
+                <td><strong>Ethane (C<sub>2</sub>H<sub>6</sub>)</strong></td>
+                <td class="center">15</td>
+                <td class="center">9</td>
+                <td class="center">3</td>
+                <td class="center">2</td>
+              </tr>
+              <tr>
+                <td><strong>Ethylene (C<sub>2</sub>H<sub>4</sub>)</strong></td>
+                <td class="center">10</td>
+                <td class="center">7</td>
+                <td class="center">7</td>
+                <td class="center">5</td>
+              </tr>
+              <tr>
+                <td><strong>Acetylene (C<sub>2</sub>H<sub>2</sub>)</strong></td>
+                <td colspan="4" class="center" style="font-weight:600; color:var(--danger);">Any increasing rate</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon monoxide (CO)</strong></td>
+                <td class="center">200</td>
+                <td class="center">100</td>
+                <td class="center">100</td>
+                <td class="center">80</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon dioxide (CO<sub>2</sub>)</strong></td>
+                <td class="center">1750</td>
+                <td class="center">1000</td>
+                <td class="center">1000</td>
+                <td class="center">800</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-note">
+            <strong>NOTE:</strong> Contribution of voltage class, MVA, and volume of mineral oil in the unit was not studied for Table 4 as they have not been retained for Table 1 and Table 2. Data was insufficient to study age influence.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Step 3 Card -->
+      <div class="step-card" data-start="60" data-end="85" onclick="seekTo(60)">
+        <div class="step-header">
+          <span class="step-badge">
+            <i class="fa-solid fa-circle-3"></i>
+            ขั้นตอนที่ 3 : การจัดระดับสภาวะและการดำเนินการ (DGA Status Classification & Actions)
+          </span>
+          <span class="timestamp-badge"><i class="fa-solid fa-clock"></i> 1:00 - 1:25</span>
+        </div>
+        <div class="step-title">Status Categorization & Operational Guardrails</div>
+        <div class="sub-item-list">
+          <div class="sub-item green">
+            <strong>DGA Status 1 (Unexceptional / Normal Condition):</strong><br>
+            • <em>เกณฑ์:</em> ระดับก๊าซทุกตัว &lt; Table 1 <strong>และ</strong> ค่า Delta ทุกตัว &lt; Table 3 <strong>และ</strong> อัตราการเกิดก๊าซทุกตัว &lt; Table 4<br>
+            • <em>การดำเนินการ:</em> หม้อแปลงอยู่ในสภาวะปกติ ปลอดภัย ให้เปิดใช้งานตามปกติและสุ่มเก็บตัวอย่างตามรอบวาระปกติขององค์กรต่อไป
+          </div>
+          <div class="sub-item yellow">
+            <strong>DGA Status 2 (Possibly Suspicious / Intermediate Condition):</strong><br>
+            • <em>เกณฑ์ (ก):</em> ระดับก๊าซทุกตัวต่ำกว่า Table 1 แต่พบว่ามีค่า Delta &gt; Table 3 หรือ Multi-point Rate &gt; Table 4 (ต้องทำการสุ่มเก็บตัวอย่างยืนยันผลภายใน 1 เดือนก่อนกำหนด)<br>
+            • <em>เกณฑ์ (ข):</em> มีระดับก๊าซตัวใดตัวหนึ่งอยู่ระหว่าง Table 1 ถึง Table 2 (Table 1 &lt; Gas &le; Table 2) และอัตราการเกิดก๊าซทุกตัว &lt; Table 4<br>
+            • <em>การดำเนินการ:</em> เพิ่มความถี่ในการสุ่มเก็บตัวอย่างน้ำมัน เฝ้าระวังแนวโน้มการสะสมตัวของก๊าซอย่างใกล้ชิด และปรึกษาผู้ผลิตหากจำเป็น
+          </div>
+          <div class="sub-item red">
+            <strong>DGA Status 3 (Probably Suspicious / High or Active Fault):</strong><br>
+            • <em>เกณฑ์:</em> มีระดับก๊าซตัวใดตัวหนึ่ง &gt; Table 2 <strong>หรือ</strong> มีอัตราการเกิดก๊าซสะสม (Multi-point Rate) &gt; Table 4<br>
+            • <em>การดำเนินการ:</em> ถือเป็นสภาวะเสี่ยงสูง ต้องเฝ้าระวังอย่างเข้มงวด (พิจารณาติดตั้งเครื่องวัดออนไลน์ Continuous Monitoring), ดำเนินการระบุประเภทความผิดปกติ (Fault Identification), ทดสอบทางไฟฟ้าเพิ่มเติม และปรึกษาผู้เชี่ยวชาญหรือผู้ผลิตเพื่อวางแผนมาตรการแก้ไข
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 Card -->
+      <div class="step-card" data-start="85" data-end="102" onclick="seekTo(85)">
+        <div class="step-header">
+          <span class="step-badge">
+            <i class="fa-solid fa-circle-4"></i>
+            ขั้นตอนที่ 4 : การระบุประเภทความผิดปกติ (Fault Identification Methods)
+          </span>
+          <span class="timestamp-badge"><i class="fa-solid fa-clock"></i> 1:25 - 1:42</span>
+        </div>
+        <div class="step-title">Diagnostic Tools for Active Gassing & Status 3</div>
+        <p class="step-desc">
+          เมื่อหม้อแปลงตกอยู่ใน Status 3 หรือพบสภาวะการเกิดก๊าซต่อเนื่อง (Active Gassing) มาตรฐานแนะนำให้ใช้วิธีวิเคราะห์เฉพาะทาง:
+        </p>
+        <div class="sub-item-list">
+          <div class="sub-item">
+            <strong>• Duval Triangles (1, 4, 5) และ Duval Pentagons (1, 2):</strong> เป็นวิธีหลักที่มีความแม่นยำสูงในการระบุประเภทความผิดปกติ (เช่น Partial Discharge PD, Thermal Faults T1–T3, Discharges D1–D2, Carbonization of Paper)
+          </div>
+          <div class="sub-item">
+            <strong>• Rogers Ratios & Key Gases:</strong> ใช้ในการประเมินสัดส่วนก๊าซคู่เปรียบเทียบ (CH<sub>4</sub>/H<sub>2</sub>, C<sub>2</sub>H<sub>2</sub>/C<sub>2</sub>H<sub>4</sub>, C<sub>2</sub>H<sub>4</sub>/C<sub>2</sub>H<sub>6</sub>) เพื่อยืนยันลักษณะพลังงานความร้อนหรือการอาร์กไฟฟ้า
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Action Link to DGA Report -->
+    <div class="action-row">
+      <a href="dga_report.html" target="_blank" class="btn-report">
+        <i class="fa-solid fa-file-waveform"></i>
+        เปิดหน้ารายงาน DGA Report ฉบับเต็ม
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    const audio = document.getElementById('dga-audio');
+    const playBtn = document.getElementById('btn-play');
+    const playIcon = document.getElementById('play-icon');
+    const statusText = document.getElementById('player-status-text');
+    const waveform = document.getElementById('waveform');
+    const progressFill = document.getElementById('progress-fill');
+    const progressBg = document.getElementById('progress-bg');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationTimeEl = document.getElementById('duration-time');
+    const speedBtn = document.getElementById('btn-speed');
+    const cards = document.querySelectorAll('.step-card');
+
+    const speeds = [1.0, 1.25, 1.5, 0.85];
+    let speedIdx = 0;
+
+    function formatTime(secs) {
+      if (isNaN(secs)) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      playIcon.classList.remove('fa-play');
+      playIcon.classList.add('fa-pause');
+      waveform.classList.add('playing');
+      statusText.textContent = 'กำลังเล่นเสียงบรรยาย...';
+    });
+
+    audio.addEventListener('pause', () => {
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+      waveform.classList.remove('playing');
+      statusText.textContent = 'หยุดชั่วคราว';
+    });
+
+    audio.addEventListener('ended', () => {
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+      waveform.classList.remove('playing');
+      statusText.textContent = 'เล่นจบแล้ว (กดเพื่อฟังซ้ำ)';
+      cards.forEach(c => c.classList.remove('active'));
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      durationTimeEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      const cur = audio.currentTime;
+      const dur = audio.duration || 102;
+      currentTimeEl.textContent = formatTime(cur);
+      const pct = (cur / dur) * 100;
+      progressFill.style.width = pct + '%';
+
+      // Highlight active step card
+      cards.forEach(card => {
+        const start = parseFloat(card.getAttribute('data-start'));
+        const end = parseFloat(card.getAttribute('data-end'));
+        if (cur >= start && cur < end) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    });
+
+    progressBg.addEventListener('click', (e) => {
+      const rect = progressBg.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      audio.currentTime = pct * (audio.duration || 102);
+    });
+
+    speedBtn.addEventListener('click', () => {
+      speedIdx = (speedIdx + 1) % speeds.length;
+      const spd = speeds[speedIdx];
+      audio.playbackRate = spd;
+      speedBtn.textContent = spd + 'x';
+    });
+
+    function seekTo(seconds) {
+      audio.currentTime = seconds;
+      if (audio.paused) {
+        audio.play();
+      }
+    }
+
+    // Switch Table Tab inside Step 2
+    function switchTableTab(evt, tabId) {
+      if (evt) evt.stopPropagation();
+      document.querySelectorAll('.table-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.table-panel').forEach(p => p.classList.remove('active'));
+      if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    }
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeIcon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    });
+
+    // Initialize Mermaid Flowchart
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
+        fontFamily: 'Prompt, Inter, sans-serif'
+      });
+    }
+  </script>
+</body>
+</html>
