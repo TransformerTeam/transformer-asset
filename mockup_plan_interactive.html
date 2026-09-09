@@ -749,308 +749,311 @@
       background: #4f46e5 !important;
       color: #ffffff !important;
     }
-    [data-theme="light"] .month-calendar-card .opacity-30,
-    [data-preset="slate-light"] .month-calendar-card .opacity-30 {
-      background: #f8fafc !important;
-      border-color: #f1f5f9 !important;
-      opacity: 0.65 !important;
-    }
     .pill-outage { background: rgba(37, 99, 235, 0.9); border-left: 3px solid #93c5fd; }
     .pill-routine { background: rgba(234, 88, 12, 0.9); border-left: 3px solid #fdba74; }
     .pill-assess { background: rgba(5, 150, 105, 0.9); border-left: 3px solid #6ee7b7; }
 
-    /* Continuous Horizontal Gantt Span Bars (Matching Reference Image) */
+    /* =========================================================================
+       UNIFIED CONTINUOUS CALENDAR DESIGN (MATCHING USER REFERENCE)
+       Continuous grid, centered day/date headers, seamless borders in Light & Dark modes
+       ========================================================================= */
+    :root {
+      --cal-bg: #111215;
+      --cal-border: #27272a;
+      --cal-cell-bg: #111215;
+      --cal-cell-hover: #16181d;
+      --cal-day-label: #94a3b8;
+      --cal-date-num: #f1f5f9;
+      --cal-date-muted: #64748b;
+      --cal-today-bg: rgba(79, 70, 229, 0.08);
+      --cal-today-badge-bg: #4f46e5;
+      --cal-today-badge-text: #ffffff;
+    }
+
+    [data-theme="light"],
+    [data-preset="slate-light"] {
+      --cal-bg: #ffffff;
+      --cal-border: #e5e7eb;
+      --cal-cell-bg: #ffffff;
+      --cal-cell-hover: #f8fafc;
+      --cal-day-label: #64748b;
+      --cal-date-num: #1e293b;
+      --cal-date-muted: #94a3b8;
+      --cal-today-bg: rgba(79, 70, 229, 0.05);
+      --cal-today-badge-bg: #4f46e5;
+      --cal-today-badge-text: #ffffff;
+    }
+
+    /* Container wrapper with rounded corners and outer border */
+    .unified-cal-wrapper {
+      background: var(--cal-bg);
+      border: 1px solid var(--cal-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+      width: 100%;
+    }
+
+    .unified-cal-table {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .unified-cal-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      width: 100%;
+      border-bottom: 1px solid var(--cal-border);
+    }
+    .unified-cal-row:last-child {
+      border-bottom: none;
+    }
+
+    .unified-cal-cell {
+      position: relative;
+      border-right: 1px solid var(--cal-border);
+      background: var(--cal-cell-bg);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: background 0.15s ease;
+    }
+    .unified-cal-cell:last-child {
+      border-right: none;
+    }
+    .unified-cal-cell:hover {
+      background: var(--cal-cell-hover);
+    }
+    .unified-cal-cell.is-today {
+      background: var(--cal-today-bg);
+    }
+
+    /* Row 1 Header: Centered Day Name (SUN, MON...) + Centered Date (31, Jun 1...) */
+    .cal-header-row1 {
+      text-align: center;
+      padding-top: 8px;
+      padding-bottom: 4px;
+      user-select: none;
+      line-height: 1.25;
+    }
+    .cal-header-row1 .cal-day-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--cal-day-label);
+    }
+    .cal-header-row1 .cal-date-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cal-date-num);
+      margin-top: 2px;
+    }
+
+    /* Rows 2+ Header: Centered Date (7, 8... or Jul 1 on 1st) */
+    .cal-header-rown {
+      text-align: center;
+      padding-top: 8px;
+      padding-bottom: 4px;
+      user-select: none;
+      line-height: 1.25;
+    }
+    .cal-header-rown .cal-date-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cal-date-num);
+    }
+
+    /* Out of month dates */
+    .cal-date-muted {
+      color: var(--cal-date-muted) !important;
+      font-weight: 500 !important;
+    }
+
+    /* Today Badge */
+    .cal-today-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 5px;
+      border-radius: 9999px;
+      background: var(--cal-today-badge-bg);
+      color: var(--cal-today-badge-text) !important;
+      font-weight: 700;
+      font-size: 12px;
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Gantt Track Bars Layer overlaying the week row */
+    .cal-gantt-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 4px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .cal-overlay-row1 {
+      top: 48px;
+    }
+    .cal-overlay-rown {
+      top: 30px;
+    }
+
+    .cal-track-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      width: 100%;
+      pointer-events: auto;
+    }
+
+    /* Task Pills (Matching User Reference Image) */
     .gantt-bar {
       position: relative;
       display: flex;
       align-items: center;
-      min-height: 26px;
+      min-height: 24px;
       font-size: 11px;
       line-height: 1.2;
       padding: 2px 8px;
+      margin: 1.5px 3px;
       border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       cursor: pointer;
       transition: all 0.15s ease-in-out;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
       z-index: 10;
+      color: #ffffff !important;
+      font-weight: 600;
     }
     .gantt-bar:hover {
       filter: brightness(1.12);
       transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
       z-index: 20;
     }
-    /* Distinct Category Themes */
-    .gantt-bar-outage {
-      background: #fde8e4;
-      color: #7c2d12;
-      border: 1px solid #fca5a5;
+
+    /* Category Themes - Light Mode */
+    [data-theme="light"] .gantt-bar-outage,
+    [data-preset="slate-light"] .gantt-bar-outage {
+      background: #dc2626 !important;
+      border: 1px solid #b91c1c !important;
     }
-    .gantt-bar-outage.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #ef4444;
-      border: 1px solid #b91c1c;
-      border-radius: 2px;
+    [data-theme="light"] .gantt-bar-life,
+    [data-preset="slate-light"] .gantt-bar-life {
+      background: #7c3aed !important;
+      border: 1px solid #6d28d9 !important;
+    }
+    [data-theme="light"] .gantt-bar-plant,
+    [data-preset="slate-light"] .gantt-bar-plant {
+      background: #0d9488 !important;
+      border: 1px solid #0f766e !important;
+    }
+    [data-theme="light"] .gantt-bar-oil,
+    [data-preset="slate-light"] .gantt-bar-oil {
+      background: #d97706 !important;
+      border: 1px solid #b45309 !important;
+    }
+    [data-theme="light"] .gantt-bar-visual,
+    [data-preset="slate-light"] .gantt-bar-visual {
+      background: #0284c7 !important;
+      border: 1px solid #0369a1 !important;
+    }
+    [data-theme="light"] .gantt-bar-oltc,
+    [data-preset="slate-light"] .gantt-bar-oltc {
+      background: #db2777 !important;
+      border: 1px solid #be185d !important;
+    }
+    [data-theme="light"] .gantt-bar-52week,
+    [data-preset="slate-light"] .gantt-bar-52week {
+      background: #0284c7 !important;
+      border: 1px solid #0369a1 !important;
+    }
+    [data-theme="light"] .gantt-bar-assess,
+    [data-preset="slate-light"] .gantt-bar-assess,
+    [data-theme="light"] .gantt-bar {
+      background: #057a55;
+      border: 1px solid #046c4e;
+    }
+
+    /* Category Themes - Dark Mode (Default) */
+    .gantt-bar-outage {
+      background: #991b1b !important;
+      border: 1px solid #7f1d1d !important;
     }
     .gantt-bar-life {
-      background: #ede9fe;
-      color: #4c1d95;
-      border: 1px solid #c4b5fd;
-    }
-    .gantt-bar-life.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #8b5cf6;
-      border: 1px solid #6d28d9;
-      border-radius: 2px;
+      background: #5b21b6 !important;
+      border: 1px solid #4c1d95 !important;
     }
     .gantt-bar-plant {
-      background: #ccfbf1;
-      color: #115e59;
-      border: 1px solid #5eead4;
-    }
-    .gantt-bar-plant.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #14b8a6;
-      border: 1px solid #0f766e;
-      border-radius: 2px;
+      background: #0f766e !important;
+      border: 1px solid #115e59 !important;
     }
     .gantt-bar-oil {
-      background: #fef3c7;
-      color: #78350f;
-      border: 1px solid #fcd34d;
-    }
-    .gantt-bar-oil.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #f59e0b;
-      border: 1px solid #b45309;
-      border-radius: 2px;
+      background: #92400e !important;
+      border: 1px solid #78350f !important;
     }
     .gantt-bar-visual {
-      background: #e0f2fe;
-      color: #0c4a6e;
-      border: 1px solid #7dd3fc;
-    }
-    .gantt-bar-visual.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #0ea5e9;
-      border: 1px solid #0369a1;
-      border-radius: 2px;
+      background: #0369a1 !important;
+      border: 1px solid #075985 !important;
     }
     .gantt-bar-oltc {
-      background: #fce7f3;
-      color: #831843;
-      border: 1px solid #f472b6;
-    }
-    .gantt-bar-oltc.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #ec4899;
-      border: 1px solid #be185d;
-      border-radius: 2px;
+      background: #9d174d !important;
+      border: 1px solid #831843 !important;
     }
     .gantt-bar-52week {
-      background: #e0f2fe;
-      color: #0c4a6e;
-      border: 1px solid #7dd3fc;
+      background: #0369a1 !important;
+      border: 1px solid #075985 !important;
     }
-    .gantt-bar-52week.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #0ea5e9;
-      border: 1px solid #0369a1;
-      border-radius: 2px;
-    }
-    .gantt-bar-assess {
-      background: #ccfbf1;
-      color: #115e59;
-      border: 1px solid #5eead4;
-    }
-    .gantt-bar-assess.has-start-handle::before {
-      content: '';
-      position: absolute;
-      left: 1px;
-      top: 2px;
-      bottom: 2px;
-      width: 4px;
-      background: #14b8a6;
-      border: 1px solid #0f766e;
-      border-radius: 2px;
+    .gantt-bar-assess,
+    .gantt-bar {
+      background: #356b49;
+      border: 1px solid #2d5a3e;
     }
 
-    /* Finished Tasks (100% Executed): Deep Solid Saturated Colors */
+    /* Finished Tasks (100% Executed) */
     .gantt-bar.gantt-bar-finished {
       font-weight: 700 !important;
-      color: #ffffff !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
-    }
-    .gantt-bar.gantt-bar-finished:hover {
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-outage {
-      background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
-      border-color: #ef4444 !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-outage.has-start-handle::before {
-      background: #fca5a5 !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-life {
-      background: linear-gradient(135deg, #6d28d9, #5b21b6) !important;
-      border-color: #a855f7 !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-life.has-start-handle::before {
-      background: #d8b4fe !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-plant {
-      background: linear-gradient(135deg, #0f766e, #115e59) !important;
-      border-color: #2dd4bf !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-plant.has-start-handle::before {
-      background: #99f6e4 !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-oil {
-      background: linear-gradient(135deg, #b45309, #92400e) !important;
-      border-color: #f59e0b !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-oil.has-start-handle::before {
-      background: #fde68a !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-visual {
-      background: linear-gradient(135deg, #0369a1, #075985) !important;
-      border-color: #38bdf8 !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-visual.has-start-handle::before {
-      background: #bae6fd !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-oltc {
-      background: linear-gradient(135deg, #be185d, #9d174d) !important;
-      border-color: #f472b6 !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-oltc.has-start-handle::before {
-      background: #fbcfe8 !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-52week {
-      background: linear-gradient(135deg, #0369a1, #075985) !important;
-      border-color: #38bdf8 !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-52week.has-start-handle::before {
-      background: #bae6fd !important;
-      border-color: #ffffff !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-assess {
-      background: linear-gradient(135deg, #0f766e, #115e59) !important;
-      border-color: #2dd4bf !important;
-    }
-    .gantt-bar.gantt-bar-finished.gantt-bar-assess.has-start-handle::before {
-      background: #99f6e4 !important;
-      border-color: #ffffff !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
     }
 
-    /* Continuation Arrows */
+    /* Continuations */
     .gantt-bar.cont-left {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-      border-left: 2px dashed rgba(0, 0, 0, 0.4);
-      padding-left: 14px;
+      margin-left: 0 !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-left: none !important;
     }
     .gantt-bar.cont-right {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-right: 2px dashed rgba(0, 0, 0, 0.4);
-      padding-right: 14px;
-    }
-    .gantt-bar.has-start-handle {
-      padding-left: 10px;
+      margin-right: 0 !important;
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      border-right: none !important;
     }
 
-    /* Compact Gantt Bar for 3-Month View */
+    /* Compact Pill for 3M */
     .gantt-bar-sm {
-      min-height: 20px;
-      font-size: 9.5px;
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
-    .gantt-bar-sm.has-start-handle {
-      padding-left: 7px;
-    }
-    .gantt-bar-sm.has-start-handle::before {
-      width: 3px;
-      left: 1px;
-      top: 1.5px;
-      bottom: 1.5px;
-      border-radius: 1.5px;
-    }
-    .gantt-bar-sm.cont-left {
-      padding-left: 10px;
-    }
-    .gantt-bar-sm.cont-right {
-      padding-right: 10px;
+      min-height: 20px !important;
+      font-size: 9.5px !important;
+      padding: 1px 5px !important;
+      border-radius: 4px !important;
+      margin: 1px 2px !important;
     }
 
-    /* Micro Gantt Bar for 6-Month & 12-Month Views */
+    /* Micro Pill for 6M/12M */
     .gantt-bar-xs {
-      min-height: 16px;
-      font-size: 8.5px;
-      padding: 0 3px;
-      border-radius: 3px;
-      line-height: 1;
-    }
-    .gantt-bar-xs.has-start-handle {
-      padding-left: 6px;
-    }
-    .gantt-bar-xs.has-start-handle::before {
-      width: 2.5px;
-      left: 0.5px;
-      top: 1px;
-      bottom: 1px;
-      border-radius: 1px;
-    }
-    .gantt-bar-xs.cont-left {
-      padding-left: 8px;
-    }
-    .gantt-bar-xs.cont-right {
-      padding-right: 8px;
+      min-height: 16px !important;
+      font-size: 8.5px !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+      margin: 0.5px 1px !important;
+      line-height: 1 !important;
     }
 
     /* View Switcher & Range Span Action Buttons */
@@ -3410,9 +3413,9 @@
       if (c.includes('oil')) return 'gantt-bar-oil';
       if (c.includes('visual')) return 'gantt-bar-visual';
       if (c.includes('oltc')) return 'gantt-bar-oltc';
-      if (c.includes('52week')) return 'gantt-bar-visual';
-      if (c.includes('assess')) return 'gantt-bar-plant';
-      return 'gantt-bar-outage';
+      if (c.includes('52week')) return 'gantt-bar-52week';
+      if (c.includes('assess')) return 'gantt-bar-assess';
+      return 'gantt-bar-assess';
     }
 
     function getCategoryColorDot(cat) {
@@ -4867,7 +4870,10 @@
       if (!container) return;
       container.innerHTML = '';
 
-      // === 1. WEEK VIEW: CONTINUOUS HORIZONTAL GANTT SPAN BARS (MATCHING USER REFERENCE) ===
+      const dayLabels = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const todayObj = new Date();
+
+      // === 1. WEEK VIEW: UNIFIED CONTINUOUS GRID ===
       if (calendarSpan === 'week') {
         const curr = new Date(currentWeekDate);
         const first = curr.getDate() - curr.getDay(); // Sunday
@@ -4891,103 +4897,96 @@
         `;
 
         const weekCard = document.createElement('div');
-        weekCard.className = 'week-calendar-card rounded-xl p-4 shadow-xl space-y-3';
+        weekCard.className = 'week-calendar-card w-full';
 
-        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        // Week Calendar Container with absolute/relative layering
-        const weekGridContainer = document.createElement('div');
-        weekGridContainer.className = 'relative rounded-xl border border-slate-800 bg-slate-950/70 p-2 min-h-[380px] overflow-hidden';
-
-        // 1. Base Day Columns (7 columns)
-        const colsGrid = document.createElement('div');
-        colsGrid.className = 'grid grid-cols-7 gap-1.5 h-full min-h-[360px]';
-
-        const todayObj = new Date();
-        weekDates.forEach((wDate, i) => {
+        let cellsHTML = '';
+        weekDates.forEach((wDate, dIdx) => {
           const isToday = (
             wDate.date.getDate() === todayObj.getDate() &&
             wDate.date.getMonth() === todayObj.getMonth() &&
             wDate.date.getFullYear() === todayObj.getFullYear()
           );
-          const colEl = document.createElement('div');
-          colEl.className = `rounded-lg border flex flex-col justify-start p-2 transition ${isToday ? 'bg-slate-900/90 border-sky-400 ring-2 ring-sky-400/40' : 'bg-slate-900/30 border-slate-800/80'}`;
+          const d = wDate.date.getDate();
+          const isDay1 = (d === 1);
+          const shortMonth = monthNames[wDate.date.getMonth()].substring(0, 3);
+          const displayDateText = isDay1 ? `${shortMonth} 1` : `${d}`;
+          const displayDateHTML = isToday ? `<span class="cal-today-badge">${displayDateText}</span>` : `<span>${displayDateText}</span>`;
 
-          colEl.innerHTML = `
-            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80 mb-2">
-              <span class="text-xs font-bold ${i === 0 ? 'text-rose-400' : (i === 6 ? 'text-sky-400' : 'text-slate-400')}">${dayLabels[i]}</span>
-              <span class="text-xs font-black px-1.5 py-0.5 rounded ${isToday ? 'bg-sky-500 text-white shadow' : 'text-slate-200 bg-slate-800/90'}">${wDate.date.getDate()}</span>
+          cellsHTML += `
+            <div class="unified-cal-cell ${isToday ? 'is-today' : ''}">
+              <div class="cal-header-row1">
+                <div class="cal-day-name">${dayLabels[dIdx]}</div>
+                <div class="cal-date-num">${displayDateHTML}</div>
+              </div>
             </div>
           `;
-          colsGrid.appendChild(colEl);
         });
-        weekGridContainer.appendChild(colsGrid);
-
-        // 2. Gantt Span Layer
-        const ganttLayer = document.createElement('div');
-        ganttLayer.className = 'absolute top-12 left-2 right-2 bottom-2 pointer-events-none';
 
         const { placedTasks, trackCount } = computeWeekTaskTracks(weekDates.map(x => x.dateStr), filtered);
+        const rowMinHeight = Math.max(380, 56 + (trackCount * 34) + 16);
 
+        let barsHTML = '';
         if (placedTasks.length === 0) {
-          const emptyMsg = document.createElement('div');
-          emptyMsg.className = 'flex items-center justify-center h-48 text-slate-500 text-xs font-medium';
-          emptyMsg.textContent = 'No tasks scheduled in this week period.';
-          ganttLayer.appendChild(emptyMsg);
+          barsHTML = `
+            <div class="col-span-7 flex items-center justify-center h-48 text-slate-400 text-xs font-medium">
+              No tasks scheduled in this week period.
+            </div>
+          `;
         } else {
-          const trackGrid = document.createElement('div');
-          trackGrid.className = 'grid grid-cols-7 gap-1.5 auto-rows-[34px] w-full pt-1 pointer-events-auto';
-
           placedTasks.forEach(pt => {
             const t = pt.task;
-            const isSub = !!t.parentId;
             const isDone = t.progress >= 100;
             const catClass = getGanttCategoryClass(t.cat);
-
-            const hasStartHandle = !pt.isContinuationLeft;
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
             const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
-            const handleClass = hasStartHandle ? 'has-start-handle' : '';
             const doneClass = isDone ? 'gantt-bar-finished' : '';
             const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
 
-            const bar = document.createElement('div');
-            bar.onclick = () => openModal('edit', t.id);
-            bar.title = `${t.wbs}: ${t.task} (${t.plant} - ${t.tr || 'TR'}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%`;
-            bar.className = `gantt-bar ${catClass} ${doneClass} ${handleClass} ${contLeftClass} ${contRightClass} group`;
-            bar.style.gridColumn = `${pt.startCol} / span ${pt.span}`;
-            bar.style.gridRow = `${pt.trackRow + 1}`;
-
-            bar.innerHTML = `
-              <div class="flex items-center justify-between w-full overflow-hidden text-[11px] font-semibold gap-1.5">
-                <div class="flex items-center gap-1.5 truncate">
-                  ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[9px] opacity-70"></i>' : ''}
-                  <span class="font-mono font-black text-[11px] opacity-95">${displayTitle}</span>
-                  ${t.tr ? (() => {
-                    const parts = t.tr.split(',').map(s => s.trim()).filter(Boolean);
-                    if (parts.length <= 1) return `<span class="opacity-75 text-[10px] hidden sm:inline font-normal">(${t.tr})</span>`;
-                    return `<span class="opacity-80 text-[10px] hidden sm:inline font-normal bg-black/25 px-1 rounded">(${parts[0]} +${parts.length - 1})</span>`;
-                  })() : ''}
-                </div>
-                <div class="flex items-center gap-1.5 shrink-0 ml-1 text-[10px]">
-                  <span class="font-bold opacity-90">${t.progress}%</span>
-                  ${isDone ? '<i class="fa-solid fa-circle-check text-emerald-300 text-[11px] drop-shadow-sm"></i>' : ''}
-                  ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>' : ''}
+            barsHTML += `
+              <div onclick="openModal('edit', '${t.id}')"
+                   title="${t.wbs}: ${t.task} (${t.plant} - ${t.tr || 'TR'}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%"
+                   class="gantt-bar ${catClass} ${doneClass} ${contLeftClass} ${contRightClass} group"
+                   style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
+                <div class="flex items-center justify-between w-full overflow-hidden text-[11px] font-semibold gap-1.5">
+                  <div class="flex items-center gap-1.5 truncate">
+                    ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[9px] opacity-70"></i>' : ''}
+                    <span class="font-mono font-bold text-[11px]">${displayTitle}</span>
+                    ${t.tr ? (() => {
+                      const parts = t.tr.split(',').map(s => s.trim()).filter(Boolean);
+                      if (parts.length <= 1) return `<span class="opacity-80 text-[10px] hidden sm:inline font-normal">(${t.tr})</span>`;
+                      return `<span class="opacity-85 text-[10px] hidden sm:inline font-normal bg-black/25 px-1 rounded">(${parts[0]} +${parts.length - 1})</span>`;
+                    })() : ''}
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0 ml-1 text-[10px]">
+                    <span class="font-bold opacity-90">${t.progress}%</span>
+                    ${isDone ? '<i class="fa-solid fa-circle-check text-white text-[11px]"></i>' : ''}
+                    ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>' : ''}
+                  </div>
                 </div>
               </div>
             `;
-            trackGrid.appendChild(bar);
           });
-          ganttLayer.appendChild(trackGrid);
         }
 
-        weekGridContainer.appendChild(ganttLayer);
-        weekCard.appendChild(weekGridContainer);
+        weekCard.innerHTML = `
+          <div class="unified-cal-wrapper">
+            <div class="unified-cal-table">
+              <div class="unified-cal-row" style="min-height: ${rowMinHeight}px;">
+                ${cellsHTML}
+                <div class="cal-gantt-overlay cal-overlay-row1">
+                  <div class="cal-track-grid" style="grid-auto-rows: 30px; row-gap: 3px;">
+                    ${barsHTML}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
         container.appendChild(weekCard);
         return;
       }
 
-      // === 2. MULTI-MONTH VIEW (1M, 3M, 6M, 12M) - STRETCHED & LEGIBLE ===
+      // === 2. MULTI-MONTH VIEW (1M, 3M, 6M, 12M) ===
       const spanCount = typeof calendarSpan === 'number' ? calendarSpan : 3;
       const endMonth = startMonth + spanCount - 1;
       const endYear = currentYear + Math.floor(endMonth / 12);
@@ -5001,57 +5000,40 @@
         document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} - ${monthNames[normEndMonth]} ${endYear} (${spanCount} Months)`;
       }
 
-      // === 2. MONTHS VIEW (1M, 3M, 6M, 12M): ALL SUPPORT CONTINUOUS HORIZONTAL GANTT SPAN BARS ===
       let gridCols = 'grid-cols-1';
       let barVariantClass = '';
-      let autoRowHeight = 28;
-      let minRowBaseHeight = 42;
-      let defaultRowHeight = 90;
-      let dayHeaderSize = 'text-xs';
-      let dayNumSize = 'text-[11px]';
+      let autoRowHeight = 24;
+      let defaultRowHeight = 115;
       let titleSize = 'text-xs md:text-sm';
-      let maxVisibleTracks = 99; // show all or truncate with more indicator
 
       if (spanCount === 1) {
         gridCols = 'grid-cols-1';
         barVariantClass = '';
-        autoRowHeight = 28;
-        minRowBaseHeight = 42;
-        defaultRowHeight = 90;
-        dayHeaderSize = 'text-xs';
-        dayNumSize = 'text-[11px]';
+        autoRowHeight = 25;
+        defaultRowHeight = 115;
         titleSize = 'text-sm md:text-base';
       } else if (spanCount === 3) {
         gridCols = 'grid-cols-1 md:grid-cols-3';
         barVariantClass = 'gantt-bar-sm';
-        autoRowHeight = 22;
-        minRowBaseHeight = 32;
+        autoRowHeight = 20;
         defaultRowHeight = 72;
-        dayHeaderSize = 'text-[10.5px]';
-        dayNumSize = 'text-[10px]';
         titleSize = 'text-xs md:text-sm';
       } else if (spanCount === 6) {
         gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
         barVariantClass = 'gantt-bar-xs';
-        autoRowHeight = 18;
-        minRowBaseHeight = 28;
-        defaultRowHeight = 60;
-        dayHeaderSize = 'text-[9.5px]';
-        dayNumSize = 'text-[9px]';
+        autoRowHeight = 16;
+        defaultRowHeight = 56;
         titleSize = 'text-xs';
       } else if (spanCount === 12) {
         gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
         barVariantClass = 'gantt-bar-xs';
-        autoRowHeight = 18;
-        minRowBaseHeight = 28;
-        defaultRowHeight = 60;
-        dayHeaderSize = 'text-[9.5px]';
-        dayNumSize = 'text-[9px]';
+        autoRowHeight = 16;
+        defaultRowHeight = 56;
         titleSize = 'text-xs md:text-sm';
       }
 
       const monthsGrid = document.createElement('div');
-      monthsGrid.className = `grid ${gridCols} gap-4`;
+      monthsGrid.className = `grid ${gridCols} gap-4 w-full`;
 
       for (let m = 0; m < spanCount; m++) {
         const absM = startMonth + m;
@@ -5059,88 +5041,89 @@
         const mIdx = ((absM % 12) + 12) % 12;
 
         const monthCard = document.createElement('div');
-        monthCard.className = 'month-calendar-card rounded-xl p-3 shadow-xl space-y-2 flex flex-col justify-between';
+        monthCard.className = spanCount === 1 ? 'month-calendar-card w-full' : 'month-calendar-card month-calendar-card-multi shadow-md space-y-2 flex flex-col justify-between';
 
         const weekRows = getWeekRowsForMonth(yIdx, mIdx);
 
-        // Header Title + Days of week
-        let headerRow = `
-          <div>
-            <div class="flex items-center justify-between pb-1.5 border-b border-slate-800 mb-1.5">
-              <h3 class="${titleSize} font-bold text-sky-300 flex items-center gap-1.5">
-                <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
-              </h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
-            </div>
-            <div class="grid grid-cols-7 gap-1 text-center ${dayHeaderSize} font-bold text-slate-400 pb-1">
-              <span class="text-rose-400">Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="text-sky-400">Sat</span>
-            </div>
-          </div>
-          <div class="space-y-1.5 flex-1">
-        `;
-
         let rowsHTML = '';
-        weekRows.forEach((wRow) => {
-          const weekDateStrs = wRow.map(x => x.dateStr);
-          const { placedTasks, trackCount } = computeWeekTaskTracks(weekDateStrs, filtered);
-          const rowMinHeight = Math.max(defaultRowHeight, minRowBaseHeight + (trackCount * autoRowHeight));
+        weekRows.forEach((wRow, wIdx) => {
+          const isFirstRow = (wIdx === 0);
+          let cellsHTML = '';
 
-          // Base 7-day columns
-          let colsHTML = `<div class="grid grid-cols-7 gap-1 h-full">`;
-          const todayObj = new Date();
           wRow.forEach((cell, dIdx) => {
-            const isCurrentMonth = cell.currentMonth;
+            const d = cell.d;
+            const isDay1 = (d === 1);
+            const dObj = new Date(cell.dateStr + 'T00:00:00');
+            const shortMonth = monthNames[dObj.getMonth()].substring(0, 3);
+            const displayDateText = isDay1 ? `${shortMonth} 1` : `${d}`;
+
             const isToday = (
               cell.d === todayObj.getDate() &&
               mIdx === todayObj.getMonth() &&
               yIdx === todayObj.getFullYear() &&
-              isCurrentMonth
+              cell.currentMonth
             );
-            const numColor = isToday ? 'bg-sky-500 text-white shadow' : (isCurrentMonth ? (dIdx === 0 ? 'text-rose-400' : (dIdx === 6 ? 'text-sky-400' : 'text-slate-300')) : 'text-slate-600');
-            const bgCell = isCurrentMonth ? (isToday ? 'bg-slate-900/90 border-sky-400 ring-1 ring-sky-400/30' : 'bg-slate-950/50 border-slate-800/80') : 'bg-slate-950/20 border-slate-900/40 opacity-30';
 
-            colsHTML += `
-              <div class="rounded border ${bgCell} p-1 flex flex-col justify-start min-h-[${rowMinHeight}px]">
-                <div class="flex items-center justify-between">
-                  <span class="${dayNumSize} font-black px-1 rounded ${numColor}">${cell.d}</span>
+            let displayDateHTML = '';
+            if (isToday) {
+              displayDateHTML = `<span class="cal-today-badge">${displayDateText}</span>`;
+            } else if (!cell.currentMonth) {
+              displayDateHTML = `<span class="cal-date-muted">${displayDateText}</span>`;
+            } else {
+              displayDateHTML = `<span>${displayDateText}</span>`;
+            }
+
+            let cellHeader = '';
+            if (isFirstRow) {
+              cellHeader = `
+                <div class="cal-header-row1">
+                  <div class="cal-day-name">${dayLabels[dIdx]}</div>
+                  <div class="cal-date-num">${displayDateHTML}</div>
                 </div>
+              `;
+            } else {
+              cellHeader = `
+                <div class="cal-header-rown">
+                  <div class="cal-date-num">${displayDateHTML}</div>
+                </div>
+              `;
+            }
+
+            cellsHTML += `
+              <div class="unified-cal-cell ${isToday ? 'is-today' : ''} ${!cell.currentMonth ? 'is-other-month' : ''}">
+                ${cellHeader}
               </div>
             `;
           });
-          colsHTML += `</div>`;
 
-          // Gantt track bars layer
-          const topOffset = spanCount === 1 ? 'top-8' : (spanCount === 3 ? 'top-6' : 'top-5');
-          let trackLayerHTML = `
-            <div class="absolute ${topOffset} left-1 right-1 bottom-1 pointer-events-none">
-              <div class="grid grid-cols-7 gap-1 auto-rows-[${autoRowHeight}px] pointer-events-auto">
-          `;
+          const weekDateStrs = wRow.map(x => x.dateStr);
+          const { placedTasks, trackCount } = computeWeekTaskTracks(weekDateStrs, filtered);
 
+          const baseHeaderHeight = isFirstRow ? (spanCount === 1 ? 48 : (spanCount === 3 ? 40 : 34)) : (spanCount === 1 ? 30 : (spanCount === 3 ? 24 : 20));
+          const rowMinHeight = Math.max(defaultRowHeight, baseHeaderHeight + (trackCount * (autoRowHeight + 3)) + 8);
+
+          let barsHTML = '';
           placedTasks.forEach(pt => {
             const t = pt.task;
             const isDone = t.progress >= 100;
             const catClass = getGanttCategoryClass(t.cat);
-
-            const hasStartHandle = !pt.isContinuationLeft;
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
             const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
-            const handleClass = hasStartHandle ? 'has-start-handle' : '';
             const doneClass = isDone ? 'gantt-bar-finished' : '';
             const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
 
-            // Text rendering based on view density
             let barContent = '';
             if (spanCount === 1) {
               barContent = `
-                <div class="flex items-center justify-between w-full overflow-hidden text-[10.5px] font-semibold gap-1.5">
+                <div class="flex items-center justify-between w-full overflow-hidden text-[11px] font-semibold gap-1.5">
                   <div class="flex items-center gap-1.5 truncate">
                     ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[8px] opacity-70"></i>' : ''}
-                    <span class="font-mono font-black text-[10.5px] opacity-95">${displayTitle}</span>
-                    ${t.tr ? `<span class="opacity-75 text-[9.5px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
+                    <span class="font-mono font-bold text-[11px]">${displayTitle}</span>
+                    ${t.tr ? `<span class="opacity-80 text-[9.5px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
                   </div>
                   <div class="flex items-center gap-1 shrink-0 ml-1 text-[9.5px]">
                     <span class="font-bold opacity-90">${t.progress}%</span>
-                    ${isDone ? '<i class="fa-solid fa-check text-emerald-300 text-[10px] drop-shadow-sm"></i>' : ''}
+                    ${isDone ? '<i class="fa-solid fa-check text-white text-[10px]"></i>' : ''}
                     ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[8px] opacity-70"></i>' : ''}
                   </div>
                 </div>
@@ -5150,16 +5133,15 @@
                 <div class="flex items-center justify-between w-full overflow-hidden text-[9.5px] font-semibold gap-1">
                   <div class="flex items-center gap-1 truncate">
                     ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[7px] opacity-70"></i>' : ''}
-                    <span class="font-mono font-black opacity-95">${pt.span >= 2 ? displayTitle : t.wbs}</span>
+                    <span class="font-mono font-bold">${pt.span >= 2 ? displayTitle : t.wbs}</span>
                   </div>
                   <div class="flex items-center gap-0.5 shrink-0 text-[8.5px]">
-                    ${isDone ? '<i class="fa-solid fa-check text-emerald-300 text-[9px] drop-shadow-sm"></i>' : `<span class="font-bold opacity-75">${t.progress}%</span>`}
+                    ${isDone ? '<i class="fa-solid fa-check text-white text-[9px]"></i>' : `<span class="font-bold opacity-80">${t.progress}%</span>`}
                     ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[7px] opacity-70"></i>' : ''}
                   </div>
                 </div>
               `;
             } else {
-              // 6M & 12M Micro View
               barContent = `
                 <div class="flex items-center justify-between w-full overflow-hidden text-[8.5px] font-bold gap-0.5">
                   <div class="flex items-center gap-0.5 truncate">
@@ -5171,27 +5153,53 @@
               `;
             }
 
-            trackLayerHTML += `
+            barsHTML += `
               <div onclick="openModal('edit', '${t.id}')"
                    title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%"
-                   class="gantt-bar ${barVariantClass} ${catClass} ${doneClass} ${handleClass} ${contLeftClass} ${contRightClass} group"
+                   class="gantt-bar ${barVariantClass} ${catClass} ${doneClass} ${contLeftClass} ${contRightClass} group"
                    style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
                 ${barContent}
               </div>
             `;
           });
 
-          trackLayerHTML += `</div></div>`;
-
+          const overlayTopClass = isFirstRow ? 'cal-overlay-row1' : 'cal-overlay-rown';
           rowsHTML += `
-            <div class="relative rounded-lg border border-slate-800/80 bg-slate-950/40 p-1 min-h-[${rowMinHeight}px] overflow-hidden">
-              ${colsHTML}
-              ${trackLayerHTML}
+            <div class="unified-cal-row" style="min-height: ${rowMinHeight}px;">
+              ${cellsHTML}
+              <div class="cal-gantt-overlay ${overlayTopClass}">
+                <div class="cal-track-grid" style="grid-auto-rows: ${autoRowHeight}px; row-gap: 2.5px;">
+                  ${barsHTML}
+                </div>
+              </div>
             </div>
           `;
         });
 
-        monthCard.innerHTML = headerRow + rowsHTML + `</div>`;
+        if (spanCount === 1) {
+          monthCard.innerHTML = `
+            <div class="unified-cal-wrapper">
+              <div class="unified-cal-table">
+                ${rowsHTML}
+              </div>
+            </div>
+          `;
+        } else {
+          monthCard.innerHTML = `
+            <div class="flex items-center justify-between pb-1.5 border-b border-slate-700/40 mb-2">
+              <h3 class="${titleSize} font-bold text-sky-400 flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
+              </h3>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
+            </div>
+            <div class="unified-cal-wrapper flex-1">
+              <div class="unified-cal-table">
+                ${rowsHTML}
+              </div>
+            </div>
+          `;
+        }
+
         monthsGrid.appendChild(monthCard);
       }
 
