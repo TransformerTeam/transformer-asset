@@ -4865,7 +4865,8 @@
     }
 
     function renderCalendar(filteredList = null) {
-      const filtered = filteredList || getFilteredTasks();
+      const allFiltered = filteredList || getFilteredTasks();
+      const filtered = allFiltered.filter(t => !t.parentId);
       const container = document.getElementById('calendar-container');
       if (!container) return;
       container.innerHTML = '';
