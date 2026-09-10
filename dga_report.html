@@ -59,7 +59,7 @@
     /* Top Control Bar */
     .control-panel {
       width: 100%;
-      max-width: 900px;
+      max-width: 1200px;
       background: var(--panel-dark);
       border: 1px solid var(--border-dark);
       border-radius: 12px;
@@ -69,10 +69,11 @@
       -webkit-backdrop-filter: blur(12px);
       box-shadow: var(--glass-glow);
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      transition: max-width 0.3s ease;
     }
 
     .selector-group {
@@ -174,31 +175,31 @@
     /* Report Sheet Layout Container */
     .report-wrapper {
       width: 100%;
-      max-width: 900px;
+      max-width: 1200px;
       display: flex;
       flex-direction: column;
       gap: 30px;
+      transition: max-width 0.3s ease;
     }
 
     .report-page {
       background-color: #ffffff;
       color: #000000;
       width: 100%;
-      padding: 24px;
+      padding: 28px 36px;
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       position: relative;
     }
 
-    /* Header Bar */
     /* Header Bar (Matching Power Factor Report Theme) */
     .report-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       border-bottom: 3px solid var(--report-primary);
-      padding-bottom: 10px;
-      margin-bottom: 15px;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
       background: transparent;
     }
 
@@ -208,21 +209,21 @@
     }
 
     .report-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
       color: var(--report-primary);
       letter-spacing: 0.5px;
     }
 
     .report-subtitle {
-      font-size: 12px;
+      font-size: 13px;
       color: #b91c1c;
       font-weight: 700;
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     .logo-container img {
-      height: 44px;
+      height: 48px;
       object-fit: contain;
     }
 
@@ -230,13 +231,13 @@
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 8px;
-      font-size: 10px;
+      margin-bottom: 10px;
+      font-size: 11.5px;
     }
 
     .report-table th, .report-table td {
       border: 1px solid #718096;
-      padding: 3px 6px;
+      padding: 5px 8px;
     }
 
     .report-table th {
@@ -250,27 +251,29 @@
       background-color: #f9fafb;
       color: #0f172a;
       font-weight: 700;
-      width: 15%;
+      width: 16%;
+      font-size: 11.5px;
     }
 
     .tbl-meta td.val {
       font-weight: 600;
       color: #1e3a8a;
-      width: 35%;
+      width: 34%;
+      font-size: 11.5px;
     }
 
     .section-title {
       background-color: var(--report-primary);
       color: #ffffff;
-      font-size: 11px;
+      font-size: 12.5px;
       font-weight: 700;
-      padding: 4px 8px;
-      margin-top: 12px;
-      margin-bottom: 8px;
+      padding: 6px 12px;
+      margin-top: 14px;
+      margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-bottom: none;
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     /* Criteria Summary Box (IEEE C57.104-2019) */
@@ -278,10 +281,10 @@
       background-color: #f8fafc;
       border: 1px solid #cbd5e1;
       border-left: 5px solid #2563eb;
-      padding: 8px 12px;
-      margin-bottom: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
       border-radius: 4px;
-      font-size: 9.5px;
+      font-size: 11px;
     }
 
     .criteria-header-row {
@@ -293,17 +296,63 @@
 
     .criteria-title-txt {
       font-weight: 700;
-      font-size: 10.5px;
+      font-size: 12.5px;
       color: #1e3a8a;
     }
 
     .status-pill {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 9px;
+      font-size: 10px;
       text-transform: uppercase;
+    }
+    .status-pill.status-a { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .status-pill.status-b { background-color: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+    .status-pill.status-c { background-color: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+    .status-pill.status-d { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    /* Interactive View Zoom & Width Controller */
+    .view-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 3px 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .btn-zoom {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.15s ease;
+    }
+    .btn-zoom:hover {
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--primary);
+    }
+    .zoom-level-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      min-width: 40px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .zoom-level-text:hover {
+      color: var(--primary);
     }
     .status-pill.status-a { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
     .status-pill.status-b { background-color: #fef9c3; color: #a16207; border: 1px solid #fde047; }
@@ -329,11 +378,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 180px;
+      height: 205px;
       border: 1px solid #cbd5e1;
-      padding: 8px 12px;
+      padding: 10px 16px;
       background: #f8fafc;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       border-radius: 6px;
     }
 
@@ -347,14 +396,14 @@
     }
 
     .gas-bar-label-top {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
     .gas-bar-stack {
-      width: 18px;
-      height: 75px;
+      width: 22px;
+      height: 85px;
       display: flex;
       flex-direction: column-reverse;
       border: 1px solid #64748b;
@@ -367,7 +416,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 7.5px;
+      font-size: 8.5px;
       font-weight: 600;
       color: #000;
     }
@@ -376,8 +425,8 @@
     .bar-seg.red { background-color: #ef4444; }
 
     .gas-bar-val-bottom {
-      margin-top: 3px;
-      font-size: 8.5px;
+      margin-top: 4px;
+      font-size: 10px;
       font-weight: 700;
       color: #0f172a;
     }
@@ -386,18 +435,18 @@
     .keygas-trending-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 12px;
+      margin-bottom: 10px;
       width: 100%;
       box-sizing: border-box;
     }
 
     .keygas-trending-grid .trend-box {
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 6px 14px 4px 10px;
+      border-radius: 6px;
+      padding: 8px 16px 6px 12px;
       background: #ffffff;
-      height: 220px;
+      height: 250px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
@@ -411,27 +460,27 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
     }
     .keygas-trending-grid .trend-title {
-      font-size: 10.5px;
+      font-size: 12px;
       font-weight: 700;
       color: #2563eb;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     /* Gas Pattern Grid (Page 3) */
     .gas-pattern-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 10px;
       width: 100%;
       box-sizing: border-box;
     }
     .gas-pattern-box {
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 6px 10px 4px 6px;
+      border-radius: 6px;
+      padding: 8px 12px 6px 8px;
       background: #ffffff;
-      height: 185px;
+      height: 215px;
       overflow: hidden;
       box-sizing: border-box;
       min-width: 0;
@@ -449,17 +498,17 @@
     .duval-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 12px;
+      margin-bottom: 10px;
       width: 100%;
       box-sizing: border-box;
     }
     .duval-card {
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 6px 10px;
+      border-radius: 6px;
+      padding: 8px 12px;
       background: #ffffff;
-      height: 270px;
+      height: 310px;
       text-align: left;
       overflow: hidden;
       box-sizing: border-box;
@@ -470,7 +519,7 @@
     }
     .duval-svg-container {
       flex: 1;
-      height: 220px;
+      height: 260px;
       width: 100%;
       overflow: hidden;
     }
@@ -848,6 +897,16 @@
     </div>
     
     <div class="btn-group">
+      <!-- Interactive Zoom & Width Controller -->
+      <div class="view-controls" title="Adjust View Scale">
+        <button class="btn-zoom" onclick="adjustViewZoom(-0.1)" title="Zoom Out (-10%)"><i class="fa-solid fa-minus"></i></button>
+        <span class="zoom-level-text" id="zoom-text" onclick="resetViewZoom()" title="Click to Reset (100%)">100%</span>
+        <button class="btn-zoom" onclick="adjustViewZoom(0.1)" title="Zoom In (+10%)"><i class="fa-solid fa-plus"></i></button>
+        <button class="btn-zoom" id="btn-toggle-width" onclick="toggleReportWidth()" title="Toggle Width Mode (1200px / 1400px / 1000px)" style="border-left: 1px solid var(--border-dark); border-radius: 0 6px 6px 0; margin-left: 2px; padding-left: 4px;">
+          <i class="fa-solid fa-expand"></i>
+        </button>
+      </div>
+
       <a href="#page-4" class="btn btn-secondary" style="text-decoration: none;">
         <i class="fa-solid fa-diagram-project"></i> DGA Flowchart & Norms
       </a>
@@ -916,16 +975,16 @@
           <span class="criteria-title-txt"><i class="fa-solid fa-shield-halved"></i> DGA Interpretation & Evaluation Summary (IEEE Std C57.104-2019 Clause 6)</span>
           <span class="status-pill status-a" id="summary-status-pill">DGA Status 1: Normal</span>
         </div>
-        <div style="font-size:9px; font-weight:700; color:#1e293b; margin-top:3px; margin-bottom:2px;" id="summary-decision-trail">
+        <div style="font-size:11px; font-weight:700; color:#1e293b; margin-top:4px; margin-bottom:3px;" id="summary-decision-trail">
           Decision 1: All combustible gases < Table 1, Δ < Table 3, and Multi-point Rates < Table 4 → DGA Status 1 (Normal)
         </div>
-        <p style="margin-bottom:4px; font-size:8.5px; color:#334155; line-height:1.35;" id="summary-text-desc">
+        <p style="margin-bottom:6px; font-size:10.5px; color:#334155; line-height:1.4;" id="summary-text-desc">
           Unit is operating normally. Routine periodic sampling schedule (6–12 months) recommended.
         </p>
-        <div style="font-size:8px; color:#64748b; background:rgba(0,0,0,0.03); border:1px solid #e2e8f0; border-radius:4px; padding:3px 8px; margin-bottom:5px;" id="summary-operating-baseline">
+        <div style="font-size:10px; color:#64748b; background:rgba(0,0,0,0.03); border:1px solid #e2e8f0; border-radius:4px; padding:4px 10px; margin-bottom:8px;" id="summary-operating-baseline">
           Operating Baseline: O<sub>2</sub>/N<sub>2</sub> Ratio = - | Age = - Years | Multi-point Rate Window = -
         </div>
-        <table class="report-table" style="margin-bottom:0; background:#ffffff; font-size:7.5px;">
+        <table class="report-table" style="margin-bottom:0; background:#ffffff; font-size:11px;">
           <thead>
             <tr>
               <th style="width:14%; white-space:nowrap;">Gas Symbol</th>
@@ -945,15 +1004,15 @@
       </div>
 
       <!-- IEC 60599 Gas Ratio Analysis Section -->
-      <div class="criteria-box-summary" style="margin-top:6px; border-left: 4px solid #0284c7;">
+      <div class="criteria-box-summary" style="margin-top:8px; border-left: 4px solid #0284c7;">
         <div class="criteria-header-row">
-          <span class="criteria-title-txt"><i class="fa-solid fa-calculator"></i> IEC 60599 Gas Ratio & Fault Diagnosis</span>
+          <span class="criteria-title-txt" style="font-size:12px;"><i class="fa-solid fa-calculator"></i> IEC 60599 Gas Ratio & Fault Diagnosis</span>
           <span class="status-pill status-a" id="iec-status-pill">Normal</span>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px; margin-top: 5px;">
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 10px; margin-top: 6px;">
           <!-- Left: Gas Ratios Table -->
-          <table class="report-table" style="margin-bottom:0; background:#ffffff;">
+          <table class="report-table" style="margin-bottom:0; background:#ffffff; font-size:11px;">
             <thead>
               <tr>
                 <th style="width:45%;">IEC Ratios</th>
@@ -986,20 +1045,20 @@
           </table>
 
           <!-- Right: Fault Diagnosis Summary Card -->
-          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:4px; padding:8px 12px; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
-              <div style="font-size:9.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">
+              <div style="font-size:11px; font-weight:700; color:#1e293b; margin-bottom:4px;">
                 <i class="fa-solid fa-stethoscope"></i> IEC 60599 Fault Diagnosis:
               </div>
-              <div style="font-size:11.5px; font-weight:800; color:#0369a1; margin-bottom:3px;" id="iec-fault-name">
+              <div style="font-size:13px; font-weight:800; color:#0369a1; margin-bottom:4px;" id="iec-fault-name">
                 Normal / No Fault Detected
               </div>
-              <div style="font-size:8.5px; color:#334155; line-height:1.35;" id="iec-fault-desc">
+              <div style="font-size:10.5px; color:#334155; line-height:1.4;" id="iec-fault-desc">
                 All gas concentrations are within normal limits of IEC 60599.
               </div>
             </div>
 
-            <div style="margin-top:4px; padding-top:4px; border-top:1px dashed #cbd5e1; font-size:8.5px; color:#334155;">
+            <div style="margin-top:6px; padding-top:6px; border-top:1px dashed #cbd5e1; font-size:10.5px; color:#334155;">
               <strong>Paper Insulation Condition:</strong> <span id="iec-paper-desc">Normal Paper Aging</span>
             </div>
           </div>
@@ -1007,24 +1066,24 @@
       </div>
 
       <!-- Key Gas Analysis Stacked Bar Chart [IEEE C57.104-2019] -->
-      <div style="font-weight:700; font-size:9.5px; margin-top:5px; margin-bottom:3px;">Key Gas Analysis [IEEE C57.104-2019]</div>
-      <div class="keygas-chart-container" id="keygas-stacked-bars" style="margin-bottom:6px;">
+      <div style="font-weight:700; font-size:11.5px; margin-top:8px; margin-bottom:4px;">Key Gas Analysis [IEEE C57.104-2019]</div>
+      <div class="keygas-chart-container" id="keygas-stacked-bars" style="margin-bottom:8px;">
         <!-- Rendered dynamically -->
       </div>
 
       <!-- Test Result Section -->
-      <div style="font-weight:700; font-size:10px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
         <span>Test Result</span>
-        <span style="font-size:9px; color:#475569;">O2/N2 Ratio: <strong id="lbl-o2n2-ratio">0.24</strong></span>
+        <span style="font-size:11px; color:#475569;">O2/N2 Ratio: <strong id="lbl-o2n2-ratio">0.24</strong></span>
       </div>
 
       <table class="report-table tbl-results">
         <thead>
           <tr>
             <th style="width:30%; text-align:left;">Parameter</th>
-            <th style="width:23%;" colspan="2">Current Sampling<br><span id="date-sample-curr" style="font-weight:400; font-size:9px;">-</span></th>
-            <th style="width:23%;" colspan="2">Previous Sampling<br><span id="date-sample-prev1" style="font-weight:400; font-size:9px;">-</span></th>
-            <th style="width:24%;" colspan="2">Previous Sampling<br><span id="date-sample-prev2" style="font-weight:400; font-size:9px;">-</span></th>
+            <th style="width:23%;" colspan="2">Current Sampling<br><span id="date-sample-curr" style="font-weight:400; font-size:10.5px;">-</span></th>
+            <th style="width:23%;" colspan="2">Previous Sampling<br><span id="date-sample-prev1" style="font-weight:400; font-size:10.5px;">-</span></th>
+            <th style="width:24%;" colspan="2">Previous Sampling<br><span id="date-sample-prev2" style="font-weight:400; font-size:10.5px;">-</span></th>
           </tr>
         </thead>
         <tbody>
@@ -2475,12 +2534,12 @@ graph TD
         if (g.status === 3) statusBadge = `<span class="status-pill status-d">Status 3</span>`;
 
         const deltaDisplay = (g.prevVal !== null)
-          ? `${formatNum(g.delta)} <span style="font-size:7px;color:#64748b;">(≤${g.t3})</span>`
+          ? `${formatNum(g.delta)} <span style="font-size:8.5px;color:#64748b;">(≤${g.t3})</span>`
           : `-`;
         
         const rateDisplay = (g.rate !== null)
-          ? `${g.rate.toFixed(1)} <span style="font-size:7px;color:#64748b;">(≤${g.t4})</span>`
-          : `<span style="font-size:7px;color:#94a3b8;">N/A (&lt;3pts)</span>`;
+          ? `${g.rate.toFixed(1)} <span style="font-size:8.5px;color:#64748b;">(≤${g.t4})</span>`
+          : `<span style="font-size:8.5px;color:#94a3b8;">N/A (&lt;3pts)</span>`;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -2491,7 +2550,7 @@ graph TD
           <td style="text-align:right; white-space:nowrap;">${deltaDisplay}</td>
           <td style="text-align:right; white-space:nowrap;">${rateDisplay}</td>
           <td style="text-align:center; white-space:nowrap;">${statusBadge}</td>
-          <td style="font-size:7.5px; color:#334155; line-height:1.25;">${g.finding}</td>
+          <td style="font-size:10px; color:#334155; line-height:1.35;">${g.finding}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -3938,6 +3997,83 @@ graph TD
       if (e.target.classList.contains('duval-point')) {
         const tooltip = document.getElementById('duval-tooltip');
         tooltip.style.display = 'none';
+      }
+    });
+
+    // --- Interactive View Zoom & Width Controller ---
+    let currentZoom = 1.0;
+    const widthModes = ['1200px', '1400px', '1000px'];
+    let currentWidthIndex = 0;
+
+    function adjustViewZoom(delta) {
+      currentZoom = Math.max(0.7, Math.min(1.5, Math.round((currentZoom + delta) * 10) / 10));
+      applyZoom();
+    }
+
+    function resetViewZoom() {
+      currentZoom = 1.0;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      const wrap = document.getElementById('report-capture-area');
+      const lbl = document.getElementById('zoom-text');
+      if (wrap) {
+        wrap.style.zoom = currentZoom;
+      }
+      if (lbl) {
+        lbl.textContent = Math.round(currentZoom * 100) + '%';
+      }
+      try {
+        localStorage.setItem('dga_report_zoom', currentZoom);
+      } catch (e) {}
+    }
+
+    function toggleReportWidth() {
+      currentWidthIndex = (currentWidthIndex + 1) % widthModes.length;
+      const newWidth = widthModes[currentWidthIndex];
+      const wrap = document.getElementById('report-capture-area');
+      const ctrl = document.querySelector('.control-panel');
+      if (wrap) wrap.style.maxWidth = newWidth;
+      if (ctrl) ctrl.style.maxWidth = newWidth;
+      const btn = document.getElementById('btn-toggle-width');
+      if (btn) {
+        btn.innerHTML = newWidth === '1400px' 
+          ? '<i class="fa-solid fa-compress"></i>' 
+          : (newWidth === '1000px' ? '<i class="fa-solid fa-file"></i>' : '<i class="fa-solid fa-expand"></i>');
+        btn.title = `Width: ${newWidth} (Click to toggle)`;
+      }
+      try {
+        localStorage.setItem('dga_report_width_idx', currentWidthIndex);
+      } catch (e) {}
+    }
+
+    try {
+      const savedZoom = parseFloat(localStorage.getItem('dga_report_zoom'));
+      if (!isNaN(savedZoom) && savedZoom >= 0.7 && savedZoom <= 1.5) {
+        currentZoom = savedZoom;
+      }
+      const savedWidthIdx = parseInt(localStorage.getItem('dga_report_width_idx'), 10);
+      if (!isNaN(savedWidthIdx) && savedWidthIdx >= 0 && savedWidthIdx < widthModes.length) {
+        currentWidthIndex = savedWidthIdx;
+      }
+    } catch (e) {}
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyZoom();
+      if (currentWidthIndex !== 0) {
+        const newWidth = widthModes[currentWidthIndex];
+        const wrap = document.getElementById('report-capture-area');
+        const ctrl = document.querySelector('.control-panel');
+        if (wrap) wrap.style.maxWidth = newWidth;
+        if (ctrl) ctrl.style.maxWidth = newWidth;
+        const btn = document.getElementById('btn-toggle-width');
+        if (btn) {
+          btn.innerHTML = newWidth === '1400px' 
+            ? '<i class="fa-solid fa-compress"></i>' 
+            : (newWidth === '1000px' ? '<i class="fa-solid fa-file"></i>' : '<i class="fa-solid fa-expand"></i>');
+          btn.title = `Width: ${newWidth} (Click to toggle)`;
+        }
       }
     });
   </script>
