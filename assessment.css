@@ -1683,35 +1683,100 @@ header p {
 .custom-marker-pin.critical { background-color: var(--color-critical); }
 .custom-marker-pin.no-assess { background-color: #6b7280; }
 
-/* Substation Power Transformer Map Markers */
-.custom-tr-marker {
-  display: inline-block;
+/* 3D Substation Power Transformer Map Markers */
+.custom-3d-leaflet-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.tr-3d-marker {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.8));
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.85));
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+  user-select: none;
 }
 
-.custom-tr-marker:hover {
-  transform: scale(1.22) translateY(-2px);
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.95));
-  z-index: 1000 !important;
+.tr-3d-marker:hover {
+  transform: scale(1.28) translateY(-4px);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.95));
+  z-index: 9999 !important;
 }
 
-.custom-tr-marker .tr-marker-stroke-thin {
-  stroke: #ffffff;
-  stroke-width: 1.5px;
+/* Floating Status Pill */
+.tr-3d-marker .status-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  margin-bottom: -10px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
-.custom-tr-marker .tr-marker-stroke-thick {
-  stroke: #ffffff;
-  stroke-width: 2px;
+/* 3D Transformer Image */
+.tr-3d-marker .tr-3d-img {
+  width: 36px !important;
+  height: 40px !important;
+  object-fit: contain;
+  display: block;
+  z-index: 5;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
 }
 
-.custom-tr-marker.healthy .tr-marker-fill { fill: var(--color-good, #10b981); }
-.custom-tr-marker.monitoring .tr-marker-fill { fill: var(--color-fair, #eab308); }
-.custom-tr-marker.warning .tr-marker-fill { fill: var(--color-poor, #f97316); }
-.custom-tr-marker.critical .tr-marker-fill { fill: var(--color-critical, #ef4444); }
-.custom-tr-marker.no-assess .tr-marker-fill { fill: #64748b; }
+/* Foundation Pedestal & Anchor */
+.tr-3d-marker .foundation-base {
+  margin-top: -14px;
+  z-index: 2;
+}
+
+.tr-3d-marker svg {
+  display: block;
+}
+
+/* Status Color Styling */
+.tr-3d-marker.healthy .status-pill,
+.tr-3d-marker.healthy .foundation-ellipse,
+.tr-3d-marker.healthy .foundation-pointer {
+  background: #10b981;
+  fill: #10b981;
+}
+
+.tr-3d-marker.monitoring .status-pill,
+.tr-3d-marker.monitoring .foundation-ellipse,
+.tr-3d-marker.monitoring .foundation-pointer {
+  background: #eab308;
+  fill: #eab308;
+  color: #0f172a;
+}
+
+.tr-3d-marker.warning .status-pill,
+.tr-3d-marker.warning .foundation-ellipse,
+.tr-3d-marker.warning .foundation-pointer {
+  background: #f97316;
+  fill: #f97316;
+}
+
+.tr-3d-marker.critical .status-pill,
+.tr-3d-marker.critical .foundation-ellipse,
+.tr-3d-marker.critical .foundation-pointer {
+  background: #ef4444;
+  fill: #ef4444;
+}
+
+.tr-3d-marker.no-assess .status-pill,
+.tr-3d-marker.no-assess .foundation-ellipse,
+.tr-3d-marker.no-assess .foundation-pointer {
+  background: #64748b;
+  fill: #64748b;
+}
 
 
 /* Fullscreen Map Override Styles */
