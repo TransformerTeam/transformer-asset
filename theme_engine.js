@@ -282,6 +282,18 @@
     }
 
     init() {
+      // Check URL parameters first (e.g., ?preset=slate-light or ?theme=slate-light)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlPreset = urlParams.get('preset') || urlParams.get('theme');
+        if (urlPreset && THEME_PRESETS[urlPreset]) {
+          this.applyPreset(urlPreset, false);
+          return;
+        }
+      } catch (e) {
+        console.warn('[ThemeEngine] Failed to parse URL parameters.', e);
+      }
+
       // Check saved custom theme
       const savedCustom = localStorage.getItem(STORAGE_KEY_CUSTOM);
       if (savedCustom) {
