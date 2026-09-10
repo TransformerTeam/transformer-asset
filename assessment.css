@@ -86,7 +86,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Light Mode / Slate Modern Bright Page Background & Base Text */
+/* Light Mode / Slate Modern: Retain background image unchanged */
 [data-theme="light"] body,
 [data-preset="slate-light"] body,
 [data-preset="nordic-frost"] body,
@@ -94,10 +94,10 @@ body[data-theme="light"],
 html[data-theme="light"] body,
 html[data-preset="slate-light"] body,
 html[data-preset="nordic-frost"] body {
-  background: #f1f5f9 !important;
-  background-image: none !important;
-  color: #0f172a !important;
+  background: linear-gradient(rgba(13, 33, 73, 0.60), rgba(13, 33, 73, 0.60)), url('background.jpg') no-repeat center center fixed !important;
+  background-size: cover !important;
 }
+
 
 
 
@@ -2200,24 +2200,24 @@ header p {
   font-weight: 600 !important;
 }
 
-/* 3. Header & Navigation */
+/* 3. Header & Navigation (over background image) */
 [data-theme="light"] header,
 [data-preset="slate-light"] header,
 [data-preset="nordic-frost"] header {
-  border-bottom: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 [data-theme="light"] header h1,
 [data-preset="slate-light"] header h1,
 [data-preset="nordic-frost"] header h1 {
   background: none !important;
-  -webkit-text-fill-color: #0f172a !important;
-  color: #0f172a !important;
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
   font-weight: 800 !important;
 }
 [data-theme="light"] header p,
 [data-preset="slate-light"] header p,
 [data-preset="nordic-frost"] header p {
-  color: #475569 !important;
+  color: #cbe6f9 !important;
   font-weight: 700 !important;
   opacity: 1 !important;
 }
