@@ -1689,6 +1689,11 @@ header p {
   flex: 1 !important;
 }
 
+/* Dim satellite map background tiles only, keeping markers/points at 100% full brightness */
+#map .leaflet-tile-pane {
+  filter: brightness(0.65) contrast(1.1);
+}
+
 /* ==========================================================================
    EXCEL REPLICA DETAIL MODAL STYLES
    ========================================================================== */

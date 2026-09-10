@@ -463,6 +463,11 @@ header {
   z-index: 1;
 }
 
+/* Dim satellite map background tiles only, keeping markers/points at 100% full brightness */
+#map .leaflet-tile-pane {
+  filter: brightness(0.65) contrast(1.1);
+}
+
 /* Customized Leaflet Tooltip/Popup Styles */
 .leaflet-popup-content-wrapper {
   background: var(--bg-secondary) !important;
