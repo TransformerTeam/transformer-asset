@@ -4943,6 +4943,17 @@
               const dgaEval = evaluateDGAFlowchartCore(latestMt, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
               if (dgaEval) {
                 if (dgaEval.overallStatus === 3) {
+                  // Rule: กรณี H2, CH4, C2H6, C2H4, C2H2 ปกติ มีเฉพาะ CO หรือ CO2 เป็น DGA Status 3 ให้ score Evaluation เป็น 3
+                  if (dgaEval.isCarbonOxideOnlyStatus3) {
+                    const triggeredGases = [...new Set((dgaEval.carbonOxideStatus3Reasons || []).map(r => r.split(' ')[0]))];
+                    const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
+                    return {
+                      value: `Caution (IEEE C57.104 Status 3: ${gasLabel} only)`,
+                      testDate: date,
+                      ratingScore: 3,
+                      recommendation: dgaEval.recommendation
+                    };
+                  }
                   return {
                     value: `Critical (IEEE C57.104 ${dgaEval.statusText})`,
                     testDate: date,
@@ -4968,9 +4979,19 @@
             }
 
             // Fallback if evaluateDGAFlowchartCore not available
-            const isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
+            const combustibleCrit = h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
+            const coCrit = (co > 1100);
+            const isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || combustibleCrit || coCrit;
             const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
             if (isCritical) {
+              if (!combustibleCrit && (coCrit || (co > 350 && h2 <= 100 && ch4 <= 120 && c2h6 <= 65 && c2h4 <= 50 && c2h2 <= 1))) {
+                return {
+                  value: 'Caution (IEEE C57.104 Status 3: CO only)',
+                  testDate: date,
+                  ratingScore: 3,
+                  recommendation: 'Monitor cellulose degradation / paper aging (CO trend) & check operating temperature'
+                };
+              }
               return { 
                 value: 'Critical (IEEE C57.104 Status 3 Fault)', 
                 testDate: date, 

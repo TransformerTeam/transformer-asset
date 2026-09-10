@@ -2392,12 +2392,26 @@ graph TD
 
         if (condG) {
           overallStatus = 3;
-          statusText = 'DGA Status 3: High Risk / Active Fault';
-          badgeClass = 'status-d';
-          stepGResult = 'Triggered Status 3';
-          stepGDetail = stepGTriggers.slice(0, 2).join('; ') + (stepGTriggers.length > 2 ? ` (+${stepGTriggers.length - 2} more)` : '');
-          decisionTrail = `Decision 1 Failed → Decision 2 (Triggered): ${stepGTriggers.join(', ')} → High Risk / Active Fault Detected.`;
-          recommendation = 'เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification (Duval Triangles/Pentagons, Rogers Ratios), ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไขเร่งด่วน';
+          const combustibleSymbols = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
+          const combustibleTriggers = stepGTriggers.filter(t => combustibleSymbols.some(s => t.startsWith(s + ' ') || t.startsWith(s + '　')));
+          const carbonOxideTriggers = stepGTriggers.filter(t => t.startsWith('CO ') || t.startsWith('CO2 '));
+          const isCarbonOxideOnly = combustibleTriggers.length === 0 && carbonOxideTriggers.length > 0;
+
+          if (isCarbonOxideOnly) {
+            statusText = 'DGA Status 3: Caution (CO/CO2 Cellulose Degradation)';
+            badgeClass = 'status-b';
+            stepGResult = 'Triggered Status 3 (CO/CO2 Only)';
+            stepGDetail = stepGTriggers.slice(0, 2).join('; ') + (stepGTriggers.length > 2 ? ` (+${stepGTriggers.length - 2} more)` : '');
+            decisionTrail = `Decision 1 Failed → Decision 2 (Triggered): ${stepGTriggers.join(', ')} → Cellulose Degradation Detected (Combustible gases normal → Health Index Evaluation Score = 3).`;
+            recommendation = 'พบอัตราการเกิดหรือปริมาณก๊าซ CO/CO2 สูงเกินเกณฑ์ (Cellulose Degradation / การเสื่อมสภาพของฉนวนกระดาษ) ในขณะที่ก๊าซติดไฟหลัก (H2, CH4, C2H6, C2H4, C2H2) ยังอยู่ในเกณฑ์ปกติ จึงยังไม่พบความผิดปกติทางไฟฟ้าในน้ำมัน (Health Index Evaluation Score = 3: Monitoring) แนะนำให้ติดตามอัตราการเกิดของ CO/CO2 อย่างใกล้ชิด ตรวจวัดค่า Furan/DP และตรวจสอบอุณหภูมิใช้งาน';
+          } else {
+            statusText = 'DGA Status 3: High Risk / Active Fault';
+            badgeClass = 'status-d';
+            stepGResult = 'Triggered Status 3';
+            stepGDetail = stepGTriggers.slice(0, 2).join('; ') + (stepGTriggers.length > 2 ? ` (+${stepGTriggers.length - 2} more)` : '');
+            decisionTrail = `Decision 1 Failed → Decision 2 (Triggered): ${stepGTriggers.join(', ')} → High Risk / Active Fault Detected.`;
+            recommendation = 'เข้าสู่กระบวนการระบุประเภทความผิดปกติ Fault Identification (Duval Triangles/Pentagons, Rogers Ratios), ประเมินความเสี่ยง ตรวจสอบทางไฟฟ้าเพิ่มเติม ปรึกษาผู้ผลิต/ผู้เชี่ยวชาญ และวางมาตรการแก้ไขเร่งด่วน';
+          }
         } else {
           overallStatus = 2;
           statusText = 'DGA Status 2: Intermediate / Suspicious';

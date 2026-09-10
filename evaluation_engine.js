@@ -229,6 +229,8 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
 
   const t4Limits = norms.table4[t4DurKey];
   const gKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+  const combustibleKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
+  const carbonOxideKeys = ['CO', 'CO2'];
 
   let allGasLtT1 = true;
   let allDeltaLtT3 = true;
@@ -240,6 +242,10 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
 
   const triggerReasons = [];
   const cautionReasons = [];
+  const combustibleStatus3Reasons = [];
+  const carbonOxideStatus3Reasons = [];
+  const combustibleCautionReasons = [];
+  const carbonOxideCautionReasons = [];
 
   gKeys.forEach(k => {
     const cVal = parseFloat(curr[k] || 0);
@@ -255,14 +261,25 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     if (cVal > t1) {
       allGasLtT1 = false;
       cautionReasons.push(`${k} level (${cVal} > T1: ${t1})`);
+      if (combustibleKeys.includes(k)) {
+        combustibleCautionReasons.push(`${k} level (${cVal} > T1: ${t1})`);
+      } else {
+        carbonOxideCautionReasons.push(`${k} level (${cVal} > T1: ${t1})`);
+      }
     }
     if (pVal !== null) {
       if (k === 'C2H2' && delta > 0.5 && cVal > 1) {
         allDeltaLtT3 = false;
         cautionReasons.push(`C2H2 increasing (Δ=${delta.toFixed(1)})`);
+        combustibleCautionReasons.push(`C2H2 increasing (Δ=${delta.toFixed(1)})`);
       } else if (delta > t3) {
         allDeltaLtT3 = false;
         cautionReasons.push(`${k} Δ (${delta.toFixed(1)} > T3: ${t3})`);
+        if (combustibleKeys.includes(k)) {
+          combustibleCautionReasons.push(`${k} Δ (${delta.toFixed(1)} > T3: ${t3})`);
+        } else {
+          carbonOxideCautionReasons.push(`${k} Δ (${delta.toFixed(1)} > T3: ${t3})`);
+        }
       }
     }
     if (rate !== null) {
@@ -270,16 +287,27 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
         allRateLtT4 = false;
         anyC2H2Increasing = true;
         triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+        combustibleStatus3Reasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
       } else if (rate > t4) {
         allRateLtT4 = false;
         anyRateGtT4 = true;
         triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+        if (combustibleKeys.includes(k)) {
+          combustibleStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+        } else {
+          carbonOxideStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+        }
       }
     }
 
     if (cVal > t2) {
       anyGasGtT2 = true;
       triggerReasons.push(`${k} level (${cVal} > T2: ${t2})`);
+      if (combustibleKeys.includes(k)) {
+        combustibleStatus3Reasons.push(`${k} level (${cVal} > T2: ${t2})`);
+      } else {
+        carbonOxideStatus3Reasons.push(`${k} level (${cVal} > T2: ${t2})`);
+      }
     }
   });
 
@@ -287,6 +315,10 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
   let overallStatus = 1;
   let statusText = 'Status 1 (Normal)';
   let recommendation = 'Routine periodic screening (6–12 months)';
+
+  const hasCombustibleStatus3 = combustibleStatus3Reasons.length > 0;
+  const isCarbonOxideOnlyStatus3 = !hasCombustibleStatus3 && carbonOxideStatus3Reasons.length > 0;
+  const allCombustibleNormal = combustibleCautionReasons.length === 0 && !hasCombustibleStatus3;
 
   if (condD) {
     overallStatus = 1;
@@ -296,8 +328,13 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     const condG = anyGasGtT2 || anyRateGtT4 || anyC2H2Increasing;
     if (condG) {
       overallStatus = 3;
-      statusText = 'Status 3 (Active Fault)';
-      recommendation = `Active fault detected (${triggerReasons.slice(0, 2).join(', ')}). Perform Fault Identification (Duval/Rogers) & electrical tests.`;
+      if (isCarbonOxideOnlyStatus3) {
+        statusText = 'Status 3 (Cellulose Degradation / CO-CO2)';
+        recommendation = `Elevated cellulose degradation / paper aging detected (${carbonOxideStatus3Reasons.slice(0, 2).join(', ')}). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature.`;
+      } else {
+        statusText = 'Status 3 (Active Fault)';
+        recommendation = `Active fault detected (${triggerReasons.slice(0, 2).join(', ')}). Perform Fault Identification (Duval/Rogers) & electrical tests.`;
+      }
     } else {
       overallStatus = 2;
       statusText = 'Status 2 (Suspicious)';
@@ -311,7 +348,14 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     recommendation,
     triggerReasons,
     cautionReasons,
-    norms
+    norms,
+    hasCombustibleStatus3,
+    isCarbonOxideOnlyStatus3,
+    allCombustibleNormal,
+    combustibleStatus3Reasons,
+    carbonOxideStatus3Reasons,
+    combustibleCautionReasons,
+    carbonOxideCautionReasons
   };
 }
 
@@ -2006,6 +2050,17 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         const dgaEval = evaluateDGAFlowchartCore(latestMt, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
         if (dgaEval) {
           if (dgaEval.overallStatus === 3) {
+            // Rule: กรณี H2, CH4, C2H6, C2H4, C2H2 ปกติ มีเฉพาะ CO หรือ CO2 เป็น DGA Status 3 ให้ score Evaluation เป็น 3
+            if (dgaEval.isCarbonOxideOnlyStatus3) {
+              const triggeredGases = [...new Set((dgaEval.carbonOxideStatus3Reasons || []).map(r => r.split(' ')[0]))];
+              const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
+              return {
+                value: `Caution (IEEE C57.104 Status 3: ${gasLabel} only)`,
+                testDate: date,
+                ratingScore: 3,
+                recommendation: dgaEval.recommendation
+              };
+            }
             return {
               value: `Critical (IEEE C57.104 ${dgaEval.statusText})`,
               testDate: date,

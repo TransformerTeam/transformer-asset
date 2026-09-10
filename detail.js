@@ -2025,25 +2025,65 @@ function openDetail(no) {
     let maxIEEEStatus = 'DGA Status 1 (Normal)';
     let ieeeColor = '#10b981';
     
-    const gasKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
-    let hasExceededT2 = false;
-    let hasExceededT1 = false;
-    
-    for (let key of gasKeys) {
-      const val = parseFloat(latestDGA[key] || 0);
-      if (val > limitsT2[key]) {
-        hasExceededT2 = true;
-      } else if (val > limitsT1[key]) {
-        hasExceededT1 = true;
+    let dgaCoreEvaluated = false;
+    if (typeof evaluateDGAFlowchartCore === 'function') {
+      const allDgaRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && item && item.serial)
+        ? mtOilCsvData.filter(d => {
+            const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
+            return String(s).trim().toLowerCase() === String(item.serial).trim().toLowerCase();
+          }).sort((a, b) => new Date(b.date || b.Date || 0) - new Date(a.date || a.Date || 0))
+        : [latestDGA];
+      const dgaEval = evaluateDGAFlowchartCore(latestDGA, allDgaRecords[1] || null, allDgaRecords, trInfo || item);
+      if (dgaEval) {
+        dgaCoreEvaluated = true;
+        if (dgaEval.overallStatus === 3) {
+          if (dgaEval.isCarbonOxideOnlyStatus3) {
+            maxIEEEStatus = 'DGA Status 3 (Caution: CO/CO2 only)';
+            ieeeColor = '#eab308';
+          } else {
+            maxIEEEStatus = 'DGA Status 3 (Critical)';
+            ieeeColor = '#ef4444';
+          }
+        } else if (dgaEval.overallStatus === 2) {
+          maxIEEEStatus = 'DGA Status 2 (Caution)';
+          ieeeColor = '#eab308';
+        } else {
+          maxIEEEStatus = 'DGA Status 1 (Normal)';
+          ieeeColor = '#10b981';
+        }
       }
     }
-    
-    if (hasExceededT2) {
-      maxIEEEStatus = 'DGA Status 3 (Critical)';
-      ieeeColor = '#ef4444';
-    } else if (hasExceededT1) {
-      maxIEEEStatus = 'DGA Status 2 (Caution)';
-      ieeeColor = '#eab308';
+
+    if (!dgaCoreEvaluated) {
+      const gasKeys = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'CO2'];
+      let hasExceededT2 = false;
+      let hasExceededT1 = false;
+      let combustibleExceededT2 = false;
+      let carbonOxideExceededT2 = false;
+      
+      for (let key of gasKeys) {
+        const val = parseFloat(latestDGA[key] || 0);
+        if (val > limitsT2[key]) {
+          hasExceededT2 = true;
+          if (key === 'CO' || key === 'CO2') carbonOxideExceededT2 = true;
+          else combustibleExceededT2 = true;
+        } else if (val > limitsT1[key]) {
+          hasExceededT1 = true;
+        }
+      }
+      
+      if (hasExceededT2) {
+        if (!combustibleExceededT2 && carbonOxideExceededT2) {
+          maxIEEEStatus = 'DGA Status 3 (Caution: CO/CO2 only)';
+          ieeeColor = '#eab308';
+        } else {
+          maxIEEEStatus = 'DGA Status 3 (Critical)';
+          ieeeColor = '#ef4444';
+        }
+      } else if (hasExceededT1) {
+        maxIEEEStatus = 'DGA Status 2 (Caution)';
+        ieeeColor = '#eab308';
+      }
     }
     
     document.getElementById('ex-dga-ieee-status').textContent = maxIEEEStatus;
