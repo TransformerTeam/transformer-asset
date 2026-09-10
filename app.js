@@ -555,15 +555,29 @@ function plotMapMarkers() {
       statusLabel = 'CRITICAL';
     }
     
-    // 3D Transformer marker
+    let iconFile = 'transformer_noassess.png';
+    let statusColor = '#64748b';
+    if (statusClass === 'healthy') {
+      iconFile = 'transformer_healthy.png';
+      statusColor = '#10b981';
+    } else if (statusClass === 'monitoring') {
+      iconFile = 'transformer_monitoring.png';
+      statusColor = '#eab308';
+    } else if (statusClass === 'warning') {
+      iconFile = 'transformer_warning.png';
+      statusColor = '#f97316';
+    } else if (statusClass === 'critical') {
+      iconFile = 'transformer_critical.png';
+      statusColor = '#ef4444';
+    }
+    
+    // 3D Colored Transformer marker
     const trMarkerHtml = `
       <div class="tr-3d-marker ${statusClass}" title="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER} (${statusLabel} ${hi}%)">
-        <div class="status-pill">${!isNaN(hi) && hi > 0 ? Math.round(hi) + '%' : 'N/A'}</div>
-        <img src="transformer_3d.png" class="tr-3d-img" alt="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER}">
+        <img src="${iconFile}" class="tr-3d-img" alt="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER}">
         <div class="foundation-base">
-          <svg width="36" height="18" viewBox="0 0 36 18">
-            <ellipse cx="18" cy="7" rx="16" ry="5.5" class="foundation-ellipse" stroke="#ffffff" stroke-width="1.8"/>
-            <polygon points="14,10.5 22,10.5 18,16.5" class="foundation-pointer" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"/>
+          <svg width="28" height="14" viewBox="0 0 28 14">
+            <polygon points="7,2 21,2 14,12" fill="${statusColor}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
           </svg>
         </div>
       </div>`;
@@ -571,9 +585,9 @@ function plotMapMarkers() {
     const customIcon = L.divIcon({
       className: 'custom-3d-leaflet-marker',
       html: trMarkerHtml,
-      iconSize: [36, 52],
-      iconAnchor: [18, 50],
-      popupAnchor: [0, -50]
+      iconSize: [36, 46],
+      iconAnchor: [18, 44],
+      popupAnchor: [0, -44]
     });
     
     // Build popup HTML content

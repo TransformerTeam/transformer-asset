@@ -966,20 +966,37 @@ function plotMapMarkers() {
     
     const hi = item.healthIndex;
     let statusClass = 'no-assess';
-    if (hi === 0 || hi === null || hi === undefined) statusClass = 'no-assess';
-    else if (hi >= 80) statusClass = 'healthy';
-    else if (hi >= 70) statusClass = 'monitoring';
-    else if (hi >= 50) statusClass = 'warning';
-    else statusClass = 'critical';
+    let iconFile = 'transformer_noassess.png';
+    let statusColor = '#64748b';
+    
+    if (hi === 0 || hi === null || hi === undefined) {
+      statusClass = 'no-assess';
+      iconFile = 'transformer_noassess.png';
+      statusColor = '#64748b';
+    } else if (hi >= 80) {
+      statusClass = 'healthy';
+      iconFile = 'transformer_healthy.png';
+      statusColor = '#10b981';
+    } else if (hi >= 70) {
+      statusClass = 'monitoring';
+      iconFile = 'transformer_monitoring.png';
+      statusColor = '#eab308';
+    } else if (hi >= 50) {
+      statusClass = 'warning';
+      iconFile = 'transformer_warning.png';
+      statusColor = '#f97316';
+    } else {
+      statusClass = 'critical';
+      iconFile = 'transformer_critical.png';
+      statusColor = '#ef4444';
+    }
     
     const trMarkerHtml = `
       <div class="tr-3d-marker ${statusClass}" title="${item.name} (HI: ${hi ?? 0}%)">
-        <div class="status-pill">${hi != null && hi > 0 ? hi + '%' : 'N/A'}</div>
-        <img src="transformer_3d.png" class="tr-3d-img" alt="${item.name}">
+        <img src="${iconFile}" class="tr-3d-img" alt="${item.name}">
         <div class="foundation-base">
-          <svg width="36" height="18" viewBox="0 0 36 18">
-            <ellipse cx="18" cy="7" rx="16" ry="5.5" class="foundation-ellipse" stroke="#ffffff" stroke-width="1.8"/>
-            <polygon points="14,10.5 22,10.5 18,16.5" class="foundation-pointer" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"/>
+          <svg width="28" height="14" viewBox="0 0 28 14">
+            <polygon points="7,2 21,2 14,12" fill="${statusColor}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
           </svg>
         </div>
       </div>`;
@@ -987,9 +1004,9 @@ function plotMapMarkers() {
     const customIcon = L.divIcon({
       className: 'custom-3d-leaflet-marker',
       html: trMarkerHtml,
-      iconSize: [36, 52],
-      iconAnchor: [18, 50],
-      popupAnchor: [0, -50]
+      iconSize: [36, 46],
+      iconAnchor: [18, 44],
+      popupAnchor: [0, -44]
     });
     
     const popupContent = `
