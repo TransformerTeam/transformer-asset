@@ -10,6 +10,53 @@ function isExcludedSite(site) {
   return false;
 }
 
+function parsePowerRatingMVA(powerStr, serial, fallbackKva) {
+  let hiMva = null;
+  if (serial && typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+    const sClean = String(serial).trim().toUpperCase();
+    const hiItem = HEALTH_INDEX_DATA.find(x => String(x['Serial No'] || x.serial || '').trim().toUpperCase() === sClean);
+    if (hiItem && hiItem['Rated Power (MVA)']) {
+      const p = parseFloat(hiItem['Rated Power (MVA)']);
+      if (!isNaN(p) && p > 0) hiMva = p;
+    }
+  }
+
+  if (powerStr && typeof powerStr === 'string' && powerStr.trim() !== '' && powerStr.trim() !== '-') {
+    const s = powerStr.trim();
+    if (s.includes('/')) {
+      const parts = s.split('/');
+      const nums = parts.map(p => {
+        const clean = p.replace(/[^0-9.]/g, '');
+        const v = parseFloat(clean);
+        return isNaN(v) ? null : v;
+      }).filter(v => v !== null);
+
+      if (nums.length > 0) {
+        let maxVal = nums[nums.length - 1];
+        if (maxVal >= 1000) maxVal = maxVal / 1000;
+        return maxVal;
+      }
+    }
+
+    const isKva = /kVA/i.test(s);
+    const num = parseFloat(s.replace(/[^0-9.]/g, ''));
+    if (!isNaN(num) && num > 0) {
+      if (isKva) return num / 1000;
+      if (num >= 1000) return num / 1000;
+      if (hiMva && hiMva <= 1.0 && num >= 100) return num / 1000;
+      if (num > 500 && hiMva && hiMva <= 500) return hiMva;
+      return num;
+    }
+  }
+
+  if (hiMva) return hiMva;
+  if (fallbackKva) {
+    const fb = parseFloat(fallbackKva);
+    if (!isNaN(fb) && fb > 0) return fb >= 1000 ? fb / 1000 : fb;
+  }
+  return null;
+}
+
 function parseHealthIndexSumCSV(rows) {
   if (!rows || rows.length === 0) return [];
   const results = [];
@@ -2207,13 +2254,13 @@ function openDetail(no) {
       : null;
 
     const calcDevForTap = (tapKey, rawDevCol) => {
+      const rawD = parseFloat(tsRec[rawDevCol]);
       const zA = parseFloat(tsRec[`HV_A_Z_${tapKey}`] || tsRec[`HV_A_${tapKey}_Z`]);
       const zB = parseFloat(tsRec[`HV_B_Z_${tapKey}`] || tsRec[`HV_B_${tapKey}_Z`]);
       const zC = parseFloat(tsRec[`HV_C_Z_${tapKey}`] || tsRec[`HV_C_${tapKey}_Z`]);
       const vTap = parseFloat(tsRec[`Tap_Voltage_${tapKey}`] || (tapKey === 'Tap1' ? tsRec.Tap_Voltage_No1 : 0) || (facItem ? facItem.HV_Rated : 0));
       const fatZ = facItem ? parseFloat(facItem[`ShortZ_Y_${tapKey}`] || facItem[`ShortZ_X_${tapKey}`] || facItem.IMPEDANCE_MIDDLE_TAP || 0) : null;
-      const pKVA = facItem ? parseFloat(facItem.Power_Rated || facItem.Rated_Power || 0) : 0;
-      const sMVA = pKVA > 0 ? (pKVA >= 1000 ? pKVA / 1000 : pKVA) : null;
+      const sMVA = parsePowerRatingMVA(facItem ? (facItem.Power_Rated || facItem.Rated_Power) : null, item.serial);
 
       if (!isNaN(zA) && !isNaN(zB) && !isNaN(zC) && fatZ && fatZ > 0 && vTap > 0 && sMVA > 0) {
         const zAvg = (zA + zB + zC) / 3;
@@ -2225,10 +2272,13 @@ function openDetail(no) {
           const diff = Math.abs(c - fatZ);
           if (diff < minDiff) { minDiff = diff; best = c; }
         }
-        return (Math.abs(best - fatZ) / fatZ) * 100;
+        const dynDev = (Math.abs(best - fatZ) / fatZ) * 100;
+        if (!isNaN(rawD) && Math.abs(dynDev - rawD) > 5.0) {
+          return rawD;
+        }
+        return dynDev;
       }
 
-      const rawD = parseFloat(tsRec[rawDevCol]);
       if (!isNaN(rawD)) return rawD;
       return NaN;
     };

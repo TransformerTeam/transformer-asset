@@ -1332,6 +1332,53 @@
       renderShortReport(activeRecord);
     }
 
+    function parsePowerRatingMVA(powerStr, targetSerial, fallbackKva) {
+      let hiMva = null;
+      if (targetSerial && typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
+        const sClean = String(targetSerial).trim().toUpperCase();
+        const hiItem = HEALTH_INDEX_DATA.find(x => String(x['Serial No'] || x.serial || '').trim().toUpperCase() === sClean);
+        if (hiItem && hiItem['Rated Power (MVA)']) {
+          const p = parseFloat(hiItem['Rated Power (MVA)']);
+          if (!isNaN(p) && p > 0) hiMva = p;
+        }
+      }
+
+      if (powerStr && typeof powerStr === 'string' && powerStr.trim() !== '' && powerStr.trim() !== '-') {
+        const s = powerStr.trim();
+        if (s.includes('/')) {
+          const parts = s.split('/');
+          const nums = parts.map(p => {
+            const clean = p.replace(/[^0-9.]/g, '');
+            const v = parseFloat(clean);
+            return isNaN(v) ? null : v;
+          }).filter(v => v !== null);
+
+          if (nums.length > 0) {
+            let maxVal = nums[nums.length - 1];
+            if (maxVal >= 1000) maxVal = maxVal / 1000;
+            return maxVal;
+          }
+        }
+
+        const isKva = /kVA/i.test(s);
+        const num = parseFloat(s.replace(/[^0-9.]/g, ''));
+        if (!isNaN(num) && num > 0) {
+          if (isKva) return num / 1000;
+          if (num >= 1000) return num / 1000;
+          if (hiMva && hiMva <= 1.0 && num >= 100) return num / 1000;
+          if (num > 500 && hiMva && hiMva <= 500) return hiMva;
+          return num;
+        }
+      }
+
+      if (hiMva) return hiMva;
+      if (fallbackKva) {
+        const fb = parseFloat(fallbackKva);
+        if (!isNaN(fb) && fb > 0) return fb >= 1000 ? fb / 1000 : fb;
+      }
+      return null;
+    }
+
     function renderShortReport(record) {
       currentRecord = record;
       const serial = currentSerial;
@@ -1362,9 +1409,16 @@
       if (facMeta) {
         if (facMeta.Site && facMeta.Site !== '-' && facMeta.Site !== '') site = facMeta.Site;
         if (facMeta.Power_Rated && facMeta.Power_Rated !== '-' && facMeta.Power_Rated !== '') {
-          const pr = parseFloat(facMeta.Power_Rated);
-          if (!isNaN(pr) && pr > 0) {
-            power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+          const rawP = String(facMeta.Power_Rated).trim();
+          if (rawP.includes('/')) {
+            let cleanSlash = rawP.endsWith('MVA') ? rawP : `${rawP} MVA`;
+            if (cleanSlash.startsWith('385/')) cleanSlash = cleanSlash.replace('385/', '38.5/');
+            power = cleanSlash;
+          } else {
+            const pr = parseFloat(rawP);
+            if (!isNaN(pr) && pr > 0) {
+              power = pr >= 1000 ? `${(pr / 1000).toFixed(0)} MVA` : `${pr} MVA`;
+            }
           }
         }
         if (facMeta.HV_Rated) {
@@ -1710,8 +1764,7 @@
         // 2. Get Rated Power (MVA)
         let sMVA = null;
         if (facMeta) {
-          const pKVA = parseFloat(facMeta.Power_Rated || facMeta.Rated_Power || 0);
-          if (!isNaN(pKVA) && pKVA > 0) sMVA = pKVA >= 1000 ? pKVA / 1000 : pKVA;
+          sMVA = parsePowerRatingMVA(facMeta.Power_Rated || facMeta.Rated_Power, r ? (r.Serial_No || r.serial || r.SERIAL_NUMBER) : null);
         }
         if (!sMVA && typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
           const s = r ? (r.Serial_No || r.serial || r.SERIAL_NUMBER) : null;
@@ -1765,6 +1818,17 @@
         let calcDev = null;
         if (calcPctZ !== null && fatZ && fatZ > 0) {
           calcDev = (Math.abs(calcPctZ - fatZ) / fatZ) * 100;
+        }
+
+        // Safeguard: If rawDev from field test is available and dynamic calcDev diverges significantly (> 5%), prefer field test rawDev and rawPctZ
+        if (tapObj.rawDev && !isNaN(parseFloat(tapObj.rawDev)) && calcDev !== null) {
+          const rawD = parseFloat(tapObj.rawDev);
+          if (Math.abs(calcDev - rawD) > 5.0) {
+            calcDev = rawD;
+            if (tapObj.rawPctZ && !isNaN(parseFloat(tapObj.rawPctZ))) {
+              calcPctZ = parseFloat(tapObj.rawPctZ);
+            }
+          }
         }
 
         // Fallback: if dynamic %Z or %Dev couldn't be calculated, preserve original CSV values
@@ -2254,8 +2318,7 @@
         const zAvg = (zAVal !== null && zBVal !== null && zCVal !== null) ? (zAVal + zBVal + zCVal) / 3 : null;
         if (zAvg !== null && facMeta) {
           const fatCen = parseFloat(facMeta.ShortZ_Y_Cen || facMeta.ShortZ_X_Cen || facMeta.IMPEDANCE_MIDDLE_TAP || 0);
-          const pKVA = parseFloat(facMeta.Power_Rated || facMeta.Rated_Power || 0);
-          const sMVA = pKVA > 0 ? (pKVA >= 1000 ? pKVA / 1000 : pKVA) : null;
+          const sMVA = parsePowerRatingMVA(facMeta.Power_Rated || facMeta.Rated_Power, rec ? (rec.Serial_No || rec.serial) : null);
           const vTap = parseFloat(rec.Tap_Voltage_Cen || facMeta.HV_Rated || facMeta.Rated_Voltage || 0);
           if (fatCen > 0 && sMVA > 0 && vTap > 0) {
             let computed = (zAvg * sMVA) / (vTap * vTap) * 100;
@@ -2270,9 +2333,11 @@
           }
         }
 
-        if (devVal === null && rec.HV_Cen_Dev && !isNaN(parseFloat(rec.HV_Cen_Dev))) {
+        if (rec.HV_Cen_Dev && !isNaN(parseFloat(rec.HV_Cen_Dev))) {
           const rawD = parseFloat(rec.HV_Cen_Dev);
-          if (rawD < 50) devVal = rawD;
+          if (devVal === null || Math.abs(devVal - rawD) > 5.0) {
+            devVal = rawD;
+          }
         }
 
         if (devVal === null && zAVal !== null && zBVal !== null && zCVal !== null) {
