@@ -2320,20 +2320,35 @@ graph TD
           }
         }
         if (rate !== null) {
+          // Inactive/Ceased Fault check:
+          // If current concentration is within normal limit (num <= t1)
+          // AND recent change is non-increasing (prevNum !== null && num <= prevNum),
+          // then active gas generation has ceased (transitory past spike has cleared).
+          // Do not trigger Status 3 or fail Condition D from historical lagging rate.
+          const isRateInactive = (num <= t1) && (prevNum !== null && num <= prevNum);
+
           if (g.key === 'C2H2') {
             if (rate > 0.1 && num > 0) {
-              allRateLtT4 = false;
-              anyC2H2Increasing = true;
-              stepGTriggers.push(`C2H2 increasing rate (${rate.toFixed(2)} ppm/yr)`);
-              findings.push(`Rate > 0 (Active generation)`);
-              gStatus = 3;
+              if (!isRateInactive) {
+                allRateLtT4 = false;
+                anyC2H2Increasing = true;
+                stepGTriggers.push(`C2H2 increasing rate (${rate.toFixed(2)} ppm/yr)`);
+                findings.push(`Rate > 0 (Active generation)`);
+                gStatus = 3;
+              } else {
+                findings.push(`Rate (${rate.toFixed(2)} ppm/yr, Inactive: Level ≤ T1 & Δ ≤ 0)`);
+              }
             }
           } else if (rate > t4) {
-            allRateLtT4 = false;
-            anyRateGtT4 = true;
-            stepGTriggers.push(`${g.symbol} rate (${rate.toFixed(1)} ppm/yr) > T4 (${t4} ppm/yr)`);
-            findings.push(`Rate (${rate.toFixed(1)}) > T4 (${t4})`);
-            gStatus = 3;
+            if (!isRateInactive) {
+              allRateLtT4 = false;
+              anyRateGtT4 = true;
+              stepGTriggers.push(`${g.symbol} rate (${rate.toFixed(1)} ppm/yr) > T4 (${t4} ppm/yr)`);
+              findings.push(`Rate (${rate.toFixed(1)}) > T4 (${t4})`);
+              gStatus = 3;
+            } else {
+              findings.push(`Rate (${rate.toFixed(1)} ppm/yr, Inactive: Level ≤ T1 & Δ ≤ 0)`);
+            }
           }
         }
 
@@ -2375,6 +2390,7 @@ graph TD
       let stepDDetail = 'All gases < T1, Δ < T3, Rate < T4';
       let stepGResult = 'Skipped';
       let stepGDetail = 'Not required (Condition D satisfied)';
+      let isCarbonOxideOnly = false;
 
       if (condD) {
         overallStatus = 1;
@@ -2395,7 +2411,7 @@ graph TD
           const combustibleSymbols = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2'];
           const combustibleTriggers = stepGTriggers.filter(t => combustibleSymbols.some(s => t.startsWith(s + ' ') || t.startsWith(s + '　')));
           const carbonOxideTriggers = stepGTriggers.filter(t => t.startsWith('CO ') || t.startsWith('CO2 '));
-          const isCarbonOxideOnly = combustibleTriggers.length === 0 && carbonOxideTriggers.length > 0;
+          isCarbonOxideOnly = combustibleTriggers.length === 0 && carbonOxideTriggers.length > 0;
 
           if (isCarbonOxideOnly) {
             statusText = 'DGA Status 3: Caution (CO/CO2 Cellulose Degradation)';
@@ -2441,7 +2457,8 @@ graph TD
         ageCategory: norms.ageCategory,
         ratePointsCount: rateItems.length,
         durMonths,
-        t4DurKey
+        t4DurKey,
+        isCarbonOxideOnly
       };
     }
 
@@ -2505,10 +2522,17 @@ graph TD
       const stepKText = document.getElementById('duval-stepk-text');
       if (stepKBanner && stepKText) {
         if (evalRes.overallStatus === 3) {
-          stepKBanner.style.background = '#fef2f2';
-          stepKBanner.style.borderColor = '#fca5a5';
-          stepKBanner.style.color = '#991b1b';
-          stepKText.innerHTML = `<strong>⚡ IEEE C57.104 Step K Active (Fault Identification Triggered):</strong> High combustible gas concentration or rate detected (${evalRes.stepGDetail}). Analyze Duval Triangles 1, 4, Pentagons 1, 2, and Gas Patterns below to identify active fault mechanism.`;
+          if (evalRes.isCarbonOxideOnly) {
+            stepKBanner.style.background = '#fefce8';
+            stepKBanner.style.borderColor = '#fde047';
+            stepKBanner.style.color = '#854d0e';
+            stepKText.innerHTML = `<strong>⚠️ IEEE C57.104 Step K (Cellulose Degradation / CO-CO2):</strong> พบอัตราการเกิดหรือปริมาณก๊าซ CO/CO2 สูงเกินเกณฑ์ (${evalRes.stepGDetail}) แต่ก๊าซติดไฟหลักยังปกติ จึงยังไม่พบความผิดปกติทางไฟฟ้าในน้ำมัน แนะนำให้ติดตามอัตรา CO/CO2 และตรวจวัดค่า Furan/DP`;
+          } else {
+            stepKBanner.style.background = '#fef2f2';
+            stepKBanner.style.borderColor = '#fca5a5';
+            stepKBanner.style.color = '#991b1b';
+            stepKText.innerHTML = `<strong>⚡ IEEE C57.104 Step K Active (Fault Identification Triggered):</strong> High combustible gas concentration or rate detected (${evalRes.stepGDetail}). Analyze Duval Triangles 1, 4, Pentagons 1, 2, and Gas Patterns below to identify active fault mechanism.`;
+          }
         } else if (evalRes.overallStatus === 2) {
           stepKBanner.style.background = '#fefce8';
           stepKBanner.style.borderColor = '#fde047';

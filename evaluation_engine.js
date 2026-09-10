@@ -283,19 +283,30 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
       }
     }
     if (rate !== null) {
+      // Inactive/Ceased Fault check:
+      // If current concentration is within normal limit (cVal <= t1)
+      // AND recent change is non-increasing (pVal !== null && cVal <= pVal),
+      // then active gas generation has ceased (transitory past spike has cleared).
+      // Do not trigger Status 3 or fail Condition D from historical lagging rate.
+      const isRateInactive = (cVal <= t1) && (pVal !== null && cVal <= pVal);
+
       if (k === 'C2H2' && rate > 0.1 && cVal > 0) {
-        allRateLtT4 = false;
-        anyC2H2Increasing = true;
-        triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
-        combustibleStatus3Reasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+        if (!isRateInactive) {
+          allRateLtT4 = false;
+          anyC2H2Increasing = true;
+          triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+          combustibleStatus3Reasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+        }
       } else if (rate > t4) {
-        allRateLtT4 = false;
-        anyRateGtT4 = true;
-        triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
-        if (combustibleKeys.includes(k)) {
-          combustibleStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
-        } else {
-          carbonOxideStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+        if (!isRateInactive) {
+          allRateLtT4 = false;
+          anyRateGtT4 = true;
+          triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+          if (combustibleKeys.includes(k)) {
+            combustibleStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+          } else {
+            carbonOxideStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+          }
         }
       }
     }
