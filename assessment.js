@@ -972,12 +972,34 @@ function plotMapMarkers() {
     else if (hi >= 50) statusClass = 'warning';
     else statusClass = 'critical';
     
+    const trMarkerSvg = `
+      <div class="custom-tr-marker ${statusClass}" title="${item.name} (HI: ${hi ?? 0}%)">
+        <svg viewBox="0 0 34 38" width="34" height="38" class="tr-marker-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Radiator cooling fins left/right -->
+          <rect x="1.5" y="13" width="3" height="15" rx="1.5" class="tr-marker-fill tr-marker-stroke-thin"/>
+          <rect x="29.5" y="13" width="3" height="15" rx="1.5" class="tr-marker-fill tr-marker-stroke-thin"/>
+          <!-- Main Tank Body -->
+          <rect x="5.5" y="10" width="23" height="19" rx="2.5" class="tr-marker-fill tr-marker-stroke-thick"/>
+          <!-- Top HV Bushings (Insulators & Terminals) -->
+          <line x1="10" y1="3.5" x2="10" y2="10" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="10" cy="3" r="1.8" fill="#ffffff"/>
+          <line x1="17" y1="1.5" x2="17" y2="10" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="17" cy="1.5" r="1.8" fill="#ffffff"/>
+          <line x1="24" y1="3.5" x2="24" y2="10" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="24" cy="3" r="1.8" fill="#ffffff"/>
+          <!-- High Voltage Lightning Symbol inside tank -->
+          <path d="M18 14.5l-2.5 4h3.2l-2.2 5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Bottom Anchor Pointer Tip -->
+          <polygon points="12,29 22,29 17,36.5" class="tr-marker-fill tr-marker-stroke-thin" stroke-linejoin="round"/>
+        </svg>
+      </div>`;
+
     const customIcon = L.divIcon({
-      className: 'custom-icon',
-      html: `<div class="custom-marker-pin ${statusClass}"></div>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 28],
-      popupAnchor: [0, -28]
+      className: 'custom-tr-icon-container',
+      html: trMarkerSvg,
+      iconSize: [34, 38],
+      iconAnchor: [17, 37],
+      popupAnchor: [0, -37]
     });
     
     const popupContent = `

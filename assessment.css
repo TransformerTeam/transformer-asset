@@ -1683,6 +1683,37 @@ header p {
 .custom-marker-pin.critical { background-color: var(--color-critical); }
 .custom-marker-pin.no-assess { background-color: #6b7280; }
 
+/* Substation Power Transformer Map Markers */
+.custom-tr-marker {
+  display: inline-block;
+  cursor: pointer;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.8));
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
+}
+
+.custom-tr-marker:hover {
+  transform: scale(1.22) translateY(-2px);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.95));
+  z-index: 1000 !important;
+}
+
+.custom-tr-marker .tr-marker-stroke-thin {
+  stroke: #ffffff;
+  stroke-width: 1.5px;
+}
+
+.custom-tr-marker .tr-marker-stroke-thick {
+  stroke: #ffffff;
+  stroke-width: 2px;
+}
+
+.custom-tr-marker.healthy .tr-marker-fill { fill: var(--color-good, #10b981); }
+.custom-tr-marker.monitoring .tr-marker-fill { fill: var(--color-fair, #eab308); }
+.custom-tr-marker.warning .tr-marker-fill { fill: var(--color-poor, #f97316); }
+.custom-tr-marker.critical .tr-marker-fill { fill: var(--color-critical, #ef4444); }
+.custom-tr-marker.no-assess .tr-marker-fill { fill: #64748b; }
+
+
 /* Fullscreen Map Override Styles */
 .dashboard-card.map-fullscreen-active {
   position: fixed !important;
