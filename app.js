@@ -514,7 +514,7 @@ function init3DMap() {
     map3dInstance.addControl(nav, 'top-right');
 
     map3dInstance.on('load', () => {
-      plotMap3DMarkers();
+      plotMap3DMarkers(true);
     });
   } catch (err) {
     console.error('Failed to initialize 3D Map:', err);
@@ -534,19 +534,10 @@ function switchMapMode(mode) {
     if (!map3dInstance) {
       init3DMap();
     } else {
-      if (mapInstance) {
-        const c = mapInstance.getCenter();
-        map3dInstance.jumpTo({
-          center: [c.lng, c.lat],
-          zoom: Math.max(1, mapInstance.getZoom() - 1),
-          pitch: 58,
-          bearing: -18
-        });
-      }
       setTimeout(() => {
         if (map3dInstance) {
           map3dInstance.resize();
-          plotMap3DMarkers();
+          plotMap3DMarkers(true);
         }
       }, 100);
     }
@@ -564,13 +555,16 @@ function switchMapMode(mode) {
   }
 }
 
-function plotMap3DMarkers() {
+function plotMap3DMarkers(fitView = true) {
   if (!map3dInstance) return;
 
   map3dMarkers.forEach(m => m.remove());
   map3dMarkers = [];
 
   const coordTracker = {};
+  let minLat = Infinity, maxLat = -Infinity;
+  let minLng = Infinity, maxLng = -Infinity;
+  let validCoordsCount = 0;
 
   filteredData.forEach(item => {
     if (!item.LOCATION_GPS) return;
@@ -579,6 +573,13 @@ function plotMap3DMarkers() {
     const lat = parseFloat(coords[0].trim());
     const lng = parseFloat(coords[1].trim());
     if (isNaN(lat) || isNaN(lng)) return;
+
+    // Track bounds for site-level zoom just like 2D
+    minLat = Math.min(minLat, lat);
+    maxLat = Math.max(maxLat, lat);
+    minLng = Math.min(minLng, lng);
+    maxLng = Math.max(maxLng, lng);
+    validCoordsCount++;
 
     // Handle duplicate GPS coordinates with slight jitter so co-located markers don't overlap completely
     const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
@@ -679,6 +680,39 @@ function plotMap3DMarkers() {
 
     map3dMarkers.push(marker);
   });
+
+  // Auto-zoom 3D camera to fit the selected SITE just like 2D Leaflet
+  if (validCoordsCount > 0 && fitView && map3dInstance) {
+    const performFit = () => {
+      if (!map3dInstance) return;
+      const pitch = map3dInstance.getPitch() || 58;
+      const bearing = map3dInstance.getBearing() || -18;
+
+      if (Math.abs(maxLng - minLng) < 0.0001 && Math.abs(maxLat - minLat) < 0.0001) {
+        map3dInstance.easeTo({
+          center: [minLng, minLat],
+          zoom: 16,
+          pitch: pitch,
+          bearing: bearing,
+          duration: 900
+        });
+      } else {
+        map3dInstance.fitBounds([[minLng, minLat], [maxLng, maxLat]], {
+          padding: { top: 60, bottom: 60, left: 60, right: 60 },
+          maxZoom: 16,
+          pitch: pitch,
+          bearing: bearing,
+          duration: 900
+        });
+      }
+    };
+
+    if (map3dInstance.isStyleLoaded()) {
+      performFit();
+    } else {
+      map3dInstance.once('load', performFit);
+    }
+  }
 }
 
 // Initialize Leaflet Map
