@@ -1256,7 +1256,7 @@ function renderLastPM(lastPM) {
     const currentYear = new Date().getFullYear();
     const isOver3Years = (currentYear - year) > 3;
     if (isOver3Years) {
-      return `<span class="param-indicator param-Q" style="width:auto; padding: 2px 8px; border-radius: 4px; display: inline-block; text-align: center; white-space: nowrap;" title="PM date is over 3 years old (${year})">${year} (Overdue)</span>`;
+      return `<span class="param-indicator param-pm-overdue" style="width:auto; padding: 2px 8px; border-radius: 4px; display: inline-block; text-align: center; white-space: nowrap; font-weight: 800; color: #f59e0b;" title="PM date is over 3 years old (${year})">${year} (Overdue)</span>`;
     }
     return `<span style="font-weight: 500; color: var(--text-primary);">${year}</span>`;
   }

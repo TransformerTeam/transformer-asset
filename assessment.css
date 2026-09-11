@@ -589,6 +589,22 @@ header p {
   border-color: #fde047 !important;
 }
 
+/* ---- Last PM Overdue Indicator (Bold Yellow-Orange / Amber) ---- */
+.param-pm-overdue {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .param-pm-overdue {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+  border: 1px solid #fde68a !important;
+  font-weight: 800 !important;
+}
+
+
 .param-W {
   background: rgba(249, 115, 22, 0.15);
   color: #f97316;
@@ -2672,6 +2688,14 @@ body.dark-mode .btn-gauge-eval:hover,
   color: #a16207 !important;
   border: 1px solid #fde047 !important;
   font-weight: 700 !important;
+}
+[data-theme="light"] .param-pm-overdue,
+[data-preset="slate-light"] .param-pm-overdue,
+[data-preset="nordic-frost"] .param-pm-overdue {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+  border: 1px solid #fde68a !important;
+  font-weight: 800 !important;
 }
 [data-theme="light"] .param-W,
 [data-preset="slate-light"] .param-W,
