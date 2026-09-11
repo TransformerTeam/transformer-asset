@@ -570,6 +570,8 @@ function plotMap3DMarkers() {
   map3dMarkers.forEach(m => m.remove());
   map3dMarkers = [];
 
+  const coordTracker = {};
+
   filteredData.forEach(item => {
     if (!item.LOCATION_GPS) return;
     const coords = item.LOCATION_GPS.split(',');
@@ -577,6 +579,20 @@ function plotMap3DMarkers() {
     const lat = parseFloat(coords[0].trim());
     const lng = parseFloat(coords[1].trim());
     if (isNaN(lat) || isNaN(lng)) return;
+
+    // Handle duplicate GPS coordinates with slight jitter so co-located markers don't overlap completely
+    const coordKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+    const count = coordTracker[coordKey] || 0;
+    coordTracker[coordKey] = count + 1;
+
+    let markerLat = lat;
+    let markerLng = lng;
+    if (count > 0) {
+      const angle = (count * 2.094) + 0.5;
+      const dist = 0.00012 * Math.ceil(count / 2);
+      markerLat += dist * Math.cos(angle);
+      markerLng += dist * Math.sin(angle);
+    }
 
     let hi = item.Condition_Health_Index || item.HI || item.healthIndex || item.HEALTH_INDEX;
     let statusClass = 'no-assess';
@@ -615,16 +631,16 @@ function plotMap3DMarkers() {
       }
     }
 
-    const el = document.createElement('div');
-    el.className = `tr-3d-marker ${statusClass}`;
-    el.title = `${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER} (${statusLabel} ${hi}%)`;
-    el.style.cursor = 'pointer';
-    el.innerHTML = `
-      <img src="${iconFile}" class="tr-3d-img" alt="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER}">
-      <div class="foundation-base">
-        <svg width="20" height="10" viewBox="0 0 20 10">
-          <polygon points="4,1 16,1 10,9" fill="${statusColor}" stroke="#ffffff" stroke-width="1.3" stroke-linejoin="round"/>
-        </svg>
+    const wrapper = document.createElement('div');
+    wrapper.className = 'maplibre-tr-marker-wrapper';
+    wrapper.innerHTML = `
+      <div class="tr-3d-marker ${statusClass}" title="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER} (${statusLabel} ${hi}%)">
+        <img src="${iconFile}" class="tr-3d-img" alt="${item.LOCAL_EQUIPMENT_CODE || item.SERIAL_NUMBER}">
+        <div class="foundation-base">
+          <svg width="20" height="10" viewBox="0 0 20 10">
+            <polygon points="4,1 16,1 10,9" fill="${statusColor}" stroke="#ffffff" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </div>
     `;
 
@@ -656,8 +672,8 @@ function plotMap3DMarkers() {
     const popup = new maplibregl.Popup({ offset: [0, -35], closeButton: true, className: 'maplibre-custom-popup' })
       .setHTML(popupHtml);
 
-    const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
-      .setLngLat([lng, lat])
+    const marker = new maplibregl.Marker({ element: wrapper, anchor: 'bottom' })
+      .setLngLat([markerLng, markerLat])
       .setPopup(popup)
       .addTo(map3dInstance);
 

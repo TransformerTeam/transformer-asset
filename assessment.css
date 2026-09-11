@@ -1689,9 +1689,28 @@ header p {
   border: none !important;
 }
 
+/* MapLibre 3D Marker Wrapper */
+.maplibre-tr-marker-wrapper {
+  position: absolute !important;
+  width: 27px;
+  height: 37px;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
+.maplibre-tr-marker-wrapper .tr-3d-marker {
+  transform-origin: bottom center;
+}
+
+/* Guard against MapLibre marker position issues */
+.maplibregl-marker {
+  position: absolute !important;
+}
+
 .tr-3d-marker {
   position: relative;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
