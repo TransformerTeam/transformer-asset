@@ -19,10 +19,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
-  <!-- MapLibre GL JS for 3D Perspective Map -->
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  
+
   <!-- Assessment Styles -->
   <link rel="stylesheet" href="assessment.css">
 
@@ -211,9 +208,8 @@
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
           <h2><i class="fa-solid fa-map-location-dot"></i> Geographical Distribution</h2>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <select id="map-type-select" class="filter-select" style="min-width: 140px; padding: 4px 8px; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer;">
-              <option value="satellite" selected>Satellite (2D)</option>
-              <option value="satellite-3d">Satellite (3D View)</option>
+            <select id="map-type-select" class="filter-select" style="min-width: 100px; padding: 4px 8px; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none;">
+              <option value="satellite" selected>Satellite</option>
             </select>
             <button id="btn-map-fullscreen" class="filter-select" style="min-width: auto; width: 32px; padding: 4px 0; font-size: 0.75rem; height: 26px; margin: 0; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; outline: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="Toggle Fullscreen">
               <i class="fa-solid fa-expand"></i>
@@ -222,12 +218,6 @@
         </div>
         <div class="map-wrapper" style="position: relative; flex: 1; min-height: 580px; width: 100%; margin-top: 10px;">
           <div id="map" style="height: 100%; width: 100%; border-radius: 8px; border: 1px solid var(--border-color); z-index: 1;"></div>
-          <div id="map-3d" style="height: 100%; width: 100%; display: none; border-radius: 8px; border: 1px solid var(--border-color); z-index: 2; position: absolute; top: 0; left: 0;"></div>
-          <!-- 3D Hint Overlay -->
-          <div id="map-3d-hint" class="map-3d-hint-overlay" style="display: none; position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(15, 23, 42, 0.85); color: #94a3b8; font-size: 0.72rem; padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); pointer-events: none; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-cube" style="color: #38bdf8;"></i>
-            <span><strong>3D Map Controls:</strong> คลิกขวาลาก / Ctrl+ลาก เพื่อหมุน 360&deg; และเอียงมุมกล้อง</span>
-          </div>
           <!-- Legend overlays inside map wrapper -->
           <div class="map-legend" style="position: absolute; bottom: 10px; right: 10px; z-index: 1000; background: rgba(10, 15, 29, 0.85); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; pointer-events: none; backdrop-filter: blur(8px); display: flex; gap: 6px; flex-direction: column;">
             <div style="display: flex; align-items: center; gap: 6px; color: #fff;"><span class="legend-color" style="width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #10b981;"></span> Healthy (&ge;80%)</div>
