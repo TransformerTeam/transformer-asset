@@ -995,8 +995,8 @@ function plotMapMarkers() {
       <div class="tr-3d-marker ${statusClass}" title="${item.name} (HI: ${hi ?? 0}%)">
         <img src="${iconFile}" class="tr-3d-img" alt="${item.name}">
         <div class="foundation-base">
-          <svg width="22" height="11" viewBox="0 0 22 11">
-            <polygon points="4,1 18,1 11,10" fill="${statusColor}" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+          <svg width="20" height="10" viewBox="0 0 20 10">
+            <polygon points="4,1 16,1 10,9" fill="${statusColor}" stroke="#ffffff" stroke-width="1.3" stroke-linejoin="round"/>
           </svg>
         </div>
       </div>`;
@@ -1004,9 +1004,9 @@ function plotMapMarkers() {
     const customIcon = L.divIcon({
       className: 'custom-3d-leaflet-marker',
       html: trMarkerHtml,
-      iconSize: [30, 40],
-      iconAnchor: [15, 39],
-      popupAnchor: [0, -39]
+      iconSize: [27, 36],
+      iconAnchor: [13.5, 35],
+      popupAnchor: [0, -35]
     });
     
     const popupContent = `
