@@ -469,6 +469,9 @@ function setupListeners() {
         if (mapInstance) {
           mapInstance.invalidateSize();
         }
+        if (map3dInstance) {
+          map3dInstance.resize();
+        }
       }, 200);
     });
   }
@@ -903,6 +906,217 @@ if (typeof L !== 'undefined') {
 
 let mapInstance = null;
 let markersLayer = null;
+let map3dInstance = null;
+let map3dMarkers = [];
+
+function init3DMap() {
+  if (map3dInstance || typeof maplibregl === 'undefined') return;
+  const map3dContainer = document.getElementById('map-3d');
+  if (!map3dContainer) return;
+
+  let center = [101.137, 12.677]; // [lng, lat]
+  let zoom = 13;
+  if (mapInstance) {
+    const c = mapInstance.getCenter();
+    center = [c.lng, c.lat];
+    zoom = Math.max(1, mapInstance.getZoom() - 1);
+  }
+
+  const maplibreStyle = {
+    version: 8,
+    sources: {
+      'esri-satellite': {
+        type: 'raster',
+        tiles: [
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        ],
+        tileSize: 256,
+        attribution: 'Tiles &copy; Esri',
+        maxzoom: 19
+      },
+      'esri-labels': {
+        type: 'raster',
+        tiles: [
+          'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+        ],
+        tileSize: 256,
+        maxzoom: 19
+      }
+    },
+    layers: [
+      {
+        id: 'esri-satellite-layer',
+        type: 'raster',
+        source: 'esri-satellite',
+        minzoom: 0,
+        maxzoom: 19
+      },
+      {
+        id: 'esri-labels-layer',
+        type: 'raster',
+        source: 'esri-labels',
+        minzoom: 0,
+        maxzoom: 19
+      }
+    ]
+  };
+
+  try {
+    map3dInstance = new maplibregl.Map({
+      container: 'map-3d',
+      style: maplibreStyle,
+      center: center,
+      zoom: zoom,
+      pitch: 58,       // 3D Perspective angle
+      bearing: -18,    // Isometric slight rotation
+      maxPitch: 82,
+      attributionControl: false
+    });
+
+    const nav = new maplibregl.NavigationControl({
+      visualizePitch: true
+    });
+    map3dInstance.addControl(nav, 'top-right');
+
+    map3dInstance.on('load', () => {
+      plotMap3DMarkers();
+    });
+  } catch (err) {
+    console.error('Failed to initialize 3D Map:', err);
+  }
+}
+
+function switchMapMode(mode) {
+  const map2dEl = document.getElementById('map');
+  const map3dEl = document.getElementById('map-3d');
+  const hint3d = document.getElementById('map-3d-hint');
+
+  if (mode === 'satellite-3d') {
+    if (map2dEl) map2dEl.style.display = 'none';
+    if (map3dEl) map3dEl.style.display = 'block';
+    if (hint3d) hint3d.style.display = 'inline-flex';
+
+    if (!map3dInstance) {
+      init3DMap();
+    } else {
+      if (mapInstance) {
+        const c = mapInstance.getCenter();
+        map3dInstance.jumpTo({
+          center: [c.lng, c.lat],
+          zoom: Math.max(1, mapInstance.getZoom() - 1),
+          pitch: 58,
+          bearing: -18
+        });
+      }
+      setTimeout(() => {
+        if (map3dInstance) {
+          map3dInstance.resize();
+          plotMap3DMarkers();
+        }
+      }, 100);
+    }
+  } else {
+    // 2D Mode
+    if (map3dEl) map3dEl.style.display = 'none';
+    if (map2dEl) map2dEl.style.display = 'block';
+    if (hint3d) hint3d.style.display = 'none';
+
+    if (map3dInstance && mapInstance) {
+      const c = map3dInstance.getCenter();
+      const z = map3dInstance.getZoom() + 1;
+      mapInstance.setView([c.lat, c.lng], Math.round(z));
+    }
+    if (mapInstance) mapInstance.invalidateSize();
+  }
+}
+
+function plotMap3DMarkers() {
+  if (!map3dInstance) return;
+
+  map3dMarkers.forEach(m => m.remove());
+  map3dMarkers = [];
+
+  filteredAssessment.forEach(item => {
+    let gps = null;
+    if (typeof TR_DATA !== 'undefined') {
+      const rawItem = TR_DATA.find(x => x.SERIAL_NUMBER === item.serial);
+      if (rawItem) gps = rawItem.LOCATION_GPS;
+    }
+    if (!gps) return;
+
+    const coords = gps.split(',');
+    if (coords.length !== 2) return;
+    const lat = parseFloat(coords[0].trim());
+    const lng = parseFloat(coords[1].trim());
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    const hi = item.healthIndex;
+    let statusClass = 'no-assess';
+    let iconFile = 'transformer_noassess.png';
+    let statusColor = '#64748b';
+
+    if (hi === 0 || hi === null || hi === undefined) {
+      statusClass = 'no-assess';
+      iconFile = 'transformer_noassess.png';
+      statusColor = '#64748b';
+    } else if (hi >= 80) {
+      statusClass = 'healthy';
+      iconFile = 'transformer_healthy.png';
+      statusColor = '#10b981';
+    } else if (hi >= 70) {
+      statusClass = 'monitoring';
+      iconFile = 'transformer_monitoring.png';
+      statusColor = '#eab308';
+    } else if (hi >= 50) {
+      statusClass = 'warning';
+      iconFile = 'transformer_warning.png';
+      statusColor = '#f97316';
+    } else {
+      statusClass = 'critical';
+      iconFile = 'transformer_critical.png';
+      statusColor = '#ef4444';
+    }
+
+    const el = document.createElement('div');
+    el.className = `tr-3d-marker ${statusClass}`;
+    el.title = `${item.name} (HI: ${hi ?? 0}%)`;
+    el.style.cursor = 'pointer';
+    el.innerHTML = `
+      <img src="${iconFile}" class="tr-3d-img" alt="${item.name}">
+      <div class="foundation-base">
+        <svg width="20" height="10" viewBox="0 0 20 10">
+          <polygon points="4,1 16,1 10,9" fill="${statusColor}" stroke="#ffffff" stroke-width="1.3" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    `;
+
+    const popupHtml = `
+      <div class="map-popup-container" style="color: var(--text-main); font-family: 'Inter', sans-serif;">
+        <div class="map-popup-header" style="border-color: var(--border-dark); color: var(--text-main); font-weight:700;">${item.name}</div>
+        <div class="map-popup-row" style="color: var(--text-sub);">
+          <span class="map-popup-label">Site:</span>
+          <span class="map-popup-value" style="color: var(--text-main); font-weight:600;">${item.site}</span>
+        </div>
+        <div class="map-popup-row" style="color: var(--text-sub);">
+          <span class="map-popup-label">Health Index:</span>
+          <span class="map-popup-value" style="color: ${hi >= 80 ? '#10b981' : (hi >= 70 ? '#eab308' : (hi >= 50 ? '#f97316' : '#ef4444'))}; font-weight:700;">${hi}%</span>
+        </div>
+        <button class="btn btn-primary map-popup-btn" onclick="openDetail(${item.no})" style="margin-top: 8px; width: 100%; padding: 6px; font-size: 0.75rem; border-radius: 6px; border: none; background: var(--primary); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <i class="fa-solid fa-expand"></i> Detail
+        </button>
+      </div>`;
+
+    const popup = new maplibregl.Popup({ offset: [0, -35], closeButton: true, className: 'maplibre-custom-popup' })
+      .setHTML(popupHtml);
+
+    const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      .setLngLat([lng, lat])
+      .setPopup(popup)
+      .addTo(map3dInstance);
+
+    map3dMarkers.push(marker);
+  });
+}
 
 function initMap() {
   if (mapInstance) return;
@@ -925,6 +1139,12 @@ function initMap() {
 }
 
 function updateMapLayer(isDark) {
+  if (currentMapType === 'satellite-3d') {
+    switchMapMode('satellite-3d');
+    return;
+  }
+  
+  switchMapMode('2d');
   if (!mapInstance) return;
   mapInstance.eachLayer(layer => {
     if (layer instanceof L.TileLayer) {
@@ -1033,6 +1253,10 @@ function plotMapMarkers() {
   
   if (bounds.length > 0) {
     mapInstance.fitBounds(bounds, { padding: [20, 20] });
+  }
+
+  if (map3dInstance) {
+    plotMap3DMarkers();
   }
 }
 

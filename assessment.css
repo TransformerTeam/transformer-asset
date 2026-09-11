@@ -2807,3 +2807,79 @@ header p {
   font-weight: 500 !important;
 }
 
+/* 14. MapLibre 3D Map Custom Controls & Popups */
+.maplibre-custom-popup .maplibregl-popup-content {
+  background: var(--bg-card, #12161f) !important;
+  color: var(--text-main, #ffffff) !important;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+  padding: 12px 14px !important;
+  min-width: 220px;
+}
+
+.maplibre-custom-popup .maplibregl-popup-close-button {
+  color: #94a3b8 !important;
+  padding: 4px 8px !important;
+  font-size: 16px !important;
+}
+
+.maplibre-custom-popup .maplibregl-popup-close-button:hover {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.maplibre-custom-popup .maplibregl-popup-tip {
+  border-top-color: var(--bg-card, #12161f) !important;
+}
+
+.maplibregl-ctrl-group {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 6px !important;
+  backdrop-filter: blur(8px) !important;
+  overflow: hidden;
+}
+
+.maplibregl-ctrl-group button {
+  border-color: var(--border-color, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.maplibregl-ctrl-group button:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.maplibregl-ctrl-icon {
+  filter: invert(1) !important;
+}
+
+[data-theme="light"] .maplibre-custom-popup .maplibregl-popup-content {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .maplibre-custom-popup .maplibregl-popup-tip {
+  border-top-color: #ffffff !important;
+}
+
+[data-theme="light"] .maplibregl-ctrl-group {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .maplibregl-ctrl-icon {
+  filter: none !important;
+}
+
+.map-3d-hint-overlay {
+  animation: fadeInHint 0.3s ease;
+}
+
+@keyframes fadeInHint {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
