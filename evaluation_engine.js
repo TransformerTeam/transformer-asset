@@ -166,6 +166,107 @@ function getIEEENormsCore(o2n2Ratio, ageYears) {
   };
 }
 
+// ==========================================================================
+// DGA DATA SCREENING & OUTLIER EXCLUSION ENGINE (IEEE C57.104 & CIGRE TB 771)
+// Detects testing/sampling errors and recording anomalies across all transformers
+// ==========================================================================
+function isDgaOutlierRecordCore(record, allRecords) {
+  if (!record) return { isOutlier: false };
+
+  const parseD = (dStr) => {
+    if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+    if (typeof dStr === 'string' && dStr.includes('/')) {
+      const pts = dStr.split('/');
+      if (pts.length === 3) return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+    }
+    return new Date(dStr);
+  };
+
+  const getNum = (val) => {
+    if (val === undefined || val === null || val === '' || val === '-' || val === 'N/A') return 0;
+    const n = parseFloat(String(val).replace(/,/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+
+  const recDateStr = String(record.Date || record.date || record.DATE || '').trim();
+  const recDate = parseD(recDateStr);
+  const recTime = recDate.getTime();
+  const serial = String(record.Serial_No || record.serial || record.SERIAL_NUMBER || '').trim().toUpperCase();
+
+  const h2 = getNum(record.H2);
+  const ch4 = getNum(record.CH4);
+  const c2h6 = getNum(record.C2H6);
+  const c2h4 = getNum(record.C2H4);
+  const c2h2 = getNum(record.C2H2);
+  const co = getNum(record.CO);
+  const co2 = getNum(record.CO2);
+  const sumCombustible = h2 + ch4 + c2h6 + c2h4 + c2h2 + co;
+
+  // 1. Explicit Whitelist / Known Documented Testing Anomalies
+  // SN PP0225B01 on 2024-03-07: Testing error (CH4 dropped to 1 ppm with TDCG=0.00 and duplicate co-gases from 2023-11-13)
+  if (serial.includes('PP0225B01') && recDateStr.includes('2024-03-07')) {
+    return {
+      isOutlier: true,
+      reason: 'Testing/recording anomaly: CH4 recorded as 1 ppm with TDCG 0.00 and duplicated co-gases from previous test (13-Nov-2023)'
+    };
+  }
+
+  // 2. Mathematical Inconsistency Rule:
+  // TDCG recorded as exactly 0.00 (or empty) while sum of measured combustible gases is significant (>= 30 ppm)
+  const rawTdcgStr = String(record.TDCG !== undefined ? record.TDCG : (record.tdcg !== undefined ? record.tdcg : '')).trim();
+  if ((rawTdcgStr === '0.00' || rawTdcgStr === '0' || rawTdcgStr === '0.0') && sumCombustible >= 30) {
+    return {
+      isOutlier: true,
+      reason: `Mathematical data inconsistency: TDCG recorded as 0.00 ppm while measured combustible gases total ${Math.round(sumCombustible)} ppm`
+    };
+  }
+
+  // 3. Physical Impossible Isolated Drop & Immediate Rebound (V-notch Trough Anomaly)
+  // In a sealed transformer without degassing, an isolated drop in a hydrocarbon gas to <= 2 ppm followed by immediate rebound to >= 15 ppm
+  if (Array.isArray(allRecords) && allRecords.length >= 3) {
+    const sorted = [...allRecords]
+      .filter(r => r && (r.Date || r.date || r.DATE))
+      .sort((a, b) => parseD(a.Date || a.date || a.DATE) - parseD(b.Date || b.date || b.DATE));
+
+    const idx = sorted.findIndex(r => r === record || parseD(r.Date || r.date || r.DATE).getTime() === recTime);
+    if (idx > 0 && idx < sorted.length - 1) {
+      const prevRec = sorted[idx - 1];
+      const nextRec = sorted[idx + 1];
+
+      const prevDays = Math.abs(recTime - parseD(prevRec.Date || prevRec.date || prevRec.DATE).getTime()) / (1000 * 3600 * 24);
+      const nextDays = Math.abs(parseD(nextRec.Date || nextRec.date || nextRec.DATE).getTime() - recTime) / (1000 * 3600 * 24);
+
+      if (prevDays <= 550 && nextDays <= 550) {
+        const gasesToCheck = ['CH4', 'C2H6', 'C2H4'];
+        for (const g of gasesToCheck) {
+          const prevVal = getNum(prevRec[g]);
+          const currVal = getNum(record[g]);
+          const nextVal = getNum(nextRec[g]);
+
+          if (prevVal >= 15 && currVal <= 2 && nextVal >= 15 && (currVal / prevVal) <= 0.2 && (nextVal / Math.max(1, currVal)) >= 3.0) {
+            const prevCO = getNum(prevRec.CO);
+            const currCO = getNum(record.CO);
+            const prevCO2 = getNum(prevRec.CO2);
+            const currCO2 = getNum(record.CO2);
+
+            const coMaintained = prevCO > 50 ? (currCO / prevCO >= 0.5) : true;
+            const co2Maintained = prevCO2 > 500 ? (currCO2 / prevCO2 >= 0.5) : true;
+
+            if (coMaintained && co2Maintained) {
+              return {
+                isOutlier: true,
+                reason: `Physical impossibility anomaly (V-notch drop): ${g} dropped from ${prevVal} to ${currVal} ppm and rebounded to ${nextVal} ppm without oil degassing (CO/CO2 stable)`
+              };
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return { isOutlier: false };
+}
+
 function calcLinearRegressionRateCore(points) {
   if (!points || points.length < 3) return null;
   const xVals = points.map(p => p[0] / 365.25);
@@ -198,19 +299,34 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
 
   const norms = getIEEENormsCore(o2n2Ratio, ageYears);
 
-  // Multi-point rate
+  const parseD = (dStr) => {
+    if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
+    if (typeof dStr === 'string' && dStr.includes('/')) {
+      const pts = dStr.split('/');
+      if (pts.length === 3) return new Date(parseInt(pts[2], 10), parseInt(pts[0], 10) - 1, parseInt(pts[1], 10));
+    }
+    return new Date(dStr);
+  };
+
+  // Multi-point rate with Automated Data Screening
   const itemsList = Array.isArray(allItems) ? allItems : [curr];
-  const rateItems = itemsList.slice(0, Math.min(6, itemsList.length));
+  
+  // Screen records to exclude testing anomalies / outliers from linear regression
+  const validRocItems = itemsList.filter(item => {
+    const check = isDgaOutlierRecordCore(item, itemsList);
+    return !check.isOutlier;
+  });
+  
+  // Select up to 6 valid historical samples (minimum 3 needed)
+  const rateItems = (validRocItems.length >= 3 ? validRocItems : itemsList).slice(0, Math.min(6, (validRocItems.length >= 3 ? validRocItems : itemsList).length));
+  const excludedFromRoc = itemsList.filter(item => isDgaOutlierRecordCore(item, itemsList).isOutlier);
+
   const rates = {};
   let durMonths = null;
   let t4DurKey = 'long';
 
   if (rateItems.length >= 3) {
     const chromItems = [...rateItems].reverse();
-    const parseD = (dStr) => {
-      if (!dStr) return new Date(0);
-      return new Date(dStr);
-    };
     const baseDt = parseD(chromItems[0].Date || chromItems[0].date).getTime();
     const lastDt = parseD(chromItems[chromItems.length - 1].Date || chromItems[chromItems.length - 1].date).getTime();
     const durDays = Math.max(0, (lastDt - baseDt) / (1000 * 3600 * 24));
@@ -225,6 +341,13 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
       ]);
       rates[g] = calcLinearRegressionRateCore(pts);
     });
+  }
+
+  // Delta (Table 3) resolution: If prev1 is an outlier, find the previous valid record
+  let effectivePrev = prev1;
+  if (prev1 && isDgaOutlierRecordCore(prev1, itemsList).isOutlier) {
+    const currTime = parseD(curr.Date || curr.date || curr.DATE).getTime();
+    effectivePrev = validRocItems.find(r => r !== curr && parseD(r.Date || r.date || r.DATE).getTime() < currTime) || null;
   }
 
   const t4Limits = norms.table4[t4DurKey];
@@ -249,7 +372,7 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
 
   gKeys.forEach(k => {
     const cVal = parseFloat(curr[k] || 0);
-    const pVal = prev1 ? parseFloat(prev1[k] || 0) : null;
+    const pVal = effectivePrev ? parseFloat(effectivePrev[k] || 0) : null;
     const delta = pVal !== null ? Math.max(0, cVal - pVal) : 0;
     const rate = rates[k] !== undefined ? rates[k] : null;
 
@@ -360,6 +483,15 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     triggerReasons,
     cautionReasons,
     norms,
+    rates,
+    effectivePrev,
+    ratePointsCount: rateItems.length,
+    durMonths,
+    t4DurKey,
+    excludedRecords: excludedFromRoc.map(x => ({
+      date: x.Date || x.date || x.DATE,
+      reason: isDgaOutlierRecordCore(x, itemsList).reason
+    })),
     hasCombustibleStatus3,
     isCarbonOxideOnlyStatus3,
     allCombustibleNormal,
@@ -3206,6 +3338,8 @@ if (typeof window !== 'undefined') {
   window.formatDateToDdMmmYyyy = formatDateToDdMmmYyyy;
   window.formatDate = formatDateToDdMmmYyyy;
   window.evaluateDGAFlowchartCore = evaluateDGAFlowchartCore;
+  window.isDgaOutlierRecordCore = isDgaOutlierRecordCore;
+  window.calcLinearRegressionRateCore = calcLinearRegressionRateCore;
   window.getIEEENormsCore = getIEEENormsCore;
   window.IEEE_C57_104_T1 = IEEE_C57_104_T1;
   window.IEEE_C57_104_T2 = IEEE_C57_104_T2;
@@ -3222,6 +3356,8 @@ if (typeof module !== 'undefined' && module.exports) {
     generateDetailedRecommendation,
     formatDateToDdMmmYyyy,
     evaluateDGAFlowchartCore,
+    isDgaOutlierRecordCore,
+    calcLinearRegressionRateCore,
     getIEEENormsCore,
     IEEE_C57_104_T1,
     IEEE_C57_104_T2,
@@ -3229,3 +3365,4 @@ if (typeof module !== 'undefined' && module.exports) {
     IEEE_C57_104_T4
   };
 }
+
