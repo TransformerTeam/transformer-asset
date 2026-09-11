@@ -452,10 +452,12 @@
             <div class="excel-life-dp-boxes">
               <!-- Speedometer Gauge (Top Left) -->
               <div class="excel-gauge-container life-box" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8px 6px;">
-                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-report-link" title="Open Evaluation & Criteria Report" style="position: absolute; top: 6px; right: 6px; color: #38bdf8; font-size: 0.9rem; text-decoration: none; z-index: 5;">
-                  <i class="fa-solid fa-file-invoice"></i>
+                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
+                  <i class="fa-solid fa-file-waveform"></i>
+                  <span>Evaluation</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.55rem; opacity: 0.85;"></i>
                 </a>
-                <div class="gauge-chart-container" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px;">
+                <a id="ex-eval-gauge-click-area" href="evaluation_report.html" target="_blank" class="gauge-clickable-area" title="Click to open Evaluation & Criteria Report" style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 120px; text-decoration: none; cursor: pointer;">
                   <svg viewBox="0 0 120 72" style="width: 120px; height: 72px; overflow: visible;">
                     <!-- Red Zone: 0% to 50% -->
                     <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ff4d4d" stroke-width="12" stroke-linecap="butt"/>
@@ -479,7 +481,7 @@
                   <div class="gauge-center-text" style="text-align: center; margin-top: 4px; line-height: 1;">
                     <span class="gauge-score" id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: #10b981;">HI 100%</span>
                   </div>
-                </div>
+                </a>
               </div>
 
               <!-- Estimated Remaining Life Box -->

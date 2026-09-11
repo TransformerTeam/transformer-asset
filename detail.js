@@ -901,6 +901,7 @@ function openDetail(no) {
   setLinkHref('ex-surge-link', 'surge_report.html');
   setLinkHref('ex-visual-link', 'visual_report.html');
   setLinkHref('ex-eval-gauge-link', 'evaluation_report.html');
+  setLinkHref('ex-eval-gauge-click-area', 'evaluation_report.html');
   setLinkHref('link-kpi-remaining-life', 'remaining_life_report.html');
 
   // 3. Bushing Card

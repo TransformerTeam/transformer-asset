@@ -1599,6 +1599,69 @@ header p {
   transform: translateY(-1px);
 }
 
+/* Prominent Evaluation Report Link in Gauge Box */
+.btn-gauge-eval {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.12);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  z-index: 10;
+  line-height: 1;
+}
+.btn-gauge-eval:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+body.dark-theme .btn-gauge-eval,
+body.dark-mode .btn-gauge-eval,
+[data-theme="dark"] .btn-gauge-eval {
+  background: rgba(37, 99, 235, 0.25) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(147, 197, 253, 0.35) !important;
+}
+body.dark-theme .btn-gauge-eval:hover,
+body.dark-mode .btn-gauge-eval:hover,
+[data-theme="dark"] .btn-gauge-eval:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Clickable Gauge Area */
+.gauge-clickable-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 2px 4px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.gauge-clickable-area:hover {
+  transform: scale(1.03);
+}
+
 /* Customized Leaflet Tooltip/Popup Styles */
 .leaflet-popup-content-wrapper {
   background: var(--bg-secondary) !important;

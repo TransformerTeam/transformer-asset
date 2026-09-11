@@ -1675,6 +1675,10 @@ function openDetail(no) {
   if (exEvalGaugeLink) {
     exEvalGaugeLink.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
   }
+  const exEvalGaugeClickArea = document.getElementById('ex-eval-gauge-click-area');
+  if (exEvalGaugeClickArea) {
+    exEvalGaugeClickArea.href = `evaluation_report.html?serial=${encodeURIComponent(item.serial)}`;
+  }
 
   const needleGroup = document.getElementById('ex-gauge-needle-group');
   const score = document.getElementById('ex-gauge-score');

@@ -383,6 +383,69 @@
       border: 1px solid rgba(56, 189, 248, 0.3) !important;
     }
 
+    /* Prominent Evaluation Report Link in Gauge Box */
+    .btn-gauge-eval {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      background: #eff6ff !important;
+      color: #1d4ed8 !important;
+      border: 1px solid #bfdbfe !important;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.12);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      z-index: 10;
+      line-height: 1;
+    }
+    .btn-gauge-eval:hover {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      border-color: #1d4ed8 !important;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+      transform: translateY(-1px);
+    }
+    body.dark-theme .btn-gauge-eval,
+    body.dark-mode .btn-gauge-eval,
+    [data-theme="dark"] .btn-gauge-eval {
+      background: rgba(37, 99, 235, 0.25) !important;
+      color: #93c5fd !important;
+      border: 1px solid rgba(147, 197, 253, 0.35) !important;
+    }
+    body.dark-theme .btn-gauge-eval:hover,
+    body.dark-mode .btn-gauge-eval:hover,
+    [data-theme="dark"] .btn-gauge-eval:hover {
+      background: #2563eb !important;
+      color: #ffffff !important;
+      border-color: #3b82f6 !important;
+    }
+
+    /* Clickable Gauge Area */
+    .gauge-clickable-area {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 130px;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 2px 4px;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .gauge-clickable-area:hover {
+      transform: scale(1.03);
+    }
+
     /* Tables Styling: Crisp White with Clean Borders */
     .excel-table {
       width: 100% !important;
@@ -854,10 +917,12 @@
             <div class="excel-life-dp-boxes">
               <!-- Speedometer Gauge -->
               <div class="gauge-kpi-box">
-                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-report-link" title="Open Evaluation Report" style="position: absolute; top: 6px; right: 6px;">
-                  <i class="fa-solid fa-file-invoice"></i>
+                <a id="ex-eval-gauge-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
+                  <i class="fa-solid fa-file-waveform"></i>
+                  <span>Evaluation</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.55rem; opacity: 0.85;"></i>
                 </a>
-                <div style="position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 130px;">
+                <a id="ex-eval-gauge-click-area" href="evaluation_report.html" target="_blank" class="gauge-clickable-area" title="Click to open Evaluation & Criteria Report">
                   <svg viewBox="0 0 120 72" style="width: 120px; height: 72px; overflow: visible;">
                     <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="butt" />
                     <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="butt" />
@@ -877,7 +942,7 @@
                   <div style="text-align: center; margin-top: 2px; line-height: 1;">
                     <span id="ex-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #10b981;">HI 100%</span>
                   </div>
-                </div>
+                </a>
               </div>
 
               <!-- Estimated Remaining Life Box (Linked to DP 300) -->
