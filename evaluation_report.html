@@ -1755,6 +1755,9 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       document.documentElement.setAttribute('data-theme', 'light');
+      loadTestDatasetsForEval().then(() => {
+        if (typeof refreshEvalView === 'function') refreshEvalView();
+      });
       refreshEvalView();
     });
 
@@ -1777,6 +1780,8 @@
         const cols = line.split(',');
         const obj = {};
         headers.forEach((h, i) => obj[h] = cols[i] ? cols[i].trim() : '');
+        obj.serial = obj.Serial_No || obj.serial || obj.Serial || obj.SERIAL_NUMBER || '';
+        obj.date = obj.Date || obj.date || obj.DATE || '';
         return obj;
       });
     };
@@ -1790,10 +1795,24 @@
         if (resOil && resOil.ok) {
           const text = await resOil.text();
           evalOilDataList = parseEvalCSV(text);
+          if (typeof window !== 'undefined') {
+            window.evalOilDataList = evalOilDataList;
+            if (typeof mtOilCsvData === 'undefined' || !Array.isArray(mtOilCsvData) || !mtOilCsvData.length) {
+              mtOilCsvData = evalOilDataList;
+              window.mtOilCsvData = evalOilDataList;
+            }
+          }
         }
         if (resDfr && resDfr.ok) {
           const text = await resDfr.text();
           evalDfrDataList = parseEvalCSV(text);
+          if (typeof window !== 'undefined') {
+            window.evalDfrDataList = evalDfrDataList;
+            if (typeof dfrCsvData === 'undefined' || !Array.isArray(dfrCsvData) || !dfrCsvData.length) {
+              dfrCsvData = evalDfrDataList;
+              window.dfrCsvData = evalDfrDataList;
+            }
+          }
         }
       } catch (e) {
         console.warn('Dataset load warning:', e);
@@ -3630,7 +3649,7 @@
       if (!itemName) return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
 
       // Look up dynamic TRInfo record
-      const serialVal = item.serial || item.SERIAL_NUMBER || item.Name || '';
+      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || item['Serial No.'] || item.Serial_No || item.Serial_no || item.Name || currentSerial || '';
       const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
 
       // Rule 1: Service Type (UAT, Auxiliary) -> Exclude Bushing & Surge Arrester
@@ -3661,11 +3680,11 @@
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 
-      const targetSerial = serialVal || item.serial || item.SERIAL_NUMBER || item.serial_number || item.Name || item.code || '';
+      const targetSerial = serialVal || item.serial || item.SERIAL_NUMBER || item['Serial No'] || item['Serial No.'] || item.Serial_No || item.Serial_no || item.serial_number || item.Name || item.code || currentSerial || '';
 
       const irPiDataArr = (typeof irPiCsvData !== 'undefined' && irPiCsvData && irPiCsvData.length) ? irPiCsvData : ((typeof window !== 'undefined' && window.irPiCsvData && window.irPiCsvData.length) ? window.irPiCsvData : []);
 
-      const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, targetSerial) : null;
+      const latestMt = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && mtOilCsvData.length) ? findLatestRecord(mtOilCsvData, targetSerial) : ((typeof evalOilDataList !== 'undefined' && Array.isArray(evalOilDataList) && evalOilDataList.length) ? findLatestRecord(evalOilDataList, targetSerial) : ((typeof window !== 'undefined' && window.mtOilCsvData) ? findLatestRecord(window.mtOilCsvData, targetSerial) : null));
       const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, targetSerial) : null;
       const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, targetSerial) : null;
       const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, targetSerial) : null;
@@ -4876,16 +4895,66 @@
 
       // 11. Dissolve Gas Analysis (DGA) (MTOilData.csv)
       if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
-        if (latestMt) {
-          const date = latestMt.Date || latestMt.date || latestMt.DATE;
-          const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.IEEE_C57_155 || latestMt.Test_Result || '').toUpperCase();
+        const hasDga = (r) => {
+          if (!r) return false;
+          if (typeof hasValidDgaRecordCore === 'function') return hasValidDgaRecordCore(r);
+          const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
+          return gases.some(g => {
+            const val = r[g];
+            if (val === undefined || val === null) return false;
+            const s = String(val).trim();
+            if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+            return !isNaN(parseFloat(s.replace(/,/g, '')));
+          });
+        };
+        const dgaSourceList = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && mtOilCsvData.length > 0)
+          ? mtOilCsvData
+          : ((typeof evalOilDataList !== 'undefined' && Array.isArray(evalOilDataList) && evalOilDataList.length > 0)
+            ? evalOilDataList
+            : ((typeof window !== 'undefined' && window.mtOilCsvData && Array.isArray(window.mtOilCsvData)) ? window.mtOilCsvData : []));
+        const allMtRecords = (dgaSourceList.length > 0 && serialVal)
+          ? dgaSourceList.filter(d => {
+              const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
+              if (!s) return false;
+              const s1 = String(s).trim().toLowerCase();
+              const s2 = String(serialVal).trim().toLowerCase();
+              const match = (s1 === s2) || (() => {
+                const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+                const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
+                return !!(cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS)));
+              })();
+              return match && hasDga(d);
+            })
+          : [];
+        allMtRecords.sort((a, b) => {
+          const dA = new Date(a.date || a.Date || a.DATE || 0);
+          const dB = new Date(b.date || b.Date || b.DATE || 0);
+          return dB - dA;
+        });
 
-          const h2   = parseFloat(latestMt.H2 || 0);
-          const ch4  = parseFloat(latestMt.CH4 || 0);
-          const c2h6 = parseFloat(latestMt.C2H6 || 0);
-          const c2h4 = parseFloat(latestMt.C2H4 || 0);
-          const c2h2 = parseFloat(latestMt.C2H2 || 0);
-          const co   = parseFloat(latestMt.CO || 0);
+        // Deduplicate items by test date timestamp so each test date appears only once per Serial No.
+        const seenDates = new Set();
+        const dedupMtRecords = [];
+        for (const item of allMtRecords) {
+          const dt = new Date(item.date || item.Date || item.DATE || 0);
+          const key = !isNaN(dt.getTime()) && dt.getTime() > 0 ? dt.getTime() : String(item.date || item.Date || item.DATE);
+          if (!seenDates.has(key)) {
+            seenDates.add(key);
+            dedupMtRecords.push(item);
+          }
+        }
+
+        const activeDgaRec = dedupMtRecords[0] || latestMt;
+        if (activeDgaRec) {
+          const date = activeDgaRec.Date || activeDgaRec.date || activeDgaRec.DATE;
+          const ieeeRes = (activeDgaRec.IEEE_C57_104 || activeDgaRec.IEEE_C57_155 || activeDgaRec.Test_Result || '').toUpperCase();
+
+          const h2   = parseFloat(activeDgaRec.H2 || 0);
+          const ch4  = parseFloat(activeDgaRec.CH4 || 0);
+          const c2h6 = parseFloat(activeDgaRec.C2H6 || 0);
+          const c2h4 = parseFloat(activeDgaRec.C2H4 || 0);
+          const c2h2 = parseFloat(activeDgaRec.C2H2 || 0);
+          const co   = parseFloat(activeDgaRec.CO || 0);
 
           const trInfoItem = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length > 0 && serialVal)
             ? findLatestRecord(trInfoCsvData, serialVal)
@@ -4922,25 +4991,7 @@
           } else {
             // Mineral Oil: IEEE C57.104-2019 Flowchart Decision Engine
             if (typeof evaluateDGAFlowchartCore === 'function') {
-              const allMtRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && serialVal)
-                ? mtOilCsvData.filter(d => {
-                    const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
-                    if (!s) return false;
-                    const s1 = String(s).trim().toLowerCase();
-                    const s2 = String(serialVal).trim().toLowerCase();
-                    if (s1 === s2) return true;
-                    const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    return cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS));
-                  })
-                : [];
-              allMtRecords.sort((a, b) => {
-                const dA = new Date(a.date || a.Date || a.DATE || 0);
-                const dB = new Date(b.date || b.Date || b.DATE || 0);
-                return dB - dA;
-              });
-
-              const dgaEval = evaluateDGAFlowchartCore(latestMt, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
+              const dgaEval = evaluateDGAFlowchartCore(activeDgaRec, dedupMtRecords[1] || null, dedupMtRecords, trInfoItem || item);
               if (dgaEval) {
                 if (dgaEval.overallStatus === 3) {
                   // Rule: กรณี H2, CH4, C2H6, C2H4, C2H2 ปกติ มีเฉพาะ CO หรือ CO2 เป็น DGA Status 3 ให้ score Evaluation เป็น 3
@@ -4948,21 +4999,21 @@
                     const triggeredGases = [...new Set((dgaEval.carbonOxideStatus3Reasons || []).map(r => r.split(' ')[0]))];
                     const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
                     return {
-                      value: `Caution (IEEE C57.104 Status 3: ${gasLabel} only)`,
+                      value: `Caution (IEEE C57.104 Status 3: ${gasLabel} Cellulose Degradation)`,
                       testDate: date,
                       ratingScore: 3,
                       recommendation: dgaEval.recommendation
                     };
                   }
                   return {
-                    value: `Critical (IEEE C57.104 ${dgaEval.statusText})`,
+                    value: `Critical (IEEE C57.104 Status 3: High Risk / Active Fault)`,
                     testDate: date,
                     ratingScore: 1,
                     recommendation: dgaEval.recommendation
                   };
                 } else if (dgaEval.overallStatus === 2) {
                   return {
-                    value: `Monitoring (IEEE C57.104 ${dgaEval.statusText})`,
+                    value: `Monitoring (IEEE C57.104 Status 2: Intermediate / Suspicious)`,
                     testDate: date,
                     ratingScore: 3,
                     recommendation: dgaEval.recommendation
@@ -4982,9 +5033,9 @@
             const combustibleCrit = h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
             const coCrit = (co > 1100);
             const isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || combustibleCrit || coCrit;
-            const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 350;
+            const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 900;
             if (isCritical) {
-              if (!combustibleCrit && (coCrit || (co > 350 && h2 <= 100 && ch4 <= 120 && c2h6 <= 65 && c2h4 <= 50 && c2h2 <= 1))) {
+              if (!combustibleCrit && (coCrit || (co > 900 && h2 <= 100 && ch4 <= 120 && c2h6 <= 65 && c2h4 <= 50 && c2h2 <= 1))) {
                 return {
                   value: 'Caution (IEEE C57.104 Status 3: CO only)',
                   testDate: date,

@@ -170,8 +170,20 @@ function getIEEENormsCore(o2n2Ratio, ageYears) {
 // DGA DATA SCREENING & OUTLIER EXCLUSION ENGINE (IEEE C57.104 & CIGRE TB 771)
 // Detects testing/sampling errors and recording anomalies across all transformers
 // ==========================================================================
+function hasValidDgaRecordCore(item) {
+  if (!item) return false;
+  const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
+  return gases.some(g => {
+    const val = item[g];
+    if (val === undefined || val === null) return false;
+    const s = String(val).trim();
+    if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+    return !isNaN(parseFloat(s.replace(/,/g, '')));
+  });
+}
+
 function isDgaOutlierRecordCore(record, allRecords) {
-  if (!record) return { isOutlier: false };
+  if (!record || !hasValidDgaRecordCore(record)) return { isOutlier: false };
 
   const parseD = (dStr) => {
     if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
@@ -225,7 +237,7 @@ function isDgaOutlierRecordCore(record, allRecords) {
   // In a sealed transformer without degassing, an isolated drop in a hydrocarbon gas to <= 2 ppm followed by immediate rebound to >= 15 ppm
   if (Array.isArray(allRecords) && allRecords.length >= 3) {
     const sorted = [...allRecords]
-      .filter(r => r && (r.Date || r.date || r.DATE))
+      .filter(r => r && (r.Date || r.date || r.DATE) && hasValidDgaRecordCore(r))
       .sort((a, b) => parseD(a.Date || a.date || a.DATE) - parseD(b.Date || b.date || b.DATE));
 
     const idx = sorted.findIndex(r => r === record || parseD(r.Date || r.date || r.DATE).getTime() === recTime);
@@ -282,22 +294,6 @@ function calcLinearRegressionRateCore(points) {
 
 function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
   if (!curr) return null;
-  const o2Val = parseFloat(curr.O2 || 0);
-  const n2Val = parseFloat(curr.N2 || 0);
-  const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
-
-  let ageYears = null;
-  const mfgDate = (trInfoItem && trInfoItem.MANUFACTURING_DATE) || curr.MANUFACTURING_DATE || curr.mfgYear;
-  if (mfgDate) {
-    const s = String(mfgDate).trim();
-    const yMatch = s.match(/\b(19\d\d|20\d\d)\b/);
-    if (yMatch) {
-      const sampleY = curr.Date || curr.date ? new Date(curr.Date || curr.date).getFullYear() : 2026;
-      ageYears = (sampleY || 2026) - parseInt(yMatch[1], 10);
-    }
-  }
-
-  const norms = getIEEENormsCore(o2n2Ratio, ageYears);
 
   const parseD = (dStr) => {
     if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
@@ -308,9 +304,52 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     return new Date(dStr);
   };
 
+  // Filter all items to only include records with valid DGA gas test data
+  const rawList = Array.isArray(allItems) ? allItems : [curr];
+  const validList = rawList.filter(hasValidDgaRecordCore);
+  if (!validList.length) return null;
+
+  // Sort descending by date
+  validList.sort((a, b) => {
+    const tA = parseD(a.Date || a.date || a.DATE || 0).getTime();
+    const tB = parseD(b.Date || b.date || b.DATE || 0).getTime();
+    return tB - tA;
+  });
+
+  // Deduplicate items by test date timestamp so each test date appears only once per Serial No.
+  const seenDates = new Set();
+  const itemsList = [];
+  for (const item of validList) {
+    const dt = parseD(item.Date || item.date || item.DATE);
+    const key = (dt && !isNaN(dt.getTime()) && dt.getTime() > 0) ? dt.getTime() : String(item.Date || item.date || item.DATE);
+    if (!seenDates.has(key)) {
+      seenDates.add(key);
+      itemsList.push(item);
+    }
+  }
+  if (!itemsList.length) return null;
+
+  const effectiveCurr = hasValidDgaRecordCore(curr) ? curr : itemsList[0];
+  if (!effectiveCurr) return null;
+
+  const o2Val = parseFloat(effectiveCurr.O2 || 0);
+  const n2Val = parseFloat(effectiveCurr.N2 || 0);
+  const o2n2Ratio = n2Val > 0 ? (o2Val / n2Val) : 0.25;
+
+  let ageYears = null;
+  const mfgDate = (trInfoItem && trInfoItem.MANUFACTURING_DATE) || effectiveCurr.MANUFACTURING_DATE || effectiveCurr.mfgYear;
+  if (mfgDate) {
+    const s = String(mfgDate).trim();
+    const yMatch = s.match(/\b(19\d\d|20\d\d)\b/);
+    if (yMatch) {
+      const sampleY = effectiveCurr.Date || effectiveCurr.date ? new Date(effectiveCurr.Date || effectiveCurr.date).getFullYear() : 2026;
+      ageYears = (sampleY || 2026) - parseInt(yMatch[1], 10);
+    }
+  }
+
+  const norms = getIEEENormsCore(o2n2Ratio, ageYears);
+
   // Multi-point rate with Automated Data Screening
-  const itemsList = Array.isArray(allItems) ? allItems : [curr];
-  
   // Screen records to exclude testing anomalies / outliers from linear regression
   const validRocItems = itemsList.filter(item => {
     const check = isDgaOutlierRecordCore(item, itemsList);
@@ -343,11 +382,14 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     });
   }
 
-  // Delta (Table 3) resolution: If prev1 is an outlier, find the previous valid record
-  let effectivePrev = prev1;
-  if (prev1 && isDgaOutlierRecordCore(prev1, itemsList).isOutlier) {
-    const currTime = parseD(curr.Date || curr.date || curr.DATE).getTime();
-    effectivePrev = validRocItems.find(r => r !== curr && parseD(r.Date || r.date || r.DATE).getTime() < currTime) || null;
+  // Delta (Table 3) resolution: If prev1 is an outlier, invalid, or has duplicate date with curr, find the previous valid record
+  let effectivePrev = (prev1 && hasValidDgaRecordCore(prev1)) ? prev1 : null;
+  const currTime = parseD(effectiveCurr.Date || effectiveCurr.date || effectiveCurr.DATE).getTime();
+  if (effectivePrev && parseD(effectivePrev.Date || effectivePrev.date || effectivePrev.DATE).getTime() === currTime) {
+    effectivePrev = null;
+  }
+  if (!effectivePrev || isDgaOutlierRecordCore(effectivePrev, itemsList).isOutlier) {
+    effectivePrev = validRocItems.find(r => r !== effectiveCurr && parseD(r.Date || r.date || r.DATE).getTime() < currTime) || null;
   }
 
   const t4Limits = norms.table4[t4DurKey];
@@ -371,7 +413,7 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
   const carbonOxideCautionReasons = [];
 
   gKeys.forEach(k => {
-    const cVal = parseFloat(curr[k] || 0);
+    const cVal = parseFloat(effectiveCurr[k] || 0);
     const pVal = effectivePrev ? parseFloat(effectivePrev[k] || 0) : null;
     const delta = pVal !== null ? Math.max(0, cVal - pVal) : 0;
     const rate = rates[k] !== undefined ? rates[k] : null;
@@ -456,23 +498,23 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
 
   if (condD) {
     overallStatus = 1;
-    statusText = 'Status 1 (Normal)';
-    recommendation = 'Unit is operating normally. Routine sampling (6–12 months) recommended.';
+    statusText = 'DGA Status 1: Normal';
+    recommendation = 'Unit is operating normally. Routine periodic screening (6–12 months) recommended.';
   } else {
     const condG = anyGasGtT2 || anyRateGtT4 || anyC2H2Increasing;
     if (condG) {
       overallStatus = 3;
       if (isCarbonOxideOnlyStatus3) {
-        statusText = 'Status 3 (Cellulose Degradation / CO-CO2)';
+        statusText = 'DGA Status 3: Caution (CO/CO2 Cellulose Degradation)';
         recommendation = `Elevated cellulose degradation / paper aging detected (${carbonOxideStatus3Reasons.slice(0, 2).join(', ')}). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature.`;
       } else {
-        statusText = 'Status 3 (Active Fault)';
-        recommendation = `Active fault detected (${triggerReasons.slice(0, 2).join(', ')}). Perform Fault Identification (Duval/Rogers) & electrical tests.`;
+        statusText = 'DGA Status 3: High Risk / Active Fault';
+        recommendation = `Active fault detected (${triggerReasons.slice(0, 2).join(', ')}). Immediate fault investigation recommended. Perform Fault Identification (Duval/Rogers) & electrical diagnostic tests.`;
       }
     } else {
       overallStatus = 2;
-      statusText = 'Status 2 (Suspicious)';
-      recommendation = `Gas or Delta exceeds baseline (${cautionReasons.slice(0, 2).join(', ')}). Resample within 1 month, increase frequency to 1–3 months.`;
+      statusText = 'DGA Status 2: Intermediate / Suspicious';
+      recommendation = `Gas or Delta exceeds baseline (${cautionReasons.slice(0, 2).join(', ')}). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).`;
     }
   }
 
@@ -1048,7 +1090,7 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
 // getMeasuredValueForItem: Dynamic CSV query & Scoring
 // ==========================================
 function getMeasuredValueForItem(itemName, item, ptName, subName) {
-  const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'];
+  const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || item['Serial No.'] || item.Serial_No || item.Serial_no || item.Name || '';
   const nameLower = (itemName || '').toLowerCase();
   const ptLower = (ptName || '').toLowerCase();
   const subLower = (subName || '').toLowerCase();
@@ -2143,15 +2185,48 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
   // 10. Oil & DGA (MTOilData.csv)
   const latestMt = (typeof mtOilCsvData !== 'undefined') ? findLatestRecord(mtOilCsvData, serialVal) : null;
   if (nameLower.includes('dga') || nameLower.includes('dissolve gas')) {
-    if (latestMt) {
-      const date = latestMt.Date || latestMt.date || latestMt.DATE;
-      const ieeeRes = (latestMt.IEEE_C57_104 || latestMt.IEEE_C57_155 || latestMt.Test_Result || '').toUpperCase();
-      const h2   = parseFloat(latestMt.H2 || 0);
-      const ch4  = parseFloat(latestMt.CH4 || 0);
-      const c2h6 = parseFloat(latestMt.C2H6 || 0);
-      const c2h4 = parseFloat(latestMt.C2H4 || 0);
-      const c2h2 = parseFloat(latestMt.C2H2 || 0);
-      const co   = parseFloat(latestMt.CO || 0);
+    const allMtDgaRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && serialVal)
+      ? mtOilCsvData.filter(d => {
+          const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
+          if (!s) return false;
+          const s1 = String(s).trim().toLowerCase();
+          const s2 = String(serialVal).trim().toLowerCase();
+          const match = (s1 === s2) || (() => {
+            const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
+            return !!(cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS)));
+          })();
+          return match && hasValidDgaRecordCore(d);
+        })
+      : [];
+    allMtDgaRecords.sort((a, b) => {
+      const dA = new Date(a.date || a.Date || a.DATE || 0);
+      const dB = new Date(b.date || b.Date || b.DATE || 0);
+      return dB - dA;
+    });
+
+    // Deduplicate items by test date timestamp so each test date appears only once per Serial No.
+    const seenDgaDates = new Set();
+    const dedupMtDgaRecords = [];
+    for (const item of allMtDgaRecords) {
+      const dt = new Date(item.date || item.Date || item.DATE || 0);
+      const key = !isNaN(dt.getTime()) && dt.getTime() > 0 ? dt.getTime() : String(item.date || item.Date || item.DATE);
+      if (!seenDgaDates.has(key)) {
+        seenDgaDates.add(key);
+        dedupMtDgaRecords.push(item);
+      }
+    }
+
+    const activeDgaRec = dedupMtDgaRecords[0] || latestMt;
+    if (activeDgaRec) {
+      const date = activeDgaRec.Date || activeDgaRec.date || activeDgaRec.DATE;
+      const ieeeRes = (activeDgaRec.IEEE_C57_104 || activeDgaRec.IEEE_C57_155 || activeDgaRec.Test_Result || '').toUpperCase();
+      const h2   = parseFloat(activeDgaRec.H2 || 0);
+      const ch4  = parseFloat(activeDgaRec.CH4 || 0);
+      const c2h6 = parseFloat(activeDgaRec.C2H6 || 0);
+      const c2h4 = parseFloat(activeDgaRec.C2H4 || 0);
+      const c2h2 = parseFloat(activeDgaRec.C2H2 || 0);
+      const co   = parseFloat(activeDgaRec.CO || 0);
 
       const trInfoItem = (typeof trInfoCsvData !== 'undefined' && trInfoCsvData && trInfoCsvData.length > 0 && serialVal)
         ? findLatestRecord(trInfoCsvData, serialVal)
@@ -2172,25 +2247,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         }
       } else {
         // Mineral Oil: IEEE C57.104-2019 Clause 6 Flowchart Interpretation Engine
-        const allMtRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && serialVal)
-          ? mtOilCsvData.filter(d => {
-              const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
-              if (!s) return false;
-              const s1 = String(s).trim().toLowerCase();
-              const s2 = String(serialVal).trim().toLowerCase();
-              if (s1 === s2) return true;
-              const cleanS = String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
-              const cleanTarget = String(serialVal).toUpperCase().replace(/[^A-Z0-9]/g, '');
-              return cleanS && cleanTarget && (cleanS === cleanTarget || cleanS.includes(cleanTarget) || cleanTarget.includes(cleanS));
-            })
-          : [];
-        allMtRecords.sort((a, b) => {
-          const dA = new Date(a.date || a.Date || a.DATE || 0);
-          const dB = new Date(b.date || b.Date || b.DATE || 0);
-          return dB - dA;
-        });
-
-        const dgaEval = evaluateDGAFlowchartCore(latestMt, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
+        const allMtRecords = dedupMtDgaRecords;
+        const dgaEval = evaluateDGAFlowchartCore(activeDgaRec, allMtRecords[1] || null, allMtRecords, trInfoItem || item);
         if (dgaEval) {
           if (dgaEval.overallStatus === 3) {
             // Rule: กรณี H2, CH4, C2H6, C2H4, C2H2 ปกติ มีเฉพาะ CO หรือ CO2 เป็น DGA Status 3 ให้ score Evaluation เป็น 3
@@ -2198,21 +2256,21 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
               const triggeredGases = [...new Set((dgaEval.carbonOxideStatus3Reasons || []).map(r => r.split(' ')[0]))];
               const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
               return {
-                value: `Caution (IEEE C57.104 Status 3: ${gasLabel} only)`,
+                value: `Caution (IEEE C57.104 Status 3: ${gasLabel} Cellulose Degradation)`,
                 testDate: date,
                 ratingScore: 3,
                 recommendation: dgaEval.recommendation
               };
             }
             return {
-              value: `Critical (IEEE C57.104 ${dgaEval.statusText})`,
+              value: `Critical (IEEE C57.104 Status 3: High Risk / Active Fault)`,
               testDate: date,
               ratingScore: 1,
               recommendation: dgaEval.recommendation
             };
           } else if (dgaEval.overallStatus === 2) {
             return {
-              value: `Monitoring (IEEE C57.104 ${dgaEval.statusText})`,
+              value: `Monitoring (IEEE C57.104 Status 2: Intermediate / Suspicious)`,
               testDate: date,
               ratingScore: 3,
               recommendation: dgaEval.recommendation
@@ -2921,7 +2979,8 @@ function syncAssessmentWithEvaluationEngine() {
         surgeArrester: 5,
         oltc: 5,
         oil: 5,
-        visual: 5
+        visual: 5,
+        dga: 5
       };
       let ptHasData = {
         activePart: false,
@@ -2929,7 +2988,8 @@ function syncAssessmentWithEvaluationEngine() {
         surgeArrester: false,
         oltc: false,
         oil: false,
-        visual: false
+        visual: false,
+        dga: false
       };
 
       const recs = [];
@@ -2952,6 +3012,13 @@ function syncAssessmentWithEvaluationEngine() {
               if (s < minPtScores[currentPtGroup]) {
                 minPtScores[currentPtGroup] = s;
               }
+              const mNameLower = String(m.name || '').toLowerCase();
+              if (mNameLower.includes('dga') || mNameLower.includes('dissolve gas')) {
+                ptHasData.dga = true;
+                if (s < minPtScores.dga) {
+                  minPtScores.dga = s;
+                }
+              }
               if (match.recommendation && match.recommendation !== '-' && !match.recommendation.toLowerCase().includes('routine')) {
                 if (!recs.includes(match.recommendation)) recs.push(match.recommendation);
               }
@@ -2972,6 +3039,7 @@ function syncAssessmentWithEvaluationEngine() {
       
       if (!item.mainTankOil || typeof item.mainTankOil !== 'object') item.mainTankOil = {};
       if (ptHasData.oil) item.mainTankOil.overall = scoreToAqu(minPtScores.oil);
+      if (ptHasData.dga) item.mainTankOil.dga = scoreToAqu(minPtScores.dga);
       
       if (ptHasData.bushing) item.bushing = scoreToAqu(minPtScores.bushing);
       if (ptHasData.surgeArrester) item.surgeArrester = scoreToAqu(minPtScores.surgeArrester);
@@ -3337,6 +3405,7 @@ if (typeof window !== 'undefined') {
   window.generateDetailedRecommendation = generateDetailedRecommendation;
   window.formatDateToDdMmmYyyy = formatDateToDdMmmYyyy;
   window.formatDate = formatDateToDdMmmYyyy;
+  window.hasValidDgaRecordCore = hasValidDgaRecordCore;
   window.evaluateDGAFlowchartCore = evaluateDGAFlowchartCore;
   window.isDgaOutlierRecordCore = isDgaOutlierRecordCore;
   window.calcLinearRegressionRateCore = calcLinearRegressionRateCore;
@@ -3355,6 +3424,7 @@ if (typeof module !== 'undefined' && module.exports) {
     syncAssessmentWithEvaluationEngine,
     generateDetailedRecommendation,
     formatDateToDdMmmYyyy,
+    hasValidDgaRecordCore,
     evaluateDGAFlowchartCore,
     isDgaOutlierRecordCore,
     calcLinearRegressionRateCore,

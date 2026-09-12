@@ -903,7 +903,7 @@ const HEALTH_INDEX_DATA = [
     "Frequency Response Analysis (FRA)": "N/A",
     "%Moisture in paper (FDS)": "N/A",
     "Main Tank Oil": "Q",
-    "DGA": "Q",
+    "DGA": "A",
     "Water Content": "Q",
     "Dielectric Breakdown": "A",
     "PF at 25 °C": "A",

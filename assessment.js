@@ -2562,7 +2562,39 @@ function openDetail(no) {
     return `${day}-${month}-${year}`;
   }
 
-  const latestDGA = findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
+  const hasValidDgaRecord = (d) => {
+    if (!d) return false;
+    if (typeof hasValidDgaRecordCore === 'function') return hasValidDgaRecordCore(d);
+    const gases = ['H2', 'CH4', 'C2H6', 'C2H4', 'C2H2', 'CO', 'O2', 'CO2'];
+    return gases.some(g => {
+      const val = d[g];
+      if (val === undefined || val === null) return false;
+      const s = String(val).trim();
+      if (s === '' || s === '-' || s === 'N/A' || s === 'null') return false;
+      return !isNaN(parseFloat(s.replace(/,/g, '')));
+    });
+  };
+
+  const rawValidMtDga = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && item && item.serial)
+    ? mtOilCsvData.filter(d => {
+        const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
+        const match = String(s).trim().toLowerCase() === String(item.serial).trim().toLowerCase();
+        return match && hasValidDgaRecord(d);
+      }).sort((a, b) => new Date(b.date || b.Date || 0) - new Date(a.date || a.Date || 0))
+    : [];
+
+  const seenDgaDates = new Set();
+  const allValidMtDga = [];
+  for (const itemDga of rawValidMtDga) {
+    const dt = new Date(itemDga.date || itemDga.Date || itemDga.DATE || 0);
+    const key = !isNaN(dt.getTime()) && dt.getTime() > 0 ? dt.getTime() : String(itemDga.date || itemDga.Date || itemDga.DATE);
+    if (!seenDgaDates.has(key)) {
+      seenDgaDates.add(key);
+      allValidMtDga.push(itemDga);
+    }
+  }
+
+  const latestDGA = allValidMtDga[0] || findLatestRecord(mtOilCsvData.length ? mtOilCsvData : mainTankDgaCsvData, item.serial) || item.mtOilRec;
   
   function colorGasCell(elId, val, limit) {
     const el = document.getElementById(elId);
@@ -2706,28 +2738,23 @@ function openDetail(no) {
     
     let dgaCoreEvaluated = false;
     if (typeof evaluateDGAFlowchartCore === 'function') {
-      const allDgaRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && item && item.serial)
-        ? mtOilCsvData.filter(d => {
-            const s = d.serial || d.Serial_No || d.Serial_no || d.Serial || d.SERIAL_NUMBER || '';
-            return String(s).trim().toLowerCase() === String(item.serial).trim().toLowerCase();
-          }).sort((a, b) => new Date(b.date || b.Date || 0) - new Date(a.date || a.Date || 0))
-        : [latestDGA];
+      const allDgaRecords = allValidMtDga.length > 0 ? allValidMtDga : [latestDGA];
       const dgaEval = evaluateDGAFlowchartCore(latestDGA, allDgaRecords[1] || null, allDgaRecords, item);
       if (dgaEval) {
         dgaCoreEvaluated = true;
         if (dgaEval.overallStatus === 3) {
           if (dgaEval.isCarbonOxideOnlyStatus3) {
-            maxIEEEStatus = 'DGA Status 3 (Caution: CO/CO2 only)';
+            maxIEEEStatus = 'DGA Status 3: Caution (CO/CO2 Cellulose Degradation)';
             ieeeColor = '#eab308';
           } else {
-            maxIEEEStatus = 'DGA Status 3 (Critical)';
+            maxIEEEStatus = 'DGA Status 3: High Risk / Active Fault';
             ieeeColor = '#ef4444';
           }
         } else if (dgaEval.overallStatus === 2) {
-          maxIEEEStatus = 'DGA Status 2 (Caution)';
+          maxIEEEStatus = 'DGA Status 2: Intermediate / Suspicious';
           ieeeColor = '#eab308';
         } else {
-          maxIEEEStatus = 'DGA Status 1 (Normal)';
+          maxIEEEStatus = 'DGA Status 1: Normal';
           ieeeColor = '#10b981';
         }
       }
