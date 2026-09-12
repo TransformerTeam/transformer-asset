@@ -7,9 +7,9 @@ KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2025-01-26 00:00:00
 KT4A.30.EN,31-90-CPPB-XF-KT4A,SITE3,Distribution Transformer,2023-01-03 00:00:00,2023,CM,-,Oil leak at tube to radiator,,Worn out gasket,"- Repair oil leak and fix nut.
 - Replacement new buccholz relay.
 - Reset rubber bag alarm.
-- hot oil purify drain oil.",,11:00:00,
+- hot oil purify drain oil.",,0.458333333333333,
 CTG1A&1B GSUT,-,-,-,2022-12-30 00:00:00,2022,CM,-,- Sight glass of buchholz Relay is broken,-,Sight glass derteriored.,"- Change new sight glass
-- Close oil valve from buchholz relay",,04:00:00,
+- Close oil valve from buchholz relay",,0.166666666666667,
 KT4A.30.EN,31-90-CPPB-XF-KT4A,SITE3,Distribution Transformer,2022-12-19 00:00:00,2022,CM,-,KT4A has alarm AC Ragulating failure and Can't Reset.,,???,???,,,
 KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2022-11-09 00:00:00,2022,CM,-,"Alarm ""AC Reculator fail"", Verify.",,,,,,
 10060-TR-001 (GTG15),10060-TR-001,CUP-1,GSUT,2022-10-31 00:00:00,2022,PM,-,3 Year Maintenance,,,,,,
@@ -46,7 +46,7 @@ KT7A.30.EN,31-90-CPPB-XF-KT7A,SITE3,Distribution Transformer,2021-10-31 00:00:00
 KT7A.30.EN,31-90-CPPB-XF-KT7A,SITE3,Distribution Transformer,2021-10-31 00:00:00,2021,Improved,Self-Protection,Verify and replacement cable of Rapid pressure (Follow from KT6A Trip),,,,,,
 TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2026-05-10 00:00:00,2026,PM,-,6Y PM Program (Overhual OLTC).,,,,,,
 TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2023-09-14 00:00:00,2023,PM,-,3Y PM Pogram,,,,,,
-TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2021-10-28 00:00:00,2021,CM,Tap Changer Oil,OLTC hot oil purify.,,-,,,,
+TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2021-10-28 00:00:00,2021,CM,Tap Changer Oil,OLTC hot oil purify.,,- ,,,,
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2021-10-28 00:00:00,2021,CM,Main Tank Oil,Hot oil purify and top up and FDS and PDC+ test,,,"- Hot oil purify and top up.
 - FDS and PDC+ test.",,,
 KT6A.30.EN,31-90-CPPB-XF-KT6A,SITE3,Distribution Transformer,2021-10-18 00:00:00,2021,BD,Self-Protection,KT6A Trip: Verify and replacement cable of Rapid pressure,,,,,,
@@ -71,7 +71,7 @@ Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2020-10-30 00:00:00,20
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2020-10-30 00:00:00,2020,CM,Main Tank,"Replacement new gaskets HV, LV, tap, BCT",,- Unkown root cause.,"- 
 - 3Y PM Program.",,,
 KT4A.30.EN,31-90-CPPB-XF-KT4A,SITE3,Distribution Transformer,2020-08-25 00:00:00,2020,CM,Tap Changer Oil,"OLTC hot oil purify and top up oil. A=64 kV 6 ppm., B=68 kV 4 ppm., C=60 kV 6 ppm.",,,,,,
-TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2020-01-28 00:00:00,2020,FAT,-,Re-located transformer from Spare GSPP2&3 to TR3 GEN substation.,,-,- Install TR3 in GEN substation.,,,
+TR3,22-90-00ATC30 (TR3),SITE2,Distribution Transformer,2020-01-28 00:00:00,2020,FAT,-,Re-located transformer from Spare GSPP2&3 to TR3 GEN substation.,,- ,- Install TR3 in GEN substation.,,,
 10060-TR-001 (GTG15),10060-TR-001,CUP-1,GSUT,2019-10-19 00:00:00,2019,PM,,3 Year Maintenance,,,,,,
 KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2019-09-01 00:00:00,2019,PM,-,6Y PM Program,,,,,,
 KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2019-09-01 00:00:00,2019,CM,Tap Changer Oil,"Change new OLTC oil, BD = 90 kV, Water 10 ppm.",,,,,,
@@ -98,8 +98,8 @@ Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2017-12-11 00:00:00,20
 - 3Y PM Program.",,,
 Spare Transformer from ETR2,-,SITE2,Auxiliary Transformer,2017-12-11 00:00:00,2017,Improved,Main Tank Oil,Transformer oil regeneration,,,,,,
 KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2017-07-02 00:00:00,2017,PM,-,3Y PM Program,,,,,,
-KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2017-07-02 00:00:00,2017,CM,Self-Protection,"Reset ""Rubber bag rupture alarm"", After reset alarm still operated.",,,,,,
-KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2017-07-02 00:00:00,2017,CM,Tap Changer Oil,"Repalcement new OLTC oil, A: BD=67.5 kV, B: BD=66.6 kV, C: BD=69.7 kV.",,,,,,
+KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2017-07-02 00:00:00,2017,CM,Self-Protection,"Reset ""Rubber bag rupture alarm"", After reset alarm still operated. ",,,,,,
+KT2A.30.EN,31-90-CPPB-XF-KT2A,SITE3,Distribution Transformer,2017-07-02 00:00:00,2017,CM,Tap Changer Oil,"Repalcement new OLTC oil, A: BD=67.5 kV, B: BD=66.6 kV, C: BD=69.7 kV. ",,,,,,
 KT5A.30.EN,31-90-CPPB-XF-KT5A,SITE3,Distribution Transformer,2017-06-01 00:00:00,2017,PM,-,3Y PM Program.,,,,,,
 KT5A.30.EN,31-90-CPPB-XF-KT5A,SITE3,Distribution Transformer,2017-06-01 00:00:00,2017,CM,Tap Changer Oil,Change new OLTC oil,,,,,,
 KT5A.30.EN,31-90-CPPB-XF-KT5A,SITE3,Distribution Transformer,2017-06-01 00:00:00,2017,CM,Leakage,Change new gaskets for OLTC all oil pipe,,,,,,
