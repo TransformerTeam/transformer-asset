@@ -1352,6 +1352,9 @@
       <button class="btn btn-secondary" onclick="window.print()" title="Print this single Evaluation Report">
         <i class="fa-solid fa-print"></i> Print PDF
       </button>
+      <button class="btn btn-secondary" onclick="openWordReport()" id="btn-word-report" title="Open Official Word (.docx) Life Assessment Report" style="border-color: #2563eb; color: #2563eb; font-weight: 600;">
+        <i class="fa-solid fa-file-word" style="color: #2563eb;"></i> Word Report
+      </button>
     </div>
   </div>
 
@@ -5756,6 +5759,30 @@
           modal.classList.remove('active');
           if (spinIcon) spinIcon.classList.remove('fa-spin');
         }, 1500);
+      }
+    }
+
+    // ==========================================
+    // Official Word (.docx) Report Integration
+    // ==========================================
+    function openWordReport() {
+      const serial = currentSerial || (document.getElementById('eval-transformer-select') ? document.getElementById('eval-transformer-select').value : '');
+      const toast = document.getElementById('refresh-toast');
+      const docxFullPath = 'D:\\Users\\Gpsc11630400\\OneDrive - GPSC\\5. Report\\Assessment 2026\\CUP-3_TR-001\\2026 Transformer Life Assessment Report for CUP-3 TR-001.docx';
+
+      if (serial === 'PP0158B01' || serial === '34101-TR-001') {
+        const fileUrl = 'file:///' + docxFullPath.replace(/\\/g, '/');
+        window.open(fileUrl, '_blank');
+        if (toast) {
+          toast.innerHTML = '<i class="fa-solid fa-file-word" style="color: #2563eb;"></i> <span>Opening Word Report: ' + docxFullPath + '</span>';
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 6000);
+        }
+      } else {
+        alert('Official Assessment Word (.docx) Report:\n\n' +
+              'For CUP-3 TR-001 (PP0158B01), report is available at:\n' +
+              docxFullPath + '\n\n' +
+              'To generate/update reports, run GENERATE_WORD_REPORT.bat');
       }
     }
 
