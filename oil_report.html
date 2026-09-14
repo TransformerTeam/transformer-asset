@@ -566,7 +566,7 @@
         margin-bottom: 4px !important;
       }
       .trend-box {
-        height: 120px !important;
+        height: auto !important;
         padding: 3px 5px !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -1046,7 +1046,7 @@
             </div>
             <div class="trend-stat-badge">Dual-Axis Tracking &bull; ASTM D1816 / ASTM D1533</div>
           </div>
-          <div id="chart-trend-bdv-wc" class="chart-render-area" style="height: 200px;"></div>
+          <div id="chart-trend-bdv-wc" class="chart-render-area" style="height: 185px;"></div>
         </div>
 
         <!-- Section Category Header: Oil Properties -->
@@ -1845,6 +1845,7 @@
 
       const sorted = [...items].sort((a, b) => parseDate(a.Date || a.date) - parseDate(b.Date || b.date));
       const dates = sorted.map(d => formatDate_ddMmmyyyy(d.Date || d.date));
+      const compactDates = sorted.map(d => formatDate_compact(d.Date || d.date));
 
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const textColor = isDark ? '#94a3b8' : '#475569';
@@ -1867,7 +1868,7 @@
       const wcVals = sorted.map(d => parseFloat(d.WC) || null);
 
       createOrUpdateChart('chart-trend-bdv-wc', {
-        chart: { type: 'line', height: 160, toolbar: { show: false }, zoom: { enabled: false }, animations: { enabled: false } },
+        chart: { type: 'line', height: 185, toolbar: { show: false }, zoom: { enabled: false }, animations: { enabled: false } },
         stroke: { width: [2.5, 2.5], curve: 'smooth' },
         colors: ['#22c55e', '#0284c7'],
         series: [
@@ -1875,27 +1876,33 @@
           { name: 'Water Content (ppm)', type: 'line', data: wcVals }
         ],
         xaxis: {
-          categories: dates,
+          categories: compactDates,
           labels: {
-            style: { colors: textColor, fontSize: '7.5px', fontWeight: 600 },
-            rotate: -45,
+            style: { colors: textColor, fontSize: '8px', fontWeight: 600 },
+            rotate: -25,
             rotateAlways: false,
-            hideOverlappingLabels: true
+            hideOverlappingLabels: true,
+            maxHeight: 34,
+            offsetY: -2
           },
-          tickAmount: Math.min(dates.length, 6)
+          tickAmount: Math.min(compactDates.length, 7),
+          axisBorder: { show: true, color: gridColor },
+          axisTicks: { show: true, color: gridColor }
         },
         yaxis: [
           {
             min: (min) => Math.max(0, Math.min(min || 40, 40)),
             title: { text: 'BDV (kV)', style: { color: '#22c55e', fontSize: '8.5px', fontWeight: 700 } },
-            labels: { style: { colors: textColor, fontSize: '8px' }, formatter: (v) => v ? v.toFixed(1) : '' }
+            labels: { style: { colors: textColor, fontSize: '8px', fontWeight: 600 }, formatter: (v) => v ? v.toFixed(1) : '' },
+            tickAmount: 4
           },
           {
             min: 0,
             max: (max) => Math.max(max || 30, 30),
             opposite: true,
             title: { text: 'Water Content (ppm)', style: { color: '#0284c7', fontSize: '8.5px', fontWeight: 700 } },
-            labels: { style: { colors: textColor, fontSize: '8px' }, formatter: (v) => v ? v.toFixed(1) : '' }
+            labels: { style: { colors: textColor, fontSize: '8px', fontWeight: 600 }, formatter: (v) => v ? v.toFixed(1) : '' },
+            tickAmount: 4
           }
         ],
         annotations: {
@@ -1924,15 +1931,55 @@
             }
           ]
         },
-        grid: { borderColor: gridColor, strokeDashArray: 3 },
+        grid: { borderColor: gridColor, strokeDashArray: 3, padding: { top: 8, right: 12, bottom: 2, left: 12 } },
         legend: { position: 'top', labels: { colors: textColor }, fontSize: '9.5px', fontWeight: 600 },
-        markers: { size: 3.5, strokeWidth: 2, hover: { size: 5 } },
+        markers: { size: 4, strokeWidth: 2, strokeColors: '#fff', hover: { size: 6 } },
         tooltip: { shared: true, intersect: false, theme: isDark ? 'dark' : 'light' }
       });
 
       // Helper function for clean single-parameter trend charts with Auto Y-scale & Limit Line
       const createSingleParamChart = (chartId, name, dataVals, color, unit, decimals = 2, limitVal = null, limitLabel = '', customYFormatter = null) => {
-        const annotations = limitVal !== null ? {
+        const validNums = dataVals.filter(v => v !== null && !isNaN(v));
+        let yMin = 0;
+        let yMax = null;
+        let showAnnotation = false;
+
+        if (validNums.length > 0) {
+          const dataMin = Math.min(...validNums);
+          const dataMax = Math.max(...validNums);
+
+          // Smart limit inclusion:
+          // If limit is close enough (within 3.5x of dataMax, or data is near/exceeding limit),
+          // include the limit line on the plot so user sees the threshold.
+          // If limit is far higher (> 3.5x dataMax), scale Y-axis to the actual data values
+          // so the user can ACTUALLY SEE THE TRENDING shape and variations over time!
+          const isLimitClose = (limitVal !== null) &&
+                               (limitVal <= Math.max(dataMax * 3.5, 0.05)) &&
+                               (limitVal >= Math.min(dataMin * 0.35, 10));
+
+          if (isLimitClose) {
+            const overallMin = Math.min(dataMin, limitVal);
+            const overallMax = Math.max(dataMax, limitVal);
+            const span = overallMax - overallMin;
+            const pad = span > 0 ? span * 0.15 : (overallMax * 0.15 || 0.1);
+
+            yMin = Math.max(0, parseFloat((overallMin - pad).toFixed(decimals)));
+            yMax = parseFloat((overallMax + pad).toFixed(decimals));
+            showAnnotation = true;
+          } else {
+            const span = dataMax - dataMin;
+            const pad = span > 0 ? span * 0.25 : (dataMax > 0 ? dataMax * 0.25 : 0.01);
+
+            yMin = Math.max(0, parseFloat((dataMin - pad).toFixed(decimals)));
+            yMax = parseFloat((dataMax + pad).toFixed(decimals));
+
+            if (limitVal !== null && limitVal >= yMin && limitVal <= yMax) {
+              showAnnotation = true;
+            }
+          }
+        }
+
+        const annotations = (limitVal !== null && showAnnotation) ? {
           yaxis: [{
             y: limitVal,
             borderColor: '#ef4444',
@@ -1945,49 +1992,57 @@
           }]
         } : {};
 
-        // Calculate Y-axis range to guarantee Limit line is fully visible
-        const validNums = dataVals.filter(v => v !== null && !isNaN(v));
         let yaxisConfig = {
+          min: yMin,
+          max: yMax,
+          tickAmount: 3, // Exactly 3-4 clean ticks, eliminating overlapping text!
           labels: {
-            style: { colors: textColor, fontSize: '7.5px' },
+            style: { colors: textColor, fontSize: '8px', fontWeight: 600 },
             formatter: (v) => {
               if (v === null || v === undefined || isNaN(v)) return '';
               if (customYFormatter) return customYFormatter(v);
-              return v.toFixed(decimals);
+              return Number(v).toFixed(decimals);
             }
           }
         };
 
-        if (validNums.length > 0 && limitVal !== null) {
-          const dataMin = Math.min(...validNums);
-          const dataMax = Math.max(...validNums);
-          const overallMin = Math.min(dataMin, limitVal);
-          const overallMax = Math.max(dataMax, limitVal);
-          const span = overallMax - overallMin;
-          const pad = span > 0 ? span * 0.2 : (overallMax > 0 ? overallMax * 0.2 : 1);
-
-          yaxisConfig.min = Math.max(0, parseFloat((overallMin - pad).toFixed(decimals)));
-          yaxisConfig.max = parseFloat((overallMax + pad).toFixed(decimals));
-        }
-
         createOrUpdateChart(chartId, {
-          chart: { type: 'line', height: 100, toolbar: { show: false }, zoom: { enabled: false }, animations: { enabled: false } },
-          stroke: { width: 2, curve: 'smooth' },
+          chart: {
+            type: 'line',
+            height: 155, // Expanded from 100px so plot area is ~100px tall
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            animations: { enabled: false }
+          },
+          stroke: { width: 2.2, curve: 'smooth' },
           colors: [color],
           series: [{ name: `${name} (${unit})`, data: dataVals }],
           xaxis: {
-            categories: dates,
+            categories: compactDates,
             labels: {
-              style: { colors: textColor, fontSize: '7px', fontWeight: 600 },
-              rotate: -45,
+              style: { colors: textColor, fontSize: '8px', fontWeight: 600 },
+              rotate: -25,
               rotateAlways: false,
-              hideOverlappingLabels: true
+              hideOverlappingLabels: true,
+              maxHeight: 34,
+              offsetY: -2
             },
-            tickAmount: Math.min(dates.length, 5)
+            tickAmount: Math.min(compactDates.length, 6),
+            axisBorder: { show: true, color: gridColor },
+            axisTicks: { show: true, color: gridColor }
           },
           yaxis: yaxisConfig,
-          grid: { borderColor: gridColor, strokeDashArray: 3 },
-          markers: { size: 3, strokeWidth: 1.5, hover: { size: 5 } },
+          grid: {
+            borderColor: gridColor,
+            strokeDashArray: 3,
+            padding: { top: 6, right: 10, bottom: 2, left: 10 }
+          },
+          markers: {
+            size: 3.5,
+            strokeWidth: 1.5,
+            strokeColors: '#ffffff',
+            hover: { size: 5.5 }
+          },
           annotations: annotations,
           tooltip: {
             theme: isDark ? 'dark' : 'light',
@@ -1995,7 +2050,7 @@
               formatter: (val) => {
                 if (val === null || val === undefined) return '-';
                 if (customYFormatter) return customYFormatter(val);
-                return `${val.toFixed(decimals)} ${unit}`;
+                return `${Number(val).toFixed(decimals)} ${unit}`;
               }
             }
           }
@@ -2072,6 +2127,12 @@
     function parseDate(dStr) {
       if (!dStr || dStr === '-' || dStr === '0000-00-00') return new Date(0);
       return new Date(dStr);
+    }
+
+    function formatDate_compact(dateStr) {
+      const full = formatDate_ddMmmyyyy(dateStr);
+      if (!full || full === '-') return '-';
+      return full.replace(/-(\d{4})$/, (m, y) => `-${y.slice(-2)}`);
     }
 
     function formatDate_ddMmmyyyy(dateStr) {
