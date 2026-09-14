@@ -1969,6 +1969,35 @@
       ctx.closePath();
     }
 
+    // Helper to draw rounded rectangle on Canvas
+    function drawCalloutRoundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    // Helper to convert HEX color to RGBA
+    function hexToRgba(hex, alpha = 1) {
+      let c = (hex || '#2563eb').replace('#', '');
+      if (c.length === 3) {
+        c = c.split('').map(x => x + x).join('');
+      }
+      const num = parseInt(c, 16);
+      if (isNaN(num)) return `rgba(37, 99, 235, ${alpha})`;
+      const r = (num >> 16) & 255;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
     // Helper to check 2D bounding box collision with safety padding
     function doBoxesCollide(b1, b2, pad = 6) {
       return !(
@@ -1979,7 +2008,7 @@
       );
     }
 
-    // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine)
+    // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine with Drop Lines & Year Badges)
     const dp300CalloutPlugin = {
       id: 'dp300Callouts',
       afterDatasetsDraw(chart, args, options) {
@@ -2006,6 +2035,19 @@
         }
 
         const occupiedBoxes = [];
+        const bottomBadgeBoxes = [];
+
+        function getBottomBadgeY(bx, bw, defaultY) {
+          const overlapsRow1 = bottomBadgeBoxes.some(b => 
+            b.row === 1 && !(bx + bw + 4 < b.x || bx > b.x + b.w + 4)
+          );
+          if (!overlapsRow1) {
+            bottomBadgeBoxes.push({ x: bx, w: bw, row: 1 });
+            return defaultY;
+          }
+          bottomBadgeBoxes.push({ x: bx, w: bw, row: 2 });
+          return defaultY + 15;
+        }
 
         // 1. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout FIRST
         const currentItem = intersections.find(it => it.label === 'Current' || it.isCurrent);
@@ -2017,31 +2059,38 @@
 
           ctx.save();
 
-          // Vertical Drop Guide Line to X-axis
-          ctx.beginPath();
-          ctx.strokeStyle = 'rgba(37, 99, 235, 0.45)';
-          ctx.lineWidth = 1.5;
-          ctx.setLineDash([3, 3]);
-          ctx.moveTo(xPos, yPos);
-          ctx.lineTo(xPos, yAxis.bottom);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
           // Year tag badge directly on the bottom X-axis
+          let badgeY = yAxis.bottom + 2;
           if (isWithinWindow) {
             const yearText = `${currentItem.targetYear}`;
             ctx.font = 'bold 8.5px "Inter", sans-serif';
             const yw = ctx.measureText(yearText).width;
+            const bw = yw + 10;
+            const bh = 14;
+            const bx = xPos - bw / 2;
+            badgeY = getBottomBadgeY(bx, bw, yAxis.bottom + 2);
+
+            // Vertical Drop Guide Line from anchor down to badge top
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(37, 99, 235, 0.50)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([3, 3]);
+            ctx.moveTo(xPos, yPos);
+            ctx.lineTo(xPos, badgeY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw Bottom Year Badge
             ctx.fillStyle = '#1d4ed8';
-            drawCalloutRoundRect(ctx, xPos - yw / 2 - 5, yAxis.bottom + 2, yw + 10, 14, 3);
+            drawCalloutRoundRect(ctx, bx, badgeY, bw, bh, 3);
             ctx.fill();
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(yearText, xPos, yAxis.bottom + 9);
+            ctx.fillText(yearText, xPos, badgeY + bh / 2);
           }
 
-          // Anchor Dot with glowing outer ring
+          // Anchor Dot with glowing concentric halo ring
           ctx.beginPath();
           ctx.arc(xPos, yPos, 7.5, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
@@ -2065,17 +2114,17 @@
           if (badgeX < xAxis.left + 6) badgeX = xAxis.left + 6;
           if (badgeX + badgeW > xAxis.right - 6) badgeX = xAxis.right - badgeW - 6;
 
-          const badgeY = yPos - 46;
+          const heroBadgeY = yPos - 46;
 
           // Register Hero Badge in occupiedBoxes so NO other label can collide with it
-          occupiedBoxes.push({ x: badgeX, y: badgeY, w: badgeW, h: badgeH });
+          occupiedBoxes.push({ x: badgeX, y: heroBadgeY, w: badgeW, h: badgeH });
 
           // Pointer Line from Anchor to Badge
           ctx.beginPath();
           ctx.strokeStyle = '#1d4ed8';
           ctx.lineWidth = 1.8;
           ctx.moveTo(xPos, yPos);
-          ctx.lineTo(xPos, badgeY + badgeH);
+          ctx.lineTo(xPos, heroBadgeY + badgeH);
           ctx.stroke();
 
           // Draw Badge Fill & Drop Shadow
@@ -2083,27 +2132,27 @@
           ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
           ctx.shadowBlur = 6;
           ctx.shadowOffsetY = 2;
-          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
+          drawCalloutRoundRect(ctx, badgeX, heroBadgeY, badgeW, badgeH, 4);
           ctx.fill();
           ctx.shadowColor = 'transparent';
 
           // White Border
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.4;
-          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
+          drawCalloutRoundRect(ctx, badgeX, heroBadgeY, badgeW, badgeH, 4);
           ctx.stroke();
 
           // Badge Text
           ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(heroText, badgeX + badgeW / 2, badgeY + badgeH / 2);
+          ctx.fillText(heroText, badgeX + badgeW / 2, heroBadgeY + badgeH / 2);
 
           ctx.restore();
         }
 
         // 2. Filter & Deduplicate Scenarios
-        // Exclude scenarios that coincide with Current (within 2.5 years) to prevent overlapping labels!
+        // Exclude scenarios that coincide with Current (within 2.5 years) to prevent duplicate overlapping markers
         let rawScenarios = intersections.filter(it => 
           !it.isCurrent && 
           it.label !== 'Current' && 
@@ -2128,12 +2177,56 @@
           }
         });
 
-        // 3. Draw Non-Overlapping Scenario Callouts with 2D Collision Resolution & White Pills
+        // 3. Draw Drop Lines, Year Badges, Concentric Anchors, and Non-Overlapping Callout Pills for Scenarios
         groupedScenarios.forEach((item) => {
           const xPos = getXPixelForYear(item.targetYear);
           if (xPos < xAxis.left || xPos > xAxis.right) return;
 
           ctx.save();
+
+          // A. Bottom Axis Year Badge & Vertical Drop Guide Line (Matches Hero Callout Style!)
+          const yearText = `${item.targetYear}`;
+          ctx.font = 'bold 8.5px "Inter", sans-serif';
+          const yw = ctx.measureText(yearText).width;
+          const bw = yw + 10;
+          const bh = 14;
+          const bx = xPos - bw / 2;
+          const scenBadgeY = getBottomBadgeY(bx, bw, yAxis.bottom + 2);
+
+          // Vertical Dashed Guide Line in scenario color
+          ctx.beginPath();
+          ctx.strokeStyle = hexToRgba(item.color, 0.45);
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([3, 3]);
+          ctx.moveTo(xPos, y300);
+          ctx.lineTo(xPos, scenBadgeY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Year tag badge on bottom X-axis in scenario color
+          ctx.fillStyle = item.color;
+          drawCalloutRoundRect(ctx, bx, scenBadgeY, bw, bh, 3);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(yearText, xPos, scenBadgeY + bh / 2);
+
+          // B. Concentric Anchor Dot with Translucent Halo Ring (Matches Hero Callout Style!)
+          ctx.beginPath();
+          ctx.arc(xPos, y300, 7.0, 0, Math.PI * 2);
+          ctx.fillStyle = hexToRgba(item.color, 0.22);
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(xPos, y300, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = item.color;
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+
+          // C. Top Callout Pill with 2D Collision Resolution
           ctx.font = '600 8.2px "Inter", sans-serif';
           const textStr = `${item.label}: ~${item.years}y (${item.targetYear})`;
           const textW = ctx.measureText(textStr).width;
@@ -2173,15 +2266,6 @@
           if (bestPlacement) {
             const { dir, candY, pillX, pillY, pillW, pillH, box } = bestPlacement;
             occupiedBoxes.push(box);
-
-            // Anchor dot at (xPos, y300)
-            ctx.beginPath();
-            ctx.arc(xPos, y300, 3.8, 0, Math.PI * 2);
-            ctx.fillStyle = item.color;
-            ctx.fill();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.4;
-            ctx.stroke();
 
             // Leader Line with elbow
             const elbowX = dir === -1 ? (xPos - 8) : (xPos + 8);
@@ -2228,6 +2312,11 @@
       if (dpChartInstance) {
         dpChartInstance.destroy();
       }
+
+      // Collect all valid target years within projection window (2025–2125) for clean axis tick suppression
+      const validTargetYears = (intersections || [])
+        .filter(it => it.targetYear >= 2025 && it.targetYear <= 2125)
+        .map(it => it.targetYear);
 
       // X-Axis range from 2025 to 2125 with Dynamic DP0 = currentDP
       const years = [];
@@ -2348,7 +2437,7 @@
           layout: {
             padding: {
               top: 32,
-              bottom: 22,
+              bottom: 28,
               left: 8,
               right: 30
             }
@@ -2375,8 +2464,7 @@
                 maxRotation: 0,
                 callback: function(val, index) {
                   const y = years[index];
-                  const cur = intersections.find(it => it.label === 'Current' || it.isCurrent);
-                  if (cur && cur.targetYear >= 2025 && cur.targetYear <= 2125 && Math.abs(y - cur.targetYear) <= 2 && y !== cur.targetYear) {
+                  if (validTargetYears.some(ty => Math.abs(y - ty) <= 2)) {
                     return '';
                   }
                   return (y % 10 === 5 || y === 2025 || y === 2125) ? y : '';
