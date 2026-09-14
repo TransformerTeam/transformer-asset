@@ -1916,7 +1916,7 @@
         { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#f97316', offsetLevel: 2 },
         { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f59e0b', offsetLevel: 3 },
         { label: 'SDMyers [Cal.]', years: rulSDM300, targetYear: yearSDM300, color: '#9333ea', offsetLevel: 3.5 },
-        { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4 },
+        { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4, isCurrent: true },
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
 
@@ -1954,6 +1954,21 @@
       document.querySelectorAll('.val-resp-date-approved').forEach(el => el.textContent = dateVal);
     }
 
+    // Helper to draw rounded rectangle on Canvas
+    function drawCalloutRoundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
     // Custom Callout Plugin for DP = 300 Intersections
     const dp300CalloutPlugin = {
       id: 'dp300Callouts',
@@ -1966,50 +1981,165 @@
         const yAxis = chart.scales.y;
 
         const y300 = yAxis.getPixelForValue(300);
+        if (isNaN(y300)) return;
 
-        // Sort intersections by targetYear
-        const validIntersections = intersections.filter(item => item.targetYear >= 2025 && item.targetYear <= 2125);
-        validIntersections.sort((a, b) => a.targetYear - b.targetYear);
+        // Accurate X-pixel interpolation mapping calendar years (2025–2125) to category indices (0–100)
+        function getXPixelForYear(targetYear) {
+          const val = Math.max(2025, Math.min(2125, targetYear));
+          const idxFloat = val - 2025;
+          const i0 = Math.floor(idxFloat);
+          const i1 = Math.min(100, Math.ceil(idxFloat));
+          const frac = idxFloat - i0;
+          const p0 = xAxis.getPixelForValue(i0);
+          const p1 = xAxis.getPixelForValue(i1);
+          return p0 + frac * (p1 - p0);
+        }
 
-        validIntersections.forEach((item, idx) => {
-          const xPos = xAxis.getPixelForValue(item.targetYear);
-          if (isNaN(xPos) || xPos < xAxis.left || xPos > xAxis.right) return;
+        const currentItem = intersections.find(it => it.label === 'Current' || it.isCurrent);
+        const scenarioItems = intersections.filter(it => it !== currentItem && it.targetYear >= 2025 && it.targetYear <= 2125);
+        scenarioItems.sort((a, b) => a.targetYear - b.targetYear);
 
-          // Draw Anchor Dot at intersection
+        // 1. Draw Scenario Intersections & Clean Callouts
+        scenarioItems.forEach((item, idx) => {
+          const xPos = getXPixelForYear(item.targetYear);
+          if (xPos < xAxis.left || xPos > xAxis.right) return;
+
           ctx.save();
+
+          // Anchor dot at (xPos, y300)
           ctx.beginPath();
-          ctx.arc(xPos, y300, 4, 0, Math.PI * 2);
+          ctx.arc(xPos, y300, 3.8, 0, Math.PI * 2);
           ctx.fillStyle = item.color;
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.4;
           ctx.stroke();
 
-          // Calculate staggered label position
-          const staggerOffset = 26 + ((idx % 4) * 22);
-          const labelY = y300 - staggerOffset;
-          const elbowX = xPos + 10;
-          const textX = elbowX + 4;
+          // Determine label position (prevent overflowing chart edges or colliding with hero badge)
+          const isRightSide = xPos > (xAxis.left + (xAxis.right - xAxis.left) * 0.72);
+          const staggerLevel = idx % 3;
+          let labelY = y300 - (26 + staggerLevel * 20);
+          if (currentItem && Math.abs(item.targetYear - currentItem.targetYear) < 5) {
+            labelY = y300 - (68 + (idx % 2) * 18);
+          }
+          const elbowX = isRightSide ? (xPos - 12) : (xPos + 12);
+          const textX = isRightSide ? (elbowX - 4) : (elbowX + 4);
 
-          // Draw Leader Line with Elbow
+          // Leader Line with horizontal branch
           ctx.beginPath();
           ctx.strokeStyle = item.color;
-          ctx.lineWidth = 1.4;
+          ctx.lineWidth = 1.3;
           ctx.setLineDash([]);
           ctx.moveTo(xPos, y300);
           ctx.lineTo(elbowX, labelY);
-          ctx.lineTo(textX + 72, labelY);
+          const textStr = `${item.label}: ~${item.years}y (${item.targetYear})`;
+          ctx.font = '600 8.2px "Inter", sans-serif';
+          const textW = ctx.measureText(textStr).width;
+          const lineEndX = isRightSide ? (textX - textW) : (textX + textW);
+          ctx.lineTo(lineEndX, labelY);
           ctx.stroke();
 
-          // Draw Text Label: DP = 300 (~XX yrs)
+          // Text Label
           ctx.fillStyle = item.color;
-          ctx.font = 'bold 8.2px "Inter", sans-serif';
-          ctx.textAlign = 'left';
+          ctx.textAlign = isRightSide ? 'right' : 'left';
           ctx.textBaseline = 'bottom';
-          ctx.fillText(`DP = 300 (~${item.years} yrs)`, textX, labelY - 2);
+          ctx.fillText(textStr, textX, labelY - 2);
 
           ctx.restore();
         });
+
+        // 2. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout
+        if (currentItem) {
+          const isWithinWindow = currentItem.targetYear >= 2025 && currentItem.targetYear <= 2125;
+          const targetY = isWithinWindow ? currentItem.targetYear : 2125;
+          const xPos = getXPixelForYear(targetY);
+
+          // For y-value: if within window, it hits DP=300 exactly. If >2125, it's at end of blue line.
+          const yPos = isWithinWindow ? y300 : (chart.getDatasetMeta(0)?.data[100]?.y || y300);
+
+          ctx.save();
+
+          // Vertical Drop Guide Line to X-axis
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(37, 99, 235, 0.45)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 3]);
+          ctx.moveTo(xPos, yPos);
+          ctx.lineTo(xPos, yAxis.bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Year tag badge directly on the bottom X-axis
+          if (isWithinWindow) {
+            const yearText = `${currentItem.targetYear}`;
+            ctx.font = 'bold 8.5px "Inter", sans-serif';
+            const yw = ctx.measureText(yearText).width;
+            ctx.fillStyle = '#1d4ed8';
+            drawCalloutRoundRect(ctx, xPos - yw / 2 - 5, yAxis.bottom + 2, yw + 10, 14, 3);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(yearText, xPos, yAxis.bottom + 9);
+          }
+
+          // Anchor Dot with glowing outer ring
+          ctx.beginPath();
+          ctx.arc(xPos, yPos, 7.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(xPos, yPos, 4.8, 0, Math.PI * 2);
+          ctx.fillStyle = '#1d4ed8';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // Standout Hero Callout Badge
+          const heroText = `★ Remaining Life: ~${currentItem.years} Yrs (Year ${currentItem.targetYear})`;
+          ctx.font = 'bold 9.5px "Inter", sans-serif';
+          const badgeW = ctx.measureText(heroText).width + 18;
+          const badgeH = 22;
+
+          let badgeX = xPos - badgeW / 2;
+          if (badgeX < xAxis.left + 6) badgeX = xAxis.left + 6;
+          if (badgeX + badgeW > xAxis.right - 6) badgeX = xAxis.right - badgeW - 6;
+
+          const badgeY = yPos - 46;
+
+          // Pointer Line from Anchor to Badge
+          ctx.beginPath();
+          ctx.strokeStyle = '#1d4ed8';
+          ctx.lineWidth = 1.8;
+          ctx.moveTo(xPos, yPos);
+          ctx.lineTo(xPos, badgeY + badgeH);
+          ctx.stroke();
+
+          // Draw Badge Fill & Drop Shadow
+          ctx.fillStyle = '#1d4ed8';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
+          ctx.shadowBlur = 6;
+          ctx.shadowOffsetY = 2;
+          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
+          ctx.fill();
+          ctx.shadowColor = 'transparent';
+
+          // White Border
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.4;
+          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
+          ctx.stroke();
+
+          // Badge Text
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(heroText, badgeX + badgeW / 2, badgeY + badgeH / 2);
+
+          ctx.restore();
+        }
       }
     };
 
@@ -2140,9 +2270,9 @@
           layout: {
             padding: {
               top: 32,
-              bottom: 12,
+              bottom: 22,
               left: 8,
-              right: 25
+              right: 30
             }
           },
           plugins: {
