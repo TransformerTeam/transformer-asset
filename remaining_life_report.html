@@ -1969,7 +1969,17 @@
       ctx.closePath();
     }
 
-    // Custom Callout Plugin for DP = 300 Intersections
+    // Helper to check 2D bounding box collision with safety padding
+    function doBoxesCollide(b1, b2, pad = 6) {
+      return !(
+        b1.x + b1.w + pad < b2.x ||
+        b1.x > b2.x + b2.w + pad ||
+        b1.y + b1.h + pad < b2.y ||
+        b1.y > b2.y + b2.h + pad
+      );
+    }
+
+    // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine)
     const dp300CalloutPlugin = {
       id: 'dp300Callouts',
       afterDatasetsDraw(chart, args, options) {
@@ -1995,66 +2005,14 @@
           return p0 + frac * (p1 - p0);
         }
 
+        const occupiedBoxes = [];
+
+        // 1. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout FIRST
         const currentItem = intersections.find(it => it.label === 'Current' || it.isCurrent);
-        const scenarioItems = intersections.filter(it => it !== currentItem && it.targetYear >= 2025 && it.targetYear <= 2125);
-        scenarioItems.sort((a, b) => a.targetYear - b.targetYear);
-
-        // 1. Draw Scenario Intersections & Clean Callouts
-        scenarioItems.forEach((item, idx) => {
-          const xPos = getXPixelForYear(item.targetYear);
-          if (xPos < xAxis.left || xPos > xAxis.right) return;
-
-          ctx.save();
-
-          // Anchor dot at (xPos, y300)
-          ctx.beginPath();
-          ctx.arc(xPos, y300, 3.8, 0, Math.PI * 2);
-          ctx.fillStyle = item.color;
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.4;
-          ctx.stroke();
-
-          // Determine label position (prevent overflowing chart edges or colliding with hero badge)
-          const isRightSide = xPos > (xAxis.left + (xAxis.right - xAxis.left) * 0.72);
-          const staggerLevel = idx % 3;
-          let labelY = y300 - (26 + staggerLevel * 20);
-          if (currentItem && Math.abs(item.targetYear - currentItem.targetYear) < 5) {
-            labelY = y300 - (68 + (idx % 2) * 18);
-          }
-          const elbowX = isRightSide ? (xPos - 12) : (xPos + 12);
-          const textX = isRightSide ? (elbowX - 4) : (elbowX + 4);
-
-          // Leader Line with horizontal branch
-          ctx.beginPath();
-          ctx.strokeStyle = item.color;
-          ctx.lineWidth = 1.3;
-          ctx.setLineDash([]);
-          ctx.moveTo(xPos, y300);
-          ctx.lineTo(elbowX, labelY);
-          const textStr = `${item.label}: ~${item.years}y (${item.targetYear})`;
-          ctx.font = '600 8.2px "Inter", sans-serif';
-          const textW = ctx.measureText(textStr).width;
-          const lineEndX = isRightSide ? (textX - textW) : (textX + textW);
-          ctx.lineTo(lineEndX, labelY);
-          ctx.stroke();
-
-          // Text Label
-          ctx.fillStyle = item.color;
-          ctx.textAlign = isRightSide ? 'right' : 'left';
-          ctx.textBaseline = 'bottom';
-          ctx.fillText(textStr, textX, labelY - 2);
-
-          ctx.restore();
-        });
-
-        // 2. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout
         if (currentItem) {
           const isWithinWindow = currentItem.targetYear >= 2025 && currentItem.targetYear <= 2125;
           const targetY = isWithinWindow ? currentItem.targetYear : 2125;
           const xPos = getXPixelForYear(targetY);
-
-          // For y-value: if within window, it hits DP=300 exactly. If >2125, it's at end of blue line.
           const yPos = isWithinWindow ? y300 : (chart.getDatasetMeta(0)?.data[100]?.y || y300);
 
           ctx.save();
@@ -2109,6 +2067,9 @@
 
           const badgeY = yPos - 46;
 
+          // Register Hero Badge in occupiedBoxes so NO other label can collide with it
+          occupiedBoxes.push({ x: badgeX, y: badgeY, w: badgeW, h: badgeH });
+
           // Pointer Line from Anchor to Badge
           ctx.beginPath();
           ctx.strokeStyle = '#1d4ed8';
@@ -2140,6 +2101,123 @@
 
           ctx.restore();
         }
+
+        // 2. Filter & Deduplicate Scenarios
+        // Exclude scenarios that coincide with Current (within 2.5 years) to prevent overlapping labels!
+        let rawScenarios = intersections.filter(it => 
+          !it.isCurrent && 
+          it.label !== 'Current' && 
+          it.targetYear >= 2025 && 
+          it.targetYear <= 2125
+        );
+
+        if (currentItem) {
+          rawScenarios = rawScenarios.filter(it => Math.abs(it.targetYear - currentItem.targetYear) >= 2.5);
+        }
+
+        // Merge scenarios that have nearly identical targetYear (within 2 years)
+        const groupedScenarios = [];
+        rawScenarios.sort((a, b) => a.targetYear - b.targetYear);
+
+        rawScenarios.forEach(item => {
+          const existing = groupedScenarios.find(g => Math.abs(g.targetYear - item.targetYear) < 2.0);
+          if (existing) {
+            existing.label = `${existing.label} / ${item.label}`;
+          } else {
+            groupedScenarios.push({ ...item });
+          }
+        });
+
+        // 3. Draw Non-Overlapping Scenario Callouts with 2D Collision Resolution & White Pills
+        groupedScenarios.forEach((item) => {
+          const xPos = getXPixelForYear(item.targetYear);
+          if (xPos < xAxis.left || xPos > xAxis.right) return;
+
+          ctx.save();
+          ctx.font = '600 8.2px "Inter", sans-serif';
+          const textStr = `${item.label}: ~${item.years}y (${item.targetYear})`;
+          const textW = ctx.measureText(textStr).width;
+          const pillW = textW + 12;
+          const pillH = 17;
+
+          // Candidate directions: items on left half prefer branching left, items on right prefer right
+          const isLeftArea = xPos < (xAxis.left + (xAxis.right - xAxis.left) * 0.45);
+          const candidateDirs = isLeftArea ? [-1, 1] : [1, -1];
+          const candidateHeights = [26, 48, 70, 92, 114];
+
+          let bestPlacement = null;
+
+          for (const yOff of candidateHeights) {
+            for (const dir of candidateDirs) {
+              const candY = y300 - yOff;
+              const pillX = dir === -1 ? (xPos - 12 - pillW) : (xPos + 12);
+              const pillY = candY - pillH / 2;
+              const box = { x: pillX, y: pillY, w: pillW, h: pillH };
+
+              // Must stay within chart canvas boundaries
+              if (pillX < xAxis.left + 2 || (pillX + pillW) > xAxis.right - 2 || pillY < (chart.chartArea?.top || 20)) {
+                continue;
+              }
+
+              // Must NOT collide with any occupied box
+              const hasCollision = occupiedBoxes.some(occ => doBoxesCollide(box, occ, 5));
+              if (!hasCollision) {
+                bestPlacement = { dir, yOff, candY, pillX, pillY, pillW, pillH, box };
+                break;
+              }
+            }
+            if (bestPlacement) break;
+          }
+
+          // If found valid non-colliding placement, draw it
+          if (bestPlacement) {
+            const { dir, candY, pillX, pillY, pillW, pillH, box } = bestPlacement;
+            occupiedBoxes.push(box);
+
+            // Anchor dot at (xPos, y300)
+            ctx.beginPath();
+            ctx.arc(xPos, y300, 3.8, 0, Math.PI * 2);
+            ctx.fillStyle = item.color;
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
+
+            // Leader Line with elbow
+            const elbowX = dir === -1 ? (xPos - 8) : (xPos + 8);
+            const lineEndX = dir === -1 ? (pillX + pillW) : pillX;
+
+            ctx.beginPath();
+            ctx.strokeStyle = item.color;
+            ctx.lineWidth = 1.3;
+            ctx.moveTo(xPos, y300);
+            ctx.lineTo(elbowX, candY);
+            ctx.lineTo(lineEndX, candY);
+            ctx.stroke();
+
+            // White Background Pill with subtle shadow and matching colored border
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 1;
+            drawCalloutRoundRect(ctx, pillX, pillY, pillW, pillH, 3);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+
+            ctx.strokeStyle = item.color;
+            ctx.lineWidth = 1.2;
+            drawCalloutRoundRect(ctx, pillX, pillY, pillW, pillH, 3);
+            ctx.stroke();
+
+            // Pill Text
+            ctx.fillStyle = item.color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(textStr, pillX + pillW / 2, pillY + pillH / 2);
+          }
+
+          ctx.restore();
+        });
       }
     };
 
@@ -2297,6 +2375,10 @@
                 maxRotation: 0,
                 callback: function(val, index) {
                   const y = years[index];
+                  const cur = intersections.find(it => it.label === 'Current' || it.isCurrent);
+                  if (cur && cur.targetYear >= 2025 && cur.targetYear <= 2125 && Math.abs(y - cur.targetYear) <= 2 && y !== cur.targetYear) {
+                    return '';
+                  }
                   return (y % 10 === 5 || y === 2025 || y === 2125) ? y : '';
                 }
               },
