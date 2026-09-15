@@ -458,19 +458,35 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
       if (k === 'C2H2' && rate > 0.1 && cVal > 0) {
         if (!isRateInactive) {
           allRateLtT4 = false;
-          anyC2H2Increasing = true;
-          triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
-          combustibleStatus3Reasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr)`);
+          // Rate > Table 4 triggers Status 3 ONLY IF that gas concentration > Table 2
+          if (cVal > t2) {
+            anyC2H2Increasing = true;
+            triggerReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr & level > T2: ${t2})`);
+            combustibleStatus3Reasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr & level > T2: ${t2})`);
+          } else {
+            cautionReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr, level ≤ T2: ${t2})`);
+            combustibleCautionReasons.push(`C2H2 increasing rate (${rate.toFixed(1)} ppm/yr, level ≤ T2: ${t2})`);
+          }
         }
       } else if (rate > t4) {
         if (!isRateInactive) {
           allRateLtT4 = false;
-          anyRateGtT4 = true;
-          triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
-          if (combustibleKeys.includes(k)) {
-            combustibleStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+          // Rate > Table 4 triggers Status 3 ONLY IF that gas concentration > Table 2
+          if (cVal > t2) {
+            anyRateGtT4 = true;
+            triggerReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr & level > T2: ${t2})`);
+            if (combustibleKeys.includes(k)) {
+              combustibleStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr & level > T2: ${t2})`);
+            } else {
+              carbonOxideStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr & level > T2: ${t2})`);
+            }
           } else {
-            carbonOxideStatus3Reasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr)`);
+            cautionReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr, level ≤ T2: ${t2})`);
+            if (combustibleKeys.includes(k)) {
+              combustibleCautionReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr, level ≤ T2: ${t2})`);
+            } else {
+              carbonOxideCautionReasons.push(`${k} rate (${rate.toFixed(1)} > T4: ${t4} ppm/yr, level ≤ T2: ${t2})`);
+            }
           }
         }
       }

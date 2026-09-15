@@ -57,10 +57,10 @@
       align-items: center;
     }
 
-    /* Top Control Bar (Balanced Expanded 120% Width) */
+    /* Top Control Bar (Balanced A4 Width) */
     .control-bar {
       width: 100%;
-      max-width: 1056px;
+      max-width: 880px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -71,49 +71,6 @@
       border-radius: 8px;
       margin-bottom: 18px;
       box-shadow: var(--glass-glow);
-      transition: max-width 0.3s ease;
-    }
-
-    /* Interactive View Zoom & Width Controller */
-    .view-controls {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--panel-dark);
-      border: 1px solid var(--border-dark);
-      border-radius: 8px;
-      padding: 3px 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .btn-zoom {
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      width: 26px;
-      height: 26px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 11px;
-      transition: all 0.15s ease;
-    }
-    .btn-zoom:hover {
-      background: rgba(79, 70, 229, 0.12);
-      color: var(--primary);
-    }
-    .zoom-level-text {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-      min-width: 40px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-    }
-    .zoom-level-text:hover {
-      color: var(--primary);
     }
 
     [data-theme="light"] .control-bar {
@@ -207,24 +164,23 @@
       background-color: var(--primary-hover);
     }
 
-    /* Report Sheet Preview Area (Balanced 120% Expanded Width: 1056px) */
+    /* Report Sheet Preview Area (Balanced Standard A4 Width) */
     .report-wrapper {
       width: 100%;
-      max-width: 1056px;
+      max-width: 880px;
       display: flex;
       flex-direction: column;
-      transition: max-width 0.3s ease;
     }
 
     .report-page {
       background-color: var(--report-bg);
       color: var(--report-text);
       width: 100%;
-      padding: 26px 32px;
+      padding: 24px 28px;
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      font-size: 10.5px;
-      line-height: 1.35;
+      font-size: 9px;
+      line-height: 1.3;
       position: relative;
     }
 
@@ -234,8 +190,8 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2.5px solid var(--report-primary);
-      padding-bottom: 8px;
-      margin-bottom: 10px;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .report-title-group {
@@ -243,7 +199,7 @@
     }
 
     .report-title {
-      font-size: 1.45rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--report-primary);
       letter-spacing: -0.01em;
@@ -251,12 +207,12 @@
     }
 
     .report-subtitle {
-      font-size: 0.82rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: #dc2626;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      margin-top: 2px;
+      margin-top: 1px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -264,19 +220,19 @@
 
     .badge-report-no {
       display: inline-block;
-      padding: 2px 7px;
+      padding: 1px 6px;
       background: #e2e8f0;
       color: #1e3a8a;
       border: 1px solid #cbd5e1;
       border-radius: 3px;
-      font-size: 9px;
+      font-size: 7.8px;
       font-weight: 700;
       letter-spacing: 0;
       text-transform: none;
     }
 
     .logo-container img {
-      height: 44px;
+      height: 38px;
       width: auto;
       object-fit: contain;
     }
@@ -285,15 +241,15 @@
     .report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .report-table th, 
     .report-table td {
       border: 1px solid var(--report-border);
-      padding: 4px 7px;
-      font-size: 10.2px;
-      line-height: 1.3;
+      padding: 3px 6px;
+      font-size: 8.8px;
+      line-height: 1.25;
     }
 
     .report-table th {
@@ -307,12 +263,12 @@
       background-color: var(--report-primary);
       color: #ffffff;
       font-weight: 700;
-      padding: 4px 10px;
-      font-size: 10.5px;
+      padding: 3px 8px;
+      font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      margin-top: 10px;
-      margin-bottom: 6px;
+      margin-top: 8px;
+      margin-bottom: 4px;
       border-radius: 3px;
       display: flex;
       justify-content: space-between;
@@ -322,10 +278,10 @@
     /* Status Badges */
     .status-badge {
       display: inline-block;
-      padding: 2px 7px;
+      padding: 1.5px 6px;
       border-radius: 3px;
       font-weight: 700;
-      font-size: 9.2px;
+      font-size: 8px;
       text-transform: uppercase;
     }
 
@@ -357,57 +313,57 @@
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 8px 0 10px;
+      gap: 8px;
+      margin: 6px 0 8px;
     }
 
     .kpi-card {
       border: 1px solid var(--report-border);
       border-radius: 5px;
-      padding: 7px 10px;
+      padding: 6px 8px;
       background: #f8fafc;
       text-align: center;
     }
 
     .kpi-label {
-      font-size: 9.2px;
+      font-size: 7.8px;
       color: #64748b;
       font-weight: 700;
       text-transform: uppercase;
     }
 
     .kpi-val {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--report-primary);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .kpi-sub {
-      font-size: 9.2px;
+      font-size: 7.8px;
       color: #475569;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     /* 3 Main Key Aging Drivers Grid (Before DP Chart) */
     .key-drivers-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 8px 0 10px;
+      gap: 8px;
+      margin: 6px 0 8px;
     }
 
     .key-driver-card {
       border: 1px solid #cbd5e1;
       border-radius: 6px;
-      padding: 8px 12px;
+      padding: 7px 10px;
       background: #f8fafc;
       text-align: center;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
     .key-driver-label {
-      font-size: 9.6px;
+      font-size: 8.2px;
       font-weight: 700;
       color: #475569;
       letter-spacing: 0.03em;
@@ -415,14 +371,14 @@
     }
 
     .key-driver-val {
-      font-size: 18.5px;
+      font-size: 16px;
       font-weight: 800;
       color: #1e3a8a;
       margin: 2px 0 1px;
     }
 
     .key-driver-sub {
-      font-size: 9.2px;
+      font-size: 7.8px;
       color: #64748b;
       font-weight: 600;
     }
@@ -431,15 +387,15 @@
     .charts-container {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin: 10px 0;
+      gap: 10px;
+      margin: 8px 0;
       width: 100%;
     }
 
     .chart-box {
       border: 1px solid var(--report-border);
       border-radius: 6px;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: #ffffff;
       width: 100%;
       overflow: hidden;
@@ -450,12 +406,12 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px dashed #cbd5e1;
-      padding-bottom: 4px;
-      margin-bottom: 8px;
+      padding-bottom: 3px;
+      margin-bottom: 6px;
     }
 
     .chart-title {
-      font-size: 11.2px;
+      font-size: 9.8px;
       font-weight: 700;
       color: var(--report-primary);
       display: flex;
@@ -466,24 +422,24 @@
     .chart-canvas-container {
       position: relative;
       width: 100%;
-      height: 380px;
+      height: 350px;
     }
 
     /* Technical Formula Box */
     .formula-container {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      margin-bottom: 8px;
+      gap: 4px;
+      margin-bottom: 6px;
     }
 
     .formula-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-left: 3px solid var(--report-primary);
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 3px;
-      font-size: 9.6px;
+      font-size: 8.2px;
       line-height: 1.35;
     }
 
@@ -494,15 +450,15 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      font-size: 10.2px;
+      font-size: 8.8px;
     }
 
     .formula-math {
       font-family: 'Cambria Math', 'Times New Roman', serif;
-      font-size: 10.5px;
+      font-size: 9px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      padding: 2.5px 7px;
+      padding: 2px 6px;
       border-radius: 3px;
       display: inline-block;
       margin: 1px 0;
@@ -513,19 +469,19 @@
     /* Action Plan Box */
     .action-box {
       border: 1px solid var(--report-border);
-      padding: 7px 12px;
+      padding: 6px 10px;
       border-radius: 4px;
       background: #fafafa;
-      font-size: 10px;
+      font-size: 8.5px;
       line-height: 1.35;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     /* Signatures Section */
     .signature-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 6px;
       margin-bottom: 0;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -533,8 +489,8 @@
 
     .signature-table th, .signature-table td {
       border: 1px solid var(--report-border);
-      padding: 4px 8px;
-      font-size: 10.2px;
+      padding: 3px 6px;
+      font-size: 8.8px;
       text-align: center;
     }
 
@@ -542,11 +498,11 @@
       background-color: #1e3a8a;
       color: #ffffff;
       font-weight: 700;
-      padding: 4px 8px;
+      padding: 3px 6px;
     }
 
     .sig-cell {
-      height: 32px;
+      height: 30px;
     }
 
     /* Print styles */
@@ -628,35 +584,35 @@
     .calc-step-card {
       border: 1px solid var(--report-border);
       border-radius: 5px;
-      padding: 7px 12px;
+      padding: 6px 10px;
       background: #f8fafc;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
     }
 
     .calc-step-title {
-      font-size: 11.2px;
+      font-size: 9.5px;
       font-weight: 700;
       color: var(--report-primary);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       border-bottom: 1px dashed #cbd5e1;
-      padding-bottom: 3px;
+      padding-bottom: 2px;
     }
 
     .calc-box-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     .calc-formula-display {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 4px;
-      padding: 5px 10px;
-      font-size: 10px;
+      padding: 4px 8px;
+      font-size: 8.5px;
       line-height: 1.35;
     }
 
@@ -665,8 +621,8 @@
       border: 1px solid #cbd5e1;
       border-left: 3px solid var(--report-primary);
       border-radius: 4px;
-      padding: 5px 10px;
-      font-size: 10px;
+      padding: 4px 8px;
+      font-size: 8.5px;
       line-height: 1.35;
     }
 
@@ -695,17 +651,7 @@
       </select>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-      <!-- Interactive Zoom & Width Controller -->
-      <div class="view-controls">
-        <button class="btn-zoom" onclick="adjustViewZoom(-0.1)" title="Zoom Out (-10%)"><i class="fa-solid fa-minus"></i></button>
-        <span class="zoom-level-text" id="zoom-text" onclick="resetViewZoom()" title="Click to Reset (100%)">100%</span>
-        <button class="btn-zoom" onclick="adjustViewZoom(0.1)" title="Zoom In (+10%)"><i class="fa-solid fa-plus"></i></button>
-        <button class="btn-zoom" id="btn-toggle-width" onclick="toggleReportWidth()" title="Toggle Width Mode (1056px / 1200px / 880px)" style="border-left: 1px solid var(--border-dark); border-radius: 0 6px 6px 0; margin-left: 2px; padding-left: 4px;">
-          <i class="fa-solid fa-expand"></i>
-        </button>
-      </div>
-
+    <div style="display: flex; gap: 10px;">
       <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
       <button class="btn-action btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
     </div>
@@ -2023,35 +1969,6 @@
       ctx.closePath();
     }
 
-    // Helper to draw rounded rectangle on Canvas
-    function drawCalloutRoundRect(ctx, x, y, w, h, r) {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + w - r, y);
-      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      ctx.lineTo(x + r, y + h);
-      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
-    }
-
-    // Helper to convert HEX color to RGBA
-    function hexToRgba(hex, alpha = 1) {
-      let c = (hex || '#2563eb').replace('#', '');
-      if (c.length === 3) {
-        c = c.split('').map(x => x + x).join('');
-      }
-      const num = parseInt(c, 16);
-      if (isNaN(num)) return `rgba(37, 99, 235, ${alpha})`;
-      const r = (num >> 16) & 255;
-      const g = (num >> 8) & 255;
-      const b = num & 255;
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-
     // Helper to check 2D bounding box collision with safety padding
     function doBoxesCollide(b1, b2, pad = 6) {
       return !(
@@ -2062,7 +1979,7 @@
       );
     }
 
-    // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine with Drop Lines & Year Badges)
+    // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine)
     const dp300CalloutPlugin = {
       id: 'dp300Callouts',
       afterDatasetsDraw(chart, args, options) {
@@ -2089,19 +2006,6 @@
         }
 
         const occupiedBoxes = [];
-        const bottomBadgeBoxes = [];
-
-        function getBottomBadgeY(bx, bw, defaultY) {
-          const overlapsRow1 = bottomBadgeBoxes.some(b => 
-            b.row === 1 && !(bx + bw + 4 < b.x || bx > b.x + b.w + 4)
-          );
-          if (!overlapsRow1) {
-            bottomBadgeBoxes.push({ x: bx, w: bw, row: 1 });
-            return defaultY;
-          }
-          bottomBadgeBoxes.push({ x: bx, w: bw, row: 2 });
-          return defaultY + 15;
-        }
 
         // 1. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout FIRST
         const currentItem = intersections.find(it => it.label === 'Current' || it.isCurrent);
@@ -2113,38 +2017,31 @@
 
           ctx.save();
 
+          // Vertical Drop Guide Line to X-axis
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(37, 99, 235, 0.45)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 3]);
+          ctx.moveTo(xPos, yPos);
+          ctx.lineTo(xPos, yAxis.bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
           // Year tag badge directly on the bottom X-axis
-          let badgeY = yAxis.bottom + 2;
           if (isWithinWindow) {
             const yearText = `${currentItem.targetYear}`;
             ctx.font = 'bold 8.5px "Inter", sans-serif';
             const yw = ctx.measureText(yearText).width;
-            const bw = yw + 10;
-            const bh = 14;
-            const bx = xPos - bw / 2;
-            badgeY = getBottomBadgeY(bx, bw, yAxis.bottom + 2);
-
-            // Vertical Drop Guide Line from anchor down to badge top
-            ctx.beginPath();
-            ctx.strokeStyle = 'rgba(37, 99, 235, 0.50)';
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([3, 3]);
-            ctx.moveTo(xPos, yPos);
-            ctx.lineTo(xPos, badgeY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Draw Bottom Year Badge
             ctx.fillStyle = '#1d4ed8';
-            drawCalloutRoundRect(ctx, bx, badgeY, bw, bh, 3);
+            drawCalloutRoundRect(ctx, xPos - yw / 2 - 5, yAxis.bottom + 2, yw + 10, 14, 3);
             ctx.fill();
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(yearText, xPos, badgeY + bh / 2);
+            ctx.fillText(yearText, xPos, yAxis.bottom + 9);
           }
 
-          // Anchor Dot with glowing concentric halo ring
+          // Anchor Dot with glowing outer ring
           ctx.beginPath();
           ctx.arc(xPos, yPos, 7.5, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
@@ -2159,7 +2056,7 @@
           ctx.stroke();
 
           // Standout Hero Callout Badge
-          const heroText = `Current Condition: ~${currentItem.years} Yrs`;
+          const heroText = `★ Remaining Life: ~${currentItem.years} Yrs (Year ${currentItem.targetYear})`;
           ctx.font = 'bold 9.5px "Inter", sans-serif';
           const badgeW = ctx.measureText(heroText).width + 18;
           const badgeH = 22;
@@ -2168,17 +2065,17 @@
           if (badgeX < xAxis.left + 6) badgeX = xAxis.left + 6;
           if (badgeX + badgeW > xAxis.right - 6) badgeX = xAxis.right - badgeW - 6;
 
-          const heroBadgeY = yPos - 46;
+          const badgeY = yPos - 46;
 
           // Register Hero Badge in occupiedBoxes so NO other label can collide with it
-          occupiedBoxes.push({ x: badgeX, y: heroBadgeY, w: badgeW, h: badgeH });
+          occupiedBoxes.push({ x: badgeX, y: badgeY, w: badgeW, h: badgeH });
 
           // Pointer Line from Anchor to Badge
           ctx.beginPath();
           ctx.strokeStyle = '#1d4ed8';
           ctx.lineWidth = 1.8;
           ctx.moveTo(xPos, yPos);
-          ctx.lineTo(xPos, heroBadgeY + badgeH);
+          ctx.lineTo(xPos, badgeY + badgeH);
           ctx.stroke();
 
           // Draw Badge Fill & Drop Shadow
@@ -2186,27 +2083,27 @@
           ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
           ctx.shadowBlur = 6;
           ctx.shadowOffsetY = 2;
-          drawCalloutRoundRect(ctx, badgeX, heroBadgeY, badgeW, badgeH, 4);
+          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
           ctx.fill();
           ctx.shadowColor = 'transparent';
 
           // White Border
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.4;
-          drawCalloutRoundRect(ctx, badgeX, heroBadgeY, badgeW, badgeH, 4);
+          drawCalloutRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
           ctx.stroke();
 
           // Badge Text
           ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(heroText, badgeX + badgeW / 2, heroBadgeY + badgeH / 2);
+          ctx.fillText(heroText, badgeX + badgeW / 2, badgeY + badgeH / 2);
 
           ctx.restore();
         }
 
         // 2. Filter & Deduplicate Scenarios
-        // Exclude scenarios that coincide with Current (within 2.5 years) to prevent duplicate overlapping markers
+        // Exclude scenarios that coincide with Current (within 2.5 years) to prevent overlapping labels!
         let rawScenarios = intersections.filter(it => 
           !it.isCurrent && 
           it.label !== 'Current' && 
@@ -2231,56 +2128,12 @@
           }
         });
 
-        // 3. Draw Drop Lines, Year Badges, Concentric Anchors, and Non-Overlapping Callout Pills for Scenarios
+        // 3. Draw Non-Overlapping Scenario Callouts with 2D Collision Resolution & White Pills
         groupedScenarios.forEach((item) => {
           const xPos = getXPixelForYear(item.targetYear);
           if (xPos < xAxis.left || xPos > xAxis.right) return;
 
           ctx.save();
-
-          // A. Bottom Axis Year Badge & Vertical Drop Guide Line (Matches Hero Callout Style!)
-          const yearText = `${item.targetYear}`;
-          ctx.font = 'bold 8.5px "Inter", sans-serif';
-          const yw = ctx.measureText(yearText).width;
-          const bw = yw + 10;
-          const bh = 14;
-          const bx = xPos - bw / 2;
-          const scenBadgeY = getBottomBadgeY(bx, bw, yAxis.bottom + 2);
-
-          // Vertical Dashed Guide Line in scenario color
-          ctx.beginPath();
-          ctx.strokeStyle = hexToRgba(item.color, 0.45);
-          ctx.lineWidth = 1.4;
-          ctx.setLineDash([3, 3]);
-          ctx.moveTo(xPos, y300);
-          ctx.lineTo(xPos, scenBadgeY);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          // Year tag badge on bottom X-axis in scenario color
-          ctx.fillStyle = item.color;
-          drawCalloutRoundRect(ctx, bx, scenBadgeY, bw, bh, 3);
-          ctx.fill();
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(yearText, xPos, scenBadgeY + bh / 2);
-
-          // B. Concentric Anchor Dot with Translucent Halo Ring (Matches Hero Callout Style!)
-          ctx.beginPath();
-          ctx.arc(xPos, y300, 7.0, 0, Math.PI * 2);
-          ctx.fillStyle = hexToRgba(item.color, 0.22);
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.arc(xPos, y300, 4.5, 0, Math.PI * 2);
-          ctx.fillStyle = item.color;
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.8;
-          ctx.stroke();
-
-          // C. Top Callout Pill with 2D Collision Resolution
           ctx.font = '600 8.2px "Inter", sans-serif';
           const textStr = `${item.label}: ~${item.years}y (${item.targetYear})`;
           const textW = ctx.measureText(textStr).width;
@@ -2320,6 +2173,15 @@
           if (bestPlacement) {
             const { dir, candY, pillX, pillY, pillW, pillH, box } = bestPlacement;
             occupiedBoxes.push(box);
+
+            // Anchor dot at (xPos, y300)
+            ctx.beginPath();
+            ctx.arc(xPos, y300, 3.8, 0, Math.PI * 2);
+            ctx.fillStyle = item.color;
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
 
             // Leader Line with elbow
             const elbowX = dir === -1 ? (xPos - 8) : (xPos + 8);
@@ -2366,11 +2228,6 @@
       if (dpChartInstance) {
         dpChartInstance.destroy();
       }
-
-      // Collect all valid target years within projection window (2025–2125) for clean axis tick suppression
-      const validTargetYears = (intersections || [])
-        .filter(it => it.targetYear >= 2025 && it.targetYear <= 2125)
-        .map(it => it.targetYear);
 
       // X-Axis range from 2025 to 2125 with Dynamic DP0 = currentDP
       const years = [];
@@ -2491,7 +2348,7 @@
           layout: {
             padding: {
               top: 32,
-              bottom: 28,
+              bottom: 22,
               left: 8,
               right: 30
             }
@@ -2518,7 +2375,8 @@
                 maxRotation: 0,
                 callback: function(val, index) {
                   const y = years[index];
-                  if (validTargetYears.some(ty => Math.abs(y - ty) <= 2)) {
+                  const cur = intersections.find(it => it.label === 'Current' || it.isCurrent);
+                  if (cur && cur.targetYear >= 2025 && cur.targetYear <= 2125 && Math.abs(y - cur.targetYear) <= 2 && y !== cur.targetYear) {
                     return '';
                   }
                   return (y % 10 === 5 || y === 2025 || y === 2125) ? y : '';
@@ -2747,83 +2605,6 @@
     async function exportReportAsJPG() {
       await exportSinglePageJPG('page-1', 'Page1_Summary');
     }
-
-    // --- Interactive View Zoom & Width Controller ---
-    let currentZoom = 1.0;
-    const widthModes = ['1056px', '1200px', '880px'];
-    let currentWidthIndex = 0;
-
-    function adjustViewZoom(delta) {
-      currentZoom = Math.max(0.7, Math.min(1.5, Math.round((currentZoom + delta) * 10) / 10));
-      applyZoom();
-    }
-
-    function resetViewZoom() {
-      currentZoom = 1.0;
-      applyZoom();
-    }
-
-    function applyZoom() {
-      const wrap = document.getElementById('report-wrapper');
-      const lbl = document.getElementById('zoom-text');
-      if (wrap) {
-        wrap.style.zoom = currentZoom;
-      }
-      if (lbl) {
-        lbl.textContent = Math.round(currentZoom * 100) + '%';
-      }
-      try {
-        localStorage.setItem('remaining_life_report_zoom', currentZoom);
-      } catch (e) {}
-    }
-
-    function toggleReportWidth() {
-      currentWidthIndex = (currentWidthIndex + 1) % widthModes.length;
-      const newWidth = widthModes[currentWidthIndex];
-      const wrap = document.getElementById('report-wrapper');
-      const ctrl = document.querySelector('.control-bar');
-      if (wrap) wrap.style.maxWidth = newWidth;
-      if (ctrl) ctrl.style.maxWidth = newWidth;
-      const btn = document.getElementById('btn-toggle-width');
-      if (btn) {
-        btn.innerHTML = newWidth === '1200px' 
-          ? '<i class="fa-solid fa-compress"></i>' 
-          : (newWidth === '880px' ? '<i class="fa-solid fa-file"></i>' : '<i class="fa-solid fa-expand"></i>');
-        btn.title = `Width: ${newWidth} (Click to toggle)`;
-      }
-      try {
-        localStorage.setItem('remaining_life_report_width_idx', currentWidthIndex);
-      } catch (e) {}
-    }
-
-    try {
-      const savedZoom = parseFloat(localStorage.getItem('remaining_life_report_zoom'));
-      if (!isNaN(savedZoom) && savedZoom >= 0.7 && savedZoom <= 1.5) {
-        currentZoom = savedZoom;
-      }
-      const savedWidthIdx = parseInt(localStorage.getItem('remaining_life_report_width_idx'), 10);
-      if (!isNaN(savedWidthIdx) && savedWidthIdx >= 0 && savedWidthIdx < widthModes.length) {
-        currentWidthIndex = savedWidthIdx;
-      }
-    } catch (e) {}
-
-    window.addEventListener('DOMContentLoaded', () => {
-      applyZoom();
-      if (currentWidthIndex !== 0) {
-        const newWidth = widthModes[currentWidthIndex];
-        const wrap = document.getElementById('report-wrapper');
-        const ctrl = document.querySelector('.control-bar');
-        if (wrap) wrap.style.maxWidth = newWidth;
-        if (ctrl) ctrl.style.maxWidth = newWidth;
-        const btn = document.getElementById('btn-toggle-width');
-        if (btn) {
-          btn.innerHTML = newWidth === '1200px' 
-            ? '<i class="fa-solid fa-compress"></i>' 
-            : (newWidth === '880px' ? '<i class="fa-solid fa-file"></i>' : '<i class="fa-solid fa-expand"></i>');
-          btn.title = `Width: ${newWidth} (Click to toggle)`;
-        }
-      }
-    });
   </script>
   <!-- Interactive Theme Editor UI -->
   <script src="theme_editor.js"></script>

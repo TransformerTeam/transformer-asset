@@ -579,8 +579,8 @@ header {
 
 /* 3D Transformer Image */
 .tr-3d-marker .tr-3d-img {
-  width: 20px !important;
-  height: 23px !important;
+  width: 27px !important;
+  height: 31px !important;
   object-fit: contain;
   display: block;
   z-index: 5;
@@ -589,7 +589,7 @@ header {
 
 /* Foundation Anchor Pointer */
 .tr-3d-marker .foundation-base {
-  margin-top: -3px;
+  margin-top: -4px;
   z-index: 2;
 }
 
