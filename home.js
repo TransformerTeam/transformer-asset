@@ -352,7 +352,6 @@ function renderRiskMatrix() {
 
       cell.innerHTML = `
         <span class="cell-count">${count}</span>
-        <span class="cell-score">P${pof}×C${cof}</span>
       `;
 
       cell.title = `PoF: ${pof}, CoF: ${cof} (Score: ${score}) - ${count} transformers. Click to view list.`;
