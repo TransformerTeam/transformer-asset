@@ -1023,6 +1023,22 @@
       "progress": 100,
       "cost": 48000,
       "parentId": "gen_1788797448102"
+    },
+    {
+      "id": "gen_1789642032802",
+      "wbs": "OA2.2",
+      "sapMo": "",
+      "cat": "Oil Analysis",
+      "task": "Submit report to plant",
+      "plant": "CUP-1",
+      "tr": "All TRs",
+      "lead": "PIP",
+      "start": "2026-10-01",
+      "end": "2026-10-31",
+      "days": 31,
+      "progress": 0,
+      "cost": 0,
+      "parentId": "OA2"
     }
   ],
   "deletedIds": [
@@ -1030,5 +1046,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-17T10:45:47.412Z"
+  "timestamp": "2026-09-17T10:47:13.968Z"
 }
