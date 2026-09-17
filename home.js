@@ -1,7 +1,7 @@
 /**
  * ==========================================================================
  * EXECUTIVE FLEET HOME PAGE - JAVASCRIPT (home.js)
- * GHECO-One / GPSC Transformer Asset Management Portal
+ * GPSC Transformer Asset Management Portal
  * ==========================================================================
  */
 
@@ -10,57 +10,54 @@ let filteredData = [];
 let chartAgeHealth = null;
 let chartDegradation = null;
 let chartSiteCompare = null;
+let chartRUL = null;
 let chartCAPEX = null;
-let donutChartInstance = null;
-let timelineChartInstance = null;
+let gaugeDGA = null, gaugeOil = null, gaugeElec = null, gaugeThermo = null;
 
 // Initialize on DOM ready
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   initData();
   setupEventListeners();
   applyFilters();
-  if (typeof lucide !== "undefined") {
-    lucide.createIcons();
-  }
 });
 
 /**
  * 1. Data Initialization & Risk Metric Calculations
  */
 function initData() {
-  if (typeof HEALTH_INDEX_DATA === "undefined" || !Array.isArray(HEALTH_INDEX_DATA)) {
+  if (typeof HEALTH_INDEX_DATA === 'undefined' || !Array.isArray(HEALTH_INDEX_DATA)) {
     console.error("HEALTH_INDEX_DATA not found!");
     return;
   }
 
   // Build lookup from TR_DATA if available
   const trLookup = {};
-  if (typeof TR_DATA !== "undefined" && Array.isArray(TR_DATA)) {
+  if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
     TR_DATA.forEach(tr => {
-      const sn = (tr.SERIAL_NUMBER || "").trim();
-      const code = (tr.DEVICE_CODE || "").trim();
+      const sn = (tr.SERIAL_NUMBER || '').trim();
+      const code = (tr.DEVICE_CODE || '').trim();
       if (sn) trLookup[sn] = tr;
       if (code) trLookup[code] = tr;
     });
   }
 
   fleetData = HEALTH_INDEX_DATA.map(item => {
-    const sn = (item["Serial No"] || "").trim();
-    const name = (item["Equipment Name"] || "").trim();
+    const sn = (item['Serial No'] || '').trim();
+    const name = (item['Equipment Name'] || '').trim();
     const trMatch = trLookup[sn] || trLookup[name] || {};
 
-    const rawHI = parseFloat(item["Condition Health Index"]);
+    const rawHI = parseFloat(item['Condition Health Index']);
     const hi = isNaN(rawHI) ? null : rawHI;
     
     // Rated Power in MVA
-    let mva = parseFloat(item["Rated Power (MVA)"]);
+    let mva = parseFloat(item['Rated Power (MVA)']);
     if (isNaN(mva) && trMatch.POWER_RATING) {
       mva = parseFloat(trMatch.POWER_RATING) / 1000.0;
     }
     if (isNaN(mva)) mva = 1.6;
 
     // Service Age
-    let age = parseFloat(item["Service Age (Year)"]);
+    let age = parseFloat(item['Service Age (Year)']);
     if (isNaN(age) && trMatch.MANUFACTURING_DATE) {
       const yr = new Date(trMatch.MANUFACTURING_DATE).getFullYear();
       if (!isNaN(yr)) age = Math.max(0, 2026 - yr);
@@ -68,16 +65,16 @@ function initData() {
     if (isNaN(age)) age = 15;
 
     // Service Type Normalization
-    let sType = (item["Service Type"] || trMatch.Service_Type || "Auxiliary").trim();
-    if (/GSU|Step-Up|Generator Step/i.test(sType)) sType = "GSUT";
-    else if (/UAT|Unit Aux/i.test(sType)) sType = "UAT";
-    else if (/Distribution/i.test(sType)) sType = "Distribution";
-    else sType = "Auxiliary";
+    let sType = (item['Service Type'] || trMatch.Service_Type || 'Auxiliary').trim();
+    if (/GSU|Step-Up|Generator Step/i.test(sType)) sType = 'GSUT';
+    else if (/UAT|Unit Aux/i.test(sType)) sType = 'UAT';
+    else if (/Distribution/i.test(sType)) sType = 'Distribution';
+    else sType = 'Auxiliary';
 
     // 1. Calculate Probability of Failure (PoF: 1 to 5)
     let pof = 1;
     if (hi === null) {
-      pof = 2; // Dry-type default
+      pof = 2; // Dry-type or non-assessed default
     } else if (hi <= 50) {
       pof = 5; // Very High
     } else if (hi <= 68) {
@@ -90,19 +87,20 @@ function initData() {
       pof = 1; // Very Low
     }
 
-    const dga = (item["DGA"] || "").toUpperCase();
-    const bd = (item["Dielectric Breakdown"] || "").toUpperCase();
-    const dp = parseFloat(item["Estimated DP (From Furan)"]);
-    if (dga === "U" || dga === "Q") pof = Math.min(5, pof + 1);
+    // Adjust PoF for active DGA critical fault or severe dielectric breakdown
+    const dga = (item['DGA'] || '').toUpperCase();
+    const bd = (item['Dielectric Breakdown'] || '').toUpperCase();
+    const dp = parseFloat(item['Estimated DP (From Furan)']);
+    if (dga === 'U' || dga === 'Q') pof = Math.min(5, pof + 1);
     if (!isNaN(dp) && dp < 350) pof = Math.min(5, Math.max(pof, 4));
 
     // 2. Calculate Consequence of Failure (CoF: 1 to 5)
     let cof = 2;
-    if (sType === "GSUT" || mva >= 80) {
+    if (sType === 'GSUT' || mva >= 80) {
       cof = 5; // Catastrophic: Total generation loss
-    } else if (sType === "UAT" || mva >= 25) {
+    } else if (sType === 'UAT' || mva >= 25) {
       cof = 4; // Major: Plant trip risk
-    } else if (mva >= 10 || sType === "Distribution") {
+    } else if (mva >= 10 || sType === 'Distribution') {
       cof = 3; // Moderate: Bus outage / redundancy
     } else if (mva >= 2) {
       cof = 2; // Minor: Local feeder
@@ -113,62 +111,77 @@ function initData() {
     // 3. Risk Score & Financial Exposure (THB)
     const riskScore = pof * cof;
     
+    // Estimated Asset Replacement Value (THB)
+    // ~ 450,000 THB per MVA base, multiplier for GSUT / HV
     let unitValueTHB = Math.max(3000000, mva * 450000);
-    if (sType === "GSUT") unitValueTHB *= 2.2;
-    else if (sType === "UAT") unitValueTHB *= 1.5;
+    if (sType === 'GSUT') unitValueTHB *= 2.2;
+    else if (sType === 'UAT') unitValueTHB *= 1.5;
 
+    // Outage Impact Cost (THB)
     let outageImpactTHB = cof === 5 ? 85000000 : (cof === 4 ? 30000000 : (cof === 3 ? 6000000 : 1500000));
+    
+    // Probability weighting: PoF 5 ~ 45%, PoF 4 ~ 22%, PoF 3 ~ 8%, PoF 2 ~ 2.5%, PoF 1 ~ 0.5%
     const pofProb = [0, 0.005, 0.025, 0.08, 0.22, 0.45][pof];
     const financialExposureTHB = pofProb * (unitValueTHB + outageImpactTHB);
 
-    // 4. Remaining Useful Life (RUL)
+    // 4. Condition-based Remaining Useful Life (RUL)
     let rul = 12;
     if (hi === null) rul = Math.max(5, 35 - age);
-    else if (hi <= 50) rul = Math.max(1, Math.round(hi / 25));
-    else if (hi <= 68 || age >= 30) rul = Math.max(3, Math.round(3 + (hi - 50) / 6));
-    else if (hi <= 79 || age >= 22) rul = Math.max(7, Math.round(7 + (hi - 68) / 4));
-    else rul = Math.max(11, Math.round(11 + (hi - 80) / 2));
+    else if (hi <= 50) rul = Math.max(1, Math.round(hi / 25)); // 1-2 years
+    else if (hi <= 68 || age >= 30) rul = Math.max(3, Math.round(3 + (hi - 50) / 6)); // 3-6 years
+    else if (hi <= 79 || age >= 22) rul = Math.max(7, Math.round(7 + (hi - 68) / 4)); // 7-10 years
+    else rul = Math.max(11, Math.round(11 + (hi - 80) / 2)); // > 10 years
 
     // 5. Primary Warning Factor
-    let primaryFactor = "Normal Operation";
+    let primaryFactor = 'Normal Operation';
     if (hi !== null && hi <= 50) {
-      if (item["Recommendation"] && item["Recommendation"].includes("DGA")) primaryFactor = "Active DGA Gas Fault";
-      else if (bd === "U") primaryFactor = "Low Oil Dielectric";
-      else if (!isNaN(dp) && dp < 350) primaryFactor = "Insulation Paper Degradation";
-      else primaryFactor = "Critical Condition Degradation";
+      if (item['Recommendation'] && item['Recommendation'].includes('DGA')) primaryFactor = 'Active DGA Gas Fault';
+      else if (bd === 'U') primaryFactor = 'Low Oil Dielectric';
+      else if (!isNaN(dp) && dp < 350) primaryFactor = 'Insulation Paper Degradation';
+      else primaryFactor = 'Critical Condition Degradation';
     } else if (hi !== null && hi <= 70) {
-      if (dga === "Q") primaryFactor = "Elevated DGA Trend";
-      else if (item["Main Tank Oil"] === "Q" || item["Main Tank Oil"] === "U") primaryFactor = "Oil Quality Aging";
-      else primaryFactor = "Maintenance Warning";
+      if (dga === 'Q') primaryFactor = 'Elevated DGA Trend';
+      else if (item['Main Tank Oil'] === 'Q' || item['Main Tank Oil'] === 'U') primaryFactor = 'Oil Quality Aging';
+      else primaryFactor = 'Maintenance Warning';
     }
 
     return {
       name,
       sn,
-      site: item["SITE"] || "Unknown",
-      mva: mva.toFixed(1),
-      age: Math.round(age),
+      site: (item.SITE || 'Other').trim(),
+      mva,
+      voltage: (item['Rated Voltage (kV)'] || trMatch.HV_RATED || '-').trim(),
+      sType,
+      age,
       hi,
-      status: item["Health Index Status"] || (hi !== null ? (hi >= 80 ? "Good" : (hi >= 70 ? "Fair" : (hi >= 51 ? "Warning" : "Critical"))) : "N/A"),
+      status: item['Health Index Status'] || (hi === null ? 'Non-Assessed' : (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Warning' : 'Critical'))),
+      dp: isNaN(dp) ? null : dp,
       pof,
       cof,
       riskScore,
+      unitValueTHB,
       financialExposureTHB,
       rul,
+      recommendation: item['Recommendation'] || 'Standard Maintenance',
       primaryFactor,
-      recommendation: item["Recommendation"] || "Continue regular PM and monitoring",
-      dp: isNaN(dp) ? null : dp,
-      sType,
       rawItem: item
     };
   });
 
-  // Populate Site Filter Dropdown
-  const siteFilter = document.getElementById("site-filter");
+  // Populate Site Filter Options dynamically
+  const siteFilter = document.getElementById('site-filter');
   if (siteFilter) {
-    const sites = Array.from(new Set(fleetData.map(d => d.site))).filter(Boolean).sort();
-    siteFilter.innerHTML = `<option value="ALL">All Power Blocks (GSU & Aux)</option>` + 
-      sites.map(s => `<option value="${s}">${s}</option>`).join("");
+    const siteCounts = {};
+    fleetData.forEach(d => { siteCounts[d.site] = (siteCounts[d.site] || 0) + 1; });
+    
+    // Clear and rebuild options
+    siteFilter.innerHTML = `<option value="ALL">All Substations & Sites (${fleetData.length})</option>`;
+    Object.keys(siteCounts).sort().forEach(site => {
+      const opt = document.createElement('option');
+      opt.value = site;
+      opt.textContent = `${site} (${siteCounts[site]})`;
+      siteFilter.appendChild(opt);
+    });
   }
 }
 
@@ -176,72 +189,50 @@ function initData() {
  * 2. Setup Event Listeners
  */
 function setupEventListeners() {
-  const siteFilter = document.getElementById("site-filter");
-  const typeFilter = document.getElementById("type-filter");
-  const themeBtn = document.getElementById("theme-toggle-btn");
+  const siteFilter = document.getElementById('site-filter');
+  const typeFilter = document.getElementById('type-filter');
+  const searchInput = document.getElementById('search-ranking');
 
-  if (siteFilter) siteFilter.addEventListener("change", applyFilters);
-  if (typeFilter) typeFilter.addEventListener("change", applyFilters);
+  if (siteFilter) siteFilter.addEventListener('change', applyFilters);
+  if (typeFilter) typeFilter.addEventListener('change', applyFilters);
+  if (searchInput) searchInput.addEventListener('input', () => renderRankingTable());
 
-  // Initialize theme from storage or default
-  const savedTheme = localStorage.getItem("tr-dashboard-theme") || "light";
-  document.documentElement.setAttribute("data-theme", savedTheme);
-  const themeIcon = document.getElementById("theme-icon");
-  const themeText = document.getElementById("theme-text");
-  if (themeIcon) themeIcon.setAttribute("data-lucide", savedTheme === "dark" ? "moon" : "sun");
-  if (themeText) themeText.textContent = savedTheme === "dark" ? "Dark" : "Light";
-
-  // Theme Toggle (Light / Dark)
-  if (themeBtn) {
-    themeBtn.addEventListener("click", () => {
-      const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("tr-dashboard-theme", newTheme);
-
-      if (themeIcon) {
-        themeIcon.setAttribute("data-lucide", newTheme === "dark" ? "moon" : "sun");
-      }
-      if (themeText) {
-        themeText.textContent = newTheme === "dark" ? "Dark" : "Light";
-      }
-
-      if (typeof lucide !== "undefined") lucide.createIcons();
-      refreshAllCharts();
-    });
-  }
+  // Listen to Theme Changes from Theme Engine
+  window.addEventListener('themeChanged', () => {
+    refreshAllCharts();
+  });
 }
 
 /**
- * 3. Filter Application & Screen Refresh
+ * 3. Filter Application & Redraw
  */
 function applyFilters() {
-  const siteVal = document.getElementById("site-filter")?.value || "ALL";
-  const typeVal = document.getElementById("type-filter")?.value || "ALL";
+  const siteVal = document.getElementById('site-filter')?.value || 'ALL';
+  const typeVal = document.getElementById('type-filter')?.value || 'ALL';
 
   filteredData = fleetData.filter(d => {
-    if (siteVal !== "ALL" && d.site !== siteVal) return false;
-    if (typeVal !== "ALL" && d.sType !== typeVal) return false;
+    if (siteVal !== 'ALL' && d.site !== siteVal) return false;
+    if (typeVal !== 'ALL' && d.sType !== typeVal) return false;
     return true;
   });
 
   renderExecutiveKPIs();
   renderRiskMatrix();
-  renderHealthDonutChart();
-  renderRemainingLifeTimelineChart();
-  renderCriticalWatchlist();
   renderAgeVsHealthChart();
+  renderRankingTable();
   renderDegradationBreakdown();
   renderSiteComparisonChart();
+  renderCriticalWatchlist();
+  renderActionPillars();
+  renderInterventionTimeline();
+  renderRULDistributionChart();
   renderCAPEXForecastChart();
-
-  if (typeof lucide !== "undefined") {
-    lucide.createIcons();
-  }
+  renderComplianceGauges();
+  renderSAPBacklog();
 }
 
 /**
- * 4. Executive Metric Cards (4 Top Cards)
+ * MODULE 1.1: Executive KPI Cards
  */
 function renderExecutiveKPIs() {
   const total = filteredData.length;
@@ -261,431 +252,206 @@ function renderExecutiveKPIs() {
     }
   });
 
-  const isAll = (document.getElementById("site-filter")?.value || "ALL") === "ALL" && 
-                (document.getElementById("type-filter")?.value || "ALL") === "ALL";
+  const avgHI = assessed.length > 0 ? (totalHI / assessed.length).toFixed(1) : 'N/A';
+  const goodPct = assessed.length > 0 ? ((good / assessed.length) * 100).toFixed(0) : 0;
+  const fairPct = assessed.length > 0 ? (((fair + warning) / assessed.length) * 100).toFixed(0) : 0;
+  const critPct = assessed.length > 0 ? ((critical / assessed.length) * 100).toFixed(0) : 0;
 
-  const displayTotal = isAll ? 24 : total;
-  const avgHI = isAll ? "84.8" : (assessed.length > 0 ? (totalHI / assessed.length).toFixed(1) : "84.8");
-  const displayCrit = isAll ? 2 : critical;
-  const riskTHB = isAll ? "38.5" : (totalFinancialRisk / 1000000).toFixed(1);
+  // Update DOM
+  document.getElementById('kpi-total-tr').textContent = total;
+  document.getElementById('kpi-total-sub').textContent = `${assessed.length} Assessed | ${total - assessed.length} Dry-type`;
 
-  // 1. Fleet Total Capacity
-  const elTotal = document.getElementById("kpi-total-tr");
-  if (elTotal) elTotal.innerHTML = `${displayTotal} <span class="text-sm font-medium text-slate-500">Units</span>`;
+  document.getElementById('kpi-avg-hi').textContent = avgHI !== 'N/A' ? `${avgHI}%` : 'N/A';
+  document.getElementById('kpi-hi-breakdown').innerHTML = `
+    <span class="pill-badge pill-good"><i class="fa-solid fa-circle-check"></i> ${goodPct}% Good</span>
+    <span class="pill-badge pill-fair"><i class="fa-solid fa-circle-exclamation"></i> ${fairPct}% Fair</span>
+    <span class="pill-badge pill-crit"><i class="fa-solid fa-triangle-exclamation"></i> ${critPct}% Crit</span>
+  `;
 
-  // 2. Fleet Health Index
-  const elAvgHI = document.getElementById("kpi-avg-hi");
-  if (elAvgHI) elAvgHI.textContent = `${avgHI}%`;
+  document.getElementById('kpi-high-risk').textContent = critical + warning;
+  document.getElementById('kpi-risk-sub').innerHTML = `
+    <strong style="color:var(--risk-extreme);">${critical} Critical</strong> (&le;50%) | 
+    <span style="color:var(--risk-high);">${warning} Warning</span> (51-70%)
+  `;
 
-  const elStatusPill = document.getElementById("kpi-hi-status-pill");
-  if (elStatusPill) {
-    elStatusPill.textContent = parseFloat(avgHI) >= 80 ? "Stable Condition" : "Warning Condition";
-  }
-
-  // 3. High Risk Units
-  const elHighRisk = document.getElementById("kpi-high-risk");
-  if (elHighRisk) elHighRisk.innerHTML = `${displayCrit} <span class="text-sm font-medium text-slate-500">Units</span>`;
-
-  const elRiskTags = document.getElementById("kpi-high-risk-tags");
-  if (elRiskTags) {
-    if (isAll) {
-      elRiskTags.textContent = "• GSU-01 / SST-01";
-    } else {
-      const critNames = filteredData.filter(d => d.hi !== null && d.hi <= 50).map(d => d.name).slice(0, 2);
-      elRiskTags.textContent = critNames.length > 0 ? "• " + critNames.join(" / ") : "• Normal Fleet Status";
-    }
-  }
-
-  // 4. Financial Risk Exposure
-  const elFinRisk = document.getElementById("kpi-financial-risk");
-  if (elFinRisk) elFinRisk.textContent = `฿${riskTHB}M`;
+  // Financial Risk Exposure formatted in Million THB
+  const riskMB = (totalFinancialRisk / 1000000).toFixed(1);
+  document.getElementById('kpi-financial-risk').textContent = `฿ ${riskMB}M`;
+  document.getElementById('kpi-financial-sub').textContent = `Calculated PoF × Failure CoF exposure`;
 }
 
 /**
- * 5. 5x5 Risk Matrix Map (Exact Pastel Colors & Badge Styling)
+ * MODULE 1.2: 5x5 Risk Matrix Map (PoF vs CoF)
  */
 function renderRiskMatrix() {
-  const gridContainer = document.getElementById("risk-matrix-grid");
+  const gridContainer = document.getElementById('risk-matrix-grid');
   if (!gridContainer) return;
 
-  gridContainer.innerHTML = "";
+  // Matrix cells: 5 rows (PoF 5 down to 1) x 5 cols (CoF 1 to 5)
+  // Clear existing cells except labels
+  gridContainer.innerHTML = '';
 
-  // Exact Pastel Classes Matrix per row/col matching user template:
-  const pastelStyles = {
-    5: [
-      "bg-amber-50/70 border border-amber-200/80",
-      "bg-amber-100/70 border border-amber-200",
-      "bg-amber-200/80 border border-amber-300",
-      "bg-rose-100 border border-rose-200",
-      "bg-rose-200 border border-rose-300"
-    ],
-    4: [
-      "bg-emerald-50/70 border border-emerald-200/80",
-      "bg-amber-50/70 border border-amber-200/80",
-      "bg-amber-100/80 border border-amber-200",
-      "bg-amber-200/80 border border-amber-300",
-      "bg-rose-100 border border-rose-200"
-    ],
-    3: [
-      "bg-emerald-50/70 border border-emerald-200/80",
-      "bg-emerald-100/70 border border-emerald-200",
-      "bg-amber-50/70 border border-amber-200",
-      "bg-amber-100/70 border border-amber-200",
-      "bg-amber-200/80 border border-amber-300"
-    ],
-    2: [
-      "bg-emerald-100/80 border border-emerald-200",
-      "bg-emerald-100/80 border border-emerald-200",
-      "bg-emerald-50/70 border border-emerald-200",
-      "bg-amber-50/70 border border-amber-200",
-      "bg-amber-100/70 border border-amber-200"
-    ],
-    1: [
-      "bg-emerald-100/90 border border-emerald-200",
-      "bg-emerald-100/90 border border-emerald-200",
-      "bg-emerald-50/70 border border-emerald-200",
-      "bg-emerald-50/70 border border-emerald-200",
-      "bg-amber-50/70 border border-amber-200"
-    ]
-  };
+  const yLabels = ['5 (Almost Certain)', '4 (Likely)', '3 (Possible)', '2 (Unlikely)', '1 (Rare)'];
+  const xLabels = ['1 (Negligible)', '2 (Minor)', '3 (Moderate)', '4 (Major)', '5 (Catastrophic)'];
 
-  // Group filtered items into buckets
+  // Matrix Cell Definition: [pof][cof] = array of items
   const matrixBuckets = {};
   for (let r = 5; r >= 1; r--) {
     matrixBuckets[r] = {};
-    for (let c = 1; c <= 5; c++) matrixBuckets[r][c] = [];
+    for (let c = 1; c <= 5; c++) {
+      matrixBuckets[r][c] = [];
+    }
   }
+
   filteredData.forEach(d => {
     if (matrixBuckets[d.pof] && matrixBuckets[d.pof][d.cof]) {
       matrixBuckets[d.pof][d.cof].push(d);
     }
   });
 
-  const isAll = (document.getElementById("site-filter")?.value || "ALL") === "ALL" && 
-                (document.getElementById("type-filter")?.value || "ALL") === "ALL";
-
-  // Build the 5 rows (PoF 5 down to 1)
+  // Build Grid HTML
   for (let pof = 5; pof >= 1; pof--) {
+    // Y-axis Label
+    const yLabelEl = document.createElement('div');
+    yLabelEl.className = 'matrix-y-label';
+    yLabelEl.textContent = pof;
+    yLabelEl.title = yLabels[5 - pof];
+    gridContainer.appendChild(yLabelEl);
+
+    // 5 Columns (CoF 1 to 5)
     for (let cof = 1; cof <= 5; cof++) {
       const items = matrixBuckets[pof][cof];
-      const cell = document.createElement("div");
-      const pastelClass = pastelStyles[pof][cof - 1];
-      cell.className = `h-14 rounded-lg flex items-center justify-center ${pastelClass} cursor-pointer hover:scale-105 transition duration-150 relative p-1`;
-      
-      // If full template view, replicate exact mockup layout
-      if (isAll) {
-        if (pof === 5 && cof === 4) {
-          cell.innerHTML = `<span class="px-2 py-0.5 rounded bg-rose-600 text-white font-bold text-[11px] shadow-sm cursor-pointer hover:scale-110 transition animate-pulse" title="SST-01 Station Transformer (HI: 42%)">SST-01</span>`;
-        } else if (pof === 5 && cof === 5) {
-          cell.innerHTML = `<span class="px-2 py-0.5 rounded bg-rose-600 text-white font-bold text-[11px] shadow-md shadow-rose-500/40 cursor-pointer hover:scale-110 transition" title="GSU-01 Main Step-Up (HI: 49%)">GSU-01</span>`;
-        } else if (pof === 4 && cof === 3) {
-          cell.innerHTML = `<span class="px-2 py-0.5 rounded bg-amber-500 text-white font-bold text-[11px] shadow-sm cursor-pointer hover:scale-110 transition" title="UAT-02 Auxiliary (HI: 58%)">UAT-02</span>`;
-        } else if (pof === 3 && cof === 3) {
-          cell.innerHTML = `<span class="text-slate-600 font-semibold text-[10px]">1 Unit</span>`;
-        } else if (pof === 3 && cof === 4) {
-          cell.innerHTML = `<span class="text-slate-600 font-semibold text-[10px]">2 Units</span>`;
-        } else if (pof === 3 && cof === 5) {
-          cell.innerHTML = `<span class="px-2 py-0.5 rounded bg-amber-500 text-white font-bold text-[11px] shadow-sm cursor-pointer hover:scale-110 transition" title="GSU-02 Backup (HI: 69%)">GSU-02</span>`;
-        } else if (pof === 2 && cof === 1) {
-          cell.innerHTML = `<span class="text-emerald-800 text-[10px] font-bold">3 Units</span>`;
-        } else if (pof === 2 && cof === 2) {
-          cell.innerHTML = `<span class="text-emerald-800 text-[10px] font-bold">4 Units</span>`;
-        } else if (pof === 2 && cof === 3) {
-          cell.innerHTML = `<span class="text-slate-600 font-semibold text-[10px]">2 Units</span>`;
-        } else if (pof === 2 && cof === 4) {
-          cell.innerHTML = `<span class="text-slate-600 font-semibold text-[10px]">1 Unit</span>`;
-        } else if (pof === 1 && cof === 1) {
-          cell.innerHTML = `<span class="text-emerald-800 text-[10px] font-extrabold">4 Units</span>`;
-        } else if (pof === 1 && cof === 2) {
-          cell.innerHTML = `<span class="text-emerald-800 text-[10px] font-extrabold">3 Units</span>`;
-        } else if (pof === 1 && cof === 3) {
-          cell.innerHTML = `<span class="text-emerald-800 text-[10px] font-bold">2 Units</span>`;
-        }
-      } else {
-        // Dynamic Filtered rendering
-        if (items.length > 0) {
-          if (pof >= 4 && cof >= 4) {
-            cell.innerHTML = items.slice(0, 2).map(it => 
-              `<span class="px-1.5 py-0.5 rounded bg-rose-600 text-white font-bold text-[10px] shadow-sm animate-pulse m-0.5 inline-block" title="${it.name} (HI: ${it.hi}%)">${it.name}</span>`
-            ).join("");
-          } else if (items.length <= 2 && (pof >= 3 || cof >= 4)) {
-            cell.innerHTML = items.map(it => 
-              `<span class="px-1.5 py-0.5 rounded bg-amber-500 text-white font-bold text-[10px] shadow-sm m-0.5 inline-block" title="${it.name} (HI: ${it.hi}%)">${it.name}</span>`
-            ).join("");
-          } else {
-            const txtColor = pof <= 2 && cof <= 2 ? "text-emerald-800 font-bold" : "text-slate-700 font-semibold";
-            cell.innerHTML = `<span class="${txtColor} text-[10px]">${items.length} Unit${items.length > 1 ? "s" : ""}</span>`;
-          }
-        }
-      }
+      const count = items.length;
+      const score = pof * cof;
 
-      cell.title = `PoF ${pof} × CoF ${cof} (${items.length} transformers) - Click to view detail`;
+      const cell = document.createElement('div');
+      cell.className = 'matrix-cell';
+      
+      // Determine Risk Zone Color
+      if (score >= 16) cell.classList.add('cell-crit');
+      else if (score >= 12) cell.classList.add('cell-high');
+      else if (score >= 6) cell.classList.add('cell-med');
+      else cell.classList.add('cell-low');
+
+      cell.innerHTML = `
+        <span class="cell-count">${count}</span>
+        <span class="cell-score">P${pof}×C${cof}</span>
+      `;
+
+      cell.title = `PoF: ${pof}, CoF: ${cof} (Score: ${score}) - ${count} transformers. Click to view list.`;
       cell.onclick = () => showMatrixDetailModal(pof, cof, items);
+
       gridContainer.appendChild(cell);
     }
   }
-}
 
-/**
- * 6. Health Category Breakdown Donut Chart (Chart.js)
- */
-function renderHealthDonutChart() {
-  const canvas = document.getElementById("healthDonutChart");
-  if (!canvas) return;
+  // Bottom row: Empty corner + X-axis labels
+  const corner = document.createElement('div');
+  gridContainer.appendChild(corner);
 
-  const isAll = (document.getElementById("site-filter")?.value || "ALL") === "ALL" && 
-                (document.getElementById("type-filter")?.value || "ALL") === "ALL";
-
-  let good = 16, fair = 5, poor = 1, crit = 2;
-  if (!isAll) {
-    good = 0; fair = 0; poor = 0; crit = 0;
-    filteredData.forEach(d => {
-      if (d.hi !== null) {
-        if (d.hi >= 80) good++;
-        else if (d.hi >= 70) fair++;
-        else if (d.hi >= 50) poor++;
-        else crit++;
-      }
-    });
+  for (let cof = 1; cof <= 5; cof++) {
+    const xLabelEl = document.createElement('div');
+    xLabelEl.className = 'matrix-x-label';
+    xLabelEl.textContent = cof;
+    xLabelEl.title = xLabels[cof - 1];
+    gridContainer.appendChild(xLabelEl);
   }
 
-  const total = good + fair + poor + crit || 1;
-  const goodPct = ((good / total) * 100).toFixed(1);
-  const fairPct = ((fair / total) * 100).toFixed(1);
-  const poorPct = ((poor / total) * 100).toFixed(1);
-  const critPct = ((crit / total) * 100).toFixed(1);
-
-  // Update Legend Labels
-  const elGood = document.getElementById("donut-count-good");
-  const elFair = document.getElementById("donut-count-fair");
-  const elPoor = document.getElementById("donut-count-poor");
-  const elCrit = document.getElementById("donut-count-crit");
-  const elSum = document.getElementById("donut-fleet-summary");
-
-  if (elGood) elGood.textContent = `${good} (${goodPct}%)`;
-  if (elFair) elFair.textContent = `${fair} (${fairPct}%)`;
-  if (elPoor) elPoor.textContent = `${poor} (${poorPct}%)`;
-  if (elCrit) elCrit.textContent = `${crit} (${critPct}%)`;
-  if (elSum) elSum.textContent = `Fleet: ${total} Transformers`;
-
-  if (donutChartInstance) {
-    donutChartInstance.destroy();
-  }
-
-  const ctx = canvas.getContext("2d");
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-
-  donutChartInstance = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: ["Good (>80%)", "Fair (70-79%)", "Poor (50-69%)", "Critical (<50%)"],
-      datasets: [{
-        data: [good, fair, poor, crit],
-        backgroundColor: ["#10b981", "#3b82f6", "#f59e0b", "#f43f5e"],
-        borderColor: isDark ? "#1e293b" : "#ffffff",
-        borderWidth: 2,
-        hoverOffset: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: "72%",
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: "rgba(15, 23, 42, 0.9)",
-          titleColor: "#ffffff",
-          bodyColor: "#ffffff",
-          borderColor: "rgba(255, 255, 255, 0.2)",
-          borderWidth: 1,
-          callbacks: {
-            label: function(context) {
-              return ` ${context.label}: ${context.raw} Units`;
-            }
-          }
-        }
-      }
-    }
+  // Update Summary Counts
+  let critCount = 0, highCount = 0, medCount = 0, lowCount = 0;
+  filteredData.forEach(d => {
+    if (d.riskScore >= 16) critCount++;
+    else if (d.riskScore >= 12) highCount++;
+    else if (d.riskScore >= 6) medCount++;
+    else lowCount++;
   });
+
+  const legendCrit = document.getElementById('legend-crit-count');
+  const legendHigh = document.getElementById('legend-high-count');
+  const legendMed = document.getElementById('legend-med-count');
+  const legendLow = document.getElementById('legend-low-count');
+
+  if (legendCrit) legendCrit.textContent = `${critCount} Units`;
+  if (legendHigh) legendHigh.textContent = `${highCount} Units`;
+  if (legendMed) legendMed.textContent = `${medCount} Units`;
+  if (legendLow) legendLow.textContent = `${lowCount} Units`;
 }
 
 /**
- * 7. Summary Transformer Expected Remaining Life Timeline (Horizontal Floating Bar)
+ * Modal Popup for Risk Matrix Cell Details
  */
-function renderRemainingLifeTimelineChart() {
-  const canvas = document.getElementById("remainingLifeTimelineChart");
-  if (!canvas) return;
+function showMatrixDetailModal(pof, cof, items) {
+  const modal = document.getElementById('matrix-modal');
+  const modalTitle = document.getElementById('modal-matrix-title');
+  const modalBody = document.getElementById('modal-matrix-body');
+  if (!modal || !modalTitle || !modalBody) return;
 
-  if (timelineChartInstance) {
-    timelineChartInstance.destroy();
-  }
+  const score = pof * cof;
+  let zoneName = score >= 16 ? 'Extreme Risk' : (score >= 12 ? 'High Risk' : (score >= 6 ? 'Medium Risk' : 'Low Risk'));
+  
+  modalTitle.innerHTML = `<i class="fa-solid fa-layer-group text-indigo-400"></i> Risk Matrix Cell: PoF ${pof} × CoF ${cof} (${zoneName} - ${items.length} Transformers)`;
 
-  const timelineData = [
-    { tag: "SST-01", sub: "CUP1", start: 2026, end: 2035, yrs: "9 yrs", milestone: 2027 },
-    { tag: "GSU-01", sub: "GEN", start: 2026, end: 2032, yrs: "6 yrs", milestone: 2029 },
-    { tag: "UAT-02", sub: "CUP4", start: 2026, end: 2045, yrs: "19 yrs", milestone: 2035 },
-    { tag: "KT4A", sub: "GSPP2", start: 2026, end: 2041, yrs: "15 yrs", milestone: null },
-    { tag: "KT6A", sub: "GSPP3", start: 2026, end: 2058, yrs: "32 yrs", milestone: null },
-    { tag: "STG5", sub: "GSPP3", start: 2026, end: 2075, yrs: "49 yrs", milestone: 2040 }
-  ];
-
-  const ctx = canvas.getContext("2d");
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-
-  timelineChartInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: timelineData.map(d => `${d.tag} (${d.sub})`),
-      datasets: [
-        {
-          type: "bar",
-          label: "Expected Life",
-          data: timelineData.map(d => [d.start, d.end]),
-          backgroundColor: "rgba(16, 185, 129, 0.85)",
-          borderColor: "#059669",
-          borderWidth: 1,
-          borderRadius: 4,
-          borderSkipped: false,
-          barPercentage: 0.55
-        },
-        {
-          type: "scatter",
-          label: "Target Milestone",
-          data: timelineData
-            .map(d => d.milestone ? { x: d.milestone, y: `${d.tag} (${d.sub})`, label: d.tag, endYear: d.end } : null)
-            .filter(d => d !== null),
-          backgroundColor: "#f59e0b",
-          borderColor: "#ffffff",
-          borderWidth: 1.5,
-          pointRadius: 6,
-          pointHoverRadius: 8
-        }
-      ]
-    },
-    options: {
-      indexAxis: "y",
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: "rgba(15, 23, 42, 0.9)",
-          titleColor: "#ffffff",
-          bodyColor: "#ffffff",
-          borderColor: "rgba(255, 255, 255, 0.2)",
-          borderWidth: 1,
-          callbacks: {
-            label: function(context) {
-              const item = timelineData[context.dataIndex];
-              if (context.dataset.type === "scatter") {
-                return ` Target Milestone: Year ${context.raw.x}`;
-              }
-              return ` Expected End: ${item.end} (${item.yrs} remaining)`;
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          min: 2025,
-          max: 2080,
-          grid: { 
-            color: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(148, 163, 184, 0.25)",
-            drawBorder: false 
-          },
-          ticks: {
-            stepSize: 5,
-            color: isDark ? "#94a3b8" : "#64748b",
-            font: { size: 10, weight: "600" }
-          },
-          title: {
-            display: true,
-            text: "Projection Timeline (Year)",
-            color: isDark ? "#94a3b8" : "#64748b",
-            font: { size: 10, weight: "600" }
-          }
-        },
-        y: {
-          grid: { display: false },
-          ticks: {
-            color: isDark ? "#e2e8f0" : "#334155",
-            font: { size: 11, weight: "600" }
-          }
-        }
-      }
-    }
-  });
-}
-
-/**
- * 8. Top Critical Watchlist Table
- */
-function renderCriticalWatchlist() {
-  const tbody = document.getElementById("critical-watchlist-tbody");
-  if (!tbody) return;
-
-  const defaultRows = [
-    {
-      tag: "GSU-01",
-      icon: "alert-octagon",
-      pos: "500kV Main Step-Up (750 MVA)",
-      hi: 49,
-      pofCof: "5 / 5",
-      status: "Thermal Overheating (T3) & C₂H₄ Trend"
-    },
-    {
-      tag: "SST-01",
-      icon: "alert-circle",
-      pos: "115kV Station Service (40 MVA)",
-      hi: 42,
-      pofCof: "5 / 4",
-      status: "High Moisture (32 ppm) & Paper Aging"
-    },
-    {
-      tag: "UAT-02",
-      icon: "info",
-      pos: "22kV Unit Auxiliary (35 MVA)",
-      hi: 58,
-      pofCof: "4 / 3",
-      status: "Bushing Tan Delta Drift (+0.25%)"
-    }
-  ];
-
-  tbody.innerHTML = defaultRows.map(row => {
-    const isCrit = row.hi <= 50;
-    const badgeBg = isCrit ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-amber-100 text-amber-800 border-amber-200";
-    const iconColor = isCrit ? "text-rose-500" : "text-amber-500";
-    const tagColor = isCrit ? "text-rose-600" : "text-amber-600";
-
-    return `
-      <tr class="hover:bg-white/60 transition">
-        <td class="py-3 px-3 font-bold ${tagColor} flex items-center gap-1.5">
-          <i data-lucide="${row.icon}" class="w-4 h-4 ${iconColor}"></i> ${row.tag}
-        </td>
-        <td class="py-3 px-3 text-slate-700 font-medium">${row.pos}</td>
-        <td class="py-3 px-3 text-center">
-          <span class="px-2 py-0.5 rounded-full ${badgeBg} font-bold border">${row.hi}%</span>
-        </td>
-        <td class="py-3 px-3 text-center font-mono font-bold text-slate-700">${row.pofCof}</td>
-        <td class="py-3 px-3 text-slate-700 font-medium">${row.status}</td>
-        <td class="py-3 px-3 text-right">
-          <a href="assessment.html?search=${encodeURIComponent(row.tag)}" class="text-xs text-blue-600 hover:text-blue-800 font-bold underline">Diagnostic View</a>
+  if (items.length === 0) {
+    modalBody.innerHTML = `<p style="padding:20px; text-align:center; color:var(--exec-text-body);">No transformers in this risk category.</p>`;
+  } else {
+    let rowsHtml = items.map((it, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td><strong>${it.name}</strong></td>
+        <td><code>${it.sn}</code></td>
+        <td>${it.site}</td>
+        <td>${it.sType}</td>
+        <td>${it.mva} MVA</td>
+        <td><span class="badge-status ${it.hi <= 50 ? 'badge-critical' : (it.hi <= 70 ? 'badge-warning' : (it.hi <= 79 ? 'badge-caution' : 'badge-normal'))}">${it.hi !== null ? it.hi + '%' : 'N/A'}</span></td>
+        <td>${it.primaryFactor}</td>
+        <td>
+          <a href="assessment.html?search=${encodeURIComponent(it.name)}" class="action-btn-sm" target="_blank">
+            <i class="fa-solid fa-stethoscope"></i> View
+          </a>
         </td>
       </tr>
-    `;
-  }).join("");
+    `).join('');
 
-  if (typeof lucide !== "undefined") lucide.createIcons();
+    modalBody.innerHTML = `
+      <div class="table-responsive">
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Equipment Name</th>
+              <th>Serial No</th>
+              <th>Site</th>
+              <th>Type</th>
+              <th>Rating</th>
+              <th>Health Index</th>
+              <th>Primary Condition Alert</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  modal.classList.add('active');
+}
+
+function closeMatrixModal() {
+  const modal = document.getElementById('matrix-modal');
+  if (modal) modal.classList.remove('active');
 }
 
 /**
- * 9. Fleet Age vs Health Profile (ApexCharts Scatter Plot)
+ * MODULE 1.3: Fleet Age vs Health Profile (Scatter Plot)
  */
 function renderAgeVsHealthChart() {
   const chartEl = document.querySelector("#chart-age-health");
   if (!chartEl) return;
 
+  // Prepare scatter data series grouped by status
   const goodSeries = [];
   const fairSeries = [];
   const critSeries = [];
@@ -699,45 +465,57 @@ function renderAgeVsHealthChart() {
     }
   });
 
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const textColor = isDark ? "#94a3b8" : "#475569";
-  const borderColor = isDark ? "rgba(255, 255, 255, 0.08)" : "#e2e8f0";
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
   const options = {
     series: [
-      { name: "Healthy (HI ≥ 80%)", data: goodSeries },
-      { name: "Warning / Fair (51-79%)", data: fairSeries },
-      { name: "Critical (HI ≤ 50%)", data: critSeries }
+      { name: 'Healthy (HI ≥ 80%)', data: goodSeries },
+      { name: 'Warning / Fair (51-79%)', data: fairSeries },
+      { name: 'Critical (HI ≤ 50%)', data: critSeries }
     ],
     chart: {
-      height: 280,
-      type: "scatter",
+      height: 310,
+      type: 'scatter',
       toolbar: { show: false },
-      background: "transparent",
+      background: 'transparent',
       animations: { enabled: false }
     },
-    colors: ["#10b981", "#f59e0b", "#f43f5e"],
+    colors: ['#10b981', '#f59e0b', '#ef4444'],
     xaxis: {
-      title: { text: "Service Age (Years)", style: { color: textColor, fontWeight: 600 } },
+      title: { text: 'Service Age (Years)', style: { color: textColor, fontWeight: 600 } },
       min: 0,
       max: 40,
       tickAmount: 8,
       labels: { style: { colors: textColor } }
     },
     yaxis: {
-      title: { text: "Health Index (%)", style: { color: textColor, fontWeight: 600 } },
+      title: { text: 'Condition Health Index (%)', style: { color: textColor, fontWeight: 600 } },
       min: 0,
       max: 100,
       labels: { style: { colors: textColor } }
     },
-    grid: { borderColor: borderColor, strokeDashArray: 3 },
+    grid: {
+      borderColor: borderColor,
+      strokeDashArray: 3
+    },
+    annotations: {
+      yaxis: [
+        { y: 50, borderColor: '#ef4444', label: { text: 'Critical Limit (50%)', style: { color: '#fff', background: '#ef4444' } } },
+        { y: 80, borderColor: '#10b981', label: { text: 'Healthy Benchmark (80%)', style: { color: '#fff', background: '#10b981' } } }
+      ],
+      xaxis: [
+        { x: 30, borderColor: '#6366f1', label: { text: '30-Yr Design Life', style: { color: '#fff', background: '#6366f1' } } }
+      ]
+    },
     tooltip: {
-      theme: isDark ? "dark" : "light",
+      theme: isDark ? 'dark' : 'light',
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
         const p = w.config.series[seriesIndex].data[dataPointIndex];
         return `
           <div style="padding:10px 14px; font-size:12px;">
-            <strong style="color:#2563eb;">${p.name}</strong> (SN: ${p.sn})<br/>
+            <strong style="color:#38bdf8;">${p.name}</strong> (SN: ${p.sn})<br/>
             <span>Site: ${p.site} | ${p.sType}</span><br/>
             <span>Age: <strong>${p.x} Years</strong> | Health Index: <strong>${p.y}%</strong></span>
           </div>
@@ -755,7 +533,65 @@ function renderAgeVsHealthChart() {
 }
 
 /**
- * 10. Fleet-Wide Degradation Drivers Breakdown (ApexCharts Donut)
+ * MODULE 2.1: Transformer Ranking Table
+ */
+function renderRankingTable() {
+  const tbody = document.getElementById('ranking-tbody');
+  if (!tbody) return;
+
+  const searchVal = (document.getElementById('search-ranking')?.value || '').toLowerCase().trim();
+
+  // Sort ascending by Health Index (worst first)
+  const sorted = [...filteredData].sort((a, b) => {
+    if (a.hi === null && b.hi === null) return 0;
+    if (a.hi === null) return 1;
+    if (b.hi === null) return -1;
+    return a.hi - b.hi;
+  });
+
+  const matching = sorted.filter(d => {
+    if (!searchVal) return true;
+    return d.name.toLowerCase().includes(searchVal) ||
+           d.sn.toLowerCase().includes(searchVal) ||
+           d.site.toLowerCase().includes(searchVal) ||
+           d.primaryFactor.toLowerCase().includes(searchVal);
+  });
+
+  if (matching.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--exec-text-body);">No matching transformers found.</td></tr>`;
+    return;
+  }
+
+  // Render first 50 rows for snappy performance
+  tbody.innerHTML = matching.slice(0, 50).map((d, idx) => {
+    let badgeClass = 'badge-normal';
+    if (d.hi === null) badgeClass = 'badge-normal';
+    else if (d.hi <= 50) badgeClass = 'badge-critical';
+    else if (d.hi <= 70) badgeClass = 'badge-warning';
+    else if (d.hi <= 79) badgeClass = 'badge-caution';
+
+    return `
+      <tr>
+        <td><strong>#${idx + 1}</strong></td>
+        <td><strong>${d.name}</strong></td>
+        <td><code>${d.sn}</code></td>
+        <td>${d.site}</td>
+        <td>${d.sType}</td>
+        <td>${d.mva} MVA</td>
+        <td><span class="badge-status ${badgeClass}">${d.hi !== null ? d.hi + '%' : 'Non-Assessed'}</span></td>
+        <td>${d.primaryFactor}</td>
+        <td>
+          <a href="assessment.html?search=${encodeURIComponent(d.name)}" class="action-btn-sm" target="_blank">
+            <i class="fa-solid fa-stethoscope"></i> Detail
+          </a>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/**
+ * MODULE 2.2: Fleet-Wide Degradation Drivers Breakdown (Donut Chart)
  */
 function renderDegradationBreakdown() {
   const chartEl = document.querySelector("#chart-degradation");
@@ -765,41 +601,41 @@ function renderDegradationBreakdown() {
 
   filteredData.forEach(d => {
     const raw = d.rawItem || {};
-    if (raw["DGA"] === "U" || raw["DGA"] === "Q") dgaFault++;
-    if (raw["Dielectric Breakdown"] === "U" || raw["Water Content"] === "U" || raw["Main Tank Oil"] === "U") oilBreakdown++;
-    if (raw["Furan"] === "U" || (d.dp && d.dp < 450)) paperAging++;
-    if (raw["Bushing"] === "U" || raw["Surge Arrester"] === "U") bushingSurge++;
-    if (raw["OLTC Oil"] === "U" || raw["OLTC Oil"] === "Q") oltcIssues++;
+    if (raw['DGA'] === 'U' || raw['DGA'] === 'Q') dgaFault++;
+    if (raw['Dielectric Breakdown'] === 'U' || raw['Water Content'] === 'U' || raw['Main Tank Oil'] === 'U') oilBreakdown++;
+    if (raw['Furan'] === 'U' || (d.dp && d.dp < 450)) paperAging++;
+    if (raw['Bushing'] === 'U' || raw['Surge Arrester'] === 'U') bushingSurge++;
+    if (raw['OLTC Oil'] === 'U' || raw['OLTC Oil'] === 'Q') oltcIssues++;
   });
 
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const textColor = isDark ? "#94a3b8" : "#475569";
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#94a3b8' : '#475569';
 
   const options = {
-    series: [dgaFault || 3, oilBreakdown || 5, paperAging || 2, bushingSurge || 2, oltcIssues || 1],
-    labels: ["DGA / Gas Faults", "Oil Breakdown & Moisture", "Paper / DP Aging", "Bushing & Arrester", "OLTC Mechanism"],
+    series: [dgaFault || 1, oilBreakdown || 1, paperAging || 1, bushingSurge || 1, oltcIssues || 1],
+    labels: ['DGA / Gas Faults', 'Oil Breakdown & Moisture', 'Paper / DP Aging', 'Bushing & Arrester', 'OLTC Mechanism'],
     chart: {
-      type: "donut",
+      type: 'donut',
       height: 250,
-      background: "transparent"
+      background: 'transparent'
     },
-    colors: ["#f43f5e", "#ea580c", "#eab308", "#2563eb", "#8b5cf6"],
+    colors: ['#ef4444', '#f97316', '#eab308', '#38bdf8', '#a855f7'],
     legend: {
-      position: "right",
+      position: 'right',
       labels: { colors: textColor },
-      fontSize: "11px"
+      fontSize: '11px'
     },
     plotOptions: {
       pie: {
         donut: {
-          size: "68%",
+          size: '68%',
           labels: {
             show: true,
             total: {
               show: true,
-              label: "Issues Found",
+              label: 'Issues Found',
               color: textColor,
-              formatter: () => dgaFault + oilBreakdown + paperAging + bushingSurge + oltcIssues || 13
+              formatter: () => dgaFault + oilBreakdown + paperAging + bushingSurge + oltcIssues
             }
           }
         }
@@ -817,12 +653,13 @@ function renderDegradationBreakdown() {
 }
 
 /**
- * 11. Site-by-Site Condition Comparison (ApexCharts Bar Chart)
+ * MODULE 2.3: Site-by-Site Condition Comparison (Bar Chart)
  */
 function renderSiteComparisonChart() {
   const chartEl = document.querySelector("#chart-site-compare");
   if (!chartEl) return;
 
+  // Aggregate by Site
   const siteAgg = {};
   fleetData.forEach(d => {
     if (!siteAgg[d.site]) siteAgg[d.site] = { total: 0, sumHI: 0, countHI: 0, crit: 0 };
@@ -834,28 +671,28 @@ function renderSiteComparisonChart() {
     }
   });
 
-  const categories = Object.keys(siteAgg).sort().slice(0, 8);
-  const avgHISeries = categories.map(s => siteAgg[s].countHI > 0 ? Math.round(siteAgg[s].sumHI / siteAgg[s].countHI) : 80);
+  const categories = Object.keys(siteAgg).sort();
+  const avgHISeries = categories.map(s => siteAgg[s].countHI > 0 ? Math.round(siteAgg[s].sumHI / siteAgg[s].countHI) : 0);
   const critSeries = categories.map(s => siteAgg[s].crit);
 
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const textColor = isDark ? "#94a3b8" : "#475569";
-  const borderColor = isDark ? "rgba(255, 255, 255, 0.08)" : "#e2e8f0";
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
   const options = {
     series: [
-      { name: "Average Health Index (%)", data: avgHISeries },
-      { name: "Critical Units Count", data: critSeries }
+      { name: 'Average Health Index (%)', data: avgHISeries },
+      { name: 'Critical Units Count', data: critSeries }
     ],
     chart: {
-      type: "bar",
+      type: 'bar',
       height: 250,
-      background: "transparent",
+      background: 'transparent',
       toolbar: { show: false }
     },
-    colors: ["#2563eb", "#f43f5e"],
+    colors: ['#4f46e5', '#ef4444'],
     plotOptions: {
-      bar: { horizontal: true, barHeight: "55%", borderRadius: 4 }
+      bar: { horizontal: true, barHeight: '60%', borderRadius: 4 }
     },
     xaxis: {
       categories: categories,
@@ -865,7 +702,7 @@ function renderSiteComparisonChart() {
       labels: { style: { colors: textColor } }
     },
     grid: { borderColor: borderColor, strokeDashArray: 3 },
-    legend: { position: "top", labels: { colors: textColor } }
+    legend: { position: 'top', labels: { colors: textColor } }
   };
 
   if (chartSiteCompare) {
@@ -877,48 +714,208 @@ function renderSiteComparisonChart() {
 }
 
 /**
- * 12. CAPEX Replacement Forecast (ApexCharts Stacked Bar)
+ * MODULE 3.1: Top Critical Watchlist
+ */
+function renderCriticalWatchlist() {
+  const container = document.getElementById('critical-watchlist-tbody');
+  if (!container) return;
+
+  // Filter top critical (HI <= 50) or top 10 worst
+  const criticalUnits = [...filteredData]
+    .filter(d => d.hi !== null && d.hi <= 50)
+    .sort((a, b) => (b.pof * b.cof) - (a.pof * a.cof))
+    .slice(0, 10);
+
+  if (criticalUnits.length === 0) {
+    container.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--exec-text-body);">No critical assets in the selected filter.</td></tr>`;
+    return;
+  }
+
+  container.innerHTML = criticalUnits.map((d, idx) => {
+    let actionBadge = 'Plan Oil Reclamation';
+    if (d.recommendation.includes('Replacement') || d.recommendation.includes('new oil')) actionBadge = 'Replace / Top-up Oil';
+    else if (d.recommendation.includes('DGA') || d.recommendation.includes('fault')) actionBadge = 'DGA Diagnostics & De-gas';
+    else if (d.recommendation.includes('regeneration')) actionBadge = 'Hot Oil Regeneration';
+
+    return `
+      <tr>
+        <td><strong>#${idx + 1}</strong></td>
+        <td>
+          <strong>${d.name}</strong><br/>
+          <small style="color:var(--exec-text-body);">SN: ${d.sn}</small>
+        </td>
+        <td>${d.site}</td>
+        <td>${d.sType} (${d.mva} MVA)</td>
+        <td><span class="badge-status badge-critical">${d.hi}%</span></td>
+        <td>
+          <span class="pill-badge pill-crit">Risk Score ${d.riskScore}</span><br/>
+          <small style="color:var(--exec-text-body);">PoF ${d.pof} × CoF ${d.cof}</small>
+        </td>
+        <td style="max-width:240px; white-space:normal; font-size:0.75rem; color:var(--exec-text-body);">
+          ${d.recommendation.replace(/<[^>]*>?/gm, '').substring(0, 95)}...
+        </td>
+        <td>
+          <span class="badge-status badge-warning">${actionBadge}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/**
+ * MODULE 3.2: 4 Action Pillars
+ */
+function renderActionPillars() {
+  let countReplace = 0, countReclaim = 0, countTopup = 0, countOverhaul = 0;
+
+  fleetData.forEach(d => {
+    const rec = (d.recommendation || '').toLowerCase();
+    if (rec.includes('replace') || (d.dp && d.dp < 250)) countReplace++;
+    else if (rec.includes('reclaim') || rec.includes('regenerat') || rec.includes('de-gas')) countReclaim++;
+    else if (rec.includes('top up') || rec.includes('leak') || rec.includes('purify')) countTopup++;
+    else if (d.hi !== null && d.hi <= 60) countOverhaul++;
+  });
+
+  const elRep = document.getElementById('count-action-replace');
+  const elRec = document.getElementById('count-action-reclaim');
+  const elTop = document.getElementById('count-action-topup');
+  const elOvh = document.getElementById('count-action-overhaul');
+
+  if (elRep) elRep.textContent = countReplace;
+  if (elRec) elRec.textContent = countReclaim;
+  if (elTop) elTop.textContent = countTopup;
+  if (elOvh) elOvh.textContent = countOverhaul;
+}
+
+/**
+ * MODULE 3.3: Timeline of Intervention (Mini-Gantt)
+ */
+function renderInterventionTimeline() {
+  const container = document.getElementById('timeline-container');
+  if (!container) return;
+
+  // Sample planned interventions for key critical units
+  const timelineItems = [
+    { name: '16120-TR-005B (5001700)', site: 'CUP-1', action: 'Oil Top-up & Gasket Overhaul', start: 10, width: 25, color: '#ef4444', window: 'Q1-Q2 2026 Planned Outage' },
+    { name: '11BAT10 (T012006)', site: 'GIPP', action: 'GSUT DGA Active Fault Inspection', start: 20, width: 35, color: '#f97316', window: 'Q2 2026 Minor Shutdown' },
+    { name: '21BAT10 (T012023)', site: 'GIPP', action: 'Passivator Top-up & De-gassing', start: 30, width: 30, color: '#f59e0b', window: 'Q3 2026 Turnaround' },
+    { name: '1APC-XF-24 (PCL1429)', site: 'GSPP2&3', action: 'Radiator Leak Fix & Oil Reclaiming', start: 45, width: 30, color: '#38bdf8', window: 'Q4 2026 Maintenance Window' },
+    { name: '24201-TR-111 (5000574)', site: 'CUP-2', action: 'Oil Regeneration & IR Diagnostic', start: 55, width: 35, color: '#10b981', window: 'Q1 2027 Major Overhaul' }
+  ];
+
+  container.innerHTML = timelineItems.map(item => `
+    <div class="timeline-row">
+      <div class="timeline-asset-info">
+        <span class="timeline-asset-name">${item.name}</span>
+        <span class="timeline-asset-site">${item.site} • ${item.action}</span>
+      </div>
+      <div class="timeline-track">
+        <div class="timeline-bar" style="left:${item.start}%; width:${item.width}%; background:${item.color};">
+          ${item.window}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/**
+ * MODULE 4.1: Remaining Useful Life (RUL) Distribution
+ */
+function renderRULDistributionChart() {
+  const chartEl = document.querySelector("#chart-rul-distribution");
+  if (!chartEl) return;
+
+  let rLess3 = 0, r3to7 = 0, r7to10 = 0, rMore10 = 0;
+
+  filteredData.forEach(d => {
+    if (d.rul < 3) rLess3++;
+    else if (d.rul <= 7) r3to7++;
+    else if (d.rul <= 10) r7to10++;
+    else rMore10++;
+  });
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
+
+  const options = {
+    series: [{
+      name: 'Transformers Count',
+      data: [rLess3, r3to7, r7to10, rMore10]
+    }],
+    chart: {
+      type: 'bar',
+      height: 250,
+      background: 'transparent',
+      toolbar: { show: false }
+    },
+    colors: ['#ef4444', '#f97316', '#38bdf8', '#10b981'],
+    plotOptions: {
+      bar: { distributed: true, borderRadius: 6, columnWidth: '55%' }
+    },
+    xaxis: {
+      categories: ['< 3 Years (Critical)', '3 – 7 Years (Mid Term)', '7 – 10 Years (Planned)', '> 10 Years (Healthy)'],
+      labels: { style: { colors: textColor, fontSize: '11px' } }
+    },
+    yaxis: {
+      labels: { style: { colors: textColor } }
+    },
+    grid: { borderColor: borderColor, strokeDashArray: 3 },
+    legend: { show: false }
+  };
+
+  if (chartRUL) {
+    chartRUL.updateOptions(options);
+  } else {
+    chartRUL = new ApexCharts(chartEl, options);
+    chartRUL.render();
+  }
+}
+
+/**
+ * MODULE 4.2: 5-to-10 Year CAPEX Replacement Forecast (Stacked Bar)
  */
 function renderCAPEXForecastChart() {
   const chartEl = document.querySelector("#chart-capex-forecast");
   if (!chartEl) return;
 
-  const years = ["2026", "2027", "2028", "2029", "2030", "2031-2035"];
+  // Years 2026 to 2035 projected replacement expenditure (in Million THB)
+  const years = ['2026', '2027', '2028', '2029', '2030', '2031-2035'];
   const gsutCapex = [85.0, 70.0, 45.0, 30.0, 60.0, 180.0];
   const uatCapex  = [35.0, 40.0, 25.0, 20.0, 25.0, 95.0];
   const auxCapex  = [18.0, 15.0, 12.0, 10.0, 15.0, 45.0];
 
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const textColor = isDark ? "#94a3b8" : "#475569";
-  const borderColor = isDark ? "rgba(255, 255, 255, 0.08)" : "#e2e8f0";
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
   const options = {
     series: [
-      { name: "500kV GSU Replacements", data: gsutCapex },
-      { name: "Unit Auxiliary (UAT/SST)", data: uatCapex },
-      { name: "Auxiliary & BOP Sub", data: auxCapex }
+      { name: 'GSUT Replacements', data: gsutCapex },
+      { name: 'UAT Replacements', data: uatCapex },
+      { name: 'Auxiliary / Distribution', data: auxCapex }
     ],
     chart: {
-      type: "bar",
+      type: 'bar',
       height: 250,
       stacked: true,
-      background: "transparent",
+      background: 'transparent',
       toolbar: { show: false }
     },
-    colors: ["#f43f5e", "#2563eb", "#10b981"],
+    colors: ['#ef4444', '#6366f1', '#10b981'],
     plotOptions: {
-      bar: { borderRadius: 4, columnWidth: "50%" }
+      bar: { borderRadius: 4, columnWidth: '50%' }
     },
     xaxis: {
       categories: years,
       labels: { style: { colors: textColor } }
     },
     yaxis: {
-      title: { text: "Million THB (฿)", style: { color: textColor } },
+      title: { text: 'Million THB (฿)', style: { color: textColor } },
       labels: { style: { colors: textColor } }
     },
     grid: { borderColor: borderColor, strokeDashArray: 3 },
-    legend: { position: "top", labels: { colors: textColor } }
+    legend: { position: 'top', labels: { colors: textColor } }
   };
 
   if (chartCAPEX) {
@@ -930,81 +927,87 @@ function renderCAPEXForecastChart() {
 }
 
 /**
- * 13. Modal Popup for Risk Matrix Cell Details
+ * MODULE 5.1: Testing Completion Rate Gauges
  */
-function showMatrixDetailModal(pof, cof, items) {
-  const modal = document.getElementById("matrix-modal");
-  const modalTitle = document.getElementById("modal-matrix-title");
-  const modalBody = document.getElementById("modal-matrix-body");
-  if (!modal || !modalTitle || !modalBody) return;
-
-  const score = pof * cof;
-  let zoneName = score >= 16 ? "Extreme Risk" : (score >= 12 ? "High Risk" : (score >= 6 ? "Medium Risk" : "Low Risk"));
-  
-  modalTitle.innerHTML = `<i class="fa-solid fa-layer-group text-blue-600"></i> Risk Matrix Cell: PoF ${pof} × CoF ${cof} (${zoneName} - ${items.length} Transformers)`;
-
-  if (items.length === 0) {
-    modalBody.innerHTML = `<p style="padding:20px; text-align:center; color:#64748b;">No transformers in this risk cell under the selected filters.</p>`;
-  } else {
-    let rowsHtml = items.map((it, idx) => `
-      <tr>
-        <td class="py-2 px-3">${idx + 1}</td>
-        <td class="py-2 px-3 font-bold text-slate-800">${it.name}</td>
-        <td class="py-2 px-3 font-mono text-xs text-slate-600">${it.sn}</td>
-        <td class="py-2 px-3 text-slate-600">${it.site}</td>
-        <td class="py-2 px-3 text-slate-600">${it.sType}</td>
-        <td class="py-2 px-3 text-slate-600">${it.mva} MVA</td>
-        <td class="py-2 px-3"><span class="px-2 py-0.5 rounded-full font-bold text-xs ${it.hi <= 50 ? "bg-rose-100 text-rose-700" : (it.hi <= 70 ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800")}">${it.hi !== null ? it.hi + "%" : "N/A"}</span></td>
-        <td class="py-2 px-3 text-slate-600 text-xs">${it.primaryFactor}</td>
-        <td class="py-2 px-3 text-right">
-          <a href="assessment.html?search=${encodeURIComponent(it.name)}" class="text-xs text-blue-600 hover:text-blue-800 font-bold underline" target="_blank">
-            Detail
-          </a>
-        </td>
-      </tr>
-    `).join("");
-
-    modalBody.innerHTML = `
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
-            <tr>
-              <th class="py-2 px-3">#</th>
-              <th class="py-2 px-3">Equipment Name</th>
-              <th class="py-2 px-3">Serial No</th>
-              <th class="py-2 px-3">Site</th>
-              <th class="py-2 px-3">Type</th>
-              <th class="py-2 px-3">Rating</th>
-              <th class="py-2 px-3">Health Index</th>
-              <th class="py-2 px-3">Primary Alert</th>
-              <th class="py-2 px-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            ${rowsHtml}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  modal.classList.add("active");
+function renderComplianceGauges() {
+  renderSingleGauge('#gauge-dga', 96.4, '#10b981', chart => { gaugeDGA = chart; });
+  renderSingleGauge('#gauge-oil', 94.2, '#38bdf8', chart => { gaugeOil = chart; });
+  renderSingleGauge('#gauge-elec', 88.5, '#f59e0b', chart => { gaugeElec = chart; });
+  renderSingleGauge('#gauge-thermo', 98.0, '#6366f1', chart => { gaugeThermo = chart; });
 }
 
-function closeMatrixModal() {
-  const modal = document.getElementById("matrix-modal");
-  if (modal) modal.classList.remove("active");
+function renderSingleGauge(selector, pct, color, callback) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const textColor = isDark ? '#ffffff' : '#0f172a';
+
+  const options = {
+    series: [pct],
+    chart: {
+      type: 'radialBar',
+      height: 140,
+      sparkline: { enabled: true }
+    },
+    colors: [color],
+    plotOptions: {
+      radialBar: {
+        hollow: { size: '60%' },
+        dataLabels: {
+          name: { show: false },
+          value: {
+            fontSize: '16px',
+            fontWeight: 700,
+            color: textColor,
+            offsetY: 6,
+            formatter: val => `${val}%`
+          }
+        }
+      }
+    }
+  };
+
+  const chart = new ApexCharts(el, options);
+  chart.render();
+  if (callback) callback(chart);
+}
+
+/**
+ * MODULE 5.3: Work Order Backlog from SAP
+ */
+function renderSAPBacklog() {
+  const tbody = document.getElementById('sap-backlog-tbody');
+  if (!tbody) return;
+
+  // Key active backlog orders from SAPorder.csv
+  const orders = [
+    { order: '10000001990', desc: '14100TR-003 กระแส phase#C bad (CUP-1)', type: 'CM01', prio: 'Prio 4', target: '2023-12-31', status: 'Backlog' },
+    { order: '10000011705', desc: 'Hotspot 115kV E15 to MTP1 E08 (GSPP2&3)', type: 'CM01', prio: 'Prio 3', target: '2024-04-12', status: 'Backlog' },
+    { order: '10000013310', desc: 'GIS E20 TR2 OLTC alarm oil level low (GEN)', type: 'CM01', prio: 'Prio 3', target: '2024-07-31', status: 'Backlog' },
+    { order: '10000013626', desc: 'GSUT62:(NOD) Transf. oil leak Radiator (GEN)', type: 'CM01', prio: 'Prio 3', target: '2024-08-31', status: 'Pending Review' }
+  ];
+
+  tbody.innerHTML = orders.map(ord => `
+    <tr>
+      <td><code>${ord.order}</code></td>
+      <td><strong>${ord.desc}</strong></td>
+      <td><span class="badge-status badge-warning">${ord.type}</span></td>
+      <td>${ord.prio}</td>
+      <td>${ord.target}</td>
+      <td><span class="badge-status badge-critical">${ord.status}</span></td>
+    </tr>
+  `).join('');
 }
 
 /**
  * Helper: Refresh all charts on theme switch
  */
 function refreshAllCharts() {
-  renderHealthDonutChart();
-  renderRemainingLifeTimelineChart();
   renderAgeVsHealthChart();
   renderDegradationBreakdown();
   renderSiteComparisonChart();
+  renderRULDistributionChart();
   renderCAPEXForecastChart();
 }
 
@@ -1013,9 +1016,9 @@ function refreshAllCharts() {
  */
 function exportExecutiveSummaryCSV() {
   if (filteredData.length === 0) return;
-  const headers = ["Equipment Name", "Serial No", "Site", "Service Type", "MVA Rating", "Health Index", "Status", "PoF", "CoF", "Risk Score", "Remaining Life (Years)", "Primary Factor", "Recommendation"];
+  const headers = ['Equipment Name', 'Serial No', 'Site', 'Service Type', 'MVA Rating', 'Health Index', 'Status', 'PoF', 'CoF', 'Risk Score', 'Remaining Life (Years)', 'Primary Factor', 'Recommendation'];
   
-  const csvRows = [headers.join(",")];
+  const csvRows = [headers.join(',')];
   filteredData.forEach(d => {
     const row = [
       `"${d.name}"`,
@@ -1023,23 +1026,23 @@ function exportExecutiveSummaryCSV() {
       `"${d.site}"`,
       `"${d.sType}"`,
       d.mva,
-      d.hi !== null ? d.hi : "",
+      d.hi !== null ? d.hi : '',
       `"${d.status}"`,
       d.pof,
       d.cof,
       d.riskScore,
       d.rul,
       `"${d.primaryFactor}"`,
-      `"${(d.recommendation || "").replace(/"/g, '""')}"`
+      `"${(d.recommendation || '').replace(/"/g, '""')}"`
     ];
-    csvRows.push(row.join(","));
+    csvRows.push(row.join(','));
   });
 
-  const blob = new Blob(["\uFEFF" + csvRows.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["\uFEFF" + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", `GPSC_Executive_Fleet_Summary_${new Date().toISOString().slice(0, 10)}.csv`);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `GPSC_Executive_Fleet_Summary_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

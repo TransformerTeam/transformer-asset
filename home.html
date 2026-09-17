@@ -1,544 +1,541 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GHECO-One / GPSC Transformer Assessment - Executive Dashboard</title>
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <title>Executive Fleet Management & Reliability Portal | GPSC</title>
+  
+  <!-- Main Stylesheet & Theme System -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- ApexCharts JS -->
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Google Font: Prompt & Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Main & Executive Theme Stylesheets -->
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="home.css">
-
-  <style>
-    body {
-      font-family: "Prompt", sans-serif;
-      background-image: url("background.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-    }
-    /* Light Glassmorphism Effects matching GHECO-One Reference Template */
-    .glass-light {
-      background: rgba(255, 255, 255, 0.84);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.65);
-      box-shadow: 0 10px 30px 0 rgba(15, 23, 42, 0.08);
-    }
-    .glass-light-card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.07);
-    }
-    [data-theme="dark"] .glass-light {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.4);
-    }
-    [data-theme="dark"] .glass-light-card {
-      background: rgba(15, 23, 42, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
-    }
-    [data-theme="dark"] body {
-      background-color: #020617;
-      color: #f8fafc;
-    }
-    [data-theme="dark"] .text-slate-900 { color: #f8fafc !important; }
-    [data-theme="dark"] .text-slate-800 { color: #f1f5f9 !important; }
-    [data-theme="dark"] .text-slate-700 { color: #e2e8f0 !important; }
-    [data-theme="dark"] .text-slate-600 { color: #cbd5e1 !important; }
-    [data-theme="dark"] .text-slate-500 { color: #94a3b8 !important; }
-    [data-theme="dark"] .bg-white\\/80, 
-    [data-theme="dark"] .bg-white\\/70, 
-    [data-theme="dark"] .bg-white\\/50 {
-      background-color: rgba(30, 41, 59, 0.7) !important;
-      border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-    [data-theme="dark"] .border-slate-200,
-    [data-theme="dark"] .border-slate-200\\/80,
-    [data-theme="dark"] .border-slate-200\\/60,
-    [data-theme="dark"] .border-slate-300\\/80 {
-      border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-    [data-theme="dark"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
-      border-color: rgba(255, 255, 255, 0.06) !important;
-    }
-  </style>
+  <!-- Theme Engine & Customizer -->
+  <link rel="stylesheet" href="theme_editor.css">
+  <script src="theme_engine.js"></script>
 </head>
-<body class="text-slate-800 min-h-screen relative flex flex-col antialiased">
+<body>
 
-  <!-- Soft White Tint Ambient Overlay -->
-  <div class="fixed inset-0 bg-gradient-to-b from-white/70 via-sky-50/45 to-slate-100/75 pointer-events-none -z-10 ambient-overlay"></div>
+  <div class="app-container">
+    <!-- Top SCADA Marquee Banner -->
+    <div class="scada-footer">
+      <div class="marquee-content">
+        <span>⚡ GPSC Transformer Asset Management Portal | Executive Fleet Reliability, Risk Matrix & Capital Planning Overview - Global Power Synergy Public Company Limited</span>
+      </div>
+    </div>
 
-  <!-- Top Navigation Header -->
-  <header class="glass-light sticky top-0 z-40 px-6 py-3 border-b border-white/60">
-    <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-blue-600/10 border border-blue-500/20 rounded-xl text-blue-700 shadow-sm flex items-center justify-center">
-          <i data-lucide="zap" class="w-6 h-6"></i>
-        </div>
+    <!-- Executive Header -->
+    <header>
+      <div class="header-title-section">
+        <img src="GPSC_logo_ART.png" alt="GPSC Logo" class="logo-img">
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl font-bold tracking-tight text-slate-900">GHECO-One Transformer Assessment</h1>
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-100/80 text-blue-800 border border-blue-200 font-semibold">Executive View</span>
-          </div>
-          <p class="text-xs text-slate-600 font-medium">ดัชนีความพร้อมจ่าย สุขภาพหม้อแปลงหลัก และการคาดการณ์อายุการใช้งานที่เหลือ (RUL)</p>
+          <h1>TRANSFORMER FLEET EXECUTIVE PORTAL</h1>
+          <p>FLEET RELIABILITY, RISK MATRIX & CAPITAL LIFECYCLE MANAGEMENT</p>
         </div>
       </div>
-
-      <!-- Global Filters & Action Controls -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- Plant Status Normal Badge -->
-        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 text-xs font-semibold shadow-2xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-          Plant Status: Normal Operation
-        </div>
-
-        <!-- Site Filter Dropdown -->
-        <select id="site-filter" class="bg-white/80 border border-slate-300/80 rounded-lg px-3 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs backdrop-blur cursor-pointer">
-          <option value="ALL">All Power Blocks (GSU & Aux)</option>
+      
+      <div class="header-actions">
+        <!-- Site & Type Quick Filters -->
+        <select id="site-filter" class="filter-pill-select" title="Filter by Substation / Operating Site">
+          <option value="ALL">All Substations & Sites</option>
         </select>
 
-        <!-- Service Type Dropdown -->
-        <select id="type-filter" class="bg-white/80 border border-slate-300/80 rounded-lg px-3 py-1.5 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs backdrop-blur cursor-pointer">
+        <select id="type-filter" class="filter-pill-select" title="Filter by Service Application Type">
           <option value="ALL">All Service Types</option>
-          <option value="GSUT">500 kV Generator Step-Up (GSU)</option>
-          <option value="UAT">Unit Auxiliary (UAT / SST)</option>
-          <option value="Auxiliary">BOP & Coal Handling Sub</option>
+          <option value="GSUT">Generator Step-Up (GSUT)</option>
+          <option value="UAT">Unit Auxiliary (UAT)</option>
+          <option value="Auxiliary">Station Auxiliary</option>
           <option value="Distribution">Distribution / Local</option>
         </select>
 
-        <!-- Quick Theme Toggle (Light / Dark) -->
-        <button id="theme-toggle-btn" class="flex items-center gap-1.5 bg-white/80 hover:bg-white text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 shadow-2xs transition" title="Toggle Light/Dark Theme">
-          <i data-lucide="sun" class="w-4 h-4" id="theme-icon"></i>
-          <span id="theme-text">Light</span>
+        <button class="btn btn-primary" onclick="exportExecutiveSummaryCSV()" title="Export Filtered Fleet Summary to CSV">
+          <i class="fa-solid fa-file-excel"></i> Export CSV
         </button>
 
-        <!-- Export CSV/PDF Button -->
-        <button onclick="exportExecutiveSummaryCSV()" class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-blue-400/40 cursor-pointer" title="Export Executive Summary">
-          <i data-lucide="file-down" class="w-4 h-4"></i>
-          <span>Export Executive PDF</span>
+        <button class="btn theme-studio-btn" id="theme-studio-btn" title="Theme Studio (Alt+T)">
+          <i class="fa-solid fa-palette"></i> Theme Studio
         </button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main App Workspace with Sidebar -->
-  <div class="max-w-[1700px] w-full mx-auto p-5 flex gap-5 items-start flex-1">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-toggle-wrapper">
-        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
-          <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
-        </button>
-      </div>
-      
-      <a href="home.html" class="sidebar-nav-btn active" title="Executive Fleet Overview">
-        <i class="fa-solid fa-house"></i> <span class="nav-label">EXECUTIVE HOME</span>
-      </a>
-      <a href="assessment.html" class="sidebar-nav-btn" title="Diagnostic Parameter Assessments">
-        <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">HEALTH ASSESSMENT</span>
-      </a>
-      <a href="dashboard.html" class="sidebar-nav-btn" title="Geographical Map & Fleet Dashboard">
-        <i class="fa-solid fa-chart-pie"></i> <span class="nav-label">FLEET DASHBOARD</span>
-      </a>
-      <a href="plan.html" class="sidebar-nav-btn" title="Preventive Maintenance Schedule">
-        <i class="fa-solid fa-calendar-check"></i> <span class="nav-label">MAINTENANCE PLAN</span>
-      </a>
-      <a href="single_line.html" class="sidebar-nav-btn" title="SCADA Single Line Diagram">
-        <i class="fa-solid fa-network-wired"></i> <span class="nav-label">OVERALL TRANSFORMER</span>
-      </a>
-      <a href="evaluation_report.html" class="sidebar-nav-btn" title="CIGRE & IEEE Evaluation Criteria">
-        <i class="fa-solid fa-list-check"></i> <span class="nav-label">EVALUATION & CRITERIA</span>
-      </a>
-      <a href="remaining_life_report.html" class="sidebar-nav-btn" title="Remaining Useful Life Analysis">
-        <i class="fa-solid fa-hourglass-half"></i> <span class="nav-label">REMAINING LIFE</span>
-      </a>
-    </aside>
-
-    <!-- Executive Content Flow -->
-    <main class="flex-1 min-w-0 space-y-6">
-
-      <!-- =================================================================
-           1. EXECUTIVE METRIC CARDS (Exact Template Replication)
-           ================================================================= -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <!-- Main Workspace Layout with Sidebar -->
+    <div class="main-workspace">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-toggle-wrapper">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+          </button>
+        </div>
         
-        <!-- Fleet Total Capacity -->
-        <div class="glass-light-card rounded-2xl p-5 transition hover:-translate-y-0.5 duration-200">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Fleet Total Capacity</p>
-              <h3 class="text-3xl font-extrabold text-slate-900 mt-1" id="kpi-total-tr">24 <span class="text-sm font-medium text-slate-500">Units</span></h3>
-            </div>
-            <div class="p-2.5 bg-blue-50/80 rounded-xl text-blue-600 border border-blue-100 shadow-2xs">
-              <i data-lucide="cpu" class="w-5 h-5"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center text-xs text-blue-700 gap-1 font-semibold">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-blue-600"></i>
-            <span>500kV GSU, UAT, SST & BOP</span>
-            <span class="text-slate-500 ml-auto font-normal" id="kpi-monitored-badge">100% Monitored</span>
-          </div>
-        </div>
+        <!-- Active Link: Home -->
+        <a href="home.html" class="sidebar-nav-btn active" title="Executive Fleet Overview">
+          <i class="fa-solid fa-house"></i> <span class="nav-label">EXECUTIVE HOME</span>
+        </a>
+        <a href="assessment.html" class="sidebar-nav-btn" title="Diagnostic Parameter Assessments">
+          <i class="fa-solid fa-clipboard-check"></i> <span class="nav-label">HEALTH ASSESSMENT</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-btn" title="Geographical Map & Fleet Dashboard">
+          <i class="fa-solid fa-chart-pie"></i> <span class="nav-label">FLEET DASHBOARD</span>
+        </a>
+        <a href="plan.html" class="sidebar-nav-btn" title="Preventive Maintenance Schedule">
+          <i class="fa-solid fa-calendar-check"></i> <span class="nav-label">MAINTENANCE PLAN</span>
+        </a>
+        <a href="single_line.html" class="sidebar-nav-btn" title="SCADA Single Line Diagram">
+          <i class="fa-solid fa-network-wired"></i> <span class="nav-label">OVERALL TRANSFORMER</span>
+        </a>
+        <a href="evaluation_report.html" class="sidebar-nav-btn" title="CIGRE & IEEE Evaluation Criteria">
+          <i class="fa-solid fa-list-check"></i> <span class="nav-label">EVALUATION & CRITERIA</span>
+        </a>
+        <a href="remaining_life_report.html" class="sidebar-nav-btn" title="Remaining Useful Life Analysis">
+          <i class="fa-solid fa-hourglass-half"></i> <span class="nav-label">REMAINING LIFE</span>
+        </a>
+      </aside>
 
-        <!-- Plant Health Index (Avg) -->
-        <div class="glass-light-card rounded-2xl p-5 transition hover:-translate-y-0.5 duration-200">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Plant Health Index (Avg)</p>
-              <h3 class="text-3xl font-extrabold text-emerald-600 mt-1" id="kpi-avg-hi">84.8%</h3>
-            </div>
-            <div class="p-2.5 bg-emerald-50/80 rounded-xl text-emerald-600 border border-emerald-100 shadow-2xs">
-              <i data-lucide="shield-check" class="w-5 h-5"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center text-xs gap-2">
-            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200" id="kpi-hi-status-pill">Stable Condition</span>
-            <span class="text-slate-500 font-medium">-0.8% MoM Trend</span>
-          </div>
-        </div>
+      <!-- Main Content Flow -->
+      <main class="scada-content">
+        <div class="exec-container">
 
-        <!-- High Risk Units -->
-        <div class="glass-light-card rounded-2xl p-5 border-rose-200 transition hover:-translate-y-0.5 duration-200">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="text-xs font-semibold text-rose-600 uppercase tracking-wider">High Risk Units</p>
-              <h3 class="text-3xl font-extrabold text-rose-600 mt-1" id="kpi-high-risk">2 <span class="text-sm font-medium text-slate-500">Units</span></h3>
-            </div>
-            <div class="p-2.5 bg-rose-50 rounded-xl text-rose-600 border border-rose-100 shadow-2xs animate-pulse">
-              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center text-xs gap-2">
-            <span class="text-rose-800 font-bold bg-rose-100/90 px-2 py-0.5 rounded border border-rose-200">เฝ้าระวังระดับวิกฤต</span>
-            <span class="text-slate-600 font-medium" id="kpi-high-risk-tags">• GSU-01 / SST-01</span>
-          </div>
-        </div>
-
-        <!-- Unplanned Outage Risk -->
-        <div class="glass-light-card rounded-2xl p-5 transition hover:-translate-y-0.5 duration-200">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Unplanned Outage Risk</p>
-              <h3 class="text-3xl font-extrabold text-amber-600 mt-1" id="kpi-financial-risk">฿38.5M</h3>
-            </div>
-            <div class="p-2.5 bg-amber-50 rounded-xl text-amber-600 border border-amber-100 shadow-2xs">
-              <i data-lucide="circle-dollar-sign" class="w-5 h-5"></i>
-            </div>
-          </div>
-          <div class="mt-4 flex items-center text-xs text-slate-600 justify-between font-medium">
-            <span>Business Interruption Risk</span>
-            <span class="text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Availability: 99.4%</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- =================================================================
-           2. MID SECTION: 5x5 RISK MATRIX & CHARTS
-           ================================================================= -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- 5x5 Risk Matrix Map (7 Cols) -->
-        <div class="lg:col-span-7 glass-light-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <div>
-                <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <i data-lucide="grid" class="w-4 h-4 text-blue-600"></i>
-                  GHECO-One Asset Risk Matrix (PoF vs. CoF)
-                </h2>
-                <p class="text-xs text-slate-500 font-medium">ตำแหน่งหม้อแปลงตามโอกาสชำรุด (PoF) และผลกระทบต่อเสถียรภาพการจ่ายไฟ (CoF)</p>
+          <!-- =================================================================
+               MODULE 1: EXECUTIVE SUMMARY (ภาพรวมความเสี่ยงและความพร้อมใช้งาน)
+               ================================================================= -->
+          <section class="exec-section">
+            <div class="section-header">
+              <div class="section-title-group">
+                <div class="section-icon-badge"><i class="fa-solid fa-gauge-high"></i></div>
+                <div>
+                  <h2>1. Executive Summary: ภาพรวมความเสี่ยงและความพร้อมใช้งานระดับฝูงหม้อแปลง</h2>
+                  <p>Executive 30-Second Fleet-Wide Health & Financial Risk Exposure</p>
+                </div>
               </div>
-              <div class="flex items-center gap-3 text-xs font-semibold">
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Low</span>
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Medium</span>
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Critical</span>
+              <div class="section-controls">
+                <span class="pill-badge pill-good"><i class="fa-solid fa-shield-halved"></i> Live Data</span>
               </div>
             </div>
 
-            <!-- 5x5 Matrix Grid with Y-Axis label -->
-            <div class="flex items-stretch gap-3 pt-2">
-              <!-- Y-Axis Title -->
-              <div class="flex items-center justify-center">
-                <span class="text-[11px] font-bold tracking-wider text-slate-500 -rotate-90 whitespace-nowrap">
-                  PROBABILITY OF FAILURE (PoF)
-                </span>
+            <!-- 1.1 KPI Cards Grid -->
+            <div class="kpi-hero-grid">
+              <!-- Total Transformers -->
+              <div class="kpi-hero-card card-info">
+                <div class="kpi-card-header">
+                  <span class="kpi-card-label">Total Transformers</span>
+                  <i class="fa-solid fa-bolt kpi-card-icon" style="color:#38bdf8;"></i>
+                </div>
+                <div class="kpi-card-value" id="kpi-total-tr">0</div>
+                <div class="kpi-card-footer" id="kpi-total-sub">0 Assessed</div>
               </div>
 
-              <!-- Matrix Cells Container -->
-              <div class="flex-1">
-                <div class="grid grid-cols-5 gap-2 text-center text-xs font-mono" id="risk-matrix-grid">
-                  <!-- Generated dynamically by home.js matching pastel palette -->
+              <!-- Fleet Average Health Index -->
+              <div class="kpi-hero-card card-success">
+                <div class="kpi-card-header">
+                  <span class="kpi-card-label">Fleet Avg Health Index</span>
+                  <i class="fa-solid fa-heart-pulse kpi-card-icon" style="color:#10b981;"></i>
                 </div>
+                <div class="kpi-card-value" id="kpi-avg-hi">0%</div>
+                <div class="kpi-card-footer" id="kpi-hi-breakdown">Loading breakdown...</div>
+              </div>
 
-                <!-- X-Axis Labels -->
-                <div class="grid grid-cols-5 gap-2 text-center text-[10px] text-slate-600 mt-2 font-semibold">
-                  <span>1 (BOP/Aux)</span>
-                  <span>2 (Sub Feed)</span>
-                  <span>3 (Major Aux)</span>
-                  <span>4 (Essential Bus)</span>
-                  <span>5 (Main Gen 660MW)</span>
+              <!-- High-Risk Units -->
+              <div class="kpi-hero-card card-danger">
+                <div class="kpi-card-header">
+                  <span class="kpi-card-label">High-Risk Units (Critical)</span>
+                  <i class="fa-solid fa-triangle-exclamation kpi-card-icon" style="color:#ef4444;"></i>
                 </div>
-                <div class="text-center text-[11px] font-bold tracking-wider text-slate-500 mt-1">
-                  CONSEQUENCE OF FAILURE (CoF)
+                <div class="kpi-card-value" id="kpi-high-risk" style="color:#ef4444;">0</div>
+                <div class="kpi-card-footer" id="kpi-risk-sub">0 Critical | 0 Warning</div>
+              </div>
+
+              <!-- Financial Risk Exposure -->
+              <div class="kpi-hero-card card-warning">
+                <div class="kpi-card-header">
+                  <span class="kpi-card-label">Financial Risk Exposure</span>
+                  <i class="fa-solid fa-sack-dollar kpi-card-icon" style="color:#f59e0b;"></i>
                 </div>
+                <div class="kpi-card-value" id="kpi-financial-risk" style="color:#f59e0b;">฿ 0M</div>
+                <div class="kpi-card-footer" id="kpi-financial-sub">PoF × Failure Cost</div>
               </div>
             </div>
-          </div>
 
-          <!-- Matrix Footer Info -->
-          <div class="mt-4 pt-3 border-t border-slate-200/80 text-xs text-slate-500 flex items-center justify-between font-medium flex-wrap gap-2">
-            <span>*คลิกหม้อแปลงเพื่อเปิดกราฟแนวโน้ม DGA & Life Assessment</span>
-            <span class="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Action Threshold: PoF ≥ 4 & CoF ≥ 4</span>
-          </div>
-        </div>
-
-        <!-- Health Breakdown & Remaining Life Timeline (5 Cols) -->
-        <div class="lg:col-span-5 space-y-6">
-
-          <!-- Donut Chart: Health Profile -->
-          <div class="glass-light-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-              <h2 class="text-sm font-bold text-slate-900">Health Category Breakdown</h2>
-              <span class="text-xs text-slate-500 font-medium" id="donut-fleet-summary">Fleet: 24 Transformers</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-44 h-44 relative">
-                <canvas id="healthDonutChart"></canvas>
-              </div>
-              <div class="flex-1 ml-4 space-y-2 text-xs" id="donut-legend-container">
-                <div class="flex items-center justify-between p-1.5 rounded-lg bg-white/70 border border-slate-200/60 shadow-2xs">
-                  <span class="flex items-center gap-1.5 font-medium text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Good (&gt;80%)</span>
-                  <span class="font-bold text-slate-900" id="donut-count-good">16 (66.7%)</span>
+            <!-- 1.2 & 1.3: Risk Matrix (5x5) vs Age-Health Scatter -->
+            <div class="grid-2col">
+              <!-- 1.2 Risk Matrix Map (5x5) -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-table-cells text-indigo-400"></i>
+                  <span>1.2 Risk Matrix Map (5x5): Probability of Failure vs. Consequence</span>
                 </div>
-                <div class="flex items-center justify-between p-1.5 rounded-lg bg-white/70 border border-slate-200/60 shadow-2xs">
-                  <span class="flex items-center gap-1.5 font-medium text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Fair (70-79%)</span>
-                  <span class="font-bold text-slate-900" id="donut-count-fair">5 (20.8%)</span>
-                </div>
-                <div class="flex items-center justify-between p-1.5 rounded-lg bg-white/70 border border-slate-200/60 shadow-2xs">
-                  <span class="flex items-center gap-1.5 font-medium text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Poor (50-69%)</span>
-                  <span class="font-bold text-slate-900" id="donut-count-poor">1 (4.2%)</span>
-                </div>
-                <div class="flex items-center justify-between p-1.5 rounded-lg bg-rose-50 border border-rose-200 shadow-2xs">
-                  <span class="flex items-center gap-1.5 font-bold text-rose-700"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Critical (&lt;50%)</span>
-                  <span class="font-bold text-rose-600" id="donut-count-crit">2 (8.3%)</span>
-                </div>
-              </div>
-            </div>
-          </div>
+                <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:10px;">
+                  คลิกที่ช่องในตารางเพื่อดูรายชื่อหม้อแปลงในแต่ละระดับความเสี่ยง (PoF 1-5 × CoF 1-5)
+                </p>
 
-          <!-- Summary Transformer Expected Remaining Life Timeline -->
-          <div class="glass-light-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h2 class="text-sm font-bold text-slate-900">Summary Transformer Expected Remaining Life</h2>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">Life Assessment</span>
-                </div>
-                <p class="text-[11px] text-slate-500 font-medium">คาดการณ์อายุการใช้งานที่เหลือ (Expected End Year & Remaining Yrs)</p>
-              </div>
-              <div class="flex items-center gap-3 text-[10px] font-semibold">
-                <span class="flex items-center gap-1"><span class="w-3 h-2 rounded-xs bg-emerald-500 inline-block"></span> Expected Life</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400 inline-block border border-amber-500"></span> Milestone</span>
-              </div>
-            </div>
-            
-            <div class="h-44 relative">
-              <canvas id="remainingLifeTimelineChart"></canvas>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- =================================================================
-           3. BOTTOM SECTION: WATCHLIST & STRATEGIC ACTION ITEMS
-           ================================================================= -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- Critical Watchlist Table (7 Cols) -->
-        <div class="lg:col-span-7 glass-light-card rounded-2xl p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h2 class="text-base font-bold text-slate-900">Top Critical Watchlist</h2>
-              <p class="text-xs text-slate-500 font-medium">หม้อแปลงที่เข้าเกณฑ์ Warning / Critical ที่ต้องตัดสินใจเชิงบริหาร</p>
-            </div>
-            <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-rose-50 text-rose-600 border border-rose-200">Action Required</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="text-slate-600 border-b border-slate-200 font-bold bg-white/50">
-                <tr>
-                  <th class="py-2.5 px-3">Asset Tag</th>
-                  <th class="py-2.5 px-3">Position</th>
-                  <th class="py-2.5 px-3 text-center">HI (%)</th>
-                  <th class="py-2.5 px-3 text-center">PoF / CoF</th>
-                  <th class="py-2.5 px-3">Diagnostic Status</th>
-                  <th class="py-2.5 px-3 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100" id="critical-watchlist-tbody">
-                <!-- Dynamically populated by home.js -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Strategic Actions & Budget Allocation (5 Cols) -->
-        <div class="lg:col-span-5 glass-light-card rounded-2xl p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-base font-bold text-slate-900">Recommended Actions & Budget</h2>
-              <span class="text-xs text-blue-700 font-bold bg-blue-100/90 px-2.5 py-0.5 rounded-full border border-blue-200">Major Outage Plan</span>
-            </div>
-
-            <div class="space-y-3 text-xs" id="recommended-actions-container">
-              <!-- Critical Action -->
-              <div class="p-3 bg-rose-50/80 border border-rose-200 rounded-xl flex items-center justify-between shadow-2xs">
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2">
-                    <span class="px-1.5 py-0.5 rounded bg-rose-600 text-white font-bold text-[10px]">CRITICAL</span>
-                    <span class="font-bold text-slate-900">GSU-01 Comprehensive Internal Inspection</span>
+                <div class="matrix-wrapper">
+                  <div class="matrix-grid-container" id="risk-matrix-grid">
+                    <!-- Populated by home.js -->
                   </div>
-                  <p class="text-slate-600 text-[11px] font-medium">จัดเตรียมหม้อแปลงสำรอง (1-Phase Spare Unit) ให้พร้อม</p>
-                </div>
-                <div class="text-right">
-                  <span class="font-extrabold text-slate-900 block">฿3,500,000</span>
-                  <span class="text-[10px] text-amber-700 font-bold">Pending Approval</span>
-                </div>
-              </div>
 
-              <!-- High Action -->
-              <div class="p-3 bg-amber-50/80 border border-amber-200 rounded-xl flex items-center justify-between shadow-2xs">
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2">
-                    <span class="px-1.5 py-0.5 rounded bg-amber-500 text-white font-bold text-[10px]">HIGH</span>
-                    <span class="font-bold text-slate-900">Online Oil Dehydration & Degassing - SST-01</span>
+                  <!-- Legend -->
+                  <div class="matrix-legend">
+                    <div class="legend-item">
+                      <div class="legend-color-box" style="background:#ef4444;"></div>
+                      <span>Extreme Risk: <strong id="legend-crit-count">0 Units</strong></span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color-box" style="background:#f97316;"></div>
+                      <span>High: <strong id="legend-high-count">0 Units</strong></span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color-box" style="background:#eab308;"></div>
+                      <span>Medium: <strong id="legend-med-count">0 Units</strong></span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color-box" style="background:#10b981;"></div>
+                      <span>Low: <strong id="legend-low-count">0 Units</strong></span>
+                    </div>
                   </div>
-                  <p class="text-slate-600 text-[11px] font-medium">ติดตั้งเครื่องฟอกน้ำมันเพื่อชะลอการเสื่อมของกระดาษฉนวน</p>
-                </div>
-                <div class="text-right">
-                  <span class="font-extrabold text-slate-900 block">฿650,000</span>
-                  <span class="text-[10px] text-emerald-700 font-bold">Budget Approved</span>
                 </div>
               </div>
 
-              <!-- Medium Action -->
-              <div class="p-3 bg-white/80 border border-slate-200 rounded-xl flex items-center justify-between shadow-2xs">
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2">
-                    <span class="px-1.5 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px]">MEDIUM</span>
-                    <span class="font-bold text-slate-900">UAT-02 Bushing C1/C2 Replacement</span>
+              <!-- 1.3 Fleet Age vs Health Profile -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-chart-line text-indigo-400"></i>
+                  <span>1.3 Fleet Age vs. Health Profile: อายุกราฟเสื่อมสภาพจริงเทียบเกณฑ์</span>
+                </div>
+                <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:10px;">
+                  ระบุเครื่องที่เสื่อมสภาพเร็วกว่าปกติ (Accelerated Degradation) เมื่อเทียบกับเกณฑ์อายุใช้งาน 30-40 ปี
+                </p>
+                <div id="chart-age-health" style="min-height: 310px;"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- =================================================================
+               MODULE 2: FLEET HEALTH & CONDITION INDEX (ดัชนีสุขภาพและสภาพความเสื่อมสภาพ)
+               ================================================================= -->
+          <section class="exec-section">
+            <div class="section-header">
+              <div class="section-title-group">
+                <div class="section-icon-badge"><i class="fa-solid fa-stethoscope"></i></div>
+                <div>
+                  <h2>2. Fleet Health & Condition Index: ดัชนีสุขภาพและสภาพความเสื่อมสภาพ</h2>
+                  <p>Standardized Health Indices & Fleet-Wide Degradation Analytics</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="ranking-grid-layout">
+              <!-- 2.1 Transformer Ranking Table -->
+              <div class="sub-card" style="min-width: 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                  <div class="sub-card-title" style="margin-bottom:0;">
+                    <i class="fa-solid fa-arrow-down-short-wide text-indigo-400"></i>
+                    <span>2.1 Transformer Ranking by Health Index (แย่ที่สุด &rarr; ดีที่สุด)</span>
                   </div>
-                  <p class="text-slate-600 text-[11px] font-medium">เข้าดำเนินการช่วง Planned Minor Overhaul ประจำปี</p>
+                  <input type="text" id="search-ranking" class="filter-pill-select" placeholder="🔍 Search ID, Serial..." style="padding:4px 10px; font-size:0.75rem; width:160px;" />
                 </div>
-                <div class="text-right">
-                  <span class="font-extrabold text-slate-900 block">฿450,000</span>
-                  <span class="text-[10px] text-slate-500 font-medium">Planned</span>
+
+                <div class="table-responsive" style="max-height: 380px;">
+                  <table class="exec-table">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Equipment Name</th>
+                        <th>Serial No</th>
+                        <th>Site</th>
+                        <th>Type</th>
+                        <th>Rating</th>
+                        <th>HI (%)</th>
+                        <th>Primary Risk Factor</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ranking-tbody">
+                      <!-- Populated by home.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 2.2 & 2.3: Degradation Breakdown & Site Compare -->
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <!-- 2.2 Degradation Breakdown -->
+                <div class="sub-card">
+                  <div class="sub-card-title">
+                    <i class="fa-solid fa-pie-chart text-indigo-400"></i>
+                    <span>2.2 สัดส่วนปัญหารวม (Fleet Degradation Drivers)</span>
+                  </div>
+                  <div id="chart-degradation" style="min-height: 230px;"></div>
+                </div>
+
+                <!-- 2.3 Site Comparison -->
+                <div class="sub-card">
+                  <div class="sub-card-title">
+                    <i class="fa-solid fa-chart-bar text-indigo-400"></i>
+                    <span>2.3 สภาพความเสื่อมสภาพเฉลี่ยรายไซต์ (Site Comparison)</span>
+                  </div>
+                  <div id="chart-site-compare" style="min-height: 230px;"></div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between">
-            <div>
-              <p class="text-[11px] text-slate-500 font-semibold">Total Action Plan Budget</p>
-              <p class="text-xl font-extrabold text-slate-900" id="total-action-budget">฿4,600,000</p>
+          <!-- =================================================================
+               MODULE 3: CRITICAL ASSETS & PRIORITY ACTION (รายการหม้อแปลงวิกฤตและแผนเชิงรุก)
+               ================================================================= -->
+          <section class="exec-section">
+            <div class="section-header">
+              <div class="section-title-group">
+                <div class="section-icon-badge"><i class="fa-solid fa-fire-flame-curved" style="color:#ef4444;"></i></div>
+                <div>
+                  <h2>3. Critical Assets & Priority Action: รายการหม้อแปลงวิกฤตและแผนจัดการเชิงรุก</h2>
+                  <p>Targeted Mitigation Strategy for Highest Risk Transformers</p>
+                </div>
+              </div>
             </div>
-            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5 border border-emerald-500/40 cursor-pointer">
-              <i data-lucide="check-circle" class="w-4 h-4"></i>
-              <span>อนุมัติงบประมาณ Action Plan</span>
-            </button>
-          </div>
+
+            <!-- 3.2 Action Strategy Pillars -->
+            <div class="pillar-grid">
+              <div class="pillar-card">
+                <div class="pillar-title"><i class="fa-solid fa-truck-ramp-box text-rose-400"></i> Unit Replacement</div>
+                <div class="pillar-count" id="count-action-replace">0</div>
+                <div class="pillar-desc">หม้อแปลงที่กระดาษฉนวนเสื่อมสภาพรุนแรง (DP &lt; 250) หรือหมดอายุขัย ต้องจัดซื้อทดแทน</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-title"><i class="fa-solid fa-filter text-amber-400"></i> Oil Reclamation / De-gas</div>
+                <div class="pillar-count" id="count-action-reclaim">0</div>
+                <div class="pillar-desc">หม้อแปลงที่มีค่า DGA Gas Rate สูง, กรดน้ำมันสูง หรือ IFT เสื่อมสภาพ ต้องฟอกไล่ก๊าซและปรับสภาพ</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-title"><i class="fa-solid fa-oil-can text-cyan-400"></i> Oil Top-up & Leak Repair</div>
+                <div class="pillar-count" id="count-action-topup">0</div>
+                <div class="pillar-desc">หม้อแปลงที่ระดับน้ำมันต่ำหรือมีจุดรั่วซึม (เช่น 5001700, 4803167) ต้องเติมน้ำมันและเปลี่ยนปะเก็น</div>
+              </div>
+
+              <div class="pillar-card">
+                <div class="pillar-title"><i class="fa-solid fa-wrench text-indigo-400"></i> Major Overhaul & Dry-out</div>
+                <div class="pillar-count" id="count-action-overhaul">0</div>
+                <div class="pillar-desc">หม้อแปลงที่มีความชื้นในฉนวนสูงหรือค่า Dielectric breakdown ต่ำ ต้องอบไล่ความชื้นทั้งระบบ</div>
+              </div>
+            </div>
+
+            <!-- 3.1 Top Critical Watchlist Table -->
+            <div class="sub-card" style="margin-bottom: 20px;">
+              <div class="sub-card-title">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+                <span>3.1 Top Critical Watchlist: รายชื่อหม้อแปลงเฝ้าระวังสูงสุดที่ต้องดำเนินการ</span>
+              </div>
+              <div class="table-responsive">
+                <table class="exec-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Equipment Name</th>
+                      <th>Site</th>
+                      <th>Type & Rating</th>
+                      <th>Health Index</th>
+                      <th>Risk Priority</th>
+                      <th>Primary Root Cause / Diagnostic Alert</th>
+                      <th>Recommended Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="critical-watchlist-tbody">
+                    <!-- Populated by home.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3.3 Timeline of Intervention -->
+            <div class="sub-card">
+              <div class="sub-card-title">
+                <i class="fa-solid fa-timeline text-indigo-400"></i>
+                <span>3.3 Timeline of Intervention: แผนกำหนดการเข้าดำเนินการแก้ไขตามช่วง Shutdown</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:10px;">
+                จัดสรรช่วงเวลาเข้าดำเนินการในช่วง Planned Outage เพื่อไม่ให้ส่งผลกระทบต่อความต้องการใช้ไฟฟ้าสูงสุด (Peak Demand)
+              </p>
+              <div class="timeline-container" id="timeline-container">
+                <!-- Populated by home.js -->
+              </div>
+            </div>
+          </section>
+
+          <!-- =================================================================
+               MODULE 4: CAPITAL PLANNING & ASSET LIFECYCLE (การวางแผนงบประมาณและวงรอบอายุ)
+               ================================================================= -->
+          <section class="exec-section">
+            <div class="section-header">
+              <div class="section-title-group">
+                <div class="section-icon-badge"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                <div>
+                  <h2>4. Capital Planning & Asset Lifecycle: การวางแผนงบประมาณและวงรอบอายุการใช้งาน</h2>
+                  <p>Long-Term CAPEX Forecast, Remaining Useful Life (RUL) & OPEX Financial Risk</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2col">
+              <!-- 4.1 Remaining Useful Life Distribution -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-hourglass-half text-indigo-400"></i>
+                  <span>4.1 Remaining Useful Life (RUL) Distribution: การกระจายตัวอายุใช้งานที่เหลือ</span>
+                </div>
+                <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:8px;">
+                  คาดการณ์อายุการใช้งานที่เหลือทั้งระบบโดยคำนวณจากสภาพความเสื่อมสภาพจริง (Health Index & DP)
+                </p>
+                <div id="chart-rul-distribution" style="min-height: 250px;"></div>
+              </div>
+
+              <!-- 4.2 CAPEX Replacement Forecast (5-10 Years) -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-chart-column text-indigo-400"></i>
+                  <span>4.2 CAPEX Replacement Forecast (2026-2035): ประมาณการงบประมาณจัดซื้อทดแทน</span>
+                </div>
+                <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:8px;">
+                  แผนภูมิแท่งคาดการณ์งบประมาณจัดซื้อหม้อแปลงทดแทนล่วงหน้าตามลำดับ RUL และพิกัด MVA (หน่วย: ล้านบาท)
+                </p>
+                <div id="chart-capex-forecast" style="min-height: 250px;"></div>
+              </div>
+            </div>
+
+            <!-- 4.3 OPEX vs Unplanned Downtime Cost -->
+            <div class="sub-card" style="margin-top: 18px;">
+              <div class="sub-card-title">
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i>
+                <span>4.3 OPEX vs. Corrective Cost Impact: ความคุ้มค่าเชิงเศรษฐศาสตร์ของการบำรุงรักษาเชิงรุก</span>
+              </div>
+              <div class="grid-3col" style="margin-top: 8px;">
+                <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:16px; text-align:center;">
+                  <div style="font-size:0.8rem; color:var(--exec-text-body); font-weight:600;">ANNUAL PROACTIVE PM OPEX</div>
+                  <div style="font-size:1.8rem; font-weight:800; color:#10b981; font-family:'Outfit'; margin:6px 0;">฿ 18.5M</div>
+                  <div style="font-size:0.75rem; color:var(--exec-text-body);">งบตรวจแล็บน้ำมัน, De-gassing, เปลี่ยนถ่ายน้ำมัน & PM</div>
+                </div>
+
+                <div style="background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:10px; padding:16px; text-align:center;">
+                  <div style="font-size:0.8rem; color:var(--exec-text-body); font-weight:600;">UNPLANNED FAILURE COST EXPOSURE</div>
+                  <div style="font-size:1.8rem; font-weight:800; color:#ef4444; font-family:'Outfit'; margin:6px 0;">฿ 420.0M</div>
+                  <div style="font-size:0.75rem; color:var(--exec-text-body);">มูลค่าความเสียหายจากเครื่องชำรุดฉุกเฉินและสูญเสียรายได้</div>
+                </div>
+
+                <div style="background:rgba(99, 102, 241, 0.1); border:1px solid rgba(99, 102, 241, 0.3); border-radius:10px; padding:16px; text-align:center;">
+                  <div style="font-size:0.8rem; color:var(--exec-text-body); font-weight:600;">ESTIMATED RISK MITIGATION ROI</div>
+                  <div style="font-size:1.8rem; font-weight:800; color:#38bdf8; font-family:'Outfit'; margin:6px 0;">1 : 22.7</div>
+                  <div style="font-size:0.75rem; color:var(--exec-text-body);">ทุก 1 บาทที่ลงทุนใน Proactive PM ช่วยลดความเสียหายได้ 22.7 บาท</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- =================================================================
+               MODULE 5: COMPLIANCE & INSPECTION ASSURANCE (การปฏิบัติตามมาตรฐานและประวัติ)
+               ================================================================= -->
+          <section class="exec-section">
+            <div class="section-header">
+              <div class="section-title-group">
+                <div class="section-icon-badge"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div>
+                  <h2>5. Compliance & Inspection Assurance: การปฏิบัติตามมาตรฐานและประวัติการทดสอบ</h2>
+                  <p>Testing Completion Coverage, Regulatory Compliance & SAP Work Order Backlog</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5.1 Testing Completion Rate Gauges -->
+            <div class="sub-card" style="margin-bottom: 18px;">
+              <div class="sub-card-title">
+                <i class="fa-solid fa-list-check text-indigo-400"></i>
+                <span>5.1 Testing Completion Rate: สัดส่วนความครอบคลุมของการทดสอบประจำปีเทียบแผนงาน</span>
+              </div>
+              <div class="radial-gauges-grid">
+                <div class="gauge-box">
+                  <div id="gauge-dga"></div>
+                  <div class="gauge-title">DGA Test Coverage</div>
+                  <span class="pill-badge pill-good">96.4% Done</span>
+                </div>
+                <div class="gauge-box">
+                  <div id="gauge-oil"></div>
+                  <div class="gauge-title">Oil Properties & Water</div>
+                  <span class="pill-badge pill-good">94.2% Done</span>
+                </div>
+                <div class="gauge-box">
+                  <div id="gauge-elec"></div>
+                  <div class="gauge-title">Electrical Diagnostics</div>
+                  <span class="pill-badge pill-fair">88.5% Done</span>
+                </div>
+                <div class="gauge-box">
+                  <div id="gauge-thermo"></div>
+                  <div class="gauge-title">Infrared Thermoscan</div>
+                  <span class="pill-badge pill-good">98.0% Done</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2col">
+              <!-- 5.2 Regulatory & Insurance Compliance -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-certificate text-indigo-400"></i>
+                  <span>5.2 Regulatory & Insurance Compliance: การรับรองตามมาตรฐานสากล</span>
+                </div>
+                <div class="standards-badge-list">
+                  <div class="standard-item">
+                    <span><i class="fa-solid fa-check-circle text-emerald-400"></i> IEEE Std C57.104-2019 (DGA Interpretation)</span>
+                    <span class="badge-status badge-normal">Compliant</span>
+                  </div>
+                  <div class="standard-item">
+                    <span><i class="fa-solid fa-check-circle text-emerald-400"></i> IEEE Std C57.106-2015 (Insulating Mineral Oil)</span>
+                    <span class="badge-status badge-normal">Compliant</span>
+                  </div>
+                  <div class="standard-item">
+                    <span><i class="fa-solid fa-check-circle text-emerald-400"></i> IEC 60076 & CIGRE 761 Asset Condition</span>
+                    <span class="badge-status badge-normal">Certified</span>
+                  </div>
+                  <div class="standard-item">
+                    <span><i class="fa-solid fa-shield-halved text-amber-400"></i> Insurance Property Risk Benchmark</span>
+                    <span class="badge-status badge-caution">Grade A (92/100)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5.3 Work Order Backlog from SAP -->
+              <div class="sub-card">
+                <div class="sub-card-title">
+                  <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+                  <span>5.3 SAP Work Order Backlog & Audit Trail: รายการงานซ่อมบำรุงที่ค้างดำเนินการ</span>
+                </div>
+                <div class="table-responsive">
+                  <table class="exec-table">
+                    <thead>
+                      <tr>
+                        <th>Order</th>
+                        <th>Notification / Work Scope</th>
+                        <th>Type</th>
+                        <th>Priority</th>
+                        <th>Target Date</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sap-backlog-tbody">
+                      <!-- Populated by home.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
         </div>
-
-      </div>
-
-      <!-- =================================================================
-           4. DEEP DIVE FLEET ANALYTICS (Preserving Full Fleet Insights)
-           ================================================================= -->
-      <details class="glass-light-card rounded-2xl p-6" open>
-        <summary class="text-base font-bold text-slate-900 flex items-center justify-between cursor-pointer select-none">
-          <div class="flex items-center gap-2">
-            <i data-lucide="bar-chart-2" class="w-5 h-5 text-blue-600"></i>
-            <span>Engineering Analytics: Degradation Drivers, Age Scatter & Site Benchmarks</span>
-          </div>
-          <span class="text-xs font-medium text-slate-500">Click to expand / collapse</span>
-        </summary>
-
-        <div class="mt-6 space-y-6">
-          <!-- Scatter & Drivers -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Age vs Health Scatter -->
-            <div class="p-4 rounded-xl bg-white/70 border border-slate-200/80">
-              <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1.5">
-                <i data-lucide="trending-up" class="w-4 h-4 text-blue-600"></i> Fleet Age vs. Health Index
-              </h3>
-              <p class="text-xs text-slate-500 mb-3">เปรียบเทียบอายุใช้งาน (ปี) กับ Health Index เพื่อจับตาเครื่องที่มีแนวโน้มเสื่อมสภาพเร่งด่วน</p>
-              <div id="chart-age-health" style="min-height: 280px;"></div>
-            </div>
-
-            <!-- Fleet Degradation Drivers -->
-            <div class="p-4 rounded-xl bg-white/70 border border-slate-200/80">
-              <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1.5">
-                <i data-lucide="pie-chart" class="w-4 h-4 text-rose-600"></i> Fleet Degradation Drivers Breakdown
-              </h3>
-              <p class="text-xs text-slate-500 mb-3">สัดส่วนสาเหตุความเสื่อมสภาพหลัก (DGA, ความชื้น, กระดาษฉนวน, Bushing, OLTC)</p>
-              <div id="chart-degradation" style="min-height: 280px;"></div>
-            </div>
-          </div>
-
-          <!-- Site Comparison & CAPEX -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Site Comparison -->
-            <div class="p-4 rounded-xl bg-white/70 border border-slate-200/80">
-              <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1.5">
-                <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i> Site-by-Site Condition Comparison
-              </h3>
-              <p class="text-xs text-slate-500 mb-3">คะแนนสุขภาพเฉลี่ยและจำนวนหม้อแปลงวิกฤตแยกตาม Substation / Site</p>
-              <div id="chart-site-compare" style="min-height: 260px;"></div>
-            </div>
-
-            <!-- CAPEX Forecast -->
-            <div class="p-4 rounded-xl bg-white/70 border border-slate-200/80">
-              <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-1.5">
-                <i data-lucide="dollar-sign" class="w-4 h-4 text-amber-600"></i> CAPEX Replacement Forecast (10-Yr)
-              </h3>
-              <p class="text-xs text-slate-500 mb-3">ประมาณการงบลงทุนจัดซื้อหม้อแปลงทดแทนล่วงหน้าตามลำดับ RUL</p>
-              <div id="chart-capex-forecast" style="min-height: 260px;"></div>
-            </div>
-          </div>
-        </div>
-      </details>
-
-    </main>
+      </main>
+    </div>
   </div>
 
   <!-- Interactive Modal for Risk Matrix Cell Transformer List -->
@@ -562,17 +559,17 @@
 
   <!-- Sidebar Toggle Script -->
   <script>
-    const sidebar = document.getElementById("sidebar");
-    const toggleBtn = document.getElementById("sidebar-toggle-btn");
-    const toggleIcon = document.getElementById("sidebar-toggle-icon");
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    const toggleIcon = document.getElementById('sidebar-toggle-icon');
 
     if (toggleBtn && sidebar) {
-      toggleBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("collapsed");
-        if (sidebar.classList.contains("collapsed")) {
-          toggleIcon.className = "fa-solid fa-chevron-right";
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        if (sidebar.classList.contains('collapsed')) {
+          toggleIcon.className = 'fa-solid fa-chevron-right';
         } else {
-          toggleIcon.className = "fa-solid fa-chevron-left";
+          toggleIcon.className = 'fa-solid fa-chevron-left';
         }
         setTimeout(() => refreshAllCharts(), 250);
       });
