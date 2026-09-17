@@ -8,8 +8,6 @@
 let fleetData = [];
 let filteredData = [];
 let chartAgeHealth = null;
-let chartDegradation = null;
-let chartSiteCompare = null;
 let chartRUL = null;
 let chartCAPEX = null;
 let gaugeDGA = null, gaugeOil = null, gaugeElec = null, gaugeThermo = null;
@@ -237,8 +235,6 @@ function applyFilters() {
   renderRiskMatrix();
   renderAgeVsHealthChart();
   renderRankingTable();
-  renderDegradationBreakdown();
-  renderSiteComparisonChart();
   renderCriticalWatchlist();
   renderActionPillars();
   renderInterventionTimeline();
@@ -616,128 +612,7 @@ function renderRankingTable() {
   }).join('');
 }
 
-/**
- * MODULE 2.2: Fleet-Wide Degradation Drivers Breakdown (Donut Chart)
- */
-function renderDegradationBreakdown() {
-  const chartEl = document.querySelector("#chart-degradation");
-  if (!chartEl) return;
 
-  let paperAging = 0, oilBreakdown = 0, dgaFault = 0, bushingSurge = 0, oltcIssues = 0;
-
-  filteredData.forEach(d => {
-    const raw = d.rawItem || {};
-    if (raw['DGA'] === 'U' || raw['DGA'] === 'Q') dgaFault++;
-    if (raw['Dielectric Breakdown'] === 'U' || raw['Water Content'] === 'U' || raw['Main Tank Oil'] === 'U') oilBreakdown++;
-    if (raw['Furan'] === 'U' || (d.dp && d.dp < 450)) paperAging++;
-    if (raw['Bushing'] === 'U' || raw['Surge Arrester'] === 'U') bushingSurge++;
-    if (raw['OLTC Oil'] === 'U' || raw['OLTC Oil'] === 'Q') oltcIssues++;
-  });
-
-  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-  const textColor = isDark ? '#94a3b8' : '#475569';
-
-  const options = {
-    series: [dgaFault || 1, oilBreakdown || 1, paperAging || 1, bushingSurge || 1, oltcIssues || 1],
-    labels: ['DGA / Gas Faults', 'Oil Breakdown & Moisture', 'Paper / DP Aging', 'Bushing & Arrester', 'OLTC Mechanism'],
-    chart: {
-      type: 'donut',
-      height: 250,
-      background: 'transparent'
-    },
-    colors: ['#ef4444', '#f97316', '#eab308', '#38bdf8', '#a855f7'],
-    legend: {
-      position: 'right',
-      labels: { colors: textColor },
-      fontSize: '11px'
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '68%',
-          labels: {
-            show: true,
-            total: {
-              show: true,
-              label: 'Issues Found',
-              color: textColor,
-              formatter: () => dgaFault + oilBreakdown + paperAging + bushingSurge + oltcIssues
-            }
-          }
-        }
-      }
-    },
-    dataLabels: { enabled: false }
-  };
-
-  if (chartDegradation) {
-    chartDegradation.updateOptions(options);
-  } else {
-    chartDegradation = new ApexCharts(chartEl, options);
-    chartDegradation.render();
-  }
-}
-
-/**
- * MODULE 2.3: Site-by-Site Condition Comparison (Bar Chart)
- */
-function renderSiteComparisonChart() {
-  const chartEl = document.querySelector("#chart-site-compare");
-  if (!chartEl) return;
-
-  // Aggregate by Site
-  const siteAgg = {};
-  fleetData.forEach(d => {
-    if (!siteAgg[d.site]) siteAgg[d.site] = { total: 0, sumHI: 0, countHI: 0, crit: 0 };
-    siteAgg[d.site].total++;
-    if (d.hi !== null) {
-      siteAgg[d.site].sumHI += d.hi;
-      siteAgg[d.site].countHI++;
-      if (d.hi <= 50) siteAgg[d.site].crit++;
-    }
-  });
-
-  const categories = Object.keys(siteAgg).sort();
-  const avgHISeries = categories.map(s => siteAgg[s].countHI > 0 ? Math.round(siteAgg[s].sumHI / siteAgg[s].countHI) : 0);
-  const critSeries = categories.map(s => siteAgg[s].crit);
-
-  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
-
-  const options = {
-    series: [
-      { name: 'Average Health Index (%)', data: avgHISeries },
-      { name: 'Critical Units Count', data: critSeries }
-    ],
-    chart: {
-      type: 'bar',
-      height: 250,
-      background: 'transparent',
-      toolbar: { show: false }
-    },
-    colors: ['#4f46e5', '#ef4444'],
-    plotOptions: {
-      bar: { horizontal: true, barHeight: '60%', borderRadius: 4 }
-    },
-    xaxis: {
-      categories: categories,
-      labels: { style: { colors: textColor } }
-    },
-    yaxis: {
-      labels: { style: { colors: textColor } }
-    },
-    grid: { borderColor: borderColor, strokeDashArray: 3 },
-    legend: { position: 'top', labels: { colors: textColor } }
-  };
-
-  if (chartSiteCompare) {
-    chartSiteCompare.updateOptions(options);
-  } else {
-    chartSiteCompare = new ApexCharts(chartEl, options);
-    chartSiteCompare.render();
-  }
-}
 
 /**
  * MODULE 3.1: Top Critical Watchlist
@@ -1031,8 +906,6 @@ function renderSAPBacklog() {
  */
 function refreshAllCharts() {
   renderAgeVsHealthChart();
-  renderDegradationBreakdown();
-  renderSiteComparisonChart();
   renderRULDistributionChart();
   renderCAPEXForecastChart();
 }

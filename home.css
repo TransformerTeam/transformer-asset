@@ -268,13 +268,8 @@
 }
 
 .ranking-grid-layout {
-  display: grid;
-  grid-template-columns: 1.28fr 0.92fr;
-  gap: 20px;
-  align-items: flex-start;
-}
-@media (max-width: 1200px) {
-  .ranking-grid-layout { grid-template-columns: 1fr; }
+  display: block;
+  width: 100%;
 }
 
 .grid-3col {
