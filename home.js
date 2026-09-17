@@ -496,32 +496,19 @@ function renderAgeVsHealthChart() {
 
   const options = {
     series: [
-      { name: `Healthy: ${goodSeries.length} Units`, data: goodSeries },
-      { name: `Warning / Fair: ${fairSeries.length} Units`, data: fairSeries },
-      { name: `Critical: ${critSeries.length} Units`, data: critSeries }
+      { name: 'Healthy', data: goodSeries },
+      { name: 'Warning / Fair', data: fairSeries },
+      { name: 'Critical', data: critSeries }
     ],
     chart: {
-      height: 310,
+      height: 285,
       type: 'scatter',
       toolbar: { show: false },
       background: 'transparent',
       animations: { enabled: false }
     },
     legend: {
-      position: 'bottom',
-      horizontalAlign: 'center',
-      fontSize: '12px',
-      fontWeight: 600,
-      labels: { colors: textColor },
-      markers: {
-        width: 10,
-        height: 10,
-        radius: 12
-      },
-      itemMargin: {
-        horizontal: 10,
-        vertical: 4
-      }
+      show: false
     },
     colors: ['#10b981', '#f59e0b', '#ef4444'],
     xaxis: {
@@ -598,6 +585,14 @@ function renderAgeVsHealthChart() {
     chartAgeHealth = new ApexCharts(chartEl, options);
     chartAgeHealth.render();
   }
+
+  // Update HTML Legend Counts (matching 1.2 Risk Matrix style)
+  const elHealthy = document.getElementById('legend-age-healthy-count');
+  const elFair = document.getElementById('legend-age-fair-count');
+  const elCrit = document.getElementById('legend-age-crit-count');
+  if (elHealthy) elHealthy.textContent = `${goodSeries.length} Units`;
+  if (elFair) elFair.textContent = `${fairSeries.length} Units`;
+  if (elCrit) elCrit.textContent = `${critSeries.length} Units`;
 }
 
 /**
