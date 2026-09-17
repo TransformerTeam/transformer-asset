@@ -496,9 +496,9 @@ function renderAgeVsHealthChart() {
 
   const options = {
     series: [
-      { name: 'Healthy (HI ≥ 80%)', data: goodSeries },
-      { name: 'Warning / Fair (51-79%)', data: fairSeries },
-      { name: 'Critical (HI ≤ 50%)', data: critSeries }
+      { name: `Healthy: ${goodSeries.length} Units`, data: goodSeries },
+      { name: `Warning / Fair: ${fairSeries.length} Units`, data: fairSeries },
+      { name: `Critical: ${critSeries.length} Units`, data: critSeries }
     ],
     chart: {
       height: 310,
@@ -506,6 +506,22 @@ function renderAgeVsHealthChart() {
       toolbar: { show: false },
       background: 'transparent',
       animations: { enabled: false }
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'center',
+      fontSize: '11px',
+      fontWeight: 600,
+      labels: { colors: textColor },
+      markers: {
+        width: 8,
+        height: 8,
+        radius: 8
+      },
+      itemMargin: {
+        horizontal: 6,
+        vertical: 2
+      }
     },
     colors: ['#10b981', '#f59e0b', '#ef4444'],
     xaxis: {
