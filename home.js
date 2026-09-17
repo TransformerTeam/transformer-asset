@@ -21,6 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
   applyFilters();
 });
 
+function isExcludedSite(site) {
+  if (!site) return false;
+  const s = String(site).trim().toLowerCase();
+  if (s === 'scrap' || s.includes('scrap')) return true;
+  if (s === 'spare gspp2&3' || s === 'spare gspp2 & 3' || (s.includes('spare') && s.includes('gspp'))) return true;
+  return false;
+}
+
 /**
  * 1. Data Initialization & Risk Metric Calculations
  */
@@ -29,6 +37,15 @@ function initData() {
     console.error("HEALTH_INDEX_DATA not found!");
     return;
   }
+
+  // Filter valid assessment units (exclude scrap / spare) exactly as assessment.js
+  const validHealthData = HEALTH_INDEX_DATA.filter(item => {
+    const site = String(item['SITE'] || item.site || '');
+    if (isExcludedSite(site)) return false;
+    const name = item['Equipment Name'] || item.name || '';
+    const serial = item['Serial No'] || item.serial || '';
+    return Boolean(name || serial);
+  });
 
   // Build lookup from TR_DATA if available
   const trLookup = {};
@@ -41,7 +58,7 @@ function initData() {
     });
   }
 
-  fleetData = HEALTH_INDEX_DATA.map(item => {
+  fleetData = validHealthData.map(item => {
     const sn = (item['Serial No'] || '').trim();
     const name = (item['Equipment Name'] || '').trim();
     const trMatch = trLookup[sn] || trLookup[name] || {};
@@ -247,7 +264,7 @@ function renderExecutiveKPIs() {
       totalHI += d.hi;
       if (d.hi >= 80) good++;
       else if (d.hi >= 70) fair++;
-      else if (d.hi >= 51) warning++;
+      else if (d.hi >= 50) warning++;
       else critical++;
     }
   });
@@ -259,7 +276,7 @@ function renderExecutiveKPIs() {
 
   // Update DOM
   document.getElementById('kpi-total-tr').textContent = total;
-  document.getElementById('kpi-total-sub').textContent = `${assessed.length} Assessed | ${total - assessed.length} Dry-type`;
+  document.getElementById('kpi-total-sub').textContent = `${assessed.length} with Health Index | ${total - assessed.length} Dry-type`;
 
   document.getElementById('kpi-avg-hi').textContent = avgHI !== 'N/A' ? `${avgHI}%` : 'N/A';
   document.getElementById('kpi-hi-breakdown').innerHTML = `
@@ -270,8 +287,8 @@ function renderExecutiveKPIs() {
 
   document.getElementById('kpi-high-risk').textContent = critical + warning;
   document.getElementById('kpi-risk-sub').innerHTML = `
-    <strong style="color:var(--risk-extreme);">${critical} Critical</strong> (&le;50%) | 
-    <span style="color:var(--risk-high);">${warning} Warning</span> (51-70%)
+    <strong style="color:var(--risk-extreme);">${critical} Critical</strong> (&lt;50%) | 
+    <span style="color:var(--risk-high);">${warning} Warning</span> (50-69%)
   `;
 
   // Financial Risk Exposure formatted in Million THB
