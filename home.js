@@ -525,10 +525,40 @@ function renderAgeVsHealthChart() {
       borderColor: borderColor,
       strokeDashArray: 3
     },
+    markers: {
+      size: 6.5,
+      strokeColors: ['#059669', '#d97706', '#dc2626'],
+      strokeWidth: 1.5,
+      strokeOpacity: 0.9,
+      fillOpacity: 0.88,
+      hover: { size: 8.5, strokeWidth: 2 }
+    },
     annotations: {
       yaxis: [
-        { y: 50, borderColor: '#ef4444', label: { text: 'Critical', style: { color: '#fff', background: '#ef4444' } } },
-        { y: 80, borderColor: '#10b981', label: { text: 'Healthy', style: { color: '#fff', background: '#10b981' } } }
+        {
+          y: 50,
+          borderColor: '#ef4444',
+          strokeDashArray: 3,
+          label: {
+            text: 'Critical',
+            borderColor: '#f87171',
+            borderWidth: 1.5,
+            borderRadius: 5,
+            style: { color: '#ffffff', background: '#dc2626', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
+          }
+        },
+        {
+          y: 80,
+          borderColor: '#10b981',
+          strokeDashArray: 3,
+          label: {
+            text: 'Healthy',
+            borderColor: '#34d399',
+            borderWidth: 1.5,
+            borderRadius: 5,
+            style: { color: '#ffffff', background: '#059669', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
+          }
+        }
       ]
     },
     tooltip: {
