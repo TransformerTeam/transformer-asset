@@ -508,19 +508,19 @@ function renderAgeVsHealthChart() {
       animations: { enabled: false }
     },
     legend: {
-      position: 'top',
+      position: 'bottom',
       horizontalAlign: 'center',
-      fontSize: '11px',
+      fontSize: '12px',
       fontWeight: 600,
       labels: { colors: textColor },
       markers: {
-        width: 8,
-        height: 8,
-        radius: 8
+        width: 10,
+        height: 10,
+        radius: 12
       },
       itemMargin: {
-        horizontal: 6,
-        vertical: 2
+        horizontal: 10,
+        vertical: 4
       }
     },
     colors: ['#10b981', '#f59e0b', '#ef4444'],
