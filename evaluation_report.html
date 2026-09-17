@@ -1588,19 +1588,19 @@
           <td class="sig-cell" style="border: 1px solid #cbd5e1; background-color: #ffffff;"></td>
         </tr>
         <tr>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-tested"></td>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-reviewed"></td>
-          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-approved"></td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-tested">Mr. Jirasak Suksakun</td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-reviewed">Mr.Suchat Mondopyai</td>
+          <td style="text-align: center; font-weight: 600; color: #1e293b; height: 22px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-name-approved">Mr.Atinat Buasamree</td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-tested"></td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-reviewed"></td>
-          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-approved"></td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-tested">GPSC</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-reviewed">GPSC</td>
+          <td style="text-align: center; font-size: 8.5px; color: #64748b; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-comp-approved">GPSC</td>
         </tr>
         <tr>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-tested"></td>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-reviewed"></td>
-          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-approved"></td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-tested">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-reviewed">Date: -</td>
+          <td style="text-align: center; font-size: 8.5px; height: 18px; border: 1px solid #cbd5e1; background-color: #ffffff;" id="resp-date-approved">Date: -</td>
         </tr>
       </tbody>
     </table>
@@ -2128,26 +2128,36 @@
       const dateStr = (testRecord && (testRecord.date || testRecord.Date || testRecord.DATE)) || item.testDate || item.date || item.Date || '';
       const dateText = cleanDate(dateStr);
 
+      // Fixed Signatures & Engineering Approval per specification
+      const todayFormatted = (() => {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = months[now.getMonth()];
+        const y = now.getFullYear();
+        return `${d}-${m}-${y}`;
+      })();
+
       const elNameTested = document.getElementById('resp-name-tested');
       const elNameRev = document.getElementById('resp-name-reviewed');
       const elNameApp = document.getElementById('resp-name-approved');
-      if (elNameTested) elNameTested.textContent = tester;
-      if (elNameRev) elNameRev.textContent = reviewer;
-      if (elNameApp) elNameApp.textContent = approver;
+      if (elNameTested) elNameTested.textContent = 'Mr. Jirasak Suksakun';
+      if (elNameRev) elNameRev.textContent = 'Mr.Suchat Mondopyai';
+      if (elNameApp) elNameApp.textContent = 'Mr.Atinat Buasamree';
 
       const elCompTested = document.getElementById('resp-comp-tested');
       const elCompRev = document.getElementById('resp-comp-reviewed');
       const elCompApp = document.getElementById('resp-comp-approved');
-      if (elCompTested) elCompTested.textContent = compTested;
-      if (elCompRev) elCompRev.textContent = compReviewed;
-      if (elCompApp) elCompApp.textContent = compApproved;
+      if (elCompTested) elCompTested.textContent = 'GPSC';
+      if (elCompRev) elCompRev.textContent = 'GPSC';
+      if (elCompApp) elCompApp.textContent = 'GPSC';
 
       const elDateTested = document.getElementById('resp-date-tested');
       const elDateRev = document.getElementById('resp-date-reviewed');
       const elDateApp = document.getElementById('resp-date-approved');
-      if (elDateTested) elDateTested.textContent = (tester && tester !== '-') ? dateText : 'Date: -';
-      if (elDateRev) elDateRev.textContent = (reviewer && reviewer !== '-') ? dateText : 'Date: -';
-      if (elDateApp) elDateApp.textContent = (approver && approver !== '-') ? dateText : 'Date: -';
+      if (elDateTested) elDateTested.textContent = `Date: ${todayFormatted}`;
+      if (elDateRev) elDateRev.textContent = `Date: ${todayFormatted}`;
+      if (elDateApp) elDateApp.textContent = `Date: ${todayFormatted}`;
     }
 
     // =============================================
