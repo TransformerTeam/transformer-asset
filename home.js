@@ -521,9 +521,6 @@ function renderAgeVsHealthChart() {
       yaxis: [
         { y: 50, borderColor: '#ef4444', label: { text: 'Critical Limit (50%)', style: { color: '#fff', background: '#ef4444' } } },
         { y: 80, borderColor: '#10b981', label: { text: 'Healthy Benchmark (80%)', style: { color: '#fff', background: '#10b981' } } }
-      ],
-      xaxis: [
-        { x: 30, borderColor: '#6366f1', label: { text: '30-Yr Design Life', style: { color: '#fff', background: '#6366f1' } } }
       ]
     },
     tooltip: {
