@@ -282,11 +282,15 @@
 
       <!-- Tab Items -->
       <div class="tab-bar" id="tab-bar">
+        <div class="browser-tab active" data-url="home.html" onclick="switchTab(this)">
+          <i class="fa-solid fa-house tab-icon" style="color:#6366f1;"></i>
+          <span>Executive Home</span>
+        </div>
         <div class="browser-tab" data-url="dashboard.html" onclick="switchTab(this)">
           <i class="fa-solid fa-chart-pie tab-icon" style="color:#38bdf8;"></i>
           <span>Dashboard</span>
         </div>
-        <div class="browser-tab active" data-url="assessment.html" onclick="switchTab(this)">
+        <div class="browser-tab" data-url="assessment.html" onclick="switchTab(this)">
           <i class="fa-solid fa-stethoscope tab-icon" style="color:#34d399;"></i>
           <span>Assessment</span>
         </div>
@@ -340,7 +344,7 @@
         <div class="spinner"></div>
         <span style="font-size:12px; color:#94a3b8; font-weight:500;">Loading page...</span>
       </div>
-      <iframe id="web-canvas" src="assessment.html" onload="onFrameLoaded()"></iframe>
+      <iframe id="web-canvas" src="home.html" onload="onFrameLoaded()"></iframe>
     </div>
   </div>
 
@@ -351,9 +355,13 @@
     const serialSelector = document.getElementById('serial-selector');
 
     function updateAddressBar(relativeUrl) {
-      const fullUrl = window.location.origin + '/' + relativeUrl;
-      addressBar.value = fullUrl;
+      let base = window.location.origin;
+      if (!base || base === 'null') base = 'local://';
+      addressBar.value = base + '/' + relativeUrl;
     }
+
+    // Set initial address
+    updateAddressBar('home.html');
 
     function navigateTo(url) {
       loadingOverlay.classList.add('show');
@@ -419,10 +427,12 @@
     }
 
     function changeDGAData(serial) {
-      const dgaTab = document.querySelectorAll('.browser-tab')[2];
+      const dgaTab = document.querySelector('.browser-tab[data-url*="dga_report"]');
       const newUrl = `dga_report.html?serial=${serial}`;
-      dgaTab.setAttribute('data-url', newUrl);
-      switchTab(dgaTab);
+      if (dgaTab) {
+        dgaTab.setAttribute('data-url', newUrl);
+        switchTab(dgaTab);
+      }
     }
 
     function copyCurrentUrl() {
