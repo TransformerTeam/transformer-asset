@@ -51,15 +51,34 @@ function initData() {
     TR_DATA.forEach(tr => {
       const sn = (tr.SERIAL_NUMBER || '').trim();
       const code = (tr.DEVICE_CODE || '').trim();
+      const eq = (tr.LOCAL_EQUIPMENT_CODE || '').trim();
       if (sn) trLookup[sn] = tr;
       if (code) trLookup[code] = tr;
+      if (eq) trLookup[eq] = tr;
     });
   }
 
   fleetData = validHealthData.map(item => {
     const sn = (item['Serial No'] || '').trim();
     const name = (item['Equipment Name'] || '').trim();
-    const trMatch = trLookup[sn] || trLookup[name] || {};
+    let trMatch = trLookup[sn] || trLookup[name];
+    if (!trMatch && name) {
+      const clean = name.split('(')[0].trim();
+      trMatch = trLookup[clean];
+    }
+    trMatch = trMatch || {};
+
+    // Insulation and Fluid classification (Oil-type vs Dry-type, Mineral / Natural / Synthetic)
+    const dataCol = String(trMatch.DATA || '').toUpperCase();
+    const insul = String(trMatch.TYPE_OF_INSULATION || '').toUpperCase();
+    const isDry = dataCol.includes('DRY') || insul.includes('DRY') || insul.includes('RESIN') || insul.includes('RASIN') || insul.includes('CAST') || /dry/i.test(String(trMatch.MODEL_TYPE || '')) || /dry/i.test(String(trMatch.APPLICATION || '')) || String(item['Service Type'] || '').toUpperCase().includes('DRY');
+
+    let oilType = null;
+    if (!isDry) {
+      if (insul.includes('NATURAL')) oilType = 'natural';
+      else if (insul.includes('SYNTHETIC')) oilType = 'synthetic';
+      else oilType = 'mineral'; // Defaults to Mineral Oil per IEEE/assessment standards
+    }
 
     const rawHI = parseFloat(item['Condition Health Index']);
     const hi = isNaN(rawHI) ? null : rawHI;
@@ -167,6 +186,8 @@ function initData() {
       mva,
       voltage: (item['Rated Voltage (kV)'] || trMatch.HV_RATED || '-').trim(),
       sType,
+      isDry,
+      oilType,
       age,
       hi,
       status: item['Health Index Status'] || (hi === null ? 'Non-Assessed' : (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Warning' : 'Critical'))),
@@ -272,7 +293,24 @@ function renderExecutiveKPIs() {
 
   // Update DOM
   document.getElementById('kpi-total-tr').textContent = total;
-  document.getElementById('kpi-total-sub').textContent = `${assessed.length} with Health Index | ${total - assessed.length} Dry-type`;
+
+  const oilCount = filteredData.filter(d => !d.isDry).length;
+  const dryCount = filteredData.filter(d => d.isDry).length;
+  const mineralCount = filteredData.filter(d => !d.isDry && d.oilType === 'mineral').length;
+  const naturalCount = filteredData.filter(d => !d.isDry && d.oilType === 'natural').length;
+  const syntheticCount = filteredData.filter(d => !d.isDry && d.oilType === 'synthetic').length;
+
+  const elTotalSub = document.getElementById('kpi-total-sub');
+  if (elTotalSub) {
+    elTotalSub.innerHTML = `
+      <div class="kpi-sub-line line-main">
+        <span><strong>${oilCount}</strong> Oil-type</span> <span class="sep">|</span> <span><strong>${dryCount}</strong> Dry-type</span>
+      </div>
+      <div class="kpi-sub-line line-detail">
+        <span>${mineralCount} Mineral</span> <span class="sep">|</span> <span>${naturalCount} Natural</span> <span class="sep">|</span> <span>${syntheticCount} Synthetic</span>
+      </div>
+    `;
+  }
 
   document.getElementById('kpi-avg-hi').textContent = avgHI !== 'N/A' ? `${avgHI}%` : 'N/A';
   document.getElementById('kpi-hi-breakdown').innerHTML = `
