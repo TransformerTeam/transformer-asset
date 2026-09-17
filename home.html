@@ -7,7 +7,7 @@
   
   <!-- Main Stylesheet & Theme System -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home.css?v=20260918_0520">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -211,19 +211,19 @@
                 </p>
                 <div id="chart-age-health" style="min-height: 310px;"></div>
 
-                <!-- Legend matching 1.2 Risk Matrix style -->
+                <!-- Legend matching 1.2 Risk Matrix style with circular dots -->
                 <div class="matrix-legend">
                   <div class="legend-item">
-                    <div class="legend-color-box" style="background:#10b981;"></div>
-                    <span>Healthy: <strong id="legend-age-healthy-count">0 Units</strong></span>
+                    <div class="legend-color-dot" style="background:#10b981; border-radius:50%;"></div>
+                    <span>Healthy: <strong id="legend-age-healthy-count">153 Units</strong></span>
                   </div>
                   <div class="legend-item">
-                    <div class="legend-color-box" style="background:#f59e0b;"></div>
-                    <span>Warning / Fair: <strong id="legend-age-fair-count">0 Units</strong></span>
+                    <div class="legend-color-dot" style="background:#f59e0b; border-radius:50%;"></div>
+                    <span>Warning / Fair: <strong id="legend-age-fair-count">44 Units</strong></span>
                   </div>
                   <div class="legend-item">
-                    <div class="legend-color-box" style="background:#ef4444;"></div>
-                    <span>Critical: <strong id="legend-age-crit-count">0 Units</strong></span>
+                    <div class="legend-color-dot" style="background:#ef4444; border-radius:50%;"></div>
+                    <span>Critical: <strong id="legend-age-crit-count">10 Units</strong></span>
                   </div>
                 </div>
               </div>
@@ -549,7 +549,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js"></script>
+  <script src="home.js?v=20260918_0520"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->
