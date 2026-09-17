@@ -327,15 +327,21 @@ function renderRiskMatrix() {
   });
 
   // Build Grid HTML
+  // 1. Vertical Y-axis Title: Probability of Failure (spans rows 1 to 5, column 1)
+  const yAxisTitle = document.createElement('div');
+  yAxisTitle.className = 'matrix-axis-y-title';
+  yAxisTitle.textContent = 'Probability of Failure';
+  gridContainer.appendChild(yAxisTitle);
+
   for (let pof = 5; pof >= 1; pof--) {
-    // Y-axis Label
+    // Y-axis Label (column 2)
     const yLabelEl = document.createElement('div');
     yLabelEl.className = 'matrix-y-label';
     yLabelEl.textContent = pof;
     yLabelEl.title = yLabels[5 - pof];
     gridContainer.appendChild(yLabelEl);
 
-    // 5 Columns (CoF 1 to 5)
+    // 5 Columns (CoF 1 to 5) (columns 3 to 7)
     for (let cof = 1; cof <= 5; cof++) {
       const items = matrixBuckets[pof][cof];
       const count = items.length;
@@ -361,8 +367,9 @@ function renderRiskMatrix() {
     }
   }
 
-  // Bottom row: Empty corner + X-axis labels
+  // Row 6: Empty corner (spans columns 1-2) + X-axis labels (columns 3-7)
   const corner = document.createElement('div');
+  corner.className = 'matrix-corner';
   gridContainer.appendChild(corner);
 
   for (let cof = 1; cof <= 5; cof++) {
@@ -372,6 +379,12 @@ function renderRiskMatrix() {
     xLabelEl.title = xLabels[cof - 1];
     gridContainer.appendChild(xLabelEl);
   }
+
+  // Row 7: Horizontal X-axis Title: Consequence of Failure (spans columns 3 to 7)
+  const xAxisTitle = document.createElement('div');
+  xAxisTitle.className = 'matrix-axis-x-title';
+  xAxisTitle.textContent = 'Consequence of Failure';
+  gridContainer.appendChild(xAxisTitle);
 
   // Update Summary Counts
   let critCount = 0, highCount = 0, medCount = 0, lowCount = 0;
