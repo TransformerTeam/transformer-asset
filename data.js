@@ -11533,7 +11533,7 @@
         "STANDARD": "IEC 60076",
         "TEMP_RISE_MAX": "55",
         "WINDING_INSULATION": "",
-        "TYPE_OF_INSULATION": "Mineral Oil",
+        "TYPE_OF_INSULATION": "Synthetic Ester",
         "TOTAL_MASS": "11500",
         "CORE_AND_COIL_MASS": "6800",
         "TANK_AND_FITTING_MASS": "",
