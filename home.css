@@ -144,24 +144,90 @@
 }
 
 .filter-pill-select {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--exec-card-border);
-  color: var(--exec-text-title);
+  background-color: #1a2234;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f8fafc;
   padding: 7px 14px;
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
   outline: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
-[data-theme="light"] .filter-pill-select {
-  background: #f8fafc;
-  color: #0f172a;
+
+select.filter-pill-select {
+  padding-right: 32px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 13px 13px;
+  font-weight: 600;
 }
+
+.filter-pill-select:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  background-color: #222d44;
+}
+
 .filter-pill-select:focus {
   border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+  background-color: #222d44;
+}
+
+/* Dropdown Option Items - Explicit High Contrast */
+.filter-pill-select option,
+select.filter-pill-select option,
+.filter-pill-select optgroup {
+  background-color: #12161f !important;
+  color: #ffffff !important;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+
+/* Light Theme Styling */
+[data-theme="light"] .filter-pill-select,
+[data-preset="slate-light"] .filter-pill-select,
+[data-preset="nordic-frost"] .filter-pill-select {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] select.filter-pill-select,
+[data-preset="slate-light"] select.filter-pill-select,
+[data-preset="nordic-frost"] select.filter-pill-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+[data-theme="light"] .filter-pill-select:hover,
+[data-preset="slate-light"] .filter-pill-select:hover,
+[data-preset="nordic-frost"] .filter-pill-select:hover {
+  border-color: #94a3b8;
+  background-color: #f8fafc;
+}
+
+[data-theme="light"] .filter-pill-select:focus,
+[data-preset="slate-light"] .filter-pill-select:focus,
+[data-preset="nordic-frost"] .filter-pill-select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+[data-theme="light"] .filter-pill-select option,
+[data-theme="light"] select.filter-pill-select option,
+[data-theme="light"] .filter-pill-select optgroup,
+[data-preset="slate-light"] .filter-pill-select option,
+[data-preset="slate-light"] select.filter-pill-select option,
+[data-preset="nordic-frost"] .filter-pill-select option,
+[data-preset="nordic-frost"] select.filter-pill-select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 /* Top KPI Grid */

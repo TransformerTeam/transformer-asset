@@ -1129,12 +1129,20 @@ svg.circular-chart {
   transition: all var(--transition-fast) !important;
 }
 
-.filter-select option {
+select option,
+.filter-select option,
+.filter-pill-select option,
+optgroup {
   background-color: #12161f;
   color: #ffffff;
 }
 
-[data-theme="light"] .filter-select option {
+[data-theme="light"] select option,
+[data-theme="light"] .filter-select option,
+[data-theme="light"] .filter-pill-select option,
+[data-theme="light"] optgroup,
+[data-preset="slate-light"] select option,
+[data-preset="nordic-frost"] select option {
   background-color: #ffffff;
   color: #0f172a;
 }
