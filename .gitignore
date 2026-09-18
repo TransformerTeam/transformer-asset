@@ -17,6 +17,7 @@ Thumbs.db
 .git-portable/
 
 # Dev/scratch scripts
+.venv/
 scratch/
 serve.ps1
 serve.py
