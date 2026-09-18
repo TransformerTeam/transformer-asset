@@ -7,6 +7,7 @@
 
 let fleetData = [];
 let filteredData = [];
+let planTasks = [];
 let chartAgeHealth = null;
 let chartRUL = null;
 let chartCAPEX = null;
@@ -16,6 +17,7 @@ let gaugeDGA = null, gaugeOil = null, gaugeElec = null, gaugeThermo = null;
 document.addEventListener('DOMContentLoaded', () => {
   initData();
   setupEventListeners();
+  loadPlanData();
   applyFilters();
 });
 
@@ -334,10 +336,141 @@ function renderExecutiveKPIs() {
     <span style="color:var(--risk-high);">${warning} Warning</span> (50-69%)
   `;
 
-  // Financial Risk Exposure formatted in Million THB
-  const riskMB = (totalFinancialRisk / 1000000).toFixed(1);
-  document.getElementById('kpi-financial-risk').textContent = `฿ ${riskMB}M`;
-  document.getElementById('kpi-financial-sub').textContent = `Calculated PoF × Failure CoF exposure`;
+  // Estimated Cost (This Year) from Maintenance Plan
+  renderCostKPI();
+}
+
+/**
+ * MODULE 1.1b: Estimated Cost (This Year) Engine & Sub-breakdowns
+ */
+async function loadPlanData() {
+  // Check localStorage first
+  try {
+    const cached = localStorage.getItem('GPSC_PLAN_TASKS_2026');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        planTasks = parsed;
+      }
+    }
+  } catch (e) {}
+
+  // Fetch plan_data.json
+  try {
+    const res = await fetch('plan_data.json?v=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.tasks)) {
+        planTasks = data.tasks;
+      }
+    }
+  } catch (e) {}
+
+  renderCostKPI();
+}
+
+function classifyPlanTask(t) {
+  const name = (t.task || '').toLowerCase();
+  const cat = (t.cat || '').toLowerCase();
+  
+  // Improvement / Life Extension / Major Overhaul / Oil Regeneration / Re-gasket
+  if (name.includes('oil regeneration') || 
+      name.includes('overhaul') || 
+      name.includes('re-gasket') || 
+      name.includes('insulation paper')) {
+    return { expense: 'IMP', funding: 'CAPEX' };
+  }
+  
+  // Corrective Maintenance (Replace damaged/defective parts, repair, connection inspection)
+  if (name.includes('replace') || 
+      name.includes('inspection oltc connection') || 
+      name.includes('repair') || 
+      name.includes('corrective') || 
+      cat.includes('corrective')) {
+    return { expense: 'CM', funding: 'OPEX' };
+  }
+  
+  // Otherwise Preventive Maintenance / Routine / Life Assessment / Scaffolding / Passivator
+  return { expense: 'PM', funding: 'OPEX' };
+}
+
+function matchesPlanPlant(plantName, filterSite) {
+  if (!plantName || !filterSite) return false;
+  const p = plantName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const s = filterSite.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return p === s || p.includes(s) || s.includes(p);
+}
+
+function renderCostKPI() {
+  const elVal = document.getElementById('kpi-cost-total');
+  const elSub = document.getElementById('kpi-cost-sub');
+  if (!elVal || !elSub) return;
+
+  const siteVal = document.getElementById('site-filter')?.value || 'ALL';
+
+  let totalCost = 0;
+  let capex = 0, opex = 0;
+  let pm = 0, cm = 0, imp = 0;
+
+  let activeTasks = planTasks;
+  if (siteVal !== 'ALL') {
+    activeTasks = planTasks.filter(t => matchesPlanPlant(t.plant, siteVal));
+  }
+
+  if (activeTasks && activeTasks.length > 0) {
+    const parents = activeTasks.filter(t => !t.parentId);
+    parents.forEach(p => {
+      const subs = activeTasks.filter(s => s.parentId === p.id);
+      if (subs.length > 0 && subs.some(s => (s.cost || 0) > 0)) {
+        subs.forEach(s => {
+          const c = Number(s.cost) || 0;
+          if (c > 0) {
+            totalCost += c;
+            const cls = classifyPlanTask(s);
+            if (cls.funding === 'CAPEX') capex += c; else opex += c;
+            if (cls.expense === 'IMP') imp += c;
+            else if (cls.expense === 'CM') cm += c;
+            else pm += c;
+          }
+        });
+      } else {
+        const c = Number(p.cost) || 0;
+        if (c > 0) {
+          totalCost += c;
+          const cls = classifyPlanTask(p);
+          if (cls.funding === 'CAPEX') capex += c; else opex += c;
+          if (cls.expense === 'IMP') imp += c;
+          else if (cls.expense === 'CM') cm += c;
+          else pm += c;
+        }
+      }
+    });
+  } else if (siteVal === 'ALL') {
+    // Fallback baseline totals for fleet-wide if plan_data.json has not loaded
+    totalCost = 5469870;
+    capex = 3667500;
+    opex = 1802370;
+    pm = 1032830;
+    cm = 769540;
+    imp = 3667500;
+  }
+
+  const totalM = (totalCost / 1000000).toFixed(2);
+  const capexM = (capex / 1000000).toFixed(2);
+  const opexM = (opex / 1000000).toFixed(2);
+  const pmM = (pm / 1000000).toFixed(2);
+  const cmM = (cm / 1000000).toFixed(2);
+  const impM = (imp / 1000000).toFixed(2);
+
+  elVal.textContent = `฿ ${totalM}M`;
+  elSub.innerHTML = `
+    <div class="kpi-sub-line line-main">
+      <span><strong>CAPEX</strong> ${capexM} M</span> <span class="sep">|</span> <span><strong>OPEX</strong> ${opexM} M</span>
+    </div>
+    <div class="kpi-sub-line line-detail">
+      <span>PM ${pmM} M</span> <span class="sep">|</span> <span>CM ${cmM} M</span> <span class="sep">|</span> <span title="Improvement (IMP)">IMP ${impM} M</span>
+    </div>
+  `;
 }
 
 /**

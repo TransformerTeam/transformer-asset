@@ -7,7 +7,7 @@
   
   <!-- Main Stylesheet & Theme System -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="home.css?v=20260918_1027">
+  <link rel="stylesheet" href="home.css?v=20260918_1530">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -157,14 +157,21 @@
                 <div class="kpi-card-footer" id="kpi-risk-sub">0 Critical | 0 Warning</div>
               </div>
 
-              <!-- Financial Risk Exposure -->
+              <!-- Estimated Cost (This Year) -->
               <div class="kpi-hero-card card-warning">
                 <div class="kpi-card-header">
-                  <span class="kpi-card-label">Financial Risk Exposure</span>
-                  <i class="fa-solid fa-sack-dollar kpi-card-icon" style="color:#f59e0b;"></i>
+                  <span class="kpi-card-label">Estimated Cost (This Year)</span>
+                  <i class="fa-solid fa-coins kpi-card-icon" style="color:#f59e0b;"></i>
                 </div>
-                <div class="kpi-card-value" id="kpi-financial-risk" style="color:#f59e0b;">฿ 0M</div>
-                <div class="kpi-card-footer" id="kpi-financial-sub">PoF × Failure Cost</div>
+                <div class="kpi-card-value" id="kpi-cost-total" style="color:#f59e0b;">฿ 5.47M</div>
+                <div class="kpi-card-footer kpi-dual-sub" id="kpi-cost-sub">
+                  <div class="kpi-sub-line line-main">
+                    <span><strong>CAPEX</strong> 3.67 M</span> <span class="sep">|</span> <span><strong>OPEX</strong> 1.80 M</span>
+                  </div>
+                  <div class="kpi-sub-line line-detail">
+                    <span>PM 1.03 M</span> <span class="sep">|</span> <span>CM 0.77 M</span> <span class="sep">|</span> <span title="Improvement">IMP 3.67 M</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -560,7 +567,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260918_1027"></script>
+  <script src="home.js?v=20260918_1530"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->
