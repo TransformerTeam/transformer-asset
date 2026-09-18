@@ -1,6 +1,7 @@
 ﻿Serial_No,Date,Test_No,Name1,Name2,COMP1,COMP2,Test_Instrument,Instrument_Serial_No,Calibration_Date,Ambient_Temp,Oil_Temp,Winding_Temp,Humidity,O2,N2,CO2,CO,H2,CH4,C2H2,C2H4,C2H6,C3H6,C3H8,TDCG,Temp,BD,WC,IFT,Acidity_No,Color_No,PF_25,PF_100,Corrosive_Sulfur,Passivator,Sludge_Condition,Conductivity,Furan_Analysis,Test_Result
 3905095,2026-10-16 00:00:00,,Mr. Aekapong Klamchang,Mr.Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,12M,,,40,,,20411,54792,5645,167,7,16,0,16,1,6,1,194,40,56.2,21.9,21.9,0.01,1.5,0.005,0.432,2c,0,0.014,2.2,149,NORMAL
 20083122TIC008,2026-09-19 00:00:00,,Aekapong Klamchang,Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,12M,,,63,,,2273,65626,824,105,8,2,0,9,0,1,0,124,63,65.4,8.9,33.5,0.01,1.5,0.004,0.483,1a,226,0.0016,1.6,12,NORMAL
+5000574,2026-09-18 00:00:00,,Mr.Aekapong K.,Mr.Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,,,,,,,5088,30753,1550,309,4,53,0,13,218,36,222,,40,84.7,10,26.6,0.07,1.5,0.5,5,1b,0,0.016,4.7,10,NORMAL
 4810106,2026-06-21 00:00:00,,Mr. Aekapong Klamchang,Mr.Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,12M,,,58,,,4061,24582,3754,81,0,9,0,2,2,0,1,94,58,67.7,8.6,31.2,0.01,1.5,0.009,0.610,1a,2,0.010,5.2,7,NORMAL
 4811735,2026-06-21 00:00:00,,Mr. Aekapong Klamchang,Mr.Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,12M,,,60,,,4683,34179,7261,322,2,29,0,3,8,3,5,364,60,78.1,9.5,31.1,0.05,1.5,0.006,1.640,1a,0,0.014,4,17,NORMAL
 5001700,2026-06-21 00:00:00,,Mr. Aekapong Klamchang,Mr.Pimchart P.,Hitachi Energy,GPSC,Hitachi Energy,12M,,,,,,2556,65459,11504,599,15,12,0,8,4,5,4,638,50,62.6,20.3,21.9,0.06,1.5,0.008,0.775,1a,0,0.014,4.7,9,NORMAL
@@ -257,8 +258,6 @@ T013007,2024-11-20 00:00:00,,Chayaporn Somsriyo,Mr.Pimchart P.,Hitachi Energy,GP
 4912021,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,50,,,2458,10908,2103,262,2,5,0,2,1,1,1,271,50,74,2.2,36.9,0.02,1,0.001,0.284,2e,269,0.01,2.1,34,NORMAL
 4912022,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,42,,,7565,37035,1892,248,33,5,0,3,2,1,1,289,42,69.4,6.7,33.1,0.01,1.5,0.161,3.514,2e,0,0,0,20,NORMAL
 4912023,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,43,,,2389,16027,1980,291,21,5,0,4,1,1,1,321,43,74.8,7.9,26.8,0.01,1.5,0.136,3.716,2e,0,0,0,8,NORMAL
-5000574,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,40,,,1797,47695,1349,565,6,9,0,1,1,0,1,581,40,,,,,,,,,0,,,,NORMAL
-5000574,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,40,,,1797,47695,1349,565,6,9,0,1,1,0,1,581,40,64.2,12.1,28.8,0.06,1.5,0.020,0.867,2e,0,0,0,40,NORMAL
 5000575,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,40,,,1524,33395,1034,302,10,78,0,8,49,12,55,398,40,72.6,10.0,37.6,0.04,1.5,0.013,0.707,2e,0,0,0,132,NORMAL
 5000575,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,40,,,1524,33395,1034,302,10,78,0,8,49,12,55,398,40,72.6,10.0,37.6,0.04,1.5,0.013,0.707,2e,0,0,0,132,NORMAL
 5000576,2024-11-15 00:00:00,,Chayaporn S.,Pimchart P.,Hitachi Energy,GPSC,,12M,,,,,,2001,7,1015,358,7,64,0,8,37,12,36,437,40,71.6,8.5,26.4,0.06,1.5,0.014,0.69,2e,0,0,0,8,NORMAL
@@ -925,7 +924,6 @@ PP0181B01,2021-05-19 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,1627,7118,
 4912019,2021-05-17 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,1570,7350,1226,143,0,1,0.0,1,0,0,0,145,,43,14,30,0.016,1.5,0.021,1.18,1a,0,0,0,0,NORMAL
 4912020,2021-05-17 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,1469,3620,373,15,0,0,0.0,0,0,0,0,15,,46,18,30,0.010,1.0,0.006,0.48,1a,0,0,0,0,NORMAL
 4912021,2021-05-17 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,1924,4698,297,24,0,0,0.0,0,0,0,0,24,,75,11,35,0.009,1.0,0.006,0.21,1a,0,0,0,0,NORMAL
-5000574,2021-05-17 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,0,0,0,0,NORMAL
 4912019,2021-03-12 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,,,,,,,,,,,,,,0,0,0,0,0,0,0,0,0,0,0.9,0,NORMAL
 6110201,2021-03-12 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,11237,33493,1462,102,0,2,0.0,0,0,0,0,104,,85,5,40,0.013,0.5,0.003,0.08,1a,0,0,0.1,0,NORMAL
 6110202,2021-03-12 00:00:00,,Kittisak S.,Jirasak S.,IEC,GPSC,,,,,,,,11254,32603,1093,153,0,0,0.0,0,0,0,0,153,,86,2,41,0.012,0.5,0.002,0.62,1a,0,0,0.4,0,NORMAL

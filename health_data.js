@@ -1487,7 +1487,7 @@
         "Water Content": "A",
         "Dielectric Breakdown": "A",
         "PF at 25 °C": "A",
-        "PF at 100 °C": "A",
+        "PF at 100 °C": "Q",
         "Conductivity": "A",
         "Interfratial Tension (IFT)": "A",
         "Acidity": "A",
@@ -1503,7 +1503,7 @@
         "Water Content (OLTC)": "N/A",
         "Date To Assess": "03-01-2026",
         "FAT": "",
-        "Last PM": "2025",
+        "Last PM": "2026",
         "Next PM": "2028",
         "Recommendation": "Plan for oil regeneration; there is a concern that the IFT Conductivity are qeustionable limit. Re-test Insulation resistance and short circuit test."
     },

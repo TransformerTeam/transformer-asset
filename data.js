@@ -6301,16 +6301,16 @@
         "FILEUPLOAD": "",
         "Service_Type": "Auxiliary Transformer",
         "SPARE2": "",
-        "SPARE3": "",
-        "GI": "",
-        "API": "",
-        "IOI": "",
+        "SPARE3": "100",
+        "GI": "5",
+        "API": "4",
+        "IOI": "0",
         "OLTCI": "",
         "BI": "",
         "ARI": "",
         "DGA": "",
         "HI": "",
-        "Result_Date": ""
+        "Result_Date": "2026-09-18"
     },
     {
         "SERIAL_NUMBER": "E541351_2",
