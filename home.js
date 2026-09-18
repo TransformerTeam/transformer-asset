@@ -551,7 +551,7 @@ function renderAgeVsHealthChart() {
       { name: 'Critical', data: critSeries }
     ],
     chart: {
-      height: 285,
+      height: 350,
       type: 'scatter',
       toolbar: { show: false },
       background: 'transparent',

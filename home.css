@@ -352,6 +352,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  flex: 1;
 }
 
 .matrix-grid-container {
@@ -461,11 +462,19 @@
   padding-top: 2px;
 }
 
+#chart-age-health {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .matrix-legend {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 14px;
+  margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid var(--exec-card-border);
   flex-wrap: wrap;
