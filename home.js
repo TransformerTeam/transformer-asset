@@ -190,7 +190,16 @@ function initData() {
       oilType,
       age,
       hi,
-      status: item['Health Index Status'] || (hi === null ? 'Non-Assessed' : (hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Warning' : 'Critical'))),
+      status: (() => {
+        let st = (item['Health Index Status'] || '').trim();
+        if (st === 'Monitor') return 'Monitoring';
+        if (st) return st;
+        if (hi === null) return 'Non-Assessed';
+        if (hi >= 80) return 'Healthy';
+        if (hi >= 70) return 'Monitoring';
+        if (hi >= 50) return 'Warning';
+        return 'Critical';
+      })(),
       dp: isNaN(dp) ? null : dp,
       pof,
       cof,
@@ -514,16 +523,18 @@ function renderAgeVsHealthChart() {
   const chartEl = document.querySelector("#chart-age-health");
   if (!chartEl) return;
 
-  // Prepare scatter data series grouped by status
+  // Prepare scatter data series grouped by 4-tier status
   const goodSeries = [];
-  const fairSeries = [];
+  const monitorSeries = [];
+  const warnSeries = [];
   const critSeries = [];
 
   filteredData.forEach(d => {
     if (d.hi !== null) {
       const point = { x: d.age, y: d.hi, name: d.name, site: d.site, sn: d.sn, sType: d.sType };
       if (d.hi >= 80) goodSeries.push(point);
-      else if (d.hi >= 51) fairSeries.push(point);
+      else if (d.hi >= 70) monitorSeries.push(point);
+      else if (d.hi >= 50) warnSeries.push(point);
       else critSeries.push(point);
     }
   });
@@ -535,7 +546,8 @@ function renderAgeVsHealthChart() {
   const options = {
     series: [
       { name: 'Healthy', data: goodSeries },
-      { name: 'Warning / Fair', data: fairSeries },
+      { name: 'Monitoring', data: monitorSeries },
+      { name: 'Warning', data: warnSeries },
       { name: 'Critical', data: critSeries }
     ],
     chart: {
@@ -548,7 +560,7 @@ function renderAgeVsHealthChart() {
     legend: {
       show: false
     },
-    colors: ['#10b981', '#f59e0b', '#ef4444'],
+    colors: ['#10b981', '#eab308', '#f97316', '#ef4444'],
     xaxis: {
       title: { text: 'Service Age (Years)', style: { color: textColor, fontWeight: 600 } },
       min: 0,
@@ -568,7 +580,7 @@ function renderAgeVsHealthChart() {
     },
     markers: {
       size: 6.5,
-      strokeColors: ['#059669', '#d97706', '#dc2626'],
+      strokeColors: ['#059669', '#ca8a04', '#ea580c', '#dc2626'],
       strokeWidth: 1.5,
       strokeOpacity: 0.9,
       fillOpacity: 0.88,
@@ -589,6 +601,18 @@ function renderAgeVsHealthChart() {
           }
         },
         {
+          y: 70,
+          borderColor: '#eab308',
+          strokeDashArray: 3,
+          label: {
+            text: 'Monitoring',
+            borderColor: '#facc15',
+            borderWidth: 1.5,
+            borderRadius: 5,
+            style: { color: '#ffffff', background: '#ca8a04', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
+          }
+        },
+        {
           y: 80,
           borderColor: '#10b981',
           strokeDashArray: 3,
@@ -606,10 +630,13 @@ function renderAgeVsHealthChart() {
       theme: isDark ? 'dark' : 'light',
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
         const p = w.config.series[seriesIndex].data[dataPointIndex];
+        const statusColors = ['#10b981', '#eab308', '#f97316', '#ef4444'];
+        const statusName = w.config.series[seriesIndex].name;
         return `
           <div style="padding:10px 14px; font-size:12px;">
             <strong style="color:#38bdf8;">${p.name}</strong> (SN: ${p.sn})<br/>
             <span>Site: ${p.site} | ${p.sType}</span><br/>
+            <span>Status: <strong style="color:${statusColors[seriesIndex]};">${statusName}</strong></span><br/>
             <span>Age: <strong>${p.x} Years</strong> | Health Index: <strong>${p.y}%</strong></span>
           </div>
         `;
@@ -626,10 +653,12 @@ function renderAgeVsHealthChart() {
 
   // Update HTML Legend Counts (matching 1.2 Risk Matrix style)
   const elHealthy = document.getElementById('legend-age-healthy-count');
-  const elFair = document.getElementById('legend-age-fair-count');
+  const elMonitor = document.getElementById('legend-age-monitor-count');
+  const elWarn = document.getElementById('legend-age-warning-count');
   const elCrit = document.getElementById('legend-age-crit-count');
   if (elHealthy) elHealthy.textContent = `${goodSeries.length} Units`;
-  if (elFair) elFair.textContent = `${fairSeries.length} Units`;
+  if (elMonitor) elMonitor.textContent = `${monitorSeries.length} Units`;
+  if (elWarn) elWarn.textContent = `${warnSeries.length} Units`;
   if (elCrit) elCrit.textContent = `${critSeries.length} Units`;
 }
 
