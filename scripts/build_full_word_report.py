@@ -34,27 +34,32 @@ print("Generating verified technical figures from genuine 34101-TR-001 records..
 # 1. GENERATE AUTHENTIC CHARTS FOR 34101-TR-001
 # -------------------------------------------------------------
 
-# Fig 5-1: Actual Health Index Breakdown (CIGRE TB 761 1-5 Scale)
-fig, ax = plt.subplots(figsize=(7.5, 3.6), dpi=200)
-components = ['Active Part', 'HV Bushings', 'Oil Quality', 'DGA', 'OLTC']
-# CIGRE TB 761 Scale: 1 (Very Poor) to 5 (Optimal / As New)
-# Active Part = 5.0 (Level A), Bushings = 5.0 (Level A), Oil Quality = 4.83 (OQF 3.86/4.00 * 5),
-# DGA = 4.0 (Level B / CO Status 2), OLTC = 4.0 (Level B / 97k ops)
-scores = [5.0, 5.0, 4.83, 4.0, 4.0]
-colors = ['#16A34A', '#16A34A', '#16A34A', '#22C55E', '#EAB308']
+# Fig 5-1: Actual Health Index Breakdown (6 PT Components, CIGRE TB 761 1-5 Scale)
+fig, ax = plt.subplots(figsize=(8.2, 3.8), dpi=220)
+components = [
+    'General Part\n(5%)',
+    'Active Part\n(25%)',
+    'Insulation Oil\n(20%)',
+    'Bushing\n(25%)',
+    'OLTC\n(20%)',
+    'Arrester\n(5%)'
+]
+scores = [5.00, 5.00, 4.67, 5.00, 4.00, 5.00]
+pct_labels = ['100%', '100%', '93.4%', '100%', '80.0%', '100%']
+colors = ['#16A34A', '#16A34A', '#16A34A', '#16A34A', '#EAB308', '#16A34A']
 
-bars = ax.bar(components, scores, color=colors, width=0.55, edgecolor='#1E293B', linewidth=1.2)
-ax.set_ylim(0, 5.5)
-ax.axhline(4.0, color='#16A34A', linestyle='--', alpha=0.6, label='Good / Normal Threshold (4.0)')
-ax.axhline(3.0, color='#EAB308', linestyle='--', alpha=0.6, label='Acceptable / Monitor Threshold (3.0)')
+bars = ax.bar(components, scores, color=colors, width=0.52, edgecolor='#1E293B', linewidth=1.2)
+ax.set_ylim(0, 5.7)
+ax.axhline(4.0, color='#16A34A', linestyle='--', alpha=0.7, linewidth=1.2, label='Good / Normal Threshold (4.0)')
+ax.axhline(3.0, color='#EAB308', linestyle='--', alpha=0.7, linewidth=1.2, label='Acceptable / Monitor Threshold (3.0)')
 ax.set_ylabel('Condition Score (1 - 5) [CIGRE TB 761]', fontsize=9.5, fontweight='bold')
-ax.set_title('Subsystem Condition Scores: 34101-TR-001 (CIGRE TB 761 Standard, Scale 1 - 5)', fontsize=10.5, fontweight='bold', pad=10)
+ax.set_title('PT Component Condition Scores: 34101-TR-001 (Overall HI = 85.0% / Good)', fontsize=11, fontweight='bold', pad=12)
 ax.grid(axis='y', linestyle=':', alpha=0.6)
-ax.legend(loc='lower right', fontsize=8)
+ax.legend(loc='lower right', fontsize=8.5, framealpha=0.95)
 
-for bar, s in zip(bars, scores):
+for bar, s, pct in zip(bars, scores, pct_labels):
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height + 0.12, f'{s:.2f}', ha='center', va='bottom', fontsize=9.5, fontweight='bold')
+    ax.text(bar.get_x() + bar.get_width()/2., height + 0.12, f'{s:.2f}\n({pct})', ha='center', va='bottom', fontsize=8.8, fontweight='bold')
 
 plt.tight_layout()
 plt.savefig(os.path.join(FIGURES_DIR, 'fig_5_1_hi_summary.png'), bbox_inches='tight')
