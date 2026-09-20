@@ -766,7 +766,7 @@
         <!-- Chart 1: DP Degradation Curves (2025 to 2125, Dynamic DP0) -->
         <div class="chart-box">
           <div class="chart-header">
-            <span class="chart-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
+            <span class="chart-title" id="chart-dp-title"><i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation (DP Curves)</span>
             <span style="font-size: 8.2px; color: #64748b; font-weight: 600;" id="chart-dp-subtitle">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
           </div>
           <div class="chart-canvas-container">
@@ -777,8 +777,8 @@
         <!-- Chart 2: Failure Probability (Weibull PoF) (2025 to 2125) -->
         <div class="chart-box">
           <div class="chart-header">
-            <span class="chart-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
-            <span style="font-size: 8.2px; color: #64748b; font-weight: 600;">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
+            <span class="chart-title" id="chart-pof-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
+            <span style="font-size: 8.2px; color: #64748b; font-weight: 600;" id="chart-pof-subtitle">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
           </div>
           <div class="chart-canvas-container">
             <canvas id="chart-weibull-pof"></canvas>
@@ -1906,9 +1906,17 @@
         document.getElementById('calc-pof-status').textContent = 'No Service Age Record';
       }
 
-      // Update Chart Subtitle
+      // Update Chart Titles & Subtitles with Transformer Name
+      const elChartDpTitle = document.getElementById('chart-dp-title');
+      if (elChartDpTitle) {
+        elChartDpTitle.innerHTML = `<i class="fa-solid fa-chart-line"></i> Cellulose Insulation Degradation: ${name} (DP Curves)`;
+      }
+      const elChartPofTitle = document.getElementById('chart-pof-title');
+      if (elChartPofTitle) {
+        elChartPofTitle.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Failure Probability: ${name} (Weibull PoF)`;
+      }
       const elSubtitle = document.getElementById('chart-dp-subtitle');
-      if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (CIGRE 761 / SINTEF)`;
+      if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (${name} | CIGRE 761 / SINTEF)`;
 
       // Intersections metadata for callout lines
       const intersections = [
@@ -1922,8 +1930,34 @@
 
       // Render Charts with Real Available Data
       const effectiveDP = dpVal !== null ? dpVal : 1000;
-      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : [], kSDM, sdMyersMoist);
-      renderWeibullChart(age !== null ? age : 20, currentYear);
+      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : [], kSDM, sdMyersMoist, name);
+      renderWeibullChart(age !== null ? age : 20, currentYear, name);
+
+      // Check if headless chart export is requested
+      const urlExportParams = new URLSearchParams(window.location.search);
+      if (urlExportParams.get('export_charts') === '1') {
+        setTimeout(async () => {
+          try {
+            const boxes = document.querySelectorAll('.chart-box');
+            if (boxes.length >= 2) {
+              const c1 = await html2canvas(boxes[0], { scale: 3, backgroundColor: '#ffffff', useCORS: true });
+              const c2 = await html2canvas(boxes[1], { scale: 3, backgroundColor: '#ffffff', useCORS: true });
+              const cAll = await html2canvas(document.querySelector('.charts-container'), { scale: 3, backgroundColor: '#ffffff', useCORS: true });
+              await fetch('/save_exported_charts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chart1: c1.toDataURL('image/png'),
+                  chart2: c2.toDataURL('image/png'),
+                  combined: cAll.toDataURL('image/png')
+                })
+              });
+            }
+          } catch (err) {
+            console.error('Auto-export error:', err);
+          }
+        }, 1500);
+      }
 
       // Signatures (Specific for Remaining Life Assessment Report per GPSC Directive)
       const testedName = 'Jirasak Suksakun';
@@ -2221,7 +2255,7 @@
       }
     };
 
-    function renderDegradationChart(currentDP, currentK, baseYear, intersections = [], kSDM = null, sdMyersMoist = null) {
+    function renderDegradationChart(currentDP, currentK, baseYear, intersections = [], kSDM = null, sdMyersMoist = null, unitName = '') {
       const ctx = document.getElementById('chart-dp-degradation');
       if (!ctx) return;
 
@@ -2272,7 +2306,7 @@
           labels: years,
           datasets: [
             {
-              label: 'Current (Operating Condition)',
+              label: unitName ? `Current Operating Condition (${unitName})` : 'Current (Operating Condition)',
               data: unitDP,
               borderColor: '#2563eb',
               backgroundColor: '#2563eb',
@@ -2398,7 +2432,7 @@
       });
     }
 
-    function renderWeibullChart(currentAge, baseYear) {
+    function renderWeibullChart(currentAge, baseYear, unitName = '') {
       const ctx = document.getElementById('chart-weibull-pof');
       if (!ctx) return;
 
@@ -2485,7 +2519,7 @@
               pointRadius: 0
             },
             {
-              label: `Current Operating Point (${baseYear}: ${currentAge} yrs, PoF=${currentPofVal}%)`,
+              label: unitName ? `Current Operating Point: ${unitName} (${baseYear}: ${currentAge} yrs, PoF=${currentPofVal}%)` : `Current Operating Point (${baseYear}: ${currentAge} yrs, PoF=${currentPofVal}%)`,
               data: unitPointData,
               borderColor: '#dc2626',
               backgroundColor: '#dc2626',

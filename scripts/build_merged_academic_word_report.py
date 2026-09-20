@@ -165,6 +165,14 @@ def generate_subsystem_scores_chart(output_path):
 generate_cigre_761_risk_matrix(os.path.join(FIGURES_DIR, 'fig_risk_matrix.png'))
 generate_subsystem_scores_chart(os.path.join(FIGURES_DIR, 'fig_5_1_hi_summary.png'))
 
+rl_dp_file = os.path.join(FIGURES_DIR, 'fig_remaining_life_dp.png')
+if not os.path.exists(rl_dp_file):
+    try:
+        from export_remaining_life_chart import export_charts_for_serial
+        export_charts_for_serial('PP0158B01')
+    except Exception as e:
+        print("Note on chart export:", e)
+
 print("Starting Merged Academic & Corporate Report Builder...")
 
 doc = Document()
@@ -510,17 +518,19 @@ if fig_hi_path and os.path.exists(fig_hi_path):
     r_c1.font.italic = True
 
 add_body_p(
-    "Expected Remaining Lifetime: Grounded in the verified solid insulation state (DP = 1,089 and paper moisture = 0.50% wt), the Arrhenius second-order degradation kinetics project an expected remaining lifetime of 64 to 78 years before reaching the critical mechanical end-of-life threshold (DP = 300) under standard ONAN operating conditions."
+    "Expected Remaining Lifetime: Grounded in the verified solid insulation state (DP = 1,089 from 2-FAL = 5 ppb) and actual operating environment (Moisture = 0.9% wt via SDMyers / 0.7% via DIRANA, O₂ in oil = 13,253 ppm, Hotspot = 51.1°C), the CIGRE TB 761 / SINTEF kinetic degradation model calculates a current remaining useful life of ~40.5 years before reaching the critical mechanical threshold (DP = 300, Target Year: 2066). Under standard normal conditions (dry and inert), remaining life extends up to ~77.9 years (Year 2103)."
 )
 
-fig_deg_path = get_fig_path('fig_6_3_degradation.png')
+fig_deg_path = get_fig_path('fig_remaining_life_dp.png')
+if not fig_deg_path:
+    fig_deg_path = get_fig_path('fig_6_3_degradation.png')
 if fig_deg_path and os.path.exists(fig_deg_path):
     p_f2 = doc.add_paragraph()
     p_f2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_f2.add_run().add_picture(fig_deg_path, width=Inches(5.4))
+    p_f2.add_run().add_picture(fig_deg_path, width=Inches(5.5))
     p_c2 = doc.add_paragraph()
     p_c2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_c2 = p_c2.add_run("Figure 2: Estimated Remaining Lifetime Degradation Curve (34101-TR-001)")
+    r_c2 = p_c2.add_run("Figure 2: CIGRE 761 / SINTEF Cellulose Insulation Degradation Curves (34101-TR-001)")
     r_c2.font.size = Pt(8.5)
     r_c2.font.italic = True
 
@@ -972,10 +982,23 @@ if fig_risk_p2 and os.path.exists(fig_risk_p2):
 
 style_heading_2("6.5 Expected Remaining Lifetime Modeling (SINTEF & Arrhenius)")
 add_body_p(
-    "Cellulose solid insulation degradation is modeled using the verified starting condition (DP = 1,089 from 2-FAL = 5 ppb and moisture = 0.50% wt via DIRANA). Modeling follows the second-order chain scission kinetic rate:\n"
+    "Cellulose solid insulation degradation is modeled using the verified starting condition (DP = 1,089 from 2-FAL = 5 ppb via Dominelli correlation and paper moisture = 0.70% wt via DIRANA FDS / 0.90% wt via SDMyers moisture equilibrium). Modeling follows the second-order chain scission kinetic rate per CIGRE TB 761 and SINTEF thermal-chemical model:\n"
     "    (1 / DP_end) - (1 / DP_start) = k * t\n"
-    "Hot-spot temperature calculated per IEC 60076-7 is θh = 55.1°C (average operating winding temperature 40°C + 15.1°C hotspot gradient under ONAN cooling). Under conservative Arrhenius dry kinetics (k = 1.50 x 10^-5 year^-1), the time required for cellulose to reach the critical mechanical threshold (DP = 300) is 161 years (> Year 2100). Even under worst-case degradation scenarios (moisture > 2.0% wt, continuous oxygen ingress), remaining life exceeds 53 years."
+    "Hot-spot temperature calculated per IEC 60076-7 is θh = 51.1°C (oil temperature 46.0°C + 5.1°C hotspot rise). Accounting for dissolved oxygen ingress (O₂ = 13,253 ppm in oil, classifying under SINTEF High O₂ regime ≥ 7,000 ppm), the kinetic aging rate is evaluated at k = 5.97 × 10^-5 year^-1. The time required for cellulose to reach the critical mechanical threshold (DP = 300) is evaluated at ~40.5 years (Target Year: 2066), while the ultimate paper embrittlement boundary (DP = 200) will be reached after ~68.4 years (Year 2093). Under standard normal operating conditions (moisture 0.5–2.0%, O₂ < 7,000 ppm, k = 3.10 × 10^-5 year^-1), the expected remaining life is ~77.9 years (Year 2103)."
 )
+
+fig_rl_comb = get_fig_path('fig_remaining_life_combined.png')
+if not fig_rl_comb:
+    fig_rl_comb = get_fig_path('fig_remaining_life_dp.png')
+if fig_rl_comb and os.path.exists(fig_rl_comb):
+    p_frl = doc.add_paragraph()
+    p_frl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_frl.add_run().add_picture(fig_rl_comb, width=Inches(5.5))
+    p_crl = doc.add_paragraph()
+    p_crl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r_crl = p_crl.add_run("Figure 10: CIGRE TB 761 / SINTEF Cellulose Degradation Curves and Weibull PoF Projection (34101-TR-001)")
+    r_crl.font.size = Pt(8.5)
+    r_crl.font.italic = True
 
 doc.add_page_break()
 
