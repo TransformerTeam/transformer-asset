@@ -1,9 +1,11 @@
 # ZIP exports
 *.zip
 
-# OS files
+# OS & Temporary Office files
 .DS_Store
 Thumbs.db
+~$*
+
 
 # Editor directories
 .vscode/
