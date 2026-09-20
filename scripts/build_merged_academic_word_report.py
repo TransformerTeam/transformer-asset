@@ -63,7 +63,6 @@ def generate_cigre_761_risk_matrix(output_path):
             c = get_color(score)
             rect = plt.Rectangle((pof-1, cof-1), 1, 1, facecolor=c, edgecolor='#FFFFFF', linewidth=2.5, alpha=0.9)
             ax.add_patch(rect)
-            ax.text(pof - 0.5, cof - 0.5, f'{score}', ha='center', va='center', fontsize=14, fontweight='bold', color='#FFFFFF')
 
     # Plot 34101-TR-001 point: PoF = 1, CoF = 4 (Cell center: x = 0.5, y = 3.5)
     target_x = 0.5
