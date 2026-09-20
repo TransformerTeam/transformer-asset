@@ -34,28 +34,30 @@ print("Generating verified technical figures from genuine 34101-TR-001 records..
 # 1. GENERATE AUTHENTIC CHARTS FOR 34101-TR-001
 # -------------------------------------------------------------
 
-# Fig 5-1: Actual Health Index Breakdown
-fig, ax = plt.subplots(figsize=(7.5, 3.4), dpi=200)
-components = ['Active Part', 'DGA', 'Oil Quality', 'HV Bushings', 'OLTC']
-# Real evaluated scores: Active Part = 4 (All standard tests Level A), DGA = 4 (DGAF = 5.94),
-# Oil Quality = 4 (OQF = 3.86), Bushings = 4 (All C1 & PF Level A), OLTC = 3 (Oil/Operations Level B/75%)
-scores = [4.0, 4.0, 3.86, 4.0, 3.0]
-colors = ['#16A34A', '#16A34A', '#16A34A', '#16A34A', '#CA8A04']
+# Fig 5-1: Actual Health Index Breakdown (CIGRE TB 761 1-5 Scale)
+fig, ax = plt.subplots(figsize=(7.5, 3.6), dpi=200)
+components = ['Active Part', 'HV Bushings', 'Oil Quality', 'DGA', 'OLTC']
+# CIGRE TB 761 Scale: 1 (Very Poor) to 5 (Optimal / As New)
+# Active Part = 5.0 (Level A), Bushings = 5.0 (Level A), Oil Quality = 4.83 (OQF 3.86/4.00 * 5),
+# DGA = 4.0 (Level B / CO Status 2), OLTC = 4.0 (Level B / 97k ops)
+scores = [5.0, 5.0, 4.83, 4.0, 4.0]
+colors = ['#16A34A', '#16A34A', '#16A34A', '#22C55E', '#EAB308']
 
-bars = ax.bar(components, scores, color=colors, width=0.55, edgecolor='#1E293B', linewidth=1)
-ax.set_ylim(0, 4.5)
-ax.axhline(3.5, color='#16A34A', linestyle='--', alpha=0.5, label='Good threshold (3.5)')
-ax.axhline(2.5, color='#CA8A04', linestyle='--', alpha=0.5, label='Acceptable threshold (2.5)')
-ax.set_ylabel('Condition Score (0 - 4)', fontsize=9, fontweight='bold')
-ax.set_title('Subsystem Condition Scores: 34101-TR-001 (Overall HI = 85.0% / Good)', fontsize=10, fontweight='bold', pad=10)
+bars = ax.bar(components, scores, color=colors, width=0.55, edgecolor='#1E293B', linewidth=1.2)
+ax.set_ylim(0, 5.5)
+ax.axhline(4.0, color='#16A34A', linestyle='--', alpha=0.6, label='Good / Normal Threshold (4.0)')
+ax.axhline(3.0, color='#EAB308', linestyle='--', alpha=0.6, label='Acceptable / Monitor Threshold (3.0)')
+ax.set_ylabel('Condition Score (1 - 5) [CIGRE TB 761]', fontsize=9.5, fontweight='bold')
+ax.set_title('Subsystem Condition Scores: 34101-TR-001 (CIGRE TB 761 Standard, Scale 1 - 5)', fontsize=10.5, fontweight='bold', pad=10)
 ax.grid(axis='y', linestyle=':', alpha=0.6)
+ax.legend(loc='lower right', fontsize=8)
 
 for bar, s in zip(bars, scores):
     height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2., height + 0.1, f'{s:.2f}', ha='center', va='bottom', fontsize=9, fontweight='bold')
+    ax.text(bar.get_x() + bar.get_width()/2., height + 0.12, f'{s:.2f}', ha='center', va='bottom', fontsize=9.5, fontweight='bold')
 
 plt.tight_layout()
-plt.savefig(os.path.join(FIGURES_DIR, 'fig_5_1_hi_summary.png'))
+plt.savefig(os.path.join(FIGURES_DIR, 'fig_5_1_hi_summary.png'), bbox_inches='tight')
 plt.close()
 
 # Annex B: Genuine DGA Gas Ratios (11 actual sample dates from MainTankOilData.csv)

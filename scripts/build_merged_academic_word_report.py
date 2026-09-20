@@ -120,8 +120,41 @@ def generate_cigre_761_risk_matrix(output_path):
     plt.close()
     print("CIGRE TB 761 5x5 Risk Matrix generated successfully!")
 
-# Ensure CIGRE TB 761 figure is generated
+def generate_subsystem_scores_chart(output_path):
+    """Generates Figure 1: Subsystem Condition Scores adhering to CIGRE TB 761 1-5 scale."""
+    fig, ax = plt.subplots(figsize=(7.5, 3.6), dpi=200)
+    components = ['Active Part', 'HV Bushings', 'Oil Quality', 'DGA', 'OLTC']
+    # CIGRE TB 761 Scale: 1 (Very Poor) to 5 (Optimal / As New)
+    # Active Part: 5.00 (All tests Level A)
+    # HV Bushings: 5.00 (All C1 & PF Level A)
+    # Oil Quality: 4.83 (OQF 3.86/4.00 converted to 5-scale: 96.5% * 5 = 4.83)
+    # DGA: 4.00 (Level B - Hydrocarbons baseline, CO Status 2)
+    # OLTC: 4.00 (Level B - Operations 97k ops, oil high BDV)
+    scores = [5.0, 5.0, 4.83, 4.0, 4.0]
+    colors = ['#16A34A', '#16A34A', '#16A34A', '#22C55E', '#EAB308']
+
+    bars = ax.bar(components, scores, color=colors, width=0.55, edgecolor='#1E293B', linewidth=1.2)
+    ax.set_ylim(0, 5.5)
+    ax.axhline(4.0, color='#16A34A', linestyle='--', alpha=0.6, label='Good / Normal Threshold (4.0)')
+    ax.axhline(3.0, color='#EAB308', linestyle='--', alpha=0.6, label='Acceptable / Monitor Threshold (3.0)')
+    ax.set_ylabel('Condition Score (1 - 5) [CIGRE TB 761]', fontsize=9.5, fontweight='bold')
+    ax.set_title('Subsystem Condition Scores: 34101-TR-001 (CIGRE TB 761 Standard, Scale 1 - 5)', fontsize=10.5, fontweight='bold', pad=10)
+    ax.grid(axis='y', linestyle=':', alpha=0.6)
+    ax.legend(loc='lower right', fontsize=8)
+
+    for bar, s in zip(bars, scores):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height + 0.12, f'{s:.2f}', ha='center', va='bottom', fontsize=9.5, fontweight='bold')
+
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, bbox_inches='tight')
+    plt.close()
+    print("CIGRE TB 761 1-5 Subsystem Condition Chart generated successfully!")
+
+# Ensure CIGRE TB 761 figures are generated
 generate_cigre_761_risk_matrix(os.path.join(FIGURES_DIR, 'fig_risk_matrix.png'))
+generate_subsystem_scores_chart(os.path.join(FIGURES_DIR, 'fig_5_1_hi_summary.png'))
 
 print("Starting Merged Academic & Corporate Report Builder...")
 
@@ -1209,5 +1242,10 @@ add_body_p(
 # SAVE MERGED WORD DOCUMENT
 # -------------------------------------------------------------
 out_docx_path = os.path.join(REPO_ROOT, "2026_Transformer_Life_Assessment_Report_34101-TR-001.docx")
-doc.save(out_docx_path)
-print(f"Merged Word Report successfully created at: {out_docx_path}")
+try:
+    doc.save(out_docx_path)
+    print(f"Merged Word Report successfully created at: {out_docx_path}")
+except PermissionError:
+    alt_docx_path = os.path.join(REPO_ROOT, "2026_Transformer_Life_Assessment_Report_34101-TR-001_Updated.docx")
+    doc.save(alt_docx_path)
+    print(f"Primary file locked by Word. Merged Word Report saved as: {alt_docx_path}")
