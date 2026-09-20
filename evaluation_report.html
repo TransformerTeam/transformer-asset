@@ -1318,10 +1318,169 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.15); opacity: 0.85; }
+    /* ========================================================================= */
+    /* PART 3: INTERACTIVE CRITICALITY & CONSEQUENCE OF FAILURE (CoF) STYLES    */
+    /* ========================================================================= */
+    .part3-toolbar-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin: 10px 0 12px 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
     }
+    .part3-kpi-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .part3-kpi-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .part3-kpi-label {
+      font-weight: 500;
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .part3-kpi-val {
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 12px;
+    }
+    .part3-kpi-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .part3-action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .part3-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .part3-btn-save {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+    }
+    .part3-btn-save:hover {
+      background: linear-gradient(135deg, #047857, #059669);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.45);
+    }
+    .part3-btn-reset {
+      background: #334155;
+      color: #e2e8f0;
+      border: 1px solid #475569;
+    }
+    .part3-btn-reset:hover {
+      background: #475569;
+      color: #ffffff;
+    }
+    .part3-score-select {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1.5px solid #cbd5e1;
+      background-color: #ffffff;
+      cursor: pointer;
+      width: 100%;
+      min-width: 125px;
+      transition: all 0.2s ease;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .part3-score-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    .part3-score-1 {
+      background-color: #ecfdf5 !important;
+      color: #047857 !important;
+      border-color: #10b981 !important;
+    }
+    .part3-score-2 {
+      background-color: #f0fdf4 !important;
+      color: #16a34a !important;
+      border-color: #84cc16 !important;
+    }
+    .part3-score-3 {
+      background-color: #fefce8 !important;
+      color: #ca8a04 !important;
+      border-color: #eab308 !important;
+    }
+    .part3-score-4 {
+      background-color: #fff7ed !important;
+      color: #c2410c !important;
+      border-color: #f97316 !important;
+    }
+    .part3-score-5 {
+      background-color: #fef2f2 !important;
+      color: #b91c1c !important;
+      border-color: #ef4444 !important;
+    }
+    .part3-scale-box {
+      font-size: 0.69rem;
+      line-height: 1.35;
+      color: #475569;
+      background: #f8fafc;
+      padding: 4px 6px;
+      border-radius: 4px;
+      border-left: 3px solid #94a3b8;
+    }
+    .part3-scale-item {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 1px;
+    }
+    .part3-scale-num {
+      font-weight: 700;
+      font-size: 0.68rem;
+      width: 12px;
+      text-align: center;
+      border-radius: 2px;
+      color: #ffffff;
+      padding: 0 2px;
+    }
+    .part3-sn-1 { background: #10b981; }
+    .part3-sn-2 { background: #84cc16; }
+    .part3-sn-3 { background: #eab308; }
+    .part3-sn-4 { background: #f97316; }
+    .part3-sn-5 { background: #ef4444; }
   </style>
 
   <!-- Theme Editor & Engine -->
@@ -1539,27 +1698,59 @@
 
 
     <!-- ========================================================================= -->
-    <!-- PART 3: IMPACT INDEX (CONSEQUENCE OF FAILURE & RISK) -->
+    <!-- PART 3: IMPACT INDEX (CONSEQUENCE OF FAILURE & RISK CRITICALITY) -->
     <!-- ========================================================================= -->
-    <div class="part-3-section no-print" id="part-3-wrapper">
+    <div class="part-3-section" id="part-3-wrapper">
       <div class="part-banner part-banner-3">
-        <span><i class="fa-solid fa-triangle-exclamation"></i> Part 3: Impact Index (Consequence of Failure & Criticality)</span>
-        <span class="part-banner-subtitle">Financial, Grid & Safety Risk Impact Assessment</span>
+        <span><i class="fa-solid fa-triangle-exclamation"></i> Part 3: Impact Index (Consequence of Failure &amp; Criticality)</span>
+        <span class="part-banner-subtitle">CIGRE TB 761 &amp; GPSC Asset Criticality Matrix (10 Operational, Financial &amp; Safety Criteria)</span>
+      </div>
+
+      <!-- Executive Interactive Toolbar -->
+      <div class="part3-toolbar-container no-print" id="part3-toolbar">
+        <div class="part3-kpi-group">
+          <div class="part3-kpi-chip">
+            <span class="part3-kpi-label"><i class="fa-solid fa-calculator"></i> Composite CoF:</span>
+            <span class="part3-kpi-val" id="part3-live-cof">2.80 / 5.00</span>
+            <span class="part3-kpi-badge badge-warn" id="part3-live-cof-badge">Moderate</span>
+          </div>
+          <div class="part3-kpi-chip">
+            <span class="part3-kpi-label"><i class="fa-solid fa-heart-pulse"></i> Linked PoF:</span>
+            <span class="part3-kpi-val" id="part3-live-pof">1 (HI 94%)</span>
+            <span class="part3-kpi-badge badge-good" id="part3-live-pof-badge">Very Low</span>
+          </div>
+          <div class="part3-kpi-chip part3-kpi-chip-risk">
+            <span class="part3-kpi-label"><i class="fa-solid fa-shield-halved"></i> 5×5 Risk Matrix:</span>
+            <span class="part3-kpi-val" id="part3-live-risk">PoF 1 × CoF 2.80 = 2.80 (Low Risk)</span>
+          </div>
+          <div class="part3-kpi-chip" id="part3-saved-status-chip" style="display: none; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
+            <span class="part3-kpi-label" style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> บันทึกแล้ว</span>
+            <span class="part3-kpi-val" id="part3-saved-time" style="color: #6ee7b7; font-size: 10.5px; font-weight: 500;"></span>
+          </div>
+        </div>
+        <div class="part3-action-group">
+          <button type="button" class="part3-btn part3-btn-save" onclick="savePart3Assessment()" id="btn-save-part3" title="บันทึกคะแนนการประเมินลงในหน่วยความจำเบราว์เซอร์">
+            <i class="fa-solid fa-floppy-disk"></i> บันทึกผลการประเมิน Part 3
+          </button>
+          <button type="button" class="part3-btn part3-btn-reset" onclick="resetPart3Assessment()" id="btn-reset-part3" title="คืนค่าการประเมินกลับสู่ค่ามาตรฐานตามประเภทและขนาดหม้อแปลง">
+            <i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น
+          </button>
+        </div>
       </div>
 
       <table class="eval-table" id="part3-table">
         <thead>
           <tr>
-            <th class="th-part3" style="width: 3%;">#</th>
-            <th class="th-part3" style="width: 19%;">Test Item</th>
-            <th class="th-part3" style="width: 16%;">Criteria &amp; Limit</th>
-            <th class="th-part3" style="width: 9%;">Standards</th>
-            <th class="th-part3" style="width: 7%;">Test Date</th>
-            <th class="th-part3" style="width: 11%;">Measurement Value</th>
-            <th class="th-part3" style="width: 10%;">Score<br><span style="font-size:0.62rem; font-weight:normal;">(1 Critical–5 Excellent)</span></th>
-            <th class="th-part3" style="width: 6%; text-align:center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
-            <th class="th-part3" style="width: 8%; text-align:center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
-            <th class="th-part3" style="width: 11%;">Recommendation</th>
+            <th class="th-part3" style="width: 3%; text-align: center;">#</th>
+            <th class="th-part3" style="width: 20%;">Evaluation Item &amp; Scope<br><span style="font-size:0.62rem; font-weight:normal;">(หัวข้อเกณฑ์การประเมินผลกระทบ)</span></th>
+            <th class="th-part3" style="width: 19%;">Impact Criteria Matrix<br><span style="font-size:0.62rem; font-weight:normal;">(เกณฑ์ระดับ 1–5 ตาม CIGRE 761)</span></th>
+            <th class="th-part3" style="width: 8%;">Standards</th>
+            <th class="th-part3" style="width: 7%; text-align: center;">Assessment<br><span style="font-size:0.62rem; font-weight:normal;">Date</span></th>
+            <th class="th-part3" style="width: 18%;">Operating Condition<br><span style="font-size:0.62rem; font-weight:normal;">(สภาวะการทำงานที่ประเมิน)</span></th>
+            <th class="th-part3" style="width: 10%; text-align: center;">Score (1–5)<br><span style="font-size:0.62rem; font-weight:normal;">(1 ต่ำมาก – 5 วิกฤต)</span></th>
+            <th class="th-part3" style="width: 5%; text-align: center;">Weight<br><span style="font-size:0.62rem; font-weight:normal;">(%)</span></th>
+            <th class="th-part3" style="width: 6%; text-align: center;">Weighted<br><span style="font-size:0.62rem; font-weight:normal;">Score</span></th>
+            <th class="th-part3" style="width: 11%;">Recommendation<br><span style="font-size:0.62rem; font-weight:normal;">(มาตรการรองรับ)</span></th>
           </tr>
         </thead>
         <tbody id="part3-table-body">
@@ -3595,67 +3786,614 @@
       tbody.appendChild(sumTr);
     }
 
-    // ==========================================
-    // RENDER PART 3: IMPACT INDEX (CRITICALITY)
-    // ==========================================
+    // =========================================================================
+    // PART 3: INTERACTIVE IMPACT INDEX (CONSEQUENCE OF FAILURE & CRITICALITY)
+    // CIGRE TB 761 Standard / GPSC Asset Management Matrix (10 Criteria)
+    // =========================================================================
+    const PART3_CRITERIA_CONFIG = [
+      {
+        id: 'financial',
+        item: 'Financial losses (MTHB/Day)',
+        thaiTitle: 'มูลค่าความเสียหายจากการขายไฟฟ้าให้ลูกค้าไม่ได้ (ลบ./วัน)',
+        desc: 'Loss of revenue from unsupplied electrical energy to customers (MTHB/day)',
+        standard: 'CIGRE TB 761 / GPSC',
+        weight: 10,
+        scales: [
+          { score: 1, label: '< 1', full: '< 1 MTHB/Day', rec: 'Routine monitoring; financial risk is minimal.' },
+          { score: 2, label: '2 - 5', full: '2 - 5 MTHB/Day', rec: 'Routine monitoring; evaluate revenue loss backup.' },
+          { score: 3, label: '6 - 10', full: '6 - 10 MTHB/Day', rec: 'Prepare financial contingency and load transfer plan.' },
+          { score: 4, label: '11 - 14', full: '11 - 14 MTHB/Day', rec: 'Establish priority restoration and standby power supply.' },
+          { score: 5, label: '≥ 15', full: '≥ 15 MTHB/Day', rec: 'Critical revenue loss; implement urgent risk mitigation & spare TR readiness.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' || mva >= 80) ? 5 : ((sType === 'UAT' || mva >= 25) ? 4 : (mva >= 10 ? 3 : (mva >= 2 ? 2 : 1)))
+      },
+      {
+        id: 'damage',
+        item: 'Equipment damage cost (MTHB)',
+        thaiTitle: 'มูลค่าความเสียหายของหม้อแปลงไฟฟ้า (ลบ.)',
+        desc: 'Direct transformer physical damage and replacement cost (MTHB)',
+        standard: 'CIGRE TB 761 / GPSC',
+        weight: 10,
+        scales: [
+          { score: 1, label: '< 2', full: '< 2 MTHB', rec: 'Standard insurance and routine inspection.' },
+          { score: 2, label: '2 - 4', full: '2 - 4 MTHB', rec: 'Standard asset maintenance and asset value tracking.' },
+          { score: 3, label: '5 - 7', full: '5 - 7 MTHB', rec: 'Review capital expenditure spare parts strategy.' },
+          { score: 4, label: '8 - 10', full: '8 - 10 MTHB', rec: 'High asset value; maintain rapid workshop repair agreement.' },
+          { score: 5, label: '> 10', full: '> 10 MTHB', rec: 'Very high capital exposure; verify complete spare transformer coverage.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' || mva >= 50) ? 5 : ((sType === 'UAT' || mva >= 20) ? 4 : (mva >= 5 ? 3 : (mva >= 2 ? 2 : 1)))
+      },
+      {
+        id: 'n1',
+        item: 'N-1 Criteria',
+        thaiTitle: 'ความพร้อมของระบบสำรองกรณีหม้อแปลงชำรุดเสียหาย',
+        desc: 'แหล่งพลังงานไฟฟ้ามีกำลังสำรองหรือมีเครือข่ายที่เพียงพอกับความต้องการใช้ไฟฟ้าและสามารถจ่ายไฟได้แม้ว่าอุปกรณ์ตัวใดตัวหนึ่งหรือส่วนใดส่วนหนึ่งของระบบเกิดชำรุดเสียหายจนไม่สามารถใช้งานได้',
+        standard: 'GPSC Grid Code',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'Yes', full: 'Yes (มีระบบสำรอง N-1 สมบูรณ์ 100%)', rec: 'Verify automatic tie breaker & transfer switching logic periodically.' },
+          { score: 2, label: 'Minor (>85%)', full: 'Minor / สำรองได้เกือบสมบูรณ์ (>85%)', rec: 'Routine N-1 transfer path inspection.' },
+          { score: 3, label: 'Partial transfer', full: 'Partial transfer / โอนย้ายโหลดได้บางส่วน (50-85%)', rec: 'Maintain selective load shedding procedure and verify peak load margins.' },
+          { score: 4, label: 'Limited (<50%)', full: 'Limited transfer / โอนย้ายโหลดได้จำกัด (<50%)', rec: 'Review mobile transformer or emergency mobile tie-in capability.' },
+          { score: 5, label: 'No', full: 'No (ไม่มีระบบสำรอง N-1 / ปลดโหลดทันที)', rec: 'High single-point-of-failure risk; prioritize redundant backup feeder or spare TR.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' ? 5 : (sType === 'UAT' ? 3 : 1))
+      },
+      {
+        id: 'feeder',
+        item: 'Feeder Importance',
+        thaiTitle: 'ความสำคัญของหม้อแปลงไฟฟ้า แบ่งตามความสำคัญและการใช้งาน',
+        desc: 'ความสำคัญของหม้อแปลงไฟฟ้า แบ่งตามความสำคัญและการใช้งาน (Auxiliary, UAT, GSUT/Distribution)',
+        standard: 'GPSC Asset Standard',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'Auxiliary', full: 'Auxiliary (หม้อแปลงช่วยระบบบริการ)', rec: 'Standard auxiliary equipment preventive maintenance.' },
+          { score: 2, label: 'Station Svc', full: 'Station Service / หม้อแปลงบริการสถานี', rec: 'Scheduled service check during unit outage.' },
+          { score: 3, label: 'UAT', full: 'UAT (Unit Auxiliary Transformer - จ่ายไฟระบบหลักโรงไฟฟ้า)', rec: 'Coordinate maintenance with generating block overhaul window.' },
+          { score: 4, label: 'Main Feeder', full: 'Main Feeder / หม้อแปลงสายส่งหลัก', rec: 'Intensify online monitoring and thermal scanning on main bus.' },
+          { score: 5, label: 'GSUT/Distribution', full: 'GSUT / Distribution (หม้อแปลงเชื่อมต่อส่งออกกริดหลัก)', rec: 'Highest operational priority; maintain continuous DGA & PD online surveillance.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' ? 5 : (sType === 'Distribution' ? 5 : (sType === 'UAT' ? 3 : (mva >= 40 ? 5 : (mva >= 15 ? 3 : 1)))))
+      },
+      {
+        id: 'recovery',
+        item: 'Recovery Time (Week)',
+        thaiTitle: 'เวลาในการนำหม้อแปลงไฟฟ้ากลับเข้าระบบ (สัปดาห์)',
+        desc: 'เวลาในการนำหม้อแปลงไฟฟ้ากลับเข้าระบบ กรณีเกิดเหตุขัดข้องหรือเสียหาย',
+        standard: 'CIGRE TB 761 / GPSC',
+        weight: 10,
+        scales: [
+          { score: 1, label: '< 1', full: '< 1 สัปดาห์ (< 1 Week)', rec: 'Rapid recovery achievable through on-site ready spare or quick repair.' },
+          { score: 2, label: '1 - 4', full: '1 - 4 สัปดาห์ (1 - 4 Weeks)', rec: 'Standard component replacement turnaround.' },
+          { score: 3, label: '5 - 8', full: '5 - 8 สัปดาห์ (5 - 8 Weeks)', rec: 'Pre-align with qualified heavy repair vendors & crane access.' },
+          { score: 4, label: '9 - 11', full: '9 - 11 สัปดาห์ (9 - 11 Weeks)', rec: 'Establish strategic spare procurement contract to shorten lead time.' },
+          { score: 5, label: '≥ 12', full: '≥ 12 สัปดาห์ (≥ 12 Weeks)', rec: 'Prolonged outage risk; ensure hot spare unit available in fleet inventory.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' || mva >= 80) ? 5 : ((sType === 'UAT' || mva >= 25) ? 3 : 2)
+      },
+      {
+        id: 'network',
+        item: 'Network Stability',
+        thaiTitle: 'เสถียรภาพของระบบส่งจ่ายกำลังไฟฟ้า',
+        desc: 'เสถียรภาพของระบบส่งจ่ายกำลังไฟฟ้า เมื่อหม้อแปลงปลดวงจรฉับพลัน',
+        standard: 'GPSC Grid Code',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'No Impact', full: 'ไม่กระทบกับเสถียรภาพของระบบส่งจ่ายกำลังไฟฟ้า', rec: 'Routine power system stability review.' },
+          { score: 2, label: 'Transient', full: 'กระทบชั่วคราว เสถียรภาพคงเดิม ไม่ปลดโหลด', rec: 'Monitor reactive power margins and bus voltage profile.' },
+          { score: 3, label: 'Minor', full: 'กระทบกับเสถียรภาพของระบบส่งจ่ายกำลังไฟฟ้าเล็กน้อย ไม่สั่งปลดโหลดออกจากระบบ', rec: 'Review protection relay settings and transient stability coordination.' },
+          { score: 4, label: 'Moderate', full: 'กระทบเสถียรภาพปานกลาง เสี่ยงต่อการหลุดของโรงไฟฟ้าข้างเคียง', rec: 'Maintain special protection scheme (SPS) and under-frequency defense.' },
+          { score: 5, label: 'Severe', full: 'กระทบกับเสถียรภาพของระบบอย่างมาก และหรือสั่งปลดโหลดบางส่วนออกจากระบบ', rec: 'Severe grid threat; coordinate immediate grid defense and N-1 dispatch constraints.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' ? 5 : (sType === 'UAT' ? 3 : 1))
+      },
+      {
+        id: 'customer',
+        item: 'Customer impact',
+        thaiTitle: 'ผลกระทบกับระบบไฟฟ้าของลูกค้า',
+        desc: 'ผลกระทบกับระบบไฟฟ้าของลูกค้า (คุณภาพไฟฟ้า, แรงดันตก, การปลดลูกค้า)',
+        standard: 'GPSC Quality Standard',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'No Impact', full: 'ไม่กระทบกับลูกค้า (Zero Customer Impact)', rec: 'Maintain standard power quality compliance.' },
+          { score: 2, label: 'Voltage Dip', full: 'แรงดันกระพริบชั่วคราว ไม่กระทบสายการผลิตลูกค้า', rec: 'Monitor power quality event logs and customer feeder PQmeters.' },
+          { score: 3, label: 'Minor Fluct', full: 'ไม่เกิดปัญหากับกระบวนการผลิตของลูกค้า (แรงดันไฟฟ้าไม่เสถียรชั่วคราว ไม่ปลดลูกค้าออกจากระบบ)', rec: 'Maintain communication with sensitive industrial customers.' },
+          { score: 4, label: 'Partial Stop', full: 'กระทบกระบวนการผลิตลูกค้าบางส่วน (แรงดันไฟฟ้าตกเกินเกณฑ์)', rec: 'Review customer UPS / ride-through capability and provide early warning.' },
+          { score: 5, label: 'Severe Stop', full: 'เกิดผลกระทบกับกระบวนการผลิตของลูกค้าอย่างมาก (แรงดันไฟฟ้าตก ปลดลูกค้าออกจากระบบ)', rec: 'Major customer outage risk; implement dedicated emergency backup agreements.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' ? 4 : (sType === 'Distribution' ? 5 : (sType === 'UAT' ? 3 : 1)))
+      },
+      {
+        id: 'image',
+        item: 'Image and Media Relations',
+        thaiTitle: 'ภาพลักษณ์และสื่อโซเชียล',
+        desc: 'ภาพลักษณ์และสื่อโซเชียล เมื่อเกิดเหตุขัดข้องหรือความเสียหาย',
+        standard: 'GPSC Corporate Risk',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'No Impact', full: 'ไม่กระทบกับภาพลักษณ์บริษัท', rec: 'Standard public relation routine.' },
+          { score: 2, label: 'Internal Only', full: 'รับทราบเฉพาะภายในองค์กร / ไม่มีผลกระทบภายนอก', rec: 'Internal event logging and communication.' },
+          { score: 3, label: 'Minor Inquiry', full: 'ภาพลักษณ์ของบริษัทเสียหายเล็กน้อย ได้รับการสอบถามจากชุมชนใกล้เคียง', rec: 'Community relations briefing and factual transparent communication.' },
+          { score: 4, label: 'Local Media', full: 'เกิดกระแสข่าวในระดับท้องถิ่น / สื่อท้องถิ่นให้ความสนใจ', rec: 'Activate plant spokesperson and prepared public relation statement.' },
+          { score: 5, label: 'Severe Crisis', full: 'ภาพลักษณ์ของบริษัทได้รับความเสียหายอย่างรุนแรงทั้งในสื่อและโซเชียลมีเดีย', rec: 'Crisis Management Team activation and corporate-level media response.' }
+        ],
+        defaultScore: (mva, sType) => (sType === 'GSUT' ? 4 : (sType === 'UAT' ? 3 : 1))
+      },
+      {
+        id: 'environment',
+        item: 'Enviroment',
+        thaiTitle: 'ผลกระทบด้านสิ่งแวดล้อมขณะหม้อแปลงผิดปกติ',
+        desc: 'ผลกระทบด้านสิ่งแวดล้อมขณะหม้อแปลงผิดปกติ (ควันดำ, น้ำมันหกรั่วไหล, ไฟไหม้)',
+        standard: 'ISO 14001 / GPSC HSE',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'Zero Impact', full: 'ไม่เกิดผลกระทบด้านสิ่งแวดล้อม (ไม่มีควันดำปกคลุมพื้นที่ ไม่มีน้ำมันหกรั่วไหล)', rec: 'Routine bund wall and oil drainage sump check.' },
+          { score: 2, label: 'Contained', full: 'น้ำมันซึมในบ่อดักน้ำมัน ไม่มีการปนเปื้อนภายนอก', rec: 'Inspect transformer oil containment pit & separator valve regularly.' },
+          { score: 3, label: 'Minor Spill', full: 'เกิดผลกระทบกับสิ่งแวดล้อมเล็กน้อยสามารถควบคุมได้ (เกิดควันดำและหรือน้ำมันหกรั่วไหลเล็กน้อย สามารถควบคุมได้)', rec: 'Keep spill response kits ready at site and verify oil containment seals.' },
+          { score: 4, label: 'Spill Out', full: 'น้ำมันรั่วไหลนอกบ่อกักเก็บเล็กน้อย หรือควันดำปกคลุมบริเวณจำกัด', rec: 'Conduct environmental containment drill and check rapid isolation valves.' },
+          { score: 5, label: 'Major Spill/Fire', full: 'เกิดผลกระทบด้านสิ่งแวดล้อมบริเวณกว้าง ต้องใช้หน่วยงานภายนอกเพื่อควบคุม (เกิดไฟไหม้ มีควันดำเป็นบริเวณกว้าง และหรือมีน้ำมันหกรั่วไหลจำนวนมาก)', rec: 'Major environmental catastrophe risk; maintain automatic oil drainage to remote fire pit.' }
+        ],
+        defaultScore: (mva, sType) => (mva >= 80 ? 4 : (mva >= 25 ? 3 : (mva >= 5 ? 2 : 1)))
+      },
+      {
+        id: 'safety',
+        item: 'Safety',
+        thaiTitle: 'ผลกระทบด้านความปลอดภัยขณะหม้อแปลงผิดปกติ',
+        desc: 'ผลกระทบด้านความปลอดภัยขณะหม้อแปลงผิดปกติ (ความปลอดภัยบุคคล, ทรัพย์สิน, ระบบดับเพลิง)',
+        standard: 'ISO 45001 / GPSC HSE',
+        weight: 10,
+        scales: [
+          { score: 1, label: 'Zero Hazard', full: 'ไม่เกิดอันตรายต่อบุคคลและทรัพย์สิน (มีระบบป้องกันที่ดี อยู่ในพื้นที่ปิด มีระบบดับเพลิงครบ)', rec: 'Routine fire protection & blast wall inspection.' },
+          { score: 2, label: 'First Aid', full: 'เกิดเหตุตกใจ ปฐมพยาบาลเบื้องต้น ไม่มีทรัพย์สินเสียหาย', rec: 'Enforce perimeter safety boundary during normal energized operation.' },
+          { score: 3, label: 'Minor Injury', full: 'บุคคลบาดเจ็บเล็กน้อยและทรัพย์สินเสียหายบางส่วน (มีระบบป้องกันที่ดี มีระบบดับเพลิง พื้นที่บางส่วนเปิดโล่ง)', rec: 'Inspect water spray deluge system and fire barrier walls periodically.' },
+          { score: 4, label: 'Hospitalized', full: 'บุคคลบาดเจ็บต้องนำส่งโรงพยาบาล ทรัพย์สินเสียหายระดับปานกลาง', rec: 'Verify automatic fast depressurization system (AFDS) & emergency evacuation route.' },
+          { score: 5, label: 'Catastrophic', full: 'บุคคลบาดเจ็บสาหัสหรือเสียชีวิต ทรัพย์สินข้างเคียงได้รับความเสียหายอย่างหนัก (ระบบป้องกันไม่ดี พื้นที่ทุกส่วนเปิดโล่ง ไม่มีระบบดับเพลิง)', rec: 'Critical life safety exposure; strictly enforce explosion hazard boundary & fire mitigation.' }
+        ],
+        defaultScore: (mva, sType) => (mva >= 80 ? 4 : (mva >= 25 ? 3 : (mva >= 5 ? 2 : 1)))
+      }
+    ];
+
+    // Global state for Part 3 scores
+    let currentPart3State = {
+      serial: '',
+      scores: {},
+      item: null,
+      savedAt: null
+    };
+
+    function getPart3StorageKey(serial) {
+      return 'gpsc_part3_criticality_' + String(serial || '').trim();
+    }
+
+    function loadPart3SavedScores(serial) {
+      if (!serial) return null;
+      try {
+        const raw = localStorage.getItem(getPart3StorageKey(serial));
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.warn('Failed to load Part 3 scores from localStorage:', e);
+      }
+      return null;
+    }
+
+    function getPart3ScoreColor(score) {
+      if (score === 1) return '#047857';
+      if (score === 2) return '#16a34a';
+      if (score === 3) return '#ca8a04';
+      if (score === 4) return '#c2410c';
+      return '#b91c1c';
+    }
+
+    function getPart3BadgeClass(score) {
+      if (score === 1) return 'badge-good';
+      if (score === 2) return 'badge-good';
+      if (score === 3) return 'badge-warn';
+      if (score === 4) return 'badge-orange';
+      return 'badge-danger';
+    }
+
+    function showPart3Toast(message, iconClass, iconColor) {
+      let toast = document.getElementById('refresh-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'refresh-toast';
+        toast.className = 'toast-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="${iconClass || 'fa-solid fa-circle-check'}" style="color: ${iconColor || '#10b981'}; font-size: 1.15rem;"></i> <span style="font-weight: 600;">${message}</span>`;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    function updatePart3LiveSummary() {
+      let totalWS = 0;
+      PART3_CRITERIA_CONFIG.forEach(c => {
+        const score = currentPart3State.scores[c.id] || 3;
+        totalWS += (score / 5) * c.weight;
+      });
+
+      const compositeCof = Math.round(((totalWS / 100) * 5) * 100) / 100;
+
+      // CoF Category & Name
+      let cofLevel = 3;
+      let cofName = 'Moderate Impact';
+      let cofThai = 'ผลกระทบปานกลาง';
+      let cofColor = '#ca8a04';
+      let cofBadgeClass = 'badge-warn';
+
+      if (compositeCof < 1.8) {
+        cofLevel = 1; cofName = 'Negligible Impact'; cofThai = 'ผลกระทบต่ำมาก'; cofColor = '#047857'; cofBadgeClass = 'badge-good';
+      } else if (compositeCof < 2.6) {
+        cofLevel = 2; cofName = 'Minor Impact'; cofThai = 'ผลกระทบต่ำ'; cofColor = '#16a34a'; cofBadgeClass = 'badge-good';
+      } else if (compositeCof < 3.4) {
+        cofLevel = 3; cofName = 'Moderate Impact'; cofThai = 'ผลกระทบปานกลาง'; cofColor = '#ca8a04'; cofBadgeClass = 'badge-warn';
+      } else if (compositeCof < 4.2) {
+        cofLevel = 4; cofName = 'Major Impact'; cofThai = 'ผลกระทบสูง'; cofColor = '#c2410c'; cofBadgeClass = 'badge-orange';
+      } else {
+        cofLevel = 5; cofName = 'Catastrophic Impact'; cofThai = 'ผลกระทบวิกฤต/สูงมาก'; cofColor = '#b91c1c'; cofBadgeClass = 'badge-danger';
+      }
+
+      // Calculate Linked PoF from current item HI
+      const item = currentPart3State.item || {};
+      let hi = 80;
+      try {
+        if (typeof computeHI === 'function') {
+          const comp = computeHI(item);
+          if (comp && comp.percentHIVal > 0) hi = comp.percentHIVal;
+        }
+      } catch (e) {
+        // Fallback to static or provided item HI
+      }
+      if (hi === 80 && (item.healthIndex || item['Condition Health Index'])) {
+        const parsed = parseFloat(item.healthIndex || item['Condition Health Index']);
+        if (!isNaN(parsed) && parsed > 0) hi = parsed;
+      }
+
+      let pof = 1;
+      let pofDesc = 'Very Low';
+      let pofBadgeClass = 'badge-good';
+      if (hi <= 50) { pof = 5; pofDesc = 'Very High'; pofBadgeClass = 'badge-danger'; }
+      else if (hi <= 65) { pof = 4; pofDesc = 'High'; pofBadgeClass = 'badge-orange'; }
+      else if (hi <= 75) { pof = 3; pofDesc = 'Medium'; pofBadgeClass = 'badge-warn'; }
+      else if (hi <= 88) { pof = 2; pofDesc = 'Low'; pofBadgeClass = 'badge-good'; }
+      else { pof = 1; pofDesc = 'Very Low'; pofBadgeClass = 'badge-good'; }
+
+      // 5x5 Risk Matrix: PoF x CoF
+      const riskScore = Math.round(pof * compositeCof * 10) / 10;
+      let riskLevelName = 'Low Risk';
+      let riskThai = 'ความเสี่ยงต่ำ';
+      let riskColor = '#15803d';
+      let riskBadgeClass = 'badge-good';
+
+      if (riskScore >= 15) {
+        riskLevelName = 'Critical Risk'; riskThai = 'ความเสี่ยงวิกฤต'; riskColor = '#b91c1c'; riskBadgeClass = 'badge-danger';
+      } else if (riskScore >= 10) {
+        riskLevelName = 'High Risk'; riskThai = 'ความเสี่ยงสูง'; riskColor = '#ea580c'; riskBadgeClass = 'badge-orange';
+      } else if (riskScore >= 5) {
+        riskLevelName = 'Medium Risk'; riskThai = 'ความเสี่ยงปานกลาง'; riskColor = '#ca8a04'; riskBadgeClass = 'badge-warn';
+      } else {
+        riskLevelName = 'Low Risk'; riskThai = 'ความเสี่ยงต่ำ'; riskColor = '#15803d'; riskBadgeClass = 'badge-good';
+      }
+
+      // Update Toolbar KPI Chips
+      const liveCofEl = document.getElementById('part3-live-cof');
+      if (liveCofEl) liveCofEl.textContent = `${compositeCof.toFixed(2)} / 5.00`;
+
+      const liveCofBadge = document.getElementById('part3-live-cof-badge');
+      if (liveCofBadge) {
+        liveCofBadge.textContent = cofName;
+        liveCofBadge.className = `part3-kpi-badge ${cofBadgeClass}`;
+      }
+
+      const livePofEl = document.getElementById('part3-live-pof');
+      if (livePofEl) livePofEl.textContent = `PoF ${pof} (HI ${hi.toFixed(1)}%)`;
+
+      const livePofBadge = document.getElementById('part3-live-pof-badge');
+      if (livePofBadge) {
+        livePofBadge.textContent = pofDesc;
+        livePofBadge.className = `part3-kpi-badge ${pofBadgeClass}`;
+      }
+
+      const liveRiskEl = document.getElementById('part3-live-risk');
+      if (liveRiskEl) {
+        liveRiskEl.innerHTML = `PoF ${pof} × CoF ${compositeCof.toFixed(2)} = <strong style="color: ${riskColor}; font-size: 13px;">${riskScore.toFixed(1)}</strong> (${riskLevelName})`;
+      }
+
+      // Update Summary Row in Table Body
+      const sumCond = document.getElementById('part3-sum-cond');
+      if (sumCond) {
+        sumCond.innerHTML = `<span style="color: ${cofColor}; font-weight: 700;">${cofName}</span><br><span style="font-size: 0.72rem; color: #64748b; font-weight: normal;">(${cofThai})</span>`;
+      }
+
+      const sumBadge = document.getElementById('part3-sum-badge');
+      if (sumBadge) {
+        sumBadge.textContent = `CoF ${compositeCof.toFixed(2)} (${cofName})`;
+        sumBadge.className = `badge-status ${cofBadgeClass}`;
+      }
+
+      const sumWs = document.getElementById('part3-sum-ws');
+      if (sumWs) {
+        sumWs.textContent = totalWS.toFixed(2);
+      }
+
+      const sumRisk = document.getElementById('part3-sum-risk');
+      if (sumRisk) {
+        sumRisk.innerHTML = `<span style="color: ${riskColor}; font-weight: 700;">${riskLevelName} (${riskThai})</span><br><span style="font-size: 0.72rem; color: #64748b;">PoF ${pof} × CoF ${compositeCof.toFixed(2)} = <strong>${riskScore.toFixed(1)}</strong></span>`;
+      }
+    }
+
+    function onPart3ScoreChange(criterionId, newScore) {
+      newScore = parseInt(newScore, 10);
+      if (isNaN(newScore) || newScore < 1 || newScore > 5) newScore = 3;
+
+      currentPart3State.scores[criterionId] = newScore;
+
+      // Update Row Elements
+      const c = PART3_CRITERIA_CONFIG.find(x => x.id === criterionId);
+      if (!c) return;
+
+      const scaleObj = c.scales.find(s => s.score === newScore) || c.scales[0];
+      const condEl = document.getElementById(`part3-cond-${criterionId}`);
+      if (condEl) {
+        condEl.textContent = scaleObj.full;
+        condEl.style.color = getPart3ScoreColor(newScore);
+      }
+
+      const wsEl = document.getElementById(`part3-ws-${criterionId}`);
+      if (wsEl) {
+        const weightedScore = (newScore / 5) * c.weight;
+        wsEl.textContent = weightedScore.toFixed(2);
+      }
+
+      const recEl = document.getElementById(`part3-rec-${criterionId}`);
+      if (recEl) {
+        recEl.textContent = scaleObj.rec;
+      }
+
+      const selEl = document.getElementById(`part3-sel-${criterionId}`);
+      if (selEl) {
+        selEl.className = `part3-score-select part3-score-${newScore}`;
+      }
+
+      // Update Toolbar KPI chips and Summary Row
+      updatePart3LiveSummary();
+    }
+
+    function savePart3Assessment() {
+      const serial = currentPart3State.serial || currentSerial;
+      if (!serial) {
+        alert('กรุณาเลือกหม้อแปลงก่อนบันทึก');
+        return;
+      }
+
+      // Compute current composite CoF
+      let totalWS = 0;
+      PART3_CRITERIA_CONFIG.forEach(c => {
+        const score = currentPart3State.scores[c.id] || 3;
+        totalWS += (score / 5) * c.weight;
+      });
+      const compositeCof = Math.round(((totalWS / 100) * 5) * 100) / 100;
+
+      const dataToSave = {
+        serial: serial,
+        scores: currentPart3State.scores,
+        savedAt: new Date().toISOString(),
+        compositeCof: compositeCof
+      };
+
+      try {
+        localStorage.setItem(getPart3StorageKey(serial), JSON.stringify(dataToSave));
+        currentPart3State.savedAt = dataToSave.savedAt;
+
+        // Update UI indicator
+        const chip = document.getElementById('part3-saved-status-chip');
+        const timeEl = document.getElementById('part3-saved-time');
+        if (chip && timeEl) {
+          chip.style.display = 'inline-flex';
+          const dt = new Date(dataToSave.savedAt);
+          timeEl.textContent = dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // Show Toast Notification
+        showPart3Toast(
+          `บันทึกผลการประเมิน Part 3 ของ ${serial} เรียบร้อยแล้ว (CoF: ${compositeCof.toFixed(2)})`,
+          'fa-solid fa-circle-check',
+          '#10b981'
+        );
+      } catch (e) {
+        console.error('Error saving Part 3:', e);
+        alert('ไม่สามารถบันทึกลงหน่วยความจำเบราว์เซอร์ได้: ' + e.message);
+      }
+    }
+
+    function resetPart3Assessment() {
+      const serial = currentPart3State.serial || currentSerial;
+      if (!serial) return;
+
+      if (!confirm(`คุณต้องการคืนค่าการประเมิน Part 3 ของหม้อแปลง ${serial} กลับเป็นค่ามาตรฐานหรือไม่?`)) {
+        return;
+      }
+
+      try {
+        localStorage.removeItem(getPart3StorageKey(serial));
+      } catch (e) {
+        console.warn(e);
+      }
+
+      // Re-render with default scores
+      currentPart3State.savedAt = null;
+      renderPart3Table(currentPart3State.item || { serial: serial });
+
+      showPart3Toast(
+        `คืนค่าการประเมิน Part 3 ของ ${serial} เป็นค่าเริ่มต้นเรียบร้อยแล้ว`,
+        'fa-solid fa-rotate-left',
+        '#3b82f6'
+      );
+    }
+
     function renderPart3Table(item) {
       const tbody = document.getElementById('part3-table-body');
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      const criteriaData = (typeof window !== 'undefined' && window.EVALUATION_CRITERIA_DATA) ? window.EVALUATION_CRITERIA_DATA : ((typeof EVALUATION_CRITERIA_DATA !== 'undefined') ? EVALUATION_CRITERIA_DATA : []);
-      if (!criteriaData || criteriaData.length === 0) return;
+      if (!item) return;
 
-      const part3Items = criteriaData.filter(r => r.category === 'Impact Index' && r.item && r.item !== 'Criteria');
-      // Each Impact item gets equal weight across 100%
-      const itemWeight = part3Items.length > 0 ? 100 / part3Items.length : 0;
-      let idx = 1;
+      const serialVal = item.serial || item.SERIAL_NUMBER || item['Serial No'] || item['Serial No.'] || item.Serial_No || item.Serial_no || item.Name || currentSerial || '';
+      currentPart3State.serial = serialVal;
+      currentPart3State.item = item;
+
+      // Extract MVA and Service Type
+      const trInfoItem = (typeof trInfoCsvData !== 'undefined') ? findLatestRecord(trInfoCsvData, serialVal) : null;
+      const sTypeRaw = String(
+        item['Service Type'] || item.serviceType || item.SERVICE_TYPE || item.Service_Type || item.APPLICATION || (trInfoItem && (trInfoItem['Service Type'] || trInfoItem.SERVICE_TYPE || trInfoItem.APPLICATION)) || ''
+      ).toUpperCase();
+      let sType = 'GSUT';
+      if (sTypeRaw.includes('UAT')) sType = 'UAT';
+      else if (sTypeRaw.includes('AUX')) sType = 'Auxiliary';
+      else if (sTypeRaw.includes('DIST')) sType = 'Distribution';
+
+      const powerStr = String(item.ratedPower || item['Rated Power (MVA)'] || item['Rated Power'] || (trInfoItem && trInfoItem['Rated Power (MVA)']) || '0');
+      const mva = parseFloat(powerStr) || 0;
+
+      // Check saved scores in localStorage
+      const savedData = loadPart3SavedScores(serialVal);
+      currentPart3State.scores = {};
+
+      if (savedData && savedData.scores) {
+        currentPart3State.scores = Object.assign({}, savedData.scores);
+        currentPart3State.savedAt = savedData.savedAt;
+      } else {
+        // Compute smart defaults based on MVA and Service Type
+        PART3_CRITERIA_CONFIG.forEach(c => {
+          currentPart3State.scores[c.id] = c.defaultScore(mva, sType);
+        });
+        currentPart3State.savedAt = null;
+      }
+
+      // Update Saved Badge Chip in Toolbar
+      const chip = document.getElementById('part3-saved-status-chip');
+      const timeEl = document.getElementById('part3-saved-time');
+      if (chip && timeEl) {
+        if (currentPart3State.savedAt) {
+          chip.style.display = 'inline-flex';
+          const dt = new Date(currentPart3State.savedAt);
+          timeEl.textContent = dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        } else {
+          chip.style.display = 'none';
+        }
+      }
+
+      // Get Assessment Date
+      const dateStr = item.testDate || item.date || item.Date || '19-Jan-2026';
+      const formattedDate = (typeof formatDate === 'function' && dateStr !== '19-Jan-2026') ? formatDate(dateStr) : dateStr;
+
+      // Render 10 Rows
       let totalWS = 0;
-
-      part3Items.forEach(row => {
-        const tr = document.createElement('tr');
-        const rating = 4; // Impact default Good
-        const weightedScore = (rating / 5) * itemWeight;
+      PART3_CRITERIA_CONFIG.forEach((c, idx) => {
+        const score = currentPart3State.scores[c.id] || 3;
+        const weightedScore = (score / 5) * c.weight;
         totalWS += weightedScore;
 
-        let recVal = 'No Impact / Low Risk';
-        if (row.item.includes('Financial')) recVal = 'Loss < 0.5 MTHB/Day';
-        if (row.item.includes('Equipment damage')) recVal = 'Cost < 5.0 MTHB';
-        if (row.item.includes('N-1')) recVal = 'Yes (Full Backup)';
-        if (row.item.includes('Feeder')) recVal = 'Auxiliary Feeder';
-        if (row.item.includes('Recovery')) recVal = '< 2 Weeks';
-        if (row.item.includes('Network')) recVal = 'No Grid Impact';
-        if (row.item.includes('Customer')) recVal = 'No Customer Impact';
-        if (row.item.includes('Safety')) recVal = 'No Safety Hazard';
+        const scaleObj = c.scales.find(s => s.score === score) || c.scales[0];
+        const condColor = getPart3ScoreColor(score);
 
+        // Build compact scale box HTML
+        let scaleHtml = '<div class="part3-scale-box">';
+        c.scales.forEach(s => {
+          scaleHtml += `
+            <div class="part3-scale-item">
+              <span class="part3-scale-num part3-sn-${s.score}">${s.score}</span>
+              <span><strong>${s.label}:</strong> ${s.score === 1 || s.score === 5 || s.score === 3 ? s.full.substring(0, 32) : s.label}</span>
+            </div>`;
+        });
+        scaleHtml += '</div>';
+
+        // Select options HTML
+        let selectOptionsHtml = '';
+        c.scales.forEach(s => {
+          const sel = (s.score === score) ? 'selected' : '';
+          selectOptionsHtml += `<option value="${s.score}" ${sel}>${s.score} - ${s.label}</option>`;
+        });
+
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="text-align: center; font-weight: 600; color: #64748b;">${idx++}</td>
-          <td style="font-weight: 600;">${row.item}</td>
-          <td style="color: #334155;">${row.criteria || '-'}</td>
-          <td style="color: #475569; font-weight: 500;">GPSC Risk Criteria</td>
-          <td style="text-align: center; font-weight: 500; color: #475569;">19-Jan-2026</td>
-          <td style="font-weight: 700; color: #b91c1c;">${recVal}</td>
-          <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-          <td style="text-align: center; font-weight: 600; color: #475569;">${itemWeight.toFixed(1)}%</td>
-          <td style="text-align: center; font-weight: 700; color: #15803d;">${weightedScore.toFixed(2)}</td>
-          <td style="color: #475569;">-</td>
+          <td style="text-align: center; font-weight: 700; color: #64748b;">${idx + 1}</td>
+          <td>
+            <div style="font-weight: 700; color: #1e293b; font-size: 0.78rem;">${c.item}</div>
+            <div style="font-size: 0.71rem; color: #64748b; line-height: 1.25; margin-top: 2px;">${c.thaiTitle}</div>
+          </td>
+          <td>
+            ${scaleHtml}
+          </td>
+          <td style="color: #475569; font-weight: 600; font-size: 0.74rem;">${c.standard}</td>
+          <td style="text-align: center; font-weight: 500; color: #475569; font-size: 0.74rem;">${formattedDate}</td>
+          <td>
+            <div id="part3-cond-${c.id}" style="font-weight: 700; font-size: 0.75rem; line-height: 1.35; color: ${condColor};">
+              ${scaleObj.full}
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <select class="part3-score-select part3-score-${score}" id="part3-sel-${c.id}" onchange="onPart3ScoreChange('${c.id}', this.value)" title="คลิกเพื่อแก้ไขคะแนนระดับผลกระทบ (1-5)">
+              ${selectOptionsHtml}
+            </select>
+          </td>
+          <td style="text-align: center; font-weight: 600; color: #475569;">${c.weight.toFixed(1)}%</td>
+          <td style="text-align: center; font-weight: 700; color: #1e293b;" id="part3-ws-${c.id}">
+            ${weightedScore.toFixed(2)}
+          </td>
+          <td>
+            <div id="part3-rec-${c.id}" style="font-size: 0.72rem; color: #475569; line-height: 1.25;">
+              ${scaleObj.rec}
+            </div>
+          </td>
         `;
         tbody.appendChild(tr);
       });
 
       // Part 3 Summary Row
       const sumTr = document.createElement('tr');
-      sumTr.style.background = '#fef2f2';
+      sumTr.style.background = '#f8fafc';
       sumTr.style.fontWeight = '700';
+      sumTr.style.borderTop = '2px solid #cbd5e1';
       sumTr.innerHTML = `
-        <td colspan="5" style="text-align: right; color: #991b1b; font-weight: 700;">OVERALL RISK MATRIX POSITION (PoF x CoF):</td>
-        <td style="font-weight: 700; color: #15803d;">Low Risk Category</td>
-        <td style="text-align: center;"><span class="badge-status badge-good">4 Good</span></td>
-        <td style="text-align: center; color: #991b1b; font-weight: 700;">100%</td>
-        <td style="text-align: center; color: #15803d; font-weight: 700;">${totalWS.toFixed(2)}</td>
-        <td style="color: #991b1b;">-</td>
+        <td colspan="5" style="text-align: right; color: #991b1b; font-weight: 700; padding: 10px 8px; font-size: 0.84rem;">
+          <i class="fa-solid fa-chart-pie"></i> OVERALL CONSEQUENCE OF FAILURE (CoF) &amp; RISK MATRIX POSITION:
+        </td>
+        <td id="part3-sum-cond" style="font-weight: 700; color: #ca8a04; font-size: 0.8rem; line-height: 1.3;">
+          -
+        </td>
+        <td style="text-align: center;">
+          <span class="badge-status badge-warn" id="part3-sum-badge" style="padding: 4px 10px; font-size: 0.78rem;">
+            CoF -
+          </span>
+        </td>
+        <td style="text-align: center; color: #475569; font-weight: 700;">100.0%</td>
+        <td style="text-align: center; color: #1e293b; font-weight: 800; font-size: 0.88rem;" id="part3-sum-ws">
+          ${totalWS.toFixed(2)}
+        </td>
+        <td id="part3-sum-risk" style="color: #991b1b; font-size: 0.78rem; font-weight: 700; line-height: 1.3;">
+          -
+        </td>
       `;
       tbody.appendChild(sumTr);
+
+      // Trigger initial summary calculation & toolbar sync
+      updatePart3LiveSummary();
+    }
+
+    // Expose Part 3 interactive engine to global window
+    if (typeof window !== 'undefined') {
+      window.PART3_CRITERIA_CONFIG = PART3_CRITERIA_CONFIG;
+      window.currentPart3State = currentPart3State;
+      window.getPart3StorageKey = getPart3StorageKey;
+      window.loadPart3SavedScores = loadPart3SavedScores;
+      window.savePart3Assessment = savePart3Assessment;
+      window.resetPart3Assessment = resetPart3Assessment;
+      window.onPart3ScoreChange = onPart3ScoreChange;
+      window.renderPart3Table = renderPart3Table;
+      window.updatePart3LiveSummary = updatePart3LiveSummary;
     }
 
     function getMeasuredValueForItem(itemName, item, ptName, subName) {
