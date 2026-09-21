@@ -270,6 +270,7 @@ select.filter-pill-select option,
 .kpi-hero-card.card-warning::before { background: var(--risk-med); }
 .kpi-hero-card.card-success::before { background: var(--risk-low); }
 .kpi-hero-card.card-info::before { background: #38bdf8; }
+.kpi-hero-card.card-matrix::before { background: #818cf8; }
 
 .kpi-card-header {
   display: flex;

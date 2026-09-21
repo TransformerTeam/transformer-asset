@@ -323,12 +323,41 @@ function renderExecutiveKPIs() {
     `;
   }
 
-  document.getElementById('kpi-avg-hi').textContent = avgHI !== 'N/A' ? `${avgHI}%` : 'N/A';
-  document.getElementById('kpi-hi-breakdown').innerHTML = `
-    <span class="pill-badge pill-good"><i class="fa-solid fa-circle-check"></i> ${goodPct}% Good</span>
-    <span class="pill-badge pill-fair"><i class="fa-solid fa-circle-exclamation"></i> ${fairPct}% Fair</span>
-    <span class="pill-badge pill-crit"><i class="fa-solid fa-triangle-exclamation"></i> ${critPct}% Crit</span>
-  `;
+  // Card 2: Risk Matrix Transformers (ผลรวมหม้อแปลง ตาม Risk Matrix)
+  let critCount = 0, highCount = 0, medCount = 0, lowCount = 0;
+  filteredData.forEach(d => {
+    if (d.riskScore >= 16) critCount++;
+    else if (d.riskScore >= 12) highCount++;
+    else if (d.riskScore >= 6) medCount++;
+    else lowCount++;
+  });
+
+  const elMatrixTotal = document.getElementById('kpi-matrix-total');
+  if (elMatrixTotal) elMatrixTotal.textContent = total;
+
+  const elMatrixSub = document.getElementById('kpi-matrix-sub');
+  if (elMatrixSub) {
+    elMatrixSub.innerHTML = `
+      <div class="kpi-sub-line line-main">
+        <span><strong style="color:var(--risk-extreme);">${critCount}</strong> Extreme</span> <span class="sep">|</span> <span><strong style="color:var(--risk-high);">${highCount}</strong> High</span>
+      </div>
+      <div class="kpi-sub-line line-detail">
+        <span><strong style="color:var(--risk-med);">${medCount}</strong> Medium</span> <span class="sep">|</span> <span><strong style="color:var(--risk-low);">${lowCount}</strong> Low</span>
+      </div>
+    `;
+  }
+
+  // Fallbacks if legacy elements exist
+  const elAvgHI = document.getElementById('kpi-avg-hi');
+  if (elAvgHI) elAvgHI.textContent = avgHI !== 'N/A' ? `${avgHI}%` : 'N/A';
+  const elHiBreakdown = document.getElementById('kpi-hi-breakdown');
+  if (elHiBreakdown) {
+    elHiBreakdown.innerHTML = `
+      <span class="pill-badge pill-good"><i class="fa-solid fa-circle-check"></i> ${goodPct}% Good</span>
+      <span class="pill-badge pill-fair"><i class="fa-solid fa-circle-exclamation"></i> ${fairPct}% Fair</span>
+      <span class="pill-badge pill-crit"><i class="fa-solid fa-triangle-exclamation"></i> ${critPct}% Crit</span>
+    `;
+  }
 
   document.getElementById('kpi-high-risk').textContent = critical + warning;
   document.getElementById('kpi-risk-sub').innerHTML = `
