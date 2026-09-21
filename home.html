@@ -7,7 +7,7 @@
   
   <!-- Main Stylesheet & Theme System -->
   <link rel="stylesheet" href="style.css?v=20260918_2235">
-  <link rel="stylesheet" href="home.css?v=20260921_2230">
+  <link rel="stylesheet" href="home.css?v=20260921_2305">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -134,20 +134,28 @@
                 </div>
               </div>
 
-              <!-- 5x5 Risk Matrix Transformers: Extreme, High, Medium, Low -->
+              <!-- 5x5 Risk Matrix Transformers: 4 Quadrants -->
               <div class="kpi-hero-card card-matrix">
                 <div class="kpi-card-header">
                   <span class="kpi-card-label">Risk Matrix (5×5)</span>
                   <i class="fa-solid fa-table-cells kpi-card-icon" style="color:#818cf8;"></i>
                 </div>
-                <div class="kpi-matrix-content" id="kpi-matrix-sub">
-                  <div class="kpi-matrix-row">
-                    <span class="risk-item">Extreme <strong style="color:var(--risk-extreme);">21</strong><span class="sep">,</span></span>
-                    <span class="risk-item">High <strong style="color:var(--risk-high);">38</strong></span>
+                <div class="kpi-matrix-quadrant" id="kpi-matrix-sub">
+                  <div class="quadrant-cell extreme">
+                    <span class="q-lbl">Extreme</span>
+                    <span class="q-val" style="color:var(--risk-extreme);">21</span>
                   </div>
-                  <div class="kpi-matrix-row">
-                    <span class="risk-item">Medium <strong style="color:var(--risk-med);">45</strong><span class="sep">,</span></span>
-                    <span class="risk-item">Low <strong style="color:var(--risk-low);">144</strong></span>
+                  <div class="quadrant-cell high">
+                    <span class="q-lbl">High</span>
+                    <span class="q-val" style="color:var(--risk-high);">38</span>
+                  </div>
+                  <div class="quadrant-cell med">
+                    <span class="q-lbl">Medium</span>
+                    <span class="q-val" style="color:var(--risk-med);">45</span>
+                  </div>
+                  <div class="quadrant-cell low">
+                    <span class="q-lbl">Low</span>
+                    <span class="q-val" style="color:var(--risk-low);">144</span>
                   </div>
                 </div>
               </div>
@@ -572,7 +580,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260921_2230"></script>
+  <script src="home.js?v=20260921_2305"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->

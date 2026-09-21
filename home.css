@@ -319,43 +319,97 @@ select.filter-pill-select option,
   flex-wrap: nowrap;
 }
 
-/* Card 2: 5x5 Risk Matrix Equal-Size Content */
-.kpi-matrix-content {
+/* Card 2: 4-Quadrant 5x5 Risk Matrix */
+.kpi-matrix-quadrant {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+  flex: 1;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.kpi-matrix-quadrant .quadrant-cell {
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
-  flex: 1;
-  padding: 6px 0 4px 0;
+  gap: 2px;
+  transition: filter 0.15s ease, background 0.15s ease;
 }
 
-.kpi-matrix-row {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  white-space: nowrap;
-  line-height: 1.35;
+.kpi-matrix-quadrant .quadrant-cell:hover {
+  filter: brightness(1.15);
 }
 
-.kpi-matrix-row .risk-item {
+.kpi-matrix-quadrant .quadrant-cell.extreme {
+  background: rgba(239, 68, 68, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kpi-matrix-quadrant .quadrant-cell.high {
+  background: rgba(249, 115, 22, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kpi-matrix-quadrant .quadrant-cell.med {
+  background: rgba(234, 179, 8, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kpi-matrix-quadrant .quadrant-cell.low {
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.kpi-matrix-quadrant .q-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
   color: var(--exec-text-title);
-  font-size: 0.95rem;
-  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
 }
 
-.kpi-matrix-row .risk-item strong {
+.kpi-matrix-quadrant .q-val {
   font-size: 1.35rem;
   font-weight: 800;
   font-family: 'Outfit', sans-serif;
   line-height: 1;
-  margin-left: 3px;
 }
 
-.kpi-matrix-row .risk-item .sep {
-  color: var(--exec-text-body);
-  opacity: 0.7;
-  font-weight: 500;
-  font-size: 1rem;
+/* Light Theme Overrides for Quadrant */
+[data-theme="light"] .kpi-matrix-quadrant {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+[data-theme="light"] .kpi-matrix-quadrant .quadrant-cell.extreme {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .kpi-matrix-quadrant .quadrant-cell.high {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .kpi-matrix-quadrant .quadrant-cell.med {
+  background: rgba(234, 179, 8, 0.08);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .kpi-matrix-quadrant .quadrant-cell.low {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .kpi-matrix-quadrant .q-lbl {
+  color: #475569;
 }
 
 .kpi-sub-line {
