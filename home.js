@@ -338,11 +338,13 @@ function renderExecutiveKPIs() {
   const elMatrixSub = document.getElementById('kpi-matrix-sub');
   if (elMatrixSub) {
     elMatrixSub.innerHTML = `
-      <div class="kpi-sub-line line-main">
-        <span><strong style="color:var(--risk-extreme);">${critCount}</strong> Extreme</span> <span class="sep">|</span> <span><strong style="color:var(--risk-high);">${highCount}</strong> High</span>
+      <div class="kpi-matrix-row">
+        <span class="risk-item">Extreme <strong style="color:var(--risk-extreme);">${critCount}</strong><span class="sep">,</span></span>
+        <span class="risk-item">High <strong style="color:var(--risk-high);">${highCount}</strong></span>
       </div>
-      <div class="kpi-sub-line line-detail">
-        <span><strong style="color:var(--risk-med);">${medCount}</strong> Medium</span> <span class="sep">|</span> <span><strong style="color:var(--risk-low);">${lowCount}</strong> Low</span>
+      <div class="kpi-matrix-row">
+        <span class="risk-item">Medium <strong style="color:var(--risk-med);">${medCount}</strong><span class="sep">,</span></span>
+        <span class="risk-item">Low <strong style="color:var(--risk-low);">${lowCount}</strong></span>
       </div>
     `;
   }

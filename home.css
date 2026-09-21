@@ -319,6 +319,45 @@ select.filter-pill-select option,
   flex-wrap: nowrap;
 }
 
+/* Card 2: 5x5 Risk Matrix Equal-Size Content */
+.kpi-matrix-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  padding: 6px 0 4px 0;
+}
+
+.kpi-matrix-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  white-space: nowrap;
+  line-height: 1.35;
+}
+
+.kpi-matrix-row .risk-item {
+  color: var(--exec-text-title);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.kpi-matrix-row .risk-item strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  line-height: 1;
+  margin-left: 3px;
+}
+
+.kpi-matrix-row .risk-item .sep {
+  color: var(--exec-text-body);
+  opacity: 0.7;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
 .kpi-sub-line {
   width: 100%;
   white-space: nowrap;
