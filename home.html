@@ -577,10 +577,25 @@
     </div>
   </div>
 
+  <!-- Interactive Quick CoF Editor Modal -->
+  <div class="exec-modal-backdrop" id="quick-cof-modal" onclick="if(event.target===this) closeQuickCofModal()">
+    <div class="exec-modal-content" style="max-width: 640px;">
+      <div class="exec-modal-header">
+        <h3 class="exec-modal-title" id="quick-cof-title">
+          <i class="fa-solid fa-pen-to-square text-indigo-400"></i> ปรับค่าผลกระทบความเสียหาย (CoF)
+        </h3>
+        <button class="exec-modal-close" onclick="closeQuickCofModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="exec-modal-body" id="quick-cof-body">
+        <!-- Populated dynamically by home.js -->
+      </div>
+    </div>
+  </div>
+
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260922_0730"></script>
+  <script src="home.js?v=20260922_0745"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->

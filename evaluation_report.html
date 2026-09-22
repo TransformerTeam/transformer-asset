@@ -3967,11 +3967,24 @@
 
     function loadPart3SavedScores(serial) {
       if (!serial) return null;
-      try {
-        const raw = localStorage.getItem(getPart3StorageKey(serial));
-        if (raw) return JSON.parse(raw);
-      } catch (e) {
-        console.warn('Failed to load Part 3 scores from localStorage:', e);
+      const item = currentPart3State.item || {};
+      const keysToTry = [
+        serial,
+        item['Serial No'],
+        item.serial,
+        item.SERIAL_NUMBER,
+        item['Equipment Name'],
+        item.name,
+        item.EQUIPMENT_NAME
+      ].filter(Boolean);
+
+      for (const k of keysToTry) {
+        try {
+          const raw = localStorage.getItem(getPart3StorageKey(k));
+          if (raw) return JSON.parse(raw);
+        } catch (e) {
+          console.warn('Failed to load Part 3 scores from localStorage:', e);
+        }
       }
       return null;
     }
@@ -4052,109 +4065,94 @@
       }
 
       let pof = 1;
-      let pofDesc = 'Very Low';
-      let pofBadgeClass = 'badge-good';
-      if (hi <= 50) { pof = 5; pofDesc = 'Very High'; pofBadgeClass = 'badge-danger'; }
-      else if (hi <= 65) { pof = 4; pofDesc = 'High'; pofBadgeClass = 'badge-orange'; }
-      else if (hi <= 75) { pof = 3; pofDesc = 'Medium'; pofBadgeClass = 'badge-warn'; }
-      else if (hi <= 88) { pof = 2; pofDesc = 'Low'; pofBadgeClass = 'badge-good'; }
-      else { pof = 1; pofDesc = 'Very Low'; pofBadgeClass = 'badge-good'; }
+      if (hi <= 50) pof = 5;
+      else if (hi <= 68) pof = 4;
+      else if (hi <= 79) pof = 3;
+      else if (hi <= 88) pof = 2;
+      else pof = 1;
 
-      // 5x5 Risk Matrix: PoF x CoF
-      const riskScore = Math.round(pof * compositeCof * 10) / 10;
-      let riskLevelName = 'Low Risk';
-      let riskThai = 'ความเสี่ยงต่ำ';
-      let riskColor = '#15803d';
-      let riskBadgeClass = 'badge-good';
+      const riskScore = pof * cofLevel;
 
-      if (riskScore >= 15) {
-        riskLevelName = 'Critical Risk'; riskThai = 'ความเสี่ยงวิกฤต'; riskColor = '#b91c1c'; riskBadgeClass = 'badge-danger';
-      } else if (riskScore >= 10) {
-        riskLevelName = 'High Risk'; riskThai = 'ความเสี่ยงสูง'; riskColor = '#ea580c'; riskBadgeClass = 'badge-orange';
-      } else if (riskScore >= 5) {
-        riskLevelName = 'Medium Risk'; riskThai = 'ความเสี่ยงปานกลาง'; riskColor = '#ca8a04'; riskBadgeClass = 'badge-warn';
-      } else {
-        riskLevelName = 'Low Risk'; riskThai = 'ความเสี่ยงต่ำ'; riskColor = '#15803d'; riskBadgeClass = 'badge-good';
+      // Update Summary Row
+      const condEl = document.getElementById('part3-sum-cond');
+      const badgeEl = document.getElementById('part3-sum-badge');
+      const wsEl = document.getElementById('part3-sum-ws');
+      const riskEl = document.getElementById('part3-sum-risk');
+
+      if (condEl) {
+        condEl.style.color = cofColor;
+        condEl.innerHTML = `${cofName}<br/><span style="font-size: 0.72rem; font-weight: normal; color: #64748b;">${cofThai}</span>`;
+      }
+      if (badgeEl) {
+        badgeEl.className = `badge-status ${cofBadgeClass}`;
+        badgeEl.textContent = `CoF Level ${cofLevel} (${compositeCof.toFixed(2)})`;
+      }
+      if (wsEl) {
+        wsEl.textContent = totalWS.toFixed(2);
+      }
+      if (riskEl) {
+        let riskColor = riskScore >= 16 ? '#dc2626' : (riskScore >= 12 ? '#ea580c' : (riskScore >= 6 ? '#ca8a04' : '#16a34a'));
+        let riskZone = riskScore >= 16 ? 'Extreme Risk (โซนสีแดง)' : (riskScore >= 12 ? 'High Risk (โซนสีส้ม)' : (riskScore >= 6 ? 'Medium Risk (โซนสีเหลือง)' : 'Low Risk (โซนสีเขียว)'));
+        riskEl.style.color = riskColor;
+        riskEl.innerHTML = `Risk Score: <strong>${riskScore}</strong> (PoF ${pof} × CoF ${cofLevel})<br/><span style="font-size: 0.72rem; font-weight: normal;">${riskZone}</span>`;
       }
 
       // Update Toolbar KPI Chips
-      const liveCofEl = document.getElementById('part3-live-cof');
-      if (liveCofEl) liveCofEl.textContent = `${compositeCof.toFixed(2)} / 5.00`;
+      const chipScore = document.getElementById('part3-kpi-score');
+      const chipCat = document.getElementById('part3-kpi-category');
+      const chipRisk = document.getElementById('part3-kpi-risk');
 
-      const liveCofBadge = document.getElementById('part3-live-cof-badge');
-      if (liveCofBadge) {
-        liveCofBadge.textContent = cofName;
-        liveCofBadge.className = `part3-kpi-badge ${cofBadgeClass}`;
+      if (chipScore) {
+        chipScore.textContent = `${compositeCof.toFixed(2)} / 5.00`;
       }
-
-      const livePofEl = document.getElementById('part3-live-pof');
-      if (livePofEl) livePofEl.textContent = `PoF ${pof} (HI ${hi.toFixed(1)}%)`;
-
-      const livePofBadge = document.getElementById('part3-live-pof-badge');
-      if (livePofBadge) {
-        livePofBadge.textContent = pofDesc;
-        livePofBadge.className = `part3-kpi-badge ${pofBadgeClass}`;
+      if (chipCat) {
+        chipCat.className = `badge-status ${cofBadgeClass}`;
+        chipCat.textContent = `Level ${cofLevel} - ${cofName}`;
       }
-
-      const liveRiskEl = document.getElementById('part3-live-risk');
-      if (liveRiskEl) {
-        liveRiskEl.innerHTML = `PoF ${pof} × CoF ${compositeCof.toFixed(2)} = <strong style="color: ${riskColor}; font-size: 13px;">${riskScore.toFixed(1)}</strong> (${riskLevelName})`;
-      }
-
-      // Update Summary Row in Table Body
-      const sumCond = document.getElementById('part3-sum-cond');
-      if (sumCond) {
-        sumCond.innerHTML = `<span style="color: ${cofColor}; font-weight: 700;">${cofName}</span><br><span style="font-size: 0.72rem; color: #64748b; font-weight: normal;">(${cofThai})</span>`;
-      }
-
-      const sumBadge = document.getElementById('part3-sum-badge');
-      if (sumBadge) {
-        sumBadge.textContent = `CoF ${compositeCof.toFixed(2)} (${cofName})`;
-        sumBadge.className = `badge-status ${cofBadgeClass}`;
-      }
-
-      const sumWs = document.getElementById('part3-sum-ws');
-      if (sumWs) {
-        sumWs.textContent = totalWS.toFixed(2);
-      }
-
-      const sumRisk = document.getElementById('part3-sum-risk');
-      if (sumRisk) {
-        sumRisk.innerHTML = `<span style="color: ${riskColor}; font-weight: 700;">${riskLevelName} (${riskThai})</span><br><span style="font-size: 0.72rem; color: #64748b;">PoF ${pof} × CoF ${compositeCof.toFixed(2)} = <strong>${riskScore.toFixed(1)}</strong></span>`;
+      if (chipRisk) {
+        let riskBadgeClass = riskScore >= 16 ? 'badge-danger' : (riskScore >= 12 ? 'badge-orange' : (riskScore >= 6 ? 'badge-warn' : 'badge-good'));
+        chipRisk.className = `badge-status ${riskBadgeClass}`;
+        chipRisk.textContent = `Score ${riskScore} (PoF ${pof} × CoF ${cofLevel})`;
       }
     }
 
     function onPart3ScoreChange(criterionId, newScore) {
-      newScore = parseInt(newScore, 10);
-      if (isNaN(newScore) || newScore < 1 || newScore > 5) newScore = 3;
+      currentPart3State.scores[criterionId] = parseInt(newScore, 10);
 
-      currentPart3State.scores[criterionId] = newScore;
+      const row = document.getElementById(`part3-row-${criterionId}`);
+      if (!row) return;
 
-      // Update Row Elements
       const c = PART3_CRITERIA_CONFIG.find(x => x.id === criterionId);
       if (!c) return;
 
-      const scaleObj = c.scales.find(s => s.score === newScore) || c.scales[0];
-      const condEl = document.getElementById(`part3-cond-${criterionId}`);
-      if (condEl) {
-        condEl.textContent = scaleObj.full;
-        condEl.style.color = getPart3ScoreColor(newScore);
+      const scaleObj = c.scales.find(s => s.score === parseInt(newScore, 10)) || c.scales[0];
+      const condColor = getPart3ScoreColor(scaleObj.score);
+      const badgeClass = getPart3BadgeClass(scaleObj.score);
+      const weightedScore = (scaleObj.score / 5) * c.weight;
+
+      // Update Condition Description cell
+      const condCell = row.querySelector('.part3-cond-cell');
+      if (condCell) {
+        condCell.style.color = condColor;
+        condCell.innerHTML = `<strong>${scaleObj.label}</strong><br/><span style="font-size: 0.72rem; color: #475569;">${scaleObj.full}</span>`;
       }
 
-      const wsEl = document.getElementById(`part3-ws-${criterionId}`);
-      if (wsEl) {
-        const weightedScore = (newScore / 5) * c.weight;
-        wsEl.textContent = weightedScore.toFixed(2);
+      // Update Badge cell
+      const badgeCell = row.querySelector('.part3-badge-cell');
+      if (badgeCell) {
+        badgeCell.innerHTML = `<span class="badge-status ${badgeClass}" style="padding: 2px 8px; font-size: 0.75rem;">Score ${scaleObj.score}</span>`;
       }
 
-      const recEl = document.getElementById(`part3-rec-${criterionId}`);
-      if (recEl) {
-        recEl.textContent = scaleObj.rec;
+      // Update Weighted Score cell
+      const wsCell = row.querySelector('.part3-ws-cell');
+      if (wsCell) {
+        wsCell.textContent = weightedScore.toFixed(2);
       }
 
-      const selEl = document.getElementById(`part3-sel-${criterionId}`);
-      if (selEl) {
-        selEl.className = `part3-score-select part3-score-${newScore}`;
+      // Update Recommendation cell
+      const recCell = row.querySelector('.part3-rec-cell');
+      if (recCell) {
+        recCell.textContent = scaleObj.rec;
       }
 
       // Update Toolbar KPI chips and Summary Row
@@ -4176,16 +4174,46 @@
       });
       const compositeCof = Math.round(((totalWS / 100) * 5) * 100) / 100;
 
+      // CoF Category Level 1 to 5
+      let cofLevel = 3;
+      if (compositeCof < 1.8) {
+        cofLevel = 1;
+      } else if (compositeCof < 2.6) {
+        cofLevel = 2;
+      } else if (compositeCof < 3.4) {
+        cofLevel = 3;
+      } else if (compositeCof < 4.2) {
+        cofLevel = 4;
+      } else {
+        cofLevel = 5;
+      }
+
+      const item = currentPart3State.item || {};
+      const sn = item['Serial No'] || item.serial || item.SERIAL_NUMBER || serial;
+      const eqName = item['Equipment Name'] || item.name || item.EQUIPMENT_NAME || '';
+
       const dataToSave = {
         serial: serial,
+        equipmentName: eqName,
         scores: currentPart3State.scores,
         savedAt: new Date().toISOString(),
-        compositeCof: compositeCof
+        compositeCof: compositeCof,
+        cofLevel: cofLevel
       };
 
       try {
-        localStorage.setItem(getPart3StorageKey(serial), JSON.stringify(dataToSave));
+        const jsonStr = JSON.stringify(dataToSave);
+        localStorage.setItem(getPart3StorageKey(serial), jsonStr);
+        if (sn && sn !== serial) localStorage.setItem(getPart3StorageKey(sn), jsonStr);
+        if (eqName && eqName !== serial) localStorage.setItem(getPart3StorageKey(eqName), jsonStr);
+
         currentPart3State.savedAt = dataToSave.savedAt;
+
+        // Dispatch storage events for cross-tab or current-window synchronization
+        try {
+          window.dispatchEvent(new Event('storage'));
+          window.dispatchEvent(new CustomEvent('part3CoFSaved', { detail: dataToSave }));
+        } catch (evErr) {}
 
         // Update UI indicator
         const chip = document.getElementById('part3-saved-status-chip');
@@ -4198,7 +4226,7 @@
 
         // Show Toast Notification
         showPart3Toast(
-          `บันทึกผลการประเมิน Part 3 ของ ${serial} เรียบร้อยแล้ว (CoF: ${compositeCof.toFixed(2)})`,
+          `บันทึกผลการประเมิน Part 3 ของ ${eqName || serial} เรียบร้อยแล้ว (CoF: Level ${cofLevel} / ${compositeCof.toFixed(2)})`,
           'fa-solid fa-circle-check',
           '#10b981'
         );
@@ -4216,8 +4244,18 @@
         return;
       }
 
+      const item = currentPart3State.item || {};
+      const sn = item['Serial No'] || item.serial || item.SERIAL_NUMBER || serial;
+      const eqName = item['Equipment Name'] || item.name || item.EQUIPMENT_NAME || '';
+
       try {
         localStorage.removeItem(getPart3StorageKey(serial));
+        if (sn) localStorage.removeItem(getPart3StorageKey(sn));
+        if (eqName) localStorage.removeItem(getPart3StorageKey(eqName));
+
+        try {
+          window.dispatchEvent(new Event('storage'));
+        } catch (evErr) {}
       } catch (e) {
         console.warn(e);
       }
@@ -4227,7 +4265,7 @@
       renderPart3Table(currentPart3State.item || { serial: serial });
 
       showPart3Toast(
-        `คืนค่าการประเมิน Part 3 ของ ${serial} เป็นค่าเริ่มต้นเรียบร้อยแล้ว`,
+        `คืนค่าการประเมิน Part 3 ของ ${eqName || serial} เป็นค่าเริ่มต้นเรียบร้อยแล้ว`,
         'fa-solid fa-rotate-left',
         '#3b82f6'
       );

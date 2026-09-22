@@ -30,6 +30,61 @@ function isExcludedSite(site) {
 }
 
 /**
+ * Convert composite decimal CoF (1.00 - 5.00) to standard 1..5 matrix level
+ */
+function getCofLevelFromComposite(comp) {
+  const c = parseFloat(comp);
+  if (isNaN(c)) return null;
+  if (c < 1.8) return 1;
+  if (c < 2.6) return 2;
+  if (c < 3.4) return 3;
+  if (c < 4.2) return 4;
+  return 5;
+}
+
+/**
+ * Retrieve saved Part 3 Criticality / Consequence of Failure assessment from localStorage
+ */
+function getSavedPart3CoF(sn, name, trMatch) {
+  const keysToTry = [
+    sn,
+    name,
+    name ? name.split('(')[0].trim() : '',
+    trMatch ? trMatch.SERIAL_NUMBER : '',
+    trMatch ? trMatch.DEVICE_CODE : '',
+    trMatch ? trMatch.LOCAL_EQUIPMENT_CODE : ''
+  ].filter(Boolean);
+
+  for (const k of keysToTry) {
+    try {
+      const raw = localStorage.getItem('gpsc_part3_criticality_' + String(k).trim());
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data) {
+          let lvl = null;
+          if (typeof data.cofLevel === 'number' && data.cofLevel >= 1 && data.cofLevel <= 5) {
+            lvl = data.cofLevel;
+          } else if (data.compositeCof !== undefined) {
+            lvl = getCofLevelFromComposite(data.compositeCof);
+          }
+          if (lvl !== null) {
+            return {
+              cofLevel: lvl,
+              compositeCof: data.compositeCof,
+              savedAt: data.savedAt,
+              isCustom: true
+            };
+          }
+        }
+      }
+    } catch (e) {
+      // Ignore corrupted entries
+    }
+  }
+  return null;
+}
+
+/**
  * 1. Data Initialization & Risk Metric Calculations
  */
 function initData() {
@@ -131,17 +186,26 @@ function initData() {
     if (!isNaN(dp) && dp < 350) pof = Math.min(5, Math.max(pof, 4));
 
     // 2. Calculate Consequence of Failure (CoF: 1 to 5)
+    // Check if user evaluated or customized CoF via Part 3 Assessment or Quick Editor
+    const savedPart3 = getSavedPart3CoF(sn, name, trMatch);
     let cof = 2;
-    if (sType === 'GSUT' || mva >= 80) {
-      cof = 5; // Catastrophic: Total generation loss
-    } else if (sType === 'UAT' || mva >= 25) {
-      cof = 4; // Major: Plant trip risk
-    } else if (mva >= 10 || sType === 'Distribution') {
-      cof = 3; // Moderate: Bus outage / redundancy
-    } else if (mva >= 2) {
-      cof = 2; // Minor: Local feeder
+    let hasCustomCof = false;
+
+    if (savedPart3) {
+      cof = savedPart3.cofLevel;
+      hasCustomCof = true;
     } else {
-      cof = 1; // Negligible: Standby / Low voltage
+      if (sType === 'GSUT' || mva >= 80) {
+        cof = 5; // Catastrophic: Total generation loss
+      } else if (sType === 'UAT' || mva >= 25) {
+        cof = 4; // Major: Plant trip risk
+      } else if (mva >= 10 || sType === 'Distribution') {
+        cof = 3; // Moderate: Bus outage / redundancy
+      } else if (mva >= 2) {
+        cof = 2; // Minor: Local feeder
+      } else {
+        cof = 1; // Negligible: Standby / Low voltage
+      }
     }
 
     // 3. Risk Score & Financial Exposure (THB)
@@ -178,25 +242,25 @@ function initData() {
     } else if (hi !== null && hi <= 70) {
       if (dga === 'Q') primaryFactor = 'Elevated DGA Trend';
       else if (item['Main Tank Oil'] === 'Q' || item['Main Tank Oil'] === 'U') primaryFactor = 'Oil Quality Aging';
-      else primaryFactor = 'Maintenance Warning';
+      else if (bd === 'Q') primaryFactor = 'Moderate Dielectric Drop';
+      else primaryFactor = 'Medium Condition Aging';
+    } else {
+      if (age >= 25) primaryFactor = 'High Operating Age';
+      else primaryFactor = 'Optimal Asset Condition';
     }
 
     return {
-      name,
       sn,
-      site: (item.SITE || 'Other').trim(),
+      name,
+      site: item['SITE'] || item.site || 'Unknown',
       mva,
-      voltage: (item['Rated Voltage (kV)'] || trMatch.HV_RATED || '-').trim(),
+      age,
       sType,
       isDry,
       oilType,
-      age,
       hi,
       status: (() => {
-        let st = (item['Health Index Status'] || '').trim();
-        if (st === 'Monitor') return 'Monitoring';
-        if (st) return st;
-        if (hi === null) return 'Non-Assessed';
+        if (hi === null) return 'Not Assessed';
         if (hi >= 80) return 'Healthy';
         if (hi >= 70) return 'Monitoring';
         if (hi >= 50) return 'Warning';
@@ -205,6 +269,9 @@ function initData() {
       dp: isNaN(dp) ? null : dp,
       pof,
       cof,
+      hasCustomCof,
+      compositeCof: savedPart3 ? savedPart3.compositeCof : null,
+      savedPart3Date: savedPart3 ? savedPart3.savedAt : null,
       riskScore,
       unitValueTHB,
       financialExposureTHB,
@@ -247,6 +314,18 @@ function setupEventListeners() {
   // Listen to Theme Changes from Theme Engine
   window.addEventListener('themeChanged', () => {
     refreshAllCharts();
+  });
+
+  // Cross-tab and window sync for Part 3 CoF updates
+  window.addEventListener('storage', (e) => {
+    if (e.key && e.key.startsWith('gpsc_part3_criticality_')) {
+      initData();
+      applyFilters();
+    }
+  });
+  window.addEventListener('focus', () => {
+    initData();
+    applyFilters();
   });
 }
 
@@ -648,9 +727,12 @@ function showMatrixDetailModal(pof, cof, items) {
         <td>${it.mva} MVA</td>
         <td><span class="badge-status ${it.hi <= 50 ? 'badge-critical' : (it.hi <= 70 ? 'badge-warning' : (it.hi <= 79 ? 'badge-caution' : 'badge-normal'))}">${it.hi !== null ? it.hi + '%' : 'N/A'}</span></td>
         <td>${it.primaryFactor}</td>
-        <td>
-          <a href="assessment.html?search=${encodeURIComponent(it.name)}" class="action-btn-sm" target="_blank">
+        <td style="white-space:nowrap;">
+          <a href="assessment.html?search=${encodeURIComponent(it.name)}" class="action-btn-sm" target="_blank" title="View Assessment">
             <i class="fa-solid fa-stethoscope"></i> View
+          </a>
+          <a href="evaluation_report.html?serial=${encodeURIComponent(it.sn || it.name)}" class="action-btn-sm" target="_blank" title="Open Part 3 CoF Evaluation" style="margin-left:4px;">
+            <i class="fa-solid fa-triangle-exclamation"></i> CoF
           </a>
         </td>
       </tr>
@@ -687,6 +769,152 @@ function closeMatrixModal() {
   const modal = document.getElementById('matrix-modal');
   if (modal) modal.classList.remove('active');
 }
+
+/**
+ * Quick Consequence of Failure (CoF) Editor Modal
+ */
+function openQuickCofModal(snEncoded, nameEncoded, currentCof, pof) {
+  const sn = decodeURIComponent(snEncoded || '');
+  const name = decodeURIComponent(nameEncoded || '');
+  const modal = document.getElementById('quick-cof-modal');
+  if (!modal) return;
+
+  const titleEl = document.getElementById('quick-cof-title');
+  const bodyEl = document.getElementById('quick-cof-body');
+  if (titleEl) {
+    titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-indigo-400"></i> ปรับค่าผลกระทบความเสียหาย (CoF) - ${name}`;
+  }
+
+  const cofDescriptions = [
+    { level: 1, label: 'Level 1: Negligible Impact (ผลกระทบต่ำมาก)', desc: 'ไม่กระทบสายการผลิต จ่ายโหลดสำรอง/หม้อแปลงตัวเล็ก (< 2 MVA)', color: '#10b981' },
+    { level: 2, label: 'Level 2: Minor Impact (ผลกระทบต่ำ)', desc: 'กระทบ Feeders ภายในโรงไฟฟ้า มีวงจรจ่ายทดแทนได้ (2 - 9 MVA)', color: '#10b981' },
+    { level: 3, label: 'Level 3: Moderate Impact (ผลกระทบปานกลาง)', desc: 'หม้อแปลง Distribution หรือ Bus สำคัญ กระทบกระบวนการผลิตบางส่วน (10 - 24 MVA)', color: '#ca8a04' },
+    { level: 4, label: 'Level 4: Major Impact (ผลกระทบสูง)', desc: 'หม้อแปลง UAT หรือหน่วยผลิตหลัก เสี่ยงต่อการ Trip ของโรงไฟฟ้า (25 - 79 MVA)', color: '#f97316' },
+    { level: 5, label: 'Level 5: Catastrophic Impact (ผลกระทบวิกฤต/สูงมาก)', desc: 'หม้อแปลง GSUT หรือสายส่งหลัก โรงไฟฟ้าหยุดผลิต กำลังผลิตสูญเสียมหาศาล (>= 80 MVA)', color: '#ef4444' }
+  ];
+
+  let optionsHtml = cofDescriptions.map(c => `
+    <label class="quick-cof-option ${c.level === currentCof ? 'selected' : ''}" id="quick-cof-opt-${c.level}">
+      <input type="radio" name="quick-cof-choice" value="${c.level}" ${c.level === currentCof ? 'checked' : ''} onchange="onQuickCofRadioChange(${c.level}, ${pof})">
+      <div class="quick-cof-option-content">
+        <div class="quick-cof-option-header">
+          <strong style="color:${c.color}; font-size:0.88rem;">${c.label}</strong>
+          <span class="badge-status" style="border-color:${c.color}; color:${c.color}; background:transparent;">CoF ${c.level}</span>
+        </div>
+        <p class="quick-cof-option-desc">${c.desc}</p>
+      </div>
+    </label>
+  `).join('');
+
+  const initialScore = pof * currentCof;
+  const initialColor = initialScore >= 16 ? '#ef4444' : (initialScore >= 12 ? '#f97316' : (initialScore >= 6 ? '#ca8a04' : '#10b981'));
+
+  bodyEl.innerHTML = `
+    <div style="margin-bottom:14px; padding:12px 14px; background:rgba(255,255,255,0.03); border:1px solid var(--exec-card-border); border-radius:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <span style="color:var(--exec-text-body); font-size:0.82rem;">หม้อแปลง:</span> <strong style="font-size:0.95rem; color:var(--exec-text-title);">${name}</strong>
+          ${sn ? `<span style="color:var(--exec-text-body); font-size:0.8rem; margin-left:6px;">(SN: <code>${sn}</code>)</span>` : ''}
+        </div>
+        <div>
+          <span style="color:var(--exec-text-body); font-size:0.82rem;">โอกาสเกิดเหตุขัดข้อง (PoF):</span> <strong style="color:#ef4444;">Level ${pof}</strong>
+        </div>
+      </div>
+      <div style="margin-top:8px; display:flex; align-items:center; gap:12px; font-size:0.88rem;">
+        <span>คะแนนความเสี่ยงตาม CoF ที่เลือก:</span>
+        <strong id="quick-cof-preview-score" style="font-size:1.15rem; color:${initialColor}; font-family:'Outfit', sans-serif;">
+          Risk Score ${initialScore} (PoF ${pof} × CoF ${currentCof})
+        </strong>
+      </div>
+    </div>
+
+    <div class="quick-cof-options-list">
+      ${optionsHtml}
+    </div>
+
+    <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid var(--exec-card-border); padding-top:14px;">
+      <div>
+        <a href="evaluation_report.html?serial=${encodeURIComponent(sn || name)}" target="_blank" style="color:#818cf8; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:6px;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> ประเมินละเอียด 10 ด้านใน Part 3 Report
+        </a>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="action-btn-sm" style="background:transparent; border:1px solid var(--exec-card-border); color:var(--exec-text-body); padding:6px 12px;" onclick="resetQuickCof('${encodeURIComponent(sn)}', '${encodeURIComponent(name)}')">
+          <i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น
+        </button>
+        <button type="button" class="action-btn-sm" style="background:#4f46e5; border:1px solid #4f46e5; color:#fff; font-weight:600; padding:6px 16px;" onclick="saveQuickCof('${encodeURIComponent(sn)}', '${encodeURIComponent(name)}', ${pof})">
+          <i class="fa-solid fa-floppy-disk"></i> บันทึก CoF
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function closeQuickCofModal() {
+  const modal = document.getElementById('quick-cof-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function onQuickCofRadioChange(newCof, pof) {
+  document.querySelectorAll('.quick-cof-option').forEach(el => el.classList.remove('selected'));
+  const target = document.getElementById('quick-cof-opt-' + newCof);
+  if (target) target.classList.add('selected');
+
+  const preview = document.getElementById('quick-cof-preview-score');
+  if (preview) {
+    const score = pof * newCof;
+    let color = score >= 16 ? '#ef4444' : (score >= 12 ? '#f97316' : (score >= 6 ? '#ca8a04' : '#10b981'));
+    preview.style.color = color;
+    preview.textContent = `Risk Score ${score} (PoF ${pof} × CoF ${newCof})`;
+  }
+}
+
+function saveQuickCof(snEncoded, nameEncoded, pof) {
+  const sn = decodeURIComponent(snEncoded || '');
+  const name = decodeURIComponent(nameEncoded || '');
+  const selectedRadio = document.querySelector('input[name="quick-cof-choice"]:checked');
+  if (!selectedRadio) return;
+
+  const cofLevel = parseInt(selectedRadio.value, 10);
+  const dataToSave = {
+    serial: sn,
+    equipmentName: name,
+    cofLevel: cofLevel,
+    compositeCof: cofLevel,
+    savedAt: new Date().toISOString(),
+    isQuickSet: true
+  };
+
+  const jsonStr = JSON.stringify(dataToSave);
+  if (sn) localStorage.setItem('gpsc_part3_criticality_' + sn, jsonStr);
+  if (name) localStorage.setItem('gpsc_part3_criticality_' + name, jsonStr);
+
+  closeQuickCofModal();
+
+  // Re-initialize and update full dashboard immediately
+  initData();
+  applyFilters();
+}
+
+function resetQuickCof(snEncoded, nameEncoded) {
+  const sn = decodeURIComponent(snEncoded || '');
+  const name = decodeURIComponent(nameEncoded || '');
+  if (sn) localStorage.removeItem('gpsc_part3_criticality_' + sn);
+  if (name) localStorage.removeItem('gpsc_part3_criticality_' + name);
+
+  closeQuickCofModal();
+  initData();
+  applyFilters();
+}
+
+// Expose to window for inline HTML handlers
+window.openQuickCofModal = openQuickCofModal;
+window.closeQuickCofModal = closeQuickCofModal;
+window.onQuickCofRadioChange = onQuickCofRadioChange;
+window.saveQuickCof = saveQuickCof;
+window.resetQuickCof = resetQuickCof;
 
 /**
  * MODULE 1.3: Fleet Age vs Health Profile (Scatter Plot)
@@ -922,7 +1150,9 @@ function renderCriticalWatchlist() {
       <tr>
         <td><strong>#${idx + 1}</strong></td>
         <td>
-          <strong>${d.name}</strong><br/>
+          <a href="evaluation_report.html?serial=${encodeURIComponent(d.sn || d.name)}" style="color:var(--exec-text-title); text-decoration:none;" class="tr-link-hover" title="Open Diagnostic Evaluation Report">
+            <strong>${d.name}</strong>
+          </a><br/>
           <small style="color:var(--exec-text-body);">SN: ${d.sn}</small>
         </td>
         <td>${d.site}</td>
@@ -930,7 +1160,13 @@ function renderCriticalWatchlist() {
         <td><span class="badge-status badge-critical">${d.hi}%</span></td>
         <td>
           <span class="pill-badge pill-crit">Risk Score ${d.riskScore}</span><br/>
-          <small style="color:var(--exec-text-body);">PoF ${d.pof} × CoF ${d.cof}</small>
+          <div style="display:inline-flex; align-items:center; gap:4px; margin-top:3px; flex-wrap:wrap;">
+            <small style="color:var(--exec-text-body); font-weight:600;">PoF ${d.pof} × CoF ${d.cof}</small>
+            ${d.hasCustomCof ? `<span style="display:inline-flex; align-items:center; gap:2px; font-size:0.64rem; padding:1px 5px; border-radius:4px; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.4);" title="Evaluated CoF from Part 3 Assessment (${d.compositeCof ? Number(d.compositeCof).toFixed(2) : d.cof})"><i class="fa-solid fa-check"></i> Part 3</span>` : ''}
+            <button type="button" class="btn-quick-cof" onclick="openQuickCofModal('${encodeURIComponent(d.sn)}', '${encodeURIComponent(d.name)}', ${d.cof}, ${d.pof})" title="Adjust Consequence of Failure (CoF)">
+              <i class="fa-solid fa-pen-to-square"></i> Edit CoF
+            </button>
+          </div>
         </td>
         <td style="max-width:240px; white-space:normal; font-size:0.75rem; color:var(--exec-text-body);">
           ${d.recommendation.replace(/<[^>]*>?/gm, '').substring(0, 95)}...
