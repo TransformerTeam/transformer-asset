@@ -1879,6 +1879,14 @@
         const selectEl = document.getElementById('eval-transformer-select');
         if (selectEl) selectEl.value = currentSerial;
         loadEvaluationBySerial(currentSerial);
+
+        // Auto-scroll to Part 3 if URL hash contains part-3 or part3
+        if (window.location.hash && (window.location.hash.includes('part-3') || window.location.hash.includes('part3'))) {
+          setTimeout(() => {
+            const targetEl = document.getElementById('part-3-wrapper');
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 350);
+        }
       }
     }
 
@@ -4157,14 +4165,14 @@
 
       // Update Toolbar KPI chips and Summary Row
       updatePart3LiveSummary();
+
+      // Real-time automatic dynamic sync on score change
+      syncPart3ScoresToStorage(false);
     }
 
-    function savePart3Assessment() {
+    function syncPart3ScoresToStorage(showToast) {
       const serial = currentPart3State.serial || currentSerial;
-      if (!serial) {
-        alert('กรุณาเลือกหม้อแปลงก่อนบันทึก');
-        return;
-      }
+      if (!serial) return;
 
       // Compute current composite CoF
       let totalWS = 0;
@@ -4206,8 +4214,18 @@
         localStorage.setItem(getPart3StorageKey(serial), jsonStr);
         if (sn && sn !== serial) localStorage.setItem(getPart3StorageKey(sn), jsonStr);
         if (eqName && eqName !== serial) localStorage.setItem(getPart3StorageKey(eqName), jsonStr);
+        localStorage.setItem('gpsc_part3_last_update', Date.now().toString());
 
         currentPart3State.savedAt = dataToSave.savedAt;
+
+        // Real-time BroadcastChannel sync across all open tabs (Home, SCADA, etc.)
+        if (typeof BroadcastChannel !== 'undefined') {
+          try {
+            const bc = new BroadcastChannel('gpsc_part3_sync');
+            bc.postMessage({ type: 'PART3_COF_UPDATED', serial, sn, eqName, cofLevel, compositeCof });
+            bc.close();
+          } catch (bcErr) {}
+        }
 
         // Dispatch storage events for cross-tab or current-window synchronization
         try {
@@ -4224,16 +4242,26 @@
           timeEl.textContent = dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
 
-        // Show Toast Notification
-        showPart3Toast(
-          `บันทึกผลการประเมิน Part 3 ของ ${eqName || serial} เรียบร้อยแล้ว (CoF: Level ${cofLevel} / ${compositeCof.toFixed(2)})`,
-          'fa-solid fa-circle-check',
-          '#10b981'
-        );
+        if (showToast) {
+          showPart3Toast(
+            `บันทึกผลการประเมิน Part 3 ของ ${eqName || serial} เรียบร้อยแล้ว (CoF: Level ${cofLevel} / ${compositeCof.toFixed(2)})`,
+            'fa-solid fa-circle-check',
+            '#10b981'
+          );
+        }
       } catch (e) {
         console.error('Error saving Part 3:', e);
-        alert('ไม่สามารถบันทึกลงหน่วยความจำเบราว์เซอร์ได้: ' + e.message);
+        if (showToast) alert('ไม่สามารถบันทึกลงหน่วยความจำเบราว์เซอร์ได้: ' + e.message);
       }
+    }
+
+    function savePart3Assessment() {
+      const serial = currentPart3State.serial || currentSerial;
+      if (!serial) {
+        alert('กรุณาเลือกหม้อแปลงก่อนบันทึก');
+        return;
+      }
+      syncPart3ScoresToStorage(true);
     }
 
     function resetPart3Assessment() {
@@ -4252,6 +4280,16 @@
         localStorage.removeItem(getPart3StorageKey(serial));
         if (sn) localStorage.removeItem(getPart3StorageKey(sn));
         if (eqName) localStorage.removeItem(getPart3StorageKey(eqName));
+        localStorage.setItem('gpsc_part3_last_update', Date.now().toString());
+
+        // Real-time broadcast for reset
+        if (typeof BroadcastChannel !== 'undefined') {
+          try {
+            const bc = new BroadcastChannel('gpsc_part3_sync');
+            bc.postMessage({ type: 'PART3_COF_RESET', serial, sn, eqName });
+            bc.close();
+          } catch (bcErr) {}
+        }
 
         try {
           window.dispatchEvent(new Event('storage'));

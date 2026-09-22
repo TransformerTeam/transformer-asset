@@ -316,17 +316,46 @@ function setupEventListeners() {
     refreshAllCharts();
   });
 
-  // Cross-tab and window sync for Part 3 CoF updates
+  // Real-time dynamic sync for Part 3 CoF updates across tabs & windows
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('gpsc_part3_sync');
+      bc.onmessage = (event) => {
+        initData();
+        applyFilters();
+      };
+    } catch (e) {}
+  }
+
   window.addEventListener('storage', (e) => {
-    if (e.key && e.key.startsWith('gpsc_part3_criticality_')) {
+    if (!e.key || e.key.startsWith('gpsc_part3_') || e.key === 'gpsc_part3_last_update') {
       initData();
       applyFilters();
     }
   });
+
   window.addEventListener('focus', () => {
     initData();
     applyFilters();
   });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      initData();
+      applyFilters();
+    }
+  });
+
+  // Heartbeat check every 2.5s for instant multi-window detection
+  let lastPart3UpdateSeen = localStorage.getItem('gpsc_part3_last_update') || '';
+  setInterval(() => {
+    const cur = localStorage.getItem('gpsc_part3_last_update') || '';
+    if (cur && cur !== lastPart3UpdateSeen) {
+      lastPart3UpdateSeen = cur;
+      initData();
+      applyFilters();
+    }
+  }, 2500);
 }
 
 /**
@@ -731,8 +760,8 @@ function showMatrixDetailModal(pof, cof, items) {
           <a href="assessment.html?search=${encodeURIComponent(it.name)}" class="action-btn-sm" target="_blank" title="View Assessment">
             <i class="fa-solid fa-stethoscope"></i> View
           </a>
-          <a href="evaluation_report.html?serial=${encodeURIComponent(it.sn || it.name)}" class="action-btn-sm" target="_blank" title="Open Part 3 CoF Evaluation" style="margin-left:4px;">
-            <i class="fa-solid fa-triangle-exclamation"></i> CoF
+          <a href="evaluation_report.html?serial=${encodeURIComponent(it.sn || it.name)}#part-3-wrapper" class="action-btn-sm" target="_blank" title="Open Part 3 CoF Evaluation in Evaluation Report" style="margin-left:4px;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Evaluation
           </a>
         </td>
       </tr>
@@ -771,152 +800,6 @@ function closeMatrixModal() {
 }
 
 /**
- * Quick Consequence of Failure (CoF) Editor Modal
- */
-function openQuickCofModal(snEncoded, nameEncoded, currentCof, pof) {
-  const sn = decodeURIComponent(snEncoded || '');
-  const name = decodeURIComponent(nameEncoded || '');
-  const modal = document.getElementById('quick-cof-modal');
-  if (!modal) return;
-
-  const titleEl = document.getElementById('quick-cof-title');
-  const bodyEl = document.getElementById('quick-cof-body');
-  if (titleEl) {
-    titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-indigo-400"></i> ปรับค่าผลกระทบความเสียหาย (CoF) - ${name}`;
-  }
-
-  const cofDescriptions = [
-    { level: 1, label: 'Level 1: Negligible Impact (ผลกระทบต่ำมาก)', desc: 'ไม่กระทบสายการผลิต จ่ายโหลดสำรอง/หม้อแปลงตัวเล็ก (< 2 MVA)', color: '#10b981' },
-    { level: 2, label: 'Level 2: Minor Impact (ผลกระทบต่ำ)', desc: 'กระทบ Feeders ภายในโรงไฟฟ้า มีวงจรจ่ายทดแทนได้ (2 - 9 MVA)', color: '#10b981' },
-    { level: 3, label: 'Level 3: Moderate Impact (ผลกระทบปานกลาง)', desc: 'หม้อแปลง Distribution หรือ Bus สำคัญ กระทบกระบวนการผลิตบางส่วน (10 - 24 MVA)', color: '#ca8a04' },
-    { level: 4, label: 'Level 4: Major Impact (ผลกระทบสูง)', desc: 'หม้อแปลง UAT หรือหน่วยผลิตหลัก เสี่ยงต่อการ Trip ของโรงไฟฟ้า (25 - 79 MVA)', color: '#f97316' },
-    { level: 5, label: 'Level 5: Catastrophic Impact (ผลกระทบวิกฤต/สูงมาก)', desc: 'หม้อแปลง GSUT หรือสายส่งหลัก โรงไฟฟ้าหยุดผลิต กำลังผลิตสูญเสียมหาศาล (>= 80 MVA)', color: '#ef4444' }
-  ];
-
-  let optionsHtml = cofDescriptions.map(c => `
-    <label class="quick-cof-option ${c.level === currentCof ? 'selected' : ''}" id="quick-cof-opt-${c.level}">
-      <input type="radio" name="quick-cof-choice" value="${c.level}" ${c.level === currentCof ? 'checked' : ''} onchange="onQuickCofRadioChange(${c.level}, ${pof})">
-      <div class="quick-cof-option-content">
-        <div class="quick-cof-option-header">
-          <strong style="color:${c.color}; font-size:0.88rem;">${c.label}</strong>
-          <span class="badge-status" style="border-color:${c.color}; color:${c.color}; background:transparent;">CoF ${c.level}</span>
-        </div>
-        <p class="quick-cof-option-desc">${c.desc}</p>
-      </div>
-    </label>
-  `).join('');
-
-  const initialScore = pof * currentCof;
-  const initialColor = initialScore >= 16 ? '#ef4444' : (initialScore >= 12 ? '#f97316' : (initialScore >= 6 ? '#ca8a04' : '#10b981'));
-
-  bodyEl.innerHTML = `
-    <div style="margin-bottom:14px; padding:12px 14px; background:rgba(255,255,255,0.03); border:1px solid var(--exec-card-border); border-radius:8px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <div>
-          <span style="color:var(--exec-text-body); font-size:0.82rem;">หม้อแปลง:</span> <strong style="font-size:0.95rem; color:var(--exec-text-title);">${name}</strong>
-          ${sn ? `<span style="color:var(--exec-text-body); font-size:0.8rem; margin-left:6px;">(SN: <code>${sn}</code>)</span>` : ''}
-        </div>
-        <div>
-          <span style="color:var(--exec-text-body); font-size:0.82rem;">โอกาสเกิดเหตุขัดข้อง (PoF):</span> <strong style="color:#ef4444;">Level ${pof}</strong>
-        </div>
-      </div>
-      <div style="margin-top:8px; display:flex; align-items:center; gap:12px; font-size:0.88rem;">
-        <span>คะแนนความเสี่ยงตาม CoF ที่เลือก:</span>
-        <strong id="quick-cof-preview-score" style="font-size:1.15rem; color:${initialColor}; font-family:'Outfit', sans-serif;">
-          Risk Score ${initialScore} (PoF ${pof} × CoF ${currentCof})
-        </strong>
-      </div>
-    </div>
-
-    <div class="quick-cof-options-list">
-      ${optionsHtml}
-    </div>
-
-    <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid var(--exec-card-border); padding-top:14px;">
-      <div>
-        <a href="evaluation_report.html?serial=${encodeURIComponent(sn || name)}" target="_blank" style="color:#818cf8; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> ประเมินละเอียด 10 ด้านใน Part 3 Report
-        </a>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button type="button" class="action-btn-sm" style="background:transparent; border:1px solid var(--exec-card-border); color:var(--exec-text-body); padding:6px 12px;" onclick="resetQuickCof('${encodeURIComponent(sn)}', '${encodeURIComponent(name)}')">
-          <i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น
-        </button>
-        <button type="button" class="action-btn-sm" style="background:#4f46e5; border:1px solid #4f46e5; color:#fff; font-weight:600; padding:6px 16px;" onclick="saveQuickCof('${encodeURIComponent(sn)}', '${encodeURIComponent(name)}', ${pof})">
-          <i class="fa-solid fa-floppy-disk"></i> บันทึก CoF
-        </button>
-      </div>
-    </div>
-  `;
-
-  modal.classList.add('active');
-}
-
-function closeQuickCofModal() {
-  const modal = document.getElementById('quick-cof-modal');
-  if (modal) modal.classList.remove('active');
-}
-
-function onQuickCofRadioChange(newCof, pof) {
-  document.querySelectorAll('.quick-cof-option').forEach(el => el.classList.remove('selected'));
-  const target = document.getElementById('quick-cof-opt-' + newCof);
-  if (target) target.classList.add('selected');
-
-  const preview = document.getElementById('quick-cof-preview-score');
-  if (preview) {
-    const score = pof * newCof;
-    let color = score >= 16 ? '#ef4444' : (score >= 12 ? '#f97316' : (score >= 6 ? '#ca8a04' : '#10b981'));
-    preview.style.color = color;
-    preview.textContent = `Risk Score ${score} (PoF ${pof} × CoF ${newCof})`;
-  }
-}
-
-function saveQuickCof(snEncoded, nameEncoded, pof) {
-  const sn = decodeURIComponent(snEncoded || '');
-  const name = decodeURIComponent(nameEncoded || '');
-  const selectedRadio = document.querySelector('input[name="quick-cof-choice"]:checked');
-  if (!selectedRadio) return;
-
-  const cofLevel = parseInt(selectedRadio.value, 10);
-  const dataToSave = {
-    serial: sn,
-    equipmentName: name,
-    cofLevel: cofLevel,
-    compositeCof: cofLevel,
-    savedAt: new Date().toISOString(),
-    isQuickSet: true
-  };
-
-  const jsonStr = JSON.stringify(dataToSave);
-  if (sn) localStorage.setItem('gpsc_part3_criticality_' + sn, jsonStr);
-  if (name) localStorage.setItem('gpsc_part3_criticality_' + name, jsonStr);
-
-  closeQuickCofModal();
-
-  // Re-initialize and update full dashboard immediately
-  initData();
-  applyFilters();
-}
-
-function resetQuickCof(snEncoded, nameEncoded) {
-  const sn = decodeURIComponent(snEncoded || '');
-  const name = decodeURIComponent(nameEncoded || '');
-  if (sn) localStorage.removeItem('gpsc_part3_criticality_' + sn);
-  if (name) localStorage.removeItem('gpsc_part3_criticality_' + name);
-
-  closeQuickCofModal();
-  initData();
-  applyFilters();
-}
-
-// Expose to window for inline HTML handlers
-window.openQuickCofModal = openQuickCofModal;
-window.closeQuickCofModal = closeQuickCofModal;
-window.onQuickCofRadioChange = onQuickCofRadioChange;
-window.saveQuickCof = saveQuickCof;
-window.resetQuickCof = resetQuickCof;
-
-/**
  * MODULE 1.3: Fleet Age vs Health Profile (Scatter Plot)
  */
 function renderAgeVsHealthChart() {
@@ -941,103 +824,57 @@ function renderAgeVsHealthChart() {
 
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   const textColor = isDark ? '#94a3b8' : '#475569';
-  const borderColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
   const options = {
     series: [
-      { name: 'Healthy', data: goodSeries },
-      { name: 'Monitoring', data: monitorSeries },
-      { name: 'Warning', data: warnSeries },
-      { name: 'Critical', data: critSeries }
+      { name: 'Healthy (HI >= 80%)', data: goodSeries },
+      { name: 'Monitoring (70-79%)', data: monitorSeries },
+      { name: 'Warning (50-69%)', data: warnSeries },
+      { name: 'Critical (HI < 50%)', data: critSeries }
     ],
     chart: {
-      height: 350,
+      height: 320,
       type: 'scatter',
-      toolbar: { show: false },
       background: 'transparent',
-      animations: { enabled: false }
-    },
-    legend: {
-      show: false
+      toolbar: { show: false },
+      zoom: { enabled: false }
     },
     colors: ['#10b981', '#eab308', '#f97316', '#ef4444'],
     xaxis: {
-      title: { text: 'Service Age (Years)', style: { color: textColor, fontWeight: 600 } },
+      title: { text: 'Service Age (Years)', style: { color: textColor } },
+      labels: { style: { colors: textColor } },
       min: 0,
       max: 40,
-      tickAmount: 8,
-      labels: { style: { colors: textColor } }
+      tickAmount: 8
     },
     yaxis: {
-      title: { text: 'Condition Health Index (%)', style: { color: textColor, fontWeight: 600 } },
+      title: { text: 'Health Index (%)', style: { color: textColor } },
+      labels: { style: { colors: textColor } },
       min: 0,
       max: 100,
-      labels: { style: { colors: textColor } }
+      tickAmount: 5
     },
     grid: {
-      borderColor: borderColor,
+      borderColor: gridColor,
       strokeDashArray: 3
     },
-    markers: {
-      size: 6.5,
-      strokeColors: ['#059669', '#ca8a04', '#ea580c', '#dc2626'],
-      strokeWidth: 1.5,
-      strokeOpacity: 0.9,
-      fillOpacity: 0.88,
-      hover: { size: 8.5, strokeWidth: 2 }
+    legend: {
+      show: false // Custom legend used in DOM
     },
-    annotations: {
-      yaxis: [
-        {
-          y: 50,
-          borderColor: '#ef4444',
-          strokeDashArray: 3,
-          label: {
-            text: 'Critical',
-            borderColor: '#f87171',
-            borderWidth: 1.5,
-            borderRadius: 5,
-            style: { color: '#ffffff', background: '#dc2626', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
-          }
-        },
-        {
-          y: 70,
-          borderColor: '#eab308',
-          strokeDashArray: 3,
-          label: {
-            text: 'Monitoring',
-            borderColor: '#facc15',
-            borderWidth: 1.5,
-            borderRadius: 5,
-            style: { color: '#ffffff', background: '#ca8a04', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
-          }
-        },
-        {
-          y: 80,
-          borderColor: '#10b981',
-          strokeDashArray: 3,
-          label: {
-            text: 'Healthy',
-            borderColor: '#34d399',
-            borderWidth: 1.5,
-            borderRadius: 5,
-            style: { color: '#ffffff', background: '#059669', fontWeight: 700, padding: { left: 8, right: 8, top: 3, bottom: 3 } }
-          }
-        }
-      ]
+    markers: {
+      size: 5,
+      hover: { size: 7 }
     },
     tooltip: {
       theme: isDark ? 'dark' : 'light',
-      custom: function({ series, seriesIndex, dataPointIndex, w }) {
-        const p = w.config.series[seriesIndex].data[dataPointIndex];
-        const statusColors = ['#10b981', '#eab308', '#f97316', '#ef4444'];
-        const statusName = w.config.series[seriesIndex].name;
+      custom: function({series, seriesIndex, dataPointIndex, w}) {
+        const d = w.config.series[seriesIndex].data[dataPointIndex];
         return `
-          <div style="padding:10px 14px; font-size:12px;">
-            <strong style="color:#38bdf8;">${p.name}</strong> (SN: ${p.sn})<br/>
-            <span>Site: ${p.site} | ${p.sType}</span><br/>
-            <span>Status: <strong style="color:${statusColors[seriesIndex]};">${statusName}</strong></span><br/>
-            <span>Age: <strong>${p.x} Years</strong> | Health Index: <strong>${p.y}%</strong></span>
+          <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px;">
+            <strong style="color:var(--exec-text-title);">${d.name}</strong><br/>
+            <span style="color:var(--exec-text-body);">SN: ${d.sn} | ${d.site}</span><br/>
+            <span style="color:var(--exec-text-body);">Age: ${d.x} yrs | HI: <strong>${d.y}%</strong></span>
           </div>
         `;
       }
@@ -1063,51 +900,54 @@ function renderAgeVsHealthChart() {
 }
 
 /**
- * MODULE 2.1: Transformer Ranking Table
+ * MODULE 2.1: Fleet Health Index Ranking Table
  */
 function renderRankingTable() {
-  const tbody = document.getElementById('ranking-tbody');
-  if (!tbody) return;
+  const container = document.getElementById('ranking-table-tbody');
+  if (!container) return;
 
-  const searchVal = (document.getElementById('search-ranking')?.value || '').toLowerCase().trim();
+  const searchVal = (document.getElementById('search-ranking')?.value || '').toLowerCase();
 
-  // Sort ascending by Health Index (worst first)
-  const sorted = [...filteredData].sort((a, b) => {
-    if (a.hi === null && b.hi === null) return 0;
-    if (a.hi === null) return 1;
-    if (b.hi === null) return -1;
-    return a.hi - b.hi;
-  });
-
-  const matching = sorted.filter(d => {
+  let list = filteredData.filter(d => {
     if (!searchVal) return true;
     return d.name.toLowerCase().includes(searchVal) ||
            d.sn.toLowerCase().includes(searchVal) ||
            d.site.toLowerCase().includes(searchVal) ||
-           d.primaryFactor.toLowerCase().includes(searchVal);
+           d.sType.toLowerCase().includes(searchVal);
   });
 
-  if (matching.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--exec-text-body);">No matching transformers found.</td></tr>`;
+  // Sort by Health Index Ascending (Worst first)
+  list.sort((a, b) => {
+    const aVal = a.hi === null ? 999 : a.hi;
+    const bVal = b.hi === null ? 999 : b.hi;
+    return aVal - bVal;
+  });
+
+  if (list.length === 0) {
+    container.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--exec-text-body);">No transformers found.</td></tr>`;
     return;
   }
 
-  // Render first 50 rows for snappy performance
-  tbody.innerHTML = matching.slice(0, 50).map((d, idx) => {
+  container.innerHTML = list.map((d, idx) => {
     let badgeClass = 'badge-normal';
-    if (d.hi === null) badgeClass = 'badge-normal';
+    if (d.hi === null) badgeClass = 'badge-secondary';
     else if (d.hi <= 50) badgeClass = 'badge-critical';
     else if (d.hi <= 70) badgeClass = 'badge-warning';
     else if (d.hi <= 79) badgeClass = 'badge-caution';
 
     return `
       <tr>
-        <td><strong>#${idx + 1}</strong></td>
-        <td><strong>${d.name}</strong></td>
-        <td><code>${d.sn}</code></td>
+        <td>${idx + 1}</td>
+        <td>
+          <a href="evaluation_report.html?serial=${encodeURIComponent(d.sn || d.name)}#part-3-wrapper" style="color:var(--exec-text-title); text-decoration:none;" class="tr-link-hover" title="Click to view & edit in Evaluation Report">
+            <strong>${d.name}</strong>
+          </a><br/>
+          <small style="color:var(--exec-text-body);">SN: ${d.sn}</small>
+        </td>
         <td>${d.site}</td>
         <td>${d.sType}</td>
         <td>${d.mva} MVA</td>
+        <td>${d.age} yrs</td>
         <td><span class="badge-status ${badgeClass}">${d.hi !== null ? d.hi + '%' : 'Non-Assessed'}</span></td>
         <td>${d.primaryFactor}</td>
         <td>
@@ -1150,7 +990,7 @@ function renderCriticalWatchlist() {
       <tr>
         <td><strong>#${idx + 1}</strong></td>
         <td>
-          <a href="evaluation_report.html?serial=${encodeURIComponent(d.sn || d.name)}" style="color:var(--exec-text-title); text-decoration:none;" class="tr-link-hover" title="Open Diagnostic Evaluation Report">
+          <a href="evaluation_report.html?serial=${encodeURIComponent(d.sn || d.name)}#part-3-wrapper" style="color:var(--exec-text-title); text-decoration:none;" class="tr-link-hover" title="Open Evaluation Report (Part 3 CoF)">
             <strong>${d.name}</strong>
           </a><br/>
           <small style="color:var(--exec-text-body);">SN: ${d.sn}</small>
@@ -1160,12 +1000,9 @@ function renderCriticalWatchlist() {
         <td><span class="badge-status badge-critical">${d.hi}%</span></td>
         <td>
           <span class="pill-badge pill-crit">Risk Score ${d.riskScore}</span><br/>
-          <div style="display:inline-flex; align-items:center; gap:4px; margin-top:3px; flex-wrap:wrap;">
+          <div style="display:inline-flex; align-items:center; gap:5px; margin-top:3px; flex-wrap:wrap;">
             <small style="color:var(--exec-text-body); font-weight:600;">PoF ${d.pof} × CoF ${d.cof}</small>
-            ${d.hasCustomCof ? `<span style="display:inline-flex; align-items:center; gap:2px; font-size:0.64rem; padding:1px 5px; border-radius:4px; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.4);" title="Evaluated CoF from Part 3 Assessment (${d.compositeCof ? Number(d.compositeCof).toFixed(2) : d.cof})"><i class="fa-solid fa-check"></i> Part 3</span>` : ''}
-            <button type="button" class="btn-quick-cof" onclick="openQuickCofModal('${encodeURIComponent(d.sn)}', '${encodeURIComponent(d.name)}', ${d.cof}, ${d.pof})" title="Adjust Consequence of Failure (CoF)">
-              <i class="fa-solid fa-pen-to-square"></i> Edit CoF
-            </button>
+            ${d.hasCustomCof ? `<span style="display:inline-flex; align-items:center; gap:2px; font-size:0.64rem; padding:1px 5px; border-radius:4px; background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.4);" title="Dynamic CoF evaluated from Part 3 (${d.compositeCof ? Number(d.compositeCof).toFixed(2) : d.cof})"><i class="fa-solid fa-check"></i> Part 3</span>` : ''}
           </div>
         </td>
         <td style="max-width:240px; white-space:normal; font-size:0.75rem; color:var(--exec-text-body);">
