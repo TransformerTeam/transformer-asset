@@ -513,7 +513,7 @@ function renderCostKPI() {
 }
 
 /**
- * MODULE 1.2: 5x5 Risk Matrix Map (PoF vs CoF)
+ * MODULE 1.2: Transformer Risk Matrix
  */
 function renderRiskMatrix() {
   const gridContainer = document.getElementById('risk-matrix-grid');
