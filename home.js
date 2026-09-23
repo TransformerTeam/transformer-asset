@@ -892,14 +892,26 @@ function renderAgeVsHealthChart() {
       labels: { style: { colors: textColor } },
       min: 0,
       max: 40,
-      tickAmount: 8
+      tickAmount: 8,
+      crosshairs: {
+        show: false
+      },
+      tooltip: {
+        enabled: false
+      }
     },
     yaxis: {
       title: { text: 'Health Index (%)', style: { color: textColor, fontWeight: 600 } },
       labels: { style: { colors: textColor } },
       min: 0,
       max: 100,
-      tickAmount: 5
+      tickAmount: 5,
+      crosshairs: {
+        show: false
+      },
+      tooltip: {
+        enabled: false
+      }
     },
     grid: {
       borderColor: gridColor,
