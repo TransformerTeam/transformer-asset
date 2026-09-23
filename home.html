@@ -231,19 +231,15 @@
               <div class="sub-card">
                 <div class="sub-card-title">
                   <i class="fa-solid fa-chart-line text-indigo-400"></i>
-                  <span>1.3 Fleet Age vs. Health Profile: อายุกราฟเสื่อมสภาพจริงเทียบเกณฑ์</span>
+                  <span>1.3 Fleet Age vs. Health Profile: การกระจายตัวอายุและระดับสุขภาพ</span>
                 </div>
                 <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:10px;">
-                  ระบุเครื่องที่เสื่อมสภาพเร็วกว่าปกติ (Accelerated Degradation) เมื่อเทียบกับเกณฑ์อายุใช้งาน 30-40 ปี
+                  คลิกที่จุดหม้อแปลงบนกราฟเพื่อแสดงป้ายกำกับข้อมูล (Service Age vs. Health Index %)
                 </p>
                 <div id="chart-age-health" style="min-height: 350px;"></div>
 
-                <!-- Legend matching 1.2 Risk Matrix style with circular dots & baseline -->
+                <!-- Legend matching 1.2 Risk Matrix style with circular dots -->
                 <div class="matrix-legend">
-                  <div class="legend-item" title="เกณฑ์การเสื่อมสภาพตามอายุใช้งานปกติ (Expected Degradation Baseline 30-40 ปี ตาม CIGRE/IEEE)">
-                    <div style="width:16px; height:0; border-top:2.5px dashed #6366f1;"></div>
-                    <span>เกณฑ์เสื่อมสภาพ (30-40 ปี)</span>
-                  </div>
                   <div class="legend-item">
                     <div class="legend-color-dot" style="background:#10b981;"></div>
                     <span>Healthy: <strong id="legend-age-healthy-count">153 Units</strong></span>
@@ -584,7 +580,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260923_1045"></script>
+  <script src="home.js?v=20260923_1115"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->

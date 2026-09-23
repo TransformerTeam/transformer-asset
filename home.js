@@ -799,12 +799,20 @@ function closeMatrixModal() {
   if (modal) modal.classList.remove('active');
 }
 
+let currentPointAnnotationId = null;
+let selectedPointData = null;
+let lastChartClickTime = 0;
+
 /**
  * MODULE 1.3: Fleet Age vs Health Profile (Scatter Plot)
  */
 function renderAgeVsHealthChart() {
   const chartEl = document.querySelector("#chart-age-health");
   if (!chartEl) return;
+
+  // Reset selected point annotation tracking on re-render
+  currentPointAnnotationId = null;
+  selectedPointData = null;
 
   // Prepare scatter data series grouped by 4-tier status
   const goodSeries = [];
@@ -822,30 +830,88 @@ function renderAgeVsHealthChart() {
     }
   });
 
-  // Standard Aging Degradation Curve (CIGRE TB 761 / IEEE 30-40 Year Design Life Model)
-  const baselineData = [
-    { x: 0, y: 100 },
-    { x: 5, y: 97 },
-    { x: 10, y: 93 },
-    { x: 15, y: 88 },
-    { x: 20, y: 82 },
-    { x: 25, y: 76 },
-    { x: 30, y: 70 },
-    { x: 35, y: 60 },
-    { x: 40, y: 50 }
-  ];
-
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   const textColor = isDark ? '#94a3b8' : '#475569';
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
+  const statusColors = ['#10b981', '#eab308', '#f97316', '#ef4444'];
+  const statusNames = ['Healthy', 'Monitoring', 'Warning', 'Critical'];
+
+  function selectPoint(d, seriesIndex) {
+    if (!d || !chartAgeHealth) return;
+    const color = statusColors[seriesIndex] || '#38bdf8';
+    const status = statusNames[seriesIndex] || '';
+
+    // Toggle off if clicking the same point again
+    if (selectedPointData && selectedPointData.sn === d.sn && selectedPointData.name === d.name) {
+      if (currentPointAnnotationId) {
+        chartAgeHealth.removeAnnotation(currentPointAnnotationId);
+        currentPointAnnotationId = null;
+        selectedPointData = null;
+        return;
+      }
+    }
+
+    // Remove previous point annotation
+    if (currentPointAnnotationId) {
+      chartAgeHealth.removeAnnotation(currentPointAnnotationId);
+      currentPointAnnotationId = null;
+    }
+
+    selectedPointData = d;
+    const annotId = 'point-label-' + Date.now();
+    currentPointAnnotationId = annotId;
+
+    const age = d.x !== undefined ? d.x : d.age;
+    const hi = d.y !== undefined ? d.y : d.hi;
+
+    const isNearTop = hi >= 85;
+    const isNearRight = age >= 30;
+    const isNearLeft = age <= 8;
+
+    const textAnchor = isNearRight ? 'end' : (isNearLeft ? 'start' : 'middle');
+    const offsetX = isNearRight ? -10 : (isNearLeft ? 10 : 0);
+    const offsetY = isNearTop ? 28 : -14;
+
+    chartAgeHealth.addPointAnnotation({
+      id: annotId,
+      x: age,
+      y: hi,
+      marker: {
+        size: 8,
+        fillColor: color,
+        strokeColor: '#ffffff',
+        strokeWidth: 2,
+        shape: 'circle'
+      },
+      label: {
+        borderColor: color,
+        borderWidth: 1.5,
+        borderRadius: 5,
+        textAnchor: textAnchor,
+        offsetX: offsetX,
+        offsetY: offsetY,
+        text: `${d.name} (${d.sn}) | Age: ${age} yrs | HI: ${hi}% | ${status}`,
+        style: {
+          background: isDark ? '#0f172a' : '#ffffff',
+          color: isDark ? '#f8fafc' : '#0f172a',
+          fontSize: '11px',
+          fontWeight: 600,
+          padding: { left: 8, right: 8, top: 4, bottom: 4 }
+        }
+      }
+    });
+  }
+
+  function handleMarkerSelect(d, seriesIndex) {
+    const now = Date.now();
+    if (now - lastChartClickTime < 150) return;
+    lastChartClickTime = now;
+    selectPoint(d, seriesIndex);
+  }
+
   const options = {
     series: [
-      {
-        name: 'เกณฑ์เสื่อมสภาพปกติ (Standard Degradation)',
-        type: 'line',
-        data: baselineData
-      },
       {
         name: 'Healthy',
         type: 'scatter',
@@ -869,23 +935,34 @@ function renderAgeVsHealthChart() {
     ],
     chart: {
       height: 350,
-      type: 'line',
+      type: 'scatter',
       background: 'transparent',
       toolbar: { show: false },
       zoom: { enabled: false },
-      animations: { enabled: false }
+      animations: { enabled: false },
+      events: {
+        dataPointSelection: function(event, chartContext, config) {
+          const sIdx = config.seriesIndex;
+          const pIdx = config.dataPointIndex;
+          if (config.w && config.w.config && config.w.config.series && config.w.config.series[sIdx]) {
+            const d = config.w.config.series[sIdx].data[pIdx];
+            if (d) handleMarkerSelect(d, sIdx);
+          }
+        },
+        markerClick: function(event, chartContext, { seriesIndex, dataPointIndex, w }) {
+          if (w && w.config && w.config.series && w.config.series[seriesIndex]) {
+            const d = w.config.series[seriesIndex].data[dataPointIndex];
+            if (d) handleMarkerSelect(d, seriesIndex);
+          }
+        }
+      }
     },
-    stroke: {
-      width: [2.5, 0, 0, 0, 0],
-      curve: 'smooth',
-      dashArray: [5, 0, 0, 0, 0]
-    },
-    colors: ['#6366f1', '#10b981', '#eab308', '#f97316', '#ef4444'],
+    colors: ['#10b981', '#eab308', '#f97316', '#ef4444'],
     markers: {
-      size: [0, 5.5, 5.5, 5.5, 6.5],
-      strokeColors: ['#6366f1', '#059669', '#ca8a04', '#ea580c', '#dc2626'],
-      strokeWidth: [0, 1.5, 1.5, 1.5, 1.5],
-      hover: { size: [0, 8, 8, 8, 8.5] }
+      size: 5.5,
+      strokeColors: ['#059669', '#ca8a04', '#ea580c', '#dc2626'],
+      strokeWidth: 1.5,
+      hover: { size: 8 }
     },
     xaxis: {
       title: { text: 'Service Age (Years)', style: { color: textColor, fontWeight: 600 } },
@@ -927,8 +1004,8 @@ function renderAgeVsHealthChart() {
           borderColor: '#10b981',
           strokeDashArray: 3,
           label: {
-            position: 'left',
-            textAnchor: 'start',
+            position: 'right',
+            textAnchor: 'end',
             text: 'Healthy',
             borderColor: '#34d399',
             borderWidth: 1,
@@ -941,8 +1018,8 @@ function renderAgeVsHealthChart() {
           borderColor: '#eab308',
           strokeDashArray: 3,
           label: {
-            position: 'left',
-            textAnchor: 'start',
+            position: 'right',
+            textAnchor: 'end',
             text: 'Monitoring',
             borderColor: '#facc15',
             borderWidth: 1,
@@ -955,8 +1032,8 @@ function renderAgeVsHealthChart() {
           borderColor: '#ef4444',
           strokeDashArray: 3,
           label: {
-            position: 'left',
-            textAnchor: 'start',
+            position: 'right',
+            textAnchor: 'end',
             text: 'Critical',
             borderColor: '#f87171',
             borderWidth: 1,
@@ -967,36 +1044,7 @@ function renderAgeVsHealthChart() {
       ]
     },
     tooltip: {
-      theme: isDark ? 'dark' : 'light',
-      custom: function({ series, seriesIndex, dataPointIndex, w }) {
-        if (seriesIndex === 0) {
-          const d = baselineData[dataPointIndex];
-          return `
-            <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px;">
-              <strong style="color:#818cf8;">เกณฑ์เสื่อมสภาพมาตรฐาน (Design Life Baseline)</strong><br/>
-              <span style="color:var(--exec-text-body);">อายุ: <strong>${d.x} ปี</strong> | เกณฑ์ HI: <strong>${d.y}%</strong></span><br/>
-              <small style="color:var(--exec-text-body);">เกณฑ์อายุใช้งานหม้อแปลง 30-40 ปี ตาม CIGRE/IEEE</small>
-            </div>
-          `;
-        }
-        const d = w.config.series[seriesIndex].data[dataPointIndex];
-        const statusNames = ['', 'Healthy', 'Monitoring', 'Warning', 'Critical'];
-        const statusColors = ['', '#10b981', '#eab308', '#f97316', '#ef4444'];
-        
-        // Accelerated degradation detection: age <= 25 and HI <= 65, or HI <= 50 at age < 30
-        const isAccelerated = (d.x <= 25 && d.y <= 65) || (d.x < 30 && d.y <= 50);
-
-        return `
-          <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px; min-width:190px;">
-            <strong style="color:var(--exec-text-title);">${d.name}</strong><br/>
-            <span style="color:var(--exec-text-body);">SN: <code>${d.sn}</code> | ${d.site}</span><br/>
-            <span style="color:var(--exec-text-body);">Type: ${d.sType}</span><br/>
-            <span style="color:var(--exec-text-body);">Status: <strong style="color:${statusColors[seriesIndex]};">${statusNames[seriesIndex]}</strong></span><br/>
-            <span>Age: <strong>${d.x} yrs</strong> | HI: <strong>${d.y}%</strong></span>
-            ${isAccelerated ? `<div style="margin-top:5px; padding:3px 7px; border-radius:4px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-size:11px; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> เสื่อมสภาพเร็วกว่าเกณฑ์ (Accelerated)</div>` : ''}
-          </div>
-        `;
-      }
+      enabled: false // User requested: disable hover tooltip, show label ONLY when clicked
     }
   };
 
