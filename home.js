@@ -847,22 +847,22 @@ function renderAgeVsHealthChart() {
         data: baselineData
       },
       {
-        name: 'Healthy (HI ≥ 80%)',
+        name: 'Healthy',
         type: 'scatter',
         data: goodSeries
       },
       {
-        name: 'Monitoring (70-79%)',
+        name: 'Monitoring',
         type: 'scatter',
         data: monitorSeries
       },
       {
-        name: 'Warning (50-69%)',
+        name: 'Warning',
         type: 'scatter',
         data: warnSeries
       },
       {
-        name: 'Critical (HI < 50%)',
+        name: 'Critical',
         type: 'scatter',
         data: critSeries
       }
@@ -929,7 +929,7 @@ function renderAgeVsHealthChart() {
           label: {
             position: 'left',
             textAnchor: 'start',
-            text: 'Healthy (80%)',
+            text: 'Healthy',
             borderColor: '#34d399',
             borderWidth: 1,
             borderRadius: 4,
@@ -943,7 +943,7 @@ function renderAgeVsHealthChart() {
           label: {
             position: 'left',
             textAnchor: 'start',
-            text: 'Monitoring (70%)',
+            text: 'Monitoring',
             borderColor: '#facc15',
             borderWidth: 1,
             borderRadius: 4,
@@ -957,43 +957,11 @@ function renderAgeVsHealthChart() {
           label: {
             position: 'left',
             textAnchor: 'start',
-            text: 'Critical Limit (50%)',
+            text: 'Critical',
             borderColor: '#f87171',
             borderWidth: 1,
             borderRadius: 4,
             style: { color: '#ffffff', background: '#dc2626', fontWeight: 600, padding: { left: 6, right: 6, top: 2, bottom: 2 }, fontSize: '10px' }
-          }
-        }
-      ],
-      xaxis: [
-        {
-          x: 30,
-          borderColor: '#818cf8',
-          strokeDashArray: 4,
-          label: {
-            orientation: 'vertical',
-            textAnchor: 'end',
-            offsetY: 10,
-            text: '30-Yr Design Life',
-            borderColor: '#6366f1',
-            borderWidth: 1,
-            borderRadius: 4,
-            style: { color: '#ffffff', background: '#4f46e5', fontWeight: 600, padding: { left: 5, right: 5, top: 2, bottom: 2 }, fontSize: '10px' }
-          }
-        },
-        {
-          x: 40,
-          borderColor: '#ea580c',
-          strokeDashArray: 4,
-          label: {
-            orientation: 'vertical',
-            textAnchor: 'end',
-            offsetY: 10,
-            text: '40-Yr Max Life',
-            borderColor: '#ea580c',
-            borderWidth: 1,
-            borderRadius: 4,
-            style: { color: '#ffffff', background: '#c2410c', fontWeight: 600, padding: { left: 5, right: 5, top: 2, bottom: 2 }, fontSize: '10px' }
           }
         }
       ]
