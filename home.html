@@ -238,8 +238,12 @@
                 </p>
                 <div id="chart-age-health" style="min-height: 350px;"></div>
 
-                <!-- Legend matching 1.2 Risk Matrix style with circular dots -->
+                <!-- Legend matching 1.2 Risk Matrix style with circular dots & baseline -->
                 <div class="matrix-legend">
+                  <div class="legend-item" title="เกณฑ์การเสื่อมสภาพตามอายุใช้งานปกติ (Expected Degradation Baseline 30-40 ปี ตาม CIGRE/IEEE)">
+                    <div style="width:16px; height:0; border-top:2.5px dashed #6366f1;"></div>
+                    <span>เกณฑ์เสื่อมสภาพ (30-40 ปี)</span>
+                  </div>
                   <div class="legend-item">
                     <div class="legend-color-dot" style="background:#10b981;"></div>
                     <span>Healthy: <strong id="legend-age-healthy-count">153 Units</strong></span>
@@ -580,7 +584,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260922_0800"></script>
+  <script src="home.js?v=20260923_0915"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->

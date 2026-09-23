@@ -822,34 +822,80 @@ function renderAgeVsHealthChart() {
     }
   });
 
+  // Standard Aging Degradation Curve (CIGRE TB 761 / IEEE 30-40 Year Design Life Model)
+  const baselineData = [
+    { x: 0, y: 100 },
+    { x: 5, y: 97 },
+    { x: 10, y: 93 },
+    { x: 15, y: 88 },
+    { x: 20, y: 82 },
+    { x: 25, y: 76 },
+    { x: 30, y: 70 },
+    { x: 35, y: 60 },
+    { x: 40, y: 50 }
+  ];
+
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   const textColor = isDark ? '#94a3b8' : '#475569';
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
 
   const options = {
     series: [
-      { name: 'Healthy (HI >= 80%)', data: goodSeries },
-      { name: 'Monitoring (70-79%)', data: monitorSeries },
-      { name: 'Warning (50-69%)', data: warnSeries },
-      { name: 'Critical (HI < 50%)', data: critSeries }
+      {
+        name: 'เกณฑ์เสื่อมสภาพปกติ (Standard Degradation)',
+        type: 'line',
+        data: baselineData
+      },
+      {
+        name: 'Healthy (HI ≥ 80%)',
+        type: 'scatter',
+        data: goodSeries
+      },
+      {
+        name: 'Monitoring (70-79%)',
+        type: 'scatter',
+        data: monitorSeries
+      },
+      {
+        name: 'Warning (50-69%)',
+        type: 'scatter',
+        data: warnSeries
+      },
+      {
+        name: 'Critical (HI < 50%)',
+        type: 'scatter',
+        data: critSeries
+      }
     ],
     chart: {
-      height: 320,
-      type: 'scatter',
+      height: 350,
+      type: 'line',
       background: 'transparent',
       toolbar: { show: false },
-      zoom: { enabled: false }
+      zoom: { enabled: false },
+      animations: { enabled: false }
     },
-    colors: ['#10b981', '#eab308', '#f97316', '#ef4444'],
+    stroke: {
+      width: [2.5, 0, 0, 0, 0],
+      curve: 'smooth',
+      dashArray: [5, 0, 0, 0, 0]
+    },
+    colors: ['#6366f1', '#10b981', '#eab308', '#f97316', '#ef4444'],
+    markers: {
+      size: [0, 5.5, 5.5, 5.5, 6.5],
+      strokeColors: ['#6366f1', '#059669', '#ca8a04', '#ea580c', '#dc2626'],
+      strokeWidth: [0, 1.5, 1.5, 1.5, 1.5],
+      hover: { size: [0, 8, 8, 8, 8.5] }
+    },
     xaxis: {
-      title: { text: 'Service Age (Years)', style: { color: textColor } },
+      title: { text: 'Service Age (Years)', style: { color: textColor, fontWeight: 600 } },
       labels: { style: { colors: textColor } },
       min: 0,
       max: 40,
       tickAmount: 8
     },
     yaxis: {
-      title: { text: 'Health Index (%)', style: { color: textColor } },
+      title: { text: 'Health Index (%)', style: { color: textColor, fontWeight: 600 } },
       labels: { style: { colors: textColor } },
       min: 0,
       max: 100,
@@ -860,21 +906,114 @@ function renderAgeVsHealthChart() {
       strokeDashArray: 3
     },
     legend: {
-      show: false // Custom legend used in DOM
+      show: false // Custom legend in DOM
     },
-    markers: {
-      size: 5,
-      hover: { size: 7 }
+    annotations: {
+      yaxis: [
+        {
+          y: 80,
+          borderColor: '#10b981',
+          strokeDashArray: 3,
+          label: {
+            position: 'left',
+            textAnchor: 'start',
+            text: 'Healthy (80%)',
+            borderColor: '#34d399',
+            borderWidth: 1,
+            borderRadius: 4,
+            style: { color: '#ffffff', background: '#059669', fontWeight: 600, padding: { left: 6, right: 6, top: 2, bottom: 2 }, fontSize: '10px' }
+          }
+        },
+        {
+          y: 70,
+          borderColor: '#eab308',
+          strokeDashArray: 3,
+          label: {
+            position: 'left',
+            textAnchor: 'start',
+            text: 'Monitoring (70%)',
+            borderColor: '#facc15',
+            borderWidth: 1,
+            borderRadius: 4,
+            style: { color: '#ffffff', background: '#ca8a04', fontWeight: 600, padding: { left: 6, right: 6, top: 2, bottom: 2 }, fontSize: '10px' }
+          }
+        },
+        {
+          y: 50,
+          borderColor: '#ef4444',
+          strokeDashArray: 3,
+          label: {
+            position: 'left',
+            textAnchor: 'start',
+            text: 'Critical Limit (50%)',
+            borderColor: '#f87171',
+            borderWidth: 1,
+            borderRadius: 4,
+            style: { color: '#ffffff', background: '#dc2626', fontWeight: 600, padding: { left: 6, right: 6, top: 2, bottom: 2 }, fontSize: '10px' }
+          }
+        }
+      ],
+      xaxis: [
+        {
+          x: 30,
+          borderColor: '#818cf8',
+          strokeDashArray: 4,
+          label: {
+            orientation: 'vertical',
+            textAnchor: 'end',
+            offsetY: 10,
+            text: '30-Yr Design Life',
+            borderColor: '#6366f1',
+            borderWidth: 1,
+            borderRadius: 4,
+            style: { color: '#ffffff', background: '#4f46e5', fontWeight: 600, padding: { left: 5, right: 5, top: 2, bottom: 2 }, fontSize: '10px' }
+          }
+        },
+        {
+          x: 40,
+          borderColor: '#ea580c',
+          strokeDashArray: 4,
+          label: {
+            orientation: 'vertical',
+            textAnchor: 'end',
+            offsetY: 10,
+            text: '40-Yr Max Life',
+            borderColor: '#ea580c',
+            borderWidth: 1,
+            borderRadius: 4,
+            style: { color: '#ffffff', background: '#c2410c', fontWeight: 600, padding: { left: 5, right: 5, top: 2, bottom: 2 }, fontSize: '10px' }
+          }
+        }
+      ]
     },
     tooltip: {
       theme: isDark ? 'dark' : 'light',
-      custom: function({series, seriesIndex, dataPointIndex, w}) {
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        if (seriesIndex === 0) {
+          const d = baselineData[dataPointIndex];
+          return `
+            <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px;">
+              <strong style="color:#818cf8;">เกณฑ์เสื่อมสภาพมาตรฐาน (Design Life Baseline)</strong><br/>
+              <span style="color:var(--exec-text-body);">อายุ: <strong>${d.x} ปี</strong> | เกณฑ์ HI: <strong>${d.y}%</strong></span><br/>
+              <small style="color:var(--exec-text-body);">เกณฑ์อายุใช้งานหม้อแปลง 30-40 ปี ตาม CIGRE/IEEE</small>
+            </div>
+          `;
+        }
         const d = w.config.series[seriesIndex].data[dataPointIndex];
+        const statusNames = ['', 'Healthy', 'Monitoring', 'Warning', 'Critical'];
+        const statusColors = ['', '#10b981', '#eab308', '#f97316', '#ef4444'];
+        
+        // Accelerated degradation detection: age <= 25 and HI <= 65, or HI <= 50 at age < 30
+        const isAccelerated = (d.x <= 25 && d.y <= 65) || (d.x < 30 && d.y <= 50);
+
         return `
-          <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px;">
+          <div style="padding:8px 12px; font-size:12px; background:var(--exec-card-bg); border:1px solid var(--exec-card-border); border-radius:6px; min-width:190px;">
             <strong style="color:var(--exec-text-title);">${d.name}</strong><br/>
-            <span style="color:var(--exec-text-body);">SN: ${d.sn} | ${d.site}</span><br/>
-            <span style="color:var(--exec-text-body);">Age: ${d.x} yrs | HI: <strong>${d.y}%</strong></span>
+            <span style="color:var(--exec-text-body);">SN: <code>${d.sn}</code> | ${d.site}</span><br/>
+            <span style="color:var(--exec-text-body);">Type: ${d.sType}</span><br/>
+            <span style="color:var(--exec-text-body);">Status: <strong style="color:${statusColors[seriesIndex]};">${statusNames[seriesIndex]}</strong></span><br/>
+            <span>Age: <strong>${d.x} yrs</strong> | HI: <strong>${d.y}%</strong></span>
+            ${isAccelerated ? `<div style="margin-top:5px; padding:3px 7px; border-radius:4px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-size:11px; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> เสื่อมสภาพเร็วกว่าเกณฑ์ (Accelerated)</div>` : ''}
           </div>
         `;
       }
@@ -882,11 +1021,10 @@ function renderAgeVsHealthChart() {
   };
 
   if (chartAgeHealth) {
-    chartAgeHealth.updateOptions(options);
-  } else {
-    chartAgeHealth = new ApexCharts(chartEl, options);
-    chartAgeHealth.render();
+    chartAgeHealth.destroy();
   }
+  chartAgeHealth = new ApexCharts(chartEl, options);
+  chartAgeHealth.render();
 
   // Update HTML Legend Counts (matching 1.2 Risk Matrix style)
   const elHealthy = document.getElementById('legend-age-healthy-count');
