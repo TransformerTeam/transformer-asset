@@ -221,13 +221,20 @@ try {
 Write-Host "`nAll CSV sheets exported successfully from Excel!" -ForegroundColor Cyan
 
 # ----------------------------------------------------
-# 3. Synchronize TRInfo.csv from TRinfo2.csv
+# 3. Synchronize TRInfo.csv from TRinfo2.csv & MainTankOilData.csv from MTOilData.csv
 # ----------------------------------------------------
 $tr2Path = Join-Path $testDataDir "TRinfo2.csv"
 $trInfoPath = Join-Path $repoRoot "TRInfo.csv"
 if (Test-Path $tr2Path) {
     Copy-Item -Path $tr2Path -Destination $trInfoPath -Force
     Write-Host "Synchronized TRInfo.csv from TestData/TRinfo2.csv" -ForegroundColor Green
+}
+
+$mtOilPath = Join-Path $testDataDir "MTOilData.csv"
+$mainTankOilPath = Join-Path $testDataDir "MainTankOilData.csv"
+if (Test-Path $mtOilPath) {
+    Copy-Item -Path $mtOilPath -Destination $mainTankOilPath -Force
+    Write-Host "Synchronized TestData/MainTankOilData.csv from TestData/MTOilData.csv" -ForegroundColor Green
 }
 
 # ----------------------------------------------------
