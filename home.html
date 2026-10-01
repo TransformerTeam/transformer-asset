@@ -262,69 +262,20 @@
           </section>
 
           <!-- =================================================================
-               MODULE 2: ACTION PLAN
-               ================================================================= -->
-          <section class="exec-section">
-            <div class="section-header">
-              <div class="section-title-group">
-                <div class="section-icon-badge"><i class="fa-solid fa-list-check"></i></div>
-                <div>
-                  <h2>2. Action Plan</h2>
-                  <p>Standardized Health Indices & Fleet-Wide Action Planning</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="ranking-grid-layout">
-              <!-- 2.1 Transformer Ranking Table -->
-              <div class="sub-card" style="min-width: 0;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                  <div class="sub-card-title" style="margin-bottom:0;">
-                    <i class="fa-solid fa-arrow-down-short-wide text-indigo-400"></i>
-                    <span>2.1 Transformer Ranking by Health Index (แย่ที่สุด &rarr; ดีที่สุด)</span>
-                  </div>
-                  <input type="text" id="search-ranking" class="filter-pill-select" placeholder="🔍 Search ID, Serial..." style="padding:4px 10px; font-size:0.75rem; width:160px;" />
-                </div>
-
-                <div class="table-responsive" style="max-height: 380px;">
-                  <table class="exec-table">
-                    <thead>
-                      <tr>
-                        <th>Rank</th>
-                        <th>Equipment Name</th>
-                        <th>Serial No</th>
-                        <th>Site</th>
-                        <th>Type</th>
-                        <th>Rating</th>
-                        <th>HI (%)</th>
-                        <th>Primary Risk Factor</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody id="ranking-tbody">
-                      <!-- Populated by home.js -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- =================================================================
-               MODULE 3: CRITICAL ASSETS & PRIORITY ACTION (รายการหม้อแปลงวิกฤตและแผนเชิงรุก)
+               MODULE 2: CRITICAL ASSETS & PRIORITY ACTION (รายการหม้อแปลงวิกฤตและแผนเชิงรุก)
                ================================================================= -->
           <section class="exec-section">
             <div class="section-header">
               <div class="section-title-group">
                 <div class="section-icon-badge"><i class="fa-solid fa-fire-flame-curved" style="color:#ef4444;"></i></div>
                 <div>
-                  <h2>3. Critical Assets & Priority Action: รายการหม้อแปลงวิกฤตและแผนจัดการเชิงรุก</h2>
+                  <h2>2. Critical Assets & Priority Action: รายการหม้อแปลงวิกฤตและแผนจัดการเชิงรุก</h2>
                   <p>Targeted Mitigation Strategy for Highest Risk Transformers</p>
                 </div>
               </div>
             </div>
 
-            <!-- 3.2 Action Strategy Pillars -->
+            <!-- 2.1 Action Strategy Pillars -->
             <div class="pillar-grid">
               <div class="pillar-card">
                 <div class="pillar-title"><i class="fa-solid fa-truck-ramp-box text-rose-400"></i> Unit Replacement</div>
@@ -351,11 +302,11 @@
               </div>
             </div>
 
-            <!-- 3.1 Top Critical Watchlist Table -->
+            <!-- 2.2 Top Critical Watchlist Table -->
             <div class="sub-card" style="margin-bottom: 20px;">
               <div class="sub-card-title">
                 <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
-                <span>3.1 Top Critical Watchlist: รายชื่อหม้อแปลงเฝ้าระวังสูงสุดที่ต้องดำเนินการ</span>
+                <span>2.2 Top Critical Watchlist: รายชื่อหม้อแปลงเฝ้าระวังสูงสุดที่ต้องดำเนินการ</span>
               </div>
               <div class="table-responsive">
                 <table class="exec-table">
@@ -378,11 +329,11 @@
               </div>
             </div>
 
-            <!-- 3.3 Timeline of Intervention -->
+            <!-- 2.3 Timeline of Intervention -->
             <div class="sub-card">
               <div class="sub-card-title">
                 <i class="fa-solid fa-timeline text-indigo-400"></i>
-                <span>3.3 Timeline of Intervention: แผนกำหนดการเข้าดำเนินการแก้ไขตามช่วง Shutdown</span>
+                <span>2.3 Timeline of Intervention: แผนกำหนดการเข้าดำเนินการแก้ไขตามช่วง Shutdown</span>
               </div>
               <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:10px;">
                 จัดสรรช่วงเวลาเข้าดำเนินการในช่วง Planned Outage เพื่อไม่ให้ส่งผลกระทบต่อความต้องการใช้ไฟฟ้าสูงสุด (Peak Demand)
@@ -394,25 +345,25 @@
           </section>
 
           <!-- =================================================================
-               MODULE 4: CAPITAL PLANNING & ASSET LIFECYCLE (การวางแผนงบประมาณและวงรอบอายุ)
+               MODULE 3: CAPITAL PLANNING & ASSET LIFECYCLE (การวางแผนงบประมาณและวงรอบอายุ)
                ================================================================= -->
           <section class="exec-section">
             <div class="section-header">
               <div class="section-title-group">
                 <div class="section-icon-badge"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                 <div>
-                  <h2>4. Capital Planning & Asset Lifecycle: การวางแผนงบประมาณและวงรอบอายุการใช้งาน</h2>
+                  <h2>3. Capital Planning & Asset Lifecycle: การวางแผนงบประมาณและวงรอบอายุการใช้งาน</h2>
                   <p>Long-Term CAPEX Forecast, Remaining Useful Life (RUL) & OPEX Financial Risk</p>
                 </div>
               </div>
             </div>
 
             <div class="grid-2col">
-              <!-- 4.1 Remaining Useful Life Distribution -->
+              <!-- 3.1 Remaining Useful Life Distribution -->
               <div class="sub-card">
                 <div class="sub-card-title">
                   <i class="fa-solid fa-hourglass-half text-indigo-400"></i>
-                  <span>4.1 Remaining Useful Life (RUL) Distribution: การกระจายตัวอายุใช้งานที่เหลือ</span>
+                  <span>3.1 Remaining Useful Life (RUL) Distribution: การกระจายตัวอายุใช้งานที่เหลือ</span>
                 </div>
                 <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:8px;">
                   คาดการณ์อายุการใช้งานที่เหลือทั้งระบบโดยคำนวณจากสภาพความเสื่อมสภาพจริง (Health Index & DP)
@@ -420,11 +371,11 @@
                 <div id="chart-rul-distribution" style="min-height: 250px;"></div>
               </div>
 
-              <!-- 4.2 CAPEX Replacement Forecast (5-10 Years) -->
+              <!-- 3.2 CAPEX Replacement Forecast (5-10 Years) -->
               <div class="sub-card">
                 <div class="sub-card-title">
                   <i class="fa-solid fa-chart-column text-indigo-400"></i>
-                  <span>4.2 CAPEX Replacement Forecast (2026-2035): ประมาณการงบประมาณจัดซื้อทดแทน</span>
+                  <span>3.2 CAPEX Replacement Forecast (2026-2035): ประมาณการงบประมาณจัดซื้อทดแทน</span>
                 </div>
                 <p style="font-size:0.75rem; color:var(--exec-text-body); margin-bottom:8px;">
                   แผนภูมิแท่งคาดการณ์งบประมาณจัดซื้อหม้อแปลงทดแทนล่วงหน้าตามลำดับ RUL และพิกัด MVA (หน่วย: ล้านบาท)
@@ -433,11 +384,11 @@
               </div>
             </div>
 
-            <!-- 4.3 OPEX vs Unplanned Downtime Cost -->
+            <!-- 3.3 OPEX vs Unplanned Downtime Cost -->
             <div class="sub-card" style="margin-top: 18px;">
               <div class="sub-card-title">
                 <i class="fa-solid fa-scale-balanced text-amber-400"></i>
-                <span>4.3 OPEX vs. Corrective Cost Impact: ความคุ้มค่าเชิงเศรษฐศาสตร์ของการบำรุงรักษาเชิงรุก</span>
+                <span>3.3 OPEX vs. Corrective Cost Impact: ความคุ้มค่าเชิงเศรษฐศาสตร์ของการบำรุงรักษาเชิงรุก</span>
               </div>
               <div class="grid-3col" style="margin-top: 8px;">
                 <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:16px; text-align:center;">
@@ -462,24 +413,24 @@
           </section>
 
           <!-- =================================================================
-               MODULE 5: COMPLIANCE & INSPECTION ASSURANCE (การปฏิบัติตามมาตรฐานและประวัติ)
+               MODULE 4: COMPLIANCE & INSPECTION ASSURANCE (การปฏิบัติตามมาตรฐานและประวัติ)
                ================================================================= -->
           <section class="exec-section">
             <div class="section-header">
               <div class="section-title-group">
                 <div class="section-icon-badge"><i class="fa-solid fa-clipboard-check"></i></div>
                 <div>
-                  <h2>5. Compliance & Inspection Assurance: การปฏิบัติตามมาตรฐานและประวัติการทดสอบ</h2>
+                  <h2>4. Compliance & Inspection Assurance: การปฏิบัติตามมาตรฐานและประวัติการทดสอบ</h2>
                   <p>Testing Completion Coverage, Regulatory Compliance & SAP Work Order Backlog</p>
                 </div>
               </div>
             </div>
 
-            <!-- 5.1 Testing Completion Rate Gauges -->
+            <!-- 4.1 Testing Completion Rate Gauges -->
             <div class="sub-card" style="margin-bottom: 18px;">
               <div class="sub-card-title">
                 <i class="fa-solid fa-list-check text-indigo-400"></i>
-                <span>5.1 Testing Completion Rate: สัดส่วนความครอบคลุมของการทดสอบประจำปีเทียบแผนงาน</span>
+                <span>4.1 Testing Completion Rate: สัดส่วนความครอบคลุมของการทดสอบประจำปีเทียบแผนงาน</span>
               </div>
               <div class="radial-gauges-grid">
                 <div class="gauge-box">
@@ -506,11 +457,11 @@
             </div>
 
             <div class="grid-2col">
-              <!-- 5.2 Regulatory & Insurance Compliance -->
+              <!-- 4.2 Regulatory & Insurance Compliance -->
               <div class="sub-card">
                 <div class="sub-card-title">
                   <i class="fa-solid fa-certificate text-indigo-400"></i>
-                  <span>5.2 Regulatory & Insurance Compliance: การรับรองตามมาตรฐานสากล</span>
+                  <span>4.2 Regulatory & Insurance Compliance: การรับรองตามมาตรฐานสากล</span>
                 </div>
                 <div class="standards-badge-list">
                   <div class="standard-item">
@@ -532,11 +483,11 @@
                 </div>
               </div>
 
-              <!-- 5.3 Work Order Backlog from SAP -->
+              <!-- 4.3 Work Order Backlog from SAP -->
               <div class="sub-card">
                 <div class="sub-card-title">
                   <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
-                  <span>5.3 SAP Work Order Backlog & Audit Trail: รายการงานซ่อมบำรุงที่ค้างดำเนินการ</span>
+                  <span>4.3 SAP Work Order Backlog & Audit Trail: รายการงานซ่อมบำรุงที่ค้างดำเนินการ</span>
                 </div>
                 <div class="table-responsive">
                   <table class="exec-table">
@@ -580,7 +531,7 @@
   <!-- Data Sources & Logic Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="home.js?v=20260923_1115"></script>
+  <script src="home.js?v=20260924_1705"></script>
   <script src="theme_editor.js"></script>
 
   <!-- Sidebar Toggle Script -->

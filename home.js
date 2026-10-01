@@ -305,11 +305,9 @@ function initData() {
 function setupEventListeners() {
   const siteFilter = document.getElementById('site-filter');
   const typeFilter = document.getElementById('type-filter');
-  const searchInput = document.getElementById('search-ranking');
 
   if (siteFilter) siteFilter.addEventListener('change', applyFilters);
   if (typeFilter) typeFilter.addEventListener('change', applyFilters);
-  if (searchInput) searchInput.addEventListener('input', () => renderRankingTable());
 
   // Listen to Theme Changes from Theme Engine
   window.addEventListener('themeChanged', () => {
@@ -374,7 +372,6 @@ function applyFilters() {
   renderExecutiveKPIs();
   renderRiskMatrix();
   renderAgeVsHealthChart();
-  renderRankingTable();
   renderCriticalWatchlist();
   renderActionPillars();
   renderInterventionTimeline();
@@ -1066,70 +1063,7 @@ function renderAgeVsHealthChart() {
 }
 
 /**
- * MODULE 2.1: Fleet Health Index Ranking Table
- */
-function renderRankingTable() {
-  const container = document.getElementById('ranking-table-tbody');
-  if (!container) return;
-
-  const searchVal = (document.getElementById('search-ranking')?.value || '').toLowerCase();
-
-  let list = filteredData.filter(d => {
-    if (!searchVal) return true;
-    return d.name.toLowerCase().includes(searchVal) ||
-           d.sn.toLowerCase().includes(searchVal) ||
-           d.site.toLowerCase().includes(searchVal) ||
-           d.sType.toLowerCase().includes(searchVal);
-  });
-
-  // Sort by Health Index Ascending (Worst first)
-  list.sort((a, b) => {
-    const aVal = a.hi === null ? 999 : a.hi;
-    const bVal = b.hi === null ? 999 : b.hi;
-    return aVal - bVal;
-  });
-
-  if (list.length === 0) {
-    container.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--exec-text-body);">No transformers found.</td></tr>`;
-    return;
-  }
-
-  container.innerHTML = list.map((d, idx) => {
-    let badgeClass = 'badge-normal';
-    if (d.hi === null) badgeClass = 'badge-secondary';
-    else if (d.hi <= 50) badgeClass = 'badge-critical';
-    else if (d.hi <= 70) badgeClass = 'badge-warning';
-    else if (d.hi <= 79) badgeClass = 'badge-caution';
-
-    return `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>
-          <a href="evaluation_report.html?serial=${encodeURIComponent(d.sn || d.name)}#part-3-wrapper" style="color:var(--exec-text-title); text-decoration:none;" class="tr-link-hover" title="Click to view & edit in Evaluation Report">
-            <strong>${d.name}</strong>
-          </a><br/>
-          <small style="color:var(--exec-text-body);">SN: ${d.sn}</small>
-        </td>
-        <td>${d.site}</td>
-        <td>${d.sType}</td>
-        <td>${d.mva} MVA</td>
-        <td>${d.age} yrs</td>
-        <td><span class="badge-status ${badgeClass}">${d.hi !== null ? d.hi + '%' : 'Non-Assessed'}</span></td>
-        <td>${d.primaryFactor}</td>
-        <td>
-          <a href="assessment.html?search=${encodeURIComponent(d.name)}" class="action-btn-sm" target="_blank">
-            <i class="fa-solid fa-stethoscope"></i> Detail
-          </a>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
-
-
-
-/**
- * MODULE 3.1: Top Critical Watchlist
+ * MODULE 2: Critical Watchlist Table & Action Strategy Pillars
  */
 function renderCriticalWatchlist() {
   const container = document.getElementById('critical-watchlist-tbody');
@@ -1239,7 +1173,7 @@ function renderInterventionTimeline() {
 }
 
 /**
- * MODULE 4.1: Remaining Useful Life (RUL) Distribution
+ * MODULE 3.1: Remaining Useful Life (RUL) Distribution
  */
 function renderRULDistributionChart() {
   const chartEl = document.querySelector("#chart-rul-distribution");
@@ -1293,7 +1227,7 @@ function renderRULDistributionChart() {
 }
 
 /**
- * MODULE 4.2: 5-to-10 Year CAPEX Replacement Forecast (Stacked Bar)
+ * MODULE 3.2: 5-to-10 Year CAPEX Replacement Forecast (Stacked Bar)
  */
 function renderCAPEXForecastChart() {
   const chartEl = document.querySelector("#chart-capex-forecast");
@@ -1347,7 +1281,7 @@ function renderCAPEXForecastChart() {
 }
 
 /**
- * MODULE 5.1: Testing Completion Rate Gauges
+ * MODULE 4.1: Testing Completion Rate Gauges
  */
 function renderComplianceGauges() {
   renderSingleGauge('#gauge-dga', 96.4, '#10b981', chart => { gaugeDGA = chart; });
@@ -1394,7 +1328,7 @@ function renderSingleGauge(selector, pct, color, callback) {
 }
 
 /**
- * MODULE 5.3: Work Order Backlog from SAP
+ * MODULE 4.3: Work Order Backlog from SAP
  */
 function renderSAPBacklog() {
   const tbody = document.getElementById('sap-backlog-tbody');
