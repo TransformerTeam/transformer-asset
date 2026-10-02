@@ -800,10 +800,11 @@
   <!-- Load script files -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
+  <script src="pi_data.js"></script>
   
   <script>
     // In-memory data store for IRandPIData.csv
-    let piDataList = [];
+    let piDataList = (typeof window.IR_PI_DATA !== 'undefined' && Array.isArray(window.IR_PI_DATA)) ? window.IR_PI_DATA : [];
 
     document.addEventListener('DOMContentLoaded', async () => {
       // Setup UI themes
@@ -811,16 +812,22 @@
       document.documentElement.setAttribute('data-theme', activeTheme);
       updateThemeIcon(activeTheme);
 
-      // 1. Fetch and Parse IRandPIData.csv
+      // 1. Fetch and Parse IRandPIData.csv (with fallback to window.IR_PI_DATA)
+      if (typeof window.IR_PI_DATA !== 'undefined' && Array.isArray(window.IR_PI_DATA) && window.IR_PI_DATA.length > 0) {
+        piDataList = window.IR_PI_DATA;
+      }
       try {
         let response = await fetch('TestData/IRandPIData.csv');
         if (!response.ok) response = await fetch('TestData/PIData.csv');
         if (response.ok) {
           const csvText = await response.text();
-          piDataList = parseCSV(csvText);
+          const parsed = parseCSV(csvText);
+          if (parsed && parsed.length > 0) {
+            piDataList = parsed;
+          }
         }
       } catch (err) {
-        console.warn("Could not load IRandPIData.csv via fetch, continuing with metadata:", err);
+        console.warn("Could not load IRandPIData.csv via fetch, continuing with preloaded data:", err);
       }
 
       // 2. Populate Dropdown list of transformers
@@ -1107,11 +1114,20 @@
         }
       }
 
-      if (voltage && !voltage.includes('kV') && voltage !== '-') voltage += ' kV';
-      if (power && !power.includes('MVA') && power !== '-') {
-        const pNum = parseFloat(power);
-        if (!isNaN(pNum)) power = pNum >= 1000 ? `${(pNum/1000).toFixed(0)} MVA` : `${pNum} MVA`;
+      let vStr = String(voltage !== null && voltage !== undefined ? voltage : '-').trim();
+      if (vStr && vStr !== '-' && !vStr.toUpperCase().includes('KV')) {
+        vStr += ' kV';
       }
+      voltage = vStr;
+
+      let pStr = String(power !== null && power !== undefined ? power : '-').trim();
+      if (pStr && pStr !== '-' && !pStr.toUpperCase().includes('MVA')) {
+        const pNum = parseFloat(pStr);
+        if (!isNaN(pNum)) {
+          pStr = pNum >= 1000 ? `${(pNum/1000).toFixed(0)} MVA` : `${pStr} MVA`;
+        }
+      }
+      power = pStr;
 
       // Fill Info Elements
       if (document.getElementById('info-header-id')) document.getElementById('info-header-id').textContent = 'EMM-TR-F-002, Rev.1';

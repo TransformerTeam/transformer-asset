@@ -293,5 +293,11 @@ def convert_csv_to_js():
         f.write(js_content)
     print(f"Updated {JS_PATH} successfully with {len(data)} items and embedded sub-CSV records.")
 
+    try:
+        from convert_pi_data_js import convert_pi_csv_to_js
+        convert_pi_csv_to_js()
+    except Exception as e:
+        pass
+
 if __name__ == '__main__':
     convert_csv_to_js()
