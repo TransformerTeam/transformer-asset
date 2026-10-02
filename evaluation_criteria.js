@@ -380,8 +380,8 @@ var EVALUATION_CRITERIA_DATA = [
     "category": "Surge Arrester",
     "item": "Watt Loss  (Increment from Initial %)",
     "criteria": "EGAT / IEEE C57.152",
-    "standard": "Limit: Phase Diff / %Error ≤ 50% (Normal ≤ 20%, Monitor 20-50%, Critical > 50%)",
-    "recommendation": "Check Arrester Watt Loss, clean surface if diff > 20%, replace if > 50%"
+    "standard": "Limit: < 50% (Normal), 60-80% (Warning), > 80% (Critical)",
+    "recommendation": "Normal if < 50%, inspect & monitor if 60-80%, replace if > 80%"
   },
   {
     "row": 59,

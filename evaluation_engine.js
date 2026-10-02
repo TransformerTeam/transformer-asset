@@ -1072,7 +1072,7 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
   // 24. Surge Arrester
   if (ptLower.includes('arrester') || mLower.includes('arrester') || mLower.includes('surge')) {
     if (mLower.includes('watt loss') || mLower.includes('watt')) {
-      return 'EGAT / IEEE C57.152, Limit: Phase Diff / %Error ≤ 50.0% (Normal ≤ 20%)';
+      return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50% (Normal), 60-80% (Warning), > 80% (Critical)';
     }
     if (mLower.includes('leakage') || mLower.includes('current')) {
       return 'EGAT / IEEE C57.152, Limit: Leakage Current ≤ 0.50 mA';
@@ -1080,7 +1080,7 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
     if (mLower.includes('insulation resistance') || mLower.includes('ir')) {
       return 'EGAT / IEEE C57.152, Limit: IR ≥ 10,000 MΩ';
     }
-    return 'EGAT / IEEE C57.152, Limit: Phase Diff ≤ 50.0%, Leakage ≤ 0.50 mA';
+    return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50%, Leakage ≤ 0.50 mA';
   }
 
   // 25. OLTC Oil / OLTC Breakdown / Water Content / DGA
@@ -2768,8 +2768,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             const npW = sInfo ? parseFloat(sInfo.Watts) : NaN;
             if (!isNaN(npW) && npW > 0) {
               const incPct = ((w - npW) / npW) * 100;
-              // EGAT Criteria: <= 20% Normal (5), 20-35% Good (4), 35-50% Monitoring (3), > 50% Critical (1)
-              const s = incPct <= 20.0 ? 5 : (incPct <= 35.0 ? 4 : (incPct <= 50.0 ? 3 : 1));
+              // Criteria: < 50% Normal (5), 50-60% Good (4), 60-80% Warning (3), > 80% Critical (1)
+              const s = incPct < 50.0 ? 5 : (incPct < 60.0 ? 4 : (incPct <= 80.0 ? 3 : 1));
               devScores.push(s);
             }
           }
@@ -2783,8 +2783,8 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             const minW = Math.min(...validWatts);
             const phaseVar = maxW > 0 ? ((maxW - minW) / maxW) * 100 : 0;
             diffStr = ` (Diff: ${phaseVar.toFixed(1)}%)`;
-            // EGAT / Project Criteria: Normal <= 20%, Monitoring 20-50%, Critical > 50%
-            const phaseScore = phaseVar <= 20.0 ? 5 : (phaseVar <= 35.0 ? 4 : (phaseVar <= 50.0 ? 3 : 1));
+            // Criteria: < 50% Normal (5), 50-60% Good (4), 60-80% Warning (3), > 80% Critical (1)
+            const phaseScore = phaseVar < 50.0 ? 5 : (phaseVar < 60.0 ? 4 : (phaseVar <= 80.0 ? 3 : 1));
 
             if (devScores.length > 0) {
               finalScore = Math.min(Math.min(...devScores), phaseScore);
@@ -2795,7 +2795,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             finalScore = Math.min(...devScores);
           }
 
-          const rec = finalScore >= 4 ? '-' : (isLv ? 'Check LV Arrester Watt Loss (EGAT/IEEE limit: ≤ 50%)' : 'Check HV Arrester Watt Loss (EGAT/IEEE limit: ≤ 50%)');
+          const rec = finalScore >= 4 ? '-' : (finalScore === 3 ? `Check ${isLv ? 'LV' : 'HV'} Arrester Watt Loss (Warning: Diff 60-80%)` : `Check ${isLv ? 'LV' : 'HV'} Arrester Watt Loss (Critical: Diff > 80%)`);
           return { value: parts.join(', ') + diffStr, testDate: date, ratingScore: finalScore, recommendation: rec };
         }
       }

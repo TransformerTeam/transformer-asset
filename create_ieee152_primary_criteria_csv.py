@@ -600,13 +600,13 @@ rows = [
         "EGAT / IEEE C57.152",
         "Primary (EGAT / IEEE C57.152)",
         "Condition / % Error",
-        "Normal (Leakage ≤ 0.5 mA, Watt Loss Diff ≤ 20%, IR ≥ 10,000 MΩ)",
-        "Watt Loss Diff 20-35% / Minor surface contamination",
-        "Watt Loss Diff 35-50% / Counter faulty / Leakage elevated (0.5-1.0 mA)",
+        "Normal (Leakage ≤ 0.5 mA, Watt Loss Diff < 50%, IR ≥ 10,000 MΩ)",
+        "Watt Loss Diff 50-60% / Minor surface contamination",
+        "Watt Loss Diff 60-80% (Warning) / Counter faulty / Leakage elevated (0.5-1.0 mA)",
         "High leakage current / Thermal anomaly",
-        "Watt Loss Diff > 50% / Arrester failure / Cracked housing",
+        "Watt Loss Diff > 80% (Critical) / Arrester failure / Cracked housing",
         "5.0%",
-        "Replace surge arrester if Watt Loss Diff > 50% or leakage current exceeds threshold per EGAT / IEEE C57.152 Clause 9.1"
+        "Replace surge arrester if Watt Loss Diff > 80% or leakage current exceeds threshold per EGAT / IEEE C57.152 Clause 9.1"
     ],
     [
         "Part 1: Condition Health Index (CHI)",
