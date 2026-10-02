@@ -21,6 +21,7 @@ Thumbs.db
 # Dev/scratch scripts
 .venv/
 scratch/
+.amhv_profile/
 serve.ps1
 serve.py
 start_internet_server.bat
