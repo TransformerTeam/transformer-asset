@@ -445,15 +445,15 @@ rows = [
         "Surge Arrester",
         "Surge Arrester Test",
         "Surge Arrester Condition",
-        "IEEE C57.152 / IEC 60099",
+        "EGAT / IEEE C57.152",
         "Condition / % Error",
-        "Normal (Leakage current normal, counter OK)",
-        "Minor surface contamination",
-        "Counter faulty / Leakage current elevated",
+        "Normal (Leakage ≤ 0.5 mA, Watt Loss Diff ≤ 20%, IR ≥ 10,000 MΩ)",
+        "Watt Loss Diff 20-35% / Minor surface contamination",
+        "Watt Loss Diff 35-50% / Counter faulty / Leakage elevated (0.5-1.0 mA)",
         "High leakage current / Thermal anomaly",
-        "Arrester failure / Cracked housing / Disconnected",
+        "Watt Loss Diff > 50% / Arrester failure / Cracked housing",
         "5.0%",
-        "Replace surge arrester if leakage current exceeds threshold"
+        "Replace surge arrester if Watt Loss Diff > 50% or leakage current exceeds threshold per EGAT / IEEE C57.152 Clause 9.1"
     ],
     [
         "Part 1: Condition Health Index (CHI)",

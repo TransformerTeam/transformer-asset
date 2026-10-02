@@ -371,25 +371,25 @@
     "row": 57,
     "category": "Surge Arrester",
     "item": "Leakage Current (Increment from Initial %)",
-    "criteria": "",
-    "standard": "",
-    "recommendation": ""
+    "criteria": "EGAT / IEEE C57.152",
+    "standard": "Limit: ≤ 0.50 mA / %Dev ≤ 20% (Max limit ≤ 50%)",
+    "recommendation": "Check Arrester Leakage Current, monitor if > 0.50 mA"
   },
   {
     "row": 58,
     "category": "Surge Arrester",
     "item": "Watt Loss  (Increment from Initial %)",
-    "criteria": "",
-    "standard": "",
-    "recommendation": ""
+    "criteria": "EGAT / IEEE C57.152",
+    "standard": "Limit: Phase Diff / %Error ≤ 50% (Normal ≤ 20%, Monitor 20-50%, Critical > 50%)",
+    "recommendation": "Check Arrester Watt Loss, clean surface if diff > 20%, replace if > 50%"
   },
   {
     "row": 59,
     "category": "Surge Arrester",
     "item": "Insulation Resistance (Remaining from Initial %)",
-    "criteria": "",
-    "standard": "",
-    "recommendation": ""
+    "criteria": "EGAT / IEEE C57.152",
+    "standard": "Limit: IR ≥ 10,000 MΩ",
+    "recommendation": "Check Arrester Insulation Resistance"
   },
   {
     "row": 60,

@@ -589,7 +589,7 @@ rows = [
         "Adhere to OEM maintenance schedule per CIGRE 761 Table A-6"
     ],
 
-    # 9. Surge Arrester (PRIMARY: IEEE C57.152-2013 / SUPPLEMENT: CIGRE 761 Table A-1)
+    # 9. Surge Arrester (PRIMARY: EGAT / IEEE C57.152-2013 / SUPPLEMENT: CIGRE 761 Table A-1)
     [
         "Part 1: Condition Health Index (CHI)",
         "Surge Arrester",
@@ -597,16 +597,16 @@ rows = [
         "Surge Arrester Condition",
         "Service-Aged Liquid",
         "All Voltage Classes",
-        "IEEE C57.152-2013",
-        "Primary (IEEE C57.152-2013)",
+        "EGAT / IEEE C57.152",
+        "Primary (EGAT / IEEE C57.152)",
         "Condition / % Error",
-        "Normal (Leakage current normal, counter OK)",
-        "Minor surface contamination",
-        "Counter faulty / Leakage current elevated",
+        "Normal (Leakage ≤ 0.5 mA, Watt Loss Diff ≤ 20%, IR ≥ 10,000 MΩ)",
+        "Watt Loss Diff 20-35% / Minor surface contamination",
+        "Watt Loss Diff 35-50% / Counter faulty / Leakage elevated (0.5-1.0 mA)",
         "High leakage current / Thermal anomaly",
-        "Arrester failure / Cracked housing / Disconnected",
+        "Watt Loss Diff > 50% / Arrester failure / Cracked housing",
         "5.0%",
-        "Replace surge arrester if leakage current exceeds threshold per IEEE C57.152 Clause 9.1"
+        "Replace surge arrester if Watt Loss Diff > 50% or leakage current exceeds threshold per EGAT / IEEE C57.152 Clause 9.1"
     ],
     [
         "Part 1: Condition Health Index (CHI)",
