@@ -19,9 +19,12 @@ Thumbs.db
 .git-portable/
 
 # Dev/scratch scripts
+__pycache__/
+*.bak
 .venv/
 scratch/
 .amhv_profile/
+*.log
 serve.ps1
 serve.py
 start_internet_server.bat

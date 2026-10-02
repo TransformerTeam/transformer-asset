@@ -19,6 +19,15 @@ import csv
 import re
 from html.parser import HTMLParser
 
+# If executed via pyw.exe or hidden wscript, sys.stdout and sys.stderr may be None
+if sys.stdout is None:
+    class _DummyStream:
+        def write(self, s): pass
+        def flush(self): pass
+        def reconfigure(self, **kwargs): pass
+    sys.stdout = _DummyStream()
+    sys.stderr = _DummyStream()
+
 # Base directories
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROFILE_DIR = os.path.join(BASE_DIR, ".amhv_profile")
@@ -61,6 +70,18 @@ class HTMLTableParser(HTMLParser):
         if self.in_cell:
             self.current_cell.append(data)
 
+LOG_FILE = os.path.join(BASE_DIR, "sync_history.log")
+
+def log_message(msg, level="INFO"):
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"[{timestamp}] [{level}] {msg}"
+    print(log_entry)
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(log_entry + "\n")
+    except Exception as e:
+        print("Failed to write log:", e)
+
 def is_login_page(html_text):
     if not html_text:
         return True
@@ -95,17 +116,15 @@ def launch_login():
         input("Press [Enter] here once you have finished logging in in Edge... ")
     except KeyboardInterrupt:
         pass
+    log_message("User completed interactive login session.", "INFO")
     print("\nSession saved in .amhv_profile. You can now run --sync anytime!")
 
 def run_headless_sync():
     """Runs Edge in headless mode using the saved session to pull print_visual.php."""
-    print("=" * 65)
-    print(" [AM-HV Real-Time Sync] Fetching Live Data...")
-    print("=" * 65)
+    log_message("Starting AM-HV Real-Time Background Synchronization...", "INFO")
 
     if not os.path.exists(PROFILE_DIR):
-        print("ERROR: .amhv_profile not found.")
-        print("Please run setup first: py sync_amhv_visual.py --login")
+        log_message("Authentication profile .amhv_profile not found. Run login_amhv.bat first.", "WARNING")
         return False
 
     dump_file = os.path.join(BASE_DIR, "scratch", "amhv_dump.html")
@@ -121,9 +140,8 @@ def run_headless_sync():
         AMHV_URL
     ]
 
-    print("Launching headless Edge session...")
     try:
-        proc = subprocess.run(cmd, capture_output=True, timeout=25)
+        proc = subprocess.run(cmd, capture_output=True, timeout=30)
         raw_output = proc.stdout
         # Try decoding with utf-8 or cp874/cp1252
         for enc in ['utf-8', 'cp874', 'windows-1252', 'latin-1']:
@@ -133,35 +151,32 @@ def run_headless_sync():
             except Exception:
                 html_text = ""
     except Exception as e:
-        print("Error during headless fetch:", e)
+        log_message(f"Error during headless fetch: {e}", "ERROR")
         return False
 
     if is_login_page(html_text):
-        print("\n[WARNING] Session expired or not logged in.")
-        print("Microsoft login page was returned.")
-        print("Please re-authenticate by running:")
-        print("   py sync_amhv_visual.py --login")
+        log_message("Session expired or unauthenticated. Microsoft SSO login required. Run login_amhv.bat.", "WARNING")
         return False
 
     with open(dump_file, "w", encoding="utf-8", errors="ignore") as f:
         f.write(html_text)
 
-    print(f"Raw data captured ({len(html_text)} bytes). Parsing contents...")
+    log_message(f"Captured {len(html_text)} bytes from AM-HV. Parsing content...", "INFO")
 
     # Check if response is CSV or HTML table
     if "<table" in html_text.lower():
         parser = HTMLTableParser()
         parser.feed(html_text)
         if not parser.tables:
-            print("No HTML tables found in output.")
+            log_message("No HTML tables found in AM-HV response.", "ERROR")
             return False
 
         # Pick the largest table (likely the data table)
         data_table = max(parser.tables, key=len)
-        print(f"Extracted data table with {len(data_table)} rows.")
+        log_message(f"Extracted data table with {len(data_table)} rows.", "INFO")
 
         if len(data_table) < 2:
-            print("Table contains insufficient rows.")
+            log_message("AM-HV table contains insufficient rows (< 2).", "WARNING")
             return False
 
         # Save to VisualData.csv
@@ -175,7 +190,17 @@ def run_headless_sync():
             for row in data_table:
                 writer.writerow(row)
 
-        print(f"SUCCESS: Successfully updated {VISUAL_CSV_PATH} ({len(data_table)} rows)!")
+        log_message(f"Successfully updated {VISUAL_CSV_PATH} with {len(data_table)} rows.", "SUCCESS")
+
+        # Trigger automatic health index recomputation & health_data.js update
+        try:
+            log_message("Recomputing fleet Health Indices and updating health_data.js...", "INFO")
+            import evaluate_all_health_index
+            evaluate_all_health_index.main()
+            log_message("Health Index recomputation complete. Dashboard data synchronized.", "SUCCESS")
+        except Exception as eval_err:
+            log_message(f"Error recomputing health indices: {eval_err}", "ERROR")
+
         return True
     else:
         # Plain CSV output
@@ -183,10 +208,19 @@ def run_headless_sync():
         if len(lines) > 2 and ("," in lines[0] or "\t" in lines[0]):
             with open(VISUAL_CSV_PATH, "w", encoding="utf-8-sig") as f:
                 f.write(html_text)
-            print(f"SUCCESS: Successfully saved plain CSV to {VISUAL_CSV_PATH}!")
+            log_message(f"Successfully saved plain CSV to {VISUAL_CSV_PATH}.", "SUCCESS")
+
+            try:
+                log_message("Recomputing fleet Health Indices and updating health_data.js...", "INFO")
+                import evaluate_all_health_index
+                evaluate_all_health_index.main()
+                log_message("Health Index recomputation complete. Dashboard data synchronized.", "SUCCESS")
+            except Exception as eval_err:
+                log_message(f"Error recomputing health indices: {eval_err}", "ERROR")
+
             return True
         else:
-            print("Unexpected format in response. Saved raw output to:", dump_file)
+            log_message(f"Unexpected format in response. Saved raw output to {dump_file}.", "ERROR")
             return False
 
 if __name__ == "__main__":

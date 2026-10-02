@@ -4,7 +4,8 @@ import os
 import sys
 import io
 
-sys.stdout.reconfigure(encoding='utf-8')
+if sys.stdout is not None and hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 HEALTH_SUM_PATH = r"C:\Users\NB\Downloads\TR Asset\HealthIndexSum.csv"
 TESTDATA_DIR = r"C:\Users\NB\Downloads\TR Asset\TestData"
