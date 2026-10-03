@@ -170,8 +170,41 @@ async function runFullSync() {
 
     try {
       await send('Page.navigate', { url: ep.url });
-      // Allow dynamic rendering to settle
-      await new Promise(r => setTimeout(r, 2200));
+
+      // Dynamically wait for table DOM to settle and row count to stabilize (crucial for large datasets like print_visual.php and MTOilData)
+      let prevRows = -1;
+      let stableCount = 0;
+      const maxWaitMs = 30000;
+      const navStart = Date.now();
+
+      while (Date.now() - navStart < maxWaitMs) {
+        await new Promise(r => setTimeout(r, 600));
+
+        const countRes = await send('Runtime.evaluate', {
+          expression: `(() => {
+            const body = document.body ? document.body.innerText.trim().toLowerCase() : '';
+            if (body.includes('sign in to your account') || body.includes('login.microsoftonline.com')) return -999;
+            const tables = Array.from(document.querySelectorAll('table'));
+            if (!tables.length) return document.readyState === 'complete' ? 0 : -1;
+            return tables.reduce((m, t) => Math.max(m, t.rows.length), 0);
+          })()`,
+          returnByValue: true
+        });
+
+        const rCount = countRes.result?.value;
+        if (rCount === -999) break; // Login required
+
+        if (rCount > 0 && rCount === prevRows) {
+          stableCount++;
+          if (stableCount >= 3) {
+            // Table row count remained stable for 1.8 seconds!
+            break;
+          }
+        } else {
+          stableCount = 0;
+          prevRows = rCount;
+        }
+      }
 
       const res = await send('Runtime.evaluate', {
         expression: `(() => {
@@ -256,9 +289,10 @@ async function runFullSync() {
 
   // 2. Refresh downstream JavaScript data files
   try {
-    log('Generating data.js and pi_data.js...', 'INFO');
+    log('Generating data.js, pi_data.js, and visual_data.js...', 'INFO');
     execSync('py convert_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_pi_data_js.py', { cwd: BASE_DIR });
+    execSync('py convert_visual_data_js.py', { cwd: BASE_DIR });
   } catch (jsErr) {
     log(`Notice during JS generation: ${jsErr.message}`, 'WARNING');
   }

@@ -1802,6 +1802,8 @@
   <script src="data.js"></script>
   <script src="health_data.js"></script>
   <script src="oltc_data.js"></script>
+  <script src="pi_data.js"></script>
+  <script src="visual_data.js"></script>
   <script src="evaluation_criteria.js"></script>
   <script src="evaluation_engine.js"></script>
   <script src="assessment.js"></script>
@@ -4512,7 +4514,9 @@
       const irPiDataArr = (typeof irPiCsvData !== 'undefined' && irPiCsvData && irPiCsvData.length) ? irPiCsvData : ((typeof window !== 'undefined' && window.irPiCsvData && window.irPiCsvData.length) ? window.irPiCsvData : []);
 
       const latestMt = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData) && mtOilCsvData.length) ? findLatestRecord(mtOilCsvData, targetSerial) : ((typeof evalOilDataList !== 'undefined' && Array.isArray(evalOilDataList) && evalOilDataList.length) ? findLatestRecord(evalOilDataList, targetSerial) : ((typeof window !== 'undefined' && window.mtOilCsvData) ? findLatestRecord(window.mtOilCsvData, targetSerial) : null));
-      const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, targetSerial) : null;
+      const latestVis = (typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData) && visualCsvData.length)
+        ? findLatestRecord(visualCsvData, targetSerial)
+        : ((item && (item.visRec || item.visualRec)) ? (item.visRec || item.visualRec) : ((typeof window !== 'undefined' && window.visualCsvData && window.visualCsvData.length) ? findLatestRecord(window.visualCsvData, targetSerial) : null));
       const latestBush = (typeof bushingPfCsvData !== 'undefined') ? findLatestRecord(bushingPfCsvData, targetSerial) : null;
       const latestSurge = (typeof surgePfCsvData !== 'undefined') ? findLatestRecord(surgePfCsvData, targetSerial) : null;
       const latestPi = findLatestRecord(irPiDataArr, targetSerial);
@@ -4639,6 +4643,19 @@
             };
           }
         }
+
+        // Fallback to item.visualInspection if no raw record found
+        const rawVis = item['Visual Inspection'] || item.visualInspection || (item.generalPart && item.generalPart.visual);
+        if (rawVis && rawVis !== 'N/A' && rawVis !== '-') {
+          const isGood = rawVis === 'A' || rawVis === 'Good' || rawVis === '5' || rawVis === 'Normal';
+          return {
+            value: isGood ? 'Normal' : 'Abnormal / Maintenance Required',
+            testDate: item.dateToAssess || item['Date To Assess'] || item.lastPM || '-',
+            ratingScore: isGood ? 5 : 3,
+            recommendation: isGood ? '-' : 'Plan visual maintenance / Repair defects'
+          };
+        }
+
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
 

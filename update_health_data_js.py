@@ -82,6 +82,7 @@ def convert_csv_to_js():
     mt_oil_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\MTOilData.csv")
     oltc_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\OLTCOilData.csv")
     pi_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\PIData.csv")
+    visual_recs = load_csv_records(r"C:\Users\NB\Downloads\TR Asset\TestData\VisualData.csv")
 
     data = []
     with open(CSV_PATH, 'r', encoding='utf-8-sig') as f:
@@ -111,6 +112,7 @@ def convert_csv_to_js():
             mt_oil_match = find_latest_record(mt_oil_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
             oltc_match = find_latest_record(oltc_recs, serial_str, ['Serial_No', 'serial', 'SERIAL_NUMBER'], ['Date', 'date'])
             pi_match = find_latest_record(pi_recs, serial_str, ['serial', 'Serial_No', 'SERIAL_NUMBER'], ['date', 'Date'])
+            vis_match = find_latest_record(visual_recs, serial_str, ['Serial_no', 'serial', 'SERIAL_NUMBER', 'Serial_No'], ['Date', 'date'])
 
             if bushing_match:
                 np_rows = [r for r in bushing_info_recs if str(r.get('Parent_Serial_No') or '').strip().lower() == serial_str.strip().lower()]
@@ -284,7 +286,8 @@ def convert_csv_to_js():
                 "trInfo": tr_info_match,
                 "bushRec": bushing_match,
                 "mtOilRec": mt_oil_match,
-                "oltcRec": oltc_match
+                "oltcRec": oltc_match,
+                "visRec": vis_match
             }
             data.append(item)
 
@@ -296,6 +299,12 @@ def convert_csv_to_js():
     try:
         from convert_pi_data_js import convert_pi_csv_to_js
         convert_pi_csv_to_js()
+    except Exception as e:
+        pass
+
+    try:
+        from convert_visual_data_js import convert_visual_csv_to_js
+        convert_visual_csv_to_js()
     except Exception as e:
         pass
 

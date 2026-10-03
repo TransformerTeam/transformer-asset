@@ -960,6 +960,7 @@
 
   <script src="data.js"></script>
   <script src="health_data.js"></script>
+  <script src="visual_data.js"></script>
 
   <script>
     let visualDataList = [];
@@ -970,9 +971,18 @@
       updateThemeIcon(savedTheme);
 
       try {
-        const resp = await fetch('TestData/VisualData.csv');
-        const csvTxt = await resp.text();
-        visualDataList = parseCSV(csvTxt);
+        if (typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData) && visualCsvData.length > 0) {
+          visualDataList = visualCsvData.map(r => {
+            const o = { ...r };
+            o.serial = o.Serial_no || o.serial || o.Serial || o.SERIAL_NUMBER || '';
+            o.date = o.Date || o.date || o.DATE || '';
+            return o;
+          });
+        } else {
+          const resp = await fetch('TestData/VisualData.csv');
+          const csvTxt = await resp.text();
+          visualDataList = parseCSV(csvTxt);
+        }
       } catch (e) {
         console.error('Failed to load VisualData.csv', e);
       }

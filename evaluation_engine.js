@@ -1163,7 +1163,9 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
   // 1. General Visual Inspection (VisualData.csv)
   if (nameLower.includes('visual inspection') || nameLower.includes('visual')) {
-    const latestVis = (typeof visualCsvData !== 'undefined') ? findLatestRecord(visualCsvData, serialVal) : null;
+    const latestVis = (typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData) && visualCsvData.length)
+      ? findLatestRecord(visualCsvData, serialVal)
+      : ((item && (item.visRec || item.visualRec)) ? (item.visRec || item.visualRec) : ((typeof window !== 'undefined' && window.visualCsvData && window.visualCsvData.length) ? findLatestRecord(window.visualCsvData, serialVal) : null));
     if (latestVis) {
       const date = latestVis.Date || latestVis.date || latestVis.DATE;
       const abnormalRemarks = [];
@@ -1231,6 +1233,19 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         };
       }
     }
+
+    // Fallback to item.visualInspection if no raw record found
+    const rawVis = (item && (item['Visual Inspection'] || item.visualInspection || (item.generalPart && item.generalPart.visual)));
+    if (rawVis && rawVis !== 'N/A' && rawVis !== '-') {
+      const isGood = rawVis === 'A' || rawVis === 'Good' || rawVis === '5' || rawVis === 'Normal';
+      return {
+        value: isGood ? 'Normal' : 'Abnormal / Maintenance Required',
+        testDate: (item && (item.dateToAssess || item['Date To Assess'] || item.lastPM)) || '-',
+        ratingScore: isGood ? 5 : 3,
+        recommendation: isGood ? '-' : 'Plan visual maintenance / Repair defects'
+      };
+    }
+
     return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
   }
 
