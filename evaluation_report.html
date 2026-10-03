@@ -788,6 +788,24 @@
       font-weight: 700;
       text-align: center;
     }
+    .eval-table-pdf .cell-method, .eval-table .cell-method {
+      padding: 3px 5px;
+      line-height: 1.25;
+    }
+    .eval-table-pdf .method-title, .eval-table .method-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.68rem;
+      display: inline;
+    }
+    .eval-table-pdf .method-subtext, .eval-table .method-subtext {
+      font-size: 0.58rem;
+      color: #64748b;
+      font-weight: 500;
+      line-height: 1.2;
+      display: block;
+      margin-top: 1.5px;
+    }
     .badge-square {
       display: inline-flex;
       align-items: center;
@@ -1129,6 +1147,29 @@
         padding: 2px 3.5px !important;
         line-height: 1.15 !important;
       }
+      .eval-table-pdf .cell-method, .eval-table .cell-method {
+        padding: 2px 3.5px !important;
+        line-height: 1.15 !important;
+      }
+      .eval-table-pdf td span, .eval-table td span {
+        font-size: inherit;
+      }
+      .eval-table-pdf .method-title, .eval-table .method-title,
+      .eval-table-pdf td .method-title, .eval-table td .method-title {
+        font-size: 7.2px !important;
+        font-weight: 700 !important;
+        line-height: 1.15 !important;
+        display: inline !important;
+      }
+      .eval-table-pdf .method-subtext, .eval-table .method-subtext,
+      .eval-table-pdf td .method-subtext, .eval-table td .method-subtext {
+        font-size: 5.8px !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+        line-height: 1.1 !important;
+        margin-top: 1px !important;
+        display: block !important;
+      }
       .eval-table .cat-row td, .eval-table-pdf .cat-row td {
         font-size: 7.8px !important;
         padding: 2px 3.5px !important;
@@ -1182,6 +1223,10 @@
         padding: 2px 4px !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+      }
+      table.response-table {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
       table.response-table td {
         font-size: 7.5px !important;
@@ -3657,11 +3702,11 @@
             const reportLinkHtml = repInfo ? ` <a href="${repInfo.url}" target="_blank" class="method-report-link" title="${repInfo.title}"><i class="${repInfo.icon}"></i></a>` : '';
 
             const stdLimitStr = getMethodStandardAndLimit(m.name, item, ptObj.pt, subObj.sub) || m.subText || '';
-            let methodDisplayName = `<span style="font-weight: 700; color: #0f172a; font-size: 0.78rem;">${m.name}</span>${reportLinkHtml}`;
+            let methodDisplayName = `<span class="method-title">${m.name}</span>${reportLinkHtml}`;
             if (stdLimitStr) {
-              methodDisplayName += `<br><span style="font-size: 0.65rem; color: #64748b; font-weight: 500; line-height: 1.25; display: inline-block; margin-top: 1.5px;">${stdLimitStr}</span>`;
+              methodDisplayName += `<span class="method-subtext">${stdLimitStr}</span>`;
             }
-            html += `<td style="line-height: 1.25; padding: 4px 6px;">${methodDisplayName}</td>`;
+            html += `<td class="cell-method">${methodDisplayName}</td>`;
 
             // 4. Testing Date
             let dateStyle = '';
@@ -6762,6 +6807,29 @@
               font-size: 7.2px !important;
               padding: 2px 3.5px !important;
               line-height: 1.15 !important;
+            }
+            .eval-table-pdf .cell-method, .eval-table .cell-method {
+              padding: 2px 3.5px !important;
+              line-height: 1.15 !important;
+            }
+            .eval-table-pdf td span, .eval-table td span {
+              font-size: inherit;
+            }
+            .eval-table-pdf .method-title, .eval-table .method-title,
+            .eval-table-pdf td .method-title, .eval-table td .method-title {
+              font-size: 7.2px !important;
+              font-weight: 700 !important;
+              line-height: 1.15 !important;
+              display: inline !important;
+            }
+            .eval-table-pdf .method-subtext, .eval-table .method-subtext,
+            .eval-table-pdf td .method-subtext, .eval-table td .method-subtext {
+              font-size: 5.8px !important;
+              color: #64748b !important;
+              font-weight: 500 !important;
+              line-height: 1.1 !important;
+              margin-top: 1px !important;
+              display: block !important;
             }
             .eval-table .cat-row td, .eval-table-pdf .cat-row td {
               font-size: 7.8px !important;
