@@ -803,8 +803,8 @@
       border-radius: 3px;
       white-space: nowrap;
     }
-    .bg-badge-5 { background: #10b981; }
-    .bg-badge-4 { background: #10b981; }
+    .bg-badge-5 { background: #166534; } /* เขียวเข้ม (Score 5: Excellent) */
+    .bg-badge-4 { background: #22c55e; } /* เขียวอ่อน (Score 4: Good) */
     .bg-badge-3 { background: #eab308; }
     .bg-badge-2 { background: #f97316; }
     .bg-badge-1 { background: #ef4444; }
@@ -2482,9 +2482,9 @@
 
     function getStandardRecommendBadge(score) {
       if (score === 5) {
-        return '<span class="badge-status badge-good">5 Excellent</span>';
+        return '<span class="badge-status badge-good" style="background:#dcfce7; color:#166534; border:1px solid #86efac;">5 Excellent</span>';
       } else if (score === 4) {
-        return '<span class="badge-status badge-good">4 Good</span>';
+        return '<span class="badge-status badge-good" style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;">4 Good</span>';
       } else if (score === 3) {
         return '<span class="badge-status badge-warn">3 Monitoring</span>';
       } else if (score === 2) {

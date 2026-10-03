@@ -42354,7 +42354,7 @@ var HEALTH_INDEX_DATA = [
             "Serial_no": "ET8712/1",
             "Date": "2025-02-18",
             "Test_No": "30000055287",
-            "Tested_by": "Santisuk  Lupngan",
+            "Tested_by": "Santisuk Lupngan",
             "Witnessed_by": "",
             "COMP1": "GPSC",
             "COMP2": "",
