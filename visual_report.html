@@ -349,7 +349,8 @@
     }
 
     .sig-cell {
-      height: 32px;
+      height: 55px;
+      min-height: 55px;
     }
 
     /* Photo Gallery */
@@ -415,7 +416,33 @@
         page-break-after: avoid !important;
         break-after: avoid !important;
       }
-      .signature-table {
+      .sig-cell {
+        height: 52px !important;
+        min-height: 52px !important;
+      }
+      .signature-table th, .signature-table td {
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+      }
+      .report-header-grid {
+        padding-bottom: 2px !important;
+        margin-bottom: 3px !important;
+      }
+      .logo-container img {
+        height: 26px !important;
+      }
+      .section-banner {
+        margin-top: 4px !important;
+        margin-bottom: 2px !important;
+        padding: 2px 6px !important;
+        font-size: 8.2px !important;
+      }
+      .report-table th, .report-table td {
+        padding: 1.8px 4px !important;
+        font-size: 8px !important;
+        line-height: 1.15 !important;
+      }
+      .signature-section, .signature-table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
@@ -592,42 +619,44 @@
       </table>
 
       <!-- SIGNATURES / APPROVAL (Page 1) -->
-      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
-      <table class="signature-table">
-        <thead>
-          <tr>
-            <th style="width: 33.33%;">Tested By</th>
-            <th style="width: 33.33%;">Reviewed By</th>
-            <th style="width: 33.34%;">Approved By</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-          </tr>
-          <tr>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="signature-section" style="page-break-inside: avoid; break-inside: avoid;">
+        <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+        <table class="signature-table">
+          <thead>
+            <tr>
+              <th style="width: 33.33%;">Tested By</th>
+              <th style="width: 33.33%;">Reviewed By</th>
+              <th style="width: 33.34%;">Approved By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+            </tr>
+            <tr>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+            </tr>
+            <tr>
+              <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ==========================================
@@ -762,42 +791,44 @@
       </table>
 
       <!-- SIGNATURES / APPROVAL (Page 2) -->
-      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
-      <table class="signature-table">
-        <thead>
-          <tr>
-            <th style="width: 33.33%;">Tested By</th>
-            <th style="width: 33.33%;">Reviewed By</th>
-            <th style="width: 33.34%;">Approved By</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-          </tr>
-          <tr>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="signature-section" style="page-break-inside: avoid; break-inside: avoid;">
+        <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+        <table class="signature-table">
+          <thead>
+            <tr>
+              <th style="width: 33.33%;">Tested By</th>
+              <th style="width: 33.33%;">Reviewed By</th>
+              <th style="width: 33.34%;">Approved By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+            </tr>
+            <tr>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+            </tr>
+            <tr>
+              <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ==========================================
@@ -918,42 +949,44 @@
       </div>
 
       <!-- SIGNATURES / APPROVAL (Page 3) -->
-      <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
-      <table class="signature-table">
-        <thead>
-          <tr>
-            <th style="width: 33.33%;">Tested By</th>
-            <th style="width: 33.33%;">Reviewed By</th>
-            <th style="width: 33.34%;">Approved By</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-            <td class="sig-cell"></td>
-          </tr>
-          <tr>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-            <td style="padding: 2px 4px;">
-              <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
-              <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
-            </td>
-          </tr>
-          <tr>
-            <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-            <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="signature-section" style="page-break-inside: avoid; break-inside: avoid;">
+        <div class="section-banner" style="margin-top: 6px;">SIGNATURES / APPROVAL</div>
+        <table class="signature-table">
+          <thead>
+            <tr>
+              <th style="width: 33.33%;">Tested By</th>
+              <th style="width: 33.33%;">Reviewed By</th>
+              <th style="width: 33.34%;">Approved By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+              <td class="sig-cell"></td>
+            </tr>
+            <tr>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-tested" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-tested" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-reviewed" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-reviewed" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+              <td style="padding: 2px 4px;">
+                <div class="val-resp-name-approved" style="font-weight: 700; font-size: 9px; color: #0f172a;"></div>
+                <div class="val-resp-comp-approved" style="font-size: 8px; color: #64748b; margin-top: 1px;"></div>
+              </td>
+            </tr>
+            <tr>
+              <td class="val-resp-date-tested" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-reviewed" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+              <td class="val-resp-date-approved" style="font-size: 8px; color: #64748b; padding: 2px;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>
