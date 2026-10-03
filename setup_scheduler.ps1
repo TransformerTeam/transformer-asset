@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # GPSC Transformer Asset Management - AM-HV 30-Minute Sync Scheduler Setup
 # ==============================================================================
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -46,7 +46,7 @@ try {
     Write-Host " - ชื่องาน (Task Name)      : $taskName" -ForegroundColor White
     Write-Host " - ความถี่ (Frequency)      : ทำงานอัตโนมัติทุกๆ 30 นาที (Every 30 minutes)" -ForegroundColor White
     Write-Host " - โหมดการทำงาน (Mode)      : 100% Silent Background (ไม่มีหน้าต่างดำขึ้นมารบกวน)" -ForegroundColor White
-    Write-Host " - การคำนวณอัตโนมัติ        : อัปเดต VisualData.csv + คำนวณ Health Index ทันที" -ForegroundColor White
+    Write-Host " - การคำนวณอัตโนมัติ        : ดึงข้อมูลสด 17 หมวด + อัปเดต TestData + คำนวณ Health Index ทันที" -ForegroundColor White
     Write-Host " - กรณีเครื่องดับ/Sleep     : ทำงานทันทีเมื่อเปิดเครื่องขึ้นมาใหม่ (Catch-up on boot)" -ForegroundColor White
     Write-Host " - บันทึกประวัติ (Log)      : sync_history.log" -ForegroundColor White
     Write-Host " - รอบที่จะทำงานครั้งต่อไป  : $($info.NextRunTime)" -ForegroundColor Green

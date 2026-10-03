@@ -223,12 +223,23 @@ def run_headless_sync():
             log_message(f"Unexpected format in response. Saved raw output to {dump_file}.", "ERROR")
             return False
 
+def run_comprehensive_sync():
+    js_script = os.path.join(BASE_DIR, "sync_amhv_all.js")
+    if os.path.exists(js_script):
+        res = subprocess.run(["node", js_script, "--sync"], cwd=BASE_DIR)
+        return res.returncode == 0
+    return run_headless_sync()
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--login":
-        launch_login()
+        js_script = os.path.join(BASE_DIR, "sync_amhv_all.js")
+        if os.path.exists(js_script):
+            subprocess.run(["node", js_script, "--login"], cwd=BASE_DIR)
+        else:
+            launch_login()
     elif len(sys.argv) > 1 and sys.argv[1] == "--sync":
-        run_headless_sync()
+        run_comprehensive_sync()
     else:
         print("Usage:")
         print("  py sync_amhv_visual.py --login   # Run once to sign in via Microsoft SSO")
-        print("  py sync_amhv_visual.py --sync    # Run anytime to pull live data in background")
+        print("  py sync_amhv_visual.py --sync    # Run anytime to sync all 17 AM-HV endpoints in background")
