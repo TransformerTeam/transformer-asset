@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   loadPlanData();
   applyFilters();
+  loadLiveHealthData();
 });
 
 function isExcludedSite(site) {
@@ -95,10 +96,10 @@ function initData() {
 
   // Filter valid assessment units (exclude scrap / spare) exactly as assessment.js
   const validHealthData = HEALTH_INDEX_DATA.filter(item => {
-    const site = String(item['SITE'] || item.site || '');
+    const site = String(item.site || item['SITE'] || item['Site'] || '');
     if (isExcludedSite(site)) return false;
-    const name = item['Equipment Name'] || item.name || '';
-    const serial = item['Serial No'] || item.serial || '';
+    const name = item.name || item['Equipment Name'] || item.equipmentName || item['Name'] || '';
+    const serial = item.serial || item['Serial No'] || item['Serial No.'] || item.serial_no || '';
     return Boolean(name || serial);
   });
 
@@ -106,7 +107,7 @@ function initData() {
   const trLookup = {};
   if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
     TR_DATA.forEach(tr => {
-      const sn = (tr.SERIAL_NUMBER || '').trim();
+      const sn = (tr.SERIAL_NUMBER || tr.serial || '').trim();
       const code = (tr.DEVICE_CODE || '').trim();
       const eq = (tr.LOCAL_EQUIPMENT_CODE || '').trim();
       if (sn) trLookup[sn] = tr;
@@ -116,8 +117,8 @@ function initData() {
   }
 
   fleetData = validHealthData.map(item => {
-    const sn = (item['Serial No'] || '').trim();
-    const name = (item['Equipment Name'] || '').trim();
+    const sn = String(item.serial || item['Serial No'] || item['Serial No.'] || item.serial_no || item['Serial_no'] || '').trim();
+    const name = String(item.name || item['Equipment Name'] || item.equipmentName || item['Name'] || '').trim();
     let trMatch = trLookup[sn] || trLookup[name];
     if (!trMatch && name) {
       const clean = name.split('(')[0].trim();
@@ -125,42 +126,47 @@ function initData() {
     }
     trMatch = trMatch || {};
 
+    // Service Type Normalization
+    let rawSType = item.serviceType || item['Service Type'] || trMatch.Service_Type || trMatch.APPLICATION || 'Auxiliary';
+    let sType = String(rawSType).trim();
+    if (/GSU|Step-Up|Generator Step/i.test(sType)) sType = 'GSUT';
+    else if (/UAT|Unit Aux/i.test(sType)) sType = 'UAT';
+    else if (/Distribution/i.test(sType)) sType = 'Distribution';
+    else sType = 'Auxiliary';
+
     // Insulation and Fluid classification (Oil-type vs Dry-type, Mineral / Natural / Synthetic)
     const dataCol = String(trMatch.DATA || '').toUpperCase();
     const insul = String(trMatch.TYPE_OF_INSULATION || '').toUpperCase();
-    const isDry = dataCol.includes('DRY') || insul.includes('DRY') || insul.includes('RESIN') || insul.includes('RASIN') || insul.includes('CAST') || /dry/i.test(String(trMatch.MODEL_TYPE || '')) || /dry/i.test(String(trMatch.APPLICATION || '')) || String(item['Service Type'] || '').toUpperCase().includes('DRY');
+    const fluidType = String(item.fluidType || item['Fluid Type'] || trMatch.FLUID_TYPE || '').toUpperCase();
+    const isDry = dataCol.includes('DRY') || insul.includes('DRY') || insul.includes('RESIN') || insul.includes('RASIN') || insul.includes('CAST') || /dry/i.test(String(trMatch.MODEL_TYPE || '')) || /dry/i.test(String(trMatch.APPLICATION || '')) || sType.toUpperCase().includes('DRY') || fluidType.includes('DRY');
 
     let oilType = null;
     if (!isDry) {
-      if (insul.includes('NATURAL')) oilType = 'natural';
-      else if (insul.includes('SYNTHETIC')) oilType = 'synthetic';
+      if (insul.includes('NATURAL') || fluidType.includes('NATURAL')) oilType = 'natural';
+      else if (insul.includes('SYNTHETIC') || fluidType.includes('SYNTHETIC')) oilType = 'synthetic';
       else oilType = 'mineral'; // Defaults to Mineral Oil per IEEE/assessment standards
     }
 
-    const rawHI = parseFloat(item['Condition Health Index']);
-    const hi = isNaN(rawHI) ? null : rawHI;
+    let rawHI = item.healthIndex !== undefined ? item.healthIndex : (item['Condition Health Index'] !== undefined ? item['Condition Health Index'] : (item.healthIndexVal !== undefined ? item.healthIndexVal : item.HI));
+    if (typeof rawHI === 'string') rawHI = parseFloat(rawHI);
+    const hi = (rawHI === null || rawHI === undefined || isNaN(rawHI)) ? null : Number(rawHI);
     
     // Rated Power in MVA
-    let mva = parseFloat(item['Rated Power (MVA)']);
+    let rawMVA = item.ratedPower !== undefined ? item.ratedPower : (item['Rated Power (MVA)'] !== undefined ? item['Rated Power (MVA)'] : item.mva);
+    let mva = parseFloat(rawMVA);
     if (isNaN(mva) && trMatch.POWER_RATING) {
       mva = parseFloat(trMatch.POWER_RATING) / 1000.0;
     }
     if (isNaN(mva)) mva = 1.6;
 
     // Service Age
-    let age = parseFloat(item['Service Age (Year)']);
+    let rawAge = item.serviceAge !== undefined ? item.serviceAge : (item['Service Age (Year)'] !== undefined ? item['Service Age (Year)'] : item.age);
+    let age = parseFloat(rawAge);
     if (isNaN(age) && trMatch.MANUFACTURING_DATE) {
       const yr = new Date(trMatch.MANUFACTURING_DATE).getFullYear();
       if (!isNaN(yr)) age = Math.max(0, 2026 - yr);
     }
     if (isNaN(age)) age = 15;
-
-    // Service Type Normalization
-    let sType = (item['Service Type'] || trMatch.Service_Type || 'Auxiliary').trim();
-    if (/GSU|Step-Up|Generator Step/i.test(sType)) sType = 'GSUT';
-    else if (/UAT|Unit Aux/i.test(sType)) sType = 'UAT';
-    else if (/Distribution/i.test(sType)) sType = 'Distribution';
-    else sType = 'Auxiliary';
 
     // 1. Calculate Probability of Failure (PoF: 1 to 5)
     let pof = 1;
@@ -179,9 +185,10 @@ function initData() {
     }
 
     // Adjust PoF for active DGA critical fault or severe dielectric breakdown
-    const dga = (item['DGA'] || '').toUpperCase();
-    const bd = (item['Dielectric Breakdown'] || '').toUpperCase();
-    const dp = parseFloat(item['Estimated DP (From Furan)']);
+    const dga = String(item.mainTankOil?.dga || item['DGA'] || item['dga'] || '').toUpperCase();
+    const bd = String(item.mainTankOil?.dielectricBreakdown || item['Dielectric Breakdown'] || item['dielectricBreakdown'] || '').toUpperCase();
+    const rawDP = item.estimatedDP !== undefined ? item.estimatedDP : (item['Estimated DP (From Furan)'] !== undefined ? item['Estimated DP (From Furan)'] : item.estimatedDp);
+    const dp = parseFloat(rawDP);
     if (dga === 'U' || dga === 'Q') pof = Math.min(5, pof + 1);
     if (!isNaN(dp) && dp < 350) pof = Math.min(5, Math.max(pof, 4));
 
@@ -233,15 +240,17 @@ function initData() {
     else rul = Math.max(11, Math.round(11 + (hi - 80) / 2)); // > 10 years
 
     // 5. Primary Warning Factor
+    const recommendation = String(item.recommendation || item['Recommendation'] || 'Standard Maintenance');
+    const mtOil = String(item.mainTankOil?.overall || item['Main Tank Oil'] || '');
     let primaryFactor = 'Normal Operation';
     if (hi !== null && hi <= 50) {
-      if (item['Recommendation'] && item['Recommendation'].includes('DGA')) primaryFactor = 'Active DGA Gas Fault';
+      if (recommendation && recommendation.includes('DGA')) primaryFactor = 'Active DGA Gas Fault';
       else if (bd === 'U') primaryFactor = 'Low Oil Dielectric';
       else if (!isNaN(dp) && dp < 350) primaryFactor = 'Insulation Paper Degradation';
       else primaryFactor = 'Critical Condition Degradation';
     } else if (hi !== null && hi <= 70) {
       if (dga === 'Q') primaryFactor = 'Elevated DGA Trend';
-      else if (item['Main Tank Oil'] === 'Q' || item['Main Tank Oil'] === 'U') primaryFactor = 'Oil Quality Aging';
+      else if (mtOil === 'Q' || mtOil === 'U') primaryFactor = 'Oil Quality Aging';
       else if (bd === 'Q') primaryFactor = 'Moderate Dielectric Drop';
       else primaryFactor = 'Medium Condition Aging';
     } else {
@@ -252,7 +261,7 @@ function initData() {
     return {
       sn,
       name,
-      site: item['SITE'] || item.site || 'Unknown',
+      site: String(item.site || item['SITE'] || item['Site'] || 'Unknown').trim(),
       mva,
       age,
       sType,
@@ -276,7 +285,7 @@ function initData() {
       unitValueTHB,
       financialExposureTHB,
       rul,
-      recommendation: item['Recommendation'] || 'Standard Maintenance',
+      recommendation,
       primaryFactor,
       rawItem: item
     };
@@ -285,6 +294,7 @@ function initData() {
   // Populate Site Filter Options dynamically
   const siteFilter = document.getElementById('site-filter');
   if (siteFilter) {
+    const curVal = siteFilter.value || 'ALL';
     const siteCounts = {};
     fleetData.forEach(d => { siteCounts[d.site] = (siteCounts[d.site] || 0) + 1; });
     
@@ -296,6 +306,9 @@ function initData() {
       opt.textContent = `${site} (${siteCounts[site]})`;
       siteFilter.appendChild(opt);
     });
+    if (curVal && Array.from(siteFilter.options).some(o => o.value === curVal)) {
+      siteFilter.value = curVal;
+    }
   }
 }
 
@@ -1399,3 +1412,81 @@ function exportExecutiveSummaryCSV() {
   link.click();
   document.body.removeChild(link);
 }
+
+/**
+ * Live Synchronization for HealthIndexSum.csv
+ */
+function parseHealthIndexSumCSV(text) {
+  if (!text || typeof text !== 'string') return [];
+  if (text.startsWith('\ufeff')) text = text.substring(1);
+
+  const rows = [];
+  let currentRow = [];
+  let currentEntry = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && nextChar === '"') {
+        currentEntry += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      currentRow.push(currentEntry.trim());
+      currentEntry = '';
+    } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+      if (char === '\r' && nextChar === '\n') i++;
+      currentRow.push(currentEntry.trim());
+      currentEntry = '';
+      if (currentRow.some(col => col !== '')) {
+        rows.push(currentRow);
+      }
+      currentRow = [];
+    } else {
+      currentEntry += char;
+    }
+  }
+  if (currentEntry !== '' || currentRow.length > 0) {
+    currentRow.push(currentEntry.trim());
+    if (currentRow.some(col => col !== '')) rows.push(currentRow);
+  }
+
+  if (rows.length < 2) return [];
+  const headers = rows[0].map(h => h.replace(/^["']|["']$/g, '').trim());
+  const data = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const obj = {};
+    for (let c = 0; c < headers.length; c++) {
+      obj[headers[c]] = r[c] !== undefined ? r[c] : '';
+    }
+    data.push(obj);
+  }
+  return data;
+}
+
+async function loadLiveHealthData() {
+  try {
+    const resp = await fetch('HealthIndexSum.csv?v=' + Date.now());
+    if (!resp.ok) return;
+    const text = await resp.text();
+    if (!text || text.length < 50) return;
+    const rows = parseHealthIndexSumCSV(text);
+    if (rows && rows.length > 0) {
+      // Re-initialize with live CSV rows
+      HEALTH_INDEX_DATA = rows;
+      initData();
+      applyFilters();
+      console.log('Live HealthIndexSum.csv loaded: ' + rows.length + ' rows.');
+    }
+  } catch (err) {
+    // Offline or file:// protocol fallback to health_data.js
+    console.log('Using pre-bundled health_data.js (live fetch skipped or unavailable).');
+  }
+}
+
