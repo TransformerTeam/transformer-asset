@@ -307,9 +307,9 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 47,
     "category": "Insulating Oil in Main Tank",
     "item": "Corrosive Sulfur",
-    "criteria": "ASTM D1275",
-    "standard": "IEEE C57.106-2015",
-    "recommendation": "10"
+    "criteria": "DIN 51353 / ASTM D1275",
+    "standard": "Limit: Non-corr. (≤ 2e)",
+    "recommendation": "Non-corrosive (≤ 2e: Score 4-5), Corrosive (≥ 3a: Score 1-3, Add passivator)"
   },
   {
     "row": 48,

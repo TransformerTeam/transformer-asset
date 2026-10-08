@@ -6094,9 +6094,41 @@
         if (latestMt && (latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR)) {
           const corrVal = latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR;
           const date = latestMt.Date || latestMt.date || latestMt.DATE;
-          const isPass = String(corrVal).toLowerCase().includes('non') || String(corrVal).toLowerCase().includes('pass') || String(corrVal) === '1a' || String(corrVal) === '1b' || String(corrVal) === '0';
-          const valDisplay = isPass ? `Non-corrosive (${corrVal})` : `Corrosive (${corrVal})`;
-          return { value: valDisplay, testDate: date, ratingScore: isPass ? 5 : 3, recommendation: isPass ? '-' : 'Add passivator' };
+          const str = String(corrVal).trim();
+          const lower = str.toLowerCase();
+
+          // Class 1 & Explicit Non-corrosive: Score 5
+          if (lower.includes('non') || lower.includes('pass') || lower === '0' || lower === '1a' || lower === '1b') {
+            const valDisplay = lower.includes('non') ? (str.toLowerCase().startsWith('non') ? str : `Non-corrosive (${str})`) : `Non-corrosive (${str})`;
+            return { value: valDisplay, testDate: date, ratingScore: 5, recommendation: '-' };
+          }
+
+          // Class 2: 2a, 2b, 2c, 2d, 2e (Non-corrosive <= 2e per DIN 51353): Score 4
+          if (['2a', '2b', '2c', '2d', '2e'].includes(lower)) {
+            return { value: `Non-corrosive (${str})`, testDate: date, ratingScore: 4, recommendation: '-' };
+          }
+
+          // Class 3: 3a, 3b (Dark tarnish / Potential corrosive): Score 3
+          if (['3a', '3b'].includes(lower)) {
+            return { value: `Corrosive (${str})`, testDate: date, ratingScore: 3, recommendation: 'Add passivator' };
+          }
+
+          // Class 4: 4a, 4b, 4c or Corrosive: Score 1
+          if (['4a', '4b', '4c'].includes(lower) || (lower.includes('corrosive') && !lower.includes('non')) || lower.includes('fail')) {
+            return { value: str.includes('Corrosive') ? str : `Corrosive (${str})`, testDate: date, ratingScore: 1, recommendation: 'Add passivator (Urgent)' };
+          }
+
+          // Numeric fallback: <= 2.0 -> Score 4 (Non-corrosive), > 2.0 -> Score 3
+          const num = parseFloat(str);
+          if (!isNaN(num)) {
+            if (num <= 2.0) {
+              return { value: `Non-corrosive (${str})`, testDate: date, ratingScore: 4, recommendation: '-' };
+            } else {
+              return { value: `Corrosive (${str})`, testDate: date, ratingScore: 3, recommendation: 'Add passivator' };
+            }
+          }
+
+          return { value: str, testDate: date, ratingScore: 4, recommendation: '-' };
         }
         return { value: '-', testDate: '-', ratingScore: null, isNA: true, recommendation: '-' };
       }
@@ -6107,7 +6139,8 @@
           const date = latestMt.Date || latestMt.date || latestMt.DATE;
           const num = parseFloat(passVal);
           const corrVal = String(latestMt.Corrosive_Sulfur || latestMt.CORROSIVE_SULFUR || '').trim();
-          const isCorrosive = corrVal && (corrVal.toLowerCase().includes('corrosive') || corrVal.toLowerCase().includes('3b') || corrVal.toLowerCase().includes('4a') || corrVal.toLowerCase().includes('poten'));
+          const lowerCorr = corrVal.toLowerCase();
+          const isCorrosive = ['3a', '3b', '4a', '4b', '4c'].includes(lowerCorr) || (lowerCorr.includes('corrosive') && !lowerCorr.includes('non')) || lowerCorr.includes('poten');
 
           if (isNaN(num) || num <= 0) {
             if (isCorrosive) {
