@@ -1072,7 +1072,7 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
   // 24. Surge Arrester
   if (ptLower.includes('arrester') || mLower.includes('arrester') || mLower.includes('surge')) {
     if (mLower.includes('watt loss') || mLower.includes('watt')) {
-      return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50% (Normal), 60-80% (Warning), > 80% (Critical)';
+      return 'EGAT / IEEE C57.152, Limit: %Error from FAT < 50% & Phase Diff < 50% (Normal), 60-80% (Warning), > 80% (Critical)';
     }
     if (mLower.includes('leakage') || mLower.includes('current')) {
       return 'EGAT / IEEE C57.152, Limit: Leakage Current ≤ 0.50 mA';
@@ -2775,18 +2775,19 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
 
         [w1, w2, w3].forEach((w, idx) => {
           if (!isNaN(w) && w > 0) {
-            parts.push(`${prefix}${idx+1}: ${w.toFixed(2)} W`);
-            validWatts.push(w);
-
             const phaseCode = `${prefix}${idx+1}`;
             const sInfo = surgeInfoArr.find(x => String(x.Parent_Serial_No || '').trim() === String(serialVal || '').trim() && (x.Phase === phaseCode || x.Phase === String(idx+1)));
             const npW = sInfo ? parseFloat(sInfo.Watts) : NaN;
+            let incStr = '';
             if (!isNaN(npW) && npW > 0) {
               const incPct = ((w - npW) / npW) * 100;
+              incStr = ` [FAT: ${npW}W, ${incPct >= 0 ? '+' : ''}${incPct.toFixed(1)}%]`;
               // Criteria: < 50% Normal (5), 50-60% Good (4), 60-80% Warning (3), > 80% Critical (1)
               const s = incPct < 50.0 ? 5 : (incPct < 60.0 ? 4 : (incPct <= 80.0 ? 3 : 1));
               devScores.push(s);
             }
+            parts.push(`${prefix}${idx+1}: ${w.toFixed(2)} W${incStr}`);
+            validWatts.push(w);
           }
         });
 
