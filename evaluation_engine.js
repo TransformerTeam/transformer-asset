@@ -1974,7 +1974,6 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
         : null;
 
       const getCapDev = (currentCap, fallbackObjVal, fatCap, oldestCap, fallbackMaxVal) => {
-        if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
         if (isValidNum(currentCap)) {
           const cur = parseFloat(currentCap);
           if (cur > 0) {
@@ -1988,6 +1987,7 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
             }
           }
         }
+        if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
         if (isValidNum(fallbackMaxVal)) return Math.abs(parseFloat(fallbackMaxVal));
         return null;
       };

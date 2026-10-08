@@ -5512,7 +5512,6 @@
             : null;
 
           const getCapDev = (currentCap, fallbackObjVal, fatCap, oldestCap, fallbackMaxVal) => {
-            if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
             if (isValidNum(currentCap)) {
               const cur = parseFloat(currentCap);
               if (cur > 0) {
@@ -5526,6 +5525,7 @@
                 }
               }
             }
+            if (isValidNum(fallbackObjVal)) return Math.abs(parseFloat(fallbackObjVal));
             if (isValidNum(fallbackMaxVal)) return Math.abs(parseFloat(fallbackMaxVal));
             return null;
           };

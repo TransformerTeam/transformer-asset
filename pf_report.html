@@ -1747,12 +1747,12 @@
       };
 
       const calcCapErr = (meas, fac, objErr) => {
+        if (meas !== null && fac !== null && fac > 0) {
+          return ((meas - fac) / fac) * 100;
+        }
         if (objErr !== undefined && objErr !== null && objErr !== '' && objErr !== '-') {
           const n = parseFloat(String(objErr).replace(/,/g, ''));
           if (!isNaN(n)) return n;
-        }
-        if (meas !== null && fac !== null && fac > 0) {
-          return ((meas - fac) / fac) * 100;
         }
         return null;
       };
