@@ -2073,8 +2073,13 @@ function openDetail(no) {
             ieeeColor = '#ef4444';
           }
         } else if (dgaEval.overallStatus === 2) {
-          maxIEEEStatus = 'DGA Status 2: Intermediate / Suspicious';
-          ieeeColor = '#eab308';
+          if (dgaEval.isCarbonOxideOnlyStatus2) {
+            maxIEEEStatus = 'DGA Status 2: Intermediate (CO/CO2 Cellulose Aging)';
+            ieeeColor = '#10b981';
+          } else {
+            maxIEEEStatus = 'DGA Status 2: Intermediate / Suspicious';
+            ieeeColor = '#eab308';
+          }
         } else {
           maxIEEEStatus = 'DGA Status 1: Normal';
           ieeeColor = '#10b981';

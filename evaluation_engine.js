@@ -511,6 +511,7 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
   const hasCombustibleStatus3 = combustibleStatus3Reasons.length > 0;
   const isCarbonOxideOnlyStatus3 = !hasCombustibleStatus3 && carbonOxideStatus3Reasons.length > 0;
   const allCombustibleNormal = combustibleCautionReasons.length === 0 && !hasCombustibleStatus3;
+  const isCarbonOxideOnlyStatus2 = allCombustibleNormal && carbonOxideCautionReasons.length > 0;
 
   if (condD) {
     overallStatus = 1;
@@ -529,8 +530,15 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
       }
     } else {
       overallStatus = 2;
-      statusText = 'DGA Status 2: Intermediate / Suspicious';
-      recommendation = `Gas or Delta exceeds baseline (${cautionReasons.slice(0, 2).join(', ')}). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).`;
+      if (isCarbonOxideOnlyStatus2) {
+        const triggeredGases = [...new Set((carbonOxideCautionReasons || []).map(r => r.split(' ')[0]))];
+        const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
+        statusText = `DGA Status 2: Intermediate (${gasLabel} Cellulose Aging)`;
+        recommendation = `Elevated ${gasLabel} cellulose indicator (${carbonOxideCautionReasons.slice(0, 2).join(', ')}). Combustible fault gases are normal. Continue routine monitoring.`;
+      } else {
+        statusText = 'DGA Status 2: Intermediate / Suspicious';
+        recommendation = `Gas or Delta exceeds baseline (${cautionReasons.slice(0, 2).join(', ')}). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).`;
+      }
     }
   }
 
@@ -552,6 +560,7 @@ function evaluateDGAFlowchartCore(curr, prev1, allItems, trInfoItem) {
     })),
     hasCombustibleStatus3,
     isCarbonOxideOnlyStatus3,
+    isCarbonOxideOnlyStatus2,
     allCombustibleNormal,
     combustibleStatus3Reasons,
     carbonOxideStatus3Reasons,
@@ -2300,6 +2309,16 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
               recommendation: dgaEval.recommendation
             };
           } else if (dgaEval.overallStatus === 2) {
+            if (dgaEval.isCarbonOxideOnlyStatus2) {
+              const triggeredGases = [...new Set((dgaEval.carbonOxideCautionReasons || []).map(r => r.split(' ')[0]))];
+              const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
+              return {
+                value: `Monitoring (IEEE C57.104 Status 2: ${gasLabel} Cellulose Aging)`,
+                testDate: date,
+                ratingScore: 4,
+                recommendation: dgaEval.recommendation
+              };
+            }
             return {
               value: `Monitoring (IEEE C57.104 Status 2: Intermediate / Suspicious)`,
               testDate: date,

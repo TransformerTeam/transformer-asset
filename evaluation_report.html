@@ -5899,6 +5899,16 @@
                     recommendation: dgaEval.recommendation
                   };
                 } else if (dgaEval.overallStatus === 2) {
+                  if (dgaEval.isCarbonOxideOnlyStatus2) {
+                    const triggeredGases = [...new Set((dgaEval.carbonOxideCautionReasons || []).map(r => r.split(' ')[0]))];
+                    const gasLabel = triggeredGases.length > 0 ? triggeredGases.join('/') : 'CO/CO2';
+                    return {
+                      value: `Monitoring (IEEE C57.104 Status 2: ${gasLabel} Cellulose Aging)`,
+                      testDate: date,
+                      ratingScore: 4,
+                      recommendation: dgaEval.recommendation
+                    };
+                  }
                   return {
                     value: `Monitoring (IEEE C57.104 Status 2: Intermediate / Suspicious)`,
                     testDate: date,
@@ -5920,7 +5930,8 @@
             const combustibleCrit = h2 > 700 || ch4 > 400 || c2h4 > 200 || c2h2 > 35;
             const coCrit = (co > 1100);
             const isCritical = ieeeRes.includes('STATUS 3') || ieeeRes.includes('CRITICAL') || combustibleCrit || coCrit;
-            const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1 || co > 900;
+            const combustibleCaution = h2 > 100 || ch4 > 120 || c2h6 > 65 || c2h4 > 50 || c2h2 > 1;
+            const isCaution = ieeeRes.includes('STATUS 2') || ieeeRes.includes('CAUTION') || ieeeRes.includes('MONITOR') || combustibleCaution || co > 900;
             if (isCritical) {
               if (!combustibleCrit && (coCrit || (co > 900 && h2 <= 100 && ch4 <= 120 && c2h6 <= 65 && c2h4 <= 50 && c2h2 <= 1))) {
                 return {
@@ -5937,6 +5948,14 @@
                 recommendation: 'Perform DGA trend & fault investigation' 
               };
             } else if (isCaution) {
+              if (!combustibleCaution && co > 900) {
+                return {
+                  value: 'Monitoring (IEEE C57.104 Status 2: CO Cellulose Aging)',
+                  testDate: date,
+                  ratingScore: 4,
+                  recommendation: 'Monitor cellulose degradation / paper aging (CO trend)'
+                };
+              }
               return { 
                 value: 'Monitoring (IEEE C57.104 Gas Exceed Table 2)', 
                 testDate: date, 
