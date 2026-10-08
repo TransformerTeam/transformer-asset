@@ -361,7 +361,7 @@
         "Rated Voltage (kV)": "115/10.5",
         "Service Type": "GSUT",
         "Service Age (Year)": "21",
-        "Condition Health Index": "89",
+        "Condition Health Index": "86",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1047",
         "Estimated Remaining Life time (Year)": "",
@@ -419,7 +419,7 @@
         "Rated Voltage (kV)": "115/10.5",
         "Service Type": "GSUT",
         "Service Age (Year)": "20",
-        "Condition Health Index": "94",
+        "Condition Health Index": "91",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "937",
         "Estimated Remaining Life time (Year)": "",
@@ -477,7 +477,7 @@
         "Rated Voltage (kV)": "115/10.5",
         "Service Type": "GSUT",
         "Service Age (Year)": "18",
-        "Condition Health Index": "89",
+        "Condition Health Index": "86",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "945",
         "Estimated Remaining Life time (Year)": "",
@@ -535,7 +535,7 @@
         "Rated Voltage (kV)": "115/10.5",
         "Service Type": "GSUT",
         "Service Age (Year)": "17",
-        "Condition Health Index": "83",
+        "Condition Health Index": "80",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "961",
         "Estimated Remaining Life time (Year)": "",
@@ -593,7 +593,7 @@
         "Rated Voltage (kV)": "118/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "18",
-        "Condition Health Index": "89",
+        "Condition Health Index": "86",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1047",
         "Estimated Remaining Life time (Year)": "",
@@ -651,7 +651,7 @@
         "Rated Voltage (kV)": "118/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "18",
-        "Condition Health Index": "91",
+        "Condition Health Index": "89",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "806",
         "Estimated Remaining Life time (Year)": "",
@@ -709,7 +709,7 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "20",
-        "Condition Health Index": "88",
+        "Condition Health Index": "85",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1031",
         "Estimated Remaining Life time (Year)": "",
@@ -767,7 +767,7 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "20",
-        "Condition Health Index": "95",
+        "Condition Health Index": "93",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1003",
         "Estimated Remaining Life time (Year)": "",
@@ -1405,7 +1405,7 @@
         "Rated Voltage (kV)": "117/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "19",
-        "Condition Health Index": "89",
+        "Condition Health Index": "86",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "884",
         "Estimated Remaining Life time (Year)": "",
@@ -1695,7 +1695,7 @@
         "Rated Voltage (kV)": "118/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "18",
-        "Condition Health Index": "83",
+        "Condition Health Index": "80",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1152",
         "Estimated Remaining Life time (Year)": "",
@@ -1753,7 +1753,7 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "18",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1089",
         "Estimated Remaining Life time (Year)": "",
@@ -1811,7 +1811,7 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "18",
-        "Condition Health Index": "88",
+        "Condition Health Index": "85",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1089",
         "Estimated Remaining Life time (Year)": "",
@@ -2217,7 +2217,7 @@
         "Rated Voltage (kV)": "115/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "8",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -2275,7 +2275,7 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "7",
-        "Condition Health Index": "93",
+        "Condition Health Index": "90",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -2739,7 +2739,7 @@
         "Rated Voltage (kV)": "123/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "21",
-        "Condition Health Index": "91",
+        "Condition Health Index": "89",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "905",
         "Estimated Remaining Life time (Year)": "",
@@ -2855,7 +2855,7 @@
         "Rated Voltage (kV)": "120/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "5",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -2913,7 +2913,7 @@
         "Rated Voltage (kV)": "120/11",
         "Service Type": "GSUT",
         "Service Age (Year)": "5",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1117",
         "Estimated Remaining Life time (Year)": "",
@@ -3087,7 +3087,7 @@
         "Rated Voltage (kV)": "115/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "32",
-        "Condition Health Index": "93",
+        "Condition Health Index": "90",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "991",
         "Estimated Remaining Life time (Year)": "",
@@ -3145,7 +3145,7 @@
         "Rated Voltage (kV)": "115/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "32",
-        "Condition Health Index": "78",
+        "Condition Health Index": "75",
         "Health Index Status": "Monitor",
         "Estimated DP (From Furan)": "1047",
         "Estimated Remaining Life time (Year)": "",
@@ -3203,7 +3203,7 @@
         "Rated Voltage (kV)": "115/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "32",
-        "Condition Health Index": "83",
+        "Condition Health Index": "80",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1117",
         "Estimated Remaining Life time (Year)": "",
@@ -3245,7 +3245,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Power Factor</strong>: Check LV Bushing Power Factor (Measured: X1: 1.65%) | [Insulation Oil] Gas or Delta exceeds baseline (C2H4 level (64 > T1: 60), C2H4 Δ (64.0 > T3: 20)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis)."
+        "Recommendation": "[Urgent Action] <strong>Power Factor</strong>: Check LV Bushing Power Factor (Measured: X1: 1.65%) | [Insulation Oil] Gas or Delta exceeds baseline (C2H4 level (64 > T1: 50), C2H4 Δ (64.0 > T3: 20)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis)."
     },
     {
         "2011": "",
@@ -8191,7 +8191,7 @@
         "Rated Voltage (kV)": "123/10.5",
         "Service Type": "GSUT",
         "Service Age (Year)": "27",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1003",
         "Estimated Remaining Life time (Year)": "",
@@ -8697,7 +8697,7 @@
         "FAT": "",
         "Last PM": "2023",
         "Next PM": "-",
-        "Recommendation": "Normal Condition: All diagnostic tests, insulating oil properties, and visual inspections are within acceptable limits. The transformer is in normal operating condition. Perform routine inspection and preventive maintenance."
+        "Recommendation": "[Insulation Oil] Inspect oil sludge"
     },
     {
         "2011": "",
@@ -8929,7 +8929,7 @@
         "FAT": "",
         "Last PM": "2025",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Dissolve Gas Analysis (DGA)</strong>: Active fault detected (C2H6 rate (73.6 > T4: 9 ppm/yr & level > T2: 175), C2H6 level (485 > T2: 175)). Immediate fault investigation recommended. Perform Fault Identification (Duval/Rogers) & electrical diagnostic tests. (Measured: Critical (IEEE C57.104 Status 3: High Risk / Active Fault)) | [Insulation Oil] Top up metal passivator (> 100 ppm); Passivator level depleting (19 ppm): Monitor passivator concentration"
+        "Recommendation": "[Urgent Action] <strong>Dissolve Gas Analysis (DGA)</strong>: Active fault detected (C2H6 rate (69.3 > T4: 9 ppm/yr & level > T2: 175), C2H6 level (485 > T2: 175)). Immediate fault investigation recommended. Perform Fault Identification (Duval/Rogers) & electrical diagnostic tests. (Measured: Critical (IEEE C57.104 Status 3: High Risk / Active Fault)) | [Insulation Oil] Top up metal passivator (> 100 ppm); Passivator level depleting (19 ppm): Monitor passivator concentration"
     },
     {
         "2011": "",
@@ -9451,7 +9451,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 38.8, H2: 50.7, H3: 56.5 mA<br>Pattern: L-H-H) | <strong>Power Factor</strong>: Critical Power Factor - exceeds 1.0% service limit, investigate insulation breakdown (Measured: CH: 5.00%, CHL: 0.19%) | <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CH %Dev: Infinity%, CHL %Dev: Infinity%) | <strong>Power Factor</strong>: Critical Power Factor - exceeds 1.0% service limit, investigate insulation breakdown (Measured: CL: 2.50%, CLH: 0.14%) | <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CL %Dev: Infinity%, CLH %Dev: Infinity%) | [General Part] Plan visual maintenance / Repair defects | [Insulation Oil] Elevated cellulose degradation / paper aging detected (CO rate (87.1 > T4: 80 ppm/yr & level > T2: 600), CO level (959 > T2: 600)). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature. | [Bushing] Plan visual maintenance / Repair defects | [Arrester] Plan visual maintenance / Repair defects | [OLTC] Plan visual maintenance / Repair defects"
+        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 38.8, H2: 50.7, H3: 56.5 mA<br>Pattern: L-H-H) | <strong>Power Factor</strong>: Critical Power Factor - exceeds 1.0% service limit, investigate insulation breakdown (Measured: CH: 5.00%, CHL: 0.19%) | <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CH %Dev: Infinity%, CHL %Dev: Infinity%) | <strong>Power Factor</strong>: Critical Power Factor - exceeds 1.0% service limit, investigate insulation breakdown (Measured: CL: 2.50%, CLH: 0.14%) | <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CL %Dev: Infinity%, CLH %Dev: Infinity%) | [General Part] Plan visual maintenance / Repair defects | [Insulation Oil] Elevated cellulose degradation / paper aging detected (CO level (959 > T2: 600), CO2 level (8012 > T2: 8000)). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature. | [Bushing] Plan visual maintenance / Repair defects | [Arrester] Plan visual maintenance / Repair defects | [OLTC] Plan visual maintenance / Repair defects"
     },
     {
         "2011": "",
@@ -9509,7 +9509,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 39.9, H2: 41.4, H3: 58.1 mA<br>Pattern: L-H-H) | [Insulation Oil] Elevated cellulose degradation / paper aging detected (CO rate (194.3 > T4: 100 ppm/yr & level > T2: 1100), CO level (1364 > T2: 1100)). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature."
+        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 39.9, H2: 41.4, H3: 58.1 mA<br>Pattern: L-H-H) | [Insulation Oil] Elevated cellulose degradation / paper aging detected (CO rate (179.5 > T4: 100 ppm/yr & level > T2: 1100), CO level (1364 > T2: 1100)). Combustible gases (H2, CH4, C2H6, C2H4, C2H2) are normal. Recommend monitoring CO/CO2 trend, testing Furan/DP, and checking transformer operating temperature."
     },
     {
         "2011": "",
@@ -9857,7 +9857,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CL %Dev: 0.79%, CLT %Dev: 2306.91%) | [Insulation Oil] Gas or Delta exceeds baseline (CO2 rate (1858.9 > T4: 1000 ppm/yr, level ≤ T2: 14000)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).; Add passivator"
+        "Recommendation": "[Urgent Action] <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CL %Dev: 0.79%, CLT %Dev: 2306.91%) | [Insulation Oil] Gas or Delta exceeds baseline (CO2 level (9907 > T1: 9000), CO2 rate (1858.9 > T4: 1000 ppm/yr, level ≤ T2: 12500)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).; Add passivator"
     },
     {
         "2011": "",
@@ -10511,7 +10511,7 @@
         "Rated Voltage (kV)": "230/121",
         "Service Type": "Distribution",
         "Service Age (Year)": "28",
-        "Condition Health Index": "85",
+        "Condition Health Index": "90",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -10526,7 +10526,7 @@
         "3∅ Short Circuit Impedance": "",
         "Core to Ground": "",
         "Bushing": "A",
-        "Surge Arrester": "U",
+        "Surge Arrester": "Q",
         "Dynamic Resistance Measurement (OLTC)": "",
         "Frequency Response Analysis (FRA)": "",
         "%Moisture in paper (FDS)": "",
@@ -10553,7 +10553,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check HV Arrester Watt Loss (Critical: Diff > 80%) (Measured: H1: 344.85 W, H2: 301.44 W, H3: 240.42 W (Diff: 30.3%)) | <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check LV Arrester Watt Loss (Critical: Diff > 80%) (Measured: X1: 943.60 W, X2: 340.28 W, X3: 443.23 W (Diff: 63.9%))"
+        "Recommendation": "[Arrester] Check LV Arrester Watt Loss (Warning: Diff 50-80%)"
     },
     {
         "2011": "",
@@ -10569,7 +10569,7 @@
         "Rated Voltage (kV)": "230/121",
         "Service Type": "Distribution",
         "Service Age (Year)": "28",
-        "Condition Health Index": "90",
+        "Condition Health Index": "88",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -10669,7 +10669,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check LV Arrester Watt Loss (Critical: Diff > 80%) (Measured: X1: 1347.44 W, X2: 794.15 W, X3: 243.73 W (Diff: 81.9%))"
+        "Recommendation": "[Urgent Action] <strong>Watt Loss</strong>: Check LV Arrester Watt Loss (Critical: Diff > 80%) (Measured: X1: 1347.44 W, X2: 794.15 W, X3: 243.73 W (Diff: 81.9%))"
     },
     {
         "2011": "",
@@ -10727,7 +10727,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check HV Arrester Watt Loss (Critical: Diff > 80%) (Measured: H1: 260.63 W, H2: 195.24 W, H3: 1214.51 W (Diff: 83.9%)) | <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check LV Arrester Watt Loss (Critical: Diff > 80%) (Measured: X1: 214.89 W, X2: 220.08 W, X3: 207.04 W (Diff: 5.9%)) | [General Part] Plan visual maintenance / Repair defects | [Bushing] Plan visual maintenance / Repair defects | [Arrester] Plan visual maintenance / Repair defects | [OLTC] Plan visual maintenance / Repair defects"
+        "Recommendation": "[Urgent Action] <strong>Watt Loss</strong>: Check HV Arrester Watt Loss (Critical: Diff > 80%) (Measured: H1: 260.63 W, H2: 195.24 W, H3: 1214.51 W (Diff: 83.9%)) | [General Part] Plan visual maintenance / Repair defects | [Bushing] Plan visual maintenance / Repair defects | [Arrester] Plan visual maintenance / Repair defects | [OLTC] Plan visual maintenance / Repair defects"
     },
     {
         "2011": "",
@@ -10743,7 +10743,7 @@
         "Rated Voltage (kV)": "112.5/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "30",
-        "Condition Health Index": "85",
+        "Condition Health Index": "83",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "961",
         "Estimated Remaining Life time (Year)": "",
@@ -10785,7 +10785,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check HV Arrester Watt Loss (Critical: Diff > 80%) (Measured: H1: 270.87 W, H2: 304.40 W, H3: 386.69 W (Diff: 30.0%)) | [Insulation Oil] Add passivator; Corrosive sulfur detected (3b): Add/top-up metal passivator (Irgamet 39 > 100 ppm, currently 0 ppm) | [Bushing] Check LV Bushing Power Factor"
+        "Recommendation": "[Insulation Oil] Add passivator; Corrosive sulfur detected (3b): Add/top-up metal passivator (Irgamet 39 > 100 ppm, currently 0 ppm) | [Bushing] Check LV Bushing Power Factor"
     },
     {
         "2011": "",
@@ -10801,8 +10801,8 @@
         "Rated Voltage (kV)": "112.5/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "28",
-        "Condition Health Index": "75",
-        "Health Index Status": "Monitor",
+        "Condition Health Index": "83",
+        "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "953",
         "Estimated Remaining Life time (Year)": "",
         "Visual Inspection": "A",
@@ -10816,7 +10816,7 @@
         "3∅ Short Circuit Impedance": "",
         "Core to Ground": "",
         "Bushing": "W",
-        "Surge Arrester": "U",
+        "Surge Arrester": "A",
         "Dynamic Resistance Measurement (OLTC)": "",
         "Frequency Response Analysis (FRA)": "",
         "%Moisture in paper (FDS)": "",
@@ -10843,7 +10843,7 @@
         "FAT": "",
         "Last PM": "2026",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Watt Loss (%Error from FAT/Oldest)</strong>: Check HV Arrester Watt Loss (Critical: Diff > 80%) (Measured: H1: 305.17 W, H2: 308.65 W, H3: 313.91 W (Diff: 2.8%)) | [Insulation Oil] Gas or Delta exceeds baseline (CO Δ (380.0 > T3: 250), CO2 rate (1080.6 > T4: 1000 ppm/yr, level ≤ T2: 14000)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis). | [Bushing] Check LV Bushing Power Factor"
+        "Recommendation": "[Insulation Oil] Gas or Delta exceeds baseline (CO Δ (380.0 > T3: 250), CO2 rate (1080.6 > T4: 1000 ppm/yr, level ≤ T2: 12500)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis). | [Bushing] Check LV Bushing Power Factor"
     },
     {
         "2011": "",
@@ -10859,7 +10859,7 @@
         "Rated Voltage (kV)": "112.5/23",
         "Service Type": "Distribution",
         "Service Age (Year)": "14",
-        "Condition Health Index": "83",
+        "Condition Health Index": "80",
         "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1066",
         "Estimated Remaining Life time (Year)": "",
@@ -11191,7 +11191,7 @@
         "FAT": "",
         "Last PM": "2025",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 3.9, H2: 4.6, H3: 5.5 mA<br>Pattern: L-H-H) | [Active Part] Check HV winding resistance & DETC tap contacts at Tap Cen 6.79%; Check LV winding resistance & connections | [Insulation Oil] Gas or Delta exceeds baseline (C2H4 Δ (23.0 > T3: 20), CO Δ (494.0 > T3: 250)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis)."
+        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 3.9, H2: 4.6, H3: 5.5 mA<br>Pattern: L-H-H) | [Active Part] Check HV winding resistance & DETC tap contacts at Tap Cen 6.79%; Check LV winding resistance & connections | [Insulation Oil] Gas or Delta exceeds baseline (C2H4 Δ (23.0 > T3: 20), CO Δ (494.0 > T3: 250)). Resample within 1 month, increase frequency to 1–3 months (Trend analysis).; Inspect oil sludge"
     },
     {
         "2011": "",
@@ -12931,7 +12931,7 @@
         "FAT": "",
         "Last PM": "2021",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 24.3, H2: 24.2, H3: 36.9 mA (Tap 2-3)<br>Pattern: H-L-H)"
+        "Recommendation": "[Urgent Action] <strong>Exciting Current</strong>: Investigate turn short / core damage immediately (Measured: H1: 24.3, H2: 24.2, H3: 36.9 mA (Tap 2-3)<br>Pattern: H-L-H) | <strong>Capacitance</strong>: Check winding capacitance & deformation (Measured: CH %Dev: 12.69%, CHL %Dev: 12.69%) | [Active Part] High Power Factor - recondition or dry out insulation (Mineral Oil < 230 kV: PF 0.7-1.0%)"
     },
     {
         "2011": "",
@@ -13685,7 +13685,7 @@
         "FAT": "",
         "Last PM": "2023",
         "Next PM": "-",
-        "Recommendation": "[Urgent Action] <strong>Dielectric Breakdown</strong>: Plan oil filtration (Min 40 kV) (Measured: 27 kV) | [Insulation Oil] Monitor water content; Check oil PF at 100C; Low interfacial tension (17 mN/m): Plan oil reclaiming"
+        "Recommendation": "[Urgent Action] <strong>Dielectric Breakdown</strong>: Plan oil filtration (Min 40 kV) (Measured: 27 kV) | [Insulation Oil] Monitor water content; Check oil PF at 100C; Inspect oil sludge; Low interfacial tension (17 mN/m): Plan oil reclaiming"
     },
     {
         "2011": "",
@@ -13991,8 +13991,8 @@
         "Rated Voltage (kV)": "115/22",
         "Service Type": "Distribution",
         "Service Age (Year)": "8",
-        "Condition Health Index": "75",
-        "Health Index Status": "Monitor",
+        "Condition Health Index": "80",
+        "Health Index Status": "Healthy",
         "Estimated DP (From Furan)": "1089",
         "Estimated Remaining Life time (Year)": "",
         "Visual Inspection": "A",
@@ -14006,7 +14006,7 @@
         "3∅ Short Circuit Impedance": "",
         "Core to Ground": "",
         "Bushing": "A",
-        "Surge Arrester": "U",
+        "Surge Arrester": "Q",
         "Dynamic Resistance Measurement (OLTC)": "",
         "Frequency Response Analysis (FRA)": "",
         "%Moisture in paper (FDS)": "",

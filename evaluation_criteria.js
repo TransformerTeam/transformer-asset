@@ -370,18 +370,18 @@ var EVALUATION_CRITERIA_DATA = [
   {
     "row": 57,
     "category": "Surge Arrester",
-    "item": "Leakage Current (Increment from Initial %)",
+    "item": "Leakage Current",
     "criteria": "EGAT / IEEE C57.152",
-    "standard": "Limit: ≤ 0.50 mA / %Dev ≤ 20% (Max limit ≤ 50%)",
+    "standard": "Limit: ≤ 0.50 mA",
     "recommendation": "Check Arrester Leakage Current, monitor if > 0.50 mA"
   },
   {
     "row": 58,
     "category": "Surge Arrester",
-    "item": "Watt Loss  (Increment from Initial %)",
+    "item": "Watt Loss",
     "criteria": "EGAT / IEEE C57.152",
-    "standard": "Limit: < 50% (Normal), 60-80% (Warning), > 80% (Critical)",
-    "recommendation": "Normal if < 50%, inspect & monitor if 60-80%, replace if > 80%"
+    "standard": "Limit: Phase Diff < 50% (Normal), 50-80% (Warning), > 80% (Critical)",
+    "recommendation": "Normal if Phase Diff < 50%, inspect & monitor if 50-80%, replace if > 80%"
   },
   {
     "row": 59,
