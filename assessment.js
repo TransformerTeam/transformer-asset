@@ -200,8 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const isStandalone = window.isDetailStandalonePage || 
                        window.location.pathname.toLowerCase().includes('detail') || 
                        window.location.pathname.toLowerCase().includes('evaluation') || 
+                       window.location.pathname.toLowerCase().includes('report') || 
                        document.getElementById('detail-paper') !== null ||
-                       document.getElementById('eval-transformer-select') !== null;
+                       document.getElementById('eval-transformer-select') !== null ||
+                       document.getElementById('matrix-canvas') === null;
   if (!isStandalone) {
     initAssessment();
     setupListeners();

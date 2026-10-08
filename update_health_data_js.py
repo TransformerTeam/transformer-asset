@@ -308,5 +308,11 @@ def convert_csv_to_js():
     except Exception as e:
         pass
 
+    try:
+        from convert_bushing_data_js import convert_bushing_csv_to_js
+        convert_bushing_csv_to_js()
+    except Exception as e:
+        pass
+
 if __name__ == '__main__':
     convert_csv_to_js()

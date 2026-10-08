@@ -613,6 +613,9 @@
     </div>
 
     <div class="btn-group">
+      <button class="btn btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
+      </button>
       <button class="btn btn-secondary" onclick="window.print()">
         <i class="fa-solid fa-print"></i> Print Report
       </button>
@@ -656,16 +659,20 @@
           <td class="val" id="info-power">-</td>
         </tr>
         <tr>
+          <td class="lbl">Manufacturer:</td>
+          <td class="val" id="info-mfg">-</td>
           <td class="lbl">Voltage Ratings:</td>
           <td class="val" id="info-voltage">-</td>
-          <td class="lbl">Vector Group:</td>
-          <td class="val" id="info-vector">-</td>
         </tr>
         <tr>
+          <td class="lbl">Vector Group:</td>
+          <td class="val" id="info-vector">-</td>
           <td class="lbl">No. of winding:</td>
           <td class="val" id="info-winding">-</td>
+        </tr>
+        <tr>
           <td class="lbl">Tap Changer:</td>
-          <td class="val" id="info-tap">-</td>
+          <td class="val" id="info-tap" colspan="3">-</td>
         </tr>
       </table>
 
@@ -937,27 +944,36 @@
   <!-- Data.js files -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
-  <script src="assessment.js"></script>
+  <script src="bushing_data.js"></script>
 
   <script>
-    let bushingInfoList = [];
-    let bushingPfDataList = [];
-    let trInfoList = [];
+    let bushingInfoList = (typeof BUSHING_INFO_DATA !== 'undefined' && Array.isArray(BUSHING_INFO_DATA)) 
+      ? BUSHING_INFO_DATA 
+      : ((typeof window !== 'undefined' && window.BUSHING_INFO_DATA && Array.isArray(window.BUSHING_INFO_DATA)) ? window.BUSHING_INFO_DATA : []);
+
+    let bushingPfDataList = (typeof BUSHING_PF_DATA !== 'undefined' && Array.isArray(BUSHING_PF_DATA)) 
+      ? BUSHING_PF_DATA 
+      : ((typeof window !== 'undefined' && window.BUSHING_PF_DATA && Array.isArray(window.BUSHING_PF_DATA)) ? window.BUSHING_PF_DATA : []);
+
+    let trInfoList = (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) 
+      ? TR_DATA 
+      : ((typeof window !== 'undefined' && window.TR_DATA && Array.isArray(window.TR_DATA)) ? window.TR_DATA : []);
+
     let currentSerial = '';
     let trendChart = null;
     let trendCapChart = null;
 
     window.addEventListener('DOMContentLoaded', async () => {
       // Initialize theme
-      const savedTheme = 'light';
+      const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
-      // Fetch CSVs independently so one error doesn't abort others
+      // Attempt to fetch latest CSVs dynamically (enhancement if served via HTTP server)
       try {
         const fetchText = async (url) => {
           try {
-            const res = await fetch(url);
+            const res = await fetch(url + '?t=' + Date.now());
             if (res.ok) return await res.text();
           } catch(e) {}
           return '';
@@ -967,56 +983,117 @@
           fetchText('TestData/BushingPFData.csv'),
           fetchText('TRInfo.csv').then(t => t || fetchText('TestData/TRinfo2.csv'))
         ]);
-        if (infoText) bushingInfoList = parseCSV(infoText);
-        if (pfText) bushingPfDataList = parseCSV(pfText);
-        if (trInfoText) trInfoList = parseCSV(trInfoText);
+        if (infoText) {
+          const parsed = parseCSV(infoText);
+          if (parsed && parsed.length) bushingInfoList = parsed;
+        }
+        if (pfText) {
+          const parsed = parseCSV(pfText);
+          if (parsed && parsed.length) bushingPfDataList = parsed;
+        }
+        if (trInfoText) {
+          const parsed = parseCSV(trInfoText);
+          if (parsed && parsed.length) trInfoList = parsed;
+        }
       } catch (e) {
-        console.warn('Fetch error in Bushing report', e);
+        console.warn('Live CSV fetch notice in Bushing report', e);
       }
 
-      // Also fallback to global arrays if already loaded by assessment.js
+      // Fallback to global arrays if not already populated
+      if ((!bushingInfoList || !bushingInfoList.length) && typeof window.BUSHING_INFO_DATA !== 'undefined' && Array.isArray(window.BUSHING_INFO_DATA)) {
+        bushingInfoList = window.BUSHING_INFO_DATA;
+      }
+      if ((!bushingPfDataList || !bushingPfDataList.length) && typeof window.BUSHING_PF_DATA !== 'undefined' && Array.isArray(window.BUSHING_PF_DATA)) {
+        bushingPfDataList = window.BUSHING_PF_DATA;
+      }
       if ((!bushingInfoList || !bushingInfoList.length) && typeof window.bushingInfoCsvData !== 'undefined' && Array.isArray(window.bushingInfoCsvData)) {
         bushingInfoList = window.bushingInfoCsvData;
       }
       if ((!bushingPfDataList || !bushingPfDataList.length) && typeof window.bushingPfCsvData !== 'undefined' && Array.isArray(window.bushingPfCsvData)) {
         bushingPfDataList = window.bushingPfCsvData;
       }
-      if ((!trInfoList || !trInfoList.length) && typeof window.trInfoCsvData !== 'undefined' && Array.isArray(window.trInfoCsvData)) {
-        trInfoList = window.trInfoCsvData;
+      if ((!trInfoList || !trInfoList.length) && typeof window.TR_DATA !== 'undefined' && Array.isArray(window.TR_DATA)) {
+        trInfoList = window.TR_DATA;
       }
 
       // Populate Transformer dropdown
       const selectEl = document.getElementById('transformer-select');
+      const addedSerials = new Set();
+      const allItems = [];
+
+      // 1. First add transformers that have Bushing PF test results or Bushing nameplate records
+      bushingPfDataList.forEach(item => {
+        const s = (item.serial || item.Serial_No || item.Serial || '').trim();
+        if (s && !addedSerials.has(s.toUpperCase())) {
+          addedSerials.add(s.toUpperCase());
+          allItems.push({
+            serial: s,
+            name: s,
+            site: item.Site || item.site || item.SITE || '',
+            hasBushingData: true
+          });
+        }
+      });
+
+      bushingInfoList.forEach(item => {
+        const s = (item.Parent_Serial_No || item.parent_serial_no || item.Parent_Serial || '').trim();
+        if (s && !addedSerials.has(s.toUpperCase())) {
+          addedSerials.add(s.toUpperCase());
+          allItems.push({
+            serial: s,
+            name: s,
+            site: item.Site || item.site || item.SITE || '',
+            hasBushingData: true
+          });
+        }
+      });
+
+      // 2. Add all fleet transformers from HEALTH_INDEX_DATA / assessmentData
+      const fleet = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA))
+        ? HEALTH_INDEX_DATA 
+        : ((typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) ? assessmentData : []);
+
+      fleet.forEach(item => {
+        const s = (item.serial || item['Serial No'] || item.Serial_No || item.SERIAL_NUMBER || '').trim();
+        const n = (item.name || item['Equipment Name'] || s).trim();
+        const site = (item.site || item.SITE || item.substation || '').trim();
+        if (s && !addedSerials.has(s.toUpperCase())) {
+          addedSerials.add(s.toUpperCase());
+          allItems.push({
+            serial: s,
+            name: n,
+            site: site,
+            hasBushingData: false
+          });
+        } else if (s && addedSerials.has(s.toUpperCase())) {
+          const existing = allItems.find(x => x.serial.toUpperCase() === s.toUpperCase());
+          if (existing) {
+            if (n && n !== s) existing.name = n;
+            if (site) existing.site = site;
+          }
+        }
+      });
+
+      // Cross-reference TR_DATA to fill in missing equipment codes and sites
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        TR_DATA.forEach(tr => {
+          const s = (tr.SERIAL_NUMBER || tr.Serial_No || tr['Serial No'] || '').trim();
+          if (s) {
+            const existing = allItems.find(x => x.serial.toUpperCase() === s.toUpperCase());
+            if (existing) {
+              if ((!existing.name || existing.name === existing.serial) && tr.LOCAL_EQUIPMENT_CODE) {
+                existing.name = tr.LOCAL_EQUIPMENT_CODE;
+              }
+              if (!existing.site && tr.SUBSTATION) {
+                existing.site = tr.SUBSTATION;
+              }
+            }
+          }
+        });
+      }
+
       if (selectEl) {
         selectEl.innerHTML = '';
-        const addedSerials = new Set();
-        const allItems = [];
-        const fleet = (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA))
-          ? HEALTH_INDEX_DATA 
-          : ((typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) ? assessmentData : []);
-
-        fleet.forEach(item => {
-          if (item.serial && !addedSerials.has(item.serial)) {
-            addedSerials.add(item.serial);
-            allItems.push({
-              serial: item.serial,
-              name: item.name || item.serial,
-              site: item.site || item.SITE || ''
-            });
-          }
-        });
-
-        bushingPfDataList.forEach(item => {
-          const s = item.serial || item.Serial_No || item.Serial;
-          if (s && !addedSerials.has(s)) {
-            addedSerials.add(s);
-            allItems.push({
-              serial: s,
-              name: s,
-              site: item.Site || item.site || item.SITE || ''
-            });
-          }
-        });
 
         // Group by Site / Plant
         const plantGroups = {};
@@ -1046,7 +1123,8 @@
           trList.forEach(item => {
             const opt = document.createElement('option');
             opt.value = item.serial;
-            opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})` : item.serial;
+            const badge = item.hasBushingData ? ' [Bushing Data]' : '';
+            opt.textContent = (item.name && item.name !== item.serial) ? `${item.name} (${item.serial})${badge}` : `${item.serial}${badge}`;
             grp.appendChild(opt);
           });
           selectEl.appendChild(grp);
@@ -1059,20 +1137,21 @@
       const name = urlParams.get('name');
       const no = urlParams.get('no');
 
-      if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
+      if (!serial && name) {
+        const item = allItems.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
         if (item) serial = item.serial;
       }
       if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
-        if (item) serial = item.serial;
+        const item = HEALTH_INDEX_DATA.find(x => (x.no == no || x['No.'] == no));
+        if (item) serial = item.serial || item['Serial No'];
       }
 
       if (!serial) {
-        if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
-          serial = HEALTH_INDEX_DATA[0].serial;
-        } else if (bushingPfDataList.length > 0) {
-          serial = bushingPfDataList[0].serial;
+        const firstWithData = allItems.find(x => x.hasBushingData);
+        if (firstWithData) {
+          serial = firstWithData.serial;
+        } else if (allItems.length > 0) {
+          serial = allItems[0].serial;
         }
       }
 
@@ -1083,7 +1162,10 @@
     });
 
     function loadReportBySerial(serial) {
+      if (!serial) return;
       currentSerial = serial;
+      const selectEl = document.getElementById('transformer-select');
+      if (selectEl && selectEl.value !== serial) selectEl.value = serial;
       const newUrl = `${window.location.pathname}?serial=${encodeURIComponent(serial)}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       renderBushingReport(serial);
@@ -1129,36 +1211,43 @@
       if (a === b || a.toLowerCase() === b.toLowerCase()) return true;
       const cleanA = a.toUpperCase().replace(/[^A-Z0-9]/g, '');
       const cleanB = b.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      return (cleanA && cleanB && cleanA === cleanB) || a.includes(b) || b.includes(a);
+      if (cleanA && cleanB && cleanA === cleanB) return true;
+      if (cleanA && cleanB && cleanA.length >= 6 && cleanB.length >= 6) {
+        return cleanA.includes(cleanB) || cleanB.includes(cleanA);
+      }
+      return false;
     }
 
     // ─── Render Report ────────────────────────────────────────────────────────────
     function renderBushingReport(serial) {
-      // Equipment Info — priority: TRInfo.csv > health_data.js assessmentData
+      if (!serial) return;
+      currentSerial = serial;
+
+      // Equipment Info — search across HEALTH_INDEX_DATA, TR_DATA, and trInfoList
       let item = null;
       if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA)) {
-        item = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial, serial));
+        item = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No, serial));
       } else if (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData)) {
-        item = assessmentData.find(x => matchSerial(x.serial, serial));
+        item = assessmentData.find(x => matchSerial(x.serial || x['Serial No'] || x.Serial_No, serial));
       }
-      // Find matching TRInfo record
-      let trInfo = trInfoList.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, serial));
+
+      let trInfo = trInfoList.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No || r['Serial No'], serial));
       if (!trInfo && typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
-        trInfo = TR_DATA.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No, serial));
+        trInfo = TR_DATA.find(r => matchSerial(r.SERIAL_NUMBER || r.Serial_No || r['Serial No'], serial));
       }
 
-      // Populate equipment details from TRInfo.csv (richer data source)
-      document.getElementById('info-eq-name').textContent =
-        (item && item.name) ? item.name : (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || '-') : '-');
+      // Populate equipment details
+      const eqName = (item && (item.name || item['Equipment Name'])) ? (item.name || item['Equipment Name']) : (trInfo ? (trInfo.LOCAL_EQUIPMENT_CODE || trInfo.DEVICE_CODE || '-') : '-');
+      document.getElementById('info-eq-name').textContent = eqName;
 
-      document.getElementById('info-site').textContent =
-        (item && item.site) ? item.site : (trInfo ? (trInfo.SUBSTATION || trInfo.SITE || '-') : '-');
+      const siteVal = (item && (item.site || item.SITE || item.substation)) ? (item.site || item.SITE || item.substation) : (trInfo ? (trInfo.SUBSTATION || trInfo.SITE || '-') : '-');
+      document.getElementById('info-site').textContent = siteVal;
 
       document.getElementById('info-serial').textContent = serial || '-';
 
       // Power Rating: Display in MVA
       const trPower = trInfo ? trInfo.POWER_RATING : null;
-      const hPower = item ? item.ratedPower : null;
+      const hPower = item ? (item.ratedPower || item['Rated Power (MVA)']) : null;
       let powerMvaStr = '-';
       if (trPower !== null && trPower !== undefined && trPower !== '') {
         const numP = Number(trPower);
@@ -1169,36 +1258,36 @@
       }
       document.getElementById('info-power').textContent = powerMvaStr;
 
-      // Manufacture
-      document.getElementById('info-mfg').textContent =
-        trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || '-') : (item ? (item.manufacture || '-') : '-');
+      // Manufacturer
+      const mfgVal = trInfo ? (trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || '-') : (item ? (item.manufacture || item.MANUFACTURER || '-') : '-');
+      if (document.getElementById('info-mfg')) document.getElementById('info-mfg').textContent = mfgVal;
 
       // Voltage Rating
-      const hvRated = trInfo ? trInfo.HV_RATED : (item ? item.hvRate : null);
-      const lvRated = trInfo ? trInfo.LV_RATED : (item ? item.lvRate : null);
+      const hvRated = trInfo ? trInfo.HV_RATED : (item ? (item.hvRate || item['HV Rate (kV)']) : null);
+      const lvRated = trInfo ? trInfo.LV_RATED : (item ? (item.lvRate || item['LV Rate (kV)']) : null);
       const lv2Rated = trInfo ? trInfo.LV2_RATED : null;
       let voltStr = '-';
       if (hvRated) {
         voltStr = hvRated;
         if (lvRated && lvRated !== '-') voltStr += ' / ' + lvRated;
         if (lv2Rated && lv2Rated !== '-' && lv2Rated !== '') voltStr += ' / ' + lv2Rated;
-      } else if (item && item.ratedVoltage) {
-        voltStr = item.ratedVoltage;
+      } else if (item && (item.ratedVoltage || item['Rated Voltage (kV)'])) {
+        voltStr = item.ratedVoltage || item['Rated Voltage (kV)'];
       }
       if (voltStr && !voltStr.includes('kV') && voltStr !== '-') voltStr += ' kV';
       document.getElementById('info-voltage').textContent = voltStr;
 
-      const vectorVal = trInfo ? (trInfo.VECTOR_GROUP || '-') : (item ? (item.vectorGroup || '-') : '-');
+      const vectorVal = trInfo ? (trInfo.VECTOR_GROUP || '-') : (item ? (item.vectorGroup || item['Vector Group'] || '-') : '-');
       if (document.getElementById('info-vector')) document.getElementById('info-vector').textContent = vectorVal;
 
       const windingVal = trInfo ? (parseInt(trInfo.NO_WINDING, 10) === 3 ? '3 Windings' : '2 Windings') : '2 Windings';
       if (document.getElementById('info-winding')) document.getElementById('info-winding').textContent = windingVal;
 
-      const tapVal = trInfo ? (trInfo.TAP_CHANGER_TYPE || '-') : (item ? (item.tap_changer || '-') : '-');
+      const tapVal = trInfo ? (trInfo.TAP_CHANGER_TYPE || '-') : (item ? (item.tap_changer || item['Tap Changer'] || '-') : '-');
       if (document.getElementById('info-tap')) document.getElementById('info-tap').textContent = tapVal;
 
       // Filter BushingInfo records
-      const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No, serial));
+      const infoRecords = bushingInfoList.filter(b => matchSerial(b.Parent_Serial_No || b.parent_serial_no || b.Serial_No, serial));
 
       // Render Nameplate Table
       renderNameplateTable(infoRecords);
@@ -1206,7 +1295,11 @@
       // Filter BushingPFData — sort descending by date
       const pfRecords = bushingPfDataList.filter(d => matchSerial(d.serial, serial));
       pfRecords.sort((a, b) => parseDate(b.date) - parseDate(a.date));
-      const latest = pfRecords.length > 0 ? pfRecords[0] : null;
+
+      // Pick latest test record with actual test data if available, or first record
+      let latest = pfRecords.find(r => {
+        return Object.entries(r).some(([k, v]) => (k.includes('c1') || k.includes('c2') || k.includes('watt') || k.includes('ma') || k.includes('tan')) && v && v !== '-' && v !== '0.00' && v !== '0' && v !== 'Infinity');
+      }) || (pfRecords.length > 0 ? pfRecords[0] : null);
 
       if (latest) {
         if (document.getElementById('info-instrument')) document.getElementById('info-instrument').textContent = latest.test_instrument || 'Omicron TESTRANO 600';
@@ -1255,8 +1348,8 @@
         renderC2Table(latest, infoRecords);
       } else {
         ['bushing-c1-body', 'bushing-c2-body'].forEach(id => {
-          document.getElementById(id).innerHTML =
-            `<tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:8px;">No test results found for Serial: ${serial}</td></tr>`;
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#94a3b8; padding:8px;">No test results found for Serial: ${serial}</td></tr>`;
         });
       }
 
@@ -1336,11 +1429,8 @@
         if (!(cap > 0 || ma > 0 || pf > 0)) return;
         hasData = true;
 
-        // Nameplate info matching
-        const matchInfo = infoRecords.find(i => {
-          const ph = (i.Phase || '').toUpperCase();
-          return ph === p.npPhase || ph.endsWith(p.npPhase.replace(/[0-9]/g, '').toLowerCase() + p.npPhase.slice(-1));
-        });
+        // Nameplate info matching via robust phase resolver
+        const matchInfo = findBushingInfoForPhase(infoRecords, p.npPhase);
 
         // %PF Error calculation vs Nameplate PF
         const npPf = matchInfo ? parseFloat(capType === 'C1' ? (matchInfo.Meas_PF_C1 || matchInfo.Corr_PF || 0) : (matchInfo.Meas_PF_C2 || 0)) : 0;
@@ -1647,6 +1737,14 @@
         if (trendCapChart) { trendCapChart.destroy(); trendCapChart = null; }
         document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
         document.getElementById('trend-cap-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">Please select at least one phase to display trend line.</div>`;
+        return;
+      }
+
+      if (records.length === 0) {
+        if (trendChart) { trendChart.destroy(); trendChart = null; }
+        if (trendCapChart) { trendCapChart.destroy(); trendCapChart = null; }
+        document.getElementById('trend-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">No historical test measurements available for trending.</div>`;
+        document.getElementById('trend-cap-chart').innerHTML = `<div style="text-align:center; color:#94a3b8; padding:40px; font-size:11px;">No historical test measurements available for trending.</div>`;
         return;
       }
 
