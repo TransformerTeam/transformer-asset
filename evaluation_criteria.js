@@ -372,8 +372,8 @@ var EVALUATION_CRITERIA_DATA = [
     "category": "Surge Arrester",
     "item": "Leakage Current",
     "criteria": "EGAT / IEEE C57.152",
-    "standard": "Limit: ≤ 0.50 mA",
-    "recommendation": "Check Arrester Leakage Current, monitor if > 0.50 mA"
+    "standard": "Limit: Phase Diff < 50% (Normal), 50-80% (Warning), > 80% (Critical)",
+    "recommendation": "Normal if Phase Diff < 50%, inspect & monitor if 50-80%, replace if > 80%"
   },
   {
     "row": 58,

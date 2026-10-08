@@ -372,6 +372,7 @@ for (let r = hIdx + 1; r < hiLines.length; r++) {
                           updatedRow['Recommendation'].startsWith('Normal Condition:') ||
                           updatedRow['Recommendation'].includes('Watt Loss (%Error from FAT/Oldest)') ||
                           updatedRow['Recommendation'].includes('Watt Loss') ||
+                          updatedRow['Recommendation'].includes('Leakage Current') ||
                           updatedRow['Recommendation'].includes('Corrosive sulfur detected') ||
                           updatedRow['Recommendation'].includes('Corrosive (2e)');
 

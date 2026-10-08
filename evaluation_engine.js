@@ -1075,12 +1075,12 @@ function getMethodStandardAndLimit(methodName, item, ptName, subName) {
       return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50% (Normal), 50-80% (Warning), > 80% (Critical)';
     }
     if (mLower.includes('leakage') || mLower.includes('current')) {
-      return 'EGAT / IEEE C57.152, Limit: Leakage Current ≤ 0.50 mA';
+      return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50% (Normal), 50-80% (Warning), > 80% (Critical)';
     }
     if (mLower.includes('insulation resistance') || mLower.includes('ir')) {
       return 'EGAT / IEEE C57.152, Limit: IR ≥ 10,000 MΩ';
     }
-    return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50%, Leakage ≤ 0.50 mA';
+    return 'EGAT / IEEE C57.152, Limit: Phase Diff < 50% (Normal), 50-80% (Warning), > 80% (Critical)';
   }
 
   // 25. OLTC Oil / OLTC Breakdown / Water Content / DGA
@@ -2742,57 +2742,37 @@ function getMeasuredValueForItem(itemName, item, ptName, subName) {
       const isLv = subLower.includes('lv') || subLower.includes('x');
 
       if (nameLower.includes('leakage current') || nameLower.includes('current')) {
-        if (isLv) {
-          const cur1 = parseFloat(latestSurge.xh1_current);
-          const cur2 = parseFloat(latestSurge.xh2_current);
-          const cur3 = parseFloat(latestSurge.xh3_current);
+        const parts = [];
+        const validCurs = [];
 
-          const parts = [];
-          const scores = [];
-          if (!isNaN(cur1) && cur1 > 0) {
-            parts.push(`X1: ${cur1.toFixed(2)} mA`);
-            scores.push(cur1 <= 0.5 ? 5 : (cur1 <= 1.0 ? 4 : (cur1 <= 2.0 ? 3 : 1)));
-          }
-          if (!isNaN(cur2) && cur2 > 0) {
-            parts.push(`X2: ${cur2.toFixed(2)} mA`);
-            scores.push(cur2 <= 0.5 ? 5 : (cur2 <= 1.0 ? 4 : (cur2 <= 2.0 ? 3 : 1)));
-          }
-          if (!isNaN(cur3) && cur3 > 0) {
-            parts.push(`X3: ${cur3.toFixed(2)} mA`);
-            scores.push(cur3 <= 0.5 ? 5 : (cur3 <= 1.0 ? 4 : (cur3 <= 2.0 ? 3 : 1)));
-          }
+        const prefix = isLv ? 'X' : 'H';
+        const cur1 = parseFloat(isLv ? latestSurge.xh1_current : (latestSurge.h1_current && latestSurge.h1_current !== '-' ? latestSurge.h1_current : latestSurge.maxma1));
+        const cur2 = parseFloat(isLv ? latestSurge.xh2_current : (latestSurge.h2_current && latestSurge.h2_current !== '-' ? latestSurge.h2_current : latestSurge.maxma2));
+        const cur3 = parseFloat(isLv ? latestSurge.xh3_current : (latestSurge.h3_current && latestSurge.h3_current !== '-' ? latestSurge.h3_current : latestSurge.maxma3));
 
-          if (parts.length > 0) {
-            const minScore = Math.min(...scores);
-            const rec = minScore >= 4 ? '-' : 'Check LV Arrester Leakage Current';
-            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
+        [cur1, cur2, cur3].forEach((c, idx) => {
+          if (!isNaN(c) && c > 0) {
+            parts.push(`${prefix}${idx+1}: ${c.toFixed(2)} mA`);
+            validCurs.push(c);
           }
-        } else {
-          // HV Arrester
-          const cur1 = parseFloat(latestSurge.h1_current && latestSurge.h1_current !== '-' ? latestSurge.h1_current : latestSurge.maxma1);
-          const cur2 = parseFloat(latestSurge.h2_current && latestSurge.h2_current !== '-' ? latestSurge.h2_current : latestSurge.maxma2);
-          const cur3 = parseFloat(latestSurge.h3_current && latestSurge.h3_current !== '-' ? latestSurge.h3_current : latestSurge.maxma3);
+        });
 
-          const parts = [];
-          const scores = [];
-          if (!isNaN(cur1) && cur1 > 0) {
-            parts.push(`H1: ${cur1.toFixed(2)} mA`);
-            scores.push(cur1 <= 0.5 ? 5 : (cur1 <= 1.0 ? 4 : (cur1 <= 2.0 ? 3 : 1)));
-          }
-          if (!isNaN(cur2) && cur2 > 0) {
-            parts.push(`H2: ${cur2.toFixed(2)} mA`);
-            scores.push(cur2 <= 0.5 ? 5 : (cur2 <= 1.0 ? 4 : (cur2 <= 2.0 ? 3 : 1)));
-          }
-          if (!isNaN(cur3) && cur3 > 0) {
-            parts.push(`H3: ${cur3.toFixed(2)} mA`);
-            scores.push(cur3 <= 0.5 ? 5 : (cur3 <= 1.0 ? 4 : (cur3 <= 2.0 ? 3 : 1)));
+        if (parts.length > 0) {
+          let finalScore = 4;
+          let diffStr = '';
+          if (validCurs.length >= 2) {
+            const maxC = Math.max(...validCurs);
+            const minC = Math.min(...validCurs);
+            const phaseVar = maxC > 0 ? ((maxC - minC) / maxC) * 100 : 0;
+            diffStr = ` (Diff: ${phaseVar.toFixed(1)}%)`;
+            // Criteria: Phase Diff < 50% Normal (4), 50-80% Warning (3), > 80% Critical (1)
+            finalScore = phaseVar < 50.0 ? 4 : (phaseVar <= 80.0 ? 3 : 1);
+          } else {
+            finalScore = 4;
           }
 
-          if (parts.length > 0) {
-            const minScore = Math.min(...scores);
-            const rec = minScore >= 4 ? '-' : 'Check HV Arrester Leakage Current';
-            return { value: parts.join(', '), testDate: date, ratingScore: minScore, recommendation: rec };
-          }
+          const rec = finalScore >= 4 ? '-' : (finalScore === 3 ? `Check ${isLv ? 'LV' : 'HV'} Arrester Leakage Current (Warning: Diff 50-80%)` : `Check ${isLv ? 'LV' : 'HV'} Arrester Leakage Current (Critical: Diff > 80%)`);
+          return { value: parts.join(', ') + diffStr, testDate: date, ratingScore: finalScore, recommendation: rec };
         }
       } else if (nameLower.includes('watt loss') || nameLower.includes('watt')) {
         const parts = [];
