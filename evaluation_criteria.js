@@ -99,7 +99,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 18,
     "category": "High Voltage Winding",
     "item": "",
-    "criteria": "%Max. Error between Phase (≤2%)",
+    "criteria": "%Max. Error between Phase (≤5%)",
     "standard": "",
     "recommendation": ""
   },
@@ -179,7 +179,7 @@ var EVALUATION_CRITERIA_DATA = [
     "row": 30,
     "category": "Tertiary Winding",
     "item": "",
-    "criteria": "%Max. Error between Phase (≤2%)",
+    "criteria": "%Max. Error between Phase (≤5%)",
     "standard": "",
     "recommendation": ""
   },

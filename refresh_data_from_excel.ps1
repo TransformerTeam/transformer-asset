@@ -248,7 +248,7 @@ if (Test-Path $syncScript) {
     Write-Warning "scripts/sync_evaluation.js not found!"
 }
 
-# Generate downstream visual_data.js and pi_data.js
+# Generate downstream visual_data.js, pi_data.js, bushing_data.js, and pf_data.js
 $piScript = Join-Path $repoRoot "convert_pi_data_js.py"
 if (Test-Path $piScript) {
     py $piScript
@@ -257,6 +257,14 @@ $visualScript = Join-Path $repoRoot "convert_visual_data_js.py"
 if (Test-Path $visualScript) {
     py $visualScript
 }
+$bushingScript = Join-Path $repoRoot "convert_bushing_data_js.py"
+if (Test-Path $bushingScript) {
+    py $bushingScript
+}
+$pfScript = Join-Path $repoRoot "convert_pf_data_js.py"
+if (Test-Path $pfScript) {
+    py $pfScript
+}
 
 # ----------------------------------------------------
 # 5. Push to GitHub
@@ -264,7 +272,7 @@ if (Test-Path $visualScript) {
 $gitExe = Join-Path $repoRoot ".git-portable\cmd\git.exe"
 if (Test-Path $gitExe) {
     Write-Host "`n--- Pushing to GitHub ---" -ForegroundColor Yellow
-    & $gitExe add HealthIndexSum.csv TestData/*.csv TRInfo.csv data.js health_data.js pi_data.js visual_data.js scripts/sync_evaluation.js refresh_data_from_excel.ps1
+    & $gitExe add HealthIndexSum.csv TestData/*.csv TRInfo.csv data.js health_data.js pi_data.js visual_data.js bushing_data.js pf_data.js scripts/sync_evaluation.js refresh_data_from_excel.ps1
     & $gitExe commit -m "data: refresh all CSV datasets and health index tables from master Excel Rev.25"
     & $gitExe push origin main
     Write-Host "Pushed to GitHub successfully!" -ForegroundColor Green

@@ -1850,6 +1850,7 @@
   <script id="script-pi-data-js" src="pi_data.js"></script>
   <script id="script-visual-data-js" src="visual_data.js"></script>
   <script id="script-bushing-data-js" src="bushing_data.js"></script>
+  <script id="script-pf-data-js" src="pf_data.js"></script>
   <script id="script-evaluation-criteria-js" src="evaluation_criteria.js"></script>
   <script id="script-evaluation-engine-js" src="evaluation_engine.js"></script>
   <script id="script-assessment-js" src="assessment.js"></script>
@@ -2764,7 +2765,7 @@
           { name: 'Single Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% average three phase', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
           { name: 'Three Phase Short Circuit Impedance', subText: 'IEEE C57.152-2013, %Deviation within 3% of nameplate', defaultDate: '-', mWeight: 5, maxScore: 4, mWorst: '13.3333' },
           { name: 'Turn Ratio', subText: 'IEEE C57.152-2013, %Deviation within 0.5% of nameplate', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
-          { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
+          { name: 'HV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 5% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '16.6667' },
           { name: 'Power Factor', subText: hvPfSubText, defaultDate: '-', mWeight: 4, maxScore: 13.3333, mWorst: '-' },
           { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' },
           { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 10, mWorst: '-' }
@@ -2774,9 +2775,9 @@
       const lvWindingSub = {
         sub: 'LV Winding', full: 100, subWeight: (isAuto ? 10 : (is3Winding ? 30 : 45)),
         methods: isAuto ? [
-          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
+          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 5% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 100, mWorst: 100 }
         ] : [
-          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
+          { name: 'LV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 5% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '33.3333' },
           { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '-', mWeight: 5, maxScore: 4, mWorst: '26.6667' },
           { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 5, maxScore: 3, mWorst: '20' },
           { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 20, mWorst: '-' }
@@ -2786,7 +2787,7 @@
       const tvWindingSub = {
         sub: 'TV Winding', full: 100, subWeight: (isAuto ? 40 : 30),
         methods: [
-          { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 2% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '25' },
+          { name: 'TV Winding Resistance', subText: 'IEEE C57.152-2013, %Dev between Phase within 5% and %DEV from FAT/Oldest 5%', defaultDate: '-', mWeight: 5, maxScore: 5, mWorst: '25' },
           { name: 'Power Factor', subText: 'IEEE C57.152-2013, Normal ≤ 0.5%, Service Limit ≤ 1.0%', defaultDate: '-', mWeight: 4, maxScore: 25, mWorst: '-' },
           { name: 'Capacitance', subText: 'IEEE C57.152-2013, %Dev from FAT/Oldest ≤ 5%', defaultDate: '-', mWeight: 3, maxScore: 25, mWorst: '-' },
           { name: 'Insulation Resistance and PI', subText: 'IEEE C57.152-2013, PI > 1.25', defaultDate: '-', mWeight: 3, maxScore: 25, mWorst: '-' }
@@ -3260,7 +3261,7 @@
 
       // 21. Winding Resistance
       if (mLower.includes('winding resistance') || mLower.includes('resistance')) {
-        return 'IEEE C57.152-2013, Limit: Phase Dev ≤ 2.0%';
+        return 'IEEE C57.152-2013, Limit: Phase Dev ≤ 5.0%';
       }
 
       // 22. Short Circuit Impedance
@@ -5209,9 +5210,9 @@
             devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
 
             val = `Tap (Max: ${devMax.toFixed(2)}%, Cen: ${devCen.toFixed(2)}%, Min: ${devMin.toFixed(2)}%)<br>FAT: ${devFat.toFixed(2)}%`;
-            if (devMax > 2.0) tapDetails.push(`Tap Max ${devMax.toFixed(2)}%`);
-            if (devCen > 2.0) tapDetails.push(`Tap Cen ${devCen.toFixed(2)}%`);
-            if (devMin > 2.0) tapDetails.push(`Tap Min ${devMin.toFixed(2)}%`);
+            if (devMax > 5.0) tapDetails.push(`Tap Max ${devMax.toFixed(2)}%`);
+            if (devCen > 5.0) tapDetails.push(`Tap Cen ${devCen.toFixed(2)}%`);
+            if (devMin > 5.0) tapDetails.push(`Tap Min ${devMin.toFixed(2)}%`);
           } else {
             // HV Winding with DETC / Specific Tap
             let specificTapName = 'Tap Cen';
@@ -5224,36 +5225,38 @@
             devPhase = Math.abs(parseFloat(latestWinding.DEVTAP1) || parseFloat(latestWinding.DEVCENTER) || parseFloat(latestWinding.DEVMAX) || parseFloat(latestWinding.DEVMAXX) || 0);
             devFat = Math.abs(parseFloat(latestWinding.MAXERR) || parseFloat(latestWinding.DEVMAXX) || 0);
             val = `${specificTapName}: ${devPhase.toFixed(2)}%<br>FAT: ${devFat.toFixed(2)}%`;
-            if (devPhase > 2.0) tapDetails.push(`${specificTapName} ${devPhase.toFixed(2)}%`);
+            if (devPhase > 5.0) tapDetails.push(`${specificTapName} ${devPhase.toFixed(2)}%`);
           }
 
-          // Scoring according to IEEE C57.152-2013:
-          // Standard Limit: %Dev between Phase <= 2%, %DEV from FAT/Oldest <= 5%
-          let score = 5;
-          if (devPhase <= 1.0 && devFat <= 3.0) {
-            score = 5;
-          } else if (devPhase <= 2.0 && devFat <= 5.0) {
-            score = 4;
-          } else if (devPhase <= 3.0 || devFat <= 7.0) {
-            score = 3;
-          } else if (devPhase <= 5.0 || devFat <= 10.0) {
-            score = 2;
-          } else {
-            score = 1;
-          }
+          // Scoring according to IEEE C57.152-2013 (Phase Dev Limit <= 5.0%, FAT Dev Limit <= 5.0%):
+          let scorePhase = 5;
+          if (devPhase <= 2.0) scorePhase = 5;
+          else if (devPhase <= 5.0) scorePhase = 4;
+          else if (devPhase <= 7.0) scorePhase = 3;
+          else if (devPhase <= 10.0) scorePhase = 2;
+          else scorePhase = 1;
+
+          let scoreFat = 5;
+          if (devFat <= 3.0) scoreFat = 5;
+          else if (devFat <= 5.0) scoreFat = 4;
+          else if (devFat <= 7.0) scoreFat = 3;
+          else if (devFat <= 10.0) scoreFat = 2;
+          else scoreFat = 1;
+
+          const score = Math.min(scorePhase, scoreFat);
 
           let rec = '-';
           if (score < 4) {
             if (isTv) {
-              rec = `Check TV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+              rec = `Check TV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 5%, FAT Dev ≤ 5%)`;
             } else if (isLv) {
-              rec = `Check LV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+              rec = `Check LV winding resistance & connections (IEEE C57.152: Phase Dev ≤ 5%, FAT Dev ≤ 5%)`;
             } else if (isOltcMode && hasMaxMin) {
               const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
-              rec = `Check HV winding resistance & OLTC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+              rec = `Check HV winding resistance & OLTC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 5%, FAT Dev ≤ 5%)`;
             } else {
               const detailStr = tapDetails.length > 0 ? ` at ${tapDetails.join(', ')}` : '';
-              rec = `Check HV winding resistance & DETC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 2%, FAT Dev ≤ 5%)`;
+              rec = `Check HV winding resistance & DETC tap contacts${detailStr} (IEEE C57.152: Phase Dev ≤ 5%, FAT Dev ≤ 5%)`;
             }
           }
 
@@ -6654,6 +6657,8 @@
           reloadScript('health_data.js', 'script-health-data-js'),
           reloadScript('visual_data.js', 'script-visual-data-js'),
           reloadScript('pi_data.js', 'script-pi-data-js'),
+          reloadScript('bushing_data.js', 'script-bushing-data-js'),
+          reloadScript('pf_data.js', 'script-pf-data-js'),
           reloadScript('oltc_data.js', 'script-oltc-data-js'),
           reloadScript('evaluation_criteria.js', 'script-evaluation-criteria-js')
         ]);

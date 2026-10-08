@@ -289,11 +289,12 @@ async function runFullSync() {
 
   // 2. Refresh downstream JavaScript data files
   try {
-    log('Generating data.js, pi_data.js, visual_data.js, and bushing_data.js...', 'INFO');
+    log('Generating data.js, pi_data.js, visual_data.js, bushing_data.js, and pf_data.js...', 'INFO');
     execSync('py convert_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_pi_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_visual_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_bushing_data_js.py', { cwd: BASE_DIR });
+    execSync('py convert_pf_data_js.py', { cwd: BASE_DIR });
   } catch (jsErr) {
     log(`Notice during JS generation: ${jsErr.message}`, 'WARNING');
   }

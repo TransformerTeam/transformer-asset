@@ -314,5 +314,11 @@ def convert_csv_to_js():
     except Exception as e:
         pass
 
+    try:
+        from convert_pf_data_js import convert_pf_csv_to_js
+        convert_pf_csv_to_js()
+    except Exception as e:
+        pass
+
 if __name__ == '__main__':
     convert_csv_to_js()

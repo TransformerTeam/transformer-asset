@@ -990,6 +990,7 @@
   <!-- Scripts -->
   <script src="data.js"></script>
   <script src="health_data.js"></script>
+  <script src="pf_data.js"></script>
 
   <script>
     let pfDataList = [];
@@ -1006,12 +1007,21 @@
       document.documentElement.setAttribute('data-theme', savedTheme);
       updateThemeIcon(savedTheme);
 
+      // Pre-load from pf_data.js if available
+      if (typeof WINDING_PF_DATA !== 'undefined' && Array.isArray(WINDING_PF_DATA) && WINDING_PF_DATA.length > 0) {
+        pfDataList = WINDING_PF_DATA;
+      }
+      if (typeof FACTORY_DATA !== 'undefined' && Array.isArray(FACTORY_DATA) && FACTORY_DATA.length > 0) {
+        factoryDataList = FACTORY_DATA;
+      }
+
       // Load WindingPFData.csv
       try {
         const response = await fetch('TestData/WindingPFData.csv');
         if (response.ok) {
           const csvText = await response.text();
-          pfDataList = parseCSV(csvText);
+          const parsed = parseCSV(csvText);
+          if (parsed && parsed.length > 0) pfDataList = parsed;
         }
       } catch (err) {
         console.warn("Could not load TestData/WindingPFData.csv via fetch:", err);
@@ -1022,7 +1032,8 @@
         const facResponse = await fetch('TestData/FactoryData.csv');
         if (facResponse.ok) {
           const facCsvText = await facResponse.text();
-          factoryDataList = parseCSV(facCsvText);
+          const parsedFac = parseCSV(facCsvText);
+          if (parsedFac && parsedFac.length > 0) factoryDataList = parsedFac;
         }
       } catch (err) {
         console.warn("Could not load TestData/FactoryData.csv via fetch:", err);
@@ -1038,19 +1049,19 @@
       const no = urlParams.get('no');
 
       if (!serial && name && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.name && x.name.toLowerCase() === name.toLowerCase());
-        if (item) serial = item.serial;
+        const item = HEALTH_INDEX_DATA.find(x => (x.name || x['Equipment Name']) && (x.name || x['Equipment Name']).toLowerCase() === name.toLowerCase());
+        if (item) serial = item.serial || item['Serial No'] || item.Serial_No;
       }
       if (!serial && no && typeof HEALTH_INDEX_DATA !== 'undefined') {
-        const item = HEALTH_INDEX_DATA.find(x => x.no == no);
-        if (item) serial = item.serial;
+        const item = HEALTH_INDEX_DATA.find(x => x.no == no || x['No.'] == no);
+        if (item) serial = item.serial || item['Serial No'] || item.Serial_No;
       }
 
       if (!serial) {
         if (pfDataList.length > 0 && pfDataList[0].serial) {
           serial = pfDataList[0].serial;
         } else if (typeof HEALTH_INDEX_DATA !== 'undefined' && HEALTH_INDEX_DATA.length > 0) {
-          serial = HEALTH_INDEX_DATA[0].serial;
+          serial = HEALTH_INDEX_DATA[0].serial || HEALTH_INDEX_DATA[0]['Serial No'] || HEALTH_INDEX_DATA[0].Serial_No;
         }
       }
 

@@ -135,22 +135,22 @@ function getRemainingLifeDP300(item, serialVal) {
 
 var assessmentData = [];
 var trInfoCsvData = [];
-var bushingPfCsvData = [];
-var bushingInfoCsvData = [];
+var bushingPfCsvData = (typeof bushingPfCsvData !== 'undefined' && bushingPfCsvData && bushingPfCsvData.length) ? bushingPfCsvData : ((typeof BUSHING_PF_DATA !== 'undefined') ? BUSHING_PF_DATA : []);
+var bushingInfoCsvData = (typeof bushingInfoCsvData !== 'undefined' && bushingInfoCsvData && bushingInfoCsvData.length) ? bushingInfoCsvData : ((typeof BUSHING_INFO_DATA !== 'undefined') ? BUSHING_INFO_DATA : []);
 var surgeInfoCsvData = [];
 var surgePfCsvData = [];
 var mtOilCsvData = [];
 var mainTankDgaCsvData = [];
 var oltcOilCsvData = [];
-var piCsvData = [];
-var irPiCsvData = [];
-var windingPfCsvData = [];
+var piCsvData = (typeof piCsvData !== 'undefined' && piCsvData && piCsvData.length) ? piCsvData : ((typeof IR_PI_DATA !== 'undefined') ? IR_PI_DATA : []);
+var irPiCsvData = (typeof irPiCsvData !== 'undefined' && irPiCsvData && irPiCsvData.length) ? irPiCsvData : ((typeof IR_PI_DATA !== 'undefined') ? IR_PI_DATA : []);
+var windingPfCsvData = (typeof windingPfCsvData !== 'undefined' && windingPfCsvData && windingPfCsvData.length) ? windingPfCsvData : ((typeof WINDING_PF_DATA !== 'undefined') ? WINDING_PF_DATA : []);
 var ratioCsvData = [];
 var excitingCsvData = [];
 var windingCsvData = [];
 var singleShortCsvData = [];
 var threeShortCsvData = [];
-var visualCsvData = [];
+var visualCsvData = (typeof visualCsvData !== 'undefined' && visualCsvData && visualCsvData.length) ? visualCsvData : ((typeof VISUAL_DATA !== 'undefined') ? VISUAL_DATA : []);
 var fraCsvData = [];
 var dfrCsvData = [];
 var drmCsvData = [];
