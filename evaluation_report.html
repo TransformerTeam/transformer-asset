@@ -1844,14 +1844,14 @@
   </div>
 
   <!-- JavaScript Modules -->
-  <script src="data.js"></script>
-  <script src="health_data.js"></script>
-  <script src="oltc_data.js"></script>
-  <script src="pi_data.js"></script>
-  <script src="visual_data.js"></script>
-  <script src="evaluation_criteria.js"></script>
-  <script src="evaluation_engine.js"></script>
-  <script src="assessment.js"></script>
+  <script id="script-data-js" src="data.js"></script>
+  <script id="script-health-data-js" src="health_data.js"></script>
+  <script id="script-oltc-data-js" src="oltc_data.js"></script>
+  <script id="script-pi-data-js" src="pi_data.js"></script>
+  <script id="script-visual-data-js" src="visual_data.js"></script>
+  <script id="script-evaluation-criteria-js" src="evaluation_criteria.js"></script>
+  <script id="script-evaluation-engine-js" src="evaluation_engine.js"></script>
+  <script id="script-assessment-js" src="assessment.js"></script>
 
   <script>
     var assessmentData = (typeof window !== 'undefined' && window.assessmentData) ? window.assessmentData : [];
@@ -2035,21 +2035,21 @@
       });
     };
 
-    async function loadTestDatasetsForEval() {
+    async function loadTestDatasetsForEval(forceRefresh = false) {
       try {
+        const cacheBust = forceRefresh ? `?t=${Date.now()}` : '';
+        const fetchOpt = forceRefresh ? { cache: 'no-store' } : {};
         const [resOil, resDfr] = await Promise.all([
-          fetch('TestData/MTOilData.csv').catch(() => null),
-          fetch('TestData/DFRData.csv').catch(() => null)
+          fetch('TestData/MTOilData.csv' + cacheBust, fetchOpt).catch(() => null),
+          fetch('TestData/DFRData.csv' + cacheBust, fetchOpt).catch(() => null)
         ]);
         if (resOil && resOil.ok) {
           const text = await resOil.text();
           evalOilDataList = parseEvalCSV(text);
           if (typeof window !== 'undefined') {
             window.evalOilDataList = evalOilDataList;
-            if (typeof mtOilCsvData === 'undefined' || !Array.isArray(mtOilCsvData) || !mtOilCsvData.length) {
-              mtOilCsvData = evalOilDataList;
-              window.mtOilCsvData = evalOilDataList;
-            }
+            mtOilCsvData = evalOilDataList;
+            window.mtOilCsvData = evalOilDataList;
           }
         }
         if (resDfr && resDfr.ok) {
@@ -2057,10 +2057,8 @@
           evalDfrDataList = parseEvalCSV(text);
           if (typeof window !== 'undefined') {
             window.evalDfrDataList = evalDfrDataList;
-            if (typeof dfrCsvData === 'undefined' || !Array.isArray(dfrCsvData) || !dfrCsvData.length) {
-              dfrCsvData = evalDfrDataList;
-              window.dfrCsvData = evalDfrDataList;
-            }
+            dfrCsvData = evalDfrDataList;
+            window.dfrCsvData = evalDfrDataList;
           }
         }
       } catch (e) {
@@ -6582,73 +6580,138 @@
       const statusText = document.getElementById('refresh-status-text');
       const spinIcon = document.getElementById('refresh-spin-icon');
       const toast = document.getElementById('refresh-toast');
+      const refreshBtn = document.getElementById('refresh-data-btn');
 
       if (!modal || !bar || !statusText) return;
 
-      // 1. Show popup modal & start spinning
+      if (refreshBtn) refreshBtn.disabled = true;
       modal.classList.add('active');
       if (spinIcon) spinIcon.classList.add('fa-spin');
-      bar.style.width = '15%';
-      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Connecting data and preparing to load files...';
+      bar.style.width = '12%';
+      statusText.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Connecting to data service & checking Master Excel...';
+
+      const selectedSerial = currentSerial || 
+        (document.getElementById('eval-transformer-select') ? document.getElementById('eval-transformer-select').value : '');
 
       try {
-        // 2. Step 1: Attempt backend sync if running on web server
-        bar.style.width = '35%';
-        statusText.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> Updating latest diagnostic test data...';
+        // Step 1: Attempt backend sync if running on web server (serve.ps1 / serve.py)
+        bar.style.width = '30%';
+        statusText.innerHTML = '<i class="fa-solid fa-sync fa-spin"></i> Synchronizing latest diagnostic data & Master Excel...';
+        
+        let backendMessage = '';
+        let backendSynced = false;
         try {
-          await fetch('/api/refresh-data', { method: 'POST' }).catch(() => {});
-        } catch (e) {}
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 65000);
+          const res = await fetch('/api/refresh-data', {
+            method: 'POST',
+            cache: 'no-store',
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json().catch(() => null);
+            backendSynced = true;
+            backendMessage = data?.message || 'Updated from Master Excel and recomputed Health Indices.';
+          }
+        } catch (e) {
+          console.log('Backend sync skipped or local mode:', e.message);
+        }
 
-        // 3. Step 2: Dynamically re-fetch & load health_data.js with timestamp
-        bar.style.width = '60%';
-        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> Loading health_data.js and updating dataset...';
+        // Step 2: Dynamically re-fetch & load all JavaScript datasets with cache-busting timestamps
+        bar.style.width = '55%';
+        statusText.innerHTML = '<i class="fa-solid fa-database fa-spin"></i> Reloading fleet datasets (data.js, health_data.js, visual, PI, OLTC)...';
 
-        await new Promise((resolve) => {
-          const oldScript = document.getElementById('health-data-script');
-          if (oldScript) oldScript.remove();
+        const reloadScript = (src, id) => {
+          return new Promise((resolve) => {
+            const old = document.getElementById(id);
+            if (old) old.remove();
+            const s = document.createElement('script');
+            s.id = id;
+            s.src = `${src}?t=${Date.now()}`;
+            s.onload = () => resolve(true);
+            s.onerror = () => resolve(false);
+            document.head.appendChild(s);
+          });
+        };
 
-          const script = document.createElement('script');
-          script.id = 'health-data-script';
-          script.src = `health_data.js?t=${Date.now()}`;
-          script.onload = () => resolve();
-          script.onerror = () => resolve();
-          document.head.appendChild(script);
-        });
+        await Promise.all([
+          reloadScript('data.js', 'script-data-js'),
+          reloadScript('health_data.js', 'script-health-data-js'),
+          reloadScript('visual_data.js', 'script-visual-data-js'),
+          reloadScript('pi_data.js', 'script-pi-data-js'),
+          reloadScript('oltc_data.js', 'script-oltc-data-js'),
+          reloadScript('evaluation_criteria.js', 'script-evaluation-criteria-js')
+        ]);
 
-        // 4. Step 3: Re-evaluate assessment data & recalculate Health Index
-        bar.style.width = '85%';
-        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> Calculating Health Index and updating report...';
+        // Step 3: Clear record caches and re-fetch all 23 TestData CSVs + HealthIndexSum.csv
+        bar.style.width = '75%';
+        statusText.innerHTML = '<i class="fa-solid fa-table-list fa-spin"></i> Reloading test records (MTOil, DFR, Bushing, Winding, Factory)...';
+
+        if (typeof window.clearLatestRecordCache === 'function') {
+          window.clearLatestRecordCache();
+        }
+
+        await Promise.all([
+          typeof window.loadAllTestDataCSVs === 'function' ? window.loadAllTestDataCSVs(true) : Promise.resolve(),
+          loadTestDatasetsForEval(true)
+        ]);
+
+        // Step 4: Re-evaluate assessment data & recalculate Health Index
+        bar.style.width = '90%';
+        statusText.innerHTML = '<i class="fa-solid fa-calculator fa-spin"></i> Calculating Health Index and updating evaluation report...';
+
+        if (typeof window.HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(window.HEALTH_INDEX_DATA) && window.HEALTH_INDEX_DATA.length > 0) {
+          assessmentData = window.HEALTH_INDEX_DATA.filter(r => !isExcludedSite(r.SITE || r.site));
+          if (typeof window !== 'undefined') window.assessmentData = assessmentData;
+        } else if (typeof getInitialHealthData === 'function') {
+          assessmentData = getInitialHealthData();
+          if (typeof window !== 'undefined') window.assessmentData = assessmentData;
+        }
 
         ensureAssessmentData();
         populateEvalDropdown();
-        refreshEvalView();
-        if (currentSerial) {
-          loadEvaluationBySerial(currentSerial);
+
+        if (selectedSerial) {
+          const sel = document.getElementById('eval-transformer-select');
+          if (sel) {
+            const hasOption = Array.from(sel.options).some(o => o.value === selectedSerial);
+            if (hasOption) sel.value = selectedSerial;
+          }
+          loadEvaluationBySerial(selectedSerial);
+        } else {
+          refreshEvalView();
         }
 
-        // 5. Complete Step 4 (100%) - ONLY AFTER data update is fully finished
+        // Step 5: Complete (100%) - ONLY AFTER data update is fully finished
         bar.style.width = '100%';
-        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Data loaded successfully!';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> All data refreshed & updated successfully!';
 
-        // 6. Wait briefly so user sees 100% completion status, then hide modal & show toast
-        await new Promise(r => setTimeout(r, 600));
+        // Wait briefly so user sees 100% completion status, then hide modal & show toast
+        await new Promise(r => setTimeout(r, 700));
         modal.classList.remove('active');
         if (spinIcon) spinIcon.classList.remove('fa-spin');
+        if (refreshBtn) refreshBtn.disabled = false;
 
         if (toast) {
+          const successNotice = backendSynced 
+            ? 'Updated from Master Excel & recalculated all transformer data successfully!' 
+            : 'All transformer datasets, CSVs, and Health Indices reloaded successfully!';
+          toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> <span>${successNotice}</span>`;
           toast.classList.add('show');
           setTimeout(() => {
             toast.classList.remove('show');
-          }, 3000);
+          }, 4500);
         }
       } catch (err) {
         console.error('Refresh error:', err);
         bar.style.width = '100%';
-        statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> An error occurred while updating data';
+        statusText.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> An error occurred while updating data: ' + (err.message || 'Unknown');
         setTimeout(() => {
           modal.classList.remove('active');
           if (spinIcon) spinIcon.classList.remove('fa-spin');
-        }, 1500);
+          if (refreshBtn) refreshBtn.disabled = false;
+        }, 2000);
       }
     }
 

@@ -211,7 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Start CSV fetch immediately
 window.allCSVsPromise = loadAllTestDataCSVs();
 
-function loadAllTestDataCSVs() {
+function loadAllTestDataCSVs(forceRefresh = false) {
+  if (forceRefresh && typeof _latestRecordCache !== 'undefined' && _latestRecordCache && _latestRecordCache.clear) {
+    _latestRecordCache.clear();
+  }
+
   const isDetail = window.isDetailStandalonePage || 
                    window.location.pathname.toLowerCase().includes('detail') || 
                    window.location.pathname.toLowerCase().includes('evaluation') || 
@@ -223,10 +227,8 @@ function loadAllTestDataCSVs() {
         if (d && d.length > 0) {
           const parsed = parseHealthIndexSumCSV(d);
           if (parsed && parsed.length > 0) {
-            if (!assessmentData || assessmentData.length === 0) {
-              assessmentData = parsed;
-              if (typeof window !== 'undefined') window.assessmentData = parsed;
-            }
+            assessmentData = parsed;
+            if (typeof window !== 'undefined') window.assessmentData = parsed;
             if (typeof initAssessment === 'function') initAssessment();
             if (typeof refreshEvalView === 'function') refreshEvalView();
           }
@@ -236,7 +238,7 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/TRinfo2.csv', target: d => { trInfoCsvData = d; if (typeof window !== 'undefined') window.trInfoCsvData = d; } },
     { url: 'TestData/BushingPFData.csv', target: d => { bushingPfCsvData = d; if (typeof window !== 'undefined') window.bushingPfCsvData = d; } },
     { url: 'TestData/MTOilData.csv', target: d => { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } },
-    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length) { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } } },
+    { url: 'TestData/MainTankOilData.csv', target: d => { if (!mtOilCsvData.length || forceRefresh) { mtOilCsvData = d; mainTankDgaCsvData = d; if (typeof window !== 'undefined') { window.mtOilCsvData = d; window.mainTankDgaCsvData = d; } } } },
     { url: 'TestData/OLTCOilData.csv', target: d => { oltcOilCsvData = d; if (typeof window !== 'undefined') window.oltcOilCsvData = d; } },
   ];
 
@@ -250,24 +252,26 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/RatioData.csv', target: d => { ratioCsvData = d; if (typeof window !== 'undefined') window.ratioCsvData = d; } },
     { url: 'TestData/ExcitingData.csv', target: d => { excitingCsvData = d; if (typeof window !== 'undefined') window.excitingCsvData = d; } },
     { url: 'TestData/WindingData.csv', target: d => { windingCsvData = d; if (typeof window !== 'undefined') window.windingCsvData = d; } },
-    { url: 'TestData/SingleShortData.csv', target: d => singleShortCsvData = d },
-    { url: 'TestData/ThreeShortData.csv', target: d => threeShortCsvData = d },
-    { url: 'TestData/FRAData.csv', target: d => fraCsvData = d },
-    { url: 'TestData/DFRData.csv', target: d => dfrCsvData = d },
-    { url: 'TestData/DRMData.csv', target: d => drmCsvData = d },
-    { url: 'TestData/PDonlineData.csv', target: d => pdOnlineCsvData = d },
-    { url: 'TestData/ThermoScanData.csv', target: d => thermoScanCsvData = d },
+    { url: 'TestData/SingleShortData.csv', target: d => { singleShortCsvData = d; if (typeof window !== 'undefined') window.singleShortCsvData = d; } },
+    { url: 'TestData/ThreeShortData.csv', target: d => { threeShortCsvData = d; if (typeof window !== 'undefined') window.threeShortCsvData = d; } },
+    { url: 'TestData/FRAData.csv', target: d => { fraCsvData = d; if (typeof window !== 'undefined') window.fraCsvData = d; } },
+    { url: 'TestData/DFRData.csv', target: d => { dfrCsvData = d; if (typeof window !== 'undefined') window.dfrCsvData = d; } },
+    { url: 'TestData/DRMData.csv', target: d => { drmCsvData = d; if (typeof window !== 'undefined') window.drmCsvData = d; } },
+    { url: 'TestData/PDonlineData.csv', target: d => { pdOnlineCsvData = d; if (typeof window !== 'undefined') window.pdOnlineCsvData = d; } },
+    { url: 'TestData/ThermoScanData.csv', target: d => { thermoScanCsvData = d; if (typeof window !== 'undefined') window.thermoScanCsvData = d; } },
     { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } }
   );
 
   return Promise.allSettled(
-    csvFiles.map(item =>
-      fetch(item.url)
+    csvFiles.map(item => {
+      const fetchUrl = forceRefresh ? `${item.url}?t=${Date.now()}` : item.url;
+      const fetchOpts = forceRefresh ? { cache: 'no-store' } : {};
+      return fetch(fetchUrl, fetchOpts)
         .then(r => r.ok ? r.text() : '')
         .then(txt => {
           if (txt) item.target(parseDgaCSV(txt));
-        })
-    )
+        });
+    })
   ).then(() => {
     document.dispatchEvent(new CustomEvent('allTestDataLoaded'));
   });
@@ -281,6 +285,15 @@ function parseNum(val) {
 }
 
 var _latestRecordCache = new Map();
+
+if (typeof window !== 'undefined') {
+  window.loadAllTestDataCSVs = loadAllTestDataCSVs;
+  window.clearLatestRecordCache = function() {
+    if (typeof _latestRecordCache !== 'undefined' && _latestRecordCache && _latestRecordCache.clear) {
+      _latestRecordCache.clear();
+    }
+  };
+}
 
 function findLatestRecord(csvArray, targetSerial) {
   if (!csvArray || !csvArray.length || !targetSerial) return null;
