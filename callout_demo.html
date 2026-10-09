@@ -243,19 +243,23 @@
       box-shadow: 0 2px 8px var(--accent-glow);
     }
 
-    /* Main Digital Twin Canvas Stage */
+    /* Main Digital Twin Canvas Stage - Full Scale */
     .stage-container {
       flex: 1;
-      padding: 24px;
+      padding: 14px 20px 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      height: calc(100vh - 120px);
+      min-height: 720px;
     }
     .twin-viewport {
       position: relative;
       width: 100%;
-      max-width: 1260px;
-      height: 740px;
+      max-width: 100%;
+      height: 100%;
+      min-height: 700px;
       background-image: var(--stage-grid), var(--stage-bg);
       background-size: 24px 24px, 100% 100%;
       background-position: 0 0, 0 0;
@@ -270,34 +274,35 @@
     /* Soft Realistic Ground Contact Shadow under Transformer */
     .pedestal-shadow {
       position: absolute;
-      bottom: 110px;
+      bottom: 7%;
       left: 50%;
       transform: translateX(-50%);
-      width: 440px;
-      height: 42px;
+      width: min(720px, 48vw);
+      height: 56px;
       background: var(--pedestal-shadow);
       border-radius: 50%;
-      filter: blur(10px);
+      filter: blur(16px);
       pointer-events: none;
       z-index: 5;
       transition: background 0.3s ease;
     }
 
-    /* Center Transformer Image */
+    /* Center Transformer Image - Expanded to Prominent Full Scale */
     .transformer-model-img {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 480px;
-      max-width: 44%;
+      width: min(820px, 48vw);
+      max-width: min(880px, 50vw);
+      max-height: 84%;
       height: auto;
       object-fit: contain;
       filter: var(--tr-shadow);
       pointer-events: none;
       z-index: 10;
       border-radius: 8px;
-      transition: filter 0.3s ease, transform 0.3s ease;
+      transition: filter 0.3s ease;
     }
 
     /* SVG Leader Lines Layer */
@@ -350,9 +355,9 @@
       z-index: 30;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
-      border-radius: 12px;
-      padding: 10px 14px;
-      width: 250px;
+      border-radius: 14px;
+      padding: 12px 16px;
+      width: 275px;
       box-shadow: var(--shadow-card);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
@@ -368,34 +373,34 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
-      gap: 6px;
+      margin-bottom: 8px;
+      gap: 8px;
     }
     .callout-title {
-      font-size: 0.8rem;
+      font-size: 0.84rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       color: var(--card-title-color);
       letter-spacing: -0.01em;
     }
     .callout-icon {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       background: var(--card-icon-bg);
       color: var(--card-icon-color);
     }
 
     .callout-status-pill {
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      padding: 2px 7px;
+      padding: 3px 8px;
       border-radius: 12px;
       letter-spacing: 0.02em;
     }
@@ -418,14 +423,14 @@
     .callout-data-list {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      font-size: 0.72rem;
+      gap: 4px;
+      font-size: 0.76rem;
     }
     .data-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 2.5px 0;
+      padding: 3px 0;
       border-bottom: 1px dashed var(--card-dash-color);
     }
     .data-row:last-child {
@@ -446,19 +451,22 @@
       color: var(--status-fair-text);
     }
 
-    /* Preset Callout Positions (Responsive % Coordinates) */
+    /* Preset Callout Positions (Responsive Full Scale Coordinates) */
     /* Left Column Callouts */
-    #card-conservator { top: 6%; left: 3%; }
-    #card-radiator    { top: 38%; left: 3%; }
-    #card-coolingfan  { top: 70%; left: 3%; }
+    #card-conservator { top: 5%; left: 36px; }
+    #card-radiator    { top: 38%; left: 36px; }
+    #card-coolingfan  { bottom: 5%; top: auto; left: 36px; }
     
     /* Center-Top Callout */
-    #card-lvbushing   { top: 5%; left: 35%; }
+    #card-lvbushing   { top: 22px; left: 50%; transform: translateX(-50%); }
+    #card-lvbushing:hover, #card-lvbushing.active {
+      transform: translate(-50%, -4px) scale(1.02);
+    }
     
     /* Right Column Callouts */
-    #card-hvbushing   { top: 6%; right: 3%; }
-    #card-activepart  { top: 38%; right: 3%; }
-    #card-oildga      { top: 70%; right: 3%; }
+    #card-hvbushing   { top: 5%; right: 36px; }
+    #card-activepart  { top: 38%; right: 36px; }
+    #card-oildga      { bottom: 5%; top: auto; right: 36px; }
 
     /* Bottom Info Banner */
     .twin-footer-info {
@@ -544,7 +552,7 @@
       <img src="transformer_cutaway_transparent.png" alt="Transformer 3D Model" class="transformer-model-img" id="transformerModelImg">
 
       <!-- SVG Leader Lines & Pulsing Pin Overlay Layer -->
-      <svg class="svg-leader-lines" id="svgLines" viewBox="0 0 1200 700" preserveAspectRatio="none">
+      <svg class="svg-leader-lines" id="svgLines">
         <!-- SVG Definitions for Gradients / Markers -->
         <defs>
           <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -554,55 +562,55 @@
         </defs>
 
         <!-- Dynamic Leader Lines connecting Cards to Target Pins on 3D Cutaway Transformer -->
-        <!-- 1. Conservator Tank (Target Pin: 425, 275) -->
-        <path id="line-conservator" class="leader-line" d="M 276 110 L 370 110 L 425 275" />
+        <!-- 1. Conservator Tank -->
+        <path id="line-conservator" class="leader-line" d="M 0 0" />
         
-        <!-- 2. Radiator / Cooling Fans (Target Pin: 570, 490) -->
-        <path id="line-radiator" class="leader-line" d="M 276 340 L 460 340 L 570 490" />
+        <!-- 2. Radiator / Cooling Fans -->
+        <path id="line-radiator" class="leader-line" d="M 0 0" />
         
-        <!-- 3. Digital Control IED & OLTC Drive (Target Pin: 460, 520) -->
-        <path id="line-coolingfan" class="leader-line" d="M 276 570 L 390 570 L 460 520" />
+        <!-- 3. Digital Control IED & OLTC Drive -->
+        <path id="line-coolingfan" class="leader-line" d="M 0 0" />
 
-        <!-- 4. Low Voltage Bushings & Surge (Target Pin: 620, 315) -->
-        <path id="line-lvbushing" class="leader-line" d="M 550 125 L 620 200 L 620 315" />
+        <!-- 4. Low Voltage Bushings & Surge -->
+        <path id="line-lvbushing" class="leader-line" d="M 0 0" />
 
-        <!-- 5. High Voltage Bushings (Target Pin: 670, 150) -->
-        <path id="line-hvbushing" class="leader-line" d="M 924 110 L 790 110 L 670 150" />
+        <!-- 5. High Voltage Bushings -->
+        <path id="line-hvbushing" class="leader-line" d="M 0 0" />
 
-        <!-- 6. Active Part: Copper Windings & Core (Target Pin: 690, 430) -->
-        <path id="line-activepart" class="leader-line" d="M 924 340 L 810 340 L 690 430" />
+        <!-- 6. Active Part: Copper Windings & Core -->
+        <path id="line-activepart" class="leader-line" d="M 0 0" />
 
-        <!-- 7. Insulating Oil & DGA Fluid Chamber (Target Pin: 780, 410) -->
-        <path id="line-oildga" class="leader-line" d="M 924 570 L 860 570 L 780 410" />
+        <!-- 7. Insulating Oil & DGA Fluid Chamber -->
+        <path id="line-oildga" class="leader-line" d="M 0 0" />
 
         <!-- Pulsing Target Pins on Cutaway Anatomy -->
         <!-- Pin: Conservator -->
-        <circle cx="425" cy="275" r="12" class="pin-pulse" />
-        <circle cx="425" cy="275" r="5" class="pin-dot" />
+        <circle id="pin-pulse-conservator" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-conservator" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: Radiator & Fans -->
-        <circle cx="570" cy="490" r="12" class="pin-pulse" />
-        <circle cx="570" cy="490" r="5" class="pin-dot" />
+        <circle id="pin-pulse-radiator" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-radiator" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: Control IED / OLTC -->
-        <circle cx="460" cy="520" r="12" class="pin-pulse" />
-        <circle cx="460" cy="520" r="5" class="pin-dot" />
+        <circle id="pin-pulse-coolingfan" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-coolingfan" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: LV Bushing -->
-        <circle cx="620" cy="315" r="12" class="pin-pulse" />
-        <circle cx="620" cy="315" r="5" class="pin-dot" />
+        <circle id="pin-pulse-lvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-lvbushing" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: HV Bushing -->
-        <circle cx="670" cy="150" r="12" class="pin-pulse" />
-        <circle cx="670" cy="150" r="5" class="pin-dot" />
+        <circle id="pin-pulse-hvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-hvbushing" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: Active Part (Coils) -->
-        <circle cx="690" cy="430" r="12" class="pin-pulse" />
-        <circle cx="690" cy="430" r="5" class="pin-dot" />
+        <circle id="pin-pulse-activepart" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-activepart" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: Oil & DGA -->
-        <circle cx="780" cy="410" r="12" class="pin-pulse" />
-        <circle cx="780" cy="410" r="5" class="pin-dot" />
+        <circle id="pin-pulse-oildga" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-oildga" cx="0" cy="0" r="5" class="pin-dot" />
       </svg>
 
       <!-- ==========================================
@@ -1015,6 +1023,87 @@
       }
     }
     initTheme();
+
+    // Responsive Dynamic Pin & Leader Line Positioning Engine for Full Scale
+    const CALLOUT_PINS = {
+      conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
+      radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'left' },
+      coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
+      lvbushing:   { u: 0.670, v: 0.439, card: 'card-lvbushing', side: 'top' },
+      hvbushing:   { u: 0.726, v: 0.176, card: 'card-hvbushing', side: 'right' },
+      activepart:  { u: 0.772, v: 0.605, card: 'card-activepart', side: 'right' },
+      oildga:      { u: 0.920, v: 0.527, card: 'card-oildga', side: 'right' }
+    };
+
+    function updateLeaderLines() {
+      const stage = document.getElementById('viewportStage');
+      const img = document.getElementById('transformerModelImg');
+      const svg = document.getElementById('svgLines');
+      if (!stage || !img || !svg) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+      if (imgRect.width === 0 || imgRect.height === 0) return;
+
+      // Match SVG internal coordinates 1:1 with screen viewport pixels
+      svg.setAttribute('viewBox', `0 0 ${stageRect.width} ${stageRect.height}`);
+
+      for (const [id, cfg] of Object.entries(CALLOUT_PINS)) {
+        const card = document.getElementById(cfg.card);
+        const line = document.getElementById(`line-${id}`);
+        const pinPulse = document.getElementById(`pin-pulse-${id}`);
+        const pinDot = document.getElementById(`pin-dot-${id}`);
+        if (!card || !line) continue;
+
+        const cardRect = card.getBoundingClientRect();
+
+        // Pin coordinate on transformer image relative to stage
+        const pinX = (imgRect.left - stageRect.left) + (cfg.u * imgRect.width);
+        const pinY = (imgRect.top - stageRect.top) + (cfg.v * imgRect.height);
+
+        // Update pin position
+        if (pinPulse) {
+          pinPulse.setAttribute('cx', pinX);
+          pinPulse.setAttribute('cy', pinY);
+        }
+        if (pinDot) {
+          pinDot.setAttribute('cx', pinX);
+          pinDot.setAttribute('cy', pinY);
+        }
+
+        // Leader line start coordinate from card
+        let startX, startY, midX, midY;
+        if (cfg.side === 'left') {
+          startX = cardRect.right - stageRect.left;
+          startY = (cardRect.top - stageRect.top) + (cardRect.height / 2);
+          midX = startX + Math.max(25, (pinX - startX) * 0.42);
+          line.setAttribute('d', `M ${startX} ${startY} L ${midX} ${startY} L ${pinX} ${pinY}`);
+        } else if (cfg.side === 'right') {
+          startX = cardRect.left - stageRect.left;
+          startY = (cardRect.top - stageRect.top) + (cardRect.height / 2);
+          midX = startX - Math.max(25, (startX - pinX) * 0.42);
+          line.setAttribute('d', `M ${startX} ${startY} L ${midX} ${startY} L ${pinX} ${pinY}`);
+        } else if (cfg.side === 'top') {
+          startX = (cardRect.left - stageRect.left) + (cardRect.width / 2);
+          startY = cardRect.bottom - stageRect.top;
+          midY = startY + Math.max(15, (pinY - startY) * 0.35);
+          line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
+        }
+      }
+    }
+
+    // Attach listeners for fluid full-scale responsiveness
+    window.addEventListener('resize', updateLeaderLines);
+    window.addEventListener('load', updateLeaderLines);
+    document.addEventListener('DOMContentLoaded', updateLeaderLines);
+    const trImg = document.getElementById('transformerModelImg');
+    if (trImg) {
+      if (trImg.complete) {
+        setTimeout(updateLeaderLines, 50);
+      } else {
+        trImg.addEventListener('load', () => setTimeout(updateLeaderLines, 50));
+      }
+    }
   </script>
 </body>
 </html>
