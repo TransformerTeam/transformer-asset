@@ -505,17 +505,6 @@
     </div>
 
     <div class="topbar-controls">
-      <!-- Image Model View Mode Switcher -->
-      <div class="tr-select-box" style="border-color: rgba(37, 99, 235, 0.35); background: rgba(37, 99, 235, 0.05);">
-        <i class="fa-solid fa-image" style="color: #2563eb; font-size: 0.8rem;"></i>
-        <select id="imageModelSelect" onchange="switchImageModel(this.value)">
-          <option value="cutaway" selected>✨ 3D Cutaway View (Coils &amp; Oil Interior)</option>
-          <option value="digital_twin">🏢 3D Enclosed Digital Twin</option>
-          <option value="reference">📐 Technical Diagram (Annotated Base)</option>
-          <option value="site_photo">📸 Real Substation Photo (14100-TR-003)</option>
-        </select>
-      </div>
-
       <!-- Transformer Unit Selector -->
       <div class="tr-select-box">
         <i class="fa-solid fa-bolt" style="color: #f59e0b; font-size: 0.8rem;"></i>
@@ -999,28 +988,6 @@
           if (line) line.style.opacity = '0.05';
         }
       });
-    }
-
-    // Image Model Switcher (Cutaway vs Clean 3D vs Reference vs Site Photo)
-    function switchImageModel(model) {
-      const img = document.getElementById('transformerModelImg');
-      if (model === 'cutaway') {
-        img.src = 'transformer_cutaway_transparent.png';
-        img.style.borderRadius = '8px';
-        img.style.width = '480px';
-      } else if (model === 'digital_twin') {
-        img.src = 'transformer_digital_twin.jpg';
-        img.style.borderRadius = '12px';
-        img.style.width = '580px';
-      } else if (model === 'reference') {
-        img.src = 'transformer_labeled_ref.png';
-        img.style.borderRadius = '8px';
-        img.style.width = '620px';
-      } else if (model === 'site_photo') {
-        img.src = 'Transformer Photo/14100-TR-003.jpg';
-        img.style.borderRadius = '12px';
-        img.style.width = '540px';
-      }
     }
 
     // Light / Dark Theme Toggle with localStorage persistence
