@@ -274,28 +274,28 @@
     /* Soft Realistic Ground Contact Shadow under Transformer */
     .pedestal-shadow {
       position: absolute;
-      bottom: 7%;
+      bottom: 14%;
       left: 50%;
       transform: translateX(-50%);
-      width: min(720px, 48vw);
-      height: 56px;
+      width: min(580px, 38vw);
+      height: 44px;
       background: var(--pedestal-shadow);
       border-radius: 50%;
-      filter: blur(16px);
+      filter: blur(14px);
       pointer-events: none;
       z-index: 5;
       transition: background 0.3s ease;
     }
 
-    /* Center Transformer Image - Expanded to Prominent Full Scale */
+    /* Center Transformer Image - Scaled Down 20% for Balanced Composition */
     .transformer-model-img {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(820px, 48vw);
-      max-width: min(880px, 50vw);
-      max-height: 84%;
+      width: min(650px, 38vw);
+      max-width: min(700px, 40vw);
+      max-height: 68%;
       height: auto;
       object-fit: contain;
       filter: var(--tr-shadow);
