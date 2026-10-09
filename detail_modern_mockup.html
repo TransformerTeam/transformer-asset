@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Transformer Detail Assessment - Prototype Mockup (Bushing, Surge & OLTC)</title>
+
+  <!-- Google Fonts: Inter & Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* -------------------------------------------------------------
+       MODERN INDUSTRIAL DESIGN SYSTEM (Soft Slate & Deep Obsidian)
+       ------------------------------------------------------------- */
+    :root {
+      --bg-app: #f4f6fa;
+      --bg-surface: #ffffff;
+      --bg-surface-subtle: #f8fafc;
+      --bg-surface-elevated: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-medium: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-subtle: #eff6ff;
+      --accent: #6366f1;
+
+      /* Semantic Status Colors (Soft Tint & High Contrast Typography) */
+      --status-good-bg: #ecfdf5;
+      --status-good-text: #059669;
+      --status-good-border: #a7f3d0;
+      --status-good-bar: #10b981;
+
+      --status-fair-bg: #fffbeb;
+      --status-fair-text: #d97706;
+      --status-fair-border: #fde68a;
+      --status-fair-bar: #f59e0b;
+
+      --status-poor-bg: #fff1f2;
+      --status-poor-text: #e11d48;
+      --status-poor-border: #fecdd3;
+      --status-poor-bar: #f43f5e;
+
+      --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 4px 14px 0 rgba(15, 23, 42, 0.04);
+      --card-shadow-hover: 0 6px 20px -2px rgba(15, 23, 42, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+
+      --topbar-bg: #ffffff;
+      --topbar-border: #e2e8f0;
+    }
+
+    [data-theme="dark"] {
+      --bg-app: #0b0f19;
+      --bg-surface: #111827;
+      --bg-surface-subtle: #172033;
+      --bg-surface-elevated: #1e293b;
+      --border-subtle: #1e293b;
+      --border-medium: #334155;
+      
+      --text-main: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-subtle: rgba(59, 130, 246, 0.15);
+      --accent: #818cf8;
+
+      --status-good-bg: rgba(16, 185, 129, 0.12);
+      --status-good-text: #34d399;
+      --status-good-border: rgba(52, 211, 153, 0.3);
+      --status-good-bar: #10b981;
+
+      --status-fair-bg: rgba(245, 158, 11, 0.12);
+      --status-fair-text: #fbbf24;
+      --status-fair-border: rgba(251, 191, 36, 0.3);
+      --status-fair-bar: #f59e0b;
+
+      --status-poor-bg: rgba(244, 63, 94, 0.14);
+      --status-poor-text: #fb7185;
+      --status-poor-border: rgba(251, 113, 133, 0.35);
+      --status-poor-bar: #f43f5e;
+
+      --card-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.35);
+      --card-shadow-hover: 0 8px 30px 0 rgba(0, 0, 0, 0.5);
+
+      --topbar-bg: #0f172a;
+      --topbar-border: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* -------------------------------------------------------------
+       TOP NAVIGATION BAR
+       ------------------------------------------------------------- */
+    .app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--topbar-border);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--primary-subtle);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .brand-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tr-picker-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-medium);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .tr-picker-select {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn-tool {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 7px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-tool:hover {
+      background: var(--bg-surface-subtle);
+      border-color: var(--border-medium);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary-action {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff !important;
+    }
+
+    .btn-primary-action:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .theme-toggle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    /* -------------------------------------------------------------
+       MAIN CONTENT CONTAINER
+       ------------------------------------------------------------- */
+    .main-container {
+      max-width: 1720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    /* -------------------------------------------------------------
+       EXECUTIVE HERO KPI STRIP
+       ------------------------------------------------------------- */
+    .hero-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .hero-kpi-grid { grid-template-columns: 1fr; }
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+      border-color: var(--border-medium);
+    }
+
+    .kpi-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .kpi-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-good {
+      background: var(--status-good-bg);
+      color: var(--status-good-text);
+      border: 1px solid var(--status-good-border);
+    }
+    .badge-fair {
+      background: var(--status-fair-bg);
+      color: var(--status-fair-text);
+      border: 1px solid var(--status-fair-border);
+    }
+    .badge-poor {
+      background: var(--status-poor-bg);
+      color: var(--status-poor-text);
+      border: 1px solid var(--status-poor-border);
+    }
+
+    .kpi-body {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-metric-val {
+      font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text-main);
+    }
+
+    .kpi-metric-unit {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .kpi-subtext {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-progress-bar {
+      height: 6px;
+      background: var(--bg-surface-subtle);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .kpi-progress-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.6s ease;
+    }
+
+    /* -------------------------------------------------------------
+       3-COLUMN WORKSPACE
+       ------------------------------------------------------------- */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 320px 1.45fr 1.15fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 1400px) {
+      .dashboard-layout { grid-template-columns: 300px 1.3fr 1fr; }
+    }
+
+    @media (max-width: 1150px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+    }
+
+    .col-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* -------------------------------------------------------------
+       MODERN CARD SYSTEM
+       ------------------------------------------------------------- */
+    .modern-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+    }
+
+    .modern-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--border-medium);
+    }
+
+    .modern-card-header {
+      padding: 11px 16px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modern-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .header-icon-box {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+    .icon-amber { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+    .icon-emerald { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+    .icon-purple { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+
+    .card-action-link {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-subtle);
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .card-action-link:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* -------------------------------------------------------------
+       TRANSFORMER PROFILE & PHOTO
+       ------------------------------------------------------------- */
+    .transformer-photo-wrap {
+      position: relative;
+      height: 195px;
+      overflow: hidden;
+      background: #0b0f19;
+      cursor: pointer;
+    }
+
+    .transformer-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+
+    .transformer-photo-wrap:hover img {
+      transform: scale(1.05);
+    }
+
+    .photo-overlay-badge {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .photo-zoom-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+    }
+
+    .spec-table tr {
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .spec-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .spec-table td {
+      padding: 6px 14px;
+    }
+
+    .spec-table td:first-child {
+      color: var(--text-secondary);
+      font-weight: 500;
+      width: 42%;
+      background: var(--bg-surface-subtle);
+    }
+
+    .spec-table td:last-child {
+      color: var(--text-main);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* -------------------------------------------------------------
+       OLTC MECHANICAL INFO CARD
+       ------------------------------------------------------------- */
+    .oltc-spec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--status-fair-bg);
+      color: var(--status-fair-text);
+      border: 1px solid var(--status-fair-border);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* -------------------------------------------------------------
+       RECOMMENDATIONS & ACTIONS
+       ------------------------------------------------------------- */
+    .rec-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .rec-item:last-child {
+      border-bottom: none;
+    }
+
+    .rec-status-icon {
+      margin-top: 2px;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .rec-title {
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .rec-desc {
+      color: var(--text-secondary);
+    }
+
+    /* -------------------------------------------------------------
+       DIAGNOSTIC TABS & TABLES
+       ------------------------------------------------------------- */
+    .tab-nav-bar {
+      display: flex;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 4px 6px 0;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--bg-surface);
+      color: var(--primary);
+      box-shadow: 0 -2px 0 var(--primary) inset;
+      font-weight: 700;
+    }
+
+    .tab-pill {
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      background: var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    .tab-btn.active .tab-pill {
+      background: var(--primary-subtle);
+      color: var(--primary);
+    }
+
+    .modern-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      text-align: left;
+    }
+
+    .modern-table th {
+      background: var(--bg-surface-subtle);
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border-medium);
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.03em;
+    }
+
+    .modern-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .modern-table tr:hover td {
+      background-color: var(--bg-surface-subtle);
+    }
+
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .tag-normal {
+      background: var(--status-good-bg);
+      color: var(--status-good-text);
+      border: 1px solid var(--status-good-border);
+    }
+    .tag-warning {
+      background: var(--status-fair-bg);
+      color: var(--status-fair-text);
+      border: 1px solid var(--status-fair-border);
+    }
+    .tag-critical {
+      background: var(--status-poor-bg);
+      color: var(--status-poor-text);
+      border: 1px solid var(--status-poor-border);
+    }
+
+    /* -------------------------------------------------------------
+       DGA GAS GRID & THRESHOLD METERS
+       ------------------------------------------------------------- */
+    .dga-gas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 12px 14px;
+    }
+
+    .gas-chip {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .gas-chip.warning {
+      background: var(--status-fair-bg);
+      border-color: var(--status-fair-border);
+    }
+
+    .gas-chip.critical {
+      background: var(--status-poor-bg);
+      border-color: var(--status-poor-border);
+    }
+
+    .gas-chip-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    .gas-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .gas-val {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .gas-chip.critical .gas-val { color: var(--status-poor-text); }
+    .gas-chip.warning .gas-val { color: var(--status-fair-text); }
+
+    .gas-unit {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .dga-method-section {
+      padding: 11px 14px;
+      background: var(--bg-surface-subtle);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 0.74rem;
+    }
+
+    .dga-method-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dga-method-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .oil-group-header {
+      padding: 6px 12px;
+      background: var(--bg-surface-subtle);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-ribbon {
+      background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #4f46e5 100%);
+      color: #ffffff;
+      padding: 8px 18px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-ribbon-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Banner -->
+  <div class="demo-ribbon">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="demo-ribbon-badge"><i class="fa-solid fa-check-double"></i> LIVE VERIFICATION</span>
+      <span>ตัวอย่างหม้อแปลงที่มีข้อมูลครบทั้ง <strong>Bushing, Surge Arrester และ On-load Tap Changer (OLTC)</strong></span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span>หน่วยงาน: <strong>CUP-1</strong> | รหัส: <strong>14100-TR-003</strong></span>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-topbar">
+    <div class="topbar-brand">
+      <div class="brand-logo-wrap">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div class="brand-text">
+        <h1>GPSC Asset Intelligence <span style="font-size: 0.7rem; font-weight: 700; color: #10b981; background: var(--status-good-bg); border: 1px solid var(--status-good-border); padding: 2px 8px; border-radius: 9999px;">Online</span></h1>
+        <p>Transformer Diagnostic &amp; Condition Cockpit</p>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <!-- Transformer Selector: lets user switch between 14100-TR-003 and 16120-TR-001 -->
+      <div class="tr-picker-wrap">
+        <span id="topbarStatusDot" style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #10b981;" title="Status: Healthy"></span>
+        <i class="fa-solid fa-cube" style="color: var(--text-muted); font-size: 0.75rem;"></i>
+        <select class="tr-picker-select" id="trSelectMockup" onchange="loadTransformerData(this.value)">
+          <option value="14100-TR-003" selected>14100-TR-003 (CUP-1 / 40 MVA / Standard OLTC1)</option>
+          <option value="KT2A.30.EN">KT2A.30.EN (SITE3 / 200 MVA / 3-Phase OLTC3)</option>
+          <option value="16120-TR-001">16120-TR-001 (CUP-1 / 6 MVA / NLTC No Bushing)</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <a href="callout_demo.html" target="_blank" class="btn-tool" style="background: rgba(37,99,235,0.08); border-color: #3b82f6; color: #2563eb; font-weight: 700;">
+        <i class="fa-solid fa-crosshairs"></i> 3D Callout Inspector
+      </a>
+      <a id="topbarEvalLink" href="evaluation_report.html?serial=PP0084B01" target="_blank" class="btn-tool btn-primary-action">
+        <i class="fa-solid fa-file-waveform"></i> Full Assessment
+      </a>
+      <button class="btn-tool" onclick="alert('Export JPG / High-Resolution Diagnostic Sheet');">
+        <i class="fa-solid fa-camera"></i> Snapshot
+      </button>
+
+      <!-- Theme Switcher -->
+      <button class="btn-tool theme-toggle-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="main-container">
+
+    <!-- =============================================================
+         SECTION 1: HERO EXECUTIVE KPI STRIP (4 Strategic Cards)
+         ============================================================= -->
+    <section class="hero-kpi-grid">
+      
+      <!-- Card 1: Health Index -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-label"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Health Index (HI)</span>
+          <span class="kpi-badge badge-good" id="kpiHiBadge"><i class="fa-solid fa-circle-check"></i> Healthy (&ge;80%)</span>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-metric-val" id="kpiHiVal" style="color: #059669;">85%</span>
+          <span class="kpi-metric-unit">Overall Score</span>
+        </div>
+        <div class="kpi-progress-bar">
+          <div class="kpi-progress-fill" id="kpiHiBar" style="width: 85%; background: #10b981;"></div>
+        </div>
+        <div class="kpi-subtext">
+          <span>Critical &le; 50%</span>
+          <span>Benchmark: CIGRE 761</span>
+          <span>Healthy &ge; 80%</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Remaining Useful Life (RUL) with Dual Timeline -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-label"><i class="fa-solid fa-hourglass-half" style="color: #10b981;"></i> Remaining Life</span>
+          <span class="kpi-badge badge-good" id="kpiLifeBadge"><i class="fa-solid fa-bolt"></i> Low Degradation</span>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-metric-val" id="kpiLifeVal" style="color: #059669;">&gt;40</span>
+          <span class="kpi-metric-unit">Years to DP 300</span>
+        </div>
+        <div class="kpi-progress-bar">
+          <div class="kpi-progress-fill" id="kpiLifeBar" style="width: 80%; background: #10b981;"></div>
+        </div>
+        <div class="kpi-subtext">
+          <span id="kpiServiceAge">Service Age: <strong>20 Years</strong></span>
+          <span id="kpiTotalLife">Est. Total: <strong>&gt;60 Years</strong></span>
+        </div>
+      </div>
+
+      <!-- Card 3: Degree of Polymerization (DP) -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-label"><i class="fa-solid fa-scroll" style="color: #3b82f6;"></i> Paper Insulation (DP)</span>
+          <span class="kpi-badge badge-good" id="kpiDpBadge"><i class="fa-solid fa-award"></i> Excellent (DP > 1000)</span>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-metric-val" id="kpiDpVal" style="color: #2563eb;">1,031</span>
+          <span class="kpi-metric-unit">DP (Furan 8 ppb)</span>
+        </div>
+        <div class="kpi-progress-bar">
+          <div class="kpi-progress-fill" id="kpiDpBar" style="width: 95%; background: #3b82f6;"></div>
+        </div>
+        <div class="kpi-subtext">
+          <span>End of Life: 200</span>
+          <span>Normal: 700+</span>
+          <span>New: 1,000+</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Action Status & Visual Inspection -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-label"><i class="fa-solid fa-clipboard-check" style="color: #10b981;"></i> Operational Status</span>
+          <span class="kpi-badge badge-good" id="kpiVisualBadge"><i class="fa-solid fa-check"></i> Acceptable (A)</span>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-metric-val" id="kpiPriorityVal" style="font-size: 1.45rem; color: #059669;">Priority 1</span>
+          <span class="kpi-metric-unit">Normal Running</span>
+        </div>
+        <div class="kpi-progress-bar">
+          <div class="kpi-progress-fill" id="kpiPriorityBar" style="width: 25%; background: #10b981;"></div>
+        </div>
+        <div class="kpi-subtext">
+          <span id="kpiSubtext1">Visual Inspection: Normal</span>
+          <span id="kpiSubtext2">OLTC Tested: Normal</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =============================================================
+         SECTION 2: 3-COLUMN INDUSTRIAL COCKPIT
+         ============================================================= -->
+    <div class="dashboard-layout">
+
+      <!-- =========================================================
+           LEFT COLUMN: TRANSFORMER NAMEPLATE & OLTC MECHANISM PROFILE
+           ========================================================= -->
+      <div class="col-stack">
+
+        <!-- Card: Transformer Profile & Photo -->
+        <div class="modern-card">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-blue"><i class="fa-solid fa-circle-info"></i></span>
+              Transformer Profile
+            </div>
+            <span class="kpi-badge badge-good">NAMEPLATE</span>
+          </div>
+
+          <!-- Transformer Photo -->
+          <div class="transformer-photo-wrap" onclick="alert('Photo Lightbox Fullscreen');">
+            <img id="trPhotoImg" src="Transformer Photo/14100-TR-003.jpg" alt="Transformer Photo" onerror="this.src='background.jpg'">
+            <div class="photo-overlay-badge" id="photoLocationBadge">
+              <i class="fa-solid fa-location-dot" style="color: #60a5fa;"></i> CUP-1 Plant Substation
+            </div>
+            <div class="photo-zoom-btn" title="View Full Photo">
+              <i class="fa-solid fa-expand"></i>
+            </div>
+          </div>
+
+          <!-- Digital Twin Callout Action Link -->
+          <div style="padding: 10px 14px 4px 14px;">
+            <a href="callout_demo.html" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 8px 12px; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.25); border-radius: 8px; color: #2563eb; font-size: 0.78rem; font-weight: 700; text-decoration: none; transition: all 0.2s ease;">
+              <i class="fa-solid fa-crosshairs" style="color: #2563eb;"></i> 3D Callout Inspector (เส้นขีดชี้อุปกรณ์ &amp; ผลทดสอบ)
+            </a>
+          </div>
+
+          <!-- Technical Specs Table -->
+          <table class="spec-table">
+            <tbody>
+              <tr>
+                <td>Equipment Name</td>
+                <td id="specEqName" style="color: var(--primary); font-family: 'Plus Jakarta Sans', monospace;">14100-TR-003</td>
+              </tr>
+              <tr>
+                <td>Serial No.</td>
+                <td id="specSerial">PP0084B01</td>
+              </tr>
+              <tr>
+                <td>Site / Plant</td>
+                <td id="specSite">CUP-1</td>
+              </tr>
+              <tr>
+                <td>Manufacturer</td>
+                <td id="specBrand">DAIHEN</td>
+              </tr>
+              <tr>
+                <td>Power Rating</td>
+                <td id="specPower">40 MVA</td>
+              </tr>
+              <tr>
+                <td>Voltage Rating</td>
+                <td id="specVoltage">115 / 22 kV</td>
+              </tr>
+              <tr>
+                <td>Fluid Type</td>
+                <td id="specFluid">Mineral Oil</td>
+              </tr>
+              <tr>
+                <td>Service Type</td>
+                <td id="specService">Distribution</td>
+              </tr>
+              <tr>
+                <td>Service Age</td>
+                <td id="specAge">20 Years</td>
+              </tr>
+              <tr>
+                <td>Vector Group</td>
+                <td id="specVector">Dyn1</td>
+              </tr>
+              <tr>
+                <td>Tap Changer</td>
+                <td id="specTapType">
+                  <span class="oltc-spec-badge"><i class="fa-solid fa-sliders"></i> OLTC1</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Card: OLTC Mechanism & Operation Details -->
+        <div class="modern-card" id="cardOltcMechanism">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-amber"><i class="fa-solid fa-sliders"></i></span>
+              On-Load Tap Changer (OLTC)
+            </div>
+            <span class="kpi-badge badge-good" id="oltcStatusBadge">OPERATIONAL</span>
+          </div>
+
+          <table class="spec-table">
+            <tbody>
+              <tr>
+                <td>Manufacturer</td>
+                <td id="oltcMfg" style="font-weight: 700;">MR (Reinhausen)</td>
+              </tr>
+              <tr>
+                <td>Model Type</td>
+                <td id="oltcModel" style="font-size: 0.72rem;">V III 200D-123/76-10</td>
+              </tr>
+              <tr>
+                <td>Serial No.</td>
+                <td id="oltcSerial">1012608</td>
+              </tr>
+              <tr>
+                <td>Motor Drive</td>
+                <td id="oltcMotor">ED100S</td>
+              </tr>
+              <tr>
+                <td>Counter Operated</td>
+                <td id="oltcCounter" style="color: #2563eb; font-weight: 800;">58,148 Ops</td>
+              </tr>
+              <tr>
+                <td>Total Taps</td>
+                <td id="oltcTaps">17 Taps</td>
+              </tr>
+              <tr>
+                <td>Inspection Cycle</td>
+                <td id="oltcSchedule">Last: 2023 / Due: 2029</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Card: Recommendations -->
+        <div class="modern-card">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-purple"><i class="fa-solid fa-list-check"></i></span>
+              Interpretation &amp; Actions
+            </div>
+            <button class="card-action-link" onclick="alert('Copied to clipboard!');">
+              <i class="fa-regular fa-copy"></i> Copy
+            </button>
+          </div>
+
+          <div id="recContainer">
+            <div class="rec-item">
+              <i class="fa-solid fa-circle-check rec-status-icon" style="color: #10b981;"></i>
+              <div>
+                <div class="rec-title">General Part &amp; Mechanics</div>
+                <div class="rec-desc">Overall condition acceptable. No visual oil leaks or physical defects observed.</div>
+              </div>
+            </div>
+
+            <div class="rec-item">
+              <i class="fa-solid fa-triangle-exclamation rec-status-icon" style="color: #f59e0b;"></i>
+              <div>
+                <div class="rec-title">Oil Treatment Advisory</div>
+                <div class="rec-desc">Plan for oil regeneration: Concern oil conductivity is 9.5 pS/m, suspect corrosive sulfur (3b), add passivator (Irgamet 39 = 0 ppm).</div>
+              </div>
+            </div>
+
+            <div class="rec-item">
+              <i class="fa-solid fa-circle-check rec-status-icon" style="color: #10b981;"></i>
+              <div>
+                <div class="rec-title">Bushing &amp; Surge Arrester</div>
+                <div class="rec-desc">Power Factor C1 and Capacitance within OEM criteria limits. Arrester insulation resistance &gt; 12,000 MΩ.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- =========================================================
+           CENTER COLUMN: SEPARATE BUSHING, SURGE, AND ACTIVE PART CARDS
+           ========================================================= -->
+      <div class="col-stack">
+
+        <!-- Card 1: Bushing Diagnostics (Explicit Separate Card) -->
+        <div class="modern-card" id="cardBushing">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-blue"><i class="fa-solid fa-plug"></i></span>
+              Bushing Diagnostics (C1 PF &amp; Capacitance)
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="kpi-badge badge-good" id="bushingDateBadge" style="font-size: 0.65rem;">16-Jul-2026</span>
+              <a href="bushing_pf_report.html" target="_blank" class="card-action-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Bushing Log
+              </a>
+            </div>
+          </div>
+          <div id="bushingContentWrapper">
+            <!-- Dynamically populated: Table or Smart Compact Banner -->
+          </div>
+        </div>
+
+        <!-- Card 2: Surge Arrester Diagnostics (Explicit Separate Card) -->
+        <div class="modern-card" id="cardSurgeArrester">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-amber"><i class="fa-solid fa-bolt-lightning"></i></span>
+              Surge Arrester Diagnostics
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="kpi-badge badge-good" id="arresterDateBadge" style="font-size: 0.65rem;">16-Jul-2026</span>
+              <a href="surge_report.html" target="_blank" class="card-action-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Arrester Log
+              </a>
+            </div>
+          </div>
+          <div id="arresterContentWrapper">
+            <!-- Dynamically populated: Table or Smart Compact Banner -->
+          </div>
+        </div>
+
+        <!-- Card 3: Active Part Diagnostics -->
+        <div class="modern-card" id="cardActivePart">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-purple"><i class="fa-solid fa-microchip"></i></span>
+              Active Part Diagnostics
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="kpi-badge badge-good" id="activePartDateBadge" style="font-size: 0.65rem;">15-Jul-2026</span>
+              <a href="evaluation_report.html" target="_blank" class="card-action-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Full Log
+              </a>
+            </div>
+          </div>
+
+          <div class="oil-group-header">
+            <span>Basic Diagnostics (IEEE C57.152)</span>
+            <span style="color: var(--status-good-text);"><i class="fa-solid fa-check"></i> Standard Compliant</span>
+          </div>
+
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standard Limit</th>
+                <th style="text-align: right;">Result</th>
+                <th style="text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="activePartTableBody">
+              <tr>
+                <td><strong>Insulation Resistance &amp; PI</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: PI &gt; 1.25</td>
+                <td style="text-align: right; font-weight: 700;">HV = 2.14, LV = 2.05</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Core to Ground</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: &gt; 100 MΩ</td>
+                <td style="text-align: right; font-weight: 700;">&gt; 1,000 MΩ</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Insulation Power Factor (PF)</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: %PF &le; 1.0%</td>
+                <td style="text-align: right; font-weight: 700;">CH: 0.28%, CHL: 0.31%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Transformer Turn Ratio (TTR)</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: &le; 0.5% Dev</td>
+                <td style="text-align: right; font-weight: 700;">&lt; 0.5% Dev</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Exciting Current</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: Outer Dev &le; 5%</td>
+                <td style="text-align: right; font-weight: 700;">Normal Pattern</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Winding Resistance</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: &le; 5% Dev</td>
+                <td style="text-align: right; font-weight: 700;">&lt; 2.33% Dev</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Single Phase Short Circuit Imp.</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: &le; 3.0% Dev</td>
+                <td style="text-align: right; font-weight: 700;">Tap 9: 2.18% Dev</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Three Phase Short Circuit Imp.</strong></td>
+                <td style="color: var(--text-muted);">IEEE C57.152: &le; 3.0% Dev</td>
+                <td style="text-align: right; font-weight: 700;">Tap 9: 0.72% Dev</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- =========================================================
+           RIGHT COLUMN: 1. DGA  2. MAIN TANK OIL  3. OLTC OIL
+           ========================================================= -->
+      <div class="col-stack">
+
+        <!-- 1. Main Tank DGA Analysis -->
+        <div class="modern-card">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-amber"><i class="fa-solid fa-fire-flame-curved"></i></span>
+              Dissolved Gas Analysis (DGA)
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-badge badge-good" id="dgaDateBadge" style="font-size: 0.65rem;">21-Jun-2026</span>
+              <a href="dga_report.html" target="_blank" class="card-action-link"><i class="fa-solid fa-chart-line"></i></a>
+            </div>
+          </div>
+
+          <!-- Gas Concentration Matrix with Modern Visual Chips -->
+          <div class="dga-gas-grid" id="dgaGasGrid">
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">H₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaH2">9</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">CH₄</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaCh4">28</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₆</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaC2h6">11</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₄</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaC2h4">2</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaC2h2">0</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">CO</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaCo">127</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">CO₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaCo2">4,090</div>
+            </div>
+            <div class="gas-chip">
+              <div class="gas-chip-head"><span class="gas-name">TDCG</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dgaTdcg">177</div>
+            </div>
+          </div>
+
+          <!-- Diagnostic Method Interpretations -->
+          <div class="dga-method-section">
+            <div class="dga-method-row">
+              <span class="dga-method-label">Duval Triangle 1:</span>
+              <span class="status-tag tag-normal" id="dgaDuval">Normal / Low Gas</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">IEEE C57.104 Evaluation:</span>
+              <span class="status-tag tag-normal" id="dgaIeee">Status 1: Normal</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">IEC 60599 Diagnosis:</span>
+              <span class="status-tag tag-normal" id="dgaIec">Normal Pattern</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">Cellulose Aging (CO₂/CO):</span>
+              <span class="status-tag tag-normal" id="dgaPaper">Normal Aging (32.2)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Main Tank Oil Properties (MOVED BEFORE OLTC OIL!) -->
+        <div class="modern-card" id="cardMainTankOil">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-emerald"><i class="fa-solid fa-droplet"></i></span>
+              Main Tank Oil Properties
+            </div>
+            <a href="oil_report.html" target="_blank" class="card-action-link"><i class="fa-solid fa-file-waveform"></i> Oil Log</a>
+          </div>
+
+          <!-- 1. Physical & Electrical -->
+          <div class="oil-group-header">1. Physical &amp; Electrical</div>
+          <table class="modern-table">
+            <tbody>
+              <tr>
+                <td>Dielectric Breakdown</td>
+                <td style="color: var(--text-muted);">ASTM D1816</td>
+                <td style="text-align: right; font-weight: 700;" id="oilBd">85.90 kV</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Good</span></td>
+              </tr>
+              <tr>
+                <td>Water Content</td>
+                <td style="color: var(--text-muted);">ASTM D1533</td>
+                <td style="text-align: right; font-weight: 700;" id="oilWc">7.40 ppm</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Dry</span></td>
+              </tr>
+              <tr>
+                <td>Interfacial Tension (IFT)</td>
+                <td style="color: var(--text-muted);">ASTM D971</td>
+                <td style="text-align: right; font-weight: 700;" id="oilIft">33.20 mN/m</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Good</span></td>
+              </tr>
+              <tr>
+                <td>Acidity / Neutralization</td>
+                <td style="color: var(--text-muted);">ASTM D974</td>
+                <td style="text-align: right; font-weight: 700;" id="oilAcid">0.09 mgKOH/g</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Good</span></td>
+              </tr>
+              <tr>
+                <td>Oil Conductivity</td>
+                <td style="color: var(--text-muted);">IEC 61620</td>
+                <td style="text-align: right; font-weight: 700; color: #d97706;" id="oilCond">9.50 pS/m</td>
+                <td style="text-align: center;"><span class="status-tag tag-warning">Watch</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 2. Aging & Protection -->
+          <div class="oil-group-header">2. Paper Aging &amp; Sulfur</div>
+          <table class="modern-table">
+            <tbody>
+              <tr>
+                <td>Furan (2-FAL)</td>
+                <td style="color: var(--text-muted);">ASTM D5837</td>
+                <td style="text-align: right; font-weight: 700;" id="oilFuran">8.00 ppb</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Low</span></td>
+              </tr>
+              <tr>
+                <td>Corrosive Sulfur</td>
+                <td style="color: var(--text-muted);">DIN 51353</td>
+                <td style="text-align: right; font-weight: 700; color: #d97706;" id="oilSulfur">3b (Detected)</td>
+                <td style="text-align: center;"><span class="status-tag tag-warning">Watch</span></td>
+              </tr>
+              <tr>
+                <td>Passivator (Irgamet 39)</td>
+                <td style="color: var(--text-muted);">IEC 60666</td>
+                <td style="text-align: right; font-weight: 700; color: #e11d48;" id="oilPass">0 ppm</td>
+                <td style="text-align: center;"><span class="status-tag tag-critical">Top-up</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. OLTC Compartment Oil Properties (AFTER MAIN TANK OIL!) -->
+        <div class="modern-card" id="cardOltcOil">
+          <div class="modern-card-header">
+            <div class="modern-card-title">
+              <span class="header-icon-box icon-amber"><i class="fa-solid fa-oil-can"></i></span>
+              <span id="oltcOilCardTitle">OLTC Compartment Oil Properties</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="kpi-badge badge-good" id="oltcOilBadge" style="font-size: 0.65rem;">21-Jun-2026</span>
+              <a href="oltc_oil_report.html" target="_blank" class="card-action-link"><i class="fa-solid fa-file-waveform"></i> Log</a>
+            </div>
+          </div>
+
+          <div id="oltcOilTableWrapper">
+            <!-- Dynamically populated: Standard Single Compartment vs OLTC3 3-Phase Matrix -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Tab switching logic for center column
+    function switchDiagnosticTab(tabName, el) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+
+      document.getElementById('tab-activePart').style.display = (tabName === 'activePart') ? 'block' : 'none';
+      document.getElementById('tab-bushing').style.display = (tabName === 'bushing') ? 'block' : 'none';
+      document.getElementById('tab-arrester').style.display = (tabName === 'arrester') ? 'block' : 'none';
+    }
+
+    // Modern Light / Dark theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const curTheme = html.getAttribute('data-theme') || 'light';
+      const newTheme = curTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      
+      const icon = document.querySelector('#themeToggleBtn i');
+      if (icon) {
+        icon.className = newTheme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      }
+    }
+
+    // Dynamic Transformer Switching Data (14100-TR-003 vs 16120-TR-001)
+    const MOCK_DATA = {
+      '14100-TR-003': {
+        name: '14100-TR-003',
+        serial: 'PP0084B01',
+        site: 'CUP-1',
+        brand: 'DAIHEN',
+        power: '40 MVA',
+        voltage: '115 / 22 kV',
+        fluid: 'Mineral Oil',
+        service: 'Distribution',
+        age: '20 Years',
+        vector: 'Dyn1',
+        tapType: 'OLTC1',
+        hasOltc: true,
+        isOltc3: false,
+        oltc: {
+          mfg: 'MR (Reinhausen)',
+          model: 'V III 200D-123/76-10 19 3W',
+          serial: '1012608',
+          motor: 'ED100S',
+          counter: '58,148 Ops',
+          taps: '17 Taps',
+          schedule: 'Last: 2023 / Due: 2029'
+        },
+        oltcOil: { bd: '86.60 kV', wc: '4.80 ppm', pf25: '0.00 %', pf100: '0.212 %' },
+        photo: 'Transformer Photo/14100-TR-003.jpg',
+        hi: '85%',
+        hiClass: 'badge-good',
+        hiValColor: '#059669',
+        life: '>40',
+        dp: '1,031',
+        dpBadge: 'Excellent (DP > 1000)',
+        priority: 'Priority 1',
+        priorityText: 'Normal Running',
+        priorityColor: '#059669',
+        bushingStatus: '3 Phases Normal',
+        arresterStatus: '3 Phases Normal',
+        hasBushingData: true,
+        hasArresterData: true,
+        dga: { h2: 9, ch4: 28, c2h6: 11, c2h4: 2, c2h2: 0, co: 127, co2: '4,090', tdcg: 177, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', paper: 'Normal Aging (32.2)' },
+        oil: { bd: '85.90 kV', wc: '7.40 ppm', ift: '33.20 mN/m', acid: '0.09 mgKOH/g', cond: '9.50 pS/m', furan: '8.00 ppb', sulfur: '3b (Detected)', pass: '0 ppm' }
+      },
+      'KT2A.30.EN': {
+        name: 'KT2A.30.EN',
+        serial: '510049',
+        site: 'SITE3',
+        brand: 'ABB LIMITED',
+        power: '200 MVA (120/160/200)',
+        voltage: '230 / 121 / 11 kV',
+        fluid: 'Mineral Oil',
+        service: 'Transmission GSU',
+        age: '15 Years',
+        vector: 'YNa0(d1)',
+        tapType: 'OLTC3',
+        hasOltc: true,
+        isOltc3: true,
+        oltc: {
+          mfg: 'ABB LIMITED',
+          model: 'TrafoStar 3-Phase Independent',
+          serial: '510049-OLTC',
+          motor: 'Dual Synchronous Drive',
+          counter: '42,190 Ops',
+          taps: '21 Taps',
+          schedule: 'Last: 2024 / Due: 2030'
+        },
+        oltcOil3: {
+          bd: { a: '85.2', b: '82.4', c: '86.0' },
+          wc: { a: '12.5', b: '14.1', c: '11.8' },
+          pf25: { a: '0.02%', b: '0.02%', c: '0.03%' }
+        },
+        photo: 'Transformer Photo/14100-TR-003.jpg',
+        hi: '89%',
+        hiClass: 'badge-good',
+        hiValColor: '#059669',
+        life: '>40',
+        dp: '1,050',
+        dpBadge: 'Excellent (DP > 1000)',
+        priority: 'Priority 1',
+        priorityText: 'Optimal Health',
+        priorityColor: '#059669',
+        bushingStatus: '3 Phases Normal',
+        arresterStatus: '3 Phases Normal',
+        hasBushingData: true,
+        hasArresterData: true,
+        dga: { h2: 12, ch4: 18, c2h6: 8, c2h4: 3, c2h2: 0, co: 145, co2: '3,850', tdcg: 186, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', paper: 'Normal Aging (26.5)' },
+        oil: { bd: '88.50 kV', wc: '6.20 ppm', ift: '35.00 mN/m', acid: '0.04 mgKOH/g', cond: '3.20 pS/m', furan: '5.00 ppb', sulfur: '1a (Non-corrosive)', pass: '120 ppm' }
+      },
+      '16120-TR-001': {
+        name: '16120-TR-001',
+        serial: '4803321',
+        site: 'CUP-1',
+        brand: 'EKARAT',
+        power: '6 MVA',
+        voltage: '11 / 6.9 kV',
+        fluid: 'Mineral Oil',
+        service: 'UAT',
+        age: '21 Years',
+        vector: 'Dyn5',
+        tapType: 'NLTC',
+        hasOltc: false,
+        isOltc3: false,
+        photo: 'Transformer Photo/16120-TR-001.jpg',
+        hi: '71%',
+        hiClass: 'badge-fair',
+        hiValColor: '#d97706',
+        life: '29.1',
+        dp: '937',
+        dpBadge: 'Normal Paper (>700)',
+        priority: 'Priority 2',
+        priorityText: 'Maintenance Watch',
+        priorityColor: '#d97706',
+        bushingStatus: 'No Data',
+        arresterStatus: 'No Data',
+        hasBushingData: false,
+        hasArresterData: false,
+        dga: { h2: 4, ch4: 24, c2h6: 7, c2h4: 14, c2h2: 0, co: 979, co2: '7,446', tdcg: '1,028', ieee: 'Status 2: Intermediate', duval: 'Normal / Low Gas', paper: 'Moderate Aging (7.6)' },
+        oil: { bd: '78.20 kV', wc: '14.60 ppm', ift: '32.10 mN/m', acid: '0.03 mgKOH/g', cond: '5.10 pS/m', furan: '17.00 ppb', sulfur: '2a', pass: '0 ppm' }
+      }
+    };
+
+    function loadTransformerData(key) {
+      const d = MOCK_DATA[key];
+      if (!d) return;
+
+      document.getElementById('specEqName').textContent = d.name;
+      document.getElementById('specSerial').textContent = d.serial;
+      document.getElementById('specSite').textContent = d.site;
+      document.getElementById('specBrand').textContent = d.brand;
+      document.getElementById('specPower').textContent = d.power;
+      document.getElementById('specVoltage').textContent = d.voltage;
+      document.getElementById('specFluid').textContent = d.fluid;
+      document.getElementById('specService').textContent = d.service;
+      document.getElementById('specAge').textContent = d.age;
+      document.getElementById('specVector').textContent = d.vector;
+      document.getElementById('specTapType').innerHTML = d.hasOltc 
+        ? `<span class="oltc-spec-badge"><i class="fa-solid fa-sliders"></i> ${d.tapType}</span>`
+        : `<span style="color: var(--text-muted); font-weight: 600;">NLTC</span>`;
+
+      // Photo
+      const img = document.getElementById('trPhotoImg');
+      img.src = d.photo;
+      img.onerror = () => { img.src = 'background.jpg'; };
+
+      // Hero KPIs
+      document.getElementById('kpiHiVal').textContent = d.hi;
+      document.getElementById('kpiHiVal').style.color = d.hiValColor;
+      document.getElementById('kpiHiBar').style.width = d.hi;
+      document.getElementById('kpiHiBar').style.background = d.hiValColor;
+      document.getElementById('kpiHiBadge').className = `kpi-badge ${d.hiClass}`;
+      document.getElementById('kpiHiBadge').textContent = d.hi === '71%' ? 'Fair (51-79%)' : 'Healthy (≥80%)';
+
+      document.getElementById('kpiLifeVal').textContent = d.life;
+      document.getElementById('kpiDpVal').textContent = d.dp;
+      document.getElementById('kpiDpBadge').textContent = d.dpBadge;
+      document.getElementById('kpiPriorityVal').textContent = d.priority;
+      document.getElementById('kpiPriorityVal').style.color = d.priorityColor;
+
+      // OLTC card visibility and content
+      const cardMech = document.getElementById('cardOltcMechanism');
+      const cardOil = document.getElementById('cardOltcOil');
+      cardMech.style.display = d.hasOltc ? 'block' : 'none';
+      cardOil.style.display = d.hasOltc ? 'block' : 'none';
+
+      if (d.hasOltc && d.oltc) {
+        document.getElementById('oltcMfg').textContent = d.oltc.mfg;
+        document.getElementById('oltcModel').textContent = d.oltc.model;
+        document.getElementById('oltcSerial').textContent = d.oltc.serial;
+        document.getElementById('oltcMotor').textContent = d.oltc.motor;
+        document.getElementById('oltcCounter').textContent = d.oltc.counter;
+        document.getElementById('oltcTaps').textContent = d.oltc.taps;
+        document.getElementById('oltcSchedule').textContent = d.oltc.schedule;
+
+        const wrapper = document.getElementById('oltcOilTableWrapper');
+        const cardTitle = document.getElementById('oltcOilCardTitle');
+        const badgeEl = document.getElementById('oltcOilBadge');
+
+        if (d.isOltc3 && d.oltcOil3) {
+          cardTitle.innerHTML = 'OLTC Oil Properties <span style="font-size: 0.68rem; font-weight: 700; color: #d97706; background: var(--status-fair-bg); border: 1px solid var(--status-fair-border); padding: 1px 6px; border-radius: 4px; margin-left: 6px;">3-Phase Matrix (OLTC3)</span>';
+          badgeEl.textContent = '3 Tanks Monitored';
+
+          wrapper.innerHTML = `
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th style="text-align: right; color: var(--primary);">Phase A</th>
+                  <th style="text-align: right; color: var(--primary);">Phase B</th>
+                  <th style="text-align: right; color: var(--primary);">Phase C</th>
+                  <th style="text-align: center;">Unit</th>
+                  <th style="text-align: center;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Dielectric Breakdown</strong></td>
+                  <td style="color: var(--text-muted);">IEC 60156</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.bd.a}</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.bd.b}</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.bd.c}</td>
+                  <td style="text-align: center; color: var(--text-muted); font-size: 0.7rem;">kV</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Water Content</strong></td>
+                  <td style="color: var(--text-muted);">ASTM D1533</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.wc.a}</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.wc.b}</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil3.wc.c}</td>
+                  <td style="text-align: center; color: var(--text-muted); font-size: 0.7rem;">ppm</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Dry</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Power Factor (25 °C)</strong></td>
+                  <td style="color: var(--text-muted);">ASTM D924</td>
+                  <td style="text-align: right; font-weight: 700;">${d.oltcOil3.pf25.a}</td>
+                  <td style="text-align: right; font-weight: 700;">${d.oltcOil3.pf25.b}</td>
+                  <td style="text-align: right; font-weight: 700;">${d.oltcOil3.pf25.c}</td>
+                  <td style="text-align: center; color: var(--text-muted); font-size: 0.7rem;">%</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+                </tr>
+              </tbody>
+            </table>
+          `;
+        } else {
+          cardTitle.textContent = 'OLTC Compartment Oil Properties';
+          badgeEl.textContent = '21-Jun-2026';
+
+          wrapper.innerHTML = `
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Item Test</th>
+                  <th>Standard</th>
+                  <th style="text-align: right;">Measured</th>
+                  <th style="text-align: center;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Dielectric Breakdown</strong></td>
+                  <td style="color: var(--text-muted);">IEC 60156</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil.bd}</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Excellent</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Water Content</strong></td>
+                  <td style="color: var(--text-muted);">ASTM D1533</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">${d.oltcOil.wc}</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Dry</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Power Factor at 25 °C</strong></td>
+                  <td style="color: var(--text-muted);">ASTM D924</td>
+                  <td style="text-align: right; font-weight: 700;">${d.oltcOil.pf25 || '0.00 %'}</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Power Factor at 100 °C</strong></td>
+                  <td style="color: var(--text-muted);">ASTM D925</td>
+                  <td style="text-align: right; font-weight: 700;">${d.oltcOil.pf100 || '0.212 %'}</td>
+                  <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+                </tr>
+              </tbody>
+            </table>
+          `;
+        }
+      }
+
+      // Bushing Card Population
+      const bushWrapper = document.getElementById('bushingContentWrapper');
+      const bushBadge = document.getElementById('bushingDateBadge');
+      if (d.hasBushingData) {
+        bushBadge.textContent = '16-Jul-2026';
+        bushBadge.className = 'kpi-badge badge-good';
+        bushWrapper.innerHTML = `
+          <div class="oil-group-header">
+            <span>Bushing C1 Power Factor &amp; Capacitance Test</span>
+            <span style="color: var(--status-good-text);"><i class="fa-solid fa-circle-check"></i> Standard Compliant</span>
+          </div>
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Item Test</th>
+                <th>Standard</th>
+                <th style="text-align: right;">Measured</th>
+                <th style="text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>HV. Phase A (H1)</strong></td>
+                <td>%Error PF (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 40%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+30.74%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>HV. Phase A (H1)</strong></td>
+                <td>%Error Cap (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 3%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+0.73%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>HV. Phase B (H2)</strong></td>
+                <td>%Error PF (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 40%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+28.08%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>HV. Phase B (H2)</strong></td>
+                <td>%Error Cap (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 3%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+1.18%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>HV. Phase C (H3)</strong></td>
+                <td>%Error PF (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 40%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+24.64%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>HV. Phase C (H3)</strong></td>
+                <td>%Error Cap (C1)</td>
+                <td style="color: var(--text-muted);">OEM (&le; 3%)</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">+0.68%</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } else {
+        bushBadge.textContent = 'No Data';
+        bushBadge.className = 'kpi-badge';
+        bushBadge.style.background = 'var(--bg-surface-subtle)';
+        bushBadge.style.color = 'var(--text-muted)';
+        bushWrapper.innerHTML = `
+          <div class="smart-empty-state" style="padding: 16px 14px;">
+            <div class="empty-state-title" style="font-size: 0.78rem; color: var(--text-secondary);"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> No Off-line Bushing Power Factor Records</div>
+            <div class="empty-state-desc" style="font-size: 0.72rem; color: var(--text-muted);">ไม่มีผลการทดสอบ C1 Power Factor และ Capacitance ในรอบการบำรุงรักษาปัจจุบัน</div>
+          </div>
+        `;
+      }
+
+      // Surge Arrester Card Population
+      const arrWrapper = document.getElementById('arresterContentWrapper');
+      const arrBadge = document.getElementById('arresterDateBadge');
+      if (d.hasArresterData) {
+        arrBadge.textContent = '16-Jul-2026';
+        arrBadge.className = 'kpi-badge badge-good';
+        arrWrapper.innerHTML = `
+          <div class="oil-group-header">
+            <span>Surge Arrester Diagnostic Results (EGAT Standard)</span>
+            <span style="color: var(--status-good-text);"><i class="fa-solid fa-shield"></i> Standard Compliant</span>
+          </div>
+          <table class="modern-table">
+            <thead>
+              <tr>
+                <th>Item Test</th>
+                <th>Standard</th>
+                <th style="text-align: right;">Phase A</th>
+                <th style="text-align: right;">Phase B</th>
+                <th style="text-align: right;">Phase C</th>
+                <th style="text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Insulation Resistance</strong></td>
+                <td style="color: var(--text-muted);">&ge; 10,000 MΩ</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">12,500 MΩ</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">13,200 MΩ</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">12,200 MΩ</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Leakage Current</strong></td>
+                <td style="color: var(--text-muted);">&le; 1.0 mA</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">0.16 mA</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">0.15 mA</td>
+                <td style="text-align: right; font-weight: 700; color: #059669;">0.15 mA</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+              <tr>
+                <td><strong>Watt Loss</strong></td>
+                <td style="color: var(--text-muted);">EGAT Criteria</td>
+                <td style="text-align: right; font-weight: 700;">136.94 W</td>
+                <td style="text-align: right; font-weight: 700;">128.39 W</td>
+                <td style="text-align: right; font-weight: 700;">127.01 W</td>
+                <td style="text-align: center;"><span class="status-tag tag-normal">Normal</span></td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } else {
+        arrBadge.textContent = 'No Data';
+        arrBadge.className = 'kpi-badge';
+        arrBadge.style.background = 'var(--bg-surface-subtle)';
+        arrBadge.style.color = 'var(--text-muted)';
+        arrWrapper.innerHTML = `
+          <div class="smart-empty-state" style="padding: 16px 14px;">
+            <div class="empty-state-title" style="font-size: 0.78rem; color: var(--text-secondary);"><i class="fa-solid fa-circle-info" style="color: #f59e0b;"></i> No Surge Arrester Diagnostic Records</div>
+            <div class="empty-state-desc" style="font-size: 0.72rem; color: var(--text-muted);">ไม่มีข้อมูลผลการวัดค่า Surge Arrester สำหรับยูนิตนี้</div>
+          </div>
+        `;
+      }
+
+      // DGA
+      document.getElementById('dgaH2').textContent = d.dga.h2;
+      document.getElementById('dgaCh4').textContent = d.dga.ch4;
+      document.getElementById('dgaC2h6').textContent = d.dga.c2h6;
+      document.getElementById('dgaC2h4').textContent = d.dga.c2h4;
+      document.getElementById('dgaC2h2').textContent = d.dga.c2h2;
+      document.getElementById('dgaCo').textContent = d.dga.co;
+      document.getElementById('dgaCo2').textContent = d.dga.co2;
+      document.getElementById('dgaTdcg').textContent = d.dga.tdcg;
+      document.getElementById('dgaIeee').textContent = d.dga.ieee;
+      document.getElementById('dgaPaper').textContent = d.dga.paper;
+
+      // Oil
+      document.getElementById('oilBd').textContent = d.oil.bd;
+      document.getElementById('oilWc').textContent = d.oil.wc;
+      document.getElementById('oilIft').textContent = d.oil.ift;
+      document.getElementById('oilAcid').textContent = d.oil.acid;
+      document.getElementById('oilCond').textContent = d.oil.cond;
+      document.getElementById('oilFuran').textContent = d.oil.furan;
+      document.getElementById('oilSulfur').textContent = d.oil.sulfur;
+      document.getElementById('oilPass').textContent = d.oil.pass;
+    }
+
+    // Initialize with 14100-TR-003
+    loadTransformerData('14100-TR-003');
+  </script>
+</body>
+</html>

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Interactive Digital Twin Callout Inspector - GPSC</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: rgba(255, 255, 255, 0.94);
+      --border-subtle: #e2e8f0;
+      --border-card: rgba(226, 232, 240, 0.95);
+      --border-hover: #2563eb;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-blue: #2563eb;
+      --accent-glow: rgba(37, 99, 235, 0.15);
+      --line-color: #2563eb;
+      --line-dim: #94a3b8;
+      --pin-color: #2563eb;
+      
+      --stage-bg: radial-gradient(ellipse at 50% 45%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%);
+      --stage-grid: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+      --stage-border: #cbd5e1;
+      --stage-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
+      --tr-shadow: drop-shadow(0 25px 35px rgba(15, 23, 42, 0.22));
+      --pedestal-shadow: radial-gradient(ellipse at 50% 50%, rgba(15, 23, 42, 0.26) 0%, rgba(15, 23, 42, 0.06) 55%, transparent 75%);
+
+      --status-good-bg: #ecfdf5;
+      --status-good-border: #a7f3d0;
+      --status-good-text: #059669;
+      
+      --status-fair-bg: #fffbeb;
+      --status-fair-border: #fde68a;
+      --status-fair-text: #b45309;
+      
+      --status-crit-bg: #fef2f2;
+      --status-crit-border: #fecaca;
+      --status-crit-text: #dc2626;
+
+      --card-title-color: #0f172a;
+      --card-label-color: #64748b;
+      --card-val-color: #0f172a;
+      --card-dash-color: rgba(226, 232, 240, 0.9);
+      --card-icon-bg: rgba(37, 99, 235, 0.08);
+      --card-icon-color: #2563eb;
+      --footer-bg: rgba(255, 255, 255, 0.94);
+      --footer-border: rgba(203, 213, 225, 0.9);
+      --footer-text: #334155;
+      --footer-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+
+      --shadow-card: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 3px 6px -2px rgba(15, 23, 42, 0.04);
+      --shadow-hover: 0 14px 30px -4px rgba(37, 99, 235, 0.2), 0 6px 12px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.92);
+      --border-subtle: #1f2937;
+      --border-card: rgba(255, 255, 255, 0.14);
+      --border-hover: #60a5fa;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --line-color: #60a5fa;
+      --line-dim: #475569;
+      --pin-color: #60a5fa;
+      
+      --stage-bg: radial-gradient(ellipse at 50% 45%, #151d30 0%, #0c1220 55%, #030712 100%);
+      --stage-grid: radial-gradient(rgba(59, 130, 246, 0.15) 1.2px, transparent 1.2px);
+      --stage-border: #1e293b;
+      --stage-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+      --tr-shadow: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(59, 130, 246, 0.22));
+      --pedestal-shadow: radial-gradient(ellipse at 50% 50%, rgba(37, 99, 235, 0.35) 0%, rgba(0, 0, 0, 0.8) 50%, transparent 80%);
+
+      --status-good-bg: rgba(6, 78, 59, 0.6);
+      --status-good-border: rgba(16, 185, 129, 0.4);
+      --status-good-text: #34d399;
+      
+      --status-fair-bg: rgba(120, 53, 15, 0.6);
+      --status-fair-border: rgba(245, 158, 11, 0.4);
+      --status-fair-text: #fbbf24;
+      
+      --status-crit-bg: rgba(127, 29, 29, 0.6);
+      --status-crit-border: rgba(239, 68, 68, 0.4);
+      --status-crit-text: #f87171;
+
+      --card-title-color: #f8fafc;
+      --card-label-color: #94a3b8;
+      --card-val-color: #f8fafc;
+      --card-dash-color: rgba(255, 255, 255, 0.1);
+      --card-icon-bg: rgba(59, 130, 246, 0.2);
+      --card-icon-color: #60a5fa;
+      --footer-bg: rgba(15, 23, 42, 0.85);
+      --footer-border: rgba(255, 255, 255, 0.15);
+      --footer-text: #cbd5e1;
+      --footer-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+      --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --shadow-hover: 0 14px 35px rgba(59, 130, 246, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Top Control Bar */
+    .topbar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #ffffff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tr-select-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-page);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+    .tr-select-box select {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .btn-action {
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-action:hover {
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      background: var(--accent-glow);
+    }
+    .btn-action.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
+
+    /* Filter Category Pills */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Main Digital Twin Canvas Stage */
+    .stage-container {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .twin-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 1260px;
+      height: 740px;
+      background-image: var(--stage-grid), var(--stage-bg);
+      background-size: 24px 24px, 100% 100%;
+      background-position: 0 0, 0 0;
+      border: 1px solid var(--stage-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--stage-shadow);
+      backdrop-filter: blur(10px);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Soft Realistic Ground Contact Shadow under Transformer */
+    .pedestal-shadow {
+      position: absolute;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 440px;
+      height: 42px;
+      background: var(--pedestal-shadow);
+      border-radius: 50%;
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 5;
+      transition: background 0.3s ease;
+    }
+
+    /* Center Transformer Image */
+    .transformer-model-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      max-width: 44%;
+      height: auto;
+      object-fit: contain;
+      filter: var(--tr-shadow);
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 8px;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    /* SVG Leader Lines Layer */
+    .svg-leader-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .leader-line {
+      fill: none;
+      stroke: var(--line-color);
+      stroke-width: 1.6;
+      stroke-dasharray: 4, 3;
+      opacity: 0.75;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .leader-line.highlight {
+      stroke-width: 2.8;
+      stroke-dasharray: none;
+      opacity: 1;
+      filter: drop-shadow(0 0 8px var(--accent-blue));
+    }
+
+    /* Pulsing Pin Dots on Transformer */
+    .pin-dot {
+      fill: #ffffff;
+      stroke: var(--pin-color);
+      stroke-width: 3;
+      cursor: pointer;
+      transition: transform 0.2s ease, fill 0.2s ease;
+    }
+    .pin-pulse {
+      fill: var(--pin-color);
+      opacity: 0.45;
+      animation: pinRadar 2.2s infinite ease-out;
+      transform-origin: center;
+    }
+    @keyframes pinRadar {
+      0% { r: 5; opacity: 0.9; }
+      100% { r: 18; opacity: 0; }
+    }
+
+    /* Callout Card Badges */
+    .callout-card {
+      position: absolute;
+      z-index: 30;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 10px 14px;
+      width: 250px;
+      box-shadow: var(--shadow-card);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+    }
+    .callout-card:hover, .callout-card.active {
+      transform: translateY(-4px) scale(1.02);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .callout-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
+    .callout-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--card-title-color);
+      letter-spacing: -0.01em;
+    }
+    .callout-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      background: var(--card-icon-bg);
+      color: var(--card-icon-color);
+    }
+
+    .callout-status-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 12px;
+      letter-spacing: 0.02em;
+    }
+    .status-normal {
+      background: var(--status-good-bg);
+      border: 1px solid var(--status-good-border);
+      color: var(--status-good-text);
+    }
+    .status-warning {
+      background: var(--status-fair-bg);
+      border: 1px solid var(--status-fair-border);
+      color: var(--status-fair-text);
+    }
+    .status-critical {
+      background: var(--status-crit-bg);
+      border: 1px solid var(--status-crit-border);
+      color: var(--status-crit-text);
+    }
+
+    .callout-data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 0.72rem;
+    }
+    .data-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.5px 0;
+      border-bottom: 1px dashed var(--card-dash-color);
+    }
+    .data-row:last-child {
+      border-bottom: none;
+    }
+    .data-label {
+      color: var(--card-label-color);
+      font-weight: 500;
+    }
+    .data-val {
+      font-weight: 700;
+      color: var(--card-val-color);
+    }
+    .val-highlight {
+      color: var(--status-good-text);
+    }
+    .val-warn {
+      color: var(--status-fair-text);
+    }
+
+    /* Preset Callout Positions (Responsive % Coordinates) */
+    /* Left Column Callouts */
+    #card-conservator { top: 6%; left: 3%; }
+    #card-radiator    { top: 38%; left: 3%; }
+    #card-coolingfan  { top: 70%; left: 3%; }
+    
+    /* Center-Top Callout */
+    #card-lvbushing   { top: 5%; left: 35%; }
+    
+    /* Right Column Callouts */
+    #card-hvbushing   { top: 6%; right: 3%; }
+    #card-activepart  { top: 38%; right: 3%; }
+    #card-oildga      { top: 70%; right: 3%; }
+
+    /* Bottom Info Banner */
+    .twin-footer-info {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--footer-bg);
+      border: 1px solid var(--footer-border);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.72rem;
+      color: var(--footer-text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--footer-shadow);
+      z-index: 40;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    .twin-footer-info span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot-legend {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Controls -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-cube"></i></div>
+      <div>
+        <h1 class="brand-title">Transformer Digital Twin Callout Inspector</h1>
+        <div class="brand-subtitle">GPSC ASSET PERFORMANCE &amp; COMPONENT DIAGNOSTICS</div>
+      </div>
+    </div>
+
+    <div class="topbar-controls">
+      <!-- Image Model View Mode Switcher -->
+      <div class="tr-select-box" style="border-color: rgba(37, 99, 235, 0.35); background: rgba(37, 99, 235, 0.05);">
+        <i class="fa-solid fa-image" style="color: #2563eb; font-size: 0.8rem;"></i>
+        <select id="imageModelSelect" onchange="switchImageModel(this.value)">
+          <option value="cutaway" selected>✨ 3D Cutaway View (Coils &amp; Oil Interior)</option>
+          <option value="digital_twin">🏢 3D Enclosed Digital Twin</option>
+          <option value="reference">📐 Technical Diagram (Annotated Base)</option>
+          <option value="site_photo">📸 Real Substation Photo (14100-TR-003)</option>
+        </select>
+      </div>
+
+      <!-- Transformer Unit Selector -->
+      <div class="tr-select-box">
+        <i class="fa-solid fa-bolt" style="color: #f59e0b; font-size: 0.8rem;"></i>
+        <select id="twinTrSelect" onchange="switchTwinTransformer(this.value)">
+          <option value="14100-TR-003" selected>14100-TR-003 (CUP-1 / 40 MVA / Full Diagnostics)</option>
+          <option value="KT2A.30.EN">KT2A.30.EN (SITE3 / 200 MVA / 3-Phase OLTC3)</option>
+          <option value="16120-TR-001">16120-TR-001 (CUP-1 / 6 MVA / NLTC Limited Tests)</option>
+        </select>
+      </div>
+
+      <button class="btn-action" onclick="toggleTheme()" id="themeBtn">
+        <i class="fa-solid fa-moon"></i> Theme
+      </button>
+
+      <a href="detail_modern_mockup.html" class="btn-action" style="text-decoration: none;">
+        <i class="fa-solid fa-table-columns"></i> View Full Dashboard
+      </a>
+    </div>
+  </header>
+
+  <!-- Category Filter Pills -->
+  <nav class="filter-bar">
+    <button class="filter-pill active" onclick="filterCategory('all', this)"><i class="fa-solid fa-layer-group"></i> All Components (7)</button>
+    <button class="filter-pill" onclick="filterCategory('electrical', this)"><i class="fa-solid fa-plug-circle-bolt"></i> Electrical Tests (Bushings &amp; Windings)</button>
+    <button class="filter-pill" onclick="filterCategory('oil', this)"><i class="fa-solid fa-droplet"></i> Oil &amp; DGA Analysis</button>
+    <button class="filter-pill" onclick="filterCategory('mechanical', this)"><i class="fa-solid fa-gears"></i> OLTC &amp; Cooling</button>
+  </nav>
+
+  <!-- Main Digital Twin Canvas -->
+  <main class="stage-container">
+    <div class="twin-viewport" id="viewportStage">
+
+      <!-- Floor Pedestal Contact Shadow for Realistic Elevation -->
+      <div class="pedestal-shadow"></div>
+
+      <!-- Center 3D Transformer Model (Default: 3D Cutaway Section View with True Transparency) -->
+      <img src="transformer_cutaway_transparent.png" alt="Transformer 3D Model" class="transformer-model-img" id="transformerModelImg">
+
+      <!-- SVG Leader Lines & Pulsing Pin Overlay Layer -->
+      <svg class="svg-leader-lines" id="svgLines" viewBox="0 0 1200 700" preserveAspectRatio="none">
+        <!-- SVG Definitions for Gradients / Markers -->
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.4" />
+          </linearGradient>
+        </defs>
+
+        <!-- Dynamic Leader Lines connecting Cards to Target Pins on 3D Cutaway Transformer -->
+        <!-- 1. Conservator Tank (Target Pin: 425, 275) -->
+        <path id="line-conservator" class="leader-line" d="M 276 110 L 370 110 L 425 275" />
+        
+        <!-- 2. Radiator / Cooling Fans (Target Pin: 570, 490) -->
+        <path id="line-radiator" class="leader-line" d="M 276 340 L 460 340 L 570 490" />
+        
+        <!-- 3. Digital Control IED & OLTC Drive (Target Pin: 460, 520) -->
+        <path id="line-coolingfan" class="leader-line" d="M 276 570 L 390 570 L 460 520" />
+
+        <!-- 4. Low Voltage Bushings & Surge (Target Pin: 620, 315) -->
+        <path id="line-lvbushing" class="leader-line" d="M 550 125 L 620 200 L 620 315" />
+
+        <!-- 5. High Voltage Bushings (Target Pin: 670, 150) -->
+        <path id="line-hvbushing" class="leader-line" d="M 924 110 L 790 110 L 670 150" />
+
+        <!-- 6. Active Part: Copper Windings & Core (Target Pin: 690, 430) -->
+        <path id="line-activepart" class="leader-line" d="M 924 340 L 810 340 L 690 430" />
+
+        <!-- 7. Insulating Oil & DGA Fluid Chamber (Target Pin: 780, 410) -->
+        <path id="line-oildga" class="leader-line" d="M 924 570 L 860 570 L 780 410" />
+
+        <!-- Pulsing Target Pins on Cutaway Anatomy -->
+        <!-- Pin: Conservator -->
+        <circle cx="425" cy="275" r="12" class="pin-pulse" />
+        <circle cx="425" cy="275" r="5" class="pin-dot" />
+
+        <!-- Pin: Radiator & Fans -->
+        <circle cx="570" cy="490" r="12" class="pin-pulse" />
+        <circle cx="570" cy="490" r="5" class="pin-dot" />
+
+        <!-- Pin: Control IED / OLTC -->
+        <circle cx="460" cy="520" r="12" class="pin-pulse" />
+        <circle cx="460" cy="520" r="5" class="pin-dot" />
+
+        <!-- Pin: LV Bushing -->
+        <circle cx="620" cy="315" r="12" class="pin-pulse" />
+        <circle cx="620" cy="315" r="5" class="pin-dot" />
+
+        <!-- Pin: HV Bushing -->
+        <circle cx="670" cy="150" r="12" class="pin-pulse" />
+        <circle cx="670" cy="150" r="5" class="pin-dot" />
+
+        <!-- Pin: Active Part (Coils) -->
+        <circle cx="690" cy="430" r="12" class="pin-pulse" />
+        <circle cx="690" cy="430" r="5" class="pin-dot" />
+
+        <!-- Pin: Oil & DGA -->
+        <circle cx="780" cy="410" r="12" class="pin-pulse" />
+        <circle cx="780" cy="410" r="5" class="pin-dot" />
+      </svg>
+
+      <!-- ==========================================
+           CALLOUT CARDS (HTML Overlays with Real Data)
+           ========================================== -->
+
+      <!-- 1. Left Top: Conservator & Oil Level -->
+      <div class="callout-card" id="card-conservator" data-category="mechanical" onmouseenter="focusCallout('conservator')" onmouseleave="unfocusCallout('conservator')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-gauge-simple-high"></i></span>
+            Conservator &amp; Oil Level
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-conservator">Normal</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Oil Level:</span>
+            <span class="data-val val-highlight" id="val-oil-level">Adequate (65%)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Silica Gel Breather:</span>
+            <span class="data-val" id="val-silica-gel">Active (Blue)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Buchholz Relay:</span>
+            <span class="data-val val-highlight" id="val-buchholz">Normal (No Gas)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Left Middle: Radiator & Cooling Fins -->
+      <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
+            Cooling Radiator &amp; Fans
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Oil Leakage:</span>
+            <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Surface Rust / Paint:</span>
+            <span class="data-val" id="val-rust">Grade A (Good)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Top Oil Temp:</span>
+            <span class="data-val" id="val-oil-temp">58.4 °C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Left Bottom: Digital Control IED & OLTC Drive -->
+      <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-microchip"></i></span>
+            Digital IED &amp; Tap Drive
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-coolingfan">Auto OK</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">OLTC Type / Model:</span>
+            <span class="data-val" id="val-oltc-model">MR V III 200D</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Operations Counter:</span>
+            <span class="data-val val-highlight" id="val-oltc-ops">58,148 Ops</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Tap Drive Motor:</span>
+            <span class="data-val">ED100S Normal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Center Top: Low Voltage Bushings & Surge -->
+      <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            Surge Arrester &amp; LV
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Insulation Resistance:</span>
+            <span class="data-val val-highlight" id="val-surge-ir">&gt; 12,000 MΩ</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Leakage Current:</span>
+            <span class="data-val" id="val-surge-leak">0.15 mA</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Watt Loss:</span>
+            <span class="data-val" id="val-surge-watt">128 W (Pass)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Right Top: High Voltage Bushings (PF & Cap) -->
+      <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-plug"></i></span>
+            HV Bushings (C1 PF &amp; Cap)
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Phase A (H1) PF:</span>
+            <span class="data-val val-highlight" id="val-bush-pfa">+30.7% (&le;40%)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Phase B (H2) PF:</span>
+            <span class="data-val val-highlight" id="val-bush-pfb">+28.1% (&le;40%)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Phase C (H3) PF:</span>
+            <span class="data-val val-highlight" id="val-bush-pfc">+24.6% (&le;40%)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Capacitance Error:</span>
+            <span class="data-val" id="val-bush-cap">&le; 1.15% (&le;3%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Right Middle: Active Part (Copper Windings & Core) -->
+      <div class="callout-card" id="card-activepart" data-category="electrical" onmouseenter="focusCallout('activepart')" onmouseleave="unfocusCallout('activepart')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-bolt"></i></span>
+            Active Part (Windings &amp; Core)
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-activepart">Normal</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Polarization Index (PI):</span>
+            <span class="data-val val-highlight" id="val-active-pi">HV=2.14 (&gt;1.25)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Winding Res. Dev:</span>
+            <span class="data-val val-highlight" id="val-active-wres">&lt; 2.33% (&le;5%)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Turns Ratio (TTR):</span>
+            <span class="data-val val-highlight" id="val-active-ttr">&lt; 0.5% Dev</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Paper DP (Furan):</span>
+            <span class="data-val val-highlight" id="val-active-dp">1,031 (Good)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Right Bottom: Insulating Oil & DGA -->
+      <div class="callout-card" id="card-oildga" data-category="oil" onmouseenter="focusCallout('oildga')" onmouseleave="unfocusCallout('oildga')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-droplet"></i></span>
+            Insulating Oil &amp; DGA
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-oildga">HI: 85%</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">IEEE DGA Status:</span>
+            <span class="data-val val-highlight" id="val-dga-status">Status 1 (Normal)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Breakdown Voltage:</span>
+            <span class="data-val val-highlight" id="val-oil-bd">85.9 kV (&gt;50)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Water Content:</span>
+            <span class="data-val val-highlight" id="val-oil-wc">7.4 ppm (&lt;20)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Total Gas (TDCG):</span>
+            <span class="data-val" id="val-dga-tdcg">177 ppm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Help & Legend -->
+      <div class="twin-footer-info">
+        <span><i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> นำเมาส์ชี้ที่การ์ดเพื่อส่อง Highlight จุดตรวจวัดบนตัวหม้อแปลง</span>
+        <span>•</span>
+        <span><span class="dot-legend" style="background: #10b981;"></span> Normal</span>
+        <span><span class="dot-legend" style="background: #f59e0b;"></span> Watch</span>
+        <span><span class="dot-legend" style="background: #ef4444;"></span> Critical</span>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Mock Data for Digital Twin Demonstration
+    const TWIN_DATA = {
+      '14100-TR-003': {
+        bushingStatus: '3 Ph Normal',
+        bushingClass: 'status-normal',
+        bushingA: '+30.7% (≤40%)',
+        bushingB: '+28.1% (≤40%)',
+        bushingC: '+24.6% (≤40%)',
+        bushingCap: '≤ 1.15% (≤3%)',
+        surgeStatus: 'Normal',
+        surgeClass: 'status-normal',
+        surgeIr: '> 12,000 MΩ',
+        surgeLeak: '0.15 mA',
+        surgeWatt: '128 W (Pass)',
+        activeStatus: 'Normal',
+        activeClass: 'status-normal',
+        activePi: 'HV=2.14 (>1.25)',
+        activeWres: '< 2.33% (≤5%)',
+        activeTtr: '< 0.5% Dev',
+        activeDp: '1,031 (Good)',
+        mainTankHI: 'HI: 85%',
+        mainTankClass: 'status-normal',
+        dgaStatus: 'Status 1 (Normal)',
+        dgaTdcg: '177 ppm',
+        oilBd: '85.9 kV (>50)',
+        oilWc: '7.4 ppm (<20)',
+        oltcStatus: 'Healthy',
+        oltcClass: 'status-normal',
+        oltcModel: 'MR V III 200D',
+        oltcOps: '58,148 Ops',
+        oltcBd: '86.6 kV',
+        oltcWc: '4.8 ppm'
+      },
+      'KT2A.30.EN': {
+        bushingStatus: '3 Ph Normal',
+        bushingClass: 'status-normal',
+        bushingA: '+22.5% (≤40%)',
+        bushingB: '+25.1% (≤40%)',
+        bushingC: '+21.8% (≤40%)',
+        bushingCap: '≤ 0.85% (≤3%)',
+        surgeStatus: 'Normal',
+        surgeClass: 'status-normal',
+        surgeIr: '> 15,000 MΩ',
+        surgeLeak: '0.12 mA',
+        surgeWatt: '110 W (Pass)',
+        activeStatus: 'Normal',
+        activeClass: 'status-normal',
+        activePi: 'HV=2.30 (>1.25)',
+        activeWres: '< 1.85% (≤5%)',
+        activeTtr: '< 0.3% Dev',
+        activeDp: '1,050 (Good)',
+        mainTankHI: 'HI: 89%',
+        mainTankClass: 'status-normal',
+        dgaStatus: 'Status 1 (Normal)',
+        dgaTdcg: '186 ppm',
+        oilBd: '88.5 kV (>50)',
+        oilWc: '6.2 ppm (<20)',
+        oltcStatus: '3-Ph Matrix',
+        oltcClass: 'status-normal',
+        oltcModel: 'ABB TrafoStar (OLTC3)',
+        oltcOps: '42,190 Ops',
+        oltcBd: 'A:85.2 B:82.4 C:86.0 kV',
+        oltcWc: 'A:12.5 B:14.1 C:11.8 ppm'
+      },
+      '16120-TR-001': {
+        bushingStatus: 'No Data',
+        bushingClass: 'status-warning',
+        bushingA: 'Not Tested',
+        bushingB: 'Not Tested',
+        bushingC: 'Not Tested',
+        bushingCap: '-',
+        surgeStatus: 'No Data',
+        surgeClass: 'status-warning',
+        surgeIr: '-',
+        surgeLeak: '-',
+        surgeWatt: '-',
+        activeStatus: 'Watch',
+        activeClass: 'status-warning',
+        activePi: 'HV=1.85 (Pass)',
+        activeWres: '< 3.10% (≤5%)',
+        activeTtr: '< 0.4% Dev',
+        activeDp: '937 (Normal Paper)',
+        mainTankHI: 'HI: 71%',
+        mainTankClass: 'status-warning',
+        dgaStatus: 'Status 2 (Intermediate)',
+        dgaTdcg: '1,028 ppm',
+        oilBd: '78.2 kV (>50)',
+        oilWc: '14.6 ppm (<20)',
+        oltcStatus: 'NLTC',
+        oltcClass: 'status-warning',
+        oltcModel: 'No Tap Changer (NLTC)',
+        oltcOps: '0 Ops',
+        oltcBd: '-',
+        oltcWc: '-'
+      }
+    };
+
+    function switchTwinTransformer(serial) {
+      const d = TWIN_DATA[serial];
+      if (!d) return;
+
+      // Bushing
+      document.getElementById('pill-bushing').textContent = d.bushingStatus;
+      document.getElementById('pill-bushing').className = `callout-status-pill ${d.bushingClass}`;
+      document.getElementById('val-bush-pfa').textContent = d.bushingA;
+      document.getElementById('val-bush-pfb').textContent = d.bushingB;
+      document.getElementById('val-bush-pfc').textContent = d.bushingC;
+      document.getElementById('val-bush-cap').textContent = d.bushingCap;
+
+      // Surge
+      document.getElementById('pill-surge').textContent = d.surgeStatus;
+      document.getElementById('pill-surge').className = `callout-status-pill ${d.surgeClass}`;
+      document.getElementById('val-surge-ir').textContent = d.surgeIr;
+      document.getElementById('val-surge-leak').textContent = d.surgeLeak;
+      document.getElementById('val-surge-watt').textContent = d.surgeWatt;
+
+      // Active Part (Coils & Core)
+      if (document.getElementById('pill-activepart')) {
+        document.getElementById('pill-activepart').textContent = d.activeStatus;
+        document.getElementById('pill-activepart').className = `callout-status-pill ${d.activeClass}`;
+        document.getElementById('val-active-pi').textContent = d.activePi;
+        document.getElementById('val-active-wres').textContent = d.activeWres;
+        document.getElementById('val-active-ttr').textContent = d.activeTtr;
+        document.getElementById('val-active-dp').textContent = d.activeDp;
+      }
+
+      // Oil & DGA
+      if (document.getElementById('pill-oildga')) {
+        document.getElementById('pill-oildga').textContent = d.mainTankHI;
+        document.getElementById('pill-oildga').className = `callout-status-pill ${d.mainTankClass}`;
+      }
+      document.getElementById('val-dga-status').textContent = d.dgaStatus;
+      document.getElementById('val-dga-tdcg').textContent = d.dgaTdcg;
+      document.getElementById('val-oil-bd').textContent = d.oilBd;
+      document.getElementById('val-oil-wc').textContent = d.oilWc;
+
+      // OLTC
+      document.getElementById('pill-coolingfan').textContent = d.oltcStatus;
+      document.getElementById('pill-coolingfan').className = `callout-status-pill ${d.oltcClass}`;
+      document.getElementById('val-oltc-model').textContent = d.oltcModel;
+      document.getElementById('val-oltc-ops').textContent = d.oltcOps;
+    }
+
+    // Hover Highlight Interactions
+    function focusCallout(id) {
+      const line = document.getElementById(`line-${id}`);
+      if (line) line.classList.add('highlight');
+      const card = document.getElementById(`card-${id}`);
+      if (card) card.classList.add('active');
+    }
+
+    function unfocusCallout(id) {
+      const line = document.getElementById(`line-${id}`);
+      if (line) line.classList.remove('highlight');
+      const card = document.getElementById(`card-${id}`);
+      if (card) card.classList.remove('active');
+    }
+
+    // Category Filter
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.callout-card');
+      cards.forEach(card => {
+        const cCat = card.getAttribute('data-category');
+        const id = card.id.replace('card-', '');
+        const line = document.getElementById(`line-${id}`);
+
+        if (cat === 'all' || cCat === cat) {
+          card.style.opacity = '1';
+          card.style.pointerEvents = 'auto';
+          if (line) line.style.opacity = '0.75';
+        } else {
+          card.style.opacity = '0.15';
+          card.style.pointerEvents = 'none';
+          if (line) line.style.opacity = '0.05';
+        }
+      });
+    }
+
+    // Image Model Switcher (Cutaway vs Clean 3D vs Reference vs Site Photo)
+    function switchImageModel(model) {
+      const img = document.getElementById('transformerModelImg');
+      if (model === 'cutaway') {
+        img.src = 'transformer_cutaway_transparent.png';
+        img.style.borderRadius = '8px';
+        img.style.width = '480px';
+      } else if (model === 'digital_twin') {
+        img.src = 'transformer_digital_twin.jpg';
+        img.style.borderRadius = '12px';
+        img.style.width = '580px';
+      } else if (model === 'reference') {
+        img.src = 'transformer_labeled_ref.png';
+        img.style.borderRadius = '8px';
+        img.style.width = '620px';
+      } else if (model === 'site_photo') {
+        img.src = 'Transformer Photo/14100-TR-003.jpg';
+        img.style.borderRadius = '12px';
+        img.style.width = '540px';
+      }
+    }
+
+    // Light / Dark Theme Toggle with localStorage persistence
+    function toggleTheme() {
+      const html = document.documentElement;
+      const cur = html.getAttribute('data-theme') || 'light';
+      const next = cur === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('gpsc_theme', next);
+
+      const icon = document.querySelector('#themeBtn i');
+      if (icon) {
+        icon.className = next === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      }
+    }
+
+    // Initialize Theme on Page Load
+    function initTheme() {
+      const curAttr = document.documentElement.getAttribute('data-theme') || 'light';
+      const saved = localStorage.getItem('gpsc_theme') || curAttr;
+      document.documentElement.setAttribute('data-theme', saved);
+      const icon = document.querySelector('#themeBtn i');
+      if (icon) {
+        icon.className = saved === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      }
+    }
+    initTheme();
+  </script>
+</body>
+</html>
