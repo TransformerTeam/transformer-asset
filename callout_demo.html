@@ -459,7 +459,7 @@
       z-index: 25;
       display: flex;
       gap: 8px;
-      align-items: flex-start;
+      align-items: stretch;
       pointer-events: auto;
     }
 
@@ -538,11 +538,20 @@
       text-align: right;
     }
 
+    /* Cockpit Right Column (Gauge Row on top, Interpretation on bottom) */
+    .cockpit-right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 252px;
+    }
+
     /* Gauge & Life KPI Row (Side by Side to the right of Nameplate) */
     .gauge-life-row {
       display: flex;
-      gap: 7px;
+      gap: 6px;
       align-items: stretch;
+      height: 104px;
     }
 
     .gauge-card {
@@ -557,7 +566,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      width: 118px;
+      width: 120px;
       transition: all 0.25s ease;
     }
     .gauge-card:hover {
@@ -602,7 +611,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      width: 124px;
+      width: 126px;
     }
 
     .life-mini-card {
@@ -648,6 +657,92 @@
     }
     [data-theme="dark"] .life-mini-val {
       color: #22c55e;
+    }
+
+    /* Interpretation Card (Underneath Gauge & Life KPIs) */
+    .interpretation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 6px 9px 7px 9px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: flex-start;
+      transition: all 0.25s ease;
+    }
+    .interpretation-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .interpretation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-card);
+      margin-bottom: 5px;
+    }
+    .interpretation-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--card-title-color);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: -0.01em;
+    }
+    .interpretation-badge {
+      font-size: 0.58rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .badge-healthy {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-monitor {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-critical {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .interpretation-body {
+      font-size: 0.67rem;
+      line-height: 1.36;
+      color: var(--card-val-color);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .interp-box {
+      background: rgba(37, 99, 235, 0.06);
+      border-left: 3px solid #3b82f6;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 0.67rem;
+      line-height: 1.4;
+      color: var(--card-val-color);
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    [data-theme="dark"] .interp-box {
+      background: rgba(59, 130, 246, 0.1);
+      border-left-color: #60a5fa;
     }
 
     /* Preset Callout Positions (Responsive Full Scale Coordinates) */
@@ -841,57 +936,76 @@
           </table>
         </div>
 
-        <!-- Health Gauge & Life KPIs Row (Side by Side to the right of Nameplate) -->
-        <div class="gauge-life-row">
-          <!-- Speedometer Health Index Gauge -->
-          <div class="gauge-card">
-            <a id="np-eval-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <div class="gauge-clickable-area">
-              <svg viewBox="0 0 120 72" style="width: 104px; height: 60px; overflow: visible;">
-                <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="11" stroke-linecap="butt" />
-                <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="butt" />
-                <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="butt" />
+        <!-- Right Section: Gauge & Life KPIs (Top) + Interpretation (Bottom / Red Box) -->
+        <div class="cockpit-right-col">
+          <!-- Top Row: Speedometer Health Index Gauge & Life KPIs -->
+          <div class="gauge-life-row">
+            <!-- Speedometer Health Index Gauge -->
+            <div class="gauge-card">
+              <a id="np-eval-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <div class="gauge-clickable-area">
+                <svg viewBox="0 0 120 72" style="width: 104px; height: 60px; overflow: visible;">
+                  <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="11" stroke-linecap="butt" />
+                  <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="butt" />
+                  <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="butt" />
 
-                <text x="14" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
-                <text x="106" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
+                  <text x="14" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
+                  <text x="106" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
 
-                <!-- Pointer Needle -->
-                <g id="np-needle-group" transform="rotate(63 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-                  <polygon points="56.5,60 63.5,60 60,20" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1" />
-                  <circle cx="60" cy="60" r="5.5" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1.5" />
-                  <circle cx="60" cy="60" r="2" fill="var(--bg-card)" />
-                </g>
-              </svg>
-              <div style="text-align: center; margin-top: 1px; line-height: 1;">
-                <span id="np-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.12rem; font-weight: 800; color: #10b981;">HI 85%</span>
+                  <!-- Pointer Needle -->
+                  <g id="np-needle-group" transform="rotate(63 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <polygon points="56.5,60 63.5,60 60,20" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1" />
+                    <circle cx="60" cy="60" r="5.5" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1.5" />
+                    <circle cx="60" cy="60" r="2" fill="var(--bg-card)" />
+                  </g>
+                </svg>
+                <div style="text-align: center; margin-top: 1px; line-height: 1;">
+                  <span id="np-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.12rem; font-weight: 800; color: #10b981;">HI 85%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remaining Life & Estimated DP KPI Stack (Beside Gauge on the right) -->
+            <div class="kpi-mini-stack">
+              <!-- Remaining Life Card -->
+              <a id="np-life-link" href="remaining_life_report.html" target="_blank" class="life-mini-card" style="text-decoration: none;">
+                <div class="life-mini-header">
+                  <span><i class="fa-solid fa-hourglass-half" style="color: #38bdf8;"></i> Remaining Life</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.58rem; color: #38bdf8;"></i>
+                </div>
+                <div class="life-mini-val" id="np-life-val">35.4</div>
+              </a>
+
+              <!-- Estimated DP Card -->
+              <div class="life-mini-card">
+                <div class="life-mini-header">
+                  <span>
+                    <svg class="icon-dp-paper" viewBox="0 0 100 100" width="12" height="12" fill="currentColor" style="color: #38bdf8; vertical-align: -2px; margin-right: 3px; display: inline-block;">
+                      <path d="M66 10h13v1h-13ZM61 11h22v1h-22ZM57 12h28v1h-28ZM54 13h12v1h-12ZM78 13h10v1h-10ZM50 14h11v1h-11ZM82 14h7v1h-7ZM48 15h10v1h-10ZM85 15h5v1h-5ZM45 16h9v1h-9ZM87 16h3v1h-3ZM5 17h2v1h-2ZM42 17h9v1h-9ZM87 17h3v1h-3ZM4 18h5v1h-5ZM39 18h9v1h-9ZM87 18h3v1h-3ZM4 19h7v1h-7ZM35 19h10v1h-10ZM87 19h3v1h-3ZM4 20h10v1h-10ZM31 20h12v1h-12ZM87 20h3v1h-3ZM4 21h17v1h-17ZM23 21h16v1h-16ZM87 21h3v1h-3ZM4 22h4v1h-4ZM10 22h26v1h-26ZM72 22h12v1h-12ZM87 22h3v1h-3ZM4 23h4v1h-4ZM13 23h19v1h-19ZM67 23h23v1h-23ZM4 24h4v1h-4ZM20 24h4v1h-4ZM63 24h28v1h-28ZM4 25h4v1h-4ZM60 25h13v1h-13ZM74 25h4v1h-4ZM83 25h11v1h-11ZM4 26h4v1h-4ZM57 26h11v1h-11ZM73 26h4v1h-4ZM88 26h7v1h-7ZM4 27h4v1h-4ZM54 27h10v1h-10ZM72 27h4v1h-4ZM89 27h7v1h-7ZM4 28h4v1h-4ZM51 28h12v1h-12ZM71 28h4v1h-4ZM88 28h4v1h-4ZM93 28h4v1h-4ZM4 29h4v1h-4ZM12 29h1v1h-1ZM48 29h14v1h-14ZM70 29h4v1h-4ZM87 29h5v1h-5ZM93 29h4v1h-4ZM4 30h4v1h-4ZM11 30h4v1h-4ZM45 30h10v1h-10ZM57 30h4v1h-4ZM69 30h4v1h-4ZM86 30h4v1h-4ZM93 30h4v1h-4ZM4 31h4v1h-4ZM11 31h6v1h-6ZM42 31h10v1h-10ZM56 31h4v1h-4ZM68 31h4v1h-4ZM85 31h4v1h-4ZM93 31h4v1h-4ZM4 32h4v1h-4ZM11 32h9v1h-9ZM38 32h11v1h-11ZM55 32h4v1h-4ZM67 32h4v1h-4ZM84 32h5v1h-5ZM93 32h4v1h-4ZM4 33h4v1h-4ZM11 33h15v1h-15ZM31 33h15v1h-15ZM54 33h4v1h-4ZM66 33h4v1h-4ZM83 33h4v1h-4ZM93 33h4v1h-4ZM4 34h4v1h-4ZM11 34h3v1h-3ZM16 34h27v1h-27ZM53 34h4v1h-4ZM65 34h4v1h-4ZM82 34h5v1h-5ZM93 34h4v1h-4ZM4 35h4v1h-4ZM11 35h3v1h-3ZM19 35h20v1h-20ZM52 35h4v1h-4ZM64 35h4v1h-4ZM81 35h4v1h-4ZM93 35h4v1h-4ZM4 36h4v1h-4ZM11 36h3v1h-3ZM22 36h16v1h-16ZM51 36h4v1h-4ZM63 36h4v1h-4ZM80 36h5v1h-5ZM92 36h5v1h-5ZM4 37h4v1h-4ZM11 37h3v1h-3ZM21 37h4v1h-4ZM32 37h5v1h-5ZM50 37h4v1h-4ZM62 37h4v1h-4ZM79 37h4v1h-4ZM91 37h6v1h-6ZM4 38h4v1h-4ZM11 38h3v1h-3ZM20 38h4v1h-4ZM31 38h5v1h-5ZM49 38h4v1h-4ZM61 38h4v1h-4ZM79 38h3v1h-3ZM90 38h7v1h-7ZM4 39h4v1h-4ZM11 39h3v1h-3ZM19 39h4v1h-4ZM30 39h5v1h-5ZM48 39h4v1h-4ZM60 39h4v1h-4ZM80 39h1v1h-1ZM89 39h8v1h-8ZM4 40h4v1h-4ZM11 40h3v1h-3ZM18 40h4v1h-4ZM29 40h5v1h-5ZM47 40h4v1h-4ZM59 40h4v1h-4ZM88 40h4v1h-4ZM93 40h4v1h-4ZM4 41h4v1h-4ZM11 41h3v1h-3ZM17 41h4v1h-4ZM28 41h5v1h-5ZM46 41h4v1h-4ZM58 41h4v1h-4ZM87 41h4v1h-4ZM93 41h4v1h-4ZM4 42h4v1h-4ZM11 42h3v1h-3ZM16 42h4v1h-4ZM27 42h5v1h-5ZM45 42h4v1h-4ZM57 42h4v1h-4ZM86 42h4v1h-4ZM93 42h4v1h-4ZM4 43h4v1h-4ZM11 43h3v1h-3ZM15 43h4v1h-4ZM26 43h5v1h-5ZM44 43h4v1h-4ZM56 43h4v1h-4ZM73 43h3v1h-3ZM85 43h4v1h-4ZM93 43h4v1h-4ZM4 44h4v1h-4ZM11 44h7v1h-7ZM25 44h5v1h-5ZM43 44h4v1h-4ZM55 44h4v1h-4ZM72 44h4v1h-4ZM84 44h4v1h-4ZM93 44h4v1h-4ZM4 45h4v1h-4ZM11 45h6v1h-6ZM24 45h5v1h-5ZM42 45h4v1h-4ZM54 45h4v1h-4ZM71 45h4v1h-4ZM83 45h4v1h-4ZM93 45h4v1h-4ZM4 46h4v1h-4ZM11 46h5v1h-5ZM23 46h5v1h-5ZM41 46h4v1h-4ZM53 46h4v1h-4ZM70 46h5v1h-5ZM82 46h4v1h-4ZM93 46h4v1h-4ZM4 47h4v1h-4ZM11 47h4v1h-4ZM22 47h5v1h-5ZM40 47h4v1h-4ZM52 47h4v1h-4ZM70 47h3v1h-3ZM81 47h4v1h-4ZM93 47h4v1h-4ZM4 48h4v1h-4ZM11 48h3v1h-3ZM21 48h5v1h-5ZM39 48h4v1h-4ZM51 48h4v1h-4ZM71 48h2v1h-2ZM80 48h4v1h-4ZM93 48h4v1h-4ZM4 49h4v1h-4ZM11 49h3v1h-3ZM20 49h5v1h-5ZM38 49h4v1h-4ZM50 49h4v1h-4ZM79 49h4v1h-4ZM93 49h4v1h-4ZM4 50h4v1h-4ZM11 50h3v1h-3ZM19 50h5v1h-5ZM37 50h4v1h-4ZM49 50h4v1h-4ZM78 50h4v1h-4ZM93 50h4v1h-4ZM4 51h4v1h-4ZM11 51h3v1h-3ZM18 51h5v1h-5ZM36 51h4v1h-4ZM48 51h4v1h-4ZM77 51h4v1h-4ZM93 51h4v1h-4ZM4 52h4v1h-4ZM11 52h3v1h-3ZM17 52h5v1h-5ZM35 52h4v1h-4ZM47 52h4v1h-4ZM64 52h3v1h-3ZM76 52h4v1h-4ZM93 52h4v1h-4ZM4 53h4v1h-4ZM11 53h3v1h-3ZM16 53h5v1h-5ZM34 53h4v1h-4ZM46 53h4v1h-4ZM63 53h4v1h-4ZM75 53h4v1h-4ZM92 53h5v1h-5ZM4 54h4v1h-4ZM11 54h3v1h-3ZM15 54h5v1h-5ZM33 54h4v1h-4ZM45 54h4v1h-4ZM62 54h4v1h-4ZM74 54h4v1h-4ZM91 54h6v1h-6ZM4 55h4v1h-4ZM11 55h8v1h-8ZM32 55h4v1h-4ZM44 55h4v1h-4ZM61 55h5v1h-5ZM73 55h4v1h-4ZM90 55h7v1h-7ZM4 56h4v1h-4ZM11 56h7v1h-7ZM31 56h4v1h-4ZM43 56h4v1h-4ZM61 56h3v1h-3ZM72 56h4v1h-4ZM89 56h8v1h-8ZM4 57h4v1h-4ZM11 57h6v1h-6ZM30 57h4v1h-4ZM42 57h4v1h-4ZM62 57h1v1h-1ZM71 57h4v1h-4ZM88 57h9v1h-9ZM4 58h4v1h-4ZM11 58h5v1h-5ZM29 58h4v1h-4ZM41 58h4v1h-4ZM70 58h4v1h-4ZM87 58h5v1h-5ZM93 58h4v1h-4ZM4 59h4v1h-4ZM11 59h4v1h-4ZM28 59h4v1h-4ZM40 59h4v1h-4ZM69 59h4v1h-4ZM86 59h5v1h-5ZM93 59h4v1h-4ZM4 60h4v1h-4ZM11 60h3v1h-3ZM27 60h4v1h-4ZM39 60h4v1h-4ZM68 60h4v1h-4ZM85 60h5v1h-5ZM93 60h4v1h-4ZM4 61h4v1h-4ZM11 61h3v1h-3ZM26 61h4v1h-4ZM38 61h4v1h-4ZM55 61h3v1h-3ZM67 61h4v1h-4ZM84 61h5v1h-5ZM93 61h4v1h-4ZM4 62h4v1h-4ZM11 62h3v1h-3ZM25 62h4v1h-4ZM37 62h4v1h-4ZM54 62h4v1h-4ZM66 62h4v1h-4ZM83 62h5v1h-5ZM93 62h4v1h-4ZM4 63h4v1h-4ZM11 63h3v1h-3ZM24 63h4v1h-4ZM36 63h4v1h-4ZM53 63h4v1h-4ZM65 63h4v1h-4ZM82 63h5v1h-5ZM93 63h4v1h-4ZM4 64h4v1h-4ZM11 64h3v1h-3ZM23 64h4v1h-4ZM35 64h4v1h-4ZM52 64h4v1h-4ZM64 64h4v1h-4ZM81 64h5v1h-5ZM93 64h4v1h-4ZM4 65h4v1h-4ZM11 65h3v1h-3ZM22 65h4v1h-4ZM34 65h4v1h-4ZM52 65h4v1h-4ZM63 65h4v1h-4ZM80 65h5v1h-5ZM92 65h5v1h-5ZM4 66h4v1h-4ZM11 66h3v1h-3ZM21 66h4v1h-4ZM33 66h4v1h-4ZM52 66h2v1h-2ZM62 66h4v1h-4ZM79 66h5v1h-5ZM91 66h6v1h-6ZM4 67h4v1h-4ZM11 67h3v1h-3ZM20 67h4v1h-4ZM32 67h4v1h-4ZM61 67h4v1h-4ZM78 67h5v1h-5ZM90 67h7v1h-7ZM4 68h4v1h-4ZM11 68h3v1h-3ZM19 68h4v1h-4ZM31 68h4v1h-4ZM60 68h4v1h-4ZM77 68h5v1h-5ZM89 68h8v1h-8ZM4 69h4v1h-4ZM11 69h3v1h-3ZM18 69h4v1h-4ZM30 69h4v1h-4ZM59 69h4v1h-4ZM76 69h5v1h-5ZM88 69h9v1h-9ZM4 70h4v1h-4ZM11 70h3v1h-3ZM17 70h4v1h-4ZM29 70h4v1h-4ZM46 70h2v1h-2ZM58 70h4v1h-4ZM75 70h5v1h-5ZM87 70h5v1h-5ZM93 70h4v1h-4ZM4 71h4v1h-4ZM11 71h3v1h-3ZM16 71h4v1h-4ZM28 71h4v1h-4ZM45 71h4v1h-4ZM57 71h4v1h-4ZM74 71h5v1h-5ZM86 71h5v1h-5ZM93 71h4v1h-4ZM4 72h4v1h-4ZM11 72h3v1h-3ZM15 72h4v1h-4ZM27 72h4v1h-4ZM44 72h5v1h-5ZM56 72h4v1h-4ZM73 72h5v1h-5ZM85 72h5v1h-5ZM93 72h4v1h-4ZM4 73h5v1h-5ZM11 73h7v1h-7ZM26 73h4v1h-4ZM43 73h4v1h-4ZM55 73h4v1h-4ZM72 73h5v1h-5ZM84 73h5v1h-5ZM93 73h4v1h-4ZM5 74h12v1h-12ZM25 74h4v1h-4ZM42 74h5v1h-5ZM54 74h4v1h-4ZM71 74h5v1h-5ZM83 74h5v1h-5ZM93 74h4v1h-4ZM6 75h10v1h-10ZM24 75h4v1h-4ZM41 75h4v1h-4ZM53 75h4v1h-4ZM70 75h5v1h-5ZM82 75h5v1h-5ZM93 75h4v1h-4ZM8 76h7v1h-7ZM23 76h4v1h-4ZM40 76h5v1h-5ZM52 76h4v1h-4ZM69 76h5v1h-5ZM81 76h5v1h-5ZM93 76h4v1h-4ZM10 77h4v1h-4ZM22 77h4v1h-4ZM39 77h5v1h-5ZM51 77h4v1h-4ZM68 77h17v1h-17ZM93 77h4v1h-4ZM11 78h3v1h-3ZM21 78h4v1h-4ZM38 78h4v1h-4ZM50 78h4v1h-4ZM67 78h22v1h-22ZM93 78h4v1h-4ZM11 79h3v1h-3ZM20 79h4v1h-4ZM37 79h5v1h-5ZM49 79h4v1h-4ZM63 79h28v1h-28ZM93 79h4v1h-4ZM11 80h3v1h-3ZM19 80h4v1h-4ZM36 80h4v1h-4ZM48 80h4v1h-4ZM60 80h13v1h-13ZM84 80h13v1h-13ZM11 81h3v1h-3ZM18 81h4v1h-4ZM35 81h5v1h-5ZM47 81h4v1h-4ZM57 81h11v1h-11ZM88 81h9v1h-9ZM11 82h3v1h-3ZM17 82h4v1h-4ZM34 82h4v1h-4ZM46 82h4v1h-4ZM54 82h10v1h-10ZM91 82h6v1h-6ZM11 83h3v1h-3ZM16 83h4v1h-4ZM33 83h4v1h-4ZM45 83h4v1h-4ZM51 83h9v1h-9ZM93 83h3v1h-3ZM11 84h3v1h-3ZM15 84h4v1h-4ZM32 84h5v1h-5ZM44 84h14v1h-14ZM94 84h2v1h-2ZM11 85h7v1h-7ZM31 85h4v1h-4ZM43 85h12v1h-12ZM11 86h6v1h-6ZM30 86h5v1h-5ZM42 86h10v1h-10ZM12 87h8v1h-8ZM29 87h4v1h-4ZM37 87h12v1h-12ZM14 88h9v1h-9ZM28 88h18v1h-18ZM16 89h7v1h-7ZM28 89h14v1h-14ZM19 90h4v1h-4ZM29 90h9v1h-9Z"/>
+                    </svg>
+                    Estimated DP
+                  </span>
+                </div>
+                <div class="life-mini-val" id="np-dp-val">1,031</div>
               </div>
             </div>
           </div>
 
-          <!-- Remaining Life & Estimated DP KPI Stack (Beside Gauge on the right) -->
-          <div class="kpi-mini-stack">
-            <!-- Remaining Life Card -->
-            <a id="np-life-link" href="remaining_life_report.html" target="_blank" class="life-mini-card" style="text-decoration: none;">
-              <div class="life-mini-header">
-                <span><i class="fa-solid fa-hourglass-half" style="color: #38bdf8;"></i> Remaining Life</span>
-                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.58rem; color: #38bdf8;"></i>
+          <!-- Bottom: Interpretation & Actions Card (Red Box) -->
+          <div class="interpretation-card" id="cockpitInterpretation">
+            <div class="interpretation-header">
+              <div class="interpretation-title">
+                <i class="fa-solid fa-clipboard-check" style="color: #3b82f6;"></i>
+                <span>Interpretation</span>
               </div>
-              <div class="life-mini-val" id="np-life-val">35.4</div>
-            </a>
-
-            <!-- Estimated DP Card -->
-            <div class="life-mini-card">
-              <div class="life-mini-header">
-                <span>
-                  <svg class="icon-dp-paper" viewBox="0 0 100 100" width="12" height="12" fill="currentColor" style="color: #38bdf8; vertical-align: -2px; margin-right: 3px; display: inline-block;">
-                    <path d="M66 10h13v1h-13ZM61 11h22v1h-22ZM57 12h28v1h-28ZM54 13h12v1h-12ZM78 13h10v1h-10ZM50 14h11v1h-11ZM82 14h7v1h-7ZM48 15h10v1h-10ZM85 15h5v1h-5ZM45 16h9v1h-9ZM87 16h3v1h-3ZM5 17h2v1h-2ZM42 17h9v1h-9ZM87 17h3v1h-3ZM4 18h5v1h-5ZM39 18h9v1h-9ZM87 18h3v1h-3ZM4 19h7v1h-7ZM35 19h10v1h-10ZM87 19h3v1h-3ZM4 20h10v1h-10ZM31 20h12v1h-12ZM87 20h3v1h-3ZM4 21h17v1h-17ZM23 21h16v1h-16ZM87 21h3v1h-3ZM4 22h4v1h-4ZM10 22h26v1h-26ZM72 22h12v1h-12ZM87 22h3v1h-3ZM4 23h4v1h-4ZM13 23h19v1h-19ZM67 23h23v1h-23ZM4 24h4v1h-4ZM20 24h4v1h-4ZM63 24h28v1h-28ZM4 25h4v1h-4ZM60 25h13v1h-13ZM74 25h4v1h-4ZM83 25h11v1h-11ZM4 26h4v1h-4ZM57 26h11v1h-11ZM73 26h4v1h-4ZM88 26h7v1h-7ZM4 27h4v1h-4ZM54 27h10v1h-10ZM72 27h4v1h-4ZM89 27h7v1h-7ZM4 28h4v1h-4ZM51 28h12v1h-12ZM71 28h4v1h-4ZM88 28h4v1h-4ZM93 28h4v1h-4ZM4 29h4v1h-4ZM12 29h1v1h-1ZM48 29h14v1h-14ZM70 29h4v1h-4ZM87 29h5v1h-5ZM93 29h4v1h-4ZM4 30h4v1h-4ZM11 30h4v1h-4ZM45 30h10v1h-10ZM57 30h4v1h-4ZM69 30h4v1h-4ZM86 30h4v1h-4ZM93 30h4v1h-4ZM4 31h4v1h-4ZM11 31h6v1h-6ZM42 31h10v1h-10ZM56 31h4v1h-4ZM68 31h4v1h-4ZM85 31h4v1h-4ZM93 31h4v1h-4ZM4 32h4v1h-4ZM11 32h9v1h-9ZM38 32h11v1h-11ZM55 32h4v1h-4ZM67 32h4v1h-4ZM84 32h5v1h-5ZM93 32h4v1h-4ZM4 33h4v1h-4ZM11 33h15v1h-15ZM31 33h15v1h-15ZM54 33h4v1h-4ZM66 33h4v1h-4ZM83 33h4v1h-4ZM93 33h4v1h-4ZM4 34h4v1h-4ZM11 34h3v1h-3ZM16 34h27v1h-27ZM53 34h4v1h-4ZM65 34h4v1h-4ZM82 34h5v1h-5ZM93 34h4v1h-4ZM4 35h4v1h-4ZM11 35h3v1h-3ZM19 35h20v1h-20ZM52 35h4v1h-4ZM64 35h4v1h-4ZM81 35h4v1h-4ZM93 35h4v1h-4ZM4 36h4v1h-4ZM11 36h3v1h-3ZM22 36h16v1h-16ZM51 36h4v1h-4ZM63 36h4v1h-4ZM80 36h5v1h-5ZM92 36h5v1h-5ZM4 37h4v1h-4ZM11 37h3v1h-3ZM21 37h4v1h-4ZM32 37h5v1h-5ZM50 37h4v1h-4ZM62 37h4v1h-4ZM79 37h4v1h-4ZM91 37h6v1h-6ZM4 38h4v1h-4ZM11 38h3v1h-3ZM20 38h4v1h-4ZM31 38h5v1h-5ZM49 38h4v1h-4ZM61 38h4v1h-4ZM79 38h3v1h-3ZM90 38h7v1h-7ZM4 39h4v1h-4ZM11 39h3v1h-3ZM19 39h4v1h-4ZM30 39h5v1h-5ZM48 39h4v1h-4ZM60 39h4v1h-4ZM80 39h1v1h-1ZM89 39h8v1h-8ZM4 40h4v1h-4ZM11 40h3v1h-3ZM18 40h4v1h-4ZM29 40h5v1h-5ZM47 40h4v1h-4ZM59 40h4v1h-4ZM88 40h4v1h-4ZM93 40h4v1h-4ZM4 41h4v1h-4ZM11 41h3v1h-3ZM17 41h4v1h-4ZM28 41h5v1h-5ZM46 41h4v1h-4ZM58 41h4v1h-4ZM87 41h4v1h-4ZM93 41h4v1h-4ZM4 42h4v1h-4ZM11 42h3v1h-3ZM16 42h4v1h-4ZM27 42h5v1h-5ZM45 42h4v1h-4ZM57 42h4v1h-4ZM86 42h4v1h-4ZM93 42h4v1h-4ZM4 43h4v1h-4ZM11 43h3v1h-3ZM15 43h4v1h-4ZM26 43h5v1h-5ZM44 43h4v1h-4ZM56 43h4v1h-4ZM73 43h3v1h-3ZM85 43h4v1h-4ZM93 43h4v1h-4ZM4 44h4v1h-4ZM11 44h7v1h-7ZM25 44h5v1h-5ZM43 44h4v1h-4ZM55 44h4v1h-4ZM72 44h4v1h-4ZM84 44h4v1h-4ZM93 44h4v1h-4ZM4 45h4v1h-4ZM11 45h6v1h-6ZM24 45h5v1h-5ZM42 45h4v1h-4ZM54 45h4v1h-4ZM71 45h4v1h-4ZM83 45h4v1h-4ZM93 45h4v1h-4ZM4 46h4v1h-4ZM11 46h5v1h-5ZM23 46h5v1h-5ZM41 46h4v1h-4ZM53 46h4v1h-4ZM70 46h5v1h-5ZM82 46h4v1h-4ZM93 46h4v1h-4ZM4 47h4v1h-4ZM11 47h4v1h-4ZM22 47h5v1h-5ZM40 47h4v1h-4ZM52 47h4v1h-4ZM70 47h3v1h-3ZM81 47h4v1h-4ZM93 47h4v1h-4ZM4 48h4v1h-4ZM11 48h3v1h-3ZM21 48h5v1h-5ZM39 48h4v1h-4ZM51 48h4v1h-4ZM71 48h2v1h-2ZM80 48h4v1h-4ZM93 48h4v1h-4ZM4 49h4v1h-4ZM11 49h3v1h-3ZM20 49h5v1h-5ZM38 49h4v1h-4ZM50 49h4v1h-4ZM79 49h4v1h-4ZM93 49h4v1h-4ZM4 50h4v1h-4ZM11 50h3v1h-3ZM19 50h5v1h-5ZM37 50h4v1h-4ZM49 50h4v1h-4ZM78 50h4v1h-4ZM93 50h4v1h-4ZM4 51h4v1h-4ZM11 51h3v1h-3ZM18 51h5v1h-5ZM36 51h4v1h-4ZM48 51h4v1h-4ZM77 51h4v1h-4ZM93 51h4v1h-4ZM4 52h4v1h-4ZM11 52h3v1h-3ZM17 52h5v1h-5ZM35 52h4v1h-4ZM47 52h4v1h-4ZM64 52h3v1h-3ZM76 52h4v1h-4ZM93 52h4v1h-4ZM4 53h4v1h-4ZM11 53h3v1h-3ZM16 53h5v1h-5ZM34 53h4v1h-4ZM46 53h4v1h-4ZM63 53h4v1h-4ZM75 53h4v1h-4ZM92 53h5v1h-5ZM4 54h4v1h-4ZM11 54h3v1h-3ZM15 54h5v1h-5ZM33 54h4v1h-4ZM45 54h4v1h-4ZM62 54h4v1h-4ZM74 54h4v1h-4ZM91 54h6v1h-6ZM4 55h4v1h-4ZM11 55h8v1h-8ZM32 55h4v1h-4ZM44 55h4v1h-4ZM61 55h5v1h-5ZM73 55h4v1h-4ZM90 55h7v1h-7ZM4 56h4v1h-4ZM11 56h7v1h-7ZM31 56h4v1h-4ZM43 56h4v1h-4ZM61 56h3v1h-3ZM72 56h4v1h-4ZM89 56h8v1h-8ZM4 57h4v1h-4ZM11 57h6v1h-6ZM30 57h4v1h-4ZM42 57h4v1h-4ZM62 57h1v1h-1ZM71 57h4v1h-4ZM88 57h9v1h-9ZM4 58h4v1h-4ZM11 58h5v1h-5ZM29 58h4v1h-4ZM41 58h4v1h-4ZM70 58h4v1h-4ZM87 58h5v1h-5ZM93 58h4v1h-4ZM4 59h4v1h-4ZM11 59h4v1h-4ZM28 59h4v1h-4ZM40 59h4v1h-4ZM69 59h4v1h-4ZM86 59h5v1h-5ZM93 59h4v1h-4ZM4 60h4v1h-4ZM11 60h3v1h-3ZM27 60h4v1h-4ZM39 60h4v1h-4ZM68 60h4v1h-4ZM85 60h5v1h-5ZM93 60h4v1h-4ZM4 61h4v1h-4ZM11 61h3v1h-3ZM26 61h4v1h-4ZM38 61h4v1h-4ZM55 61h3v1h-3ZM67 61h4v1h-4ZM84 61h5v1h-5ZM93 61h4v1h-4ZM4 62h4v1h-4ZM11 62h3v1h-3ZM25 62h4v1h-4ZM37 62h4v1h-4ZM54 62h4v1h-4ZM66 62h4v1h-4ZM83 62h5v1h-5ZM93 62h4v1h-4ZM4 63h4v1h-4ZM11 63h3v1h-3ZM24 63h4v1h-4ZM36 63h4v1h-4ZM53 63h4v1h-4ZM65 63h4v1h-4ZM82 63h5v1h-5ZM93 63h4v1h-4ZM4 64h4v1h-4ZM11 64h3v1h-3ZM23 64h4v1h-4ZM35 64h4v1h-4ZM52 64h4v1h-4ZM64 64h4v1h-4ZM81 64h5v1h-5ZM93 64h4v1h-4ZM4 65h4v1h-4ZM11 65h3v1h-3ZM22 65h4v1h-4ZM34 65h4v1h-4ZM52 65h4v1h-4ZM63 65h4v1h-4ZM80 65h5v1h-5ZM92 65h5v1h-5ZM4 66h4v1h-4ZM11 66h3v1h-3ZM21 66h4v1h-4ZM33 66h4v1h-4ZM52 66h2v1h-2ZM62 66h4v1h-4ZM79 66h5v1h-5ZM91 66h6v1h-6ZM4 67h4v1h-4ZM11 67h3v1h-3ZM20 67h4v1h-4ZM32 67h4v1h-4ZM61 67h4v1h-4ZM78 67h5v1h-5ZM90 67h7v1h-7ZM4 68h4v1h-4ZM11 68h3v1h-3ZM19 68h4v1h-4ZM31 68h4v1h-4ZM60 68h4v1h-4ZM77 68h5v1h-5ZM89 68h8v1h-8ZM4 69h4v1h-4ZM11 69h3v1h-3ZM18 69h4v1h-4ZM30 69h4v1h-4ZM59 69h4v1h-4ZM76 69h5v1h-5ZM88 69h9v1h-9ZM4 70h4v1h-4ZM11 70h3v1h-3ZM17 70h4v1h-4ZM29 70h4v1h-4ZM46 70h2v1h-2ZM58 70h4v1h-4ZM75 70h5v1h-5ZM87 70h5v1h-5ZM93 70h4v1h-4ZM4 71h4v1h-4ZM11 71h3v1h-3ZM16 71h4v1h-4ZM28 71h4v1h-4ZM45 71h4v1h-4ZM57 71h4v1h-4ZM74 71h5v1h-5ZM86 71h5v1h-5ZM93 71h4v1h-4ZM4 72h4v1h-4ZM11 72h3v1h-3ZM15 72h4v1h-4ZM27 72h4v1h-4ZM44 72h5v1h-5ZM56 72h4v1h-4ZM73 72h5v1h-5ZM85 72h5v1h-5ZM93 72h4v1h-4ZM4 73h5v1h-5ZM11 73h7v1h-7ZM26 73h4v1h-4ZM43 73h4v1h-4ZM55 73h4v1h-4ZM72 73h5v1h-5ZM84 73h5v1h-5ZM93 73h4v1h-4ZM5 74h12v1h-12ZM25 74h4v1h-4ZM42 74h5v1h-5ZM54 74h4v1h-4ZM71 74h5v1h-5ZM83 74h5v1h-5ZM93 74h4v1h-4ZM6 75h10v1h-10ZM24 75h4v1h-4ZM41 75h4v1h-4ZM53 75h4v1h-4ZM70 75h5v1h-5ZM82 75h5v1h-5ZM93 75h4v1h-4ZM8 76h7v1h-7ZM23 76h4v1h-4ZM40 76h5v1h-5ZM52 76h4v1h-4ZM69 76h5v1h-5ZM81 76h5v1h-5ZM93 76h4v1h-4ZM10 77h4v1h-4ZM22 77h4v1h-4ZM39 77h5v1h-5ZM51 77h4v1h-4ZM68 77h17v1h-17ZM93 77h4v1h-4ZM11 78h3v1h-3ZM21 78h4v1h-4ZM38 78h4v1h-4ZM50 78h4v1h-4ZM67 78h22v1h-22ZM93 78h4v1h-4ZM11 79h3v1h-3ZM20 79h4v1h-4ZM37 79h5v1h-5ZM49 79h4v1h-4ZM63 79h28v1h-28ZM93 79h4v1h-4ZM11 80h3v1h-3ZM19 80h4v1h-4ZM36 80h4v1h-4ZM48 80h4v1h-4ZM60 80h13v1h-13ZM84 80h13v1h-13ZM11 81h3v1h-3ZM18 81h4v1h-4ZM35 81h5v1h-5ZM47 81h4v1h-4ZM57 81h11v1h-11ZM88 81h9v1h-9ZM11 82h3v1h-3ZM17 82h4v1h-4ZM34 82h4v1h-4ZM46 82h4v1h-4ZM54 82h10v1h-10ZM91 82h6v1h-6ZM11 83h3v1h-3ZM16 83h4v1h-4ZM33 83h4v1h-4ZM45 83h4v1h-4ZM51 83h9v1h-9ZM93 83h3v1h-3ZM11 84h3v1h-3ZM15 84h4v1h-4ZM32 84h5v1h-5ZM44 84h14v1h-14ZM94 84h2v1h-2ZM11 85h7v1h-7ZM31 85h4v1h-4ZM43 85h12v1h-12ZM11 86h6v1h-6ZM30 86h5v1h-5ZM42 86h10v1h-10ZM12 87h8v1h-8ZM29 87h4v1h-4ZM37 87h12v1h-12ZM14 88h9v1h-9ZM28 88h18v1h-18ZM16 89h7v1h-7ZM28 89h14v1h-14ZM19 90h4v1h-4ZM29 90h9v1h-9Z"/>
-                  </svg>
-                  Estimated DP
-                </span>
+              <span class="interpretation-badge badge-healthy" id="np-interp-badge">Healthy</span>
+            </div>
+            <div class="interpretation-body">
+              <div class="interp-box" id="np-interp-text">
+                Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.
               </div>
-              <div class="life-mini-val" id="np-dp-val">1,031</div>
             </div>
           </div>
         </div>
@@ -1116,6 +1230,9 @@
         hiColor: '#10b981',
         life: '35.4',
         dp: '1,031',
+        interpBadge: 'Healthy',
+        interpClass: 'badge-healthy',
+        recommendation: 'Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.',
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
         bushingA: '+30.7% (≤40%)',
@@ -1163,6 +1280,9 @@
         hiColor: '#10b981',
         life: '38.2',
         dp: '1,050',
+        interpBadge: 'Healthy',
+        interpClass: 'badge-healthy',
+        recommendation: 'Plan visual maintenance & repair minor defects: Check tap changer compartment and seal.',
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
         bushingA: '+22.5% (≤40%)',
@@ -1210,6 +1330,9 @@
         hiColor: '#f59e0b',
         life: '29.1',
         dp: '937',
+        interpBadge: 'Monitor',
+        interpClass: 'badge-monitor',
+        recommendation: 'Repair oil leak and hot oil purify, Add passivator.',
         bushingStatus: 'No Data',
         bushingClass: 'status-warning',
         bushingA: 'Not Tested',
@@ -1276,6 +1399,15 @@
       }
       if (document.getElementById('np-dp-val')) {
         document.getElementById('np-dp-val').textContent = d.dp || '-';
+      }
+
+      // Update Interpretation Card
+      if (document.getElementById('np-interp-badge')) {
+        document.getElementById('np-interp-badge').textContent = d.interpBadge || 'Healthy';
+        document.getElementById('np-interp-badge').className = `interpretation-badge ${d.interpClass || 'badge-healthy'}`;
+      }
+      if (document.getElementById('np-interp-text')) {
+        document.getElementById('np-interp-text').textContent = d.recommendation || '-';
       }
 
       // Bushing
