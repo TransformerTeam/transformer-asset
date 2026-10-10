@@ -840,9 +840,79 @@
     }
     
     /* Right Column Callouts */
-    #card-lvbushing   { top: 5%; right: 36px; }
-    #card-activepart  { top: 38%; right: 36px; }
-    #card-oildga      { bottom: 5%; top: auto; right: 36px; }
+    /* Surge Arrester Matrix Table Callout */
+    #card-lvbushing {
+      top: 14px;
+      right: 24px;
+      width: fit-content;
+      min-width: 480px;
+      padding: 8px 10px 10px 10px;
+    }
+    #card-lvbushing:hover, #card-lvbushing.active {
+      transform: translateY(-4px) scale(1.02);
+    }
+    #card-lvbushing .callout-header {
+      margin-bottom: 6px;
+    }
+
+    .surge-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.62rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .surge-matrix-table th {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--card-label-color);
+      font-weight: 700;
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      padding: 3.5px 2px;
+      border: 1px solid var(--border-card);
+      text-align: center;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .surge-matrix-table th {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .surge-matrix-table th:first-child {
+      text-align: left;
+      padding-left: 6px;
+    }
+    .surge-matrix-table td {
+      padding: 3.5px 2px;
+      border: 1px solid var(--border-card);
+      text-align: center;
+      font-size: 0.62rem;
+      color: var(--card-val-color);
+      white-space: nowrap;
+    }
+    .surge-matrix-table td.col-item {
+      text-align: left;
+      padding-left: 6px;
+      padding-right: 4px;
+      font-weight: 700;
+      color: var(--card-title-color);
+      white-space: nowrap;
+    }
+    .surge-matrix-table td.col-std {
+      font-weight: 600;
+      color: var(--card-label-color);
+      font-size: 0.58rem;
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .surge-matrix-table td.col-val {
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    #card-activepart  { top: 40%; right: 24px; }
+    #card-oildga      { bottom: 5%; top: auto; right: 24px; }
 
     /* Bottom Info Banner */
     .twin-footer-info {
@@ -1218,29 +1288,76 @@
         </table>
       </div>
 
-      <!-- 5. Right Top: Low Voltage Bushings & Surge -->
+      <!-- 5. Right Top: Surge Arrester Matrix Table -->
       <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
         <div class="callout-header">
           <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-shield-halved"></i></span>
-            Surge Arrester &amp; LV
+            <span class="callout-icon" style="background: rgba(234, 179, 8, 0.15); color: #eab308;"><i class="fa-solid fa-bolt"></i></span>
+            <span>Surge Arrester</span>
+            <a id="surge-doc-link" href="surge_report.html" target="_blank" class="bushing-doc-btn" title="Open Surge Arrester Report">
+              <i class="fa-regular fa-file-lines"></i>
+            </a>
           </div>
           <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Insulation Resistance:</span>
-            <span class="data-val val-highlight" id="val-surge-ir">&gt; 12,000 MΩ</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Leakage Current:</span>
-            <span class="data-val" id="val-surge-leak">0.15 mA</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Watt Loss:</span>
-            <span class="data-val" id="val-surge-watt">128 W (Pass)</span>
-          </div>
-        </div>
+        <table class="surge-matrix-table">
+          <thead>
+            <tr>
+              <th>ITEM TEST</th>
+              <th>STANDARD</th>
+              <th>HV. A</th>
+              <th>HV. B</th>
+              <th>HV. C</th>
+              <th>HV. A/2</th>
+              <th>HV. B/2</th>
+              <th>HV. C/2</th>
+              <th>LV. A</th>
+              <th>LV. B</th>
+              <th>LV. C</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-item">Insulation Resistance (MΩ)</td>
+              <td class="col-std">EGAT</td>
+              <td class="col-val" id="val-surge_ir_hva">-</td>
+              <td class="col-val" id="val-surge_ir_hvb">-</td>
+              <td class="col-val" id="val-surge_ir_hvc">-</td>
+              <td class="col-val" id="val-surge_ir_hva2">-</td>
+              <td class="col-val" id="val-surge_ir_hvb2">-</td>
+              <td class="col-val" id="val-surge_ir_hvc2">-</td>
+              <td class="col-val" id="val-surge_ir_lva">-</td>
+              <td class="col-val" id="val-surge_ir_lvb">-</td>
+              <td class="col-val" id="val-surge_ir_lvc">-</td>
+            </tr>
+            <tr>
+              <td class="col-item">Current (mA)</td>
+              <td class="col-std">EGAT</td>
+              <td class="col-val" id="val-surge_curr_hva">-</td>
+              <td class="col-val" id="val-surge_curr_hvb">-</td>
+              <td class="col-val" id="val-surge_curr_hvc">-</td>
+              <td class="col-val" id="val-surge_curr_hva2">-</td>
+              <td class="col-val" id="val-surge_curr_hvb2">-</td>
+              <td class="col-val" id="val-surge_curr_hvc2">-</td>
+              <td class="col-val" id="val-surge_curr_lva">-</td>
+              <td class="col-val" id="val-surge_curr_lvb">-</td>
+              <td class="col-val" id="val-surge_curr_lvc">-</td>
+            </tr>
+            <tr>
+              <td class="col-item">Watt Loss (W)</td>
+              <td class="col-std">EGAT</td>
+              <td class="col-val" id="val-surge_watt_hva">-</td>
+              <td class="col-val" id="val-surge_watt_hvb">-</td>
+              <td class="col-val" id="val-surge_watt_hvc">-</td>
+              <td class="col-val" id="val-surge_watt_hva2">-</td>
+              <td class="col-val" id="val-surge_watt_hvb2">-</td>
+              <td class="col-val" id="val-surge_watt_hvc2">-</td>
+              <td class="col-val" id="val-surge_watt_lva">-</td>
+              <td class="col-val" id="val-surge_watt_lvb">-</td>
+              <td class="col-val" id="val-surge_watt_lvc">-</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- 6. Right Middle: Active Part (Copper Windings & Core) -->
@@ -1352,9 +1469,15 @@
         cap_lvc: '-',
         surgeStatus: 'Normal',
         surgeClass: 'status-normal',
-        surgeIr: '> 12,000 MΩ',
-        surgeLeak: '0.15 mA',
-        surgeWatt: '128 W (Pass)',
+        surge_ir_hva: '> 12k', surge_ir_hvb: '> 12k', surge_ir_hvc: '> 12k',
+        surge_ir_hva2: '-', surge_ir_hvb2: '-', surge_ir_hvc2: '-',
+        surge_ir_lva: '> 10k', surge_ir_lvb: '> 10k', surge_ir_lvc: '> 10k',
+        surge_curr_hva: '0.15', surge_curr_hvb: '0.14', surge_curr_hvc: '0.15',
+        surge_curr_hva2: '-', surge_curr_hvb2: '-', surge_curr_hvc2: '-',
+        surge_curr_lva: '0.12', surge_curr_lvb: '0.11', surge_curr_lvc: '0.12',
+        surge_watt_hva: '128', surge_watt_hvb: '125', surge_watt_hvc: '130',
+        surge_watt_hva2: '-', surge_watt_hvb2: '-', surge_watt_hvc2: '-',
+        surge_watt_lva: '95', surge_watt_lvb: '92', surge_watt_lvc: '98',
         activeStatus: 'Normal',
         activeClass: 'status-normal',
         activePi: 'HV=2.14 (>1.25)',
@@ -1410,9 +1533,15 @@
         cap_lvc: '-',
         surgeStatus: 'Normal',
         surgeClass: 'status-normal',
-        surgeIr: '> 15,000 MΩ',
-        surgeLeak: '0.12 mA',
-        surgeWatt: '110 W (Pass)',
+        surge_ir_hva: '> 15k', surge_ir_hvb: '> 15k', surge_ir_hvc: '> 15k',
+        surge_ir_hva2: '-', surge_ir_hvb2: '-', surge_ir_hvc2: '-',
+        surge_ir_lva: '> 12k', surge_ir_lvb: '> 12k', surge_ir_lvc: '> 12k',
+        surge_curr_hva: '0.12', surge_curr_hvb: '0.11', surge_curr_hvc: '0.13',
+        surge_curr_hva2: '-', surge_curr_hvb2: '-', surge_curr_hvc2: '-',
+        surge_curr_lva: '0.10', surge_curr_lvb: '0.09', surge_curr_lvc: '0.11',
+        surge_watt_hva: '110', surge_watt_hvb: '108', surge_watt_hvc: '115',
+        surge_watt_hva2: '-', surge_watt_hvb2: '-', surge_watt_hvc2: '-',
+        surge_watt_lva: '85', surge_watt_lvb: '82', surge_watt_lvc: '88',
         activeStatus: 'Normal',
         activeClass: 'status-normal',
         activePi: 'HV=2.30 (>1.25)',
@@ -1466,11 +1595,17 @@
         cap_lva: '-',
         cap_lvb: '-',
         cap_lvc: '-',
-        surgeStatus: 'No Data',
+        surgeStatus: '-',
         surgeClass: 'status-warning',
-        surgeIr: '-',
-        surgeLeak: '-',
-        surgeWatt: '-',
+        surge_ir_hva: '-', surge_ir_hvb: '-', surge_ir_hvc: '-',
+        surge_ir_hva2: '-', surge_ir_hvb2: '-', surge_ir_hvc2: '-',
+        surge_ir_lva: '-', surge_ir_lvb: '-', surge_ir_lvc: '-',
+        surge_curr_hva: '-', surge_curr_hvb: '-', surge_curr_hvc: '-',
+        surge_curr_hva2: '-', surge_curr_hvb2: '-', surge_curr_hvc2: '-',
+        surge_curr_lva: '-', surge_curr_lvb: '-', surge_curr_lvc: '-',
+        surge_watt_hva: '-', surge_watt_hvb: '-', surge_watt_hvc: '-',
+        surge_watt_hva2: '-', surge_watt_hvb2: '-', surge_watt_hvc2: '-',
+        surge_watt_lva: '-', surge_watt_lvb: '-', surge_watt_lvc: '-',
         activeStatus: 'Watch',
         activeClass: 'status-warning',
         activePi: 'HV=1.85 (Pass)',
@@ -1556,12 +1691,28 @@
         }
       });
 
-      // Surge
-      document.getElementById('pill-surge').textContent = d.surgeStatus;
-      document.getElementById('pill-surge').className = `callout-status-pill ${d.surgeClass}`;
-      document.getElementById('val-surge-ir').textContent = d.surgeIr;
-      document.getElementById('val-surge-leak').textContent = d.surgeLeak;
-      document.getElementById('val-surge-watt').textContent = d.surgeWatt;
+      // Surge Arrester Matrix Table
+      if (document.getElementById('pill-surge')) {
+        document.getElementById('pill-surge').textContent = d.surgeStatus || '-';
+        document.getElementById('pill-surge').className = `callout-status-pill ${d.surgeClass || 'status-warning'}`;
+      }
+      const surgePhases = ['hva', 'hvb', 'hvc', 'hva2', 'hvb2', 'hvc2', 'lva', 'lvb', 'lvc'];
+      const surgeTests = ['ir', 'curr', 'watt'];
+      surgeTests.forEach(t => {
+        surgePhases.forEach(p => {
+          const el = document.getElementById(`val-surge_${t}_${p}`);
+          if (el) {
+            const k = `surge_${t}_${p}`;
+            const val = d[k] || '-';
+            el.textContent = val;
+            if (val !== '-' && !val.includes('Not Tested')) {
+              el.className = 'col-val val-highlight';
+            } else {
+              el.className = 'col-val';
+            }
+          }
+        });
+      });
 
       // Active Part (Coils & Core)
       if (document.getElementById('pill-activepart')) {
