@@ -567,14 +567,14 @@
 
     .btn-gauge-eval {
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: 5px;
+      right: 5px;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      padding: 1px 4px;
-      font-size: 0.56rem;
-      font-weight: 700;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      font-size: 0.62rem;
       color: var(--accent-blue);
       background: rgba(37, 99, 235, 0.1);
       border: 1px solid rgba(37, 99, 235, 0.25);
@@ -586,6 +586,7 @@
     .btn-gauge-eval:hover {
       background: var(--accent-blue);
       color: #ffffff;
+      transform: scale(1.08);
     }
 
     .gauge-clickable-area {
@@ -836,9 +837,7 @@
           <!-- Speedometer Health Index Gauge -->
           <div class="gauge-card">
             <a id="np-eval-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
-              <i class="fa-solid fa-file-waveform"></i>
-              <span>Evaluation</span>
-              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.52rem; opacity: 0.85;"></i>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
             <div class="gauge-clickable-area">
               <svg viewBox="0 0 120 72" style="width: 108px; height: 64px; overflow: visible;">
