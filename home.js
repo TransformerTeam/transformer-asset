@@ -319,6 +319,21 @@ function setupEventListeners() {
   const siteFilter = document.getElementById('site-filter');
   const typeFilter = document.getElementById('type-filter');
 
+  // Parse URL search parameters (e.g. ?type=GSUT or ?site=GIPP)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramSite = urlParams.get('site');
+    const paramType = urlParams.get('type');
+    if (paramSite && siteFilter) {
+      const match = Array.from(siteFilter.options).find(o => o.value.toLowerCase() === paramSite.toLowerCase());
+      if (match) siteFilter.value = match.value;
+    }
+    if (paramType && typeFilter) {
+      const match = Array.from(typeFilter.options).find(o => o.value.toLowerCase() === paramType.toLowerCase());
+      if (match) typeFilter.value = match.value;
+    }
+  } catch (e) {}
+
   if (siteFilter) siteFilter.addEventListener('change', applyFilters);
   if (typeFilter) typeFilter.addEventListener('change', applyFilters);
 
@@ -830,9 +845,39 @@ function renderAgeVsHealthChart() {
   const warnSeries = [];
   const critSeries = [];
 
+  // Group by exact (age, hi) coordinates to prevent dots from overlapping on canvas
+  const coordGroups = new Map();
   filteredData.forEach(d => {
     if (d.hi !== null) {
-      const point = { x: d.age, y: d.hi, name: d.name, site: d.site, sn: d.sn, sType: d.sType };
+      const key = `${d.age}_${d.hi}`;
+      if (!coordGroups.has(key)) coordGroups.set(key, []);
+      coordGroups.get(key).push(d);
+    }
+  });
+
+  const maxSpread = 2.4;
+  filteredData.forEach(d => {
+    if (d.hi !== null) {
+      const key = `${d.age}_${d.hi}`;
+      const group = coordGroups.get(key) || [d];
+      let offsetX = 0;
+      if (group.length > 1) {
+        const idx = group.indexOf(d);
+        const step = Math.min(0.75, maxSpread / (group.length - 1));
+        offsetX = (idx - (group.length - 1) / 2) * step;
+      }
+
+      const point = {
+        x: Number((d.age + offsetX).toFixed(3)),
+        y: d.hi,
+        origX: d.age,
+        origY: d.hi,
+        name: d.name,
+        site: d.site,
+        sn: d.sn,
+        sType: d.sType
+      };
+
       if (d.hi >= 80) goodSeries.push(point);
       else if (d.hi >= 70) monitorSeries.push(point);
       else if (d.hi >= 50) warnSeries.push(point);
@@ -872,12 +917,14 @@ function renderAgeVsHealthChart() {
     const annotId = 'point-label-' + Date.now();
     currentPointAnnotationId = annotId;
 
-    const age = d.x !== undefined ? d.x : d.age;
-    const hi = d.y !== undefined ? d.y : d.hi;
+    const age = d.origX !== undefined ? d.origX : (d.x !== undefined ? d.x : d.age);
+    const hi = d.origY !== undefined ? d.origY : (d.y !== undefined ? d.y : d.hi);
+    const plotX = d.x !== undefined ? d.x : age;
+    const plotY = d.y !== undefined ? d.y : hi;
 
     const isNearTop = hi >= 85;
-    const isNearRight = age >= 30;
-    const isNearLeft = age <= 8;
+    const isNearRight = plotX >= 30;
+    const isNearLeft = plotX <= 8;
 
     const textAnchor = isNearRight ? 'end' : (isNearLeft ? 'start' : 'middle');
     const offsetX = isNearRight ? -10 : (isNearLeft ? 10 : 0);
@@ -885,8 +932,8 @@ function renderAgeVsHealthChart() {
 
     chartAgeHealth.addPointAnnotation({
       id: annotId,
-      x: age,
-      y: hi,
+      x: plotX,
+      y: plotY,
       marker: {
         size: 8,
         fillColor: color,
