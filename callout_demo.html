@@ -751,14 +751,14 @@
     #card-radiator    { top: 430px; left: 18px; }
     #card-coolingfan  { top: 565px; left: 18px; }
     
-    /* Center-Top Callout */
-    #card-lvbushing   { top: 20px; left: 50%; transform: translateX(-50%); }
-    #card-lvbushing:hover, #card-lvbushing.active {
+    /* Center-Top Callout (HV Bushing in Red Box Position) */
+    #card-hvbushing   { top: 20px; left: 50%; transform: translateX(-50%); }
+    #card-hvbushing:hover, #card-hvbushing.active {
       transform: translate(-50%, -4px) scale(1.02);
     }
     
     /* Right Column Callouts */
-    #card-hvbushing   { top: 5%; right: 36px; }
+    #card-lvbushing   { top: 5%; right: 36px; }
     #card-activepart  { top: 38%; right: 36px; }
     #card-oildga      { bottom: 5%; top: auto; right: 36px; }
 
@@ -1086,32 +1086,7 @@
         </div>
       </div>
 
-      <!-- 4. Center Top: Low Voltage Bushings & Surge -->
-      <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-shield-halved"></i></span>
-            Surge Arrester &amp; LV
-          </div>
-          <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
-        </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Insulation Resistance:</span>
-            <span class="data-val val-highlight" id="val-surge-ir">&gt; 12,000 MΩ</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Leakage Current:</span>
-            <span class="data-val" id="val-surge-leak">0.15 mA</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Watt Loss:</span>
-            <span class="data-val" id="val-surge-watt">128 W (Pass)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. Right Top: High Voltage Bushings (PF & Cap) -->
+      <!-- 4. Center Top: High Voltage Bushings (PF & Cap) -->
       <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
         <div class="callout-header">
           <div class="callout-title">
@@ -1136,6 +1111,31 @@
           <div class="data-row">
             <span class="data-label">Capacitance Error:</span>
             <span class="data-val" id="val-bush-cap">&le; 1.15% (&le;3%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Right Top: Low Voltage Bushings & Surge -->
+      <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            Surge Arrester &amp; LV
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Insulation Resistance:</span>
+            <span class="data-val val-highlight" id="val-surge-ir">&gt; 12,000 MΩ</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Leakage Current:</span>
+            <span class="data-val" id="val-surge-leak">0.15 mA</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Watt Loss:</span>
+            <span class="data-val" id="val-surge-watt">128 W (Pass)</span>
           </div>
         </div>
       </div>
@@ -1522,8 +1522,8 @@
       conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
       radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'left' },
       coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
-      lvbushing:   { u: 0.490, v: 0.320, card: 'card-lvbushing', side: 'top' },
-      hvbushing:   { u: 0.726, v: 0.176, card: 'card-hvbushing', side: 'right' },
+      hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
+      lvbushing:   { u: 0.681, v: 0.120, card: 'card-lvbushing', side: 'right' },
       activepart:  { u: 0.772, v: 0.605, card: 'card-activepart', side: 'right' },
       oildga:      { u: 0.920, v: 0.527, card: 'card-oildga', side: 'right' }
     };
@@ -1591,8 +1591,12 @@
         } else if (cfg.side === 'top') {
           startX = (cardRect.left - stageRect.left) + (cardRect.width / 2);
           startY = cardRect.bottom - stageRect.top;
-          midY = startY + Math.max(15, (pinY - startY) * 0.35);
-          line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
+          if (Math.abs(pinX - startX) < 45) {
+            line.setAttribute('d', `M ${pinX} ${startY} L ${pinX} ${pinY}`);
+          } else {
+            midY = startY + Math.max(15, (pinY - startY) * 0.35);
+            line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
+          }
         }
       }
     }
