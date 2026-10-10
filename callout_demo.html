@@ -756,7 +756,7 @@
       top: 14px;
       left: 530px;
       width: fit-content;
-      min-width: 485px;
+      min-width: 460px;
       padding: 8px 12px 10px 12px;
     }
     #card-hvbushing:hover, #card-hvbushing.active {
@@ -845,8 +845,8 @@
       top: 134px;
       left: 530px;
       width: fit-content;
-      min-width: 485px;
-      padding: 8px 10px 10px 10px;
+      min-width: 460px;
+      padding: 8px 12px 10px 12px;
     }
     #card-lvbushing:hover, #card-lvbushing.active {
       transform: translateY(-4px) scale(1.02);
@@ -858,7 +858,7 @@
     .surge-matrix-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 6px;
@@ -868,10 +868,10 @@
       background: rgba(0, 0, 0, 0.04);
       color: var(--card-label-color);
       font-weight: 700;
-      font-size: 0.55rem;
+      font-size: 0.58rem;
       text-transform: uppercase;
-      letter-spacing: 0.01em;
-      padding: 3.5px 2px;
+      letter-spacing: 0.02em;
+      padding: 3.5px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
       white-space: nowrap;
@@ -884,17 +884,16 @@
       padding-left: 6px;
     }
     .surge-matrix-table td {
-      padding: 3.5px 2px;
+      padding: 3.5px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       color: var(--card-val-color);
       white-space: nowrap;
     }
     .surge-matrix-table td.col-item {
       text-align: left;
       padding-left: 6px;
-      padding-right: 4px;
       font-weight: 700;
       color: var(--card-title-color);
       white-space: nowrap;
@@ -902,9 +901,7 @@
     .surge-matrix-table td.col-std {
       font-weight: 600;
       color: var(--card-label-color);
-      font-size: 0.58rem;
-      padding-left: 3px;
-      padding-right: 3px;
+      font-size: 0.62rem;
     }
     .surge-matrix-table td.col-val {
       font-weight: 700;
@@ -1308,9 +1305,6 @@
               <th>HV. A</th>
               <th>HV. B</th>
               <th>HV. C</th>
-              <th>HV. A/2</th>
-              <th>HV. B/2</th>
-              <th>HV. C/2</th>
               <th>LV. A</th>
               <th>LV. B</th>
               <th>LV. C</th>
@@ -1323,9 +1317,6 @@
               <td class="col-val" id="val-surge_ir_hva">-</td>
               <td class="col-val" id="val-surge_ir_hvb">-</td>
               <td class="col-val" id="val-surge_ir_hvc">-</td>
-              <td class="col-val" id="val-surge_ir_hva2">-</td>
-              <td class="col-val" id="val-surge_ir_hvb2">-</td>
-              <td class="col-val" id="val-surge_ir_hvc2">-</td>
               <td class="col-val" id="val-surge_ir_lva">-</td>
               <td class="col-val" id="val-surge_ir_lvb">-</td>
               <td class="col-val" id="val-surge_ir_lvc">-</td>
@@ -1336,9 +1327,6 @@
               <td class="col-val" id="val-surge_curr_hva">-</td>
               <td class="col-val" id="val-surge_curr_hvb">-</td>
               <td class="col-val" id="val-surge_curr_hvc">-</td>
-              <td class="col-val" id="val-surge_curr_hva2">-</td>
-              <td class="col-val" id="val-surge_curr_hvb2">-</td>
-              <td class="col-val" id="val-surge_curr_hvc2">-</td>
               <td class="col-val" id="val-surge_curr_lva">-</td>
               <td class="col-val" id="val-surge_curr_lvb">-</td>
               <td class="col-val" id="val-surge_curr_lvc">-</td>
@@ -1349,9 +1337,6 @@
               <td class="col-val" id="val-surge_watt_hva">-</td>
               <td class="col-val" id="val-surge_watt_hvb">-</td>
               <td class="col-val" id="val-surge_watt_hvc">-</td>
-              <td class="col-val" id="val-surge_watt_hva2">-</td>
-              <td class="col-val" id="val-surge_watt_hvb2">-</td>
-              <td class="col-val" id="val-surge_watt_hvc2">-</td>
               <td class="col-val" id="val-surge_watt_lva">-</td>
               <td class="col-val" id="val-surge_watt_lvb">-</td>
               <td class="col-val" id="val-surge_watt_lvc">-</td>
@@ -1696,7 +1681,7 @@
         document.getElementById('pill-surge').textContent = d.surgeStatus || '-';
         document.getElementById('pill-surge').className = `callout-status-pill ${d.surgeClass || 'status-warning'}`;
       }
-      const surgePhases = ['hva', 'hvb', 'hvc', 'hva2', 'hvb2', 'hvc2', 'lva', 'lvb', 'lvc'];
+      const surgePhases = ['hva', 'hvb', 'hvc', 'lva', 'lvb', 'lvc'];
       const surgeTests = ['ir', 'curr', 'watt'];
       surgeTests.forEach(t => {
         surgePhases.forEach(p => {
