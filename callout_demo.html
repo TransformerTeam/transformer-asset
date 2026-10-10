@@ -751,10 +751,10 @@
     #card-radiator    { top: 430px; left: 18px; }
     #card-coolingfan  { top: 565px; left: 18px; }
     
-    /* Center-Top Callout (HV Bushing in Red Box Position) */
-    #card-hvbushing   { top: 20px; left: 50%; transform: translateX(-50%); }
+    /* Center-Top Callout (HV Bushing shifted to the left beside Cockpit) */
+    #card-hvbushing   { top: 14px; left: 530px; }
     #card-hvbushing:hover, #card-hvbushing.active {
-      transform: translate(-50%, -4px) scale(1.02);
+      transform: translateY(-4px) scale(1.02);
     }
     
     /* Right Column Callouts */
@@ -1522,7 +1522,7 @@
       conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
       radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'left' },
       coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
-      hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
+      hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'left' },
       lvbushing:   { u: 0.681, v: 0.120, card: 'card-lvbushing', side: 'right' },
       activepart:  { u: 0.772, v: 0.605, card: 'card-activepart', side: 'right' },
       oildga:      { u: 0.920, v: 0.527, card: 'card-oildga', side: 'right' }
