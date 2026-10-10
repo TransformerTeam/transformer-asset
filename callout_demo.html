@@ -274,11 +274,11 @@
     /* Soft Realistic Ground Contact Shadow under Transformer */
     .pedestal-shadow {
       position: absolute;
-      bottom: 14%;
+      bottom: 20%;
       left: 50%;
       transform: translateX(-50%);
-      width: min(580px, 38vw);
-      height: 44px;
+      width: min(460px, 30vw);
+      height: 36px;
       background: var(--pedestal-shadow);
       border-radius: 50%;
       filter: blur(14px);
@@ -287,15 +287,15 @@
       transition: background 0.3s ease;
     }
 
-    /* Center Transformer Image - Scaled Down 20% for Balanced Composition */
+    /* Center Transformer Image - Scaled Down 20% More for Balanced Composition */
     .transformer-model-img {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(650px, 38vw);
-      max-width: min(700px, 40vw);
-      max-height: 68%;
+      width: min(520px, 30vw);
+      max-width: min(560px, 32vw);
+      max-height: 54%;
       height: auto;
       object-fit: contain;
       filter: var(--tr-shadow);
@@ -1540,6 +1540,18 @@
 
       // Match SVG internal coordinates 1:1 with screen viewport pixels
       svg.setAttribute('viewBox', `0 0 ${stageRect.width} ${stageRect.height}`);
+
+      // Dynamically anchor ground contact shadow to transformer base
+      const shadow = document.querySelector('.pedestal-shadow');
+      if (shadow) {
+        const shadowWidth = Math.min(imgRect.width * 0.88, 440);
+        const shadowTop = (imgRect.top - stageRect.top) + (imgRect.height * 0.958) - 16;
+        const shadowLeft = (imgRect.left - stageRect.left) + (imgRect.width / 2);
+        shadow.style.width = `${shadowWidth}px`;
+        shadow.style.top = `${shadowTop}px`;
+        shadow.style.left = `${shadowLeft}px`;
+        shadow.style.bottom = 'auto';
+      }
 
       for (const [id, cfg] of Object.entries(CALLOUT_PINS)) {
         const card = document.getElementById(cfg.card);
