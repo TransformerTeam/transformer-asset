@@ -751,10 +751,91 @@
     #card-radiator    { top: 430px; left: 18px; }
     #card-coolingfan  { top: 565px; left: 18px; }
     
-    /* Center-Top Callout (HV Bushing shifted to the left beside Cockpit) */
-    #card-hvbushing   { top: 14px; left: 530px; }
+    /* Center-Top Callout (HV Bushing Matrix Table shifted to the left beside Cockpit) */
+    #card-hvbushing {
+      top: 14px;
+      left: 530px;
+      width: 410px;
+      padding: 8px 12px 10px 12px;
+    }
     #card-hvbushing:hover, #card-hvbushing.active {
       transform: translateY(-4px) scale(1.02);
+    }
+    #card-hvbushing .callout-header {
+      margin-bottom: 6px;
+    }
+    .bushing-doc-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: rgba(37, 99, 235, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      font-size: 0.68rem;
+      margin-left: 4px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .bushing-doc-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      transform: scale(1.08);
+    }
+    
+    .bushing-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.65rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bushing-matrix-table th {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--card-label-color);
+      font-weight: 700;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      padding: 3.5px 3px;
+      border: 1px solid var(--border-card);
+      text-align: center;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .bushing-matrix-table th {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .bushing-matrix-table th:first-child {
+      text-align: left;
+      padding-left: 6px;
+    }
+    .bushing-matrix-table td {
+      padding: 3.5px 3px;
+      border: 1px solid var(--border-card);
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--card-val-color);
+      white-space: nowrap;
+    }
+    .bushing-matrix-table td.col-item {
+      text-align: left;
+      padding-left: 6px;
+      font-weight: 700;
+      color: var(--card-title-color);
+    }
+    .bushing-matrix-table td.col-std {
+      font-weight: 600;
+      color: var(--card-label-color);
+      font-size: 0.62rem;
+    }
+    .bushing-matrix-table td.col-val {
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
     }
     
     /* Right Column Callouts */
@@ -1086,33 +1167,54 @@
         </div>
       </div>
 
-      <!-- 4. Center Top: High Voltage Bushings (PF & Cap) -->
+      <!-- 4. Center Top: Bushing Matrix Table -->
       <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
         <div class="callout-header">
           <div class="callout-title">
             <span class="callout-icon"><i class="fa-solid fa-plug"></i></span>
-            HV Bushings (C1 PF &amp; Cap)
+            <span>Bushing</span>
+            <a id="bushing-doc-link" href="bushing_pf_report.html" target="_blank" class="bushing-doc-btn" title="Open Bushing Insulation Power Factor Report">
+              <i class="fa-regular fa-file-lines"></i>
+            </a>
           </div>
           <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Phase A (H1) PF:</span>
-            <span class="data-val val-highlight" id="val-bush-pfa">+30.7% (&le;40%)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Phase B (H2) PF:</span>
-            <span class="data-val val-highlight" id="val-bush-pfb">+28.1% (&le;40%)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Phase C (H3) PF:</span>
-            <span class="data-val val-highlight" id="val-bush-pfc">+24.6% (&le;40%)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Capacitance Error:</span>
-            <span class="data-val" id="val-bush-cap">&le; 1.15% (&le;3%)</span>
-          </div>
-        </div>
+        <table class="bushing-matrix-table">
+          <thead>
+            <tr>
+              <th>ITEM TEST</th>
+              <th>STANDARD</th>
+              <th>HV. A</th>
+              <th>HV. B</th>
+              <th>HV. C</th>
+              <th>LV. A</th>
+              <th>LV. B</th>
+              <th>LV. C</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-item">%Error PF (C1)</td>
+              <td class="col-std">OEM Criteria</td>
+              <td class="col-val" id="val-pf_hva">-</td>
+              <td class="col-val" id="val-pf_hvb">-</td>
+              <td class="col-val" id="val-pf_hvc">-</td>
+              <td class="col-val" id="val-pf_lva">-</td>
+              <td class="col-val" id="val-pf_lvb">-</td>
+              <td class="col-val" id="val-pf_lvc">-</td>
+            </tr>
+            <tr>
+              <td class="col-item">%Error Capacitance (C1)</td>
+              <td class="col-std">OEM Criteria</td>
+              <td class="col-val" id="val-cap_hva">-</td>
+              <td class="col-val" id="val-cap_hvb">-</td>
+              <td class="col-val" id="val-cap_hvc">-</td>
+              <td class="col-val" id="val-cap_lva">-</td>
+              <td class="col-val" id="val-cap_lvb">-</td>
+              <td class="col-val" id="val-cap_lvc">-</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- 5. Right Top: Low Voltage Bushings & Surge -->
@@ -1235,10 +1337,18 @@
         recommendation: 'Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.',
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
-        bushingA: '+30.7% (≤40%)',
-        bushingB: '+28.1% (≤40%)',
-        bushingC: '+24.6% (≤40%)',
-        bushingCap: '≤ 1.15% (≤3%)',
+        pf_hva: '+30.7%',
+        pf_hvb: '+28.1%',
+        pf_hvc: '+24.6%',
+        pf_lva: '-',
+        pf_lvb: '-',
+        pf_lvc: '-',
+        cap_hva: '≤ 1.15%',
+        cap_hvb: '≤ 0.95%',
+        cap_hvc: '≤ 0.82%',
+        cap_lva: '-',
+        cap_lvb: '-',
+        cap_lvc: '-',
         surgeStatus: 'Normal',
         surgeClass: 'status-normal',
         surgeIr: '> 12,000 MΩ',
@@ -1285,10 +1395,18 @@
         recommendation: 'Plan visual maintenance & repair minor defects: Check tap changer compartment and seal.',
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
-        bushingA: '+22.5% (≤40%)',
-        bushingB: '+25.1% (≤40%)',
-        bushingC: '+21.8% (≤40%)',
-        bushingCap: '≤ 0.85% (≤3%)',
+        pf_hva: '+22.5%',
+        pf_hvb: '+25.1%',
+        pf_hvc: '+21.8%',
+        pf_lva: '-',
+        pf_lvb: '-',
+        pf_lvc: '-',
+        cap_hva: '≤ 0.85%',
+        cap_hvb: '≤ 0.75%',
+        cap_hvc: '≤ 0.68%',
+        cap_lva: '-',
+        cap_lvb: '-',
+        cap_lvc: '-',
         surgeStatus: 'Normal',
         surgeClass: 'status-normal',
         surgeIr: '> 15,000 MΩ',
@@ -1335,10 +1453,18 @@
         recommendation: 'Repair oil leak and hot oil purify, Add passivator.',
         bushingStatus: 'No Data',
         bushingClass: 'status-warning',
-        bushingA: 'Not Tested',
-        bushingB: 'Not Tested',
-        bushingC: 'Not Tested',
-        bushingCap: '-',
+        pf_hva: '-',
+        pf_hvb: '-',
+        pf_hvc: '-',
+        pf_lva: '-',
+        pf_lvb: '-',
+        pf_lvc: '-',
+        cap_hva: '-',
+        cap_hvb: '-',
+        cap_hvc: '-',
+        cap_lva: '-',
+        cap_lvb: '-',
+        cap_lvc: '-',
         surgeStatus: 'No Data',
         surgeClass: 'status-warning',
         surgeIr: '-',
@@ -1410,13 +1536,24 @@
         document.getElementById('np-interp-text').textContent = d.recommendation || '-';
       }
 
-      // Bushing
-      document.getElementById('pill-bushing').textContent = d.bushingStatus;
-      document.getElementById('pill-bushing').className = `callout-status-pill ${d.bushingClass}`;
-      document.getElementById('val-bush-pfa').textContent = d.bushingA;
-      document.getElementById('val-bush-pfb').textContent = d.bushingB;
-      document.getElementById('val-bush-pfc').textContent = d.bushingC;
-      document.getElementById('val-bush-cap').textContent = d.bushingCap;
+      // Bushing Matrix Table
+      if (document.getElementById('pill-bushing')) {
+        document.getElementById('pill-bushing').textContent = d.bushingStatus || 'No Data';
+        document.getElementById('pill-bushing').className = `callout-status-pill ${d.bushingClass || 'status-warning'}`;
+      }
+      const bCols = ['pf_hva', 'pf_hvb', 'pf_hvc', 'pf_lva', 'pf_lvb', 'pf_lvc', 'cap_hva', 'cap_hvb', 'cap_hvc', 'cap_lva', 'cap_lvb', 'cap_lvc'];
+      bCols.forEach(k => {
+        const el = document.getElementById(`val-${k}`);
+        if (el) {
+          const val = d[k] || '-';
+          el.textContent = val;
+          if (val !== '-' && !val.includes('Not Tested')) {
+            el.className = 'col-val val-highlight';
+          } else {
+            el.className = 'col-val';
+          }
+        }
+      });
 
       // Surge
       document.getElementById('pill-surge').textContent = d.surgeStatus;
