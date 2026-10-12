@@ -2153,24 +2153,6 @@
     // Custom Plugin to draw Warning (DP 300) and Critical (DP 200) Threshold Bands and Right-Edge Labels
     const thresholdLabelsPlugin = {
       id: 'thresholdLabels',
-      beforeDraw(chart) {
-        const { ctx, chartArea, scales: { y } } = chart;
-        if (!chartArea || !y) return;
-        const { bottom, left, width } = chartArea;
-        const y200 = y.getPixelForValue(200);
-        const y300 = y.getPixelForValue(300);
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-        ctx.save();
-        // Zone 1: Critical (DP < 200) - Soft Red Tint
-        ctx.fillStyle = isDark ? 'rgba(239, 68, 68, 0.08)' : 'rgba(239, 68, 68, 0.045)';
-        ctx.fillRect(left, y200, width, bottom - y200);
-
-        // Zone 2: Warning (200 <= DP <= 300) - Soft Amber Tint
-        ctx.fillStyle = isDark ? 'rgba(245, 158, 11, 0.07)' : 'rgba(245, 158, 11, 0.04)';
-        ctx.fillRect(left, y300, width, y200 - y300);
-        ctx.restore();
-      },
       afterDatasetsDraw(chart) {
         const { ctx, chartArea, scales: { y } } = chart;
         if (!chartArea || !y) return;
@@ -2182,41 +2164,63 @@
         ctx.save();
         ctx.font = 'bold 8px "Inter", sans-serif';
 
-        // 1. Warning (DP 300) Badge Pill
+        const padX = 5;
+        const h = 14;
+        const badgeX = right + 6;
+
+        // 1. Warning (DP 300) Badge in Right Margin (100% outside plot area)
         const t1 = 'Warning (DP 300)';
         const w1 = ctx.measureText(t1).width;
-        const padX = 5;
-        const h = 13;
-        const x1 = right - w1 - padX * 2 - 4;
-        const yPos1 = y300 - h - 3;
+        const yPos1 = y300 - h / 2;
 
-        ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)';
-        ctx.strokeStyle = isDark ? '#f59e0b' : '#fde68a';
+        // Subtle dashed connector line
+        ctx.beginPath();
+        ctx.strokeStyle = '#f97316';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([2, 2]);
+        ctx.moveTo(right, y300);
+        ctx.lineTo(badgeX, y300);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 251, 235, 0.98)';
+        ctx.strokeStyle = isDark ? '#f59e0b' : '#f59e0b';
         ctx.lineWidth = 1;
-        drawCalloutRoundRect(ctx, x1, yPos1, w1 + padX * 2, h, 3);
+        drawCalloutRoundRect(ctx, badgeX, yPos1, w1 + padX * 2, h, 3);
         ctx.fill();
         ctx.stroke();
 
         ctx.fillStyle = isDark ? '#fbbf24' : '#b45309';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(t1, x1 + (w1 + padX * 2) / 2, yPos1 + h / 2);
+        ctx.fillText(t1, badgeX + (w1 + padX * 2) / 2, y300);
 
-        // 2. Critical (DP 200) Badge Pill
+        // 2. Critical (DP 200) Badge in Right Margin (100% outside plot area)
         const t2 = 'Critical (DP 200)';
         const w2 = ctx.measureText(t2).width;
-        const x2 = right - w2 - padX * 2 - 4;
-        const yPos2 = y200 - h - 3;
+        const yPos2 = y200 - h / 2;
 
-        ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)';
-        ctx.strokeStyle = isDark ? '#ef4444' : '#fecaca';
+        // Subtle dashed connector line
+        ctx.beginPath();
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([2, 2]);
+        ctx.moveTo(right, y200);
+        ctx.lineTo(badgeX, y200);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(254, 242, 242, 0.98)';
+        ctx.strokeStyle = isDark ? '#ef4444' : '#ef4444';
         ctx.lineWidth = 1;
-        drawCalloutRoundRect(ctx, x2, yPos2, w2 + padX * 2, h, 3);
+        drawCalloutRoundRect(ctx, badgeX, yPos2, w2 + padX * 2, h, 3);
         ctx.fill();
         ctx.stroke();
 
         ctx.fillStyle = isDark ? '#f87171' : '#b91c1c';
-        ctx.fillText(t2, x2 + (w2 + padX * 2) / 2, yPos2 + h / 2);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(t2, badgeX + (w2 + padX * 2) / 2, y200);
 
         ctx.restore();
       }
@@ -2658,7 +2662,7 @@
               top: 32,
               bottom: 22,
               left: 8,
-              right: 30
+              right: 95
             }
           },
           plugins: {
