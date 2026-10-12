@@ -746,40 +746,22 @@
       border-left-color: #60a5fa;
     }
 
-    /* Preset Callout Positions with UNIFORM 14px Equal Spacing */
-    /* Left Column Callouts (Uniform height 96px, 14px spacing) */
-    #card-conservator { 
-      top: 258px; 
-      left: 16px; 
-      height: 96px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    #card-radiator { 
-      top: 368px; 
-      left: 16px; 
-      height: 96px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    #card-coolingfan { 
-      top: 478px; 
-      left: 16px; 
-      height: 96px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+    /* ========================================================
+       FLEX CONTAINERS WITH GUARANTEED EQUAL 14PX GAP (NO OVERLAP)
+       ======================================================== */
     
-    /* Center-Top Callout: Bushing Matrix Table (Equal 14px gap from Cockpit) */
-    #card-hvbushing {
+    /* Top Row Container: Bushing & Surge Arrester side by side */
+    .top-callout-row {
+      position: absolute;
       top: 14px;
       left: 468px;
+      display: flex;
+      flex-direction: row;
+      gap: 14px;
+      z-index: 30;
+    }
+    .top-callout-row .callout-card {
+      position: relative;
       width: 415px;
       height: 110px;
       box-sizing: border-box;
@@ -788,18 +770,60 @@
       justify-content: space-between;
       padding: 7px 10px 8px 10px;
     }
-    #card-hvbushing:hover, #card-hvbushing.active {
+
+    /* Left Column Stack: Conservator, Radiator, Cooling Fan */
+    .left-callout-stack {
+      position: absolute;
+      top: 254px;
+      left: 16px;
+      width: 236px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 30;
+    }
+    .left-callout-stack .callout-card {
+      position: relative;
+      width: 100%;
+      height: 96px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 12px;
+    }
+
+    /* Right Column Stack: DGA and Oil Properties (Guaranteed 14px gap, Zero Overlap) */
+    .right-callout-stack {
+      position: absolute;
+      top: 138px;
+      right: 16px;
+      width: 326px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 30;
+    }
+    .right-callout-stack .callout-card {
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+    }
+
+    #card-hvbushing:hover, #card-hvbushing.active,
+    #card-lvbushing:hover, #card-lvbushing.active {
       transform: translateY(-4px) scale(1.02);
     }
-    #card-hvbushing .callout-header {
+    #card-hvbushing .callout-header,
+    #card-lvbushing .callout-header {
       margin-bottom: 6px;
     }
-    #card-hvbushing .bushing-matrix-table {
+    #card-hvbushing .bushing-matrix-table,
+    #card-lvbushing .surge-matrix-table {
       height: 70px;
     }
-    #card-hvbushing .bushing-matrix-table td {
-      padding: 2.8px 3px;
-    }
+
     .bushing-doc-btn {
       display: inline-flex;
       align-items: center;
@@ -814,6 +838,7 @@
       margin-left: 4px;
       text-decoration: none;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
     .bushing-doc-btn:hover {
       background: #0284c7;
@@ -822,80 +847,7 @@
       transform: scale(1.08);
     }
     
-    .bushing-matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.60rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .bushing-matrix-table th {
-      background: rgba(0, 0, 0, 0.04);
-      color: var(--card-label-color);
-      font-weight: 700;
-      font-size: 0.54rem;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      padding: 2.2px 3px;
-      border: 1px solid var(--border-card);
-      text-align: center;
-      white-space: nowrap;
-    }
-    [data-theme="dark"] .bushing-matrix-table th {
-      background: rgba(255, 255, 255, 0.04);
-    }
-    .bushing-matrix-table th:first-child {
-      text-align: left;
-      padding-left: 6px;
-    }
-    .bushing-matrix-table td {
-      padding: 2.8px 3px;
-      border: 1px solid var(--border-card);
-      text-align: center;
-      font-size: 0.60rem;
-      color: var(--card-val-color);
-      white-space: nowrap;
-    }
-    .bushing-matrix-table td.col-item {
-      text-align: left;
-      padding-left: 6px;
-      font-weight: 700;
-      color: var(--card-title-color);
-    }
-    .bushing-matrix-table td.col-std {
-      font-weight: 600;
-      color: var(--card-label-color);
-      font-size: 0.62rem;
-    }
-    .bushing-matrix-table td.col-val {
-      font-weight: 700;
-      font-family: 'Outfit', sans-serif;
-    }
-    
-    /* Center-Right Top Callout: Surge Arrester Matrix Table (Equal 14px gap from Bushing) */
-    #card-lvbushing {
-      top: 14px;
-      left: 897px;
-      width: 415px;
-      height: 110px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 7px 10px 8px 10px;
-    }
-    #card-lvbushing:hover, #card-lvbushing.active {
-      transform: translateY(-4px) scale(1.02);
-    }
-    #card-lvbushing .callout-header {
-      margin-bottom: 6px;
-    }
-    #card-lvbushing .surge-matrix-table {
-      height: 70px;
-    }
-
+    .bushing-matrix-table,
     .surge-matrix-table {
       width: 100%;
       border-collapse: collapse;
@@ -905,6 +857,7 @@
       border-radius: 6px;
       overflow: hidden;
     }
+    .bushing-matrix-table th,
     .surge-matrix-table th {
       background: rgba(0, 0, 0, 0.04);
       color: var(--card-label-color);
@@ -917,21 +870,25 @@
       text-align: center;
       white-space: nowrap;
     }
+    [data-theme="dark"] .bushing-matrix-table th,
     [data-theme="dark"] .surge-matrix-table th {
       background: rgba(255, 255, 255, 0.04);
     }
+    .bushing-matrix-table th:first-child,
     .surge-matrix-table th:first-child {
       text-align: left;
       padding-left: 6px;
     }
+    .bushing-matrix-table td,
     .surge-matrix-table td {
-      padding: 2.2px 3px;
+      padding: 2.4px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
       font-size: 0.60rem;
       color: var(--card-val-color);
       white-space: nowrap;
     }
+    .bushing-matrix-table td.col-item,
     .surge-matrix-table td.col-item {
       text-align: left;
       padding-left: 6px;
@@ -939,30 +896,16 @@
       color: var(--card-title-color);
       white-space: nowrap;
     }
+    .bushing-matrix-table td.col-std,
     .surge-matrix-table td.col-std {
       font-weight: 600;
       color: var(--card-label-color);
       font-size: 0.62rem;
     }
+    .bushing-matrix-table td.col-val,
     .surge-matrix-table td.col-val {
       font-weight: 700;
       font-family: 'Outfit', sans-serif;
-    }
-
-    /* DGA & Oil Properties Cards (Right Side with Equal 14px Spacing) */
-    #card-dga {
-      top: 138px;
-      right: 16px;
-      width: 310px;
-      padding: 8px 12px;
-      z-index: 30;
-    }
-    #card-oilprops {
-      top: 354px;
-      right: 16px;
-      width: 310px;
-      padding: 8px 12px;
-      z-index: 30;
     }
 
     /* DGA Gas Grid */
@@ -1373,336 +1316,345 @@
         </div>
       </div>
 
-      <!-- 1. Left Top: Conservator & Oil Level -->
-      <div class="callout-card" id="card-conservator" data-category="mechanical" onmouseenter="focusCallout('conservator')" onmouseleave="unfocusCallout('conservator')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-gauge-simple-high"></i></span>
-            Conservator &amp; Oil Level
+      <!-- Left Column Callouts Stack (Guaranteed 14px Equal Gap) -->
+      <div class="left-callout-stack" id="leftCalloutStack">
+        <!-- 1. Left Top: Conservator & Oil Level -->
+        <div class="callout-card" id="card-conservator" data-category="mechanical" onmouseenter="focusCallout('conservator')" onmouseleave="unfocusCallout('conservator')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon"><i class="fa-solid fa-gauge-simple-high"></i></span>
+              Conservator &amp; Oil Level
+            </div>
+            <span class="callout-status-pill status-normal" id="pill-conservator">Normal</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-conservator">Normal</span>
+          <div class="callout-data-list">
+            <div class="data-row">
+              <span class="data-label">Oil Level:</span>
+              <span class="data-val val-highlight" id="val-oil-level">Adequate (65%)</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Silica Gel Breather:</span>
+              <span class="data-val" id="val-silica-gel">Active (Blue)</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Buchholz Relay:</span>
+              <span class="data-val val-highlight" id="val-buchholz">Normal (No Gas)</span>
+            </div>
+          </div>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Oil Level:</span>
-            <span class="data-val val-highlight" id="val-oil-level">Adequate (65%)</span>
+
+        <!-- 2. Left Middle: Radiator & Cooling Fins -->
+        <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
+              Cooling Radiator &amp; Fans
+            </div>
+            <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
           </div>
-          <div class="data-row">
-            <span class="data-label">Silica Gel Breather:</span>
-            <span class="data-val" id="val-silica-gel">Active (Blue)</span>
+          <div class="callout-data-list">
+            <div class="data-row">
+              <span class="data-label">Oil Leakage:</span>
+              <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Surface Rust / Paint:</span>
+              <span class="data-val" id="val-rust">Grade A (Good)</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Top Oil Temp:</span>
+              <span class="data-val" id="val-oil-temp">58.4 °C</span>
+            </div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Buchholz Relay:</span>
-            <span class="data-val val-highlight" id="val-buchholz">Normal (No Gas)</span>
+        </div>
+
+        <!-- 3. Left Bottom: Digital Control IED & OLTC Drive -->
+        <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon"><i class="fa-solid fa-microchip"></i></span>
+              Digital IED &amp; Tap Drive
+            </div>
+            <span class="callout-status-pill status-normal" id="pill-coolingfan">Auto OK</span>
+          </div>
+          <div class="callout-data-list">
+            <div class="data-row">
+              <span class="data-label">OLTC Type / Model:</span>
+              <span class="data-val" id="val-oltc-model">MR V III 200D</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Operations Counter:</span>
+              <span class="data-val val-highlight" id="val-oltc-ops">58,148 Ops</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Tap Drive Motor:</span>
+              <span class="data-val">ED100S Normal</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 2. Left Middle: Radiator & Cooling Fins -->
-      <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
-            Cooling Radiator &amp; Fans
+      <!-- Top Row Callouts: Bushing & Surge Arrester (Guaranteed 14px Equal Gap) -->
+      <div class="top-callout-row" id="topCalloutRow">
+        <!-- 4. Bushing Matrix Table -->
+        <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon"><i class="fa-solid fa-plug"></i></span>
+              <span>Bushing</span>
+              <a id="bushing-doc-link" href="bushing_pf_report.html" target="_blank" class="bushing-doc-btn" title="Open Bushing Insulation Power Factor Report">
+                <i class="fa-regular fa-file-lines"></i>
+              </a>
+            </div>
+            <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
+          <table class="bushing-matrix-table">
+            <thead>
+              <tr>
+                <th>ITEM TEST</th>
+                <th>STANDARD</th>
+                <th>HV. A</th>
+                <th>HV. B</th>
+                <th>HV. C</th>
+                <th>LV. A</th>
+                <th>LV. B</th>
+                <th>LV. C</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-item">%Error PF (C1)</td>
+                <td class="col-std">OEM Criteria</td>
+                <td class="col-val" id="val-pf_hva">-</td>
+                <td class="col-val" id="val-pf_hvb">-</td>
+                <td class="col-val" id="val-pf_hvc">-</td>
+                <td class="col-val" id="val-pf_lva">-</td>
+                <td class="col-val" id="val-pf_lvb">-</td>
+                <td class="col-val" id="val-pf_lvc">-</td>
+              </tr>
+              <tr>
+                <td class="col-item">%Error Capacitance (C1)</td>
+                <td class="col-std">OEM Criteria</td>
+                <td class="col-val" id="val-cap_hva">-</td>
+                <td class="col-val" id="val-cap_hvb">-</td>
+                <td class="col-val" id="val-cap_hvc">-</td>
+                <td class="col-val" id="val-cap_lva">-</td>
+                <td class="col-val" id="val-cap_lvb">-</td>
+                <td class="col-val" id="val-cap_lvc">-</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Oil Leakage:</span>
-            <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
+
+        <!-- 5. Surge Arrester Matrix Table -->
+        <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon" style="background: rgba(234, 179, 8, 0.15); color: #eab308;"><i class="fa-solid fa-bolt"></i></span>
+              <span>Surge Arrester</span>
+              <a id="surge-doc-link" href="surge_report.html" target="_blank" class="bushing-doc-btn" title="Open Surge Arrester Report">
+                <i class="fa-regular fa-file-lines"></i>
+              </a>
+            </div>
+            <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
           </div>
-          <div class="data-row">
-            <span class="data-label">Surface Rust / Paint:</span>
-            <span class="data-val" id="val-rust">Grade A (Good)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Top Oil Temp:</span>
-            <span class="data-val" id="val-oil-temp">58.4 °C</span>
-          </div>
+          <table class="surge-matrix-table">
+            <thead>
+              <tr>
+                <th>ITEM TEST</th>
+                <th>STANDARD</th>
+                <th>HV. A</th>
+                <th>HV. B</th>
+                <th>HV. C</th>
+                <th>LV. A</th>
+                <th>LV. B</th>
+                <th>LV. C</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-item">Insulation Resistance (MΩ)</td>
+                <td class="col-std">EGAT</td>
+                <td class="col-val" id="val-surge_ir_hva">-</td>
+                <td class="col-val" id="val-surge_ir_hvb">-</td>
+                <td class="col-val" id="val-surge_ir_hvc">-</td>
+                <td class="col-val" id="val-surge_ir_lva">-</td>
+                <td class="col-val" id="val-surge_ir_lvb">-</td>
+                <td class="col-val" id="val-surge_ir_lvc">-</td>
+              </tr>
+              <tr>
+                <td class="col-item">Current (mA)</td>
+                <td class="col-std">EGAT</td>
+                <td class="col-val" id="val-surge_curr_hva">-</td>
+                <td class="col-val" id="val-surge_curr_hvb">-</td>
+                <td class="col-val" id="val-surge_curr_hvc">-</td>
+                <td class="col-val" id="val-surge_curr_lva">-</td>
+                <td class="col-val" id="val-surge_curr_lvb">-</td>
+                <td class="col-val" id="val-surge_curr_lvc">-</td>
+              </tr>
+              <tr>
+                <td class="col-item">Watt Loss (W)</td>
+                <td class="col-std">EGAT</td>
+                <td class="col-val" id="val-surge_watt_hva">-</td>
+                <td class="col-val" id="val-surge_watt_hvb">-</td>
+                <td class="col-val" id="val-surge_watt_hvc">-</td>
+                <td class="col-val" id="val-surge_watt_lva">-</td>
+                <td class="col-val" id="val-surge_watt_lvb">-</td>
+                <td class="col-val" id="val-surge_watt_lvc">-</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- 3. Left Bottom: Digital Control IED & OLTC Drive -->
-      <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-microchip"></i></span>
-            Digital IED &amp; Tap Drive
+      <!-- Right Column Stack: DGA and Oil Properties (Guaranteed 14px Equal Gap, NO OVERLAP) -->
+      <div class="right-callout-stack" id="rightCalloutStack">
+        <!-- 6. Right Top: Dissolved Gas Analysis (DGA) -->
+        <div class="callout-card" id="card-dga" data-category="oil" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')">
+          <div class="callout-header">
+            <div class="callout-title" style="white-space: nowrap;">
+              <span class="callout-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-fire-flame-curved"></i></span>
+              <span>Dissolved Gas Analysis (DGA)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="callout-status-pill status-normal" id="dga-date-badge" style="font-size: 0.60rem; padding: 2px 6px; white-space: nowrap;">21-Jun-2026</span>
+              <a href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
+                <i class="fa-solid fa-chart-line"></i>
+              </a>
+            </div>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-coolingfan">Auto OK</span>
-        </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">OLTC Type / Model:</span>
-            <span class="data-val" id="val-oltc-model">MR V III 200D</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Operations Counter:</span>
-            <span class="data-val val-highlight" id="val-oltc-ops">58,148 Ops</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Tap Drive Motor:</span>
-            <span class="data-val">ED100S Normal</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- 4. Center Top: Bushing Matrix Table -->
-      <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-plug"></i></span>
-            <span>Bushing</span>
-            <a id="bushing-doc-link" href="bushing_pf_report.html" target="_blank" class="bushing-doc-btn" title="Open Bushing Insulation Power Factor Report">
-              <i class="fa-regular fa-file-lines"></i>
+          <!-- 8 Gas Chips Grid -->
+          <div class="dga-gas-grid">
+            <div class="gas-chip" id="chip-h2">
+              <div class="gas-chip-head"><span class="gas-name">H₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-h2">9</div>
+            </div>
+            <div class="gas-chip" id="chip-ch4">
+              <div class="gas-chip-head"><span class="gas-name">CH₄</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-ch4">28</div>
+            </div>
+            <div class="gas-chip" id="chip-c2h6">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₆</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-c2h6">11</div>
+            </div>
+            <div class="gas-chip" id="chip-c2h4">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₄</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-c2h4">2</div>
+            </div>
+            <div class="gas-chip" id="chip-c2h2">
+              <div class="gas-chip-head"><span class="gas-name">C₂H₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-c2h2">0</div>
+            </div>
+            <div class="gas-chip" id="chip-co">
+              <div class="gas-chip-head"><span class="gas-name">CO</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-co">127</div>
+            </div>
+            <div class="gas-chip" id="chip-co2">
+              <div class="gas-chip-head"><span class="gas-name">CO₂</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-co2">4,090</div>
+            </div>
+            <div class="gas-chip" id="chip-tdcg">
+              <div class="gas-chip-head"><span class="gas-name">TDCG</span><span class="gas-unit">ppm</span></div>
+              <div class="gas-val" id="dga-tdcg">177</div>
+            </div>
+          </div>
+
+          <!-- Diagnostic Method Interpretations -->
+          <div class="dga-method-section">
+            <div class="dga-method-row">
+              <span class="dga-method-label">Duval Triangle 1:</span>
+              <span class="status-tag tag-normal" id="dga-duval">Normal / Low Gas</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">IEEE C57.104 Evaluation:</span>
+              <span class="status-tag tag-normal" id="dga-ieee">Status 1: Normal</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">IEC 60599 Diagnosis:</span>
+              <span class="status-tag tag-normal" id="dga-iec">Normal Pattern</span>
+            </div>
+            <div class="dga-method-row">
+              <span class="dga-method-label">Cellulose Aging (CO₂/CO):</span>
+              <span class="status-tag tag-normal" id="dga-paper">Normal Aging (32.2)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Right Bottom: Main Tank Oil Properties -->
+        <div class="callout-card" id="card-oilprops" data-category="oil" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')">
+          <div class="callout-header">
+            <div class="callout-title">
+              <span class="callout-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-droplet"></i></span>
+              <span>Main Tank Oil Properties</span>
+            </div>
+            <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
+              <i class="fa-solid fa-file-waveform"></i> Oil Log
             </a>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
+
+          <!-- 1. Physical & Electrical -->
+          <div class="oil-group-header">1. Physical &amp; Electrical</div>
+          <table class="oil-props-table">
+            <tbody>
+              <tr>
+                <td class="col-prop">Dielectric Breakdown</td>
+                <td class="col-method">ASTM D1816</td>
+                <td class="col-val" id="oil-bd">85.90 kV</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-bd">Good</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Water Content</td>
+                <td class="col-method">ASTM D1533</td>
+                <td class="col-val" id="oil-wc">7.40 ppm</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-wc">Dry</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Interfacial Tension (IFT)</td>
+                <td class="col-method">ASTM D971</td>
+                <td class="col-val" id="oil-ift">33.20 mN/m</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-ift">Good</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Acidity / Neutralization</td>
+                <td class="col-method">ASTM D974</td>
+                <td class="col-val" id="oil-acid">0.09 mgKOH/g</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-acid">Good</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Oil Conductivity</td>
+                <td class="col-method">IEC 61620</td>
+                <td class="col-val" style="color: #f59e0b;" id="oil-cond">9.50 pS/m</td>
+                <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-cond">Watch</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 2. Paper Aging & Sulfur -->
+          <div class="oil-group-header">2. Paper Aging &amp; Sulfur</div>
+          <table class="oil-props-table">
+            <tbody>
+              <tr>
+                <td class="col-prop">Furan (2-FAL)</td>
+                <td class="col-method">ASTM D5837</td>
+                <td class="col-val" id="oil-furan">8.00 ppb</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-furan">Low</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Corrosive Sulfur</td>
+                <td class="col-method">DIN 51353</td>
+                <td class="col-val" style="color: #f59e0b;" id="oil-sulfur">3b (Detected)</td>
+                <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-sulfur">Watch</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Passivator (Irgamet 39)</td>
+                <td class="col-method">IEC 60666</td>
+                <td class="col-val" style="color: #ef4444;" id="oil-pass">0 ppm</td>
+                <td class="col-status"><span class="status-tag tag-critical" id="pill-oil-pass">Top-up</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table class="bushing-matrix-table">
-          <thead>
-            <tr>
-              <th>ITEM TEST</th>
-              <th>STANDARD</th>
-              <th>HV. A</th>
-              <th>HV. B</th>
-              <th>HV. C</th>
-              <th>LV. A</th>
-              <th>LV. B</th>
-              <th>LV. C</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="col-item">%Error PF (C1)</td>
-              <td class="col-std">OEM Criteria</td>
-              <td class="col-val" id="val-pf_hva">-</td>
-              <td class="col-val" id="val-pf_hvb">-</td>
-              <td class="col-val" id="val-pf_hvc">-</td>
-              <td class="col-val" id="val-pf_lva">-</td>
-              <td class="col-val" id="val-pf_lvb">-</td>
-              <td class="col-val" id="val-pf_lvc">-</td>
-            </tr>
-            <tr>
-              <td class="col-item">%Error Capacitance (C1)</td>
-              <td class="col-std">OEM Criteria</td>
-              <td class="col-val" id="val-cap_hva">-</td>
-              <td class="col-val" id="val-cap_hvb">-</td>
-              <td class="col-val" id="val-cap_hvc">-</td>
-              <td class="col-val" id="val-cap_lva">-</td>
-              <td class="col-val" id="val-cap_lvb">-</td>
-              <td class="col-val" id="val-cap_lvc">-</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 5. Right Top: Surge Arrester Matrix Table -->
-      <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon" style="background: rgba(234, 179, 8, 0.15); color: #eab308;"><i class="fa-solid fa-bolt"></i></span>
-            <span>Surge Arrester</span>
-            <a id="surge-doc-link" href="surge_report.html" target="_blank" class="bushing-doc-btn" title="Open Surge Arrester Report">
-              <i class="fa-regular fa-file-lines"></i>
-            </a>
-          </div>
-          <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
-        </div>
-        <table class="surge-matrix-table">
-          <thead>
-            <tr>
-              <th>ITEM TEST</th>
-              <th>STANDARD</th>
-              <th>HV. A</th>
-              <th>HV. B</th>
-              <th>HV. C</th>
-              <th>LV. A</th>
-              <th>LV. B</th>
-              <th>LV. C</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="col-item">Insulation Resistance (MΩ)</td>
-              <td class="col-std">EGAT</td>
-              <td class="col-val" id="val-surge_ir_hva">-</td>
-              <td class="col-val" id="val-surge_ir_hvb">-</td>
-              <td class="col-val" id="val-surge_ir_hvc">-</td>
-              <td class="col-val" id="val-surge_ir_lva">-</td>
-              <td class="col-val" id="val-surge_ir_lvb">-</td>
-              <td class="col-val" id="val-surge_ir_lvc">-</td>
-            </tr>
-            <tr>
-              <td class="col-item">Current (mA)</td>
-              <td class="col-std">EGAT</td>
-              <td class="col-val" id="val-surge_curr_hva">-</td>
-              <td class="col-val" id="val-surge_curr_hvb">-</td>
-              <td class="col-val" id="val-surge_curr_hvc">-</td>
-              <td class="col-val" id="val-surge_curr_lva">-</td>
-              <td class="col-val" id="val-surge_curr_lvb">-</td>
-              <td class="col-val" id="val-surge_curr_lvc">-</td>
-            </tr>
-            <tr>
-              <td class="col-item">Watt Loss (W)</td>
-              <td class="col-std">EGAT</td>
-              <td class="col-val" id="val-surge_watt_hva">-</td>
-              <td class="col-val" id="val-surge_watt_hvb">-</td>
-              <td class="col-val" id="val-surge_watt_hvc">-</td>
-              <td class="col-val" id="val-surge_watt_lva">-</td>
-              <td class="col-val" id="val-surge_watt_lvb">-</td>
-              <td class="col-val" id="val-surge_watt_lvc">-</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 6. Right Top: Dissolved Gas Analysis (DGA) -->
-      <div class="callout-card" id="card-dga" data-category="oil" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-fire-flame-curved"></i></span>
-            <span>Dissolved Gas Analysis (DGA)</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span class="callout-status-pill status-normal" id="dga-date-badge" style="font-size: 0.62rem; padding: 2px 7px;">21-Jun-2026</span>
-            <a href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
-              <i class="fa-solid fa-chart-line"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- 8 Gas Chips Grid -->
-        <div class="dga-gas-grid">
-          <div class="gas-chip" id="chip-h2">
-            <div class="gas-chip-head"><span class="gas-name">H₂</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-h2">9</div>
-          </div>
-          <div class="gas-chip" id="chip-ch4">
-            <div class="gas-chip-head"><span class="gas-name">CH₄</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-ch4">28</div>
-          </div>
-          <div class="gas-chip" id="chip-c2h6">
-            <div class="gas-chip-head"><span class="gas-name">C₂H₆</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-c2h6">11</div>
-          </div>
-          <div class="gas-chip" id="chip-c2h4">
-            <div class="gas-chip-head"><span class="gas-name">C₂H₄</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-c2h4">2</div>
-          </div>
-          <div class="gas-chip" id="chip-c2h2">
-            <div class="gas-chip-head"><span class="gas-name">C₂H₂</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-c2h2">0</div>
-          </div>
-          <div class="gas-chip" id="chip-co">
-            <div class="gas-chip-head"><span class="gas-name">CO</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-co">127</div>
-          </div>
-          <div class="gas-chip" id="chip-co2">
-            <div class="gas-chip-head"><span class="gas-name">CO₂</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-co2">4,090</div>
-          </div>
-          <div class="gas-chip" id="chip-tdcg">
-            <div class="gas-chip-head"><span class="gas-name">TDCG</span><span class="gas-unit">ppm</span></div>
-            <div class="gas-val" id="dga-tdcg">177</div>
-          </div>
-        </div>
-
-        <!-- Diagnostic Method Interpretations -->
-        <div class="dga-method-section">
-          <div class="dga-method-row">
-            <span class="dga-method-label">Duval Triangle 1:</span>
-            <span class="status-tag tag-normal" id="dga-duval">Normal / Low Gas</span>
-          </div>
-          <div class="dga-method-row">
-            <span class="dga-method-label">IEEE C57.104 Evaluation:</span>
-            <span class="status-tag tag-normal" id="dga-ieee">Status 1: Normal</span>
-          </div>
-          <div class="dga-method-row">
-            <span class="dga-method-label">IEC 60599 Diagnosis:</span>
-            <span class="status-tag tag-normal" id="dga-iec">Normal Pattern</span>
-          </div>
-          <div class="dga-method-row">
-            <span class="dga-method-label">Cellulose Aging (CO₂/CO):</span>
-            <span class="status-tag tag-normal" id="dga-paper">Normal Aging (32.2)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 7. Right Bottom: Main Tank Oil Properties -->
-      <div class="callout-card" id="card-oilprops" data-category="oil" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')">
-        <div class="callout-header">
-          <div class="callout-title">
-            <span class="callout-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-droplet"></i></span>
-            <span>Main Tank Oil Properties</span>
-          </div>
-          <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
-            <i class="fa-solid fa-file-waveform"></i> Oil Log
-          </a>
-        </div>
-
-        <!-- 1. Physical & Electrical -->
-        <div class="oil-group-header">1. Physical &amp; Electrical</div>
-        <table class="oil-props-table">
-          <tbody>
-            <tr>
-              <td class="col-prop">Dielectric Breakdown</td>
-              <td class="col-method">ASTM D1816</td>
-              <td class="col-val" id="oil-bd">85.90 kV</td>
-              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-bd">Good</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Water Content</td>
-              <td class="col-method">ASTM D1533</td>
-              <td class="col-val" id="oil-wc">7.40 ppm</td>
-              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-wc">Dry</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Interfacial Tension (IFT)</td>
-              <td class="col-method">ASTM D971</td>
-              <td class="col-val" id="oil-ift">33.20 mN/m</td>
-              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-ift">Good</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Acidity / Neutralization</td>
-              <td class="col-method">ASTM D974</td>
-              <td class="col-val" id="oil-acid">0.09 mgKOH/g</td>
-              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-acid">Good</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Oil Conductivity</td>
-              <td class="col-method">IEC 61620</td>
-              <td class="col-val" style="color: #f59e0b;" id="oil-cond">9.50 pS/m</td>
-              <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-cond">Watch</span></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- 2. Paper Aging & Sulfur -->
-        <div class="oil-group-header">2. Paper Aging &amp; Sulfur</div>
-        <table class="oil-props-table">
-          <tbody>
-            <tr>
-              <td class="col-prop">Furan (2-FAL)</td>
-              <td class="col-method">ASTM D5837</td>
-              <td class="col-val" id="oil-furan">8.00 ppb</td>
-              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-furan">Low</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Corrosive Sulfur</td>
-              <td class="col-method">DIN 51353</td>
-              <td class="col-val" style="color: #f59e0b;" id="oil-sulfur">3b (Detected)</td>
-              <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-sulfur">Watch</span></td>
-            </tr>
-            <tr>
-              <td class="col-prop">Passivator (Irgamet 39)</td>
-              <td class="col-method">IEC 60666</td>
-              <td class="col-val" style="color: #ef4444;" id="oil-pass">0 ppm</td>
-              <td class="col-status"><span class="status-tag tag-critical" id="pill-oil-pass">Top-up</span></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <!-- Footer Help & Legend -->
