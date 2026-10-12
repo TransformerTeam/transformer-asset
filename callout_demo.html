@@ -754,7 +754,7 @@
     /* Center-Top Callout (HV Bushing Matrix Table shifted to the left beside Cockpit) */
     #card-hvbushing {
       top: 14px;
-      left: 530px;
+      left: 520px;
       width: fit-content;
       min-width: 460px;
       padding: 8px 12px 10px 12px;
@@ -839,11 +839,10 @@
       font-family: 'Outfit', sans-serif;
     }
     
-    /* Right Column Callouts */
-    /* Surge Arrester Matrix Table Callout (Stacked directly under Bushing) */
+    /* Center-Right Top Callout: Surge Arrester Matrix Table (Placed to the right of Bushing) */
     #card-lvbushing {
-      top: 134px;
-      left: 530px;
+      top: 14px;
+      left: 1000px;
       width: fit-content;
       min-width: 460px;
       padding: 8px 12px 10px 12px;
@@ -1796,8 +1795,8 @@
       conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
       radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'left' },
       coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
-      hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'left' },
-      lvbushing:   { u: 0.681, v: 0.120, card: 'card-lvbushing', side: 'left' },
+      hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
+      lvbushing:   { u: 0.681, v: 0.120, card: 'card-lvbushing', side: 'top' },
       activepart:  { u: 0.772, v: 0.605, card: 'card-activepart', side: 'right' },
       oildga:      { u: 0.920, v: 0.527, card: 'card-oildga', side: 'right' }
     };
@@ -1863,12 +1862,17 @@
           midX = startX - Math.max(25, (startX - pinX) * 0.42);
           line.setAttribute('d', `M ${startX} ${startY} L ${midX} ${startY} L ${pinX} ${pinY}`);
         } else if (cfg.side === 'top') {
-          startX = (cardRect.left - stageRect.left) + (cardRect.width / 2);
+          const cardLeft = cardRect.left - stageRect.left;
+          const cardRight = cardRect.right - stageRect.left;
           startY = cardRect.bottom - stageRect.top;
-          if (Math.abs(pinX - startX) < 45) {
-            line.setAttribute('d', `M ${pinX} ${startY} L ${pinX} ${pinY}`);
+          
+          // Constrain startX to card horizontal span with 24px safety margin
+          startX = Math.max(cardLeft + 24, Math.min(cardRight - 24, pinX));
+          
+          if (Math.abs(pinX - startX) < 12) {
+            line.setAttribute('d', `M ${startX} ${startY} L ${pinX} ${pinY}`);
           } else {
-            midY = startY + Math.max(15, (pinY - startY) * 0.35);
+            midY = startY + Math.max(18, (pinY - startY) * 0.35);
             line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
           }
         }
