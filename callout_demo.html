@@ -924,8 +924,180 @@
       font-family: 'Outfit', sans-serif;
     }
 
-    #card-activepart  { top: 22%; right: 28px; }
-    #card-oildga      { bottom: 12%; top: auto; right: 28px; }
+    /* DGA & Oil Properties Cards (Replacing Active Part on Right Side) */
+    #card-dga {
+      top: 155px;
+      right: 24px;
+      width: 350px;
+      padding: 10px 14px;
+      z-index: 30;
+    }
+    #card-oilprops {
+      top: 412px;
+      right: 24px;
+      width: 350px;
+      padding: 10px 14px;
+      z-index: 30;
+    }
+
+    /* DGA Gas Grid */
+    .dga-gas-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 8px 0;
+    }
+    .gas-chip {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 5px 7px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    [data-theme="light"] .gas-chip {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: rgba(0, 0, 0, 0.06);
+    }
+    .gas-chip:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+    }
+    .gas-chip.warning {
+      background: var(--status-fair-bg);
+      border-color: var(--status-fair-border);
+    }
+    .gas-chip.critical {
+      background: var(--status-crit-bg);
+      border-color: var(--status-crit-border);
+    }
+    .gas-chip-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .gas-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--card-label-color);
+    }
+    .gas-unit {
+      font-size: 0.58rem;
+      color: var(--text-muted);
+    }
+    .gas-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--card-val-color);
+      line-height: 1.1;
+    }
+
+    /* DGA Method Interpretations */
+    .dga-method-section {
+      padding: 6px 8px;
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.68rem;
+    }
+    [data-theme="dark"] .dga-method-section {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .dga-method-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dga-method-label {
+      color: var(--card-label-color);
+      font-weight: 600;
+    }
+
+    /* Main Tank Oil Properties */
+    .oil-group-header {
+      padding: 3px 6px;
+      background: rgba(0, 0, 0, 0.03);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--card-label-color);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      margin: 5px 0 3px 0;
+    }
+    [data-theme="dark"] .oil-group-header {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .oil-props-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.68rem;
+      margin-bottom: 2px;
+    }
+    .oil-props-table td {
+      padding: 2.8px 4px;
+      border-bottom: 1px solid var(--border-card);
+      vertical-align: middle;
+    }
+    .oil-props-table tr:last-child td {
+      border-bottom: none;
+    }
+    .oil-props-table td.col-prop {
+      color: var(--card-title-color);
+      font-weight: 600;
+      width: 42%;
+      white-space: nowrap;
+    }
+    .oil-props-table td.col-method {
+      color: var(--text-muted);
+      font-size: 0.62rem;
+      width: 26%;
+      white-space: nowrap;
+    }
+    .oil-props-table td.col-val {
+      text-align: right;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      color: var(--card-val-color);
+      width: 20%;
+      white-space: nowrap;
+    }
+    .oil-props-table td.col-status {
+      text-align: right;
+      width: 12%;
+    }
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 1.5px 6px;
+      border-radius: 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .tag-normal {
+      background: var(--status-good-bg);
+      color: var(--status-good-text);
+      border: 1px solid var(--status-good-border);
+    }
+    .tag-warning {
+      background: var(--status-fair-bg);
+      color: var(--status-fair-text);
+      border: 1px solid var(--status-fair-border);
+    }
+    .tag-critical {
+      background: var(--status-crit-bg);
+      color: var(--status-crit-text);
+      border: 1px solid var(--status-crit-border);
+    }
 
     /* Bottom Info Banner */
     .twin-footer-info {
@@ -1036,11 +1208,11 @@
         <!-- 5. High Voltage Bushings -->
         <path id="line-hvbushing" class="leader-line" d="M 0 0" />
 
-        <!-- 6. Active Part: Copper Windings & Core -->
-        <path id="line-activepart" class="leader-line" d="M 0 0" />
+        <!-- 6. Dissolved Gas Analysis (DGA) -->
+        <path id="line-dga" class="leader-line" d="M 0 0" />
 
-        <!-- 7. Insulating Oil & DGA Fluid Chamber -->
-        <path id="line-oildga" class="leader-line" d="M 0 0" />
+        <!-- 7. Main Tank Oil Properties -->
+        <path id="line-oilprops" class="leader-line" d="M 0 0" />
 
         <!-- Pulsing Target Pins on Cutaway Anatomy -->
         <!-- Pin: Conservator -->
@@ -1063,13 +1235,13 @@
         <circle id="pin-pulse-hvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
         <circle id="pin-dot-hvbushing" cx="0" cy="0" r="5" class="pin-dot" />
 
-        <!-- Pin: Active Part (Coils) -->
-        <circle id="pin-pulse-activepart" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-activepart" cx="0" cy="0" r="5" class="pin-dot" />
+        <!-- Pin: DGA (Tank Headspace) -->
+        <circle id="pin-pulse-dga" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-dga" cx="0" cy="0" r="5" class="pin-dot" />
 
-        <!-- Pin: Oil & DGA -->
-        <circle id="pin-pulse-oildga" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-oildga" cx="0" cy="0" r="5" class="pin-dot" />
+        <!-- Pin: Oil Properties (Oil Sampling Valve) -->
+        <circle id="pin-pulse-oilprops" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-oilprops" cx="0" cy="0" r="5" class="pin-dot" />
       </svg>
 
       <!-- ==========================================
@@ -1361,62 +1533,151 @@
         </table>
       </div>
 
-      <!-- 6. Right Middle: Active Part (Copper Windings & Core) -->
-      <div class="callout-card" id="card-activepart" data-category="electrical" onmouseenter="focusCallout('activepart')" onmouseleave="unfocusCallout('activepart')">
+      <!-- 6. Right Top: Dissolved Gas Analysis (DGA) -->
+      <div class="callout-card" id="card-dga" data-category="oil" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')">
         <div class="callout-header">
           <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-bolt"></i></span>
-            Active Part (Windings &amp; Core)
+            <span class="callout-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-fire-flame-curved"></i></span>
+            <span>Dissolved Gas Analysis (DGA)</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-activepart">Normal</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="callout-status-pill status-normal" id="dga-date-badge" style="font-size: 0.62rem; padding: 2px 7px;">21-Jun-2026</span>
+            <a href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
+              <i class="fa-solid fa-chart-line"></i>
+            </a>
+          </div>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">Polarization Index (PI):</span>
-            <span class="data-val val-highlight" id="val-active-pi">HV=2.14 (&gt;1.25)</span>
+
+        <!-- 8 Gas Chips Grid -->
+        <div class="dga-gas-grid">
+          <div class="gas-chip" id="chip-h2">
+            <div class="gas-chip-head"><span class="gas-name">H₂</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-h2">9</div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Winding Res. Dev:</span>
-            <span class="data-val val-highlight" id="val-active-wres">&lt; 2.33% (&le;5%)</span>
+          <div class="gas-chip" id="chip-ch4">
+            <div class="gas-chip-head"><span class="gas-name">CH₄</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-ch4">28</div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Turns Ratio (TTR):</span>
-            <span class="data-val val-highlight" id="val-active-ttr">&lt; 0.5% Dev</span>
+          <div class="gas-chip" id="chip-c2h6">
+            <div class="gas-chip-head"><span class="gas-name">C₂H₆</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-c2h6">11</div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Paper DP (Furan):</span>
-            <span class="data-val val-highlight" id="val-active-dp">1,031 (Good)</span>
+          <div class="gas-chip" id="chip-c2h4">
+            <div class="gas-chip-head"><span class="gas-name">C₂H₄</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-c2h4">2</div>
+          </div>
+          <div class="gas-chip" id="chip-c2h2">
+            <div class="gas-chip-head"><span class="gas-name">C₂H₂</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-c2h2">0</div>
+          </div>
+          <div class="gas-chip" id="chip-co">
+            <div class="gas-chip-head"><span class="gas-name">CO</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-co">127</div>
+          </div>
+          <div class="gas-chip" id="chip-co2">
+            <div class="gas-chip-head"><span class="gas-name">CO₂</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-co2">4,090</div>
+          </div>
+          <div class="gas-chip" id="chip-tdcg">
+            <div class="gas-chip-head"><span class="gas-name">TDCG</span><span class="gas-unit">ppm</span></div>
+            <div class="gas-val" id="dga-tdcg">177</div>
+          </div>
+        </div>
+
+        <!-- Diagnostic Method Interpretations -->
+        <div class="dga-method-section">
+          <div class="dga-method-row">
+            <span class="dga-method-label">Duval Triangle 1:</span>
+            <span class="status-tag tag-normal" id="dga-duval">Normal / Low Gas</span>
+          </div>
+          <div class="dga-method-row">
+            <span class="dga-method-label">IEEE C57.104 Evaluation:</span>
+            <span class="status-tag tag-normal" id="dga-ieee">Status 1: Normal</span>
+          </div>
+          <div class="dga-method-row">
+            <span class="dga-method-label">IEC 60599 Diagnosis:</span>
+            <span class="status-tag tag-normal" id="dga-iec">Normal Pattern</span>
+          </div>
+          <div class="dga-method-row">
+            <span class="dga-method-label">Cellulose Aging (CO₂/CO):</span>
+            <span class="status-tag tag-normal" id="dga-paper">Normal Aging (32.2)</span>
           </div>
         </div>
       </div>
 
-      <!-- 7. Right Bottom: Insulating Oil & DGA -->
-      <div class="callout-card" id="card-oildga" data-category="oil" onmouseenter="focusCallout('oildga')" onmouseleave="unfocusCallout('oildga')">
+      <!-- 7. Right Bottom: Main Tank Oil Properties -->
+      <div class="callout-card" id="card-oilprops" data-category="oil" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')">
         <div class="callout-header">
           <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-droplet"></i></span>
-            Insulating Oil &amp; DGA
+            <span class="callout-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-droplet"></i></span>
+            <span>Main Tank Oil Properties</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-oildga">HI: 85%</span>
+          <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
+            <i class="fa-solid fa-file-waveform"></i> Oil Log
+          </a>
         </div>
-        <div class="callout-data-list">
-          <div class="data-row">
-            <span class="data-label">IEEE DGA Status:</span>
-            <span class="data-val val-highlight" id="val-dga-status">Status 1 (Normal)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Breakdown Voltage:</span>
-            <span class="data-val val-highlight" id="val-oil-bd">85.9 kV (&gt;50)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Water Content:</span>
-            <span class="data-val val-highlight" id="val-oil-wc">7.4 ppm (&lt;20)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Total Gas (TDCG):</span>
-            <span class="data-val" id="val-dga-tdcg">177 ppm</span>
-          </div>
-        </div>
+
+        <!-- 1. Physical & Electrical -->
+        <div class="oil-group-header">1. Physical &amp; Electrical</div>
+        <table class="oil-props-table">
+          <tbody>
+            <tr>
+              <td class="col-prop">Dielectric Breakdown</td>
+              <td class="col-method">ASTM D1816</td>
+              <td class="col-val" id="oil-bd">85.90 kV</td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-bd">Good</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Water Content</td>
+              <td class="col-method">ASTM D1533</td>
+              <td class="col-val" id="oil-wc">7.40 ppm</td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-wc">Dry</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Interfacial Tension (IFT)</td>
+              <td class="col-method">ASTM D971</td>
+              <td class="col-val" id="oil-ift">33.20 mN/m</td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-ift">Good</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Acidity / Neutralization</td>
+              <td class="col-method">ASTM D974</td>
+              <td class="col-val" id="oil-acid">0.09 mgKOH/g</td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-acid">Good</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Oil Conductivity</td>
+              <td class="col-method">IEC 61620</td>
+              <td class="col-val" style="color: #f59e0b;" id="oil-cond">9.50 pS/m</td>
+              <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-cond">Watch</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 2. Paper Aging & Sulfur -->
+        <div class="oil-group-header">2. Paper Aging &amp; Sulfur</div>
+        <table class="oil-props-table">
+          <tbody>
+            <tr>
+              <td class="col-prop">Furan (2-FAL)</td>
+              <td class="col-method">ASTM D5837</td>
+              <td class="col-val" id="oil-furan">8.00 ppb</td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-furan">Low</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Corrosive Sulfur</td>
+              <td class="col-method">DIN 51353</td>
+              <td class="col-val" style="color: #f59e0b;" id="oil-sulfur">3b (Detected)</td>
+              <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-sulfur">Watch</span></td>
+            </tr>
+            <tr>
+              <td class="col-prop">Passivator (Irgamet 39)</td>
+              <td class="col-method">IEC 60666</td>
+              <td class="col-val" style="color: #ef4444;" id="oil-pass">0 ppm</td>
+              <td class="col-status"><span class="status-tag tag-critical" id="pill-oil-pass">Top-up</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Footer Help & Legend -->
@@ -1487,6 +1748,8 @@
         activeDp: '1,031 (Good)',
         mainTankHI: 'HI: 85%',
         mainTankClass: 'status-normal',
+        dga: { h2: 9, ch4: 28, c2h6: 11, c2h4: 2, c2h2: 0, co: 127, co2: '4,090', tdcg: 177, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', iec: 'Normal Pattern', paper: 'Normal Aging (32.2)' },
+        oil: { bd: '85.90 kV', wc: '7.40 ppm', ift: '33.20 mN/m', acid: '0.09 mgKOH/g', cond: '9.50 pS/m', furan: '8.00 ppb', sulfur: '3b (Detected)', pass: '0 ppm' },
         dgaStatus: 'Status 1 (Normal)',
         dgaTdcg: '177 ppm',
         oilBd: '85.9 kV (>50)',
@@ -1551,6 +1814,8 @@
         activeDp: '1,050 (Good)',
         mainTankHI: 'HI: 89%',
         mainTankClass: 'status-normal',
+        dga: { h2: 12, ch4: 18, c2h6: 8, c2h4: 3, c2h2: 0, co: 145, co2: '3,850', tdcg: 186, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', iec: 'Normal Pattern', paper: 'Normal Aging (26.5)' },
+        oil: { bd: '88.50 kV', wc: '6.20 ppm', ift: '35.00 mN/m', acid: '0.04 mgKOH/g', cond: '3.20 pS/m', furan: '5.00 ppb', sulfur: '1a (Non-corrosive)', pass: '120 ppm' },
         dgaStatus: 'Status 1 (Normal)',
         dgaTdcg: '186 ppm',
         oilBd: '88.5 kV (>50)',
@@ -1615,6 +1880,8 @@
         activeDp: '937 (Normal Paper)',
         mainTankHI: 'HI: 71%',
         mainTankClass: 'status-warning',
+        dga: { h2: 4, ch4: 24, c2h6: 7, c2h4: 14, c2h2: 0, co: 979, co2: '7,446', tdcg: '1,028', ieee: 'Status 2: Intermediate', duval: 'Normal / Low Gas', iec: 'Thermal Fault T1', paper: 'Moderate Aging (7.6)' },
+        oil: { bd: '78.20 kV', wc: '14.60 ppm', ift: '32.10 mN/m', acid: '0.03 mgKOH/g', cond: '5.10 pS/m', furan: '17.00 ppb', sulfur: '2a', pass: '0 ppm' },
         dgaStatus: 'Status 2 (Intermediate)',
         dgaTdcg: '1,028 ppm',
         oilBd: '78.2 kV (>50)',
@@ -1715,25 +1982,60 @@
         });
       });
 
-      // Active Part (Coils & Core)
-      if (document.getElementById('pill-activepart')) {
-        document.getElementById('pill-activepart').textContent = d.activeStatus;
-        document.getElementById('pill-activepart').className = `callout-status-pill ${d.activeClass}`;
-        document.getElementById('val-active-pi').textContent = d.activePi;
-        document.getElementById('val-active-wres').textContent = d.activeWres;
-        document.getElementById('val-active-ttr').textContent = d.activeTtr;
-        document.getElementById('val-active-dp').textContent = d.activeDp;
+      // Dissolved Gas Analysis (DGA) Binding
+      if (d.dga) {
+        document.getElementById('dga-h2').textContent = d.dga.h2;
+        document.getElementById('dga-ch4').textContent = d.dga.ch4;
+        document.getElementById('dga-c2h6').textContent = d.dga.c2h6;
+        document.getElementById('dga-c2h4').textContent = d.dga.c2h4;
+        document.getElementById('dga-c2h2').textContent = d.dga.c2h2;
+        document.getElementById('dga-co').textContent = d.dga.co;
+        document.getElementById('dga-co2').textContent = d.dga.co2;
+        document.getElementById('dga-tdcg').textContent = d.dga.tdcg;
+        
+        document.getElementById('dga-duval').textContent = d.dga.duval || 'Normal / Low Gas';
+        document.getElementById('dga-ieee').textContent = d.dga.ieee || 'Status 1: Normal';
+        document.getElementById('dga-iec').textContent = d.dga.iec || 'Normal Pattern';
+        document.getElementById('dga-paper').textContent = d.dga.paper || 'Normal Aging';
+        
+        // Chip warning/critical highlight
+        const chipTdcg = document.getElementById('chip-tdcg');
+        if (chipTdcg) {
+          chipTdcg.className = parseInt(String(d.dga.tdcg).replace(/,/g, '')) > 720 ? 'gas-chip warning' : 'gas-chip';
+        }
       }
 
-      // Oil & DGA
-      if (document.getElementById('pill-oildga')) {
-        document.getElementById('pill-oildga').textContent = d.mainTankHI;
-        document.getElementById('pill-oildga').className = `callout-status-pill ${d.mainTankClass}`;
+      // Main Tank Oil Properties Binding
+      if (d.oil) {
+        document.getElementById('oil-bd').textContent = d.oil.bd;
+        document.getElementById('oil-wc').textContent = d.oil.wc;
+        document.getElementById('oil-ift').textContent = d.oil.ift;
+        document.getElementById('oil-acid').textContent = d.oil.acid;
+        document.getElementById('oil-cond').textContent = d.oil.cond;
+        document.getElementById('oil-furan').textContent = d.oil.furan;
+        document.getElementById('oil-sulfur').textContent = d.oil.sulfur;
+        document.getElementById('oil-pass').textContent = d.oil.pass;
+        
+        // Pill status
+        const pillCond = document.getElementById('pill-oil-cond');
+        if (pillCond) {
+          const val = parseFloat(d.oil.cond);
+          pillCond.className = val > 8 ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillCond.textContent = val > 8 ? 'Watch' : 'Good';
+        }
+        const pillSulfur = document.getElementById('pill-oil-sulfur');
+        if (pillSulfur) {
+          const isCorrosive = d.oil.sulfur.includes('Detected') || d.oil.sulfur.includes('3b');
+          pillSulfur.className = isCorrosive ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillSulfur.textContent = isCorrosive ? 'Watch' : 'Good';
+        }
+        const pillPass = document.getElementById('pill-oil-pass');
+        if (pillPass) {
+          const passVal = parseInt(d.oil.pass);
+          pillPass.className = passVal < 50 ? 'status-tag tag-critical' : 'status-tag tag-normal';
+          pillPass.textContent = passVal < 50 ? 'Top-up' : 'Good';
+        }
       }
-      document.getElementById('val-dga-status').textContent = d.dgaStatus;
-      document.getElementById('val-dga-tdcg').textContent = d.dgaTdcg;
-      document.getElementById('val-oil-bd').textContent = d.oilBd;
-      document.getElementById('val-oil-wc').textContent = d.oilWc;
 
       // OLTC
       document.getElementById('pill-coolingfan').textContent = d.oltcStatus;
@@ -1814,8 +2116,8 @@
       coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
       hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
       lvbushing:   { u: 0.681, v: 0.058, card: 'card-lvbushing', side: 'top' },
-      activepart:  { u: 0.772, v: 0.605, card: 'card-activepart', side: 'right' },
-      oildga:      { u: 0.920, v: 0.527, card: 'card-oildga', side: 'right' }
+      dga:         { u: 0.772, v: 0.530, card: 'card-dga', side: 'right' },
+      oilprops:    { u: 0.880, v: 0.620, card: 'card-oilprops', side: 'right' }
     };
 
     function updateLeaderLines() {
