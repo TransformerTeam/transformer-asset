@@ -2150,62 +2150,6 @@
       );
     }
 
-    // Custom Plugin to draw Warning (DP 300) and Critical (DP 200) Threshold Bands and Right-Edge Labels
-    // Custom Plugin to draw Warning (DP 300) and Critical (DP 200) Threshold Badges on the Left Side
-    const thresholdLabelsPlugin = {
-      id: 'thresholdLabels',
-      afterDatasetsDraw(chart) {
-        const { ctx, chartArea, scales: { y } } = chart;
-        if (!chartArea || !y) return;
-        const { left } = chartArea;
-        const y300 = y.getPixelForValue(300);
-        const y200 = y.getPixelForValue(200);
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-        ctx.save();
-        ctx.font = 'bold 8px "Inter", sans-serif';
-
-        const padX = 6;
-        const h = 14;
-        const badgeX = left + 10;
-
-        // 1. Warning (DP 300) Badge on Left Side
-        const t1 = 'Warning (DP 300)';
-        const w1 = ctx.measureText(t1).width;
-        const yPos1 = y300 - h / 2;
-
-        ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 251, 235, 0.98)';
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 1;
-        drawCalloutRoundRect(ctx, badgeX, yPos1, w1 + padX * 2, h, 3);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isDark ? '#fbbf24' : '#b45309';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(t1, badgeX + (w1 + padX * 2) / 2, y300);
-
-        // 2. Critical (DP 200) Badge on Left Side
-        const t2 = 'Critical (DP 200)';
-        const w2 = ctx.measureText(t2).width;
-        const yPos2 = y200 - h / 2;
-
-        ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(254, 242, 242, 0.98)';
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 1;
-        drawCalloutRoundRect(ctx, badgeX, yPos2, w2 + padX * 2, h, 3);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isDark ? '#f87171' : '#b91c1c';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(t2, badgeX + (w2 + padX * 2) / 2, y200);
-
-        ctx.restore();
-      }
-    };
 
     // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine)
     const dp300CalloutPlugin = {
@@ -2544,7 +2488,7 @@
 
       dpChartInstance = new Chart(ctx, {
         type: 'line',
-        plugins: [thresholdLabelsPlugin, dp300CalloutPlugin],
+        plugins: [dp300CalloutPlugin],
         data: {
           labels: years,
           datasets: [
