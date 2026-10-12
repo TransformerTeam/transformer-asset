@@ -2150,53 +2150,7 @@
       );
     }
 
-    // Safety Bands Plugin (Soft Industrial IoT Background Zones: Healthy, Monitoring, Critical)
-    const safetyBandsPlugin = {
-      id: 'safetyBands',
-      beforeDraw(chart) {
-        const { ctx, chartArea, scales: { y } } = chart;
-        if (!chartArea || !y) return;
-        const { top, bottom, left, right, width } = chartArea;
-        ctx.save();
 
-        const y200 = y.getPixelForValue(200);
-        const y300 = y.getPixelForValue(300);
-        const y500 = y.getPixelForValue(500);
-
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-        // Zone 1: Critical / End of Life (0 - 200)
-        ctx.fillStyle = isDark ? 'rgba(239, 68, 68, 0.08)' : 'rgba(239, 68, 68, 0.055)';
-        ctx.fillRect(left, y200, width, bottom - y200);
-
-        // Zone 2: Warning / Accelerated Aging (200 - 300)
-        ctx.fillStyle = isDark ? 'rgba(245, 158, 11, 0.07)' : 'rgba(245, 158, 11, 0.05)';
-        ctx.fillRect(left, y300, width, y200 - y300);
-
-        // Zone 3: Advisory Monitoring (300 - 500)
-        ctx.fillStyle = isDark ? 'rgba(59, 130, 246, 0.045)' : 'rgba(59, 130, 246, 0.025)';
-        ctx.fillRect(left, y500, width, y300 - y500);
-
-        // Zone 4: Healthy Operating (> 500)
-        ctx.fillStyle = isDark ? 'rgba(16, 185, 129, 0.045)' : 'rgba(16, 185, 129, 0.025)';
-        ctx.fillRect(left, top, width, y500 - top);
-
-        // Zone Labels on Right Edge
-        ctx.font = 'bold 8px "Inter", sans-serif';
-        ctx.textAlign = 'right';
-
-        ctx.fillStyle = isDark ? 'rgba(52, 211, 153, 0.75)' : 'rgba(16, 185, 129, 0.7)';
-        ctx.fillText('HEALTHY ZONE (DP > 500)', right - 8, top + 13);
-
-        ctx.fillStyle = isDark ? 'rgba(251, 191, 36, 0.8)' : 'rgba(245, 158, 11, 0.75)';
-        ctx.fillText('MONITORING ZONE (300–500)', right - 8, y300 - 7);
-
-        ctx.fillStyle = isDark ? 'rgba(248, 113, 113, 0.85)' : 'rgba(239, 68, 68, 0.75)';
-        ctx.fillText('END OF LIFE ZONE (DP < 200)', right - 8, bottom - 8);
-
-        ctx.restore();
-      }
-    };
 
     // Custom Callout Plugin for DP = 300 Intersections (Strict Collision-Free Engine)
     const dp300CalloutPlugin = {
@@ -2535,7 +2489,7 @@
 
       dpChartInstance = new Chart(ctx, {
         type: 'line',
-        plugins: [safetyBandsPlugin, dp300CalloutPlugin],
+        plugins: [dp300CalloutPlugin],
         data: {
           labels: years,
           datasets: [
@@ -2639,7 +2593,6 @@
           },
           plugins: {
             legend: { display: false },
-            safetyBands: {},
             dp300Callouts: {
               intersections: intersections
             },
