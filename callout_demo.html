@@ -355,9 +355,9 @@
       z-index: 30;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
-      border-radius: 14px;
-      padding: 12px 16px;
-      width: 275px;
+      border-radius: 12px;
+      padding: 8px 12px;
+      width: 236px;
       box-shadow: var(--shadow-card);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
@@ -373,35 +373,35 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
-      gap: 8px;
+      margin-bottom: 6px;
+      gap: 6px;
     }
     .callout-title {
-      font-size: 0.84rem;
+      font-size: 0.74rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       color: var(--card-title-color);
       letter-spacing: -0.01em;
     }
     .callout-icon {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
+      font-size: 0.65rem;
       background: var(--card-icon-bg);
       color: var(--card-icon-color);
     }
 
     .callout-status-pill {
-      font-size: 0.68rem;
+      font-size: 0.60rem;
       font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 12px;
+      padding: 2px 7px;
+      border-radius: 10px;
       letter-spacing: 0.02em;
     }
     .status-normal {
@@ -423,14 +423,14 @@
     .callout-data-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 0.76rem;
+      gap: 2px;
+      font-size: 0.68rem;
     }
     .data-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 3px 0;
+      padding: 2px 0;
       border-bottom: 1px dashed var(--card-dash-color);
     }
     .data-row:last-child {
@@ -455,7 +455,7 @@
     .topleft-cockpit-panel {
       position: absolute;
       top: 14px;
-      left: 18px;
+      left: 16px;
       z-index: 25;
       display: flex;
       gap: 8px;
@@ -470,7 +470,7 @@
       border-radius: 10px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
-      width: 242px;
+      width: 212px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -485,17 +485,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 5px 8px;
+      padding: 4px 7px;
       background: rgba(37, 99, 235, 0.08);
       border-bottom: 1px solid var(--border-card);
     }
     .nameplate-title {
-      font-size: 0.74rem;
+      font-size: 0.68rem;
       font-weight: 700;
       color: var(--card-title-color);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       letter-spacing: -0.01em;
     }
     .nameplate-badge {
@@ -512,11 +512,11 @@
     .nameplate-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.66rem;
+      font-size: 0.61rem;
     }
     .nameplate-table td {
-      padding: 2.6px 7px;
-      line-height: 1.22;
+      padding: 2.1px 6px;
+      line-height: 1.2;
       border-bottom: 1px solid var(--border-card);
     }
     .nameplate-table tr:last-child td {
@@ -543,7 +543,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      width: 252px;
+      width: 218px;
     }
 
     /* Gauge & Life KPI Row (Side by Side to the right of Nameplate) */
@@ -551,14 +551,14 @@
       display: flex;
       gap: 6px;
       align-items: stretch;
-      height: 104px;
+      height: 96px;
     }
 
     .gauge-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 5px 6px;
+      padding: 4px 5px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -566,7 +566,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      width: 120px;
+      width: 104px;
       transition: all 0.25s ease;
     }
     .gauge-card:hover {
@@ -611,14 +611,14 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      width: 126px;
+      width: 108px;
     }
 
     .life-mini-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 5px 8px;
+      padding: 4px 7px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -649,7 +649,7 @@
 
     .life-mini-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.15rem;
+      font-size: 1.0rem;
       font-weight: 800;
       color: #16a34a;
       line-height: 1.1;
@@ -664,7 +664,8 @@
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 6px 9px 7px 9px;
+      padding: 5px 8px;
+      box-sizing: border-box;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -732,9 +733,9 @@
       background: rgba(37, 99, 235, 0.06);
       border-left: 3px solid #3b82f6;
       border-radius: 4px;
-      padding: 6px 8px;
-      font-size: 0.67rem;
-      line-height: 1.4;
+      padding: 5px 7px;
+      font-size: 0.62rem;
+      line-height: 1.35;
       color: var(--card-val-color);
       flex: 1;
       display: flex;
@@ -745,23 +746,47 @@
       border-left-color: #60a5fa;
     }
 
-    /* Preset Callout Positions (Responsive Full Scale Coordinates) */
-    /* Left Column Callouts (Stacked neatly below Nameplate & Gauge) */
-    #card-conservator { top: 295px; left: 18px; }
-    #card-radiator    { top: 430px; left: 18px; }
-    #card-coolingfan  { top: 565px; left: 18px; }
-    
-    /* Center-Top Callout (HV Bushing Matrix Table shifted to the left beside Cockpit) */
-    #card-hvbushing {
-      top: 14px;
-      left: 520px;
-      width: 460px;
-      height: 131px;
+    /* Preset Callout Positions with UNIFORM 14px Equal Spacing */
+    /* Left Column Callouts (Uniform height 96px, 14px spacing) */
+    #card-conservator { 
+      top: 258px; 
+      left: 16px; 
+      height: 96px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 12px 10px 12px;
+    }
+    #card-radiator { 
+      top: 368px; 
+      left: 16px; 
+      height: 96px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #card-coolingfan { 
+      top: 478px; 
+      left: 16px; 
+      height: 96px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    /* Center-Top Callout: Bushing Matrix Table (Equal 14px gap from Cockpit) */
+    #card-hvbushing {
+      top: 14px;
+      left: 468px;
+      width: 415px;
+      height: 110px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 7px 10px 8px 10px;
     }
     #card-hvbushing:hover, #card-hvbushing.active {
       transform: translateY(-4px) scale(1.02);
@@ -770,10 +795,10 @@
       margin-bottom: 6px;
     }
     #card-hvbushing .bushing-matrix-table {
-      height: 82px;
+      height: 70px;
     }
     #card-hvbushing .bushing-matrix-table td {
-      padding: 5.5px 3px;
+      padding: 2.8px 3px;
     }
     .bushing-doc-btn {
       display: inline-flex;
@@ -800,7 +825,7 @@
     .bushing-matrix-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.65rem;
+      font-size: 0.60rem;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 6px;
@@ -810,10 +835,10 @@
       background: rgba(0, 0, 0, 0.04);
       color: var(--card-label-color);
       font-weight: 700;
-      font-size: 0.58rem;
+      font-size: 0.54rem;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      padding: 3.5px 3px;
+      padding: 2.2px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
       white-space: nowrap;
@@ -826,10 +851,10 @@
       padding-left: 6px;
     }
     .bushing-matrix-table td {
-      padding: 3.5px 3px;
+      padding: 2.8px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
-      font-size: 0.65rem;
+      font-size: 0.60rem;
       color: var(--card-val-color);
       white-space: nowrap;
     }
@@ -849,17 +874,17 @@
       font-family: 'Outfit', sans-serif;
     }
     
-    /* Center-Right Top Callout: Surge Arrester Matrix Table (Placed to the right of Bushing) */
+    /* Center-Right Top Callout: Surge Arrester Matrix Table (Equal 14px gap from Bushing) */
     #card-lvbushing {
       top: 14px;
-      left: 1000px;
-      width: 460px;
-      height: 131px;
+      left: 897px;
+      width: 415px;
+      height: 110px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 12px 10px 12px;
+      padding: 7px 10px 8px 10px;
     }
     #card-lvbushing:hover, #card-lvbushing.active {
       transform: translateY(-4px) scale(1.02);
@@ -868,13 +893,13 @@
       margin-bottom: 6px;
     }
     #card-lvbushing .surge-matrix-table {
-      height: 82px;
+      height: 70px;
     }
 
     .surge-matrix-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.65rem;
+      font-size: 0.60rem;
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 6px;
@@ -884,10 +909,10 @@
       background: rgba(0, 0, 0, 0.04);
       color: var(--card-label-color);
       font-weight: 700;
-      font-size: 0.58rem;
+      font-size: 0.54rem;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      padding: 3.5px 3px;
+      padding: 2.2px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
       white-space: nowrap;
@@ -900,10 +925,10 @@
       padding-left: 6px;
     }
     .surge-matrix-table td {
-      padding: 3.5px 3px;
+      padding: 2.2px 3px;
       border: 1px solid var(--border-card);
       text-align: center;
-      font-size: 0.65rem;
+      font-size: 0.60rem;
       color: var(--card-val-color);
       white-space: nowrap;
     }
@@ -924,19 +949,19 @@
       font-family: 'Outfit', sans-serif;
     }
 
-    /* DGA & Oil Properties Cards (Replacing Active Part on Right Side) */
+    /* DGA & Oil Properties Cards (Right Side with Equal 14px Spacing) */
     #card-dga {
-      top: 155px;
-      right: 24px;
-      width: 350px;
-      padding: 10px 14px;
+      top: 138px;
+      right: 16px;
+      width: 310px;
+      padding: 8px 12px;
       z-index: 30;
     }
     #card-oilprops {
-      top: 412px;
-      right: 24px;
-      width: 350px;
-      padding: 10px 14px;
+      top: 354px;
+      right: 16px;
+      width: 310px;
+      padding: 8px 12px;
       z-index: 30;
     }
 
@@ -944,14 +969,14 @@
     .dga-gas-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin: 8px 0;
+      gap: 5px;
+      margin: 6px 0;
     }
     .gas-chip {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-card);
-      border-radius: 8px;
-      padding: 5px 7px;
+      border-radius: 6px;
+      padding: 3.5px 5px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -980,17 +1005,17 @@
       margin-bottom: 2px;
     }
     .gas-name {
-      font-size: 0.68rem;
+      font-size: 0.61rem;
       font-weight: 700;
       color: var(--card-label-color);
     }
     .gas-unit {
-      font-size: 0.58rem;
+      font-size: 0.52rem;
       color: var(--text-muted);
     }
     .gas-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.84rem;
       font-weight: 800;
       color: var(--card-val-color);
       line-height: 1.1;
@@ -998,14 +1023,14 @@
 
     /* DGA Method Interpretations */
     .dga-method-section {
-      padding: 6px 8px;
+      padding: 5px 8px;
       background: rgba(0, 0, 0, 0.03);
       border: 1px solid var(--border-card);
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      font-size: 0.68rem;
+      gap: 4px;
+      font-size: 0.61rem;
     }
     [data-theme="dark"] .dga-method-section {
       background: rgba(255, 255, 255, 0.02);
@@ -1022,15 +1047,15 @@
 
     /* Main Tank Oil Properties */
     .oil-group-header {
-      padding: 3px 6px;
+      padding: 2px 6px;
       background: rgba(0, 0, 0, 0.03);
-      font-size: 0.62rem;
+      font-size: 0.56rem;
       font-weight: 700;
       color: var(--card-label-color);
       text-transform: uppercase;
       letter-spacing: 0.04em;
       border-radius: 4px;
-      margin: 5px 0 3px 0;
+      margin: 4px 0 2px 0;
     }
     [data-theme="dark"] .oil-group-header {
       background: rgba(255, 255, 255, 0.03);
@@ -1038,11 +1063,11 @@
     .oil-props-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.68rem;
-      margin-bottom: 2px;
+      font-size: 0.60rem;
+      margin-bottom: 1px;
     }
     .oil-props-table td {
-      padding: 2.8px 4px;
+      padding: 2.0px 3.5px;
       border-bottom: 1px solid var(--border-card);
       vertical-align: middle;
     }
@@ -1057,7 +1082,7 @@
     }
     .oil-props-table td.col-method {
       color: var(--text-muted);
-      font-size: 0.62rem;
+      font-size: 0.56rem;
       width: 26%;
       white-space: nowrap;
     }
@@ -1076,9 +1101,9 @@
     .status-tag {
       display: inline-flex;
       align-items: center;
-      padding: 1.5px 6px;
-      border-radius: 10px;
-      font-size: 0.62rem;
+      padding: 1.2px 5px;
+      border-radius: 8px;
+      font-size: 0.56rem;
       font-weight: 700;
       white-space: nowrap;
       letter-spacing: 0.02em;
@@ -1283,7 +1308,7 @@
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
               </a>
               <div class="gauge-clickable-area">
-                <svg viewBox="0 0 120 72" style="width: 104px; height: 60px; overflow: visible;">
+                <svg viewBox="0 0 120 72" style="width: 90px; height: 52px; overflow: visible;">
                   <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="11" stroke-linecap="butt" />
                   <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="butt" />
                   <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="butt" />
@@ -1299,7 +1324,7 @@
                   </g>
                 </svg>
                 <div style="text-align: center; margin-top: 1px; line-height: 1;">
-                  <span id="np-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.12rem; font-weight: 800; color: #10b981;">HI 85%</span>
+                  <span id="np-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.0rem; font-weight: 800; color: #10b981;">HI 85%</span>
                 </div>
               </div>
             </div>
