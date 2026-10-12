@@ -995,25 +995,25 @@
             <td style="text-align: center;"><span class="status-badge" style="background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe;">SDMyers</span></td>
           </tr>
           <tr>
-            <td><strong style="color: #f97316;">0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
+            <td><strong style="color: #0891b2;">0.5–2.0% Moisture, O₂ ≥ 7000 ppm</strong> (High Oxygen)</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-oxy-300">-</td>
             <td style="text-align: center;" id="scen-oxy-200">-</td>
-            <td style="text-align: center;"><span class="status-badge status-questionable">High O₂</span></td>
+            <td style="text-align: center;"><span class="status-badge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">High O₂</span></td>
           </tr>
           <tr>
-            <td><strong style="color: #d97706;">&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
+            <td><strong style="color: #64748b;">&gt; 2.0% Moisture, O₂ &lt; 7000 ppm</strong> (High Moisture)</td>
             <td style="text-align: center;">7.80 × 10⁻⁵ year⁻¹</td>
             <td style="text-align: center;" id="scen-moist-300">-</td>
             <td style="text-align: center;" id="scen-moist-200">-</td>
-            <td style="text-align: center;"><span class="status-badge status-questionable">High H₂O</span></td>
+            <td style="text-align: center;"><span class="status-badge" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;">High H₂O</span></td>
           </tr>
           <tr>
-            <td><strong style="color: #dc2626;">&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
+            <td><strong style="color: #334155;">&gt; 2.0% Moisture, O₂ ≥ 7000 ppm</strong> (Severe Degradation)</td>
             <td style="text-align: center;">1.20 × 10⁻⁴ year⁻¹</td>
             <td style="text-align: center;" id="scen-sev-300">-</td>
             <td style="text-align: center;" id="scen-sev-200">-</td>
-            <td style="text-align: center;"><span class="status-badge status-unacceptable">Severe</span></td>
+            <td style="text-align: center;"><span class="status-badge" style="background: #e2e8f0; color: #1e293b; border: 1px solid #94a3b8;">Severe</span></td>
           </tr>
         </tbody>
       </table>
@@ -1260,7 +1260,7 @@
             <td style="text-align: center; font-weight: 700; color: #9333ea;" id="p2-sdm-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #f59e0b;">High O₂ (0.5–2.0% H₂O, O₂ ≥ 7000)</strong></td>
+            <td><strong style="color: #0891b2;">High O₂ (0.5–2.0% H₂O, O₂ ≥ 7000)</strong></td>
             <td style="text-align: center;">1.50 × 10¹¹</td>
             <td style="text-align: center;">4.60 × 10⁵</td>
             <td style="text-align: center;">5.97 × 10⁻⁵ yr⁻¹</td>
@@ -1268,7 +1268,7 @@
             <td style="text-align: center;" id="p2-oxy-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #f97316;">High Moisture (&gt; 2.0% H₂O, O₂ &lt; 7000)</strong></td>
+            <td><strong style="color: #64748b;">High Moisture (&gt; 2.0% H₂O, O₂ &lt; 7000)</strong></td>
             <td style="text-align: center;">4.50 × 10¹¹</td>
             <td style="text-align: center;">0.00</td>
             <td style="text-align: center;">7.80 × 10⁻⁵ yr⁻¹</td>
@@ -1276,7 +1276,7 @@
             <td style="text-align: center;" id="p2-moist-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #dc2626;">Severe (&gt; 2.0% H₂O, O₂ ≥ 7000)</strong></td>
+            <td><strong style="color: #334155;">Severe (&gt; 2.0% H₂O, O₂ ≥ 7000)</strong></td>
             <td style="text-align: center;">4.50 × 10¹¹</td>
             <td style="text-align: center;">4.60 × 10⁵</td>
             <td style="text-align: center;">1.20 × 10⁻⁴ yr⁻¹</td>
@@ -2057,9 +2057,9 @@
 
       // Intersections metadata for callout lines
       const intersections = [
-        { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#dc2626', offsetLevel: 1 },
-        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#f97316', offsetLevel: 2 },
-        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#f59e0b', offsetLevel: 3 },
+        { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#334155', offsetLevel: 1 },
+        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#64748b', offsetLevel: 2 },
+        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#0891b2', offsetLevel: 3 },
         { label: 'SDMyers [Cal.]', years: rulSDM300, targetYear: yearSDM300, color: '#9333ea', offsetLevel: 3.5 },
         { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4, isCurrent: true },
         { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
@@ -2422,9 +2422,9 @@
               <span class="legend-pill hero"><span class="legend-line hero-line"></span> <strong>Current: ${cleanUnit}</strong></span>
               <span class="legend-pill"><span class="legend-dashed" style="border-color: #9333ea;"></span> ${sdmText}</span>
               <span class="legend-pill"><span class="legend-dashed" style="border-color: #10b981;"></span> Normal (O₂ &lt; 7k)</span>
-              <span class="legend-pill"><span class="legend-dashed" style="border-color: #f59e0b;"></span> High O₂ (≥ 7k)</span>
-              <span class="legend-pill"><span class="legend-dashed" style="border-color: #f97316;"></span> High Moist (&gt; 2%)</span>
-              <span class="legend-pill"><span class="legend-dashed" style="border-color: #ef4444;"></span> Severe</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #0891b2;"></span> High O₂ (≥ 7k)</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #64748b;"></span> High Moist (&gt; 2%)</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #334155;"></span> Severe</span>
             </div>
           </div>
           <!-- Tier 2: Diagnostic Limits -->
@@ -2531,7 +2531,7 @@
             {
               label: '0.5-2.0% Moisture, O₂ ≥ 7000 ppm (High O₂)',
               data: highO2DP,
-              borderColor: '#f59e0b',
+              borderColor: '#0891b2',
               backgroundColor: 'transparent',
               borderWidth: 1.5,
               borderDash: [4, 4],
@@ -2541,7 +2541,7 @@
             {
               label: '> 2.0% Moisture, O₂ < 7000 ppm (High Moisture)',
               data: highMoistDP,
-              borderColor: '#f97316',
+              borderColor: '#64748b',
               backgroundColor: 'transparent',
               borderWidth: 1.5,
               borderDash: [4, 4],
@@ -2551,7 +2551,7 @@
             {
               label: '> 2.0% Moisture, O₂ ≥ 7000 ppm (Severe)',
               data: severeDP,
-              borderColor: '#ef4444',
+              borderColor: '#334155',
               backgroundColor: 'transparent',
               borderWidth: 1.5,
               borderDash: [4, 4],
