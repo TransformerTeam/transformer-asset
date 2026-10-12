@@ -2151,12 +2151,13 @@
     }
 
     // Custom Plugin to draw Warning (DP 300) and Critical (DP 200) Threshold Bands and Right-Edge Labels
+    // Custom Plugin to draw Warning (DP 300) and Critical (DP 200) Threshold Badges on the Left Side
     const thresholdLabelsPlugin = {
       id: 'thresholdLabels',
       afterDatasetsDraw(chart) {
         const { ctx, chartArea, scales: { y } } = chart;
         if (!chartArea || !y) return;
-        const { right } = chartArea;
+        const { left } = chartArea;
         const y300 = y.getPixelForValue(300);
         const y200 = y.getPixelForValue(200);
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -2164,27 +2165,17 @@
         ctx.save();
         ctx.font = 'bold 8px "Inter", sans-serif';
 
-        const padX = 5;
+        const padX = 6;
         const h = 14;
-        const badgeX = right + 6;
+        const badgeX = left + 10;
 
-        // 1. Warning (DP 300) Badge in Right Margin (100% outside plot area)
+        // 1. Warning (DP 300) Badge on Left Side
         const t1 = 'Warning (DP 300)';
         const w1 = ctx.measureText(t1).width;
         const yPos1 = y300 - h / 2;
 
-        // Subtle dashed connector line
-        ctx.beginPath();
-        ctx.strokeStyle = '#f97316';
-        ctx.lineWidth = 1.2;
-        ctx.setLineDash([2, 2]);
-        ctx.moveTo(right, y300);
-        ctx.lineTo(badgeX, y300);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
         ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 251, 235, 0.98)';
-        ctx.strokeStyle = isDark ? '#f59e0b' : '#f59e0b';
+        ctx.strokeStyle = '#f59e0b';
         ctx.lineWidth = 1;
         drawCalloutRoundRect(ctx, badgeX, yPos1, w1 + padX * 2, h, 3);
         ctx.fill();
@@ -2195,23 +2186,13 @@
         ctx.textBaseline = 'middle';
         ctx.fillText(t1, badgeX + (w1 + padX * 2) / 2, y300);
 
-        // 2. Critical (DP 200) Badge in Right Margin (100% outside plot area)
+        // 2. Critical (DP 200) Badge on Left Side
         const t2 = 'Critical (DP 200)';
         const w2 = ctx.measureText(t2).width;
         const yPos2 = y200 - h / 2;
 
-        // Subtle dashed connector line
-        ctx.beginPath();
-        ctx.strokeStyle = '#dc2626';
-        ctx.lineWidth = 1.2;
-        ctx.setLineDash([2, 2]);
-        ctx.moveTo(right, y200);
-        ctx.lineTo(badgeX, y200);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
         ctx.fillStyle = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(254, 242, 242, 0.98)';
-        ctx.strokeStyle = isDark ? '#ef4444' : '#ef4444';
+        ctx.strokeStyle = '#ef4444';
         ctx.lineWidth = 1;
         drawCalloutRoundRect(ctx, badgeX, yPos2, w2 + padX * 2, h, 3);
         ctx.fill();
@@ -2662,7 +2643,7 @@
               top: 32,
               bottom: 22,
               left: 8,
-              right: 95
+              right: 25
             }
           },
           plugins: {
