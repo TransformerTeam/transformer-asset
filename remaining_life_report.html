@@ -425,40 +425,180 @@
       height: 350px;
     }
 
-    /* Modern Custom Legend for DP Degradation Chart */
+    /* Modern Two-Tier Categorized Executive Legend for DP Degradation Chart */
     .custom-chart-legend {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      font-size: 7.8px;
-      margin-bottom: 6px;
-      padding: 5px 10px;
-      background: rgba(100, 116, 139, 0.05);
-      border-radius: 6px;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
     }
     [data-theme="dark"] .custom-chart-legend {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(255, 255, 255, 0.08);
     }
-    .legend-item {
+    .legend-exec-tier {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+    .legend-exec-top {
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    [data-theme="dark"] .legend-exec-top {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+    .legend-tier-tag {
+      font-size: 7.8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      min-width: 58px;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .legend-tier-tag {
+      color: #94a3b8;
+    }
+    .legend-tier-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .legend-pill {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      color: #334155;
+      font-size: 8px;
       font-weight: 600;
+      color: #334155;
+      background: #ffffff;
+      padding: 2.5px 7px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      white-space: nowrap;
+      line-height: 1.2;
     }
-    [data-theme="dark"] .legend-item {
+    [data-theme="dark"] .legend-pill {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(255, 255, 255, 0.1);
       color: #cbd5e1;
+    }
+    .legend-pill.hero {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+    }
+    [data-theme="dark"] .legend-pill.hero {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: #3b82f6;
+      color: #93c5fd;
+    }
+    .legend-pill.warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+      font-weight: 700;
+    }
+    [data-theme="dark"] .legend-pill.warning {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: #f59e0b;
+      color: #fde68a;
+    }
+    .legend-pill.critical {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+      font-weight: 700;
+    }
+    [data-theme="dark"] .legend-pill.critical {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+    .legend-divider {
+      width: 1px;
+      height: 14px;
+      background: #cbd5e1;
+      margin: 0 2px;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .legend-divider {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .legend-zone-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 7.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+    .legend-zone-badge.zone-green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #065f46;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    [data-theme="dark"] .legend-zone-badge.zone-green {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .legend-zone-badge.zone-amber {
+      background: rgba(245, 158, 11, 0.12);
+      color: #92400e;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    [data-theme="dark"] .legend-zone-badge.zone-amber {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+    .legend-zone-badge.zone-red {
+      background: rgba(239, 68, 68, 0.12);
+      color: #991b1b;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    [data-theme="dark"] .legend-zone-badge.zone-red {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border-color: rgba(248, 113, 113, 0.4);
     }
     .legend-line {
       width: 16px;
       height: 3.5px;
       border-radius: 2px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .legend-line.hero-line {
+      background: #2563eb;
+    }
+    [data-theme="dark"] .legend-line.hero-line {
+      background: #3b82f6;
     }
     .legend-dashed {
       border-top: 2px dashed;
       height: 0;
       width: 16px;
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     /* Technical Formula Box */
@@ -2355,20 +2495,37 @@
         dpChartInstance.destroy();
       }
 
-      // Update Custom Modern Top Legend
+      // Update Custom Modern Top Legend (Two-Tier Categorized Executive Structure)
       const elLegend = document.getElementById('dp-custom-legend');
       if (elLegend) {
-        const uLabel = unitName ? `Current Operating Condition (${unitName})` : 'Current Operating Condition';
-        const sdmLabel = `SDMyers [Cal.] (${sdMyersMoist !== null ? sdMyersMoist.toFixed(1) + '%' : '-'} Moist)`;
+        // Clean compact display for hero unit to prevent line wrapping
+        const cleanUnit = unitName ? unitName.split(' ')[0] : 'Current TR';
+        const sdmText = (sdMyersMoist !== null && !isNaN(sdMyersMoist)) ? `SDMyers (${sdMyersMoist.toFixed(1)}%)` : 'SDMyers [Cal.]';
         elLegend.innerHTML = `
-          <span class="legend-item"><span class="legend-line" style="background: #2563eb; height: 3.5px;"></span> <strong>${uLabel}</strong></span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #9333ea;"></span> ${sdmLabel}</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #10b981;"></span> Normal (O₂ &lt; 7,000)</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #f59e0b;"></span> High O₂ (≥ 7,000 ppm)</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #f97316;"></span> High Moisture (&gt; 2.0%)</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #ef4444;"></span> Severe</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #f97316;"></span> Warning (DP 300)</span>
-          <span class="legend-item"><span class="legend-dashed" style="border-color: #dc2626;"></span> Critical (DP 200)</span>
+          <!-- Tier 1: Ageing Degradation Curves -->
+          <div class="legend-exec-tier legend-exec-top">
+            <span class="legend-tier-tag"><i class="fa-solid fa-chart-line" style="color: #2563eb;"></i> Curves:</span>
+            <div class="legend-tier-group">
+              <span class="legend-pill hero"><span class="legend-line hero-line"></span> <strong>Current: ${cleanUnit}</strong></span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #9333ea;"></span> ${sdmText}</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #10b981;"></span> Normal (O₂ &lt; 7k)</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #f59e0b;"></span> High O₂ (≥ 7k)</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #f97316;"></span> High Moist (&gt; 2%)</span>
+              <span class="legend-pill"><span class="legend-dashed" style="border-color: #ef4444;"></span> Severe</span>
+            </div>
+          </div>
+          <!-- Tier 2: Diagnostic Limits & Condition Zones -->
+          <div class="legend-exec-tier legend-exec-bot">
+            <span class="legend-tier-tag"><i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i> Limits:</span>
+            <div class="legend-tier-group">
+              <span class="legend-pill warning"><span class="legend-dashed" style="border-color: #f97316; border-width: 2px;"></span> Warning (DP 300)</span>
+              <span class="legend-pill critical"><span class="legend-dashed" style="border-color: #dc2626; border-width: 2px;"></span> Critical EOL (DP 200)</span>
+              <span class="legend-divider"></span>
+              <span class="legend-zone-badge zone-green"><i class="fa-solid fa-circle-check"></i> Healthy (&gt; 500)</span>
+              <span class="legend-zone-badge zone-amber"><i class="fa-solid fa-circle-exclamation"></i> Monitoring (300–500)</span>
+              <span class="legend-zone-badge zone-red"><i class="fa-solid fa-triangle-exclamation"></i> End of Life (&lt; 200)</span>
+            </div>
+          </div>
         `;
       }
 
