@@ -539,47 +539,7 @@
     [data-theme="dark"] .legend-divider {
       background: rgba(255, 255, 255, 0.15);
     }
-    .legend-zone-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 7.5px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      white-space: nowrap;
-      line-height: 1.2;
-    }
-    .legend-zone-badge.zone-green {
-      background: rgba(16, 185, 129, 0.12);
-      color: #065f46;
-      border: 1px solid rgba(16, 185, 129, 0.25);
-    }
-    [data-theme="dark"] .legend-zone-badge.zone-green {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border-color: rgba(52, 211, 153, 0.4);
-    }
-    .legend-zone-badge.zone-amber {
-      background: rgba(245, 158, 11, 0.12);
-      color: #92400e;
-      border: 1px solid rgba(245, 158, 11, 0.25);
-    }
-    [data-theme="dark"] .legend-zone-badge.zone-amber {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-      border-color: rgba(251, 191, 36, 0.4);
-    }
-    .legend-zone-badge.zone-red {
-      background: rgba(239, 68, 68, 0.12);
-      color: #991b1b;
-      border: 1px solid rgba(239, 68, 68, 0.25);
-    }
-    [data-theme="dark"] .legend-zone-badge.zone-red {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border-color: rgba(248, 113, 113, 0.4);
-    }
+
     .legend-line {
       width: 16px;
       height: 3.5px;
@@ -2514,16 +2474,12 @@
               <span class="legend-pill"><span class="legend-dashed" style="border-color: #ef4444;"></span> Severe</span>
             </div>
           </div>
-          <!-- Tier 2: Diagnostic Limits & Condition Zones -->
+          <!-- Tier 2: Diagnostic Limits -->
           <div class="legend-exec-tier legend-exec-bot">
             <span class="legend-tier-tag"><i class="fa-solid fa-shield-halved" style="color: #f59e0b;"></i> Limits:</span>
             <div class="legend-tier-group">
               <span class="legend-pill warning"><span class="legend-dashed" style="border-color: #f97316; border-width: 2px;"></span> Warning (DP 300)</span>
               <span class="legend-pill critical"><span class="legend-dashed" style="border-color: #dc2626; border-width: 2px;"></span> Critical EOL (DP 200)</span>
-              <span class="legend-divider"></span>
-              <span class="legend-zone-badge zone-green"><i class="fa-solid fa-circle-check"></i> Healthy (&gt; 500)</span>
-              <span class="legend-zone-badge zone-amber"><i class="fa-solid fa-circle-exclamation"></i> Monitoring (300–500)</span>
-              <span class="legend-zone-badge zone-red"><i class="fa-solid fa-triangle-exclamation"></i> End of Life (&lt; 200)</span>
             </div>
           </div>
         `;
