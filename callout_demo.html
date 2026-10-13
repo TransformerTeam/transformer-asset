@@ -811,6 +811,29 @@
       padding: 8px 12px;
     }
 
+    /* 8. On Load Tap Changer Dedicated Card (Positioned in red box area) */
+    #card-oltc {
+      position: absolute;
+      bottom: 16px;
+      right: 388px;
+      width: 290px;
+      z-index: 30;
+      box-sizing: border-box;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #card-oltc .callout-data-list {
+      gap: 3px;
+    }
+    #card-oltc .data-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1px 0;
+    }
+
     #card-hvbushing:hover, #card-hvbushing.active,
     #card-lvbushing:hover, #card-lvbushing.active {
       transform: translateY(-4px) scale(1.02);
@@ -1071,7 +1094,7 @@
     .twin-footer-info {
       position: absolute;
       bottom: 16px;
-      left: 50%;
+      left: calc(50% - 90px);
       transform: translateX(-50%);
       background: var(--footer-bg);
       border: 1px solid var(--footer-border);
@@ -1134,7 +1157,7 @@
 
   <!-- Category Filter Pills -->
   <nav class="filter-bar">
-    <button class="filter-pill active" onclick="filterCategory('all', this)"><i class="fa-solid fa-layer-group"></i> All Components (7)</button>
+    <button class="filter-pill active" onclick="filterCategory('all', this)"><i class="fa-solid fa-layer-group"></i> All Components (8)</button>
     <button class="filter-pill" onclick="filterCategory('electrical', this)"><i class="fa-solid fa-plug-circle-bolt"></i> Electrical Tests (Bushings &amp; Windings)</button>
     <button class="filter-pill" onclick="filterCategory('oil', this)"><i class="fa-solid fa-droplet"></i> Oil &amp; DGA Analysis</button>
     <button class="filter-pill" onclick="filterCategory('mechanical', this)"><i class="fa-solid fa-gears"></i> OLTC &amp; Cooling</button>
@@ -1182,6 +1205,9 @@
         <!-- 7. Main Tank Oil Properties -->
         <path id="line-oilprops" class="leader-line" d="M 0 0" />
 
+        <!-- 8. On Load Tap Changer (OLTC) -->
+        <path id="line-oltc" class="leader-line" d="M 0 0" />
+
         <!-- Pulsing Target Pins on Cutaway Anatomy -->
         <!-- Pin: Conservator -->
         <circle id="pin-pulse-conservator" cx="0" cy="0" r="12" class="pin-pulse" />
@@ -1210,6 +1236,10 @@
         <!-- Pin: Oil Properties (Oil Sampling Valve) -->
         <circle id="pin-pulse-oilprops" cx="0" cy="0" r="12" class="pin-pulse" />
         <circle id="pin-dot-oilprops" cx="0" cy="0" r="5" class="pin-dot" />
+
+        <!-- Pin: On Load Tap Changer (OLTC Diverter & Selector) -->
+        <circle id="pin-pulse-oltc" cx="0" cy="0" r="12" class="pin-pulse" />
+        <circle id="pin-dot-oltc" cx="0" cy="0" r="5" class="pin-dot" />
       </svg>
 
       <!-- ==========================================
@@ -1368,27 +1398,27 @@
           </div>
         </div>
 
-        <!-- 3. Left Bottom: Digital Control IED & OLTC Drive -->
+        <!-- 3. Left Bottom: Motor Drive Mechanism & Control IED -->
         <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
           <div class="callout-header">
             <div class="callout-title">
               <span class="callout-icon"><i class="fa-solid fa-microchip"></i></span>
-              Digital IED &amp; Tap Drive
+              Motor Drive &amp; Control IED
             </div>
             <span class="callout-status-pill status-normal" id="pill-coolingfan">Auto OK</span>
           </div>
           <div class="callout-data-list">
             <div class="data-row">
-              <span class="data-label">OLTC Type / Model:</span>
-              <span class="data-val" id="val-oltc-model">MR V III 200D</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Operations Counter:</span>
-              <span class="data-val val-highlight" id="val-oltc-ops">58,148 Ops</span>
-            </div>
-            <div class="data-row">
               <span class="data-label">Tap Drive Motor:</span>
-              <span class="data-val">ED100S Normal</span>
+              <span class="data-val" id="val-mdu-motor">ED100S Normal</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Control Supply:</span>
+              <span class="data-val val-highlight" id="val-mdu-supply">220 VAC / 110 VDC</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Remote / Local Mode:</span>
+              <span class="data-val val-highlight" id="val-mdu-mode">Remote Auto (Synced)</span>
             </div>
           </div>
         </div>
@@ -1693,6 +1723,46 @@
         </div>
       </div>
 
+      <!-- 8. On Load Tap Changer (OLTC) Dedicated Card (Positioned in red box area) -->
+      <div class="callout-card" id="card-oltc" data-category="mechanical" onmouseenter="focusCallout('oltc')" onmouseleave="unfocusCallout('oltc')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-sliders"></i></span>
+            <span>On Load Tap Changer</span>
+            <a id="oltc-doc-link" href="oltc_report.html" target="_blank" class="bushing-doc-btn" title="Open OLTC Diagnostic Report">
+              <i class="fa-regular fa-file-lines"></i>
+            </a>
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-oltc">Healthy</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Model Type:</span>
+            <span class="data-val" id="val-oltc-model">MR V III 200D</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Operation Counter:</span>
+            <span class="data-val val-highlight" id="val-oltc-ops">58,148 Ops</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Inspection Cycle (Last/Due):</span>
+            <span class="data-val" id="val-oltc-cycle" style="font-size: 0.62rem;">15-Nov-24 / Nov-26</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Visual:</span>
+            <span class="data-val val-highlight" id="val-oltc-visual">Normal (No Leak)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Dielectric Breakdown:</span>
+            <span class="data-val val-highlight" id="val-oltc-bd">86.6 kV</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Water Content:</span>
+            <span class="data-val val-highlight" id="val-oltc-wc">4.8 ppm</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Footer Help & Legend -->
       <div class="twin-footer-info">
         <span><i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> นำเมาส์ชี้ที่การ์ดเพื่อส่อง Highlight จุดตรวจวัดบนตัวหม้อแปลง</span>
@@ -1771,6 +1841,8 @@
         oltcClass: 'status-normal',
         oltcModel: 'MR V III 200D',
         oltcOps: '58,148 Ops',
+        oltcCycle: '15-Nov-24 / Nov-26',
+        oltcVisual: 'Normal (No Leak)',
         oltcBd: '86.6 kV',
         oltcWc: '4.8 ppm'
       },
@@ -1833,12 +1905,14 @@
         dgaTdcg: '186 ppm',
         oilBd: '88.5 kV (>50)',
         oilWc: '6.2 ppm (<20)',
-        oltcStatus: '3-Ph Matrix',
+        oltcStatus: 'Normal',
         oltcClass: 'status-normal',
         oltcModel: 'ABB TrafoStar (OLTC3)',
         oltcOps: '42,190 Ops',
-        oltcBd: 'A:85.2 B:82.4 C:86.0 kV',
-        oltcWc: 'A:12.5 B:14.1 C:11.8 ppm'
+        oltcCycle: '10-Jan-25 / Jan-27',
+        oltcVisual: 'Normal (Seal OK)',
+        oltcBd: '84.5 kV (Avg)',
+        oltcWc: '12.8 ppm'
       },
       '16120-TR-001': {
         name: '16120-TR-001',
@@ -1899,12 +1973,14 @@
         dgaTdcg: '1,028 ppm',
         oilBd: '78.2 kV (>50)',
         oilWc: '14.6 ppm (<20)',
-        oltcStatus: 'NLTC',
-        oltcClass: 'status-warning',
-        oltcModel: 'No Tap Changer (NLTC)',
-        oltcOps: '0 Ops',
-        oltcBd: '-',
-        oltcWc: '-'
+        oltcStatus: 'NLTC (No OLTC)',
+        oltcClass: 'status-normal',
+        oltcModel: 'De-energized Tap (NLTC)',
+        oltcOps: 'Off-circuit Manual',
+        oltcCycle: 'Annual / Oct-2026',
+        oltcVisual: 'Normal (Locked)',
+        oltcBd: 'N/A (No separate oil)',
+        oltcWc: 'N/A'
       }
     };
 
@@ -2099,11 +2175,25 @@
         }
       }
 
-      // OLTC
-      document.getElementById('pill-coolingfan').textContent = d.oltcStatus;
-      document.getElementById('pill-coolingfan').className = `callout-status-pill ${d.oltcClass}`;
-      document.getElementById('val-oltc-model').textContent = d.oltcModel;
-      document.getElementById('val-oltc-ops').textContent = d.oltcOps;
+      // Dedicated On Load Tap Changer (OLTC) Card
+      const pillOltc = document.getElementById('pill-oltc');
+      if (pillOltc) {
+        pillOltc.textContent = d.oltcStatus || 'Healthy';
+        pillOltc.className = `callout-status-pill ${d.oltcClass || 'status-normal'}`;
+      }
+      if (document.getElementById('val-oltc-model')) document.getElementById('val-oltc-model').textContent = d.oltcModel || '-';
+      if (document.getElementById('val-oltc-ops')) document.getElementById('val-oltc-ops').textContent = d.oltcOps || '-';
+      if (document.getElementById('val-oltc-cycle')) document.getElementById('val-oltc-cycle').textContent = d.oltcCycle || '-';
+      if (document.getElementById('val-oltc-visual')) document.getElementById('val-oltc-visual').textContent = d.oltcVisual || '-';
+      if (document.getElementById('val-oltc-bd')) document.getElementById('val-oltc-bd').textContent = d.oltcBd || '-';
+      if (document.getElementById('val-oltc-wc')) document.getElementById('val-oltc-wc').textContent = d.oltcWc || '-';
+
+      // Left MDU Card
+      const pillMdu = document.getElementById('pill-coolingfan');
+      if (pillMdu) {
+        pillMdu.textContent = 'Auto OK';
+        pillMdu.className = 'callout-status-pill status-normal';
+      }
 
       setTimeout(updateLeaderLines, 40);
     }
@@ -2181,7 +2271,8 @@
       hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
       lvbushing:   { u: 0.681, v: 0.058, card: 'card-lvbushing', side: 'top' },
       dga:         { u: 0.772, v: 0.530, card: 'card-dga', side: 'right' },
-      oilprops:    { u: 0.880, v: 0.620, card: 'card-oilprops', side: 'right' }
+      oilprops:    { u: 0.880, v: 0.620, card: 'card-oilprops', side: 'right' },
+      oltc:        { u: 0.575, v: 0.625, card: 'card-oltc', side: 'right' }
     };
 
     function updateLeaderLines() {
