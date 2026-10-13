@@ -816,7 +816,7 @@
       position: absolute;
       bottom: 16px;
       right: 388px;
-      width: 290px;
+      width: 304px;
       z-index: 30;
       box-sizing: border-box;
       padding: 9px 12px;
@@ -832,6 +832,48 @@
       align-items: center;
       justify-content: space-between;
       padding: 1px 0;
+    }
+    /* 3-Phase Value Chips (for OLTC3) */
+    .phase-val-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .ph-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1.5px;
+      padding: 0.5px 3.5px;
+      border-radius: 3px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      font-size: 0.62rem;
+      line-height: 1.2;
+    }
+    [data-theme="light"] .ph-chip {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .ph-phase {
+      font-size: 0.56rem;
+      font-weight: 800;
+      color: var(--card-label-color);
+      letter-spacing: -0.02em;
+    }
+    .ph-num {
+      font-weight: 700;
+      color: var(--status-good-text);
+      font-feature-settings: "tnum";
+    }
+    [data-theme="light"] .ph-num {
+      color: #059669;
+    }
+    .ph-unit {
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: var(--card-label-color);
+      margin-left: 1px;
     }
 
     #card-hvbushing:hover, #card-hvbushing.active,
@@ -1905,14 +1947,14 @@
         dgaTdcg: '186 ppm',
         oilBd: '88.5 kV (>50)',
         oilWc: '6.2 ppm (<20)',
-        oltcStatus: 'Normal',
+        oltcStatus: 'Healthy',
         oltcClass: 'status-normal',
         oltcModel: 'ABB TrafoStar (OLTC3)',
         oltcOps: '42,190 Ops',
         oltcCycle: '10-Jan-25 / Jan-27',
         oltcVisual: 'Normal (Seal OK)',
-        oltcBd: '84.5 kV (Avg)',
-        oltcWc: '12.8 ppm'
+        oltcBd: { a: '85.2', b: '82.4', c: '86.0', unit: 'kV' },
+        oltcWc: { a: '12.5', b: '14.1', c: '11.8', unit: 'ppm' }
       },
       '16120-TR-001': {
         name: '16120-TR-001',
@@ -2185,8 +2227,42 @@
       if (document.getElementById('val-oltc-ops')) document.getElementById('val-oltc-ops').textContent = d.oltcOps || '-';
       if (document.getElementById('val-oltc-cycle')) document.getElementById('val-oltc-cycle').textContent = d.oltcCycle || '-';
       if (document.getElementById('val-oltc-visual')) document.getElementById('val-oltc-visual').textContent = d.oltcVisual || '-';
-      if (document.getElementById('val-oltc-bd')) document.getElementById('val-oltc-bd').textContent = d.oltcBd || '-';
-      if (document.getElementById('val-oltc-wc')) document.getElementById('val-oltc-wc').textContent = d.oltcWc || '-';
+
+      const renderOltcVal = (val, defaultUnit) => {
+        if (!val) return '-';
+        if (typeof val === 'object' && val.a !== undefined) {
+          const unit = val.unit || defaultUnit || '';
+          return `<span class="phase-val-group">` +
+            `<span class="ph-chip"><span class="ph-phase">A:</span><span class="ph-num">${val.a}</span></span>` +
+            `<span class="ph-chip"><span class="ph-phase">B:</span><span class="ph-num">${val.b}</span></span>` +
+            `<span class="ph-chip"><span class="ph-phase">C:</span><span class="ph-num">${val.c}</span></span>` +
+            (unit ? `<span class="ph-unit">${unit}</span>` : '') +
+          `</span>`;
+        }
+        return val;
+      };
+
+      const elBd = document.getElementById('val-oltc-bd');
+      if (elBd) {
+        if (typeof d.oltcBd === 'object' && d.oltcBd !== null) {
+          elBd.innerHTML = renderOltcVal(d.oltcBd, 'kV');
+          elBd.className = 'data-val';
+        } else {
+          elBd.textContent = d.oltcBd || '-';
+          elBd.className = (d.oltcBd && !d.oltcBd.includes('N/A')) ? 'data-val val-highlight' : 'data-val';
+        }
+      }
+
+      const elWc = document.getElementById('val-oltc-wc');
+      if (elWc) {
+        if (typeof d.oltcWc === 'object' && d.oltcWc !== null) {
+          elWc.innerHTML = renderOltcVal(d.oltcWc, 'ppm');
+          elWc.className = 'data-val';
+        } else {
+          elWc.textContent = d.oltcWc || '-';
+          elWc.className = (d.oltcWc && !d.oltcWc.includes('N/A')) ? 'data-val val-highlight' : 'data-val';
+        }
+      }
 
       // Left MDU Card
       const pillMdu = document.getElementById('pill-coolingfan');
