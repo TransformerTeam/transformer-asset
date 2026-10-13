@@ -796,9 +796,9 @@
     /* Right Column Stack: DGA and Oil Properties (Guaranteed 14px gap, Zero Overlap) */
     .right-callout-stack {
       position: absolute;
-      top: 138px;
+      top: 40px;
       right: 16px;
-      width: 326px;
+      width: 356px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -1006,11 +1006,11 @@
     .oil-props-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.60rem;
+      font-size: 0.57rem;
       margin-bottom: 1px;
     }
     .oil-props-table td {
-      padding: 2.0px 3.5px;
+      padding: 1.5px 3.5px;
       border-bottom: 1px solid var(--border-card);
       vertical-align: middle;
     }
@@ -1020,13 +1020,13 @@
     .oil-props-table td.col-prop {
       color: var(--card-title-color);
       font-weight: 600;
-      width: 42%;
+      width: 48%;
       white-space: nowrap;
     }
     .oil-props-table td.col-method {
       color: var(--text-muted);
-      font-size: 0.56rem;
-      width: 26%;
+      font-size: 0.53rem;
+      width: 22%;
       white-space: nowrap;
     }
     .oil-props-table td.col-val {
@@ -1034,7 +1034,7 @@
       font-weight: 700;
       font-family: 'Outfit', sans-serif;
       color: var(--card-val-color);
-      width: 20%;
+      width: 18%;
       white-space: nowrap;
     }
     .oil-props-table td.col-status {
@@ -1604,6 +1604,18 @@
                 <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-bd">Good</span></td>
               </tr>
               <tr>
+                <td class="col-prop">Power Factor at 25 °C</td>
+                <td class="col-method">ASTM D924</td>
+                <td class="col-val" id="oil-pf25">0.18 %</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-pf25">Good</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Power Factor at 100 °C</td>
+                <td class="col-method">ASTM D924</td>
+                <td class="col-val" id="oil-pf100">1.85 %</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-pf100">Good</span></td>
+              </tr>
+              <tr>
                 <td class="col-prop">Water Content</td>
                 <td class="col-method">ASTM D1533</td>
                 <td class="col-val" id="oil-wc">7.40 ppm</td>
@@ -1622,10 +1634,28 @@
                 <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-acid">Good</span></td>
               </tr>
               <tr>
+                <td class="col-prop">Color</td>
+                <td class="col-method">ASTM D1500</td>
+                <td class="col-val" id="oil-color">L1.0</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-color">Good</span></td>
+              </tr>
+              <tr>
                 <td class="col-prop">Oil Conductivity</td>
                 <td class="col-method">IEC 61620</td>
                 <td class="col-val" style="color: #f59e0b;" id="oil-cond">9.50 pS/m</td>
                 <td class="col-status"><span class="status-tag tag-warning" id="pill-oil-cond">Watch</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Inhibitor</td>
+                <td class="col-method">IEC 60666</td>
+                <td class="col-val" id="oil-inhib">0.28 %</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-inhib">Good</span></td>
+              </tr>
+              <tr>
+                <td class="col-prop">Sludge</td>
+                <td class="col-method">IEC 60422</td>
+                <td class="col-val" id="oil-sludge">None</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-sludge">Good</span></td>
               </tr>
             </tbody>
           </table>
@@ -1634,6 +1664,12 @@
           <div class="oil-group-header">2. Paper Aging &amp; Sulfur</div>
           <table class="oil-props-table">
             <tbody>
+              <tr>
+                <td class="col-prop">Moisture in paper (Cal from SDMayer)</td>
+                <td class="col-method">SDMayer</td>
+                <td class="col-val" id="oil-moist-sdm">1.3 %</td>
+                <td class="col-status"><span class="status-tag tag-normal" id="pill-oil-moist-sdm">Dry</span></td>
+              </tr>
               <tr>
                 <td class="col-prop">Furan (2-FAL)</td>
                 <td class="col-method">ASTM D5837</td>
@@ -1726,7 +1762,7 @@
         mainTankHI: 'HI: 85%',
         mainTankClass: 'status-normal',
         dga: { h2: 9, ch4: 28, c2h6: 11, c2h4: 2, c2h2: 0, co: 127, co2: '4,090', tdcg: 177, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', iec: 'Normal Pattern', paper: 'Normal Aging (32.2)' },
-        oil: { bd: '85.90 kV', wc: '7.40 ppm', ift: '33.20 mN/m', acid: '0.09 mgKOH/g', cond: '9.50 pS/m', furan: '8.00 ppb', sulfur: '3b (Detected)', pass: '0 ppm' },
+        oil: { bd: '85.90 kV', pf25: '0.18 %', pf100: '1.85 %', wc: '7.40 ppm', ift: '33.20 mN/m', acid: '0.09 mgKOH/g', color: 'L1.0', cond: '9.50 pS/m', inhib: '0.28 %', sludge: 'None', moist_sdm: '1.3 %', furan: '8.00 ppb', sulfur: '3b (Detected)', pass: '0 ppm' },
         dgaStatus: 'Status 1 (Normal)',
         dgaTdcg: '177 ppm',
         oilBd: '85.9 kV (>50)',
@@ -1792,7 +1828,7 @@
         mainTankHI: 'HI: 89%',
         mainTankClass: 'status-normal',
         dga: { h2: 12, ch4: 18, c2h6: 8, c2h4: 3, c2h2: 0, co: 145, co2: '3,850', tdcg: 186, ieee: 'Status 1: Normal', duval: 'Normal / Low Gas', iec: 'Normal Pattern', paper: 'Normal Aging (26.5)' },
-        oil: { bd: '88.50 kV', wc: '6.20 ppm', ift: '35.00 mN/m', acid: '0.04 mgKOH/g', cond: '3.20 pS/m', furan: '5.00 ppb', sulfur: '1a (Non-corrosive)', pass: '120 ppm' },
+        oil: { bd: '88.50 kV', pf25: '0.12 %', pf100: '1.20 %', wc: '6.20 ppm', ift: '35.00 mN/m', acid: '0.04 mgKOH/g', color: '0.5', cond: '3.20 pS/m', inhib: '0.32 %', sludge: 'None', moist_sdm: '1.1 %', furan: '5.00 ppb', sulfur: '1a (Non-corrosive)', pass: '120 ppm' },
         dgaStatus: 'Status 1 (Normal)',
         dgaTdcg: '186 ppm',
         oilBd: '88.5 kV (>50)',
@@ -1858,7 +1894,7 @@
         mainTankHI: 'HI: 71%',
         mainTankClass: 'status-warning',
         dga: { h2: 4, ch4: 24, c2h6: 7, c2h4: 14, c2h2: 0, co: 979, co2: '7,446', tdcg: '1,028', ieee: 'Status 2: Intermediate', duval: 'Normal / Low Gas', iec: 'Thermal Fault T1', paper: 'Moderate Aging (7.6)' },
-        oil: { bd: '78.20 kV', wc: '14.60 ppm', ift: '32.10 mN/m', acid: '0.03 mgKOH/g', cond: '5.10 pS/m', furan: '17.00 ppb', sulfur: '2a', pass: '0 ppm' },
+        oil: { bd: '78.20 kV', pf25: '0.45 %', pf100: '4.60 %', wc: '14.60 ppm', ift: '32.10 mN/m', acid: '0.03 mgKOH/g', color: '2.5', cond: '5.10 pS/m', inhib: '0.07 %', sludge: 'Trace', moist_sdm: '2.4 %', furan: '17.00 ppb', sulfur: '2a', pass: '0 ppm' },
         dgaStatus: 'Status 2 (Intermediate)',
         dgaTdcg: '1,028 ppm',
         oilBd: '78.2 kV (>50)',
@@ -1985,32 +2021,81 @@
       // Main Tank Oil Properties Binding
       if (d.oil) {
         document.getElementById('oil-bd').textContent = d.oil.bd;
+        document.getElementById('oil-pf25').textContent = d.oil.pf25 || '-';
+        document.getElementById('oil-pf100').textContent = d.oil.pf100 || '-';
         document.getElementById('oil-wc').textContent = d.oil.wc;
         document.getElementById('oil-ift').textContent = d.oil.ift;
         document.getElementById('oil-acid').textContent = d.oil.acid;
+        document.getElementById('oil-color').textContent = d.oil.color || '-';
         document.getElementById('oil-cond').textContent = d.oil.cond;
+        document.getElementById('oil-inhib').textContent = d.oil.inhib || '-';
+        document.getElementById('oil-sludge').textContent = d.oil.sludge || '-';
+        document.getElementById('oil-moist-sdm').textContent = d.oil.moist_sdm || '-';
         document.getElementById('oil-furan').textContent = d.oil.furan;
         document.getElementById('oil-sulfur').textContent = d.oil.sulfur;
         document.getElementById('oil-pass').textContent = d.oil.pass;
         
         // Pill status
+        const pillPf25 = document.getElementById('pill-oil-pf25');
+        if (pillPf25) {
+          const val = parseFloat(d.oil.pf25);
+          const isWarn = val > 0.40;
+          pillPf25.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillPf25.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillPf100 = document.getElementById('pill-oil-pf100');
+        if (pillPf100) {
+          const val = parseFloat(d.oil.pf100);
+          const isWarn = val > 4.00;
+          pillPf100.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillPf100.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillColor = document.getElementById('pill-oil-color');
+        if (pillColor) {
+          const num = parseFloat(String(d.oil.color).replace(/[^\d.]/g, ''));
+          const isWarn = num > 2.0;
+          pillColor.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillColor.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillInhib = document.getElementById('pill-oil-inhib');
+        if (pillInhib) {
+          const val = parseFloat(d.oil.inhib);
+          const isWarn = val < 0.10;
+          pillInhib.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillInhib.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillSludge = document.getElementById('pill-oil-sludge');
+        if (pillSludge) {
+          const isNormal = String(d.oil.sludge).toLowerCase().includes('none') || parseFloat(d.oil.sludge) <= 0.018;
+          pillSludge.className = isNormal ? 'status-tag tag-normal' : 'status-tag tag-warning';
+          pillSludge.textContent = isNormal ? 'Good' : 'Watch';
+        }
+        const pillMoistSdm = document.getElementById('pill-oil-moist-sdm');
+        if (pillMoistSdm) {
+          const val = parseFloat(d.oil.moist_sdm);
+          pillMoistSdm.className = val < 1.5 ? 'status-tag tag-normal' : (val <= 2.5 ? 'status-tag tag-warning' : 'status-tag tag-critical');
+          pillMoistSdm.textContent = val < 1.5 ? 'Dry' : (val <= 2.5 ? 'Moderate' : 'Wet');
+        }
         const pillCond = document.getElementById('pill-oil-cond');
         if (pillCond) {
           const val = parseFloat(d.oil.cond);
           pillCond.className = val > 8 ? 'status-tag tag-warning' : 'status-tag tag-normal';
           pillCond.textContent = val > 8 ? 'Watch' : 'Good';
+          document.getElementById('oil-cond').style.color = val > 8 ? '#f59e0b' : '';
         }
         const pillSulfur = document.getElementById('pill-oil-sulfur');
         if (pillSulfur) {
           const isCorrosive = d.oil.sulfur.includes('Detected') || d.oil.sulfur.includes('3b');
           pillSulfur.className = isCorrosive ? 'status-tag tag-warning' : 'status-tag tag-normal';
           pillSulfur.textContent = isCorrosive ? 'Watch' : 'Good';
+          document.getElementById('oil-sulfur').style.color = isCorrosive ? '#f59e0b' : '';
         }
         const pillPass = document.getElementById('pill-oil-pass');
         if (pillPass) {
           const passVal = parseInt(d.oil.pass);
           pillPass.className = passVal < 50 ? 'status-tag tag-critical' : 'status-tag tag-normal';
           pillPass.textContent = passVal < 50 ? 'Top-up' : 'Good';
+          document.getElementById('oil-pass').style.color = passVal < 50 ? '#ef4444' : '';
         }
       }
 
@@ -2019,6 +2104,8 @@
       document.getElementById('pill-coolingfan').className = `callout-status-pill ${d.oltcClass}`;
       document.getElementById('val-oltc-model').textContent = d.oltcModel;
       document.getElementById('val-oltc-ops').textContent = d.oltcOps;
+
+      setTimeout(updateLeaderLines, 40);
     }
 
     // Hover Highlight Interactions
