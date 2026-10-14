@@ -450,6 +450,9 @@
     .val-warn {
       color: var(--status-fair-text);
     }
+    .val-crit {
+      color: var(--status-crit-text);
+    }
 
     /* Top-Left Cockpit Panel: Transformer Nameplate & Health Gauge */
     .topleft-cockpit-panel {
@@ -1732,27 +1735,27 @@
         </div>
       </div>
 
-      <!-- Cooling Radiator & Fans (Cooling System) Dedicated Card (Positioned in red box area) -->
+      <!-- Cooling System Dedicated Card (Positioned in red box area) -->
       <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
         <div class="callout-header">
           <div class="callout-title">
-            <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
-            Cooling Radiator &amp; Fans
+            <span class="callout-icon"><i class="fa-solid fa-fan"></i></span>
+            <span>Cooling System</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
+          <span class="callout-status-pill status-normal" id="pill-radiator">Normal</span>
         </div>
         <div class="callout-data-list">
           <div class="data-row">
-            <span class="data-label">Oil Leakage:</span>
-            <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
+            <span class="data-label">Radiator:</span>
+            <span class="data-val val-highlight" id="val-cooling-radiator">Normal</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Surface Rust / Paint:</span>
-            <span class="data-val" id="val-rust">Grade A (Good)</span>
+            <span class="data-label">Cooling Fan:</span>
+            <span class="data-val val-highlight" id="val-cooling-fan">Normal</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Top Oil Temp:</span>
-            <span class="data-val" id="val-oil-temp">58.4 °C</span>
+            <span class="data-label">Cooling Pump:</span>
+            <span class="data-val val-highlight" id="val-cooling-pump">Normal</span>
           </div>
         </div>
       </div>
@@ -1869,7 +1872,12 @@
         oltcCycle: '15-Nov-24 / Nov-26',
         oltcVisual: 'Normal (No Leak)',
         oltcBd: '86.6 kV',
-        oltcWc: '4.8 ppm'
+        oltcWc: '4.8 ppm',
+        coolingStatus: 'Normal',
+        coolingClass: 'status-normal',
+        coolingRadiator: 'Normal',
+        coolingFan: 'Normal',
+        coolingPump: 'Normal'
       },
       'KT2A.30.EN': {
         name: 'KT2A.30.EN',
@@ -1937,7 +1945,12 @@
         oltcCycle: '10-Jan-25 / Jan-27',
         oltcVisual: 'Normal (Seal OK)',
         oltcBd: { a: '85.2', b: '82.4', c: '86.0', unit: 'kV' },
-        oltcWc: { a: '12.5', b: '14.1', c: '11.8', unit: 'ppm' }
+        oltcWc: { a: '12.5', b: '14.1', c: '11.8', unit: 'ppm' },
+        coolingStatus: 'Normal',
+        coolingClass: 'status-normal',
+        coolingRadiator: 'Normal',
+        coolingFan: 'Normal',
+        coolingPump: 'Normal'
       },
       '16120-TR-001': {
         name: '16120-TR-001',
@@ -2005,7 +2018,12 @@
         oltcCycle: 'Annual / Oct-2026',
         oltcVisual: 'Normal (Locked)',
         oltcBd: 'N/A (No separate oil)',
-        oltcWc: 'N/A'
+        oltcWc: 'N/A',
+        coolingStatus: 'Abnormal',
+        coolingClass: 'status-warning',
+        coolingRadiator: 'Abnormal',
+        coolingFan: 'Normal',
+        coolingPump: 'Normal'
       }
     };
 
@@ -2247,12 +2265,27 @@
         }
       }
 
-      // Left MDU Card
-      const pillMdu = document.getElementById('pill-coolingfan');
-      if (pillMdu) {
-        pillMdu.textContent = 'Auto OK';
-        pillMdu.className = 'callout-status-pill status-normal';
+      // Dedicated Cooling System Card
+      const pillRadiator = document.getElementById('pill-radiator');
+      if (pillRadiator) {
+        pillRadiator.textContent = d.coolingStatus || 'Normal';
+        pillRadiator.className = `callout-status-pill ${d.coolingClass || 'status-normal'}`;
       }
+      const setCoolingVal = (elId, val) => {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = val || 'Normal';
+        if (val === 'Abnormal') {
+          el.className = 'data-val val-crit';
+        } else if (val === 'Normal') {
+          el.className = 'data-val val-highlight';
+        } else {
+          el.className = 'data-val';
+        }
+      };
+      setCoolingVal('val-cooling-radiator', d.coolingRadiator);
+      setCoolingVal('val-cooling-fan', d.coolingFan);
+      setCoolingVal('val-cooling-pump', d.coolingPump);
 
       setTimeout(updateLeaderLines, 40);
     }
