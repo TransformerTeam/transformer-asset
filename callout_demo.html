@@ -1131,37 +1131,6 @@
       color: var(--status-crit-text);
       border: 1px solid var(--status-crit-border);
     }
-
-    /* Bottom Info Banner */
-    .twin-footer-info {
-      position: absolute;
-      bottom: 16px;
-      left: calc(50% - 90px);
-      transform: translateX(-50%);
-      background: var(--footer-bg);
-      border: 1px solid var(--footer-border);
-      border-radius: 30px;
-      padding: 6px 18px;
-      font-size: 0.72rem;
-      color: var(--footer-text);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: var(--footer-shadow);
-      z-index: 40;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-    .twin-footer-info span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .dot-legend {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
   </style>
 </head>
 <body>
@@ -1803,15 +1772,6 @@
             <span class="data-val val-highlight" id="val-oltc-wc">4.8 ppm</span>
           </div>
         </div>
-      </div>
-
-      <!-- Footer Help & Legend -->
-      <div class="twin-footer-info">
-        <span><i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> นำเมาส์ชี้ที่การ์ดเพื่อส่อง Highlight จุดตรวจวัดบนตัวหม้อแปลง</span>
-        <span>•</span>
-        <span><span class="dot-legend" style="background: #10b981;"></span> Normal</span>
-        <span><span class="dot-legend" style="background: #f59e0b;"></span> Watch</span>
-        <span><span class="dot-legend" style="background: #ef4444;"></span> Critical</span>
       </div>
 
     </div>
