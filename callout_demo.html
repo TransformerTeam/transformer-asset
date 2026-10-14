@@ -811,6 +811,29 @@
       padding: 8px 12px;
     }
 
+    /* 2. Cooling Radiator & Fans Dedicated Card (Moved to bottom next to OLTC) */
+    #card-radiator {
+      position: absolute;
+      bottom: 16px;
+      right: 708px;
+      width: 260px;
+      z-index: 30;
+      box-sizing: border-box;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    #card-radiator .callout-data-list {
+      gap: 3px;
+    }
+    #card-radiator .data-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1px 0;
+    }
+
     /* 8. On Load Tap Changer Dedicated Card (Positioned in red box area) */
     #card-oltc {
       position: absolute;
@@ -1384,32 +1407,7 @@
           </div>
         </div>
 
-        <!-- 2. Left Middle: Radiator & Cooling Fins -->
-        <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
-          <div class="callout-header">
-            <div class="callout-title">
-              <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
-              Cooling Radiator &amp; Fans
-            </div>
-            <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
-          </div>
-          <div class="callout-data-list">
-            <div class="data-row">
-              <span class="data-label">Oil Leakage:</span>
-              <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Surface Rust / Paint:</span>
-              <span class="data-val" id="val-rust">Grade A (Good)</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Top Oil Temp:</span>
-              <span class="data-val" id="val-oil-temp">58.4 °C</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Left Bottom: Motor Drive Mechanism & Control IED -->
+        <!-- 2. Left Bottom: Motor Drive Mechanism & Control IED -->
         <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
           <div class="callout-header">
             <div class="callout-title">
@@ -1731,6 +1729,31 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Cooling Radiator & Fans (Cooling System) Dedicated Card (Positioned in red box area) -->
+      <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
+        <div class="callout-header">
+          <div class="callout-title">
+            <span class="callout-icon"><i class="fa-solid fa-temperature-arrow-down"></i></span>
+            Cooling Radiator &amp; Fans
+          </div>
+          <span class="callout-status-pill status-normal" id="pill-radiator">Clean</span>
+        </div>
+        <div class="callout-data-list">
+          <div class="data-row">
+            <span class="data-label">Oil Leakage:</span>
+            <span class="data-val val-highlight" id="val-oil-leak">None Detected</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Surface Rust / Paint:</span>
+            <span class="data-val" id="val-rust">Grade A (Good)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Top Oil Temp:</span>
+            <span class="data-val" id="val-oil-temp">58.4 °C</span>
+          </div>
         </div>
       </div>
 
@@ -2302,13 +2325,13 @@
     // Responsive Dynamic Pin & Leader Line Positioning Engine for Full Scale
     const CALLOUT_PINS = {
       conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
-      radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'left' },
+      radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'bottom' },
       coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
       hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
       lvbushing:   { u: 0.681, v: 0.058, card: 'card-lvbushing', side: 'top' },
       dga:         { u: 0.772, v: 0.530, card: 'card-dga', side: 'right' },
       oilprops:    { u: 0.880, v: 0.620, card: 'card-oilprops', side: 'right' },
-      oltc:        { u: 0.816, v: 0.608, card: 'card-oltc', side: 'right' }
+      oltc:        { u: 0.816, v: 0.608, card: 'card-oltc', side: 'bottom' }
     };
 
     function updateLeaderLines() {
@@ -2399,6 +2422,20 @@
             line.setAttribute('d', `M ${startX} ${startY} L ${pinX} ${pinY}`);
           } else {
             midY = startY + Math.max(18, (pinY - startY) * 0.35);
+            line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
+          }
+        } else if (cfg.side === 'bottom') {
+          const cardLeft = cardRect.left - stageRect.left;
+          const cardRight = cardRect.right - stageRect.left;
+          startY = cardRect.top - stageRect.top;
+          
+          // Constrain startX to card horizontal span with 24px safety margin
+          startX = Math.max(cardLeft + 24, Math.min(cardRight - 24, pinX));
+          
+          if (Math.abs(pinX - startX) < 12) {
+            line.setAttribute('d', `M ${startX} ${startY} L ${pinX} ${pinY}`);
+          } else {
+            midY = startY - Math.max(18, (startY - pinY) * 0.35);
             line.setAttribute('d', `M ${startX} ${startY} L ${startX} ${midY} L ${pinX} ${pinY}`);
           }
         }
