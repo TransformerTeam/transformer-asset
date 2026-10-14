@@ -1502,7 +1502,7 @@
             <tr>
               <td class="col-test">Winding Resistance</td>
               <td class="col-std">Max Dev &le; 5%</td>
-              <td class="col-val" id="ap-wres">&lt; 2.33%</td>
+              <td class="col-val" id="ap-wres"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">H:</span><span class="ph-num">2.33%</span></span><span class="ph-chip"><span class="ph-phase">L:</span><span class="ph-num">0.80%</span></span></span></td>
               <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-wres">Good</span></td>
             </tr>
             <tr>
@@ -2013,7 +2013,7 @@
           status: 'Healthy',
           statusClass: 'status-normal',
           pi: { hg: '2.68', lg: '3.89' }, piPill: 'Good', piClass: 'tag-normal',
-          wres: '< 2.33%', wresPill: 'Good', wresClass: 'tag-normal',
+          wres: { h: '2.33%', l: '0.80%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.35%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.38%', pfPill: 'Good', pfClass: 'tag-normal',
           ex: 'H-L-H', exPill: 'Good', exClass: 'tag-normal',
@@ -2100,7 +2100,7 @@
           status: 'Healthy',
           statusClass: 'status-normal',
           pi: { hg: '1.40', lg: '1.35', tg: '1.37' }, piPill: 'Good', piClass: 'tag-normal',
-          wres: '< 1.85%', wresPill: 'Good', wresClass: 'tag-normal',
+          wres: { h: '0.33%', l: '0.10%', t: '1.12%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.28%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.29%', pfPill: 'Good', pfClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
@@ -2187,7 +2187,7 @@
           status: 'Watch',
           statusClass: 'status-warning',
           pi: { hg: '1.75', lg: '1.86' }, piPill: 'Good', piClass: 'tag-normal',
-          wres: '< 3.10%', wresPill: 'Fair', wresClass: 'tag-warning',
+          wres: { h: '3.10%', l: '0.42%' }, wresPill: 'Fair', wresClass: 'tag-warning',
           ttr: '< 0.40%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.72%', pfPill: 'Watch', pfClass: 'tag-warning',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
@@ -2492,11 +2492,34 @@
           return String(val);
         };
 
+        const renderWindingDev = (val) => {
+          if (!val) return '-';
+          if (typeof val === 'object') {
+            let chips = '';
+            const renderChip = (label, numVal) => {
+              if (numVal === undefined || numVal === null || numVal === '' || numVal === '-') return '';
+              const cleanStr = String(numVal).trim();
+              const num = parseFloat(cleanStr);
+              // Max Dev <= 5% (Good <= 2.5%, Warn 2.5-5.0%, Crit > 5.0%)
+              const warnCls = !isNaN(num) && num > 5.0 ? 'ph-crit' : (!isNaN(num) && num > 2.5 ? 'ph-warn' : '');
+              const displayVal = cleanStr.includes('%') ? cleanStr : `${cleanStr}%`;
+              return `<span class="ph-chip ${warnCls}"><span class="ph-phase">${label}:</span><span class="ph-num">${displayVal}</span></span>`;
+            };
+            if (val.h !== undefined) chips += renderChip('H', val.h);
+            if (val.l !== undefined) chips += renderChip('L', val.l);
+            if (val.t !== undefined) chips += renderChip('T', val.t);
+            return chips ? `<span class="phase-val-group">${chips}</span>` : '-';
+          }
+          return String(val);
+        };
+
         const setApField = (id, val, pillVal, pillCls) => {
           const elVal = document.getElementById(`ap-${id}`);
           if (elVal && val) {
             if (id === 'pi') {
               elVal.innerHTML = renderWindingPi(val);
+            } else if (id === 'wres') {
+              elVal.innerHTML = renderWindingDev(val);
             } else {
               elVal.textContent = val;
             }
