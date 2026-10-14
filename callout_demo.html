@@ -774,28 +774,6 @@
       padding: 7px 10px 8px 10px;
     }
 
-    /* Left Column Stack: Conservator, Radiator, Cooling Fan */
-    .left-callout-stack {
-      position: absolute;
-      top: 266px;
-      left: 16px;
-      width: 236px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      z-index: 30;
-    }
-    .left-callout-stack .callout-card {
-      position: relative;
-      width: 100%;
-      height: 106px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 9px 12px;
-    }
-
     /* Right Column Stack: DGA and Oil Properties (Guaranteed 16px gap, Zero Overlap) */
     .right-callout-stack {
       position: absolute;
@@ -1194,7 +1172,7 @@
 
   <!-- Category Filter Pills -->
   <nav class="filter-bar">
-    <button class="filter-pill active" onclick="filterCategory('all', this)"><i class="fa-solid fa-layer-group"></i> All Components (8)</button>
+    <button class="filter-pill active" onclick="filterCategory('all', this)"><i class="fa-solid fa-layer-group"></i> All Components (6)</button>
     <button class="filter-pill" onclick="filterCategory('electrical', this)"><i class="fa-solid fa-plug-circle-bolt"></i> Electrical Tests (Bushings &amp; Windings)</button>
     <button class="filter-pill" onclick="filterCategory('oil', this)"><i class="fa-solid fa-droplet"></i> Oil &amp; DGA Analysis</button>
     <button class="filter-pill" onclick="filterCategory('mechanical', this)"><i class="fa-solid fa-gears"></i> OLTC &amp; Cooling</button>
@@ -1221,42 +1199,28 @@
         </defs>
 
         <!-- Dynamic Leader Lines connecting Cards to Target Pins on 3D Cutaway Transformer -->
-        <!-- 1. Conservator Tank -->
-        <path id="line-conservator" class="leader-line" d="M 0 0" />
-        
-        <!-- 2. Radiator / Cooling Fans -->
+        <!-- 1. Radiator / Cooling System -->
         <path id="line-radiator" class="leader-line" d="M 0 0" />
-        
-        <!-- 3. Digital Control IED & OLTC Drive -->
-        <path id="line-coolingfan" class="leader-line" d="M 0 0" />
 
-        <!-- 4. Low Voltage Bushings & Surge -->
+        <!-- 2. Low Voltage Bushings & Surge -->
         <path id="line-lvbushing" class="leader-line" d="M 0 0" />
 
-        <!-- 5. High Voltage Bushings -->
+        <!-- 3. High Voltage Bushings -->
         <path id="line-hvbushing" class="leader-line" d="M 0 0" />
 
-        <!-- 6. Dissolved Gas Analysis (DGA) -->
+        <!-- 4. Dissolved Gas Analysis (DGA) -->
         <path id="line-dga" class="leader-line" d="M 0 0" />
 
-        <!-- 7. Main Tank Oil Properties -->
+        <!-- 5. Main Tank Oil Properties -->
         <path id="line-oilprops" class="leader-line" d="M 0 0" />
 
-        <!-- 8. On Load Tap Changer (OLTC) -->
+        <!-- 6. On Load Tap Changer (OLTC) -->
         <path id="line-oltc" class="leader-line" d="M 0 0" />
 
         <!-- Pulsing Target Pins on Cutaway Anatomy -->
-        <!-- Pin: Conservator -->
-        <circle id="pin-pulse-conservator" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-conservator" cx="0" cy="0" r="5" class="pin-dot" />
-
         <!-- Pin: Radiator & Fans -->
         <circle id="pin-pulse-radiator" cx="0" cy="0" r="12" class="pin-pulse" />
         <circle id="pin-dot-radiator" cx="0" cy="0" r="5" class="pin-dot" />
-
-        <!-- Pin: Control IED / OLTC -->
-        <circle id="pin-pulse-coolingfan" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-coolingfan" cx="0" cy="0" r="5" class="pin-dot" />
 
         <!-- Pin: LV Bushing -->
         <circle id="pin-pulse-lvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
@@ -1383,58 +1347,6 @@
         </div>
       </div>
 
-      <!-- Left Column Callouts Stack (Guaranteed 14px Equal Gap) -->
-      <div class="left-callout-stack" id="leftCalloutStack">
-        <!-- 1. Left Top: Conservator & Oil Level -->
-        <div class="callout-card" id="card-conservator" data-category="mechanical" onmouseenter="focusCallout('conservator')" onmouseleave="unfocusCallout('conservator')">
-          <div class="callout-header">
-            <div class="callout-title">
-              <span class="callout-icon"><i class="fa-solid fa-gauge-simple-high"></i></span>
-              Conservator &amp; Oil Level
-            </div>
-            <span class="callout-status-pill status-normal" id="pill-conservator">Normal</span>
-          </div>
-          <div class="callout-data-list">
-            <div class="data-row">
-              <span class="data-label">Oil Level:</span>
-              <span class="data-val val-highlight" id="val-oil-level">Adequate (65%)</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Silica Gel Breather:</span>
-              <span class="data-val" id="val-silica-gel">Active (Blue)</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Buchholz Relay:</span>
-              <span class="data-val val-highlight" id="val-buchholz">Normal (No Gas)</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Left Bottom: Motor Drive Mechanism & Control IED -->
-        <div class="callout-card" id="card-coolingfan" data-category="mechanical" onmouseenter="focusCallout('coolingfan')" onmouseleave="unfocusCallout('coolingfan')">
-          <div class="callout-header">
-            <div class="callout-title">
-              <span class="callout-icon"><i class="fa-solid fa-microchip"></i></span>
-              Motor Drive &amp; Control IED
-            </div>
-            <span class="callout-status-pill status-normal" id="pill-coolingfan">Auto OK</span>
-          </div>
-          <div class="callout-data-list">
-            <div class="data-row">
-              <span class="data-label">Tap Drive Motor:</span>
-              <span class="data-val" id="val-mdu-motor">ED100S Normal</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Control Supply:</span>
-              <span class="data-val val-highlight" id="val-mdu-supply">220 VAC / 110 VDC</span>
-            </div>
-            <div class="data-row">
-              <span class="data-label">Remote / Local Mode:</span>
-              <span class="data-val val-highlight" id="val-mdu-mode">Remote Auto (Synced)</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Top Row Callouts: Bushing & Surge Arrester (Guaranteed 14px Equal Gap) -->
       <div class="top-callout-row" id="topCalloutRow">
@@ -2357,9 +2269,7 @@
 
     // Responsive Dynamic Pin & Leader Line Positioning Engine for Full Scale
     const CALLOUT_PINS = {
-      conservator: { u: 0.160, v: 0.430, card: 'card-conservator', side: 'left' },
       radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'bottom' },
-      coolingfan:  { u: 0.238, v: 0.713, card: 'card-coolingfan', side: 'left' },
       hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
       lvbushing:   { u: 0.681, v: 0.058, card: 'card-lvbushing', side: 'top' },
       dga:         { u: 0.772, v: 0.530, card: 'card-dga', side: 'right' },
