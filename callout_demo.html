@@ -1518,6 +1518,12 @@
               <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-pf">Good</span></td>
             </tr>
             <tr>
+              <td class="col-test">Winding Capacitance</td>
+              <td class="col-std">%Dev &le; 5.0%</td>
+              <td class="col-val" id="ap-cap"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">H:</span><span class="ph-num">0.29%</span></span><span class="ph-chip"><span class="ph-phase">L:</span><span class="ph-num">1.23%</span></span></span></td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-cap">Good</span></td>
+            </tr>
+            <tr>
               <td class="col-test">Exciting Current</td>
               <td class="col-std">Outer &le; 5%</td>
               <td class="col-val" id="ap-ex">H-L-H</td>
@@ -2016,6 +2022,7 @@
           wres: { h: '2.33%', l: '0.80%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.35%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.38%', pfPill: 'Good', pfClass: 'tag-normal',
+          cap: { h: '0.29%', l: '1.23%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'H-L-H', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 1,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Normal', fraPill: 'Good', fraClass: 'tag-normal',
@@ -2103,6 +2110,7 @@
           wres: { h: '0.33%', l: '0.10%', t: '1.12%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.28%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.29%', pfPill: 'Good', pfClass: 'tag-normal',
+          cap: { h: '0.77%', l: '0.23%', t: '4.02%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 2,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Normal', fraPill: 'Good', fraClass: 'tag-normal',
@@ -2190,6 +2198,7 @@
           wres: { h: '3.10%', l: '0.42%' }, wresPill: 'Fair', wresClass: 'tag-warning',
           ttr: '< 0.40%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.72%', pfPill: 'Watch', pfClass: 'tag-warning',
+          cap: { h: '0.11%', l: '0.08%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '450 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Slight Dev', fraPill: 'Watch', fraClass: 'tag-warning',
@@ -2518,7 +2527,7 @@
           if (elVal && val) {
             if (id === 'pi') {
               elVal.innerHTML = renderWindingPi(val);
-            } else if (id === 'wres') {
+            } else if (id === 'wres' || id === 'cap') {
               elVal.innerHTML = renderWindingDev(val);
             } else {
               elVal.textContent = val;
@@ -2534,6 +2543,7 @@
         setApField('wres', ap.wres, ap.wresPill, ap.wresClass);
         setApField('ttr', ap.ttr, ap.ttrPill, ap.ttrClass);
         setApField('pf', ap.pf, ap.pfPill, ap.pfClass);
+        setApField('cap', ap.cap, ap.capPill, ap.capClass);
         setApField('ex', ap.ex, ap.exPill, ap.exClass);
         setApField('cg', ap.cg, ap.cgPill, ap.cgClass);
         setApField('fra', ap.fra, ap.fraPill, ap.fraClass);
