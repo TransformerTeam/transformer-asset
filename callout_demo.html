@@ -562,8 +562,8 @@
     /* Speedometer Health Index Gauge Hero Card (Prominent Executive KPI) */
     .gauge-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 10px;
+      border: 1.5px solid var(--border-card);
+      border-radius: 12px;
       padding: 5px 6px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
@@ -571,40 +571,43 @@
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      width: 104px;
+      width: 122px;
       height: 110px;
       box-sizing: border-box;
       transition: all 0.25s ease;
     }
     .gauge-card.state-healthy {
-      background: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.12) 0%, var(--bg-card) 75%);
-      border-color: rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.15), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.04) 60%, rgba(10, 15, 26, 0.95) 85%);
+      border-color: #10b981;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.45), inset 0 0 15px rgba(16, 185, 129, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-healthy {
-      background: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.08) 0%, var(--bg-card) 75%);
-      border-color: rgba(16, 185, 129, 0.45);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(16, 185, 129, 0.15) 0%, #ffffff 75%);
+      border-color: #059669;
+      border-width: 2px;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
     }
     .gauge-card.state-monitor {
-      background: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.12) 0%, var(--bg-card) 75%);
-      border-color: rgba(245, 158, 11, 0.4);
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.15), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.04) 60%, rgba(10, 15, 26, 0.95) 85%);
+      border-color: #f59e0b;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.45), inset 0 0 15px rgba(245, 158, 11, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-monitor {
-      background: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.08) 0%, var(--bg-card) 75%);
-      border-color: rgba(245, 158, 11, 0.45);
-      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(245, 158, 11, 0.15) 0%, #ffffff 75%);
+      border-color: #d97706;
+      border-width: 2px;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
     }
     .gauge-card.state-critical {
-      background: radial-gradient(circle at 50% 40%, rgba(239, 68, 68, 0.12) 0%, var(--bg-card) 75%);
-      border-color: rgba(239, 68, 68, 0.4);
-      box-shadow: 0 0 16px rgba(239, 68, 68, 0.2), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 60%, rgba(10, 15, 26, 0.95) 85%);
+      border-color: #ef4444;
+      box-shadow: 0 0 28px rgba(239, 68, 68, 0.5), inset 0 0 18px rgba(239, 68, 68, 0.25), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-critical {
-      background: radial-gradient(circle at 50% 40%, rgba(239, 68, 68, 0.08) 0%, var(--bg-card) 75%);
-      border-color: rgba(239, 68, 68, 0.45);
-      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12), var(--shadow-card);
+      background: radial-gradient(circle at 50% 32%, rgba(239, 68, 68, 0.15) 0%, #ffffff 75%);
+      border-color: #dc2626;
+      border-width: 2px;
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
     }
 
     .gauge-card-header {
@@ -613,16 +616,17 @@
       justify-content: space-between;
       width: 100%;
       line-height: 1;
+      padding: 1px 3px;
     }
     .gauge-card-title {
-      font-size: 0.54rem;
+      font-size: 0.58rem;
       font-weight: 800;
       color: #10b981;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       display: flex;
       align-items: center;
-      gap: 3.5px;
+      gap: 4px;
       transition: color 0.25s ease;
     }
     .state-monitor .gauge-card-title { color: #f59e0b; }
@@ -631,13 +635,13 @@
     [data-theme="light"] .state-critical .gauge-card-title { color: #dc2626; }
 
     .btn-gauge-eval {
-      width: 16px;
-      height: 16px;
-      font-size: 0.52rem;
+      width: 17px;
+      height: 17px;
+      font-size: 0.54rem;
       color: #10b981;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 3px;
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 4px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -646,17 +650,27 @@
       z-index: 2;
     }
     .btn-gauge-eval:hover {
-      transform: scale(1.08);
+      transform: scale(1.12);
+      background: #10b981;
+      color: #ffffff;
     }
     .state-monitor .btn-gauge-eval {
       color: #f59e0b;
-      background: rgba(245, 158, 11, 0.12);
-      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .state-monitor .btn-gauge-eval:hover {
+      background: #f59e0b;
+      color: #ffffff;
     }
     .state-critical .btn-gauge-eval {
       color: #ef4444;
-      background: rgba(239, 68, 68, 0.12);
-      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .state-critical .btn-gauge-eval:hover {
+      background: #ef4444;
+      color: #ffffff;
     }
 
     .gauge-body {
@@ -664,30 +678,32 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: -2px;
+      margin-top: -3px;
     }
     .gauge-track {
-      stroke: rgba(255, 255, 255, 0.08);
+      stroke: rgba(255, 255, 255, 0.12);
     }
     [data-theme="light"] .gauge-track {
-      stroke: rgba(0, 0, 0, 0.06);
+      stroke: rgba(0, 0, 0, 0.08);
     }
 
     .gauge-score-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 4px;
       margin-top: 1px;
+      box-sizing: border-box;
     }
     .gauge-score-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.10rem;
+      font-size: 1.30rem;
       font-weight: 900;
-      color: #10b981;
+      color: #ffffff;
       line-height: 1;
       letter-spacing: -0.02em;
-      text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      text-shadow: 0 0 12px #10b981, 0 0 24px rgba(16, 185, 129, 0.6);
       transition: all 0.25s ease;
     }
     [data-theme="light"] .gauge-score-val {
@@ -695,16 +711,16 @@
       color: #059669;
     }
     .state-monitor .gauge-score-val {
-      color: #f59e0b;
-      text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+      color: #ffffff;
+      text-shadow: 0 0 12px #f59e0b, 0 0 24px rgba(245, 158, 11, 0.6);
     }
     [data-theme="light"] .state-monitor .gauge-score-val {
       text-shadow: none;
       color: #d97706;
     }
     .state-critical .gauge-score-val {
-      color: #ef4444;
-      text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+      color: #ffffff;
+      text-shadow: 0 0 12px #ef4444, 0 0 24px rgba(239, 68, 68, 0.6);
     }
     [data-theme="light"] .state-critical .gauge-score-val {
       text-shadow: none;
@@ -712,42 +728,42 @@
     }
 
     .gauge-status-pill {
-      font-size: 0.50rem;
+      font-size: 0.54rem;
       font-weight: 800;
-      padding: 1px 5px;
+      padding: 2px 7px;
       border-radius: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
-      background: rgba(16, 185, 129, 0.18);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      letter-spacing: 0.04em;
+      background: #10b981;
+      color: #022c22;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
       line-height: 1.2;
       transition: all 0.25s ease;
     }
     [data-theme="light"] .gauge-status-pill {
-      background: #dcfce7;
-      color: #15803d;
-      border-color: #86efac;
+      background: #059669;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
     }
     .state-monitor .gauge-status-pill {
-      background: rgba(245, 158, 11, 0.18);
-      color: #f59e0b;
-      border-color: rgba(245, 158, 11, 0.4);
+      background: #f59e0b;
+      color: #451a03;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
     [data-theme="light"] .state-monitor .gauge-status-pill {
-      background: #fef3c7;
-      color: #b45309;
-      border-color: #fde68a;
+      background: #d97706;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
     }
     .state-critical .gauge-status-pill {
-      background: rgba(239, 68, 68, 0.18);
-      color: #ef4444;
-      border-color: rgba(239, 68, 68, 0.4);
+      background: #ef4444;
+      color: #450a0a;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
     }
     [data-theme="light"] .state-critical .gauge-status-pill {
-      background: #fee2e2;
-      color: #b91c1c;
-      border-color: #fca5a5;
+      background: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
     }
 
     /* KPI Mini Stack (Remaining Life & Estimated DP beside Gauge on the right) */
@@ -755,7 +771,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      width: 108px;
+      width: 90px;
       height: 110px;
       box-sizing: border-box;
     }
@@ -764,7 +780,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 5px 8px;
+      padding: 4px 6px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -772,6 +788,8 @@
       justify-content: center;
       flex: 1;
       transition: all 0.25s ease;
+      box-sizing: border-box;
+    }
     }
     .life-mini-card:hover {
       border-color: var(--border-hover);
@@ -1766,20 +1784,20 @@
                 </a>
               </div>
               <div class="gauge-body">
-                <svg viewBox="0 0 120 72" style="width: 86px; height: 50px; overflow: visible;">
-                  <path d="M 16 60 A 44 44 0 0 1 104 60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="13" stroke-linecap="round" class="gauge-track" />
-                  <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="11" stroke-linecap="butt" />
-                  <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="butt" />
-                  <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="butt" />
+                <svg viewBox="0 0 120 68" style="width: 104px; height: 54px; overflow: visible;">
+                  <path d="M 14 58 A 46 46 0 0 1 106 58" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="14" stroke-linecap="round" class="gauge-track" />
+                  <path d="M 14 58 A 46 46 0 0 1 60 12" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="butt" />
+                  <path d="M 60 12 A 46 46 0 0 1 96.36 29.83" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="butt" />
+                  <path d="M 96.36 29.83 A 46 46 0 0 1 106 58" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="butt" filter="drop-shadow(0 0 5px rgba(16,185,129,0.8))" />
 
-                  <text x="14" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
-                  <text x="106" y="69" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
+                  <text x="12" y="67" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
+                  <text x="108" y="67" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
 
                   <!-- Pointer Needle -->
-                  <g id="np-needle-group" transform="rotate(63 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-                    <polygon points="56.5,60 63.5,60 60,18" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1" />
-                    <circle cx="60" cy="60" r="5.5" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1.5" />
-                    <circle id="np-needle-hub" cx="60" cy="60" r="2.8" fill="#10b981" />
+                  <g id="np-needle-group" transform="rotate(63 60 58)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <polygon points="56.5,58 63.5,58 60,14" fill="#ffffff" stroke="var(--bg-card)" stroke-width="0.8" filter="drop-shadow(0 0 4px rgba(255,255,255,0.8))" />
+                    <circle cx="60" cy="58" r="6" fill="#ffffff" stroke="var(--bg-card)" stroke-width="1" />
+                    <circle id="np-needle-hub" cx="60" cy="58" r="3" fill="#10b981" />
                   </g>
                 </svg>
                 <div class="gauge-score-row">
@@ -2729,7 +2747,7 @@
 
       const deg = (d.hi / 100) * 180 - 90;
       const needle = document.getElementById('np-needle-group');
-      if (needle) needle.setAttribute('transform', `rotate(${deg} 60 60)`);
+      if (needle) needle.setAttribute('transform', `rotate(${deg} 60 58)`);
 
       // Update Life and DP Cards
       if (document.getElementById('np-life-val')) {
