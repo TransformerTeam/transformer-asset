@@ -1099,7 +1099,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 7px 12px 8px 12px;
+      padding: 6px 12px 6px 12px;
     }
 
     /* Right Column Stack: DGA and Oil Properties (Positioned directly under Surge Arrester) */
@@ -1477,7 +1477,7 @@
     }
     #card-hvbushing .callout-header,
     #card-lvbushing .callout-header {
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     #card-hvbushing .bushing-matrix-table,
     #card-lvbushing .surge-matrix-table {
@@ -1525,10 +1525,15 @@
       font-size: 0.58rem;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      padding: 2.8px 3px;
+      padding: 2.8px 4px;
       border: 1px solid var(--border-card);
       text-align: center;
       white-space: nowrap;
+    }
+    .surge-matrix-table th {
+      padding: 1.5px 4px;
+      font-size: 0.56rem;
+      line-height: 1.15;
     }
     [data-theme="dark"] .bushing-matrix-table th,
     [data-theme="dark"] .surge-matrix-table th {
@@ -1537,25 +1542,33 @@
     .bushing-matrix-table th:first-child,
     .surge-matrix-table th:first-child {
       text-align: left;
-      padding-left: 6px;
+      padding-left: 8px;
     }
     .bushing-matrix-table td,
     .surge-matrix-table td {
-      padding: 3.5px 3px;
+      padding: 3.5px 4px;
       border: 1px solid var(--border-card);
       text-align: center;
       font-size: 0.65rem;
       color: var(--card-val-color);
       white-space: nowrap;
     }
+    .surge-matrix-table td {
+      padding: 1.6px 4px;
+      font-size: 0.62rem;
+      line-height: 1.15;
+    }
     .bushing-matrix-table td.col-item,
     .surge-matrix-table td.col-item {
       text-align: left;
-      padding-left: 6px;
+      padding-left: 8px;
       font-weight: 700;
       font-size: 0.65rem;
       color: var(--card-title-color);
       white-space: nowrap;
+    }
+    .surge-matrix-table td.col-item {
+      font-size: 0.62rem;
     }
     .bushing-matrix-table td.col-std,
     .surge-matrix-table td.col-std {
@@ -1563,11 +1576,17 @@
       color: var(--card-label-color);
       font-size: 0.63rem;
     }
+    .surge-matrix-table td.col-std {
+      font-size: 0.60rem;
+    }
     .bushing-matrix-table td.col-val,
     .surge-matrix-table td.col-val {
       font-weight: 700;
       font-family: 'Outfit', sans-serif;
       font-size: 0.68rem;
+    }
+    .surge-matrix-table td.col-val {
+      font-size: 0.64rem;
     }
 
     /* DGA Gas Grid */
