@@ -862,13 +862,13 @@
     .activepart-table td.col-test {
       color: var(--card-title-color);
       font-weight: 600;
-      width: 36%;
+      width: 33%;
       white-space: nowrap;
     }
     .activepart-table td.col-std {
       color: var(--text-muted);
       font-size: 0.55rem;
-      width: 14%;
+      width: 12%;
       white-space: nowrap;
     }
     .activepart-table td.col-val {
@@ -876,12 +876,12 @@
       font-weight: 700;
       font-family: 'Outfit', sans-serif;
       color: var(--card-val-color);
-      width: 38%;
+      width: 44%;
       white-space: nowrap;
     }
     .activepart-table td.col-status {
       text-align: right;
-      width: 12%;
+      width: 11%;
     }
     .activepart-table .phase-val-group {
       display: inline-flex;
@@ -889,7 +889,7 @@
       gap: 2px;
       justify-content: flex-end;
       flex-wrap: wrap;
-      max-width: 165px;
+      max-width: 185px;
     }
     .activepart-table .ph-chip {
       padding: 0.5px 2px;
@@ -1507,6 +1507,18 @@
               <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-wres">Good</span></td>
             </tr>
             <tr>
+              <td class="col-test">1Ph. Short Circuit</td>
+              <td class="col-std">Dev &le; 3%</td>
+              <td class="col-val" id="ap-sc1p"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">Max:</span><span class="ph-num">1.91%</span></span><span class="ph-chip"><span class="ph-phase">Cen:</span><span class="ph-num">2.18%</span></span><span class="ph-chip"><span class="ph-phase">Min:</span><span class="ph-num">2.14%</span></span></span></td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-sc1p">Good</span></td>
+            </tr>
+            <tr>
+              <td class="col-test">3Ph. Short Circuit</td>
+              <td class="col-std">Dev &le; 3%</td>
+              <td class="col-val" id="ap-sc3p"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">Max:</span><span class="ph-num">0.53%</span></span><span class="ph-chip"><span class="ph-phase">Cen:</span><span class="ph-num">0.72%</span></span><span class="ph-chip"><span class="ph-phase">Min:</span><span class="ph-num">0.60%</span></span></span></td>
+              <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-sc3p">Good</span></td>
+            </tr>
+            <tr>
               <td class="col-test">Turn Ratio &amp; Polarity (TTR)</td>
               <td class="col-std">Dev &le; 0.5%</td>
               <td class="col-val" id="ap-ttr">&lt; 0.35%</td>
@@ -2021,6 +2033,8 @@
           statusClass: 'status-normal',
           pi: { hg: '2.68', lg: '3.89' }, piPill: 'Good', piClass: 'tag-normal',
           wres: { h: '2.33%', l: '0.80%' }, wresPill: 'Good', wresClass: 'tag-normal',
+          sc1p: { max: '1.91%', cen: '2.18%', min: '2.14%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
+          sc3p: { max: '0.53%', cen: '0.72%', min: '0.60%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.35%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.38%', pfPill: 'Good', pfClass: 'tag-normal',
           cap: { hl: '0.29%', h: '0.15%', l: '1.23%' }, capPill: 'Good', capClass: 'tag-normal',
@@ -2109,6 +2123,8 @@
           statusClass: 'status-normal',
           pi: { hg: '1.40', lg: '1.35', tg: '1.37' }, piPill: 'Good', piClass: 'tag-normal',
           wres: { h: '0.33%', l: '0.10%', t: '1.12%' }, wresPill: 'Good', wresClass: 'tag-normal',
+          sc1p: { max: '0.22%', cen: '0.78%', min: '1.10%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
+          sc3p: { max: '0.58%', cen: '0.44%', min: '0.41%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.28%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.29%', pfPill: 'Good', pfClass: 'tag-normal',
           cap: { hl: '0.23%', h: '0.77%', l: '0.14%', lt: '0.18%', t: '4.02%', ht: '0.23%' }, capPill: 'Good', capClass: 'tag-normal',
@@ -2197,6 +2213,8 @@
           statusClass: 'status-warning',
           pi: { hg: '1.75', lg: '1.86' }, piPill: 'Good', piClass: 'tag-normal',
           wres: { h: '3.10%', l: '0.42%' }, wresPill: 'Fair', wresClass: 'tag-warning',
+          sc1p: { tap1: '0.71%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
+          sc3p: { tap1: '0.04%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.40%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.72%', pfPill: 'Watch', pfClass: 'tag-warning',
           cap: { hl: '0.05%', h: '0.11%', l: '0.08%' }, capPill: 'Good', capClass: 'tag-normal',
@@ -2547,6 +2565,28 @@
           return String(val);
         };
 
+        const renderShortCircuit = (val) => {
+          if (!val) return '-';
+          if (typeof val === 'object') {
+            let chips = '';
+            const renderChip = (label, numVal) => {
+              if (numVal === undefined || numVal === null || numVal === '' || numVal === '-') return '';
+              const cleanStr = String(numVal).trim();
+              const num = parseFloat(cleanStr);
+              // IEEE C57.152: Dev <= 3.0% (Good <= 3.0%, Warn 3.0-5.0%, Crit > 5.0%)
+              const warnCls = !isNaN(num) && num > 5.0 ? 'ph-crit' : (!isNaN(num) && num > 3.0 ? 'ph-warn' : '');
+              const displayVal = cleanStr.includes('%') ? cleanStr : `${cleanStr}%`;
+              return `<span class="ph-chip ${warnCls}"><span class="ph-phase">${label}:</span><span class="ph-num">${displayVal}</span></span>`;
+            };
+            if (val.max !== undefined) chips += renderChip('Max', val.max);
+            if (val.cen !== undefined) chips += renderChip('Cen', val.cen);
+            if (val.min !== undefined) chips += renderChip('Min', val.min);
+            if (val.tap1 !== undefined) chips += renderChip('Tap 1', val.tap1);
+            return chips ? `<span class="phase-val-group">${chips}</span>` : '-';
+          }
+          return String(val);
+        };
+
         const setApField = (id, val, pillVal, pillCls) => {
           const elVal = document.getElementById(`ap-${id}`);
           if (elVal && val) {
@@ -2556,6 +2596,8 @@
               elVal.innerHTML = renderWindingDev(val);
             } else if (id === 'cap') {
               elVal.innerHTML = renderWindingCap(val);
+            } else if (id === 'sc1p' || id === 'sc3p') {
+              elVal.innerHTML = renderShortCircuit(val);
             } else {
               elVal.textContent = val;
             }
@@ -2568,6 +2610,8 @@
         };
         setApField('pi', ap.pi, ap.piPill, ap.piClass);
         setApField('wres', ap.wres, ap.wresPill, ap.wresClass);
+        setApField('sc1p', ap.sc1p, ap.sc1pPill, ap.sc1pClass);
+        setApField('sc3p', ap.sc3p, ap.sc3pPill, ap.sc3pClass);
         setApField('ttr', ap.ttr, ap.ttrPill, ap.ttrClass);
         setApField('pf', ap.pf, ap.pfPill, ap.pfClass);
         setApField('cap', ap.cap, ap.capPill, ap.capClass);
