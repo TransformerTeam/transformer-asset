@@ -731,29 +731,107 @@
     }
 
     .interpretation-body {
-      font-size: 0.67rem;
-      line-height: 1.36;
-      color: var(--card-val-color);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .interp-box {
-      background: rgba(37, 99, 235, 0.06);
-      border-left: 3px solid #3b82f6;
-      border-radius: 4px;
-      padding: 5px 7px;
-      font-size: 0.62rem;
+      font-size: 0.64rem;
       line-height: 1.35;
       color: var(--card-val-color);
       flex: 1;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 5px;
     }
-    [data-theme="dark"] .interp-box {
+    .interp-action-top {
+      background: rgba(37, 99, 235, 0.07);
+      border-left: 3px solid #3b82f6;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.61rem;
+      line-height: 1.32;
+      color: var(--card-val-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      flex: 1;
+      min-height: 0;
+    }
+    [data-theme="dark"] .interp-action-top {
       background: rgba(59, 130, 246, 0.1);
       border-left-color: #60a5fa;
+    }
+    .action-lead {
+      font-weight: 800;
+      color: #3b82f6;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.58rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    [data-theme="dark"] .action-lead {
+      color: #60a5fa;
+    }
+
+    .interp-sap-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      padding: 3.5px 8px;
+      font-size: 0.58rem;
+      box-sizing: border-box;
+    }
+    [data-theme="dark"] .interp-sap-row {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .sap-id-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+    .sap-icon {
+      color: #f59e0b;
+      font-size: 0.65rem;
+      flex-shrink: 0;
+    }
+    .sap-label {
+      font-weight: 800;
+      color: var(--card-label-color);
+      text-transform: uppercase;
+      font-size: 0.52rem;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+    .sap-order-num {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: var(--card-val-color);
+      font-size: 0.62rem;
+      flex-shrink: 0;
+    }
+    .sap-desc {
+      color: var(--text-muted);
+      font-size: 0.56rem;
+      max-width: 175px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      min-width: 0;
+    }
+    .sap-meta {
+      font-size: 0.54rem;
+      font-family: 'Outfit', sans-serif;
+      color: var(--card-label-color);
+      white-space: nowrap;
+      margin-left: 6px;
+      font-weight: 600;
+      flex-shrink: 0;
     }
 
     /* ========================================================
@@ -1592,18 +1670,34 @@
             </div>
           </div>
 
-          <!-- Bottom: Interpretation & Actions Card (Red Box) -->
+          <!-- Bottom: Interpretation & Closed-Loop Action Plan (Integrated SAP Work Orders) -->
           <div class="interpretation-card" id="cockpitInterpretation">
             <div class="interpretation-header">
               <div class="interpretation-title">
                 <i class="fa-solid fa-clipboard-check" style="color: #3b82f6;"></i>
-                <span>Interpretation</span>
+                <span>Interpretation &amp; Action Plan</span>
               </div>
-              <span class="interpretation-badge badge-healthy" id="np-interp-badge">Healthy</span>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="interpretation-badge badge-healthy" id="np-interp-badge">Healthy</span>
+                <a href="assessment.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Assessment &amp; Criteria Report">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
             </div>
             <div class="interpretation-body">
-              <div class="interp-box" id="np-interp-text">
-                Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.
+              <div class="interp-action-top">
+                <span class="action-lead"><i class="fa-solid fa-stethoscope" style="color: #3b82f6; margin-right: 4px;"></i>Action:</span>
+                <span id="np-interp-text" style="flex: 1; min-width: 0;">Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.</span>
+              </div>
+              <div class="interp-sap-row">
+                <div class="sap-id-group">
+                  <i class="fa-solid fa-gears sap-icon"></i>
+                  <span class="sap-label">SAP:</span>
+                  <span class="sap-order-num" id="sap-order-num">#10000001990</span>
+                  <span class="status-tag tag-warning" id="sap-order-badge">CM01 Backlog</span>
+                  <span class="sap-desc" id="sap-order-desc" title="14100TR-003 กระแส phase#C bad">14100TR-003 กระแส phase#C bad</span>
+                </div>
+                <div class="sap-meta" id="sap-order-meta">PIC: นาย ธนันดร ศ.</div>
               </div>
             </div>
           </div>
@@ -2144,6 +2238,13 @@
         interpBadge: 'Healthy',
         interpClass: 'badge-healthy',
         recommendation: 'Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.',
+        sapOrder: {
+          id: '#10000001990',
+          badge: 'CM01 Backlog',
+          badgeClass: 'tag-warning',
+          desc: '14100TR-003 กระแส phase#C bad',
+          meta: 'PIC: นาย ธนันดร ศ.'
+        },
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
         pf_hva: '+30.7%',
@@ -2242,6 +2343,13 @@
         interpBadge: 'Healthy',
         interpClass: 'badge-healthy',
         recommendation: 'Plan visual maintenance & repair minor defects: Check tap changer compartment and seal.',
+        sapOrder: {
+          id: '#30000042771',
+          badge: 'PM01 Advance',
+          badgeClass: 'tag-normal',
+          desc: '6Y PM Program & Tap Changer Overhaul',
+          meta: 'PIC: นาย จิรศักดิ์ ส.'
+        },
         bushingStatus: '3 Ph Normal',
         bushingClass: 'status-normal',
         pf_hva: '+22.5%',
@@ -2344,6 +2452,13 @@
         interpBadge: 'Monitor',
         interpClass: 'badge-monitor',
         recommendation: 'Repair oil leak and hot oil purify, Add passivator.',
+        sapOrder: {
+          id: '#10000014285',
+          badge: 'CM01 Scheduled',
+          badgeClass: 'tag-warning',
+          desc: 'Repair oil leak flange & Add passivator',
+          meta: 'PIC: นาย ภาคภูมิ ส.'
+        },
         bushingStatus: 'No Data',
         bushingClass: 'status-warning',
         pf_hva: '-',
@@ -2466,6 +2581,24 @@
       }
       if (document.getElementById('np-interp-text')) {
         document.getElementById('np-interp-text').textContent = d.recommendation || '-';
+      }
+
+      // Update Linked SAP Work Order
+      if (d.sapOrder) {
+        const orderNumEl = document.getElementById('sap-order-num');
+        const orderBadgeEl = document.getElementById('sap-order-badge');
+        const orderDescEl = document.getElementById('sap-order-desc');
+        const orderMetaEl = document.getElementById('sap-order-meta');
+        if (orderNumEl) orderNumEl.textContent = d.sapOrder.id || '-';
+        if (orderBadgeEl) {
+          orderBadgeEl.textContent = d.sapOrder.badge || '-';
+          orderBadgeEl.className = `status-tag ${d.sapOrder.badgeClass || 'tag-normal'}`;
+        }
+        if (orderDescEl) {
+          orderDescEl.textContent = d.sapOrder.desc || '-';
+          orderDescEl.title = d.sapOrder.desc || '';
+        }
+        if (orderMetaEl) orderMetaEl.textContent = d.sapOrder.meta || '';
       }
 
       // Bushing Matrix Table
