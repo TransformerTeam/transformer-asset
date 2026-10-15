@@ -559,58 +559,195 @@
       box-sizing: border-box;
     }
 
+    /* Speedometer Health Index Gauge Hero Card (Prominent Executive KPI) */
     .gauge-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 5px 5px;
+      padding: 5px 6px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       position: relative;
       width: 104px;
       height: 110px;
       box-sizing: border-box;
       transition: all 0.25s ease;
     }
-    .gauge-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: var(--shadow-hover);
+    .gauge-card.state-healthy {
+      background: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.12) 0%, var(--bg-card) 75%);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.15), var(--shadow-card);
+    }
+    [data-theme="light"] .gauge-card.state-healthy {
+      background: radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.08) 0%, var(--bg-card) 75%);
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12), var(--shadow-card);
+    }
+    .gauge-card.state-monitor {
+      background: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.12) 0%, var(--bg-card) 75%);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.15), var(--shadow-card);
+    }
+    [data-theme="light"] .gauge-card.state-monitor {
+      background: radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.08) 0%, var(--bg-card) 75%);
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.12), var(--shadow-card);
+    }
+    .gauge-card.state-critical {
+      background: radial-gradient(circle at 50% 40%, rgba(239, 68, 68, 0.12) 0%, var(--bg-card) 75%);
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.2), var(--shadow-card);
+    }
+    [data-theme="light"] .gauge-card.state-critical {
+      background: radial-gradient(circle at 50% 40%, rgba(239, 68, 68, 0.08) 0%, var(--bg-card) 75%);
+      border-color: rgba(239, 68, 68, 0.45);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12), var(--shadow-card);
     }
 
+    .gauge-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      line-height: 1;
+    }
+    .gauge-card-title {
+      font-size: 0.54rem;
+      font-weight: 800;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 3.5px;
+      transition: color 0.25s ease;
+    }
+    .state-monitor .gauge-card-title { color: #f59e0b; }
+    [data-theme="light"] .state-monitor .gauge-card-title { color: #d97706; }
+    .state-critical .gauge-card-title { color: #ef4444; }
+    [data-theme="light"] .state-critical .gauge-card-title { color: #dc2626; }
+
     .btn-gauge-eval {
-      position: absolute;
-      top: 5px;
-      right: 5px;
+      width: 16px;
+      height: 16px;
+      font-size: 0.52rem;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 3px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
-      font-size: 0.62rem;
-      color: var(--accent-blue);
-      background: rgba(37, 99, 235, 0.1);
-      border: 1px solid rgba(37, 99, 235, 0.25);
-      border-radius: 4px;
       text-decoration: none;
       transition: all 0.2s ease;
       z-index: 2;
     }
     .btn-gauge-eval:hover {
-      background: var(--accent-blue);
-      color: #ffffff;
       transform: scale(1.08);
     }
+    .state-monitor .btn-gauge-eval {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .state-critical .btn-gauge-eval {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
 
-    .gauge-clickable-area {
+    .gauge-body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-decoration: none;
-      margin-top: 3px;
+      justify-content: center;
+      margin-top: -2px;
+    }
+    .gauge-track {
+      stroke: rgba(255, 255, 255, 0.08);
+    }
+    [data-theme="light"] .gauge-track {
+      stroke: rgba(0, 0, 0, 0.06);
+    }
+
+    .gauge-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 1px;
+    }
+    .gauge-score-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.10rem;
+      font-weight: 900;
+      color: #10b981;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      transition: all 0.25s ease;
+    }
+    [data-theme="light"] .gauge-score-val {
+      text-shadow: none;
+      color: #059669;
+    }
+    .state-monitor .gauge-score-val {
+      color: #f59e0b;
+      text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+    [data-theme="light"] .state-monitor .gauge-score-val {
+      text-shadow: none;
+      color: #d97706;
+    }
+    .state-critical .gauge-score-val {
+      color: #ef4444;
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+    [data-theme="light"] .state-critical .gauge-score-val {
+      text-shadow: none;
+      color: #dc2626;
+    }
+
+    .gauge-status-pill {
+      font-size: 0.50rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background: rgba(16, 185, 129, 0.18);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      line-height: 1.2;
+      transition: all 0.25s ease;
+    }
+    [data-theme="light"] .gauge-status-pill {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #86efac;
+    }
+    .state-monitor .gauge-status-pill {
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    [data-theme="light"] .state-monitor .gauge-status-pill {
+      background: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .state-critical .gauge-status-pill {
+      background: rgba(239, 68, 68, 0.18);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    [data-theme="light"] .state-critical .gauge-status-pill {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fca5a5;
     }
 
     /* KPI Mini Stack (Remaining Life & Estimated DP beside Gauge on the right) */
@@ -1617,13 +1754,20 @@
         <div class="cockpit-right-col">
           <!-- Top Row: Speedometer Health Index Gauge & Life KPIs -->
           <div class="gauge-life-row">
-            <!-- Speedometer Health Index Gauge -->
-            <div class="gauge-card">
-              <a id="np-eval-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation & Criteria Report">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-              </a>
-              <div class="gauge-clickable-area">
-                <svg viewBox="0 0 120 72" style="width: 90px; height: 52px; overflow: visible;">
+            <!-- Speedometer Health Index Gauge (Hero Card) -->
+            <div class="gauge-card state-healthy" id="np-gauge-card">
+              <div class="gauge-card-header">
+                <div class="gauge-card-title">
+                  <i class="fa-solid fa-heart-pulse"></i>
+                  <span>Health Index</span>
+                </div>
+                <a id="np-eval-link" href="evaluation_report.html" target="_blank" class="btn-gauge-eval" title="Open Evaluation &amp; Criteria Report">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+              <div class="gauge-body">
+                <svg viewBox="0 0 120 72" style="width: 86px; height: 50px; overflow: visible;">
+                  <path d="M 16 60 A 44 44 0 0 1 104 60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="13" stroke-linecap="round" class="gauge-track" />
                   <path d="M 16 60 A 44 44 0 0 1 60 16" fill="none" stroke="#ef4444" stroke-width="11" stroke-linecap="butt" />
                   <path d="M 60 16 A 44 44 0 0 1 94.77 33.03" fill="none" stroke="#f59e0b" stroke-width="11" stroke-linecap="butt" />
                   <path d="M 94.77 33.03 A 44 44 0 0 1 104 60" fill="none" stroke="#10b981" stroke-width="11" stroke-linecap="butt" />
@@ -1633,13 +1777,14 @@
 
                   <!-- Pointer Needle -->
                   <g id="np-needle-group" transform="rotate(63 60 60)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-                    <polygon points="56.5,60 63.5,60 60,20" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1" />
+                    <polygon points="56.5,60 63.5,60 60,18" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1" />
                     <circle cx="60" cy="60" r="5.5" fill="var(--text-primary)" stroke="var(--bg-card)" stroke-width="1.5" />
-                    <circle cx="60" cy="60" r="2" fill="var(--bg-card)" />
+                    <circle id="np-needle-hub" cx="60" cy="60" r="2.8" fill="#10b981" />
                   </g>
                 </svg>
-                <div style="text-align: center; margin-top: 1px; line-height: 1;">
-                  <span id="np-gauge-score" style="font-family: 'Outfit', sans-serif; font-size: 1.0rem; font-weight: 800; color: #10b981;">HI 85%</span>
+                <div class="gauge-score-row">
+                  <span id="np-gauge-score" class="gauge-score-val">85%</span>
+                  <span id="np-gauge-pill" class="gauge-status-pill">Healthy</span>
                 </div>
               </div>
             </div>
@@ -2557,14 +2702,34 @@
         document.getElementById('np-oltc').textContent = d.oltcType || '-';
       }
 
-      // Update Health Index Speedometer Gauge
-      if (document.getElementById('np-gauge-score')) {
-        document.getElementById('np-gauge-score').textContent = d.hiText || `HI ${d.hi}%`;
-        document.getElementById('np-gauge-score').style.color = d.hiColor || '#10b981';
-        const deg = (d.hi / 100) * 180 - 90;
-        const needle = document.getElementById('np-needle-group');
-        if (needle) needle.setAttribute('transform', `rotate(${deg} 60 60)`);
+      // Update Health Index Speedometer Gauge (Hero Card)
+      const gaugeCard = document.getElementById('np-gauge-card');
+      const gaugeScore = document.getElementById('np-gauge-score');
+      const gaugePill = document.getElementById('np-gauge-pill');
+      const needleHub = document.getElementById('np-needle-hub');
+
+      let stateClass = 'state-healthy';
+      let statePillText = 'Healthy';
+      let stateColor = '#10b981';
+
+      if (d.hi <= 50) {
+        stateClass = 'state-critical';
+        statePillText = 'Critical';
+        stateColor = '#ef4444';
+      } else if (d.hi <= 79) {
+        stateClass = 'state-monitor';
+        statePillText = 'Monitor';
+        stateColor = '#f59e0b';
       }
+
+      if (gaugeCard) gaugeCard.className = `gauge-card ${stateClass}`;
+      if (gaugeScore) gaugeScore.textContent = `${d.hi}%`;
+      if (gaugePill) gaugePill.textContent = statePillText;
+      if (needleHub) needleHub.setAttribute('fill', stateColor);
+
+      const deg = (d.hi / 100) * 180 - 90;
+      const needle = document.getElementById('np-needle-group');
+      if (needle) needle.setAttribute('transform', `rotate(${deg} 60 60)`);
 
       // Update Life and DP Cards
       if (document.getElementById('np-life-val')) {
