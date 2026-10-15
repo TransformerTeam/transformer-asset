@@ -1080,11 +1080,12 @@
        FLEX CONTAINERS WITH GUARANTEED EQUAL 14PX GAP (NO OVERLAP)
        ======================================================== */
     
-    /* Top Row Container: Bushing & Surge Arrester side by side (Adjacent to DGA on the right) */
+    /* Top Row Container: Bushing & Surge Arrester side by side (Spanning from Left Cockpit to Right Edge) */
     .top-callout-row {
       position: absolute;
       top: 16px;
-      right: 388px;
+      left: 688px;
+      right: 16px;
       display: flex;
       flex-direction: row;
       gap: 14px;
@@ -1092,24 +1093,24 @@
     }
     .top-callout-row .callout-card {
       position: relative;
-      width: 395px;
+      flex: 1;
       height: 110px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 7px 10px 8px 10px;
+      padding: 7px 12px 8px 12px;
     }
 
-    /* Right Column Stack: DGA and Oil Properties (Guaranteed 16px gap, Zero Overlap) */
+    /* Right Column Stack: DGA and Oil Properties (Positioned directly under Surge Arrester) */
     .right-callout-stack {
       position: absolute;
-      top: 16px;
+      top: 140px;
       right: 16px;
-      width: 356px;
+      width: 380px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       z-index: 30;
     }
     .right-callout-stack .callout-card {
@@ -3428,8 +3429,8 @@
       radiator:    { u: 0.533, v: 0.703, card: 'card-radiator', side: 'bottom' },
       hvbushing:   { u: 0.531, v: 0.220, card: 'card-hvbushing', side: 'top' },
       lvbushing:   { u: 0.681, v: 0.058, card: 'card-lvbushing', side: 'top' },
-      dga:         { u: 0.772, v: 0.530, card: 'card-dga', side: 'right' },
-      oilprops:    { u: 0.772, v: 0.530, card: 'card-oilprops', side: 'right' },
+      dga:         { u: 0.760, v: 0.480, card: 'card-dga', side: 'right' },
+      oilprops:    { u: 0.720, v: 0.640, card: 'card-oilprops', side: 'right' },
       oltc:        { u: 0.816, v: 0.608, card: 'card-oltc', side: 'bottom' }
     };
 
