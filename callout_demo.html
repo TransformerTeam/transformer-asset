@@ -886,21 +886,22 @@
     .activepart-table .phase-val-group {
       display: inline-flex;
       align-items: center;
-      gap: 2.5px;
-      white-space: nowrap;
+      gap: 2px;
       justify-content: flex-end;
+      flex-wrap: wrap;
+      max-width: 165px;
     }
     .activepart-table .ph-chip {
-      padding: 0.5px 2.5px;
-      font-size: 0.58rem;
+      padding: 0.5px 2px;
+      font-size: 0.56rem;
       gap: 1px;
     }
     .activepart-table .ph-phase {
-      font-size: 0.52rem;
+      font-size: 0.50rem;
       font-weight: 700;
     }
     .activepart-table .ph-num {
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 700;
     }
 
@@ -1520,7 +1521,7 @@
             <tr>
               <td class="col-test">Winding Capacitance</td>
               <td class="col-std">%Dev &le; 5%</td>
-              <td class="col-val" id="ap-cap"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">H:</span><span class="ph-num">0.29%</span></span><span class="ph-chip"><span class="ph-phase">L:</span><span class="ph-num">1.23%</span></span></span></td>
+              <td class="col-val" id="ap-cap"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">HL:</span><span class="ph-num">0.29%</span></span><span class="ph-chip"><span class="ph-phase">H:</span><span class="ph-num">0.15%</span></span><span class="ph-chip"><span class="ph-phase">L:</span><span class="ph-num">1.23%</span></span></span></td>
               <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-cap">Good</span></td>
             </tr>
             <tr>
@@ -2022,7 +2023,7 @@
           wres: { h: '2.33%', l: '0.80%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.35%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.38%', pfPill: 'Good', pfClass: 'tag-normal',
-          cap: { h: '0.29%', l: '1.23%' }, capPill: 'Good', capClass: 'tag-normal',
+          cap: { hl: '0.29%', h: '0.15%', l: '1.23%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'H-L-H', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 1,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Normal', fraPill: 'Good', fraClass: 'tag-normal',
@@ -2110,7 +2111,7 @@
           wres: { h: '0.33%', l: '0.10%', t: '1.12%' }, wresPill: 'Good', wresClass: 'tag-normal',
           ttr: '< 0.28%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.29%', pfPill: 'Good', pfClass: 'tag-normal',
-          cap: { h: '0.77%', l: '0.14%', t: '4.02%' }, capPill: 'Good', capClass: 'tag-normal',
+          cap: { hl: '0.23%', h: '0.77%', l: '0.14%', lt: '0.18%', t: '4.02%', ht: '0.23%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 2,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Normal', fraPill: 'Good', fraClass: 'tag-normal',
@@ -2198,7 +2199,7 @@
           wres: { h: '3.10%', l: '0.42%' }, wresPill: 'Fair', wresClass: 'tag-warning',
           ttr: '< 0.40%', ttrPill: 'Good', ttrClass: 'tag-normal',
           pf: '0.72%', pfPill: 'Watch', pfClass: 'tag-warning',
-          cap: { h: '0.11%', l: '0.08%' }, capPill: 'Good', capClass: 'tag-normal',
+          cap: { hl: '0.05%', h: '0.11%', l: '0.08%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '450 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
           fra: 'Slight Dev', fraPill: 'Watch', fraClass: 'tag-warning',
@@ -2522,13 +2523,39 @@
           return String(val);
         };
 
+        const renderWindingCap = (val) => {
+          if (!val) return '-';
+          if (typeof val === 'object') {
+            let chips = '';
+            const renderChip = (label, numVal) => {
+              if (numVal === undefined || numVal === null || numVal === '' || numVal === '-') return '';
+              const cleanStr = String(numVal).trim();
+              const num = parseFloat(cleanStr);
+              // %Dev <= 5% (Good <= 2.5%, Warn 2.5-5.0%, Crit > 5.0%)
+              const warnCls = !isNaN(num) && num > 5.0 ? 'ph-crit' : (!isNaN(num) && num > 2.5 ? 'ph-warn' : '');
+              const displayVal = cleanStr.includes('%') || cleanStr.includes('pF') ? cleanStr : `${cleanStr}%`;
+              return `<span class="ph-chip ${warnCls}"><span class="ph-phase">${label}:</span><span class="ph-num">${displayVal}</span></span>`;
+            };
+            if (val.hl !== undefined) chips += renderChip('HL', val.hl);
+            if (val.h !== undefined) chips += renderChip('H', val.h);
+            if (val.l !== undefined) chips += renderChip('L', val.l);
+            if (val.lt !== undefined) chips += renderChip('LT', val.lt);
+            if (val.t !== undefined) chips += renderChip('T', val.t);
+            if (val.ht !== undefined) chips += renderChip('HT', val.ht);
+            return chips ? `<span class="phase-val-group">${chips}</span>` : '-';
+          }
+          return String(val);
+        };
+
         const setApField = (id, val, pillVal, pillCls) => {
           const elVal = document.getElementById(`ap-${id}`);
           if (elVal && val) {
             if (id === 'pi') {
               elVal.innerHTML = renderWindingPi(val);
-            } else if (id === 'wres' || id === 'cap') {
+            } else if (id === 'wres') {
               elVal.innerHTML = renderWindingDev(val);
+            } else if (id === 'cap') {
+              elVal.innerHTML = renderWindingCap(val);
             } else {
               elVal.textContent = val;
             }
