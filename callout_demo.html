@@ -1789,7 +1789,7 @@
             <tr>
               <td class="col-test">Insulation Power Factor (PF)</td>
               <td class="col-std">%PF &le; 0.5%</td>
-              <td class="col-val" id="ap-pf">0.38%</td>
+              <td class="col-val" id="ap-pf"><span class="phase-val-group"><span class="ph-chip"><span class="ph-phase">HL:</span><span class="ph-num">0.38%</span></span><span class="ph-chip"><span class="ph-phase">H:</span><span class="ph-num">0.15%</span></span><span class="ph-chip"><span class="ph-phase">L:</span><span class="ph-num">0.35%</span></span></span></td>
               <td class="col-status"><span class="status-tag tag-normal" id="pill-ap-pf">Good</span></td>
             </tr>
             <tr>
@@ -2305,7 +2305,7 @@
           sc1p: { max: '1.91%', cen: '2.18%', min: '2.14%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
           sc3p: { max: '0.53%', cen: '0.72%', min: '0.60%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.35%', ttrPill: 'Good', ttrClass: 'tag-normal',
-          pf: '0.38%', pfPill: 'Good', pfClass: 'tag-normal',
+          pf: { hl: '0.38%', h: '0.15%', l: '0.35%' }, pfPill: 'Good', pfClass: 'tag-normal',
           cap: { hl: '0.29%', h: '0.15%', l: '1.23%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'H-L-H', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 1,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
@@ -2410,7 +2410,7 @@
           sc1p: { max: '0.22%', cen: '0.78%', min: '1.10%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
           sc3p: { max: '0.58%', cen: '0.44%', min: '0.41%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.28%', ttrPill: 'Good', ttrClass: 'tag-normal',
-          pf: '0.29%', pfPill: 'Good', pfClass: 'tag-normal',
+          pf: { hl: '0.13%', h: '0.24%', l: '0.19%', lt: '0.15%', t: '0.26%', ht: '0.13%' }, pfPill: 'Good', pfClass: 'tag-normal',
           cap: { hl: '0.23%', h: '0.77%', l: '0.14%', lt: '0.18%', t: '4.02%', ht: '0.23%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '> 2,000 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
@@ -2519,7 +2519,7 @@
           sc1p: { tap1: '0.71%' }, sc1pPill: 'Good', sc1pClass: 'tag-normal',
           sc3p: { tap1: '0.04%' }, sc3pPill: 'Good', sc3pClass: 'tag-normal',
           ttr: '< 0.40%', ttrPill: 'Good', ttrClass: 'tag-normal',
-          pf: '0.72%', pfPill: 'Watch', pfClass: 'tag-warning',
+          pf: { hl: '0.43%', h: '0.35%', l: '0.72%' }, pfPill: 'Watch', pfClass: 'tag-warning',
           cap: { hl: '0.05%', h: '0.11%', l: '0.08%' }, capPill: 'Good', capClass: 'tag-normal',
           ex: 'Normal', exPill: 'Good', exClass: 'tag-normal',
           cg: '450 MΩ', cgPill: 'Good', cgClass: 'tag-normal',
@@ -2869,6 +2869,30 @@
           return String(val);
         };
 
+        const renderWindingPf = (val) => {
+          if (!val) return '-';
+          if (typeof val === 'object') {
+            let chips = '';
+            const renderChip = (label, numVal) => {
+              if (numVal === undefined || numVal === null || numVal === '' || numVal === '-') return '';
+              const cleanStr = String(numVal).trim();
+              const num = parseFloat(cleanStr);
+              // IEEE C57.152 & CIGRE 761: %PF <= 0.5% (Good <= 0.5%, Warn 0.5-1.0%, Crit > 1.0%)
+              const warnCls = !isNaN(num) && num > 1.0 ? 'ph-crit' : (!isNaN(num) && num > 0.5 ? 'ph-warn' : '');
+              const displayVal = cleanStr.includes('%') ? cleanStr : `${cleanStr}%`;
+              return `<span class="ph-chip ${warnCls}"><span class="ph-phase">${label}:</span><span class="ph-num">${displayVal}</span></span>`;
+            };
+            if (val.hl !== undefined) chips += renderChip('HL', val.hl);
+            if (val.h !== undefined) chips += renderChip('H', val.h);
+            if (val.l !== undefined) chips += renderChip('L', val.l);
+            if (val.lt !== undefined) chips += renderChip('LT', val.lt);
+            if (val.t !== undefined) chips += renderChip('T', val.t);
+            if (val.ht !== undefined) chips += renderChip('HT', val.ht);
+            return chips ? `<span class="phase-val-group">${chips}</span>` : '-';
+          }
+          return String(val);
+        };
+
         const renderWindingCap = (val) => {
           if (!val) return '-';
           if (typeof val === 'object') {
@@ -2922,6 +2946,8 @@
               elVal.innerHTML = renderWindingPi(val);
             } else if (id === 'wres') {
               elVal.innerHTML = renderWindingDev(val);
+            } else if (id === 'pf') {
+              elVal.innerHTML = renderWindingPf(val);
             } else if (id === 'cap') {
               elVal.innerHTML = renderWindingCap(val);
             } else if (id === 'sc1p' || id === 'sc3p') {
