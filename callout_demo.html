@@ -549,12 +549,12 @@
       width: 438px;
     }
 
-    /* Gauge & Life KPI Row (Side by Side to the right of Nameplate, exactly aligns with Bushing card height) */
+    /* Gauge & Life KPI Row (Side by Side to the right of Nameplate, expanded to full 438px matching Interpretation & Active Part below) */
     .gauge-life-row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: stretch;
-      width: 218px;
+      width: 438px;
       height: 110px;
       box-sizing: border-box;
     }
@@ -563,48 +563,49 @@
     .gauge-card {
       background: var(--bg-card);
       border: 1.5px solid var(--border-card);
-      border-radius: 12px;
-      padding: 5px 6px;
+      border-radius: 10px;
+      padding: 6px 10px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      width: 122px;
+      width: 214px;
       height: 110px;
       box-sizing: border-box;
       transition: all 0.25s ease;
+      flex-shrink: 0;
     }
     .gauge-card.state-healthy {
-      background: radial-gradient(circle at 50% 32%, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.04) 60%, rgba(10, 15, 26, 0.95) 85%);
+      background: radial-gradient(circle at 35% 45%, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.04) 65%, rgba(10, 15, 26, 0.95) 90%);
       border-color: #10b981;
       box-shadow: 0 0 25px rgba(16, 185, 129, 0.45), inset 0 0 15px rgba(16, 185, 129, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-healthy {
-      background: radial-gradient(circle at 50% 32%, rgba(16, 185, 129, 0.15) 0%, #ffffff 75%);
+      background: radial-gradient(circle at 35% 45%, rgba(16, 185, 129, 0.15) 0%, #ffffff 75%);
       border-color: #059669;
       border-width: 2px;
       box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
     }
     .gauge-card.state-monitor {
-      background: radial-gradient(circle at 50% 32%, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.04) 60%, rgba(10, 15, 26, 0.95) 85%);
+      background: radial-gradient(circle at 35% 45%, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.04) 65%, rgba(10, 15, 26, 0.95) 90%);
       border-color: #f59e0b;
       box-shadow: 0 0 25px rgba(245, 158, 11, 0.45), inset 0 0 15px rgba(245, 158, 11, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-monitor {
-      background: radial-gradient(circle at 50% 32%, rgba(245, 158, 11, 0.15) 0%, #ffffff 75%);
+      background: radial-gradient(circle at 35% 45%, rgba(245, 158, 11, 0.15) 0%, #ffffff 75%);
       border-color: #d97706;
       border-width: 2px;
       box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
     }
     .gauge-card.state-critical {
-      background: radial-gradient(circle at 50% 32%, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 60%, rgba(10, 15, 26, 0.95) 85%);
+      background: radial-gradient(circle at 35% 45%, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.05) 65%, rgba(10, 15, 26, 0.95) 90%);
       border-color: #ef4444;
       box-shadow: 0 0 28px rgba(239, 68, 68, 0.5), inset 0 0 18px rgba(239, 68, 68, 0.25), 0 8px 24px rgba(0, 0, 0, 0.6);
     }
     [data-theme="light"] .gauge-card.state-critical {
-      background: radial-gradient(circle at 50% 32%, rgba(239, 68, 68, 0.15) 0%, #ffffff 75%);
+      background: radial-gradient(circle at 35% 45%, rgba(239, 68, 68, 0.15) 0%, #ffffff 75%);
       border-color: #dc2626;
       border-width: 2px;
       box-shadow: 0 4px 20px rgba(239, 68, 68, 0.35), 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -616,17 +617,17 @@
       justify-content: space-between;
       width: 100%;
       line-height: 1;
-      padding: 1px 3px;
+      padding: 0;
     }
     .gauge-card-title {
-      font-size: 0.58rem;
+      font-size: 0.60rem;
       font-weight: 800;
       color: #10b981;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       transition: color 0.25s ease;
     }
     .state-monitor .gauge-card-title { color: #f59e0b; }
@@ -635,8 +636,8 @@
     [data-theme="light"] .state-critical .gauge-card-title { color: #dc2626; }
 
     .btn-gauge-eval {
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
       font-size: 0.54rem;
       color: #10b981;
       background: rgba(16, 185, 129, 0.16);
@@ -673,12 +674,20 @@
       color: #ffffff;
     }
 
-    .gauge-body {
+    .gauge-split-body {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      flex: 1;
+      gap: 6px;
+      padding: 2px 0 0 0;
+    }
+    .gauge-arc-wrapper {
+      display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: -3px;
+      width: 96px;
+      flex-shrink: 0;
     }
     .gauge-track {
       stroke: rgba(255, 255, 255, 0.12);
@@ -687,18 +696,18 @@
       stroke: rgba(0, 0, 0, 0.08);
     }
 
-    .gauge-score-row {
+    .gauge-score-col {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 4px;
-      margin-top: 1px;
-      box-sizing: border-box;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+      flex: 1;
+      text-align: right;
     }
     .gauge-score-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.30rem;
+      font-size: 1.48rem;
       font-weight: 900;
       color: #ffffff;
       line-height: 1;
@@ -765,62 +774,110 @@
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
     }
-
-    /* KPI Mini Stack (Remaining Life & Estimated DP beside Gauge on the right) */
-    .kpi-mini-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 90px;
-      height: 110px;
-      box-sizing: border-box;
+    .gauge-desc-txt {
+      font-size: 0.52rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
-    .life-mini-card {
+    /* Dedicated KPI Panel Cards (Remaining Life & Estimated DP full 110px height) */
+    .kpi-panel-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 4px 6px;
+      padding: 6px 8px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       flex: 1;
-      transition: all 0.25s ease;
+      height: 110px;
       box-sizing: border-box;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
     }
-    }
-    .life-mini-card:hover {
+    .kpi-panel-card:hover {
       border-color: var(--border-hover);
       transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
     }
-
-    .life-mini-header {
+    .kpi-panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      line-height: 1;
+    }
+    .kpi-panel-title {
       font-size: 0.58rem;
       font-weight: 700;
-      color: #0284c7;
+      color: #38bdf8;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 3px;
     }
-    [data-theme="dark"] .life-mini-header {
+    [data-theme="light"] .kpi-panel-title {
+      color: #0284c7;
+    }
+    .kpi-link-icon {
+      font-size: 0.52rem;
       color: #38bdf8;
+      transition: transform 0.2s ease;
     }
-
-    .life-mini-val {
+    .kpi-panel-card:hover .kpi-link-icon {
+      transform: scale(1.15);
+      color: var(--accent-blue);
+    }
+    .kpi-std-tag {
+      font-size: 0.50rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .kpi-panel-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 1px 0;
+    }
+    .kpi-panel-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #16a34a;
-      line-height: 1.1;
-      margin-top: 2px;
-    }
-    [data-theme="dark"] .life-mini-val {
+      font-size: 1.45rem;
+      font-weight: 900;
       color: #22c55e;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+      transition: all 0.25s ease;
+    }
+    [data-theme="light"] .kpi-panel-val {
+      color: #16a34a;
+      text-shadow: none;
+    }
+    .kpi-panel-unit {
+      font-size: 0.54rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 1px;
+    }
+    .kpi-panel-tag {
+      font-size: 0.50rem;
+      font-weight: 800;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      text-align: center;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Interpretation Card (Stretches across full 438px matching Active Part below it) */
@@ -1019,11 +1076,11 @@
        FLEX CONTAINERS WITH GUARANTEED EQUAL 14PX GAP (NO OVERLAP)
        ======================================================== */
     
-    /* Top Row Container: Bushing & Surge Arrester side by side */
+    /* Top Row Container: Bushing & Surge Arrester side by side (Adjacent to DGA on the right) */
     .top-callout-row {
       position: absolute;
       top: 16px;
-      left: 468px;
+      right: 388px;
       display: flex;
       flex-direction: row;
       gap: 14px;
@@ -1031,7 +1088,7 @@
     }
     .top-callout-row .callout-card {
       position: relative;
-      width: 415px;
+      width: 395px;
       height: 110px;
       box-sizing: border-box;
       display: flex;
@@ -1798,7 +1855,7 @@
         <div class="cockpit-right-col">
           <!-- Top Row: Speedometer Health Index Gauge & Life KPIs -->
           <div class="gauge-life-row">
-            <!-- Speedometer Health Index Gauge (Hero Card) -->
+            <!-- Speedometer Health Index Gauge (Hero Card, Width: 214px) -->
             <div class="gauge-card state-healthy" id="np-gauge-card">
               <div class="gauge-card-header">
                 <div class="gauge-card-title">
@@ -1809,54 +1866,63 @@
                   <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
               </div>
-              <div class="gauge-body">
-                <svg viewBox="0 0 120 68" style="width: 104px; height: 54px; overflow: visible;">
-                  <path d="M 14 58 A 46 46 0 0 1 106 58" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="14" stroke-linecap="round" class="gauge-track" />
-                  <path d="M 14 58 A 46 46 0 0 1 60 12" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="butt" />
-                  <path d="M 60 12 A 46 46 0 0 1 96.36 29.83" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="butt" />
-                  <path d="M 96.36 29.83 A 46 46 0 0 1 106 58" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="butt" filter="drop-shadow(0 0 5px rgba(16,185,129,0.8))" />
+              <div class="gauge-split-body">
+                <div class="gauge-arc-wrapper">
+                  <svg viewBox="0 0 100 58" style="width: 96px; height: 56px; overflow: visible;">
+                    <path d="M 12 50 A 38 38 0 0 1 88 50" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="11" stroke-linecap="round" class="gauge-track" />
+                    <path d="M 12 50 A 38 38 0 0 1 50 12" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" />
+                    <path d="M 50 12 A 38 38 0 0 1 80 26.5" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" />
+                    <path d="M 80 26.5 A 38 38 0 0 1 88 50" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="butt" filter="drop-shadow(0 0 4px rgba(16,185,129,0.8))" />
 
-                  <text x="12" y="67" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
-                  <text x="108" y="67" font-size="7.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
+                    <text x="10" y="58" font-size="6.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">0</text>
+                    <text x="90" y="58" font-size="6.5" fill="var(--text-muted)" font-family="'Outfit', sans-serif" text-anchor="middle">100</text>
 
-                  <!-- Pointer Needle -->
-                  <g id="np-needle-group" transform="rotate(63 60 58)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-                    <polygon points="56.5,58 63.5,58 60,14" fill="#ffffff" stroke="var(--bg-card)" stroke-width="0.8" filter="drop-shadow(0 0 4px rgba(255,255,255,0.8))" />
-                    <circle cx="60" cy="58" r="6" fill="#ffffff" stroke="var(--bg-card)" stroke-width="1" />
-                    <circle id="np-needle-hub" cx="60" cy="58" r="3" fill="#10b981" />
-                  </g>
-                </svg>
-                <div class="gauge-score-row">
+                    <!-- Pointer Needle -->
+                    <g id="np-needle-group" transform="rotate(63 50 50)" style="transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                      <polygon points="47,50 53,50 50,14" fill="#ffffff" stroke="var(--bg-card)" stroke-width="0.6" filter="drop-shadow(0 0 4px rgba(255,255,255,0.8))" />
+                      <circle cx="50" cy="50" r="5" fill="#ffffff" stroke="var(--bg-card)" stroke-width="0.8" />
+                      <circle id="np-needle-hub" cx="50" cy="50" r="2.5" fill="#10b981" />
+                    </g>
+                  </svg>
+                </div>
+                <div class="gauge-score-col">
                   <span id="np-gauge-score" class="gauge-score-val">85%</span>
                   <span id="np-gauge-pill" class="gauge-status-pill">Healthy</span>
+                  <span id="np-gauge-desc" class="gauge-desc-txt">Good Condition</span>
                 </div>
               </div>
             </div>
 
-            <!-- Remaining Life & Estimated DP KPI Stack (Beside Gauge on the right) -->
-            <div class="kpi-mini-stack">
-              <!-- Remaining Life Card -->
-              <a id="np-life-link" href="remaining_life_report.html" target="_blank" class="life-mini-card" style="text-decoration: none;">
-                <div class="life-mini-header">
-                  <span><i class="fa-solid fa-hourglass-half" style="color: #38bdf8;"></i> Remaining Life</span>
-                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.58rem; color: #38bdf8;"></i>
-                </div>
-                <div class="life-mini-val" id="np-life-val">35.4</div>
-              </a>
-
-              <!-- Estimated DP Card -->
-              <div class="life-mini-card">
-                <div class="life-mini-header">
-                  <span>
-                    <svg class="icon-dp-paper" viewBox="0 0 100 100" width="12" height="12" fill="currentColor" style="color: #38bdf8; vertical-align: -2px; margin-right: 3px; display: inline-block;">
-                      <path d="M66 10h13v1h-13ZM61 11h22v1h-22ZM57 12h28v1h-28ZM54 13h12v1h-12ZM78 13h10v1h-10ZM50 14h11v1h-11ZM82 14h7v1h-7ZM48 15h10v1h-10ZM85 15h5v1h-5ZM45 16h9v1h-9ZM87 16h3v1h-3ZM5 17h2v1h-2ZM42 17h9v1h-9ZM87 17h3v1h-3ZM4 18h5v1h-5ZM39 18h9v1h-9ZM87 18h3v1h-3ZM4 19h7v1h-7ZM35 19h10v1h-10ZM87 19h3v1h-3ZM4 20h10v1h-10ZM31 20h12v1h-12ZM87 20h3v1h-3ZM4 21h17v1h-17ZM23 21h16v1h-16ZM87 21h3v1h-3ZM4 22h4v1h-4ZM10 22h26v1h-26ZM72 22h12v1h-12ZM87 22h3v1h-3ZM4 23h4v1h-4ZM13 23h19v1h-19ZM67 23h23v1h-23ZM4 24h4v1h-4ZM20 24h4v1h-4ZM63 24h28v1h-28ZM4 25h4v1h-4ZM60 25h13v1h-13ZM74 25h4v1h-4ZM83 25h11v1h-11ZM4 26h4v1h-4ZM57 26h11v1h-11ZM73 26h4v1h-4ZM88 26h7v1h-7ZM4 27h4v1h-4ZM54 27h10v1h-10ZM72 27h4v1h-4ZM89 27h7v1h-7ZM4 28h4v1h-4ZM51 28h12v1h-12ZM71 28h4v1h-4ZM88 28h4v1h-4ZM93 28h4v1h-4ZM4 29h4v1h-4ZM12 29h1v1h-1ZM48 29h14v1h-14ZM70 29h4v1h-4ZM87 29h5v1h-5ZM93 29h4v1h-4ZM4 30h4v1h-4ZM11 30h4v1h-4ZM45 30h10v1h-10ZM57 30h4v1h-4ZM69 30h4v1h-4ZM86 30h4v1h-4ZM93 30h4v1h-4ZM4 31h4v1h-4ZM11 31h6v1h-6ZM42 31h10v1h-10ZM56 31h4v1h-4ZM68 31h4v1h-4ZM85 31h4v1h-4ZM93 31h4v1h-4ZM4 32h4v1h-4ZM11 32h9v1h-9ZM38 32h11v1h-11ZM55 32h4v1h-4ZM67 32h4v1h-4ZM84 32h5v1h-5ZM93 32h4v1h-4ZM4 33h4v1h-4ZM11 33h15v1h-15ZM31 33h15v1h-15ZM54 33h4v1h-4ZM66 33h4v1h-4ZM83 33h4v1h-4ZM93 33h4v1h-4ZM4 34h4v1h-4ZM11 34h3v1h-3ZM16 34h27v1h-27ZM53 34h4v1h-4ZM65 34h4v1h-4ZM82 34h5v1h-5ZM93 34h4v1h-4ZM4 35h4v1h-4ZM11 35h3v1h-3ZM19 35h20v1h-20ZM52 35h4v1h-4ZM64 35h4v1h-4ZM81 35h4v1h-4ZM93 35h4v1h-4ZM4 36h4v1h-4ZM11 36h3v1h-3ZM22 36h16v1h-16ZM51 36h4v1h-4ZM63 36h4v1h-4ZM80 36h5v1h-5ZM92 36h5v1h-5ZM4 37h4v1h-4ZM11 37h3v1h-3ZM21 37h4v1h-4ZM32 37h5v1h-5ZM50 37h4v1h-4ZM62 37h4v1h-4ZM79 37h4v1h-4ZM91 37h6v1h-6ZM4 38h4v1h-4ZM11 38h3v1h-3ZM20 38h4v1h-4ZM31 38h5v1h-5ZM49 38h4v1h-4ZM61 38h4v1h-4ZM79 38h3v1h-3ZM90 38h7v1h-7ZM4 39h4v1h-4ZM11 39h3v1h-3ZM19 39h4v1h-4ZM30 39h5v1h-5ZM48 39h4v1h-4ZM60 39h4v1h-4ZM80 39h1v1h-1ZM89 39h8v1h-8ZM4 40h4v1h-4ZM11 40h3v1h-3ZM18 40h4v1h-4ZM29 40h5v1h-5ZM47 40h4v1h-4ZM59 40h4v1h-4ZM88 40h4v1h-4ZM93 40h4v1h-4ZM4 41h4v1h-4ZM11 41h3v1h-3ZM17 41h4v1h-4ZM28 41h5v1h-5ZM46 41h4v1h-4ZM58 41h4v1h-4ZM87 41h4v1h-4ZM93 41h4v1h-4ZM4 42h4v1h-4ZM11 42h3v1h-3ZM16 42h4v1h-4ZM27 42h5v1h-5ZM45 42h4v1h-4ZM57 42h4v1h-4ZM86 42h4v1h-4ZM93 42h4v1h-4ZM4 43h4v1h-4ZM11 43h3v1h-3ZM15 43h4v1h-4ZM26 43h5v1h-5ZM44 43h4v1h-4ZM56 43h4v1h-4ZM73 43h3v1h-3ZM85 43h4v1h-4ZM93 43h4v1h-4ZM4 44h4v1h-4ZM11 44h7v1h-7ZM25 44h5v1h-5ZM43 44h4v1h-4ZM55 44h4v1h-4ZM72 44h4v1h-4ZM84 44h4v1h-4ZM93 44h4v1h-4ZM4 45h4v1h-4ZM11 45h6v1h-6ZM24 45h5v1h-5ZM42 45h4v1h-4ZM54 45h4v1h-4ZM71 45h4v1h-4ZM83 45h4v1h-4ZM93 45h4v1h-4ZM4 46h4v1h-4ZM11 46h5v1h-5ZM23 46h5v1h-5ZM41 46h4v1h-4ZM53 46h4v1h-4ZM70 46h5v1h-5ZM82 46h4v1h-4ZM93 46h4v1h-4ZM4 47h4v1h-4ZM11 47h4v1h-4ZM22 47h5v1h-5ZM40 47h4v1h-4ZM52 47h4v1h-4ZM70 47h3v1h-3ZM81 47h4v1h-4ZM93 47h4v1h-4ZM4 48h4v1h-4ZM11 48h3v1h-3ZM21 48h5v1h-5ZM39 48h4v1h-4ZM51 48h4v1h-4ZM71 48h2v1h-2ZM80 48h4v1h-4ZM93 48h4v1h-4ZM4 49h4v1h-4ZM11 49h3v1h-3ZM20 49h5v1h-5ZM38 49h4v1h-4ZM50 49h4v1h-4ZM79 49h4v1h-4ZM93 49h4v1h-4ZM4 50h4v1h-4ZM11 50h3v1h-3ZM19 50h5v1h-5ZM37 50h4v1h-4ZM49 50h4v1h-4ZM78 50h4v1h-4ZM93 50h4v1h-4ZM4 51h4v1h-4ZM11 51h3v1h-3ZM18 51h5v1h-5ZM36 51h4v1h-4ZM48 51h4v1h-4ZM77 51h4v1h-4ZM93 51h4v1h-4ZM4 52h4v1h-4ZM11 52h3v1h-3ZM17 52h5v1h-5ZM35 52h4v1h-4ZM47 52h4v1h-4ZM64 52h3v1h-3ZM76 52h4v1h-4ZM93 52h4v1h-4ZM4 53h4v1h-4ZM11 53h3v1h-3ZM16 53h5v1h-5ZM34 53h4v1h-4ZM46 53h4v1h-4ZM63 53h4v1h-4ZM75 53h4v1h-4ZM92 53h5v1h-5ZM4 54h4v1h-4ZM11 54h3v1h-3ZM15 54h5v1h-5ZM33 54h4v1h-4ZM45 54h4v1h-4ZM62 54h4v1h-4ZM74 54h4v1h-4ZM91 54h6v1h-6ZM4 55h4v1h-4ZM11 55h8v1h-8ZM32 55h4v1h-4ZM44 55h4v1h-4ZM61 55h5v1h-5ZM73 55h4v1h-4ZM90 55h7v1h-7ZM4 56h4v1h-4ZM11 56h7v1h-7ZM31 56h4v1h-4ZM43 56h4v1h-4ZM61 56h3v1h-3ZM72 56h4v1h-4ZM89 56h8v1h-8ZM4 57h4v1h-4ZM11 57h6v1h-6ZM30 57h4v1h-4ZM42 57h4v1h-4ZM62 57h1v1h-1ZM71 57h4v1h-4ZM88 57h9v1h-9ZM4 58h4v1h-4ZM11 58h5v1h-5ZM29 58h4v1h-4ZM41 58h4v1h-4ZM70 58h4v1h-4ZM87 58h5v1h-5ZM93 58h4v1h-4ZM4 59h4v1h-4ZM11 59h4v1h-4ZM28 59h4v1h-4ZM40 59h4v1h-4ZM69 59h4v1h-4ZM86 59h5v1h-5ZM93 59h4v1h-4ZM4 60h4v1h-4ZM11 60h3v1h-3ZM27 60h4v1h-4ZM39 60h4v1h-4ZM68 60h4v1h-4ZM85 60h5v1h-5ZM93 60h4v1h-4ZM4 61h4v1h-4ZM11 61h3v1h-3ZM26 61h4v1h-4ZM38 61h4v1h-4ZM55 61h3v1h-3ZM67 61h4v1h-4ZM84 61h5v1h-5ZM93 61h4v1h-4ZM4 62h4v1h-4ZM11 62h3v1h-3ZM25 62h4v1h-4ZM37 62h4v1h-4ZM54 62h4v1h-4ZM66 62h4v1h-4ZM83 62h5v1h-5ZM93 62h4v1h-4ZM4 63h4v1h-4ZM11 63h3v1h-3ZM24 63h4v1h-4ZM36 63h4v1h-4ZM53 63h4v1h-4ZM65 63h4v1h-4ZM82 63h5v1h-5ZM93 63h4v1h-4ZM4 64h4v1h-4ZM11 64h3v1h-3ZM23 64h4v1h-4ZM35 64h4v1h-4ZM52 64h4v1h-4ZM64 64h4v1h-4ZM81 64h5v1h-5ZM93 64h4v1h-4ZM4 65h4v1h-4ZM11 65h3v1h-3ZM22 65h4v1h-4ZM34 65h4v1h-4ZM52 65h4v1h-4ZM63 65h4v1h-4ZM80 65h5v1h-5ZM92 65h5v1h-5ZM4 66h4v1h-4ZM11 66h3v1h-3ZM21 66h4v1h-4ZM33 66h4v1h-4ZM52 66h2v1h-2ZM62 66h4v1h-4ZM79 66h5v1h-5ZM91 66h6v1h-6ZM4 67h4v1h-4ZM11 67h3v1h-3ZM20 67h4v1h-4ZM32 67h4v1h-4ZM61 67h4v1h-4ZM78 67h5v1h-5ZM90 67h7v1h-7ZM4 68h4v1h-4ZM11 68h3v1h-3ZM19 68h4v1h-4ZM31 68h4v1h-4ZM60 68h4v1h-4ZM77 68h5v1h-5ZM89 68h8v1h-8ZM4 69h4v1h-4ZM11 69h3v1h-3ZM18 69h4v1h-4ZM30 69h4v1h-4ZM59 69h4v1h-4ZM76 69h5v1h-5ZM88 69h9v1h-9ZM4 70h4v1h-4ZM11 70h3v1h-3ZM17 70h4v1h-4ZM29 70h4v1h-4ZM46 70h2v1h-2ZM58 70h4v1h-4ZM75 70h5v1h-5ZM87 70h5v1h-5ZM93 70h4v1h-4ZM4 71h4v1h-4ZM11 71h3v1h-3ZM16 71h4v1h-4ZM28 71h4v1h-4ZM45 71h4v1h-4ZM57 71h4v1h-4ZM74 71h5v1h-5ZM86 71h5v1h-5ZM93 71h4v1h-4ZM4 72h4v1h-4ZM11 72h3v1h-3ZM15 72h4v1h-4ZM27 72h4v1h-4ZM44 72h5v1h-5ZM56 72h4v1h-4ZM73 72h5v1h-5ZM85 72h5v1h-5ZM93 72h4v1h-4ZM4 73h5v1h-5ZM11 73h7v1h-7ZM26 73h4v1h-4ZM43 73h4v1h-4ZM55 73h4v1h-4ZM72 73h5v1h-5ZM84 73h5v1h-5ZM93 73h4v1h-4ZM5 74h12v1h-12ZM25 74h4v1h-4ZM42 74h5v1h-5ZM54 74h4v1h-4ZM71 74h5v1h-5ZM83 74h5v1h-5ZM93 74h4v1h-4ZM6 75h10v1h-10ZM24 75h4v1h-4ZM41 75h4v1h-4ZM53 75h4v1h-4ZM70 75h5v1h-5ZM82 75h5v1h-5ZM93 75h4v1h-4ZM8 76h7v1h-7ZM23 76h4v1h-4ZM40 76h5v1h-5ZM52 76h4v1h-4ZM69 76h5v1h-5ZM81 76h5v1h-5ZM93 76h4v1h-4ZM10 77h4v1h-4ZM22 77h4v1h-4ZM39 77h5v1h-5ZM51 77h4v1h-4ZM68 77h17v1h-17ZM93 77h4v1h-4ZM11 78h3v1h-3ZM21 78h4v1h-4ZM38 78h4v1h-4ZM50 78h4v1h-4ZM67 78h22v1h-22ZM93 78h4v1h-4ZM11 79h3v1h-3ZM20 79h4v1h-4ZM37 79h5v1h-5ZM49 79h4v1h-4ZM63 79h28v1h-28ZM93 79h4v1h-4ZM11 80h3v1h-3ZM19 80h4v1h-4ZM36 80h4v1h-4ZM48 80h4v1h-4ZM60 80h13v1h-13ZM84 80h13v1h-13ZM11 81h3v1h-3ZM18 81h4v1h-4ZM35 81h5v1h-5ZM47 81h4v1h-4ZM57 81h11v1h-11ZM88 81h9v1h-9ZM11 82h3v1h-3ZM17 82h4v1h-4ZM34 82h4v1h-4ZM46 82h4v1h-4ZM54 82h10v1h-10ZM91 82h6v1h-6ZM11 83h3v1h-3ZM16 83h4v1h-4ZM33 83h4v1h-4ZM45 83h4v1h-4ZM51 83h9v1h-9ZM93 83h3v1h-3ZM11 84h3v1h-3ZM15 84h4v1h-4ZM32 84h5v1h-5ZM44 84h14v1h-14ZM94 84h2v1h-2ZM11 85h7v1h-7ZM31 85h4v1h-4ZM43 85h12v1h-12ZM11 86h6v1h-6ZM30 86h5v1h-5ZM42 86h10v1h-10ZM12 87h8v1h-8ZM29 87h4v1h-4ZM37 87h12v1h-12ZM14 88h9v1h-9ZM28 88h18v1h-18ZM16 89h7v1h-7ZM28 89h14v1h-14ZM19 90h4v1h-4ZM29 90h9v1h-9Z"/>
-                    </svg>
-                    Estimated DP
-                  </span>
-                </div>
-                <div class="life-mini-val" id="np-dp-val">1,031</div>
+            <!-- Remaining Life Dedicated Card (Width: 104px) -->
+            <a id="np-life-card" href="remaining_life_report.html" target="_blank" class="kpi-panel-card" title="Open Remaining Life Assessment Report">
+              <div class="kpi-panel-header">
+                <span class="kpi-panel-title"><i class="fa-solid fa-hourglass-half"></i> Rem. Life</span>
+                <i class="fa-solid fa-arrow-up-right-from-square kpi-link-icon"></i>
               </div>
-            </div>
+              <div class="kpi-panel-body">
+                <span class="kpi-panel-val" id="np-life-val">35.4</span>
+                <span class="kpi-panel-unit">Years</span>
+              </div>
+              <div class="kpi-panel-tag tag-normal" id="np-life-tag">Normal Rate</div>
+            </a>
+
+            <!-- Estimated DP Dedicated Card (Width: 104px) -->
+            <a id="np-dp-card" href="evaluation_report.html" target="_blank" class="kpi-panel-card" title="Open Degree of Polymerization Evaluation">
+              <div class="kpi-panel-header">
+                <span class="kpi-panel-title">
+                  <svg class="icon-dp-paper" viewBox="0 0 100 100" width="11" height="11" fill="currentColor" style="vertical-align: -1px; margin-right: 3px;">
+                    <path d="M66 10h13v1h-13ZM61 11h22v1h-22ZM57 12h28v1h-28ZM54 13h12v1h-12ZM78 13h10v1h-10ZM50 14h11v1h-11ZM82 14h7v1h-7ZM48 15h10v1h-10ZM85 15h5v1h-5ZM45 16h9v1h-9ZM87 16h3v1h-3ZM5 17h2v1h-2ZM42 17h9v1h-9ZM87 17h3v1h-3ZM4 18h5v1h-5ZM39 18h9v1h-9ZM87 18h3v1h-3ZM4 19h7v1h-7ZM35 19h10v1h-10ZM87 19h3v1h-3ZM4 20h10v1h-10ZM31 20h12v1h-12ZM87 20h3v1h-3ZM4 21h17v1h-17ZM23 21h16v1h-16ZM87 21h3v1h-3ZM4 22h4v1h-4ZM10 22h26v1h-26ZM72 22h12v1h-12ZM87 22h3v1h-3ZM4 23h4v1h-4ZM13 23h19v1h-19ZM67 23h23v1h-23ZM4 24h4v1h-4ZM20 24h4v1h-4ZM63 24h28v1h-28ZM4 25h4v1h-4ZM60 25h13v1h-13ZM74 25h4v1h-4ZM83 25h11v1h-11ZM4 26h4v1h-4ZM57 26h11v1h-11ZM73 26h4v1h-4ZM88 26h7v1h-7ZM4 27h4v1h-4ZM54 27h10v1h-10ZM72 27h4v1h-4ZM89 27h7v1h-7ZM4 28h4v1h-4ZM51 28h12v1h-12ZM71 28h4v1h-4ZM88 28h4v1h-4ZM93 28h4v1h-4ZM4 29h4v1h-4ZM12 29h1v1h-1ZM48 29h14v1h-14ZM70 29h4v1h-4ZM87 29h5v1h-5ZM93 29h4v1h-4ZM4 30h4v1h-4ZM11 30h4v1h-4ZM45 30h10v1h-10ZM57 30h4v1h-4ZM69 30h4v1h-4ZM86 30h4v1h-4ZM93 30h4v1h-4ZM4 31h4v1h-4ZM11 31h6v1h-6ZM42 31h10v1h-10ZM56 31h4v1h-4ZM68 31h4v1h-4ZM85 31h4v1h-4ZM93 31h4v1h-4ZM4 32h4v1h-4ZM11 32h9v1h-9ZM38 32h11v1h-11ZM55 32h4v1h-4ZM67 32h4v1h-4ZM84 32h5v1h-5ZM93 32h4v1h-4ZM4 33h4v1h-4ZM11 33h15v1h-15ZM31 33h15v1h-15ZM54 33h4v1h-4ZM66 33h4v1h-4ZM83 33h4v1h-4ZM93 33h4v1h-4ZM4 34h4v1h-4ZM11 34h3v1h-3ZM16 34h27v1h-27ZM53 34h4v1h-4ZM65 34h4v1h-4ZM82 34h5v1h-5ZM93 34h4v1h-4ZM4 35h4v1h-4ZM11 35h3v1h-3ZM19 35h20v1h-20ZM52 35h4v1h-4ZM64 35h4v1h-4ZM81 35h4v1h-4ZM93 35h4v1h-4ZM4 36h4v1h-4ZM11 36h3v1h-3ZM22 36h16v1h-16ZM51 36h4v1h-4ZM63 36h4v1h-4ZM80 36h5v1h-5ZM92 36h5v1h-5ZM4 37h4v1h-4ZM11 37h3v1h-3ZM21 37h4v1h-4ZM32 37h5v1h-5ZM50 37h4v1h-4ZM62 37h4v1h-4ZM79 37h4v1h-4ZM91 37h6v1h-6ZM4 38h4v1h-4ZM11 38h3v1h-3ZM20 38h4v1h-4ZM31 38h5v1h-5ZM49 38h4v1h-4ZM61 38h4v1h-4ZM79 38h3v1h-3ZM90 38h7v1h-7ZM4 39h4v1h-4ZM11 39h3v1h-3ZM19 39h4v1h-4ZM30 39h5v1h-5ZM48 39h4v1h-4ZM60 39h4v1h-4ZM80 39h1v1h-1ZM89 39h8v1h-8ZM4 40h4v1h-4ZM11 40h3v1h-3ZM18 40h4v1h-4ZM29 40h5v1h-5ZM47 40h4v1h-4ZM59 40h4v1h-4ZM88 40h4v1h-4ZM93 40h4v1h-4ZM4 41h4v1h-4ZM11 41h3v1h-3ZM17 41h4v1h-4ZM28 41h5v1h-5ZM46 41h4v1h-4ZM58 41h4v1h-4ZM87 41h4v1h-4ZM93 41h4v1h-4ZM4 42h4v1h-4ZM11 42h3v1h-3ZM16 42h4v1h-4ZM27 42h5v1h-5ZM45 42h4v1h-4ZM57 42h4v1h-4ZM86 42h4v1h-4ZM93 42h4v1h-4ZM4 43h4v1h-4ZM11 43h3v1h-3ZM15 43h4v1h-4ZM26 43h5v1h-5ZM44 43h4v1h-4ZM56 43h4v1h-4ZM73 43h3v1h-3ZM85 43h4v1h-4ZM93 43h4v1h-4ZM4 44h4v1h-4ZM11 44h7v1h-7ZM25 44h5v1h-5ZM43 44h4v1h-4ZM55 44h4v1h-4ZM72 44h4v1h-4ZM84 44h4v1h-4ZM93 44h4v1h-4ZM4 45h4v1h-4ZM11 45h6v1h-6ZM24 45h5v1h-5ZM42 45h4v1h-4ZM54 45h4v1h-4ZM71 45h4v1h-4ZM83 45h4v1h-4ZM93 45h4v1h-4ZM4 46h4v1h-4ZM11 46h5v1h-5ZM23 46h5v1h-5ZM41 46h4v1h-4ZM53 46h4v1h-4ZM70 46h5v1h-5ZM82 46h4v1h-4ZM93 46h4v1h-4ZM4 47h4v1h-4ZM11 47h4v1h-4ZM22 47h5v1h-5ZM40 47h4v1h-4ZM52 47h4v1h-4ZM70 47h3v1h-3ZM81 47h4v1h-4ZM93 47h4v1h-4ZM4 48h4v1h-4ZM11 48h3v1h-3ZM21 48h5v1h-5ZM39 48h4v1h-4ZM51 48h4v1h-4ZM71 48h2v1h-2ZM80 48h4v1h-4ZM93 48h4v1h-4ZM4 49h4v1h-4ZM11 49h3v1h-3ZM20 49h5v1h-5ZM38 49h4v1h-4ZM50 49h4v1h-4ZM79 49h4v1h-4ZM93 49h4v1h-4ZM4 50h4v1h-4ZM11 50h3v1h-3ZM19 50h5v1h-5ZM37 50h4v1h-4ZM49 50h4v1h-4ZM78 50h4v1h-4ZM93 50h4v1h-4ZM4 51h4v1h-4ZM11 51h3v1h-3ZM18 51h5v1h-5ZM36 51h4v1h-4ZM48 51h4v1h-4ZM77 51h4v1h-4ZM93 51h4v1h-4ZM4 52h4v1h-4ZM11 52h3v1h-3ZM17 52h5v1h-5ZM35 52h4v1h-4ZM47 52h4v1h-4ZM64 52h3v1h-3ZM76 52h4v1h-4ZM93 52h4v1h-4ZM4 53h4v1h-4ZM11 53h3v1h-3ZM16 53h5v1h-5ZM34 53h4v1h-4ZM46 53h4v1h-4ZM63 53h4v1h-4ZM75 53h4v1h-4ZM92 53h5v1h-5ZM4 54h4v1h-4ZM11 54h3v1h-3ZM15 54h5v1h-5ZM33 54h4v1h-4ZM45 54h4v1h-4ZM62 54h4v1h-4ZM74 54h4v1h-4ZM91 54h6v1h-6ZM4 55h4v1h-4ZM11 55h8v1h-8ZM32 55h4v1h-4ZM44 55h4v1h-4ZM61 55h5v1h-5ZM73 55h4v1h-4ZM90 55h7v1h-7ZM4 56h4v1h-4ZM11 56h7v1h-7ZM31 56h4v1h-4ZM43 56h4v1h-4ZM61 56h3v1h-3ZM72 56h4v1h-4ZM89 56h8v1h-8ZM4 57h4v1h-4ZM11 57h6v1h-6ZM30 57h4v1h-4ZM42 57h4v1h-4ZM62 57h1v1h-1ZM71 57h4v1h-4ZM88 57h9v1h-9ZM4 58h4v1h-4ZM11 58h5v1h-5ZM29 58h4v1h-4ZM41 58h4v1h-4ZM70 58h4v1h-4ZM87 58h5v1h-5ZM93 58h4v1h-4ZM4 59h4v1h-4ZM11 59h4v1h-4ZM28 59h4v1h-4ZM40 59h4v1h-4ZM69 59h4v1h-4ZM86 59h5v1h-5ZM93 59h4v1h-4ZM4 60h4v1h-4ZM11 60h3v1h-3ZM27 60h4v1h-4ZM39 60h4v1h-4ZM68 60h4v1h-4ZM85 60h5v1h-5ZM93 60h4v1h-4ZM4 61h4v1h-4ZM11 61h3v1h-3ZM26 61h4v1h-4ZM38 61h4v1h-4ZM55 61h3v1h-3ZM67 61h4v1h-4ZM84 61h5v1h-5ZM93 61h4v1h-4ZM4 62h4v1h-4ZM11 62h3v1h-3ZM25 62h4v1h-4ZM37 62h4v1h-4ZM54 62h4v1h-4ZM66 62h4v1h-4ZM83 62h5v1h-5ZM93 62h4v1h-4ZM4 63h4v1h-4ZM11 63h3v1h-3ZM24 63h4v1h-4ZM36 63h4v1h-4ZM53 63h4v1h-4ZM65 63h4v1h-4ZM82 63h5v1h-5ZM93 63h4v1h-4ZM4 64h4v1h-4ZM11 64h3v1h-3ZM23 64h4v1h-4ZM35 64h4v1h-4ZM52 64h4v1h-4ZM64 64h4v1h-4ZM81 64h5v1h-5ZM93 64h4v1h-4ZM4 65h4v1h-4ZM11 65h3v1h-3ZM22 65h4v1h-4ZM34 65h4v1h-4ZM52 65h4v1h-4ZM63 65h4v1h-4ZM80 65h5v1h-5ZM92 65h5v1h-5ZM4 66h4v1h-4ZM11 66h3v1h-3ZM21 66h4v1h-4ZM33 66h4v1h-4ZM52 66h2v1h-2ZM62 66h4v1h-4ZM79 66h5v1h-5ZM91 66h6v1h-6ZM4 67h4v1h-4ZM11 67h3v1h-3ZM20 67h4v1h-4ZM32 67h4v1h-4ZM61 67h4v1h-4ZM78 67h5v1h-5ZM90 67h7v1h-7ZM4 68h4v1h-4ZM11 68h3v1h-3ZM19 68h4v1h-4ZM31 68h4v1h-4ZM60 68h4v1h-4ZM77 68h5v1h-5ZM89 68h8v1h-8ZM4 69h4v1h-4ZM11 69h3v1h-3ZM18 69h4v1h-4ZM30 69h4v1h-4ZM59 69h4v1h-4ZM76 69h5v1h-5ZM88 69h9v1h-9ZM4 70h4v1h-4ZM11 70h3v1h-3ZM17 70h4v1h-4ZM29 70h4v1h-4ZM46 70h2v1h-2ZM58 70h4v1h-4ZM75 70h5v1h-5ZM87 70h5v1h-5ZM93 70h4v1h-4ZM4 71h4v1h-4ZM11 71h3v1h-3ZM16 71h4v1h-4ZM28 71h4v1h-4ZM45 71h4v1h-4ZM57 71h4v1h-4ZM74 71h5v1h-5ZM86 71h5v1h-5ZM93 71h4v1h-4ZM4 72h4v1h-4ZM11 72h3v1h-3ZM15 72h4v1h-4ZM27 72h4v1h-4ZM44 72h5v1h-5ZM56 72h4v1h-4ZM73 72h5v1h-5ZM85 72h5v1h-5ZM93 72h4v1h-4ZM4 73h5v1h-5ZM11 73h7v1h-7ZM26 73h4v1h-4ZM43 73h4v1h-4ZM55 73h4v1h-4ZM72 73h5v1h-5ZM84 73h5v1h-5ZM93 73h4v1h-4ZM5 74h12v1h-12ZM25 74h4v1h-4ZM42 74h5v1h-5ZM54 74h4v1h-4ZM71 74h5v1h-5ZM83 74h5v1h-5ZM93 74h4v1h-4ZM6 75h10v1h-10ZM24 75h4v1h-4ZM41 75h4v1h-4ZM53 75h4v1h-4ZM70 75h5v1h-5ZM82 75h5v1h-5ZM93 75h4v1h-4ZM8 76h7v1h-7ZM23 76h4v1h-4ZM40 76h5v1h-5ZM52 76h4v1h-4ZM69 76h5v1h-5ZM81 76h5v1h-5ZM93 76h4v1h-4ZM10 77h4v1h-4ZM22 77h4v1h-4ZM39 77h5v1h-5ZM51 77h4v1h-4ZM68 77h17v1h-17ZM93 77h4v1h-4ZM11 78h3v1h-3ZM21 78h4v1h-4ZM38 78h4v1h-4ZM50 78h4v1h-4ZM67 78h22v1h-22ZM93 78h4v1h-4ZM11 79h3v1h-3ZM20 79h4v1h-4ZM37 79h5v1h-5ZM49 79h4v1h-4ZM63 79h28v1h-28ZM93 79h4v1h-4ZM11 80h3v1h-3ZM19 80h4v1h-4ZM36 80h4v1h-4ZM48 80h4v1h-4ZM60 80h13v1h-13ZM84 80h13v1h-13ZM11 81h3v1h-3ZM18 81h4v1h-4ZM35 81h5v1h-5ZM47 81h4v1h-4ZM57 81h11v1h-11ZM88 81h9v1h-9ZM11 82h3v1h-3ZM17 82h4v1h-4ZM34 82h4v1h-4ZM46 82h4v1h-4ZM54 82h10v1h-10ZM91 82h6v1h-6ZM11 83h3v1h-3ZM16 83h4v1h-4ZM33 83h4v1h-4ZM45 83h4v1h-4ZM51 83h9v1h-9ZM93 83h3v1h-3ZM11 84h3v1h-3ZM15 84h4v1h-4ZM32 84h5v1h-5ZM44 84h14v1h-14ZM94 84h2v1h-2ZM11 85h7v1h-7ZM31 85h4v1h-4ZM43 85h12v1h-12ZM11 86h6v1h-6ZM30 86h5v1h-5ZM42 86h10v1h-10ZM12 87h8v1h-8ZM29 87h4v1h-4ZM37 87h12v1h-12ZM14 88h9v1h-9ZM28 88h18v1h-18ZM16 89h7v1h-7ZM28 89h14v1h-14ZM19 90h4v1h-4ZM29 90h9v1h-9Z"/>
+                  </svg>
+                  Est. DP
+                </span>
+                <span class="kpi-std-tag">IEC 60450</span>
+              </div>
+              <div class="kpi-panel-body">
+                <span class="kpi-panel-val" id="np-dp-val">1,031</span>
+                <span class="kpi-panel-unit">DPv</span>
+              </div>
+              <div class="kpi-panel-tag tag-normal" id="np-dp-tag">Good Paper</div>
+            </a>
           </div>
 
           <!-- Bottom: Interpretation Card (Pure Diagnostic Assessment) -->
@@ -2771,37 +2837,74 @@
       const gaugeCard = document.getElementById('np-gauge-card');
       const gaugeScore = document.getElementById('np-gauge-score');
       const gaugePill = document.getElementById('np-gauge-pill');
+      const gaugeDesc = document.getElementById('np-gauge-desc');
       const needleHub = document.getElementById('np-needle-hub');
 
       let stateClass = 'state-healthy';
       let statePillText = 'Healthy';
+      let stateDescText = 'Good Condition';
       let stateColor = '#10b981';
 
       if (d.hi <= 50) {
         stateClass = 'state-critical';
         statePillText = 'Critical';
+        stateDescText = 'Urgent Attention';
         stateColor = '#ef4444';
       } else if (d.hi <= 79) {
         stateClass = 'state-monitor';
         statePillText = 'Monitor';
+        stateDescText = 'Watch Trending';
         stateColor = '#f59e0b';
       }
 
       if (gaugeCard) gaugeCard.className = `gauge-card ${stateClass}`;
       if (gaugeScore) gaugeScore.textContent = `${d.hi}%`;
       if (gaugePill) gaugePill.textContent = statePillText;
+      if (gaugeDesc) gaugeDesc.textContent = stateDescText;
       if (needleHub) needleHub.setAttribute('fill', stateColor);
 
       const deg = (d.hi / 100) * 180 - 90;
       const needle = document.getElementById('np-needle-group');
-      if (needle) needle.setAttribute('transform', `rotate(${deg} 60 58)`);
+      if (needle) needle.setAttribute('transform', `rotate(${deg} 50 50)`);
 
-      // Update Life and DP Cards
-      if (document.getElementById('np-life-val')) {
-        document.getElementById('np-life-val').textContent = d.life || '-';
+      // Update Remaining Life Card
+      const lifeValEl = document.getElementById('np-life-val');
+      const lifeTagEl = document.getElementById('np-life-tag');
+      if (lifeValEl) {
+        lifeValEl.textContent = d.life || '-';
+        const numLife = parseFloat(d.life);
+        if (!isNaN(numLife)) {
+          if (numLife < 10) {
+            lifeValEl.style.color = '#ef4444';
+            if (lifeTagEl) { lifeTagEl.className = 'kpi-panel-tag tag-critical'; lifeTagEl.textContent = 'Critical Lifespan'; }
+          } else if (numLife < 20) {
+            lifeValEl.style.color = '#f59e0b';
+            if (lifeTagEl) { lifeTagEl.className = 'kpi-panel-tag tag-warning'; lifeTagEl.textContent = 'Watch Rate'; }
+          } else {
+            lifeValEl.style.color = '';
+            if (lifeTagEl) { lifeTagEl.className = 'kpi-panel-tag tag-normal'; lifeTagEl.textContent = 'Normal Rate'; }
+          }
+        }
       }
-      if (document.getElementById('np-dp-val')) {
-        document.getElementById('np-dp-val').textContent = d.dp || '-';
+
+      // Update Estimated DP Card
+      const dpValEl = document.getElementById('np-dp-val');
+      const dpTagEl = document.getElementById('np-dp-tag');
+      if (dpValEl) {
+        dpValEl.textContent = d.dp || '-';
+        const numDp = parseInt(String(d.dp).replace(/,/g, ''));
+        if (!isNaN(numDp)) {
+          if (numDp < 250) {
+            dpValEl.style.color = '#ef4444';
+            if (dpTagEl) { dpTagEl.className = 'kpi-panel-tag tag-critical'; dpTagEl.textContent = 'End of Life'; }
+          } else if (numDp <= 450) {
+            dpValEl.style.color = '#f59e0b';
+            if (dpTagEl) { dpTagEl.className = 'kpi-panel-tag tag-warning'; dpTagEl.textContent = 'Degraded'; }
+          } else {
+            dpValEl.style.color = '';
+            if (dpTagEl) { dpTagEl.className = 'kpi-panel-tag tag-normal'; dpTagEl.textContent = 'Good Paper'; }
+          }
+        }
       }
 
       // Update Interpretation Card
