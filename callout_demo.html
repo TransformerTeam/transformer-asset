@@ -886,107 +886,133 @@
     }
 
     .interpretation-body {
-      font-size: 0.64rem;
-      line-height: 1.35;
+      font-size: 0.65rem;
+      line-height: 1.4;
       color: var(--card-val-color);
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 5px;
     }
-    .interp-action-top {
+    .interp-box {
       background: rgba(37, 99, 235, 0.07);
       border-left: 3px solid #3b82f6;
       border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 0.61rem;
-      line-height: 1.32;
+      padding: 8px 10px;
+      font-size: 0.64rem;
+      line-height: 1.4;
       color: var(--card-val-color);
-      display: flex;
-      align-items: flex-start;
-      gap: 5px;
       flex: 1;
-      min-height: 0;
+      display: flex;
+      align-items: center;
     }
-    [data-theme="dark"] .interp-action-top {
+    [data-theme="dark"] .interp-box {
       background: rgba(59, 130, 246, 0.1);
       border-left-color: #60a5fa;
     }
-    .action-lead {
-      font-weight: 800;
-      color: #3b82f6;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.58rem;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    [data-theme="dark"] .action-lead {
-      color: #60a5fa;
-    }
 
-    .interp-sap-row {
+    /* ========================================================
+       SAP MAINTENANCE WORK ORDER CARD (Above History & Active Part)
+       ======================================================== */
+    .sap-workorder-card {
+      position: absolute;
+      top: 262px;
+      left: 16px;
+      width: 658px;
+      height: 56px;
+      z-index: 30;
+      box-sizing: border-box;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sap-workorder-card:hover {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(245, 158, 11, 0.15);
+      transform: translateY(-2px);
+    }
+    .sap-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0, 0, 0, 0.03);
-      border: 1px solid var(--border-card);
-      border-radius: 5px;
-      padding: 3.5px 8px;
-      font-size: 0.58rem;
-      box-sizing: border-box;
+      line-height: 1;
     }
-    [data-theme="dark"] .interp-sap-row {
-      background: rgba(255, 255, 255, 0.03);
-    }
-    .sap-id-group {
+    .sap-card-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--card-title-color);
       display: flex;
       align-items: center;
       gap: 6px;
-      overflow: hidden;
+      letter-spacing: -0.01em;
+    }
+    .sap-card-title i {
+      font-size: 0.72rem;
+    }
+    .sap-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sap-card-body {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.58rem;
+      box-sizing: border-box;
+    }
+    [data-theme="dark"] .sap-card-body {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .sap-field-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .sap-field-label {
+      font-size: 0.52rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .sap-field-val {
+      font-weight: 600;
+      color: var(--card-val-color);
+      font-size: 0.58rem;
+    }
+    .sap-field-val.sap-highlight {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      color: #38bdf8;
+      font-size: 0.62rem;
+    }
+    .sap-desc-col {
       flex: 1;
       min-width: 0;
+      overflow: hidden;
     }
-    .sap-icon {
-      color: #f59e0b;
-      font-size: 0.65rem;
-      flex-shrink: 0;
-    }
-    .sap-label {
-      font-weight: 800;
-      color: var(--card-label-color);
-      text-transform: uppercase;
-      font-size: 0.52rem;
-      letter-spacing: 0.03em;
-      flex-shrink: 0;
-    }
-    .sap-order-num {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      color: var(--card-val-color);
-      font-size: 0.62rem;
-      flex-shrink: 0;
-    }
-    .sap-desc {
-      color: var(--text-muted);
-      font-size: 0.56rem;
-      max-width: 175px;
-      white-space: nowrap;
+    .sap-desc-col .sap-field-val {
       overflow: hidden;
       text-overflow: ellipsis;
-      flex: 1;
-      min-width: 0;
-    }
-    .sap-meta {
-      font-size: 0.54rem;
-      font-family: 'Outfit', sans-serif;
-      color: var(--card-label-color);
       white-space: nowrap;
-      margin-left: 6px;
-      font-weight: 600;
-      flex-shrink: 0;
+      color: var(--card-val-color);
+    }
+    .sap-divider {
+      width: 1px;
+      height: 12px;
+      background: var(--border-card);
     }
 
     /* ========================================================
@@ -1055,10 +1081,10 @@
       padding: 1px 0;
     }
 
-    /* Active Part (Core & Winding) Dedicated Card (Aligned with Interpretation card) */
+    /* Active Part (Core & Winding) Dedicated Card (Positioned below SAP Card) */
     #card-activepart {
       position: absolute;
-      top: 262px;
+      top: 328px;
       left: 236px;
       width: 438px;
       z-index: 30;
@@ -1145,10 +1171,10 @@
       font-weight: 700;
     }
 
-    /* Maintenance History Dedicated Card (Positioned in Column 1 below Nameplate) */
+    /* Maintenance History Dedicated Card (Positioned in Column 1 below SAP Card) */
     .history-card {
       position: absolute;
-      top: 262px;
+      top: 328px;
       left: 16px;
       width: 212px;
       height: 380px;
@@ -1833,12 +1859,12 @@
             </div>
           </div>
 
-          <!-- Bottom: Interpretation & Closed-Loop Action Plan (Integrated SAP Work Orders) -->
+          <!-- Bottom: Interpretation Card (Pure Diagnostic Assessment) -->
           <div class="interpretation-card" id="cockpitInterpretation">
             <div class="interpretation-header">
               <div class="interpretation-title">
                 <i class="fa-solid fa-clipboard-check" style="color: #3b82f6;"></i>
-                <span>Interpretation &amp; Action Plan</span>
+                <span>Interpretation</span>
               </div>
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span class="interpretation-badge badge-healthy" id="np-interp-badge">Healthy</span>
@@ -1848,21 +1874,43 @@
               </div>
             </div>
             <div class="interpretation-body">
-              <div class="interp-action-top">
-                <span class="action-lead"><i class="fa-solid fa-stethoscope" style="color: #3b82f6; margin-right: 4px;"></i>Action:</span>
-                <span id="np-interp-text" style="flex: 1; min-width: 0;">Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.</span>
-              </div>
-              <div class="interp-sap-row">
-                <div class="sap-id-group">
-                  <i class="fa-solid fa-gears sap-icon"></i>
-                  <span class="sap-label">SAP:</span>
-                  <span class="sap-order-num" id="sap-order-num">#10000001990</span>
-                  <span class="status-tag tag-warning" id="sap-order-badge">CM01 Backlog</span>
-                  <span class="sap-desc" id="sap-order-desc" title="14100TR-003 กระแส phase#C bad">14100TR-003 กระแส phase#C bad</span>
-                </div>
-                <div class="sap-meta" id="sap-order-meta">PIC: นาย ธนันดร ศ.</div>
+              <div class="interp-box" id="np-interp-text">
+                Plan for oil regeneration: Concern oil conductivity is unacceptable limit, Suspect corrosive (3b), Add passivator.
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAP Maintenance Work Order Dedicated Card (Positioned ABOVE Maintenance History & Active Part) -->
+      <div class="sap-workorder-card" id="card-sap">
+        <div class="sap-card-header">
+          <div class="sap-card-title">
+            <i class="fa-solid fa-gears" style="color: #f59e0b;"></i>
+            <span>SAP Maintenance Work Order</span>
+          </div>
+          <div class="sap-card-actions">
+            <span class="status-tag tag-warning" id="sap-order-badge">CM01 Backlog</span>
+            <a href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.58rem;" title="Open in SAP PM System">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>SAP PM</span>
+            </a>
+          </div>
+        </div>
+        <div class="sap-card-body">
+          <div class="sap-field-item">
+            <span class="sap-field-label">Order:</span>
+            <span class="sap-field-val sap-highlight" id="sap-order-num">#10000001990</span>
+          </div>
+          <div class="sap-divider"></div>
+          <div class="sap-field-item sap-desc-col">
+            <span class="sap-field-label">Notification:</span>
+            <span class="sap-field-val" id="sap-order-desc" title="14100TR-003 กระแส phase#C bad">14100TR-003 กระแส phase#C bad</span>
+          </div>
+          <div class="sap-divider"></div>
+          <div class="sap-field-item">
+            <span class="sap-field-label">PIC:</span>
+            <span class="sap-field-val" id="sap-order-meta">นาย ธนันดร ศ.</span>
           </div>
         </div>
       </div>
