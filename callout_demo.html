@@ -545,23 +545,25 @@
     .cockpit-right-col {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      width: 218px;
+      gap: 8px;
+      width: 438px;
     }
 
-    /* Gauge & Life KPI Row (Side by Side to the right of Nameplate) */
+    /* Gauge & Life KPI Row (Side by Side to the right of Nameplate, exactly aligns with Bushing card height) */
     .gauge-life-row {
       display: flex;
       gap: 6px;
       align-items: stretch;
-      height: 96px;
+      width: 218px;
+      height: 110px;
+      box-sizing: border-box;
     }
 
     .gauge-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 4px 5px;
+      padding: 5px 5px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -570,6 +572,8 @@
       justify-content: center;
       position: relative;
       width: 104px;
+      height: 110px;
+      box-sizing: border-box;
       transition: all 0.25s ease;
     }
     .gauge-card:hover {
@@ -606,22 +610,24 @@
       flex-direction: column;
       align-items: center;
       text-decoration: none;
-      margin-top: 5px;
+      margin-top: 3px;
     }
 
     /* KPI Mini Stack (Remaining Life & Estimated DP beside Gauge on the right) */
     .kpi-mini-stack {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
       width: 108px;
+      height: 110px;
+      box-sizing: border-box;
     }
 
     .life-mini-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 4px 7px;
+      padding: 5px 8px;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
@@ -652,28 +658,29 @@
 
     .life-mini-val {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.0rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: #16a34a;
       line-height: 1.1;
-      margin-top: 1px;
+      margin-top: 2px;
     }
     [data-theme="dark"] .life-mini-val {
       color: #22c55e;
     }
 
-    /* Interpretation Card (Underneath Gauge & Life KPIs) */
+    /* Interpretation Card (Stretches across full 438px matching Active Part below it) */
     .interpretation-card {
       background: var(--bg-card);
       border: 1px solid var(--border-card);
       border-radius: 10px;
-      padding: 5px 8px;
+      padding: 6px 10px;
       box-sizing: border-box;
       box-shadow: var(--shadow-card);
       backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
-      flex: 1;
+      width: 438px;
+      height: 118px;
       justify-content: flex-start;
       transition: all 0.25s ease;
     }
