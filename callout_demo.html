@@ -1874,8 +1874,7 @@
             <span class="callout-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-clock-rotate-left"></i></span>
             <span>Maintenance History</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 5px;">
-            <span class="callout-status-pill status-normal" id="hist-pill-count">5 Records</span>
+          <div>
             <a href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Visual & Maintenance Log">
               <i class="fa-solid fa-file-lines"></i>
             </a>
@@ -3162,12 +3161,8 @@
 
       // Populate Maintenance History Card
       const histBody = document.getElementById('hist-table-body');
-      const histPill = document.getElementById('hist-pill-count');
       if (histBody) {
         const histList = d.history || [];
-        if (histPill) {
-          histPill.textContent = `${histList.length} Records`;
-        }
         if (histList.length === 0) {
           histBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 14px 4px;">No maintenance records found</td></tr>';
         } else {
