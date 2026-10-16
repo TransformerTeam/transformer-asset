@@ -287,22 +287,297 @@
       transition: background 0.3s ease;
     }
 
-    /* Center Transformer Image - Balanced Scale in Open Stage */
-    .transformer-model-img {
+    /* ==============================================================
+       3D INTERACTIVE CAMERA RIG & LIVE COMPONENT ANIMATION ENGINE
+       ============================================================== */
+    .twin-3d-rig {
       position: absolute;
       top: 47.5%;
       left: 53.5%;
-      transform: translate(-50%, -50%);
-      width: min(500px, 28.5vw);
-      max-width: min(530px, 29.5vw);
-      max-height: 57%;
+      transform: translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1);
+      transform-origin: 50% 50%;
+      z-index: 14;
+      pointer-events: none;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .twin-viewport.is-3d-zoomed .twin-3d-rig {
+      z-index: 25;
+    }
+    .twin-3d-inner {
+      position: relative;
+      display: inline-block;
+      transform-style: preserve-3d;
+      transform: rotateX(0deg) rotateY(0deg);
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Center Transformer Image - Locked 1:1 with 3D Animation SVG */
+    .transformer-model-img {
+      display: block;
+      width: auto;
       height: auto;
+      max-width: min(500px, 28.5vw);
+      max-height: 55vh;
       object-fit: contain;
       filter: var(--tr-shadow);
       pointer-events: none;
-      z-index: 10;
       border-radius: 8px;
-      transition: filter 0.3s ease;
+      transition: filter 0.35s ease;
+    }
+
+    /* Synchronized 3D Isometric SVG Animation Layer (881x1024) */
+    .twin-3d-anim-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 15;
+    }
+    .anim3d-group {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      pointer-events: none;
+    }
+    .anim3d-group.active-3d {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 3D Keyframe Animations for Live Component Physics */
+    @keyframes spinFan3D {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes spinReverse3D {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes dashFlow3D {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes dashFlowFast3D {
+      0% { stroke-dashoffset: 32; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes pulseRing3D {
+      0%, 100% { opacity: 0.35; transform: scale(0.96); }
+      50% { opacity: 0.95; transform: scale(1.04); }
+    }
+    @keyframes riseBubble3D {
+      0% { transform: translateY(28px) scale(0.6); opacity: 0; }
+      25% { opacity: 0.95; }
+      80% { opacity: 0.85; }
+      100% { transform: translateY(-65px) scale(1.15); opacity: 0; }
+    }
+    @keyframes scanLaser3D {
+      0%, 100% { transform: translateY(-38px); opacity: 0.75; }
+      50% { transform: translateY(42px); opacity: 1; }
+    }
+    @keyframes sparkFlash3D {
+      0%, 100% { opacity: 0.15; stroke-width: 1.5; }
+      45% { opacity: 1; stroke-width: 3.8; }
+      55% { opacity: 0.3; stroke-width: 2; }
+      75% { opacity: 0.95; stroke-width: 3.2; }
+    }
+    @keyframes heatWaveRise3D {
+      0% { stroke-dashoffset: 36; opacity: 0.45; }
+      50% { opacity: 0.95; }
+      100% { stroke-dashoffset: 0; opacity: 0.45; }
+    }
+
+    .fan-blades-spin {
+      transform-origin: 0px 0px;
+      animation: spinFan3D 0.42s linear infinite;
+    }
+    .pump-impeller-spin {
+      transform-origin: 0px 0px;
+      animation: spinFan3D 0.75s linear infinite;
+    }
+    .oltc-ring-spin {
+      transform-origin: 0px 0px;
+      animation: spinFan3D 2.4s linear infinite;
+    }
+    .oltc-ring-spin-rev {
+      transform-origin: 0px 0px;
+      animation: spinReverse3D 1.8s linear infinite;
+    }
+    .flow-stream-anim {
+      animation: dashFlow3D 0.85s linear infinite;
+    }
+    .flow-fast-anim {
+      animation: dashFlowFast3D 0.55s linear infinite;
+    }
+    .heat-wave-anim {
+      animation: heatWaveRise3D 1.1s linear infinite;
+    }
+    .laser-scan-anim {
+      animation: scanLaser3D 2.2s ease-in-out infinite;
+    }
+    .spark-arc-anim {
+      animation: sparkFlash3D 0.65s ease-in-out infinite;
+    }
+    .bubble-rise-1 { animation: riseBubble3D 2.1s ease-in infinite 0s; }
+    .bubble-rise-2 { animation: riseBubble3D 2.5s ease-in infinite 0.5s; }
+    .bubble-rise-3 { animation: riseBubble3D 1.9s ease-in infinite 1.0s; }
+    .bubble-rise-4 { animation: riseBubble3D 2.3s ease-in infinite 1.4s; }
+
+    /* 3D Stage Ambient Backdrop & Spotlight Vignette when Zoomed */
+    .stage-3d-backdrop {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 53.5% 47.5%, rgba(14, 165, 233, 0.10) 0%, rgba(2, 6, 23, 0.58) 58%, rgba(2, 6, 23, 0.82) 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 18;
+      transition: opacity 0.45s ease;
+    }
+    [data-theme="light"] .stage-3d-backdrop {
+      background: radial-gradient(circle at 53.5% 47.5%, rgba(56, 189, 248, 0.14) 0%, rgba(241, 245, 249, 0.55) 58%, rgba(226, 232, 240, 0.82) 100%);
+    }
+    .twin-viewport.is-3d-zoomed .stage-3d-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+      cursor: zoom-out;
+    }
+
+    /* Floating 3D HUD Control Bar in Center Bay */
+    .hud-3d-bar {
+      position: absolute;
+      top: 132px;
+      left: 53.5%;
+      transform: translateX(-50%) translateY(-8px);
+      z-index: 48;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 18px rgba(56, 189, 248, 0.25);
+      backdrop-filter: blur(14px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      white-space: nowrap;
+    }
+    [data-theme="light"] .hud-3d-bar {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(37, 99, 235, 0.4);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.15), 0 0 16px rgba(37, 99, 235, 0.15);
+    }
+    .twin-viewport.is-3d-zoomed .hud-3d-bar {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .hud-3d-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      animation: pulseRing3D 1.2s infinite;
+    }
+    .hud-3d-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .hud-3d-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: 0.01em;
+    }
+    [data-theme="light"] .hud-3d-title {
+      color: #0f172a;
+    }
+    .hud-3d-sub {
+      font-size: 0.60rem;
+      font-weight: 600;
+      color: #38bdf8;
+    }
+    [data-theme="light"] .hud-3d-sub {
+      color: #2563eb;
+    }
+    .hud-3d-nav-btn {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .hud-3d-nav-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      transform: scale(1.08);
+    }
+    .hud-3d-reset-btn {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      border: none;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.64rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s ease;
+    }
+    .hud-3d-reset-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Subtle Hint Pill at Bottom of Center Bay when in 1x Overview */
+    .stage-3d-hint {
+      position: absolute;
+      top: 134px;
+      left: 53.5%;
+      transform: translateX(-50%);
+      z-index: 22;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+      opacity: 0.82;
+      transition: opacity 0.3s ease;
+    }
+    .stage-3d-hint i {
+      color: #38bdf8;
+    }
+    .twin-viewport.is-3d-zoomed .stage-3d-hint {
+      opacity: 0;
     }
 
     /* SVG Leader Lines Layer */
@@ -313,7 +588,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 20;
+      z-index: 28;
     }
     .leader-line {
       fill: none;
@@ -321,13 +596,16 @@
       stroke-width: 1.35;
       stroke-dasharray: 4, 4;
       opacity: 0.45;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
     }
     .leader-line.highlight {
       stroke-width: 2.5;
       stroke-dasharray: none;
       opacity: 1;
       filter: drop-shadow(0 0 8px var(--accent-blue));
+    }
+    .twin-viewport.is-3d-zoomed .leader-line:not(.highlight) {
+      opacity: 0.06;
     }
 
     /* Pulsing Pin Dots on Transformer */
@@ -336,13 +614,24 @@
       stroke: var(--pin-color);
       stroke-width: 2.8;
       cursor: pointer;
-      transition: transform 0.2s ease, fill 0.2s ease;
+      pointer-events: auto;
+      transition: transform 0.2s ease, fill 0.2s ease, opacity 0.3s ease;
+    }
+    .pin-dot:hover {
+      fill: #38bdf8;
+      stroke-width: 3.5;
     }
     .pin-pulse {
       fill: var(--pin-color);
       opacity: 0.38;
       animation: pinRadar 2.4s infinite ease-out;
       transform-origin: center;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .twin-viewport.is-3d-zoomed .pin-dot:not(.pin-active),
+    .twin-viewport.is-3d-zoomed .pin-pulse:not(.pin-active) {
+      opacity: 0.08;
     }
     @keyframes pinRadar {
       0% { r: 4.5; opacity: 0.85; }
@@ -359,7 +648,7 @@
       padding: 8px 12px;
       width: 236px;
       box-shadow: var(--shadow-card);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
       backdrop-filter: blur(16px);
     }
@@ -368,7 +657,117 @@
       border-color: var(--border-hover);
       box-shadow: var(--shadow-hover);
     }
+    /* Dim non-active cards when 3D zoomed so the 3D scene & active card stand out */
+    .twin-viewport.is-3d-zoomed .callout-card:not(.zoom-locked) {
+      opacity: 0.32;
+      filter: saturate(0.6);
+    }
+    .twin-viewport.is-3d-zoomed .callout-card:not(.zoom-locked):hover {
+      opacity: 0.88;
+      filter: saturate(1);
+    }
+    .twin-viewport.is-3d-zoomed .topleft-cockpit-panel,
+    .twin-viewport.is-3d-zoomed .sap-workorder-card,
+    .twin-viewport.is-3d-zoomed .history-card {
+      opacity: 0.32;
+      filter: saturate(0.6);
+      transition: opacity 0.35s ease, filter 0.35s ease;
+    }
+    .twin-viewport.is-3d-zoomed .topleft-cockpit-panel:hover,
+    .twin-viewport.is-3d-zoomed .sap-workorder-card:hover,
+    .twin-viewport.is-3d-zoomed .history-card:hover {
+      opacity: 0.85;
+      filter: saturate(1);
+    }
+    .callout-card.zoom-locked {
+      z-index: 45 !important;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45), 0 16px 38px -4px rgba(2, 132, 199, 0.42) !important;
+      transform: translateY(-3px);
+    }
+    /* Crisp 1:1 Screen-Space 3D Telemetry Tag Anchored to Active 3D Pin */
+    .floating-3d-tag {
+      position: absolute;
+      z-index: 46;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1.5px solid #38bdf8;
+      border-radius: 9px;
+      padding: 6px 12px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.65), 0 0 16px rgba(56, 189, 248, 0.35);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%, -100%) translateY(-16px) scale(0.92);
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s ease;
+      white-space: nowrap;
+    }
+    [data-theme="light"] .floating-3d-tag {
+      background: rgba(15, 23, 42, 0.92);
+      border-color: #38bdf8;
+    }
+    .twin-viewport.is-3d-zoomed .floating-3d-tag.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -100%) translateY(-18px) scale(1);
+    }
+    .floating-3d-tag-head {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .floating-3d-tag-head::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      display: inline-block;
+    }
+    .floating-3d-tag-metrics {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.63rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
 
+    /* 3D Zoom Indicator Pill on Component Cards */
+    .btn-3d-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      padding: 1.5px 4.5px;
+      border-radius: 4px;
+      font-size: 0.50rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    [data-theme="light"] .btn-3d-trigger {
+      background: rgba(37, 99, 235, 0.1);
+      color: #2563eb;
+      border-color: rgba(37, 99, 235, 0.28);
+    }
+    .callout-card:hover .btn-3d-trigger,
+    .callout-card.zoom-locked .btn-3d-trigger {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
     .callout-header {
       display: flex;
       align-items: center;
@@ -376,36 +775,39 @@
       padding-bottom: 5px;
       border-bottom: 1px solid var(--border-card);
       margin-bottom: 6px;
-      gap: 6px;
+      gap: 4px;
     }
     .callout-title {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       color: var(--card-title-color);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.015em;
+      white-space: nowrap;
     }
     .callout-icon {
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       border-radius: 5px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       background: var(--card-icon-bg);
       color: var(--card-icon-color);
+      flex-shrink: 0;
     }
 
     .callout-status-pill {
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 700;
-      padding: 2.5px 8px;
+      padding: 2px 7px;
       border-radius: 10px;
       letter-spacing: 0.02em;
       line-height: 1.2;
+      white-space: nowrap;
     }
     .status-normal {
       background: var(--status-good-bg);
@@ -1810,8 +2212,285 @@
       <!-- Floor Pedestal Contact Shadow for Realistic Elevation -->
       <div class="pedestal-shadow"></div>
 
-      <!-- Center 3D Transformer Model (Default: 3D Cutaway Section View with True Transparency) -->
-      <img src="transformer_cutaway_transparent.png" alt="Transformer 3D Model" class="transformer-model-img" id="transformerModelImg">
+      <!-- Ambient 3D Stage Spotlight Backdrop (Click anywhere on backdrop to exit 3D Zoom) -->
+      <div class="stage-3d-backdrop" id="stage3dBackdrop" onclick="reset3dZoom()" title="Click to exit 3D Zoom (ESC)"></div>
+
+      <!-- Subtle 1x Overview Interactive 3D Hint -->
+      <div class="stage-3d-hint" id="stage3dHint">
+        <i class="fa-solid fa-cube"></i>
+        <span>Click any Component Card or Pin for 3D Zoom &amp; Live Animation</span>
+      </div>
+
+      <!-- Floating 3D Component Inspector HUD Bar (Visible when Zoomed) -->
+      <div class="hud-3d-bar" id="hud3dBar">
+        <span class="hud-3d-live-dot"></span>
+        <div class="hud-3d-info">
+          <div class="hud-3d-title" id="hud3dTitle">Cooling System — 3D Live Simulation</div>
+          <div class="hud-3d-sub" id="hud3dSub">Dual Axial Fans (1,450 RPM) • Forced Oil Airflow • ΔT -14.2°C</div>
+        </div>
+        <button class="hud-3d-nav-btn" onclick="step3dZoom(-1)" title="Previous Component"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="hud-3d-nav-btn" onclick="step3dZoom(1)" title="Next Component"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="hud-3d-reset-btn" onclick="reset3dZoom()" title="Reset 3D View (ESC)">
+          <i class="fa-solid fa-compress"></i> Reset 3D (ESC)
+        </button>
+      </div>
+
+      <!-- Crisp 1:1 Screen-Space 3D Telemetry Tag Anchored to Active 3D Pin -->
+      <div class="floating-3d-tag" id="floating3dTag">
+        <div class="floating-3d-tag-head" id="floating3dTagHead">AF/OF COOLING ACTIVE</div>
+        <div class="floating-3d-tag-metrics" id="floating3dTagMetrics">Fan 1&amp;2: 1,450 RPM • ΔT: -14.2°C</div>
+      </div>
+
+      <!-- 3D Interactive Camera Rig & Synchronized Component Animation Overlay -->
+      <div class="twin-3d-rig" id="twin3dRig">
+        <div class="twin-3d-inner" id="twin3dInner">
+          <!-- Center 3D Transformer Model (881x1024 Native Isometric Cutaway) -->
+          <img src="transformer_cutaway_transparent.png" alt="Transformer 3D Model" class="transformer-model-img" id="transformerModelImg">
+
+          <!-- Synchronized 1:1 Isometric 3D Animation Overlay (881x1024 Coordinate Space) -->
+          <svg class="twin-3d-anim-svg" id="twin3dAnimSvg" viewBox="0 0 881 1024" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <filter id="glowCyan3D" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="glowAmber3D" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="4.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="radThermalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9" />
+                <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.95" />
+              </linearGradient>
+              <linearGradient id="coolAirGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.15" />
+                <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.95" />
+                <stop offset="100%" stop-color="#e0f2fe" stop-opacity="1" />
+              </linearGradient>
+              <radialGradient id="bubbleSpec" cx="35%" cy="30%" r="65%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                <stop offset="45%" stop-color="#38bdf8" stop-opacity="0.65" />
+                <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2" />
+              </radialGradient>
+            </defs>
+
+            <!-- 3D Projection Pin Anchors (Used by updateLeaderLines for exact 3D perspective tracking) -->
+            <circle id="anchor3d-activepart" cx="480" cy="599" r="1" opacity="0" />
+            <circle id="anchor3d-radiator" cx="470" cy="720" r="1" opacity="0" />
+            <circle id="anchor3d-hvbushing" cx="468" cy="225" r="1" opacity="0" />
+            <circle id="anchor3d-lvbushing" cx="600" cy="59" r="1" opacity="0" />
+            <circle id="anchor3d-dga" cx="670" cy="492" r="1" opacity="0" />
+            <circle id="anchor3d-oilprops" cx="634" cy="655" r="1" opacity="0" />
+            <circle id="anchor3d-oltc" cx="719" cy="623" r="1" opacity="0" />
+
+            <!-- =========================================================
+                 1. COOLING SYSTEM 3D ANIMATION (Fans, Airflow & Radiator)
+                 ========================================================= -->
+            <g id="anim3d-radiator" class="anim3d-group">
+              <!-- Radiator Vertical Fin Thermal Exchange Channels (Hot Top -> Cool Bottom) -->
+              <g filter="url(#glowAmber3D)" opacity="0.88">
+                <line x1="484" y1="665" x2="484" y2="875" stroke="url(#radThermalGrad)" stroke-width="3.2" stroke-dasharray="10 6" class="flow-stream-anim" />
+                <line x1="498" y1="670" x2="498" y2="882" stroke="url(#radThermalGrad)" stroke-width="3.2" stroke-dasharray="10 6" class="flow-stream-anim" />
+                <line x1="512" y1="676" x2="512" y2="888" stroke="url(#radThermalGrad)" stroke-width="3.2" stroke-dasharray="10 6" class="flow-stream-anim" />
+                <line x1="526" y1="682" x2="526" y2="894" stroke="url(#radThermalGrad)" stroke-width="3.2" stroke-dasharray="10 6" class="flow-stream-anim" />
+              </g>
+
+              <!-- Upper Cooling Fan #1 (Isometric 3D Plane at 416, 704) -->
+              <g transform="translate(416, 704) rotate(-14) scale(0.64, 1)" filter="url(#glowCyan3D)">
+                <circle cx="0" cy="0" r="46" fill="rgba(14, 165, 233, 0.12)" stroke="#38bdf8" stroke-width="2.8" />
+                <circle cx="0" cy="0" r="39" fill="none" stroke="#7dd3fc" stroke-width="1.3" stroke-dasharray="6 5" />
+                <g class="fan-blades-spin">
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(60)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(120)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(180)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(240)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(300)" />
+                  <circle cx="0" cy="0" r="9" fill="#0284c7" stroke="#ffffff" stroke-width="2" />
+                </g>
+              </g>
+
+              <!-- Lower Cooling Fan #2 (Isometric 3D Plane at 416, 816) -->
+              <g transform="translate(416, 816) rotate(-14) scale(0.64, 1)" filter="url(#glowCyan3D)">
+                <circle cx="0" cy="0" r="46" fill="rgba(14, 165, 233, 0.12)" stroke="#38bdf8" stroke-width="2.8" />
+                <circle cx="0" cy="0" r="39" fill="none" stroke="#7dd3fc" stroke-width="1.3" stroke-dasharray="6 5" />
+                <g class="fan-blades-spin">
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(60)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(120)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(180)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(240)" />
+                  <path d="M 0,0 C 12,-18 28,-22 36,-10 C 26,-2 14,2 0,0 Z" fill="rgba(56, 189, 248, 0.90)" stroke="#e0f2fe" stroke-width="1" transform="rotate(300)" />
+                  <circle cx="0" cy="0" r="9" fill="#0284c7" stroke="#ffffff" stroke-width="2" />
+                </g>
+              </g>
+
+              <!-- 3D Cold Air Intake Streamlines Flowing into Fans #1 & #2 -->
+              <g filter="url(#glowCyan3D)">
+                <path d="M 290,745 Q 345,725 405,695" fill="none" stroke="url(#coolAirGrad)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="10 6" class="flow-fast-anim" />
+                <path d="M 300,775 Q 355,750 412,715" fill="none" stroke="url(#coolAirGrad)" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="10 6" class="flow-fast-anim" />
+                <path d="M 290,855 Q 345,835 405,805" fill="none" stroke="url(#coolAirGrad)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="10 6" class="flow-fast-anim" />
+                <path d="M 305,885 Q 360,860 415,828" fill="none" stroke="url(#coolAirGrad)" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="10 6" class="flow-fast-anim" />
+              </g>
+
+              <!-- Rising Thermal Convection Waves Above Radiator Bank -->
+              <g filter="url(#glowAmber3D)">
+                <path d="M 465,635 Q 458,610 470,590 Q 482,570 472,548" fill="none" stroke="#f97316" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="7 5" class="heat-wave-anim" />
+                <path d="M 495,645 Q 488,620 500,600 Q 512,580 502,558" fill="none" stroke="#fb923c" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="7 5" class="heat-wave-anim" />
+                <path d="M 525,655 Q 518,630 530,610 Q 542,590 532,568" fill="none" stroke="#f59e0b" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="7 5" class="heat-wave-anim" />
+              </g>
+
+              <!-- Forced Oil Pump Impeller at Bottom Header (518, 908) -->
+              <g transform="translate(518, 908) scale(1, 0.55)" filter="url(#glowCyan3D)">
+                <circle cx="0" cy="0" r="24" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="2.5" />
+                <g class="pump-impeller-spin">
+                  <line x1="-18" y1="0" x2="18" y2="0" stroke="#34d399" stroke-width="3" />
+                  <line x1="0" y1="-18" x2="0" y2="18" stroke="#34d399" stroke-width="3" />
+                </g>
+              </g>
+            </g>
+
+            <!-- =========================================================
+                 2. ACTIVE PART (CORE & WINDING) 3D FLUX ANIMATION
+                 ========================================================= -->
+            <g id="anim3d-activepart" class="anim3d-group">
+              <!-- Primary/Secondary Copper Winding 3D Elliptical Electromagnetic Coils -->
+              <g filter="url(#glowCyan3D)">
+                <ellipse cx="616" cy="525" rx="74" ry="22" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-dasharray="14 8" class="flow-fast-anim" />
+                <ellipse cx="616" cy="560" rx="74" ry="22" fill="none" stroke="#60a5fa" stroke-width="2.6" stroke-dasharray="14 8" class="flow-stream-anim" />
+                <ellipse cx="616" cy="595" rx="74" ry="22" fill="none" stroke="#818cf8" stroke-width="2.8" stroke-dasharray="14 8" class="flow-fast-anim" />
+                <ellipse cx="616" cy="630" rx="74" ry="22" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-dasharray="14 8" class="flow-stream-anim" />
+                <ellipse cx="616" cy="665" rx="74" ry="22" fill="none" stroke="#60a5fa" stroke-width="2.6" stroke-dasharray="14 8" class="flow-fast-anim" />
+                <ellipse cx="616" cy="700" rx="74" ry="22" fill="none" stroke="#38bdf8" stroke-width="2.6" stroke-dasharray="14 8" class="flow-stream-anim" />
+              </g>
+              <!-- Left Cutaway Coil Induction Rings -->
+              <g filter="url(#glowAmber3D)">
+                <ellipse cx="504" cy="565" rx="48" ry="16" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-dasharray="10 6" class="flow-fast-anim" />
+                <ellipse cx="504" cy="600" rx="48" ry="16" fill="none" stroke="#f59e0b" stroke-width="2.4" stroke-dasharray="10 6" class="flow-stream-anim" />
+                <ellipse cx="504" cy="635" rx="48" ry="16" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-dasharray="10 6" class="flow-fast-anim" />
+              </g>
+              <!-- Laminated Core Magnetic Flux Path -->
+              <path d="M 465,515 L 465,485 L 620,445 L 620,505" fill="none" stroke="#a855f7" stroke-width="3.2" stroke-dasharray="12 6" class="flow-fast-anim" filter="url(#glowCyan3D)" />
+            </g>
+
+            <!-- =========================================================
+                 3. BUSHING (HV/LV) 3D DIELECTRIC FIELD ANIMATION
+                 ========================================================= -->
+            <g id="anim3d-hvbushing" class="anim3d-group">
+              <!-- HV.A, HV.B (Cutaway C1/C2), HV.C Equipotential Field Rings -->
+              <g filter="url(#glowCyan3D)">
+                <!-- HV.A -->
+                <g transform="translate(318, 295) rotate(-8)">
+                  <ellipse cx="0" cy="-55" rx="28" ry="9" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="8 5" class="flow-fast-anim" />
+                  <ellipse cx="0" cy="0" rx="34" ry="11" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-dasharray="8 5" class="flow-stream-anim" />
+                  <ellipse cx="0" cy="55" rx="40" ry="13" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="8 5" class="flow-fast-anim" />
+                </g>
+                <!-- HV.B Cutaway Condenser Core -->
+                <g transform="translate(468, 250)">
+                  <ellipse cx="0" cy="-65" rx="30" ry="10" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="8 5" class="flow-fast-anim" />
+                  <ellipse cx="0" cy="-20" rx="36" ry="12" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="8 5" class="flow-stream-anim" />
+                  <ellipse cx="0" cy="25" rx="40" ry="13" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="8 5" class="flow-fast-anim" />
+                  <ellipse cx="0" cy="75" rx="44" ry="14" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="8 5" class="flow-stream-anim" />
+                  <line x1="0" y1="-95" x2="0" y2="115" stroke="#fde047" stroke-width="2.8" stroke-dasharray="10 6" class="flow-fast-anim" />
+                </g>
+                <!-- HV.C -->
+                <g transform="translate(632, 205) rotate(6)">
+                  <ellipse cx="0" cy="-55" rx="28" ry="9" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="8 5" class="flow-fast-anim" />
+                  <ellipse cx="0" cy="0" rx="34" ry="11" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-dasharray="8 5" class="flow-stream-anim" />
+                  <ellipse cx="0" cy="55" rx="40" ry="13" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-dasharray="8 5" class="flow-fast-anim" />
+                </g>
+              </g>
+            </g>
+
+            <!-- =========================================================
+                 4. SURGE ARRESTER (ZnO) 3D IMPULSE & CORONA ANIMATION
+                 ========================================================= -->
+            <g id="anim3d-lvbushing" class="anim3d-group">
+              <g filter="url(#glowAmber3D)">
+                <!-- Corona Grading Rings (SA.A, SA.B, SA.C) -->
+                <ellipse cx="207" cy="198" rx="44" ry="15" fill="none" stroke="#facc15" stroke-width="3" stroke-dasharray="10 5" class="flow-fast-anim" />
+                <ellipse cx="408" cy="130" rx="44" ry="15" fill="none" stroke="#facc15" stroke-width="3" stroke-dasharray="10 5" class="flow-fast-anim" />
+                <ellipse cx="600" cy="72" rx="44" ry="15" fill="none" stroke="#facc15" stroke-width="3" stroke-dasharray="10 5" class="flow-fast-anim" />
+                <!-- ZnO Varistor Surge Conduction Paths to Ground Bus -->
+                <line x1="207" y1="150" x2="207" y2="395" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="12 8" class="flow-fast-anim" />
+                <line x1="408" y1="82" x2="408" y2="335" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="12 8" class="flow-fast-anim" />
+                <line x1="600" y1="22" x2="600" y2="280" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="12 8" class="flow-fast-anim" />
+                <!-- Ground Collector Bus -->
+                <line x1="207" y1="395" x2="600" y2="275" stroke="#10b981" stroke-width="3" stroke-dasharray="14 6" class="flow-stream-anim" />
+              </g>
+            </g>
+
+            <!-- =========================================================
+                 5. DISSOLVED GAS ANALYSIS (DGA) 3D BUBBLE & LASER SCAN
+                 ========================================================= -->
+            <g id="anim3d-dga" class="anim3d-group">
+              <!-- Rising 3D Gas Micro-Bubbles in Tank Headspace -->
+              <g style="paint-order: stroke; stroke: #0f172a; stroke-width: 2.5px; font-family: 'Outfit', sans-serif;">
+                <g class="bubble-rise-1"><circle cx="712" cy="545" r="7.5" fill="url(#bubbleSpec)" stroke="none" /><text x="723" y="549" fill="#38bdf8" font-size="10.5" font-weight="800">H₂</text></g>
+                <g class="bubble-rise-2"><circle cx="736" cy="560" r="8.5" fill="url(#bubbleSpec)" stroke="none" /><text x="748" y="564" fill="#fbbf24" font-size="10.5" font-weight="800">CO₂</text></g>
+                <g class="bubble-rise-3"><circle cx="722" cy="520" r="7" fill="url(#bubbleSpec)" stroke="none" /><text x="732" y="524" fill="#34d399" font-size="10.5" font-weight="800">CH₄</text></g>
+                <g class="bubble-rise-4"><circle cx="742" cy="535" r="8" fill="url(#bubbleSpec)" stroke="none" /><text x="753" y="539" fill="#f97316" font-size="10.5" font-weight="800">CO</text></g>
+                <g class="bubble-rise-2"><circle cx="706" cy="510" r="5.5" fill="url(#bubbleSpec)" stroke="none" /></g>
+                <g class="bubble-rise-1"><circle cx="730" cy="495" r="6" fill="url(#bubbleSpec)" stroke="none" /></g>
+              </g>
+              <!-- 3D Laser Chromatography Scanner Ring -->
+              <g class="laser-scan-anim" filter="url(#glowCyan3D)">
+                <ellipse cx="725" cy="490" rx="44" ry="15" fill="rgba(16, 185, 129, 0.18)" stroke="#10b981" stroke-width="2.8" />
+                <ellipse cx="725" cy="490" rx="32" ry="10" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6 4" />
+              </g>
+            </g>
+
+            <!-- =========================================================
+                 6. MAIN TANK OIL PROPERTIES 3D CONVECTION & BDV SPARK
+                 ========================================================= -->
+            <g id="anim3d-oilprops" class="anim3d-group">
+              <!-- Dielectric Oil Convection Ribbon Currents -->
+              <g filter="url(#glowAmber3D)">
+                <path d="M 595,735 C 635,705 660,640 715,615 C 750,600 760,660 725,710 C 690,750 630,755 595,735 Z" fill="none" stroke="#f59e0b" stroke-width="2.8" stroke-dasharray="12 7" class="flow-stream-anim" />
+                <path d="M 615,710 C 650,680 680,635 735,630" fill="none" stroke="#10b981" stroke-width="2.6" stroke-dasharray="10 6" class="flow-fast-anim" />
+              </g>
+              <!-- 3D ASTM D1816 Dielectric Breakdown Spark-Gap Tester (at 675, 665) -->
+              <g transform="translate(675, 665)" filter="url(#glowCyan3D)">
+                <circle cx="0" cy="0" r="28" fill="rgba(14, 165, 233, 0.14)" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4" />
+                <!-- Brass Test Electrodes -->
+                <circle cx="-14" cy="0" r="6" fill="#fbbf24" stroke="#ffffff" stroke-width="1.2" />
+                <circle cx="14" cy="0" r="6" fill="#fbbf24" stroke="#ffffff" stroke-width="1.2" />
+                <!-- High-Voltage 85.9 kV Breakdown Arc -->
+                <path d="M -8,0 L -3,-5 L 2,4 L 8,0" fill="none" stroke="#e0f2fe" stroke-width="3" class="spark-arc-anim" />
+              </g>
+            </g>
+
+            <!-- =========================================================
+                 7. ON LOAD TAP CHANGER (OLTC) 3D ROTARY SELECTOR & DRIVE
+                 ========================================================= -->
+            <g id="anim3d-oltc" class="anim3d-group">
+              <!-- Rotary Tap Selector Isometric Rings on OLTC Cylinder (x=724) -->
+              <g filter="url(#glowCyan3D)">
+                <g transform="translate(724, 465) scale(1, 0.36)">
+                  <circle cx="0" cy="0" r="38" fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="14 8" class="oltc-ring-spin" />
+                </g>
+                <g transform="translate(724, 515) scale(1, 0.36)">
+                  <circle cx="0" cy="0" r="38" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="12 6" class="oltc-ring-spin-rev" />
+                </g>
+                <g transform="translate(724, 565) scale(1, 0.36)">
+                  <circle cx="0" cy="0" r="38" fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="14 8" class="oltc-ring-spin" />
+                </g>
+                <!-- Mechanical Drive Shaft Linkage Pulses to Motor Drive Unit -->
+                <path d="M 724,375 L 822,428 L 822,608" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-dasharray="10 6" class="flow-fast-anim" />
+                <!-- Motor Drive Cabinet Active Frame -->
+                <polygon points="780,618 866,595 866,708 780,738" fill="rgba(56, 189, 248, 0.12)" stroke="#38bdf8" stroke-width="2.4" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
 
       <!-- SVG Leader Lines & Pulsing Pin Overlay Layer -->
       <svg class="svg-leader-lines" id="svgLines">
@@ -1848,31 +2527,31 @@
         <!-- Pulsing Target Pins on Cutaway Anatomy -->
         <!-- Pin: Active Part (Core & Winding) -->
         <circle id="pin-pulse-activepart" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-activepart" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-activepart" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('activepart', event)" onmouseenter="focusCallout('activepart')" onmouseleave="unfocusCallout('activepart')" />
 
         <!-- Pin: Radiator & Fans -->
         <circle id="pin-pulse-radiator" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-radiator" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-radiator" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('radiator', event)" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')" />
 
         <!-- Pin: LV Bushing -->
         <circle id="pin-pulse-lvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-lvbushing" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-lvbushing" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('lvbushing', event)" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')" />
 
         <!-- Pin: HV Bushing -->
         <circle id="pin-pulse-hvbushing" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-hvbushing" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-hvbushing" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('hvbushing', event)" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')" />
 
         <!-- Pin: DGA (Tank Headspace) -->
         <circle id="pin-pulse-dga" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-dga" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-dga" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('dga', event)" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')" />
 
         <!-- Pin: Oil Properties (Oil Sampling Valve) -->
         <circle id="pin-pulse-oilprops" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-oilprops" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-oilprops" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('oilprops', event)" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')" />
 
         <!-- Pin: On Load Tap Changer (OLTC Diverter & Selector) -->
         <circle id="pin-pulse-oltc" cx="0" cy="0" r="12" class="pin-pulse" />
-        <circle id="pin-dot-oltc" cx="0" cy="0" r="5" class="pin-dot" />
+        <circle id="pin-dot-oltc" cx="0" cy="0" r="5" class="pin-dot" onclick="toggle3dZoom('oltc', event)" onmouseenter="focusCallout('oltc')" onmouseleave="unfocusCallout('oltc')" />
       </svg>
 
       <!-- ==========================================
@@ -2064,13 +2743,14 @@
       </div>
 
       <!-- Active Part (Core & Winding) Dedicated Card (Positioned on Left) -->
-      <div class="callout-card" id="card-activepart" data-category="electrical" onmouseenter="focusCallout('activepart')" onmouseleave="unfocusCallout('activepart')">
+      <div class="callout-card" id="card-activepart" data-category="electrical" onclick="toggle3dZoom('activepart', event)" onmouseenter="focusCallout('activepart')" onmouseleave="unfocusCallout('activepart')">
         <div class="callout-header">
           <div class="callout-title">
             <span class="callout-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fa-solid fa-atom"></i></span>
             <span>Active Part (Core &amp; Winding)</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
             <span class="callout-status-pill status-normal" id="pill-activepart">Healthy</span>
             <a href="evaluation_report.html#active-part" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Active Part Assessment">
               <i class="fa-solid fa-file-waveform"></i> Active Log
@@ -2180,7 +2860,7 @@
       <!-- Top Row Callouts: Bushing & Surge Arrester (Guaranteed 14px Equal Gap) -->
       <div class="top-callout-row" id="topCalloutRow">
         <!-- 4. Bushing Matrix Table -->
-        <div class="callout-card" id="card-hvbushing" data-category="electrical" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
+        <div class="callout-card" id="card-hvbushing" data-category="electrical" onclick="toggle3dZoom('hvbushing', event)" onmouseenter="focusCallout('hvbushing')" onmouseleave="unfocusCallout('hvbushing')">
           <div class="callout-header">
             <div class="callout-title">
               <span class="callout-icon"><i class="fa-solid fa-plug"></i></span>
@@ -2189,7 +2869,10 @@
                 <i class="fa-regular fa-file-lines"></i>
               </a>
             </div>
-            <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
+              <span class="callout-status-pill status-normal" id="pill-bushing">3 Ph Normal</span>
+            </div>
           </div>
           <table class="bushing-matrix-table">
             <thead>
@@ -2230,7 +2913,7 @@
         </div>
 
         <!-- 5. Surge Arrester Matrix Table -->
-        <div class="callout-card" id="card-lvbushing" data-category="electrical" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
+        <div class="callout-card" id="card-lvbushing" data-category="electrical" onclick="toggle3dZoom('lvbushing', event)" onmouseenter="focusCallout('lvbushing')" onmouseleave="unfocusCallout('lvbushing')">
           <div class="callout-header">
             <div class="callout-title">
               <span class="callout-icon" style="background: rgba(234, 179, 8, 0.15); color: #eab308;"><i class="fa-solid fa-bolt"></i></span>
@@ -2239,7 +2922,10 @@
                 <i class="fa-regular fa-file-lines"></i>
               </a>
             </div>
-            <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
+              <span class="callout-status-pill status-normal" id="pill-surge">Normal</span>
+            </div>
           </div>
           <table class="surge-matrix-table">
             <thead>
@@ -2293,13 +2979,14 @@
       <!-- Right Column Stack: DGA and Oil Properties (Guaranteed 14px Equal Gap, NO OVERLAP) -->
       <div class="right-callout-stack" id="rightCalloutStack">
         <!-- 6. Right Top: Dissolved Gas Analysis (DGA) -->
-        <div class="callout-card" id="card-dga" data-category="oil" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')">
+        <div class="callout-card" id="card-dga" data-category="oil" onclick="toggle3dZoom('dga', event)" onmouseenter="focusCallout('dga')" onmouseleave="unfocusCallout('dga')">
           <div class="callout-header">
             <div class="callout-title" style="white-space: nowrap;">
               <span class="callout-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-fire-flame-curved"></i></span>
               <span>Dissolved Gas Analysis (DGA)</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
               <span class="callout-status-pill status-normal" id="dga-date-badge" style="font-size: 0.60rem; padding: 2px 6px; white-space: nowrap;">21-Jun-2026</span>
               <a href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
                 <i class="fa-solid fa-chart-line"></i>
@@ -2365,15 +3052,18 @@
         </div>
 
         <!-- 7. Right Bottom: Main Tank Oil Properties -->
-        <div class="callout-card" id="card-oilprops" data-category="oil" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')">
+        <div class="callout-card" id="card-oilprops" data-category="oil" onclick="toggle3dZoom('oilprops', event)" onmouseenter="focusCallout('oilprops')" onmouseleave="unfocusCallout('oilprops')">
           <div class="callout-header">
             <div class="callout-title">
               <span class="callout-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-droplet"></i></span>
               <span>Main Tank Oil Properties</span>
             </div>
-            <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
-              <i class="fa-solid fa-file-waveform"></i> Oil Log
-            </a>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
+              <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
+                <i class="fa-solid fa-file-waveform"></i> Oil Log
+              </a>
+            </div>
           </div>
 
           <!-- 1. Physical & Electrical -->
@@ -2477,13 +3167,16 @@
       </div>
 
       <!-- Cooling System Dedicated Card (Positioned in red box area) -->
-      <div class="callout-card" id="card-radiator" data-category="mechanical" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
+      <div class="callout-card" id="card-radiator" data-category="mechanical" onclick="toggle3dZoom('radiator', event)" onmouseenter="focusCallout('radiator')" onmouseleave="unfocusCallout('radiator')">
         <div class="callout-header">
           <div class="callout-title">
             <span class="callout-icon"><i class="fa-solid fa-fan"></i></span>
             <span>Cooling System</span>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-radiator">Normal</span>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
+            <span class="callout-status-pill status-normal" id="pill-radiator">Normal</span>
+          </div>
         </div>
         <div class="callout-data-list">
           <div class="data-row">
@@ -2502,7 +3195,7 @@
       </div>
 
       <!-- 8. On Load Tap Changer (OLTC) Dedicated Card (Positioned in red box area) -->
-      <div class="callout-card" id="card-oltc" data-category="mechanical" onmouseenter="focusCallout('oltc')" onmouseleave="unfocusCallout('oltc')">
+      <div class="callout-card" id="card-oltc" data-category="mechanical" onclick="toggle3dZoom('oltc', event)" onmouseenter="focusCallout('oltc')" onmouseleave="unfocusCallout('oltc')">
         <div class="callout-header">
           <div class="callout-title">
             <span class="callout-icon"><i class="fa-solid fa-sliders"></i></span>
@@ -2511,7 +3204,10 @@
               <i class="fa-regular fa-file-lines"></i>
             </a>
           </div>
-          <span class="callout-status-pill status-normal" id="pill-oltc">Healthy</span>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
+            <span class="callout-status-pill status-normal" id="pill-oltc">Healthy</span>
+          </div>
         </div>
         <div class="callout-data-list">
           <div class="data-row">
@@ -3387,6 +4083,252 @@
       setTimeout(updateLeaderLines, 40);
     }
 
+    // ==============================================================
+    // 3D CAMERA ZOOM & LIVE COMPONENT SIMULATION CONTROLLER
+    // ==============================================================
+    const ZOOM_3D_ORDER = ['radiator', 'activepart', 'hvbushing', 'lvbushing', 'dga', 'oilprops', 'oltc'];
+    const ZOOM_3D_CONFIG = {
+      radiator: {
+        focusU: 0.465, focusV: 0.745, zoom: 2.38, rx: 6, ry: -11, offsetX: 18, offsetY: -12,
+        title: 'Cooling System (OFAF / ONAF) — 3D Live Simulation',
+        sub: 'Dual Axial Cooling Fans (1,450 RPM) • Forced Oil Circulation • ΔT -14.2°C',
+        tagHead: 'AF/OF COOLING ACTIVE',
+        tagMetrics: 'Fan 1 & 2: 1,450 RPM • Oil Pump: ON • ΔT: -14.2°C'
+      },
+      activepart: {
+        focusU: 0.575, focusV: 0.595, zoom: 2.32, rx: 5, ry: 8, offsetX: 10, offsetY: 0,
+        title: 'Active Part (Core & Winding) — 3D Electromagnetic Flux',
+        sub: 'HV/LV Copper Winding Coils • Core Magnetic Flux Loop • PI 2.68 / FRA Normal',
+        tagHead: 'CORE & WINDING 3D FLUX',
+        tagMetrics: 'PI (HV/LV): 2.68 / 3.89 • FRA & DFR: Normal'
+      },
+      hvbushing: {
+        focusU: 0.485, focusV: 0.255, zoom: 2.15, rx: -6, ry: 7, offsetX: 0, offsetY: 28,
+        title: '115 kV / 22 kV Condenser Bushings — 3D Dielectric Field',
+        sub: 'OIP Capacitive Grading (C1/C2) • Equipotential Stress Rings • 3-Phase Normal',
+        tagHead: 'OIP BUSHING C1/C2 GRADING',
+        tagMetrics: 'PF Corr 20°C: 0.23–0.32% • Cap Dev ≤ 1.15%'
+      },
+      lvbushing: {
+        focusU: 0.435, focusV: 0.195, zoom: 2.12, rx: -6, ry: -7, offsetX: 10, offsetY: 34,
+        title: 'Surge Arrester (ZnO) — 3D Impulse & Corona Grading',
+        sub: 'Gapless Metal-Oxide Varistor Stack • Corona Ring Equalization • Leakage 0.14 mA',
+        tagHead: 'ZnO SURGE ARRESTER ACTIVE',
+        tagMetrics: 'IR > 12,500 MΩ • Leakage: 0.14 mA • Ground Normal'
+      },
+      dga: {
+        focusU: 0.720, focusV: 0.510, zoom: 2.42, rx: 4, ry: 11, offsetX: -24, offsetY: 8,
+        title: 'Dissolved Gas Analysis (DGA) — 3D Headspace Spectrometer',
+        sub: 'Micro-Bubble Nucleation (H₂, CH₄, CO, CO₂) • Laser Scan • TDCG 177 ppm',
+        tagHead: 'DGA HEADSPACE SPECTROMETER',
+        tagMetrics: 'TDCG: 177 ppm • CO₂/CO: 32.2 • IEEE Status: Normal'
+      },
+      oilprops: {
+        focusU: 0.675, focusV: 0.665, zoom: 2.36, rx: 6, ry: 9, offsetX: -20, offsetY: -10,
+        title: 'Main Tank Insulating Oil — 3D Convection & BDV Spark Test',
+        sub: 'ASTM D1816 Dielectric Breakdown (85.90 kV) • Thermal Loop • Sulfur 3b Watch',
+        tagHead: 'MAIN TANK DIELECTRIC OIL',
+        tagMetrics: 'BDV: 85.90 kV • H₂O: 7.4 ppm • Sulfur: 3b Watch'
+      },
+      oltc: {
+        focusU: 0.765, focusV: 0.585, zoom: 2.32, rx: 5, ry: 12, offsetX: -28, offsetY: -8,
+        title: 'On Load Tap Changer (OLTC) — 3D Rotary Selector & Drive',
+        sub: 'MR V III 200D High-Speed Diverter • 58,148 Operations • BDV 86.6 kV',
+        tagHead: 'OLTC MR V III 200D ACTIVE',
+        tagMetrics: '58,148 Ops • BDV: 86.6 kV • Water: 8.6 ppm'
+      }
+    };
+
+    let active3dZoomId = null;
+    let animTrackFrame = null;
+
+    function startLeaderLineTracking(durationMs = 820) {
+      if (animTrackFrame) cancelAnimationFrame(animTrackFrame);
+      const start = performance.now();
+      function step(now) {
+        updateLeaderLines();
+        if (now - start < durationMs) {
+          animTrackFrame = requestAnimationFrame(step);
+        } else {
+          updateLeaderLines();
+          animTrackFrame = null;
+        }
+      }
+      animTrackFrame = requestAnimationFrame(step);
+    }
+
+    function toggle3dZoom(id, event) {
+      if (event) {
+        if (event.target && event.target.closest('a')) return;
+        event.stopPropagation();
+      }
+      if (active3dZoomId === id) {
+        reset3dZoom();
+      } else {
+        activate3dZoom(id);
+      }
+    }
+
+    function activate3dZoom(id, instant = false) {
+      const cfg = ZOOM_3D_CONFIG[id];
+      if (!cfg) return;
+      active3dZoomId = id;
+
+      const stage = document.getElementById('viewportStage');
+      const rig = document.getElementById('twin3dRig');
+      const inner = document.getElementById('twin3dInner');
+      const img = document.getElementById('transformerModelImg');
+      const shadow = document.querySelector('.pedestal-shadow');
+      if (!stage || !rig || !inner || !img) return;
+
+      if (instant) {
+        rig.style.transition = 'none';
+        inner.style.transition = 'none';
+      }
+
+      stage.classList.add('is-3d-zoomed');
+      if (shadow) shadow.style.opacity = '0';
+
+      // Compute exact unscaled image dimensions to center (focusU, focusV) in the open bay
+      const baseW = img.offsetWidth || 440;
+      const baseH = img.offsetHeight || 512;
+      const S = cfg.zoom;
+      const tx = -((cfg.focusU - 0.5) * baseW * S) + (cfg.offsetX || 0);
+      const ty = -((cfg.focusV - 0.5) * baseH * S) + (cfg.offsetY || 0);
+
+      rig.style.transform = `translate(-50%, -50%) translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0px) scale(${S})`;
+      inner.style.transform = `rotateX(${cfg.rx}deg) rotateY(${cfg.ry}deg)`;
+
+      // Apply smooth holographic spotlight feathering around the focused 3D component
+      const maskStr = `radial-gradient(circle at ${(cfg.focusU * 100).toFixed(1)}% ${(cfg.focusV * 100).toFixed(1)}%, rgba(0,0,0,1) 28%, rgba(0,0,0,0.95) 40%, rgba(0,0,0,0.28) 54%, rgba(0,0,0,0) 66%)`;
+      inner.style.webkitMaskImage = maskStr;
+      inner.style.maskImage = maskStr;
+
+      if (instant) {
+        void rig.offsetWidth;
+        requestAnimationFrame(() => {
+          rig.style.transition = '';
+          inner.style.transition = '';
+        });
+      }
+
+      // Update 3D HUD Bar & Crisp Floating 3D Tag
+      const hudTitle = document.getElementById('hud3dTitle');
+      const hudSub = document.getElementById('hud3dSub');
+      if (hudTitle) hudTitle.textContent = cfg.title;
+      if (hudSub) hudSub.textContent = cfg.sub;
+
+      const fTag = document.getElementById('floating3dTag');
+      const fTagHead = document.getElementById('floating3dTagHead');
+      const fTagMetrics = document.getElementById('floating3dTagMetrics');
+      if (fTagHead && cfg.tagHead) fTagHead.textContent = cfg.tagHead;
+      if (fTagMetrics && cfg.tagMetrics) fTagMetrics.textContent = cfg.tagMetrics;
+      if (fTag) fTag.classList.add('visible');
+
+      // Activate corresponding 3D SVG Animation Group
+      document.querySelectorAll('.anim3d-group').forEach(g => {
+        g.classList.toggle('active-3d', g.id === `anim3d-${id}`);
+      });
+
+      // Lock active state on the selected Callout Card, Leader Line & Pin
+      for (const k of ZOOM_3D_ORDER) {
+        const card = document.getElementById(`card-${k}`);
+        const line = document.getElementById(`line-${k}`);
+        const pinDot = document.getElementById(`pin-dot-${k}`);
+        const pinPulse = document.getElementById(`pin-pulse-${k}`);
+        const isTarget = (k === id);
+
+        if (card) {
+          card.classList.toggle('zoom-locked', isTarget);
+          card.classList.toggle('active', isTarget);
+          const badge = card.querySelector('.btn-3d-trigger');
+          if (badge) {
+            badge.innerHTML = isTarget
+              ? '<i class="fa-solid fa-cube fa-spin"></i> 3D LIVE'
+              : '<i class="fa-solid fa-cube"></i> 3D';
+          }
+        }
+        if (line) line.classList.toggle('highlight', isTarget);
+        if (pinDot) pinDot.classList.toggle('pin-active', isTarget);
+        if (pinPulse) pinPulse.classList.toggle('pin-active', isTarget);
+      }
+
+      updateLeaderLines();
+      startLeaderLineTracking(840);
+    }
+
+    function reset3dZoom() {
+      active3dZoomId = null;
+      const stage = document.getElementById('viewportStage');
+      const rig = document.getElementById('twin3dRig');
+      const inner = document.getElementById('twin3dInner');
+      const shadow = document.querySelector('.pedestal-shadow');
+      const fTag = document.getElementById('floating3dTag');
+
+      if (stage) stage.classList.remove('is-3d-zoomed');
+      if (shadow) shadow.style.opacity = '1';
+      if (fTag) fTag.classList.remove('visible');
+      if (rig) rig.style.transform = 'translate(-50%, -50%) translate3d(0px, 0px, 0px) scale(1)';
+      if (inner) {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        inner.style.webkitMaskImage = 'none';
+        inner.style.maskImage = 'none';
+      }
+
+      document.querySelectorAll('.anim3d-group').forEach(g => g.classList.remove('active-3d'));
+
+      for (const k of ZOOM_3D_ORDER) {
+        const card = document.getElementById(`card-${k}`);
+        const line = document.getElementById(`line-${k}`);
+        const pinDot = document.getElementById(`pin-dot-${k}`);
+        const pinPulse = document.getElementById(`pin-pulse-${k}`);
+        if (card) {
+          card.classList.remove('zoom-locked', 'active');
+          const badge = card.querySelector('.btn-3d-trigger');
+          if (badge) badge.innerHTML = '<i class="fa-solid fa-cube"></i> 3D';
+        }
+        if (line) line.classList.remove('highlight');
+        if (pinDot) pinDot.classList.remove('pin-active');
+        if (pinPulse) pinPulse.classList.remove('pin-active');
+      }
+
+      startLeaderLineTracking(840);
+    }
+
+    function step3dZoom(dir) {
+      const curIdx = ZOOM_3D_ORDER.indexOf(active3dZoomId || 'radiator');
+      const nextIdx = (curIdx + dir + ZOOM_3D_ORDER.length) % ZOOM_3D_ORDER.length;
+      activate3dZoom(ZOOM_3D_ORDER[nextIdx]);
+    }
+
+    // Interactive 3D Mouse Parallax Orbit when Zoomed In + ESC Key Reset
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && active3dZoomId) {
+        reset3dZoom();
+      } else if (e.key === 'ArrowRight' && active3dZoomId) {
+        step3dZoom(1);
+      } else if (e.key === 'ArrowLeft' && active3dZoomId) {
+        step3dZoom(-1);
+      }
+    });
+
+    const viewportStageEl = document.getElementById('viewportStage');
+    if (viewportStageEl) {
+      viewportStageEl.addEventListener('mousemove', (e) => {
+        if (!active3dZoomId) return;
+        const cfg = ZOOM_3D_CONFIG[active3dZoomId];
+        const inner = document.getElementById('twin3dInner');
+        if (!cfg || !inner) return;
+        const rect = viewportStageEl.getBoundingClientRect();
+        const normX = ((e.clientX - rect.left) / rect.width) - 0.5;
+        const normY = ((e.clientY - rect.top) / rect.height) - 0.5;
+        const tiltX = cfg.rx - (normY * 9);
+        const tiltY = cfg.ry + (normX * 12);
+        inner.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+        updateLeaderLines();
+      });
+    }
+
     // Hover Highlight Interactions
     function focusCallout(id) {
       const line = document.getElementById(`line-${id}`);
@@ -3396,33 +4338,11 @@
     }
 
     function unfocusCallout(id) {
+      if (active3dZoomId === id) return;
       const line = document.getElementById(`line-${id}`);
       if (line) line.classList.remove('highlight');
       const card = document.getElementById(`card-${id}`);
       if (card) card.classList.remove('active');
-    }
-
-    // Category Filter
-    function filterCategory(cat, btn) {
-      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const cards = document.querySelectorAll('.callout-card');
-      cards.forEach(card => {
-        const cCat = card.getAttribute('data-category');
-        const id = card.id.replace('card-', '');
-        const line = document.getElementById(`line-${id}`);
-
-        if (cat === 'all' || cCat === cat) {
-          card.style.opacity = '1';
-          card.style.pointerEvents = 'auto';
-          if (line) line.style.opacity = '0.75';
-        } else {
-          card.style.opacity = '0.15';
-          card.style.pointerEvents = 'none';
-          if (line) line.style.opacity = '0.05';
-        }
-      });
     }
 
     // Light / Dark Theme Toggle with localStorage persistence
@@ -3476,9 +4396,9 @@
       // Match SVG internal coordinates 1:1 with screen viewport pixels
       svg.setAttribute('viewBox', `0 0 ${stageRect.width} ${stageRect.height}`);
 
-      // Dynamically anchor ground contact shadow to transformer base
+      // Dynamically anchor ground contact shadow to transformer base (when in 1x overview)
       const shadow = document.querySelector('.pedestal-shadow');
-      if (shadow) {
+      if (shadow && !active3dZoomId) {
         const shadowWidth = Math.min(imgRect.width * 0.88, 440);
         const shadowTop = (imgRect.top - stageRect.top) + (imgRect.height * 0.958) - 16;
         const shadowLeft = (imgRect.left - stageRect.left) + (imgRect.width / 2);
@@ -3509,13 +4429,21 @@
         const line = document.getElementById(`line-${id}`);
         const pinPulse = document.getElementById(`pin-pulse-${id}`);
         const pinDot = document.getElementById(`pin-dot-${id}`);
+        const anchorEl = document.getElementById(`anchor3d-${id}`);
         if (!card || !line) continue;
 
         const cardRect = card.getBoundingClientRect();
 
-        // Pin coordinate on actual transformer image relative to stage
-        const pinX = (renderLeft - stageRect.left) + (cfg.u * renderWidth);
-        const pinY = (renderTop - stageRect.top) + (cfg.v * renderHeight);
+        // Pin coordinate on actual 3D transformed SVG anchor (tracks 3D zoom & tilt accurately)
+        let pinX, pinY;
+        if (anchorEl) {
+          const aRect = anchorEl.getBoundingClientRect();
+          pinX = (aRect.left + aRect.width / 2) - stageRect.left;
+          pinY = (aRect.top + aRect.height / 2) - stageRect.top;
+        } else {
+          pinX = (renderLeft - stageRect.left) + (cfg.u * renderWidth);
+          pinY = (renderTop - stageRect.top) + (cfg.v * renderHeight);
+        }
 
         // Update pin position
         if (pinPulse) {
@@ -3525,6 +4453,17 @@
         if (pinDot) {
           pinDot.setAttribute('cx', pinX);
           pinDot.setAttribute('cy', pinY);
+        }
+
+        // Anchor the crisp 1:1 HTML floating 3D telemetry tag right above the active 3D pin
+        if (active3dZoomId === id) {
+          const fTag = document.getElementById('floating3dTag');
+          if (fTag) {
+            const clampedX = Math.max(stageRect.width * 0.36, Math.min(stageRect.width * 0.68, pinX));
+            const clampedY = Math.max(230, Math.min(stageRect.height - 230, pinY));
+            fTag.style.left = `${clampedX}px`;
+            fTag.style.top = `${clampedY}px`;
+          }
         }
 
         // Leader line start coordinate from card
@@ -3572,24 +4511,49 @@
     }
 
     // Attach listeners for fluid full-scale responsiveness
-    window.addEventListener('resize', updateLeaderLines);
-    window.addEventListener('load', updateLeaderLines);
+    window.addEventListener('resize', () => {
+      if (active3dZoomId) {
+        activate3dZoom(active3dZoomId, true);
+      } else {
+        updateLeaderLines();
+      }
+    });
+    window.addEventListener('load', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramZoom = urlParams.get('zoom');
+      if (paramZoom && ZOOM_3D_CONFIG[paramZoom]) {
+        activate3dZoom(paramZoom, true);
+      } else {
+        updateLeaderLines();
+      }
+    });
     const trImg = document.getElementById('transformerModelImg');
     if (trImg) {
       if (trImg.complete) {
         setTimeout(updateLeaderLines, 50);
       } else {
-        trImg.addEventListener('load', () => setTimeout(updateLeaderLines, 50));
+        trImg.addEventListener('load', () => {
+          const paramZoom = new URLSearchParams(window.location.search).get('zoom');
+          if (paramZoom && ZOOM_3D_CONFIG[paramZoom]) {
+            activate3dZoom(paramZoom, true);
+          } else {
+            updateLeaderLines();
+          }
+        });
       }
     }
-    // Initialize Twin Data and Nameplate on page load (supports ?tr= query param)
+    // Initialize Twin Data and Nameplate on page load (supports ?tr= and ?zoom= query params)
     function initTwinData() {
       const urlParams = new URLSearchParams(window.location.search);
       const paramTr = urlParams.get('tr');
+      const paramZoom = urlParams.get('zoom');
       const select = document.getElementById('twinTrSelect');
       const targetTr = (paramTr && TWIN_DATA[paramTr]) ? paramTr : (select ? select.value : '14100-TR-003');
       if (select) select.value = targetTr;
       switchTwinTransformer(targetTr);
+      if (paramZoom && ZOOM_3D_CONFIG[paramZoom]) {
+        activate3dZoom(paramZoom, true);
+      }
     }
     initTwinData();
   </script>
