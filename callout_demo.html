@@ -186,6 +186,12 @@
       font-size: 0.85rem;
       outline: none;
       cursor: pointer;
+      max-width: 360px;
+    }
+    .tr-select-box select option,
+    .tr-select-box select optgroup {
+      background: var(--bg-surface);
+      color: var(--text-primary);
     }
     .btn-action {
       background: var(--bg-surface);
@@ -2322,6 +2328,7 @@
   <!-- Top Navigation & Controls -->
   <header class="topbar">
     <div class="topbar-brand">
+      <img src="GPSC_logo_ART.png" alt="GPSC Logo" style="height: 28px; width: auto; object-fit: contain; margin-right: 4px;" onerror="this.style.display='none'">
       <div class="brand-icon"><i class="fa-solid fa-cube"></i></div>
       <div>
         <h1 class="brand-title">Transformer Digital Twin Callout Inspector</h1>
@@ -2333,10 +2340,10 @@
       <!-- Transformer Unit Selector -->
       <div class="tr-select-box">
         <i class="fa-solid fa-bolt" style="color: #f59e0b; font-size: 0.8rem;"></i>
-        <select id="twinTrSelect" onchange="switchTwinTransformer(this.value)">
-          <option value="14100-TR-003" selected>14100-TR-003 (CUP-1 / 40 MVA / Full Diagnostics)</option>
-          <option value="KT2A.30.EN">KT2A.30.EN (SITE3 / 200 MVA / 3-Phase OLTC3)</option>
-          <option value="16120-TR-001">16120-TR-001 (CUP-1 / 6 MVA / NLTC Limited Tests)</option>
+        <select id="twinTrSelect" onchange="switchTwinTransformer(this.value, true)">
+          <option value="PP0084B01" selected>14100-TR-003 (CUP-1 / 40 MVA / SN: PP0084B01)</option>
+          <option value="510049">KT2A.30.EN (SITE3 / 200 MVA / SN: 510049)</option>
+          <option value="4803321">16120-TR-001 (CUP-1 / 6 MVA / SN: 4803321)</option>
         </select>
       </div>
 
@@ -2344,8 +2351,12 @@
         <i class="fa-solid fa-moon"></i> Theme
       </button>
 
-      <a href="detail_modern_mockup.html" class="btn-action" style="text-decoration: none;">
-        <i class="fa-solid fa-table-columns"></i> View Full Dashboard
+      <a id="topbar-eval-link" href="evaluation_report.html" class="btn-action" style="text-decoration: none;">
+        <i class="fa-solid fa-file-shield"></i> Evaluation Report
+      </a>
+
+      <a href="assessment.html" class="btn-action" style="text-decoration: none;">
+        <i class="fa-solid fa-table-columns"></i> Health Assessment
       </a>
     </div>
   </header>
@@ -3269,7 +3280,7 @@
               </div>
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span class="interpretation-badge badge-healthy" id="np-interp-badge">Healthy</span>
-                <a href="assessment.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Assessment &amp; Criteria Report">
+                <a id="np-interp-link" href="evaluation_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Assessment &amp; Criteria Report">
                   <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
               </div>
@@ -3292,7 +3303,7 @@
           </div>
           <div class="sap-card-actions">
             <span class="status-tag tag-warning" id="sap-order-badge">CM01 Backlog</span>
-            <a href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.58rem;" title="Open in SAP PM System">
+            <a id="sap-doc-link" href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.58rem;" title="Open in SAP PM System">
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
               <span>SAP PM</span>
             </a>
@@ -3324,7 +3335,7 @@
             <span>Maintenance History</span>
           </div>
           <div>
-            <a href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Visual & Maintenance Log">
+            <a id="hist-doc-link" href="visual_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 6px; gap: 4px; font-size: 0.60rem;" title="Open Visual & Maintenance Log">
               <i class="fa-solid fa-file-lines"></i>
             </a>
           </div>
@@ -3355,7 +3366,7 @@
           <div style="display: flex; align-items: center; gap: 5px;">
             <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
             <span class="callout-status-pill status-normal" id="pill-activepart">Healthy</span>
-            <a href="evaluation_report.html#active-part" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Active Part Assessment">
+            <a id="ap-doc-link" href="evaluation_report.html#active-part" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Active Part Assessment">
               <i class="fa-solid fa-file-waveform"></i> Active Log
             </a>
           </div>
@@ -3591,7 +3602,7 @@
             <div style="display: flex; align-items: center; gap: 5px;">
               <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
               <span class="callout-status-pill status-normal" id="dga-date-badge" style="font-size: 0.60rem; padding: 2px 6px; white-space: nowrap;">21-Jun-2026</span>
-              <a href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
+              <a id="dga-doc-link" href="dga_report.html" target="_blank" class="bushing-doc-btn" title="Open DGA Report">
                 <i class="fa-solid fa-chart-line"></i>
               </a>
             </div>
@@ -3663,7 +3674,7 @@
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
               <span class="btn-3d-trigger" title="Click to 3D Zoom &amp; Animate"><i class="fa-solid fa-cube"></i> 3D</span>
-              <a href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
+              <a id="oil-doc-link" href="oil_report.html" target="_blank" class="bushing-doc-btn" style="width: auto; padding: 2px 7px; gap: 4px; font-size: 0.65rem;" title="Open Main Tank Oil Properties Report">
                 <i class="fa-solid fa-file-waveform"></i> Oil Log
               </a>
             </div>
@@ -3803,7 +3814,7 @@
           <div class="callout-title">
             <span class="callout-icon"><i class="fa-solid fa-sliders"></i></span>
             <span>On Load Tap Changer</span>
-            <a id="oltc-doc-link" href="oltc_report.html" target="_blank" class="bushing-doc-btn" title="Open OLTC Diagnostic Report">
+            <a id="oltc-doc-link" href="oltc_oil_report.html" target="_blank" class="bushing-doc-btn" title="Open OLTC Diagnostic Report">
               <i class="fa-regular fa-file-lines"></i>
             </a>
           </div>
@@ -3842,6 +3853,19 @@
 
     </div>
   </main>
+
+  <!-- Live Fleet Data & Diagnostic Criteria Engines -->
+  <script src="data.js"></script>
+  <script src="health_data.js"></script>
+  <script src="oltc_data.js"></script>
+  <script src="pi_data.js"></script>
+  <script src="visual_data.js"></script>
+  <script src="bushing_data.js"></script>
+  <script src="pf_data.js"></script>
+  <script src="oil_criteria.js"></script>
+  <script src="evaluation_criteria.js"></script>
+  <script src="evaluation_engine.js"></script>
+  <script src="detail.js"></script>
 
   <script>
     // Mock Data for Digital Twin Demonstration
@@ -4166,9 +4190,713 @@
       }
     };
 
-    function switchTwinTransformer(serial) {
-      const d = TWIN_DATA[serial];
+    // Map serial aliases for the 3 curated showcase units
+    TWIN_DATA['PP0084B01'] = TWIN_DATA['14100-TR-003'];
+    TWIN_DATA['510049'] = TWIN_DATA['KT2A.30.EN'];
+    TWIN_DATA['KT2A'] = TWIN_DATA['KT2A.30.EN'];
+    TWIN_DATA['4803321'] = TWIN_DATA['16120-TR-001'];
+
+    let currentActiveTwinSerial = 'PP0084B01';
+
+    function formatShortDateTwin(dateStr) {
+      if (!dateStr || dateStr === '-') return '-';
+      const s = String(dateStr).trim();
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = months[d.getMonth()];
+        const yy = String(d.getFullYear()).slice(-2);
+        return `${dd}-${mm}-${yy}`;
+      }
+      return s;
+    }
+
+    function formatFullDateTwin(dateStr) {
+      if (!dateStr || dateStr === '-') return 'Latest Test';
+      const s = String(dateStr).trim();
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = months[d.getMonth()];
+        const yyyy = d.getFullYear();
+        return `${dd}-${mm}-${yyyy}`;
+      }
+      return s;
+    }
+
+    function getLatestFromListBySerial(arr, serial, trName) {
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      const sNorm = String(serial || '').trim().toLowerCase();
+      const nNorm = String(trName || '').trim().toLowerCase();
+      const matches = arr.filter(r => {
+        const rSer = String(r['Serial'] || r['Serial No.'] || r['Serial_No'] || '').trim().toLowerCase();
+        const rName = String(r['TR Name'] || r['Transformer Name'] || '').trim().toLowerCase();
+        return (sNorm && rSer === sNorm) || (nNorm && rName === nNorm);
+      });
+      if (matches.length === 0) return null;
+      matches.sort((a, b) => {
+        const da = Date.parse(a['Test Date'] || a['Latest Test'] || a['Date'] || '') || 0;
+        const db = Date.parse(b['Test Date'] || b['Latest Test'] || b['Date'] || '') || 0;
+        return db - da;
+      });
+      return matches[0];
+    }
+
+    function populateTwinTransformerDropdown(selectedKey) {
+      const selectEl = document.getElementById('twinTrSelect');
+      if (!selectEl) return;
+      const assessArr = (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0)
+        ? assessmentData
+        : (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : []);
+      if (!assessArr || assessArr.length === 0) return;
+
+      const curVal = selectedKey || selectEl.value || currentActiveTwinSerial || 'PP0084B01';
+      selectEl.innerHTML = '';
+
+      // Group all fleet transformers by Plant / Site
+      const groups = {};
+      assessArr.forEach(row => {
+        const plant = String(row.site || row.SITE || row['Plant'] || 'Other').trim() || 'Other';
+        if (!groups[plant]) groups[plant] = [];
+        groups[plant].push(row);
+      });
+
+      Object.keys(groups).forEach(plant => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `📍 ${plant}`;
+        groups[plant].forEach(row => {
+          const serial = String(row.serial || row['Serial No'] || row['Serial No.'] || '').trim();
+          const name = String(row.name || row['Equipment Name'] || row['Transformer Name'] || serial).trim();
+          const mvaRaw = row.ratedPower !== undefined && row.ratedPower !== null ? String(row.ratedPower).trim() : String(row['Rated Power (MVA)'] || '').trim();
+          const mvaLabel = mvaRaw ? (mvaRaw.toUpperCase().includes('MVA') ? mvaRaw : `${mvaRaw} MVA`) : '';
+          const opt = document.createElement('option');
+          opt.value = serial || name;
+          opt.textContent = `${name} (${plant}${mvaLabel ? ' / ' + mvaLabel : ''} / SN: ${serial || '-'})`;
+          optgroup.appendChild(opt);
+        });
+        selectEl.appendChild(optgroup);
+      });
+
+      // Match selectedKey by serial or name
+      const targetNorm = String(curVal).trim().toLowerCase();
+      let matchedValue = null;
+      for (const opt of selectEl.options) {
+        if (opt.value.toLowerCase() === targetNorm || opt.textContent.toLowerCase().includes(targetNorm)) {
+          matchedValue = opt.value;
+          break;
+        }
+      }
+      if (matchedValue) {
+        selectEl.value = matchedValue;
+      }
+    }
+
+    function buildDynamicTwinData(targetKey) {
+      if (!targetKey) return null;
+      const keyStr = String(targetKey).trim();
+      if (TWIN_DATA[keyStr]) return TWIN_DATA[keyStr];
+
+      const keyLower = keyStr.toLowerCase();
+      for (const [k, v] of Object.entries(TWIN_DATA)) {
+        if (k.toLowerCase() === keyLower || (v && String(v.serial || '').toLowerCase() === keyLower) || (v && String(v.name || '').toLowerCase() === keyLower)) {
+          return v;
+        }
+      }
+
+      const assessArr = (typeof assessmentData !== 'undefined' && Array.isArray(assessmentData) && assessmentData.length > 0)
+        ? assessmentData
+        : (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) ? parseHealthIndexSumCSV(HEALTH_INDEX_DATA) : []);
+
+      let item = assessArr.find(r =>
+        String(r.serial || r['Serial No'] || '').trim().toLowerCase() === keyLower ||
+        String(r.name || r['Equipment Name'] || '').trim().toLowerCase() === keyLower ||
+        String(r.no) === keyStr
+      );
+      if (!item) {
+        item = assessArr.find(r =>
+          String(r.serial || '').toLowerCase().includes(keyLower) ||
+          String(r.name || '').toLowerCase().includes(keyLower)
+        );
+      }
+
+      const serial = item ? String(item.serial || keyStr).trim() : keyStr;
+      const trInfo = (typeof findLatestRecord === 'function' && typeof trInfoCsvData !== 'undefined' && trInfoCsvData.length > 0)
+        ? findLatestRecord(trInfoCsvData, serial)
+        : null;
+      const trDataMatch = (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA))
+        ? TR_DATA.find(x => String(x.SERIAL_NUMBER || '').trim().toLowerCase() === serial.toLowerCase() || String(x.EQUIPMENT_NAME || '').trim().toLowerCase() === keyLower)
+        : null;
+
+      if (!item && !trInfo && !trDataMatch) return null;
+      if (!item) item = {};
+
+      const trName = String(item.name || (trInfo && (trInfo.EQUIPMENT_NAME || trInfo.name)) || (trDataMatch && trDataMatch.EQUIPMENT_NAME) || serial).trim();
+      const site = String(item.site || (trInfo && trInfo.SITE) || (trDataMatch && trDataMatch.SITE) || '-').trim();
+      const brand = String((trInfo && (trInfo.BRAND || trInfo.brand)) || (trDataMatch && trDataMatch.BRAND) || '-').trim();
+      const mvaRaw = item.ratedPower ?? (trInfo && trInfo.RATED_POWER) ?? (trDataMatch && trDataMatch.RATED_POWER) ?? '-';
+      const power = (mvaRaw !== '-' && mvaRaw !== null && !String(mvaRaw).toUpperCase().includes('MVA')) ? `${mvaRaw} MVA` : String(mvaRaw);
+      const rateKvRaw = String(item.ratedVoltage || (trInfo && trInfo.RATED_VOLTAGE) || (trDataMatch && trDataMatch.RATED_VOLTAGE) || '-').trim();
+      const voltage = (rateKvRaw !== '-' && !rateKvRaw.toLowerCase().includes('kv')) ? `${rateKvRaw} kV` : rateKvRaw;
+      const fluid = String((trInfo && (trInfo.TYPE_OF_INSULATION || trInfo.type_of_insulation)) || (trDataMatch && trDataMatch.TYPE_OF_INSULATION) || 'Mineral oil').trim();
+      const serviceType = String(item.serviceType || (trInfo && trInfo.APPLICATION) || (trDataMatch && trDataMatch.APPLICATION) || 'Distribution').trim();
+      const ageRaw = item.serviceAge ?? '-';
+      const age = (ageRaw !== '-' && ageRaw !== null && !String(ageRaw).toLowerCase().includes('year')) ? `${ageRaw} Years` : String(ageRaw);
+      const vector = String((trInfo && (trInfo.VECTOR_GROUP || trInfo.vector_group)) || (trDataMatch && trDataMatch.VECTOR_GROUP) || '-').trim();
+      const oltcType = String((trInfo && (trInfo.TAP_CHANGER_TYPE || trInfo.tap_changer_type)) || (trDataMatch && trDataMatch.TAP_CHANGER_TYPE) || 'NLTC').trim();
+      const eqCode = String((trInfo && (trInfo.EQUIPMENT || trInfo.Equipment)) || (trDataMatch && trDataMatch.EQUIPMENT) || '').trim();
+
+      // Compute HI, Remaining Life, Est. DP, Interpretation
+      let hi = (item.healthIndex !== undefined && item.healthIndex !== null && !isNaN(parseFloat(item.healthIndex)))
+        ? Math.round(parseFloat(item.healthIndex))
+        : 85;
+      if (typeof computeHI === 'function' && item.serial) {
+        try {
+          const { percentHIVal } = computeHI(item);
+          if (percentHIVal > 0) hi = Math.round(percentHIVal);
+        } catch (e) {}
+      }
+
+      const remLifeInfo = (typeof getRemainingLifeDP300 === 'function')
+        ? getRemainingLifeDP300(item, serial)
+        : { dp: (item.estimatedDP || 950), rul300: (item.estimatedLife || 25) };
+      const life = (remLifeInfo.rul300 !== undefined && remLifeInfo.rul300 !== null && !isNaN(parseFloat(remLifeInfo.rul300)))
+        ? parseFloat(remLifeInfo.rul300).toFixed(1)
+        : '25.0';
+      const dp = (remLifeInfo.dp !== undefined && remLifeInfo.dp !== null && !isNaN(parseFloat(remLifeInfo.dp)))
+        ? Math.round(parseFloat(remLifeInfo.dp)).toLocaleString()
+        : '950';
+
+      let interpBadge = 'Healthy';
+      let interpClass = 'badge-healthy';
+      if (hi <= 50) {
+        interpBadge = 'Action Required';
+        interpClass = 'badge-critical';
+      } else if (hi <= 79) {
+        interpBadge = 'Fair / Watch';
+        interpClass = 'badge-warning';
+      }
+      const recommendation = (item.recommendation && String(item.recommendation).trim() && String(item.recommendation).trim() !== '-')
+        ? String(item.recommendation).trim()
+        : 'Normal Condition: All diagnostic test results are within acceptable limits.';
+
+      // SAP Work Order lookup
+      const cleanNameNorm = trName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      const sapArr = (typeof sapOrderCsvData !== 'undefined' && Array.isArray(sapOrderCsvData)) ? sapOrderCsvData : [];
+      const sapMatches = sapArr.filter(r => {
+        const rEq = String(r['Equipment'] || r['Reference object'] || '').trim();
+        const rDesc = String(r['Description'] || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        const rUser = String(r['User field'] || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        return (eqCode && rEq === eqCode) || (cleanNameNorm && (rDesc.includes(cleanNameNorm) || rUser.includes(cleanNameNorm)));
+      });
+      let sapOrder;
+      if (sapMatches.length > 0) {
+        const sRow = sapMatches[0];
+        const oType = String(sRow['Order Type'] || 'CM01').trim();
+        const isCm = oType.toUpperCase().startsWith('CM');
+        sapOrder = {
+          id: sRow['Order'] ? `#${String(sRow['Order']).trim()}` : 'Open Order',
+          badge: isCm ? `${oType} Backlog` : `${oType} Planned`,
+          badgeClass: isCm ? 'tag-warning' : 'tag-normal',
+          desc: String(sRow['Description'] || '-').trim(),
+          meta: String(sRow['Created By'] || `${site} Maintenance`).trim()
+        };
+      } else {
+        sapOrder = {
+          id: 'No Open Order',
+          badge: 'Routine PM',
+          badgeClass: 'tag-normal',
+          desc: 'All scheduled PM tasks completed — No active CM backlog',
+          meta: `${site} Maintenance Team`
+        };
+      }
+
+      // Maintenance History lookup
+      const histArr = (typeof trHistoryCsvData !== 'undefined' && Array.isArray(trHistoryCsvData)) ? trHistoryCsvData : [];
+      const histMatches = histArr.filter(r => {
+        const rTr = String(r['TR Name'] || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        const rEq = String(r['Equipment'] || '').trim();
+        return (cleanNameNorm && rTr === cleanNameNorm) || (eqCode && rEq === eqCode);
+      });
+      histMatches.sort((a, b) => (Date.parse(b['Date'] || '') || 0) - (Date.parse(a['Date'] || '') || 0));
+      let history = histMatches.map(r => {
+        const t = String(r['Type'] || 'PM').trim().toUpperCase();
+        const cls = t === 'CM' ? 'badge-cm' : (t === 'BD' ? 'badge-bd' : (t === 'SP' ? 'badge-sp' : 'badge-pm'));
+        return {
+          date: formatShortDateTwin(r['Date']),
+          type: t,
+          typeClass: cls,
+          part: String(r['Main Part'] || 'Routine').trim(),
+          detail: String(r['Detail'] || 'Routine Inspection').trim()
+        };
+      });
+      if (history.length === 0) {
+        const latestTestDate = formatShortDateTwin(item.dateToAssess || item.lastPM || '2025-11-15');
+        history = [
+          { date: latestTestDate, type: 'PM', typeClass: 'badge-pm', part: 'Oil & DGA', detail: 'Routine Insulating Oil & DGA Diagnostic Sampling' },
+          { date: '15-Nov-24', type: 'PM', typeClass: 'badge-pm', part: 'Routine', detail: 'Scheduled Visual & Electrical Condition Assessment' }
+        ];
+      }
+
+      // Bushing Matrix (using detail.js bushingPfCsvData & bushingInfoCsvData)
+      const bushRec = (typeof findLatestRecord === 'function' && typeof bushingPfCsvData !== 'undefined')
+        ? findLatestRecord(bushingPfCsvData, serial)
+        : null;
+      const fmtPctErr = (v) => {
+        if (v === undefined || v === null || String(v).trim() === '' || String(v).trim() === '-') return '-';
+        const n = parseFloat(v);
+        if (isNaN(n)) return String(v).trim();
+        return `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`;
+      };
+      let pf_hva = bushRec ? fmtPctErr(bushRec.maxbh1_tand) : '-';
+      let pf_hvb = bushRec ? fmtPctErr(bushRec.maxbh2_tand) : '-';
+      let pf_hvc = bushRec ? fmtPctErr(bushRec.maxbh3_tand) : '-';
+      let pf_lva = bushRec ? fmtPctErr(bushRec.maxbl1_tand) : '-';
+      let pf_lvb = bushRec ? fmtPctErr(bushRec.maxbl2_tand) : '-';
+      let pf_lvc = bushRec ? fmtPctErr(bushRec.maxbl3_tand) : '-';
+
+      let cap_hva = bushRec ? fmtPctErr(bushRec.maxbch1_change) : '-';
+      let cap_hvb = bushRec ? fmtPctErr(bushRec.maxbch2_change) : '-';
+      let cap_hvc = bushRec ? fmtPctErr(bushRec.maxbch3_change) : '-';
+      let cap_lva = bushRec ? fmtPctErr(bushRec.maxbcl1_change) : '-';
+      let cap_lvb = bushRec ? fmtPctErr(bushRec.maxbcl2_change) : '-';
+      let cap_lvc = bushRec ? fmtPctErr(bushRec.maxbcl3_change) : '-';
+
+      if (bushRec && typeof bushingInfoCsvData !== 'undefined' && Array.isArray(bushingInfoCsvData) && bushingInfoCsvData.length > 0) {
+        const npRows = bushingInfoCsvData.filter(r => String(r.Parent_Serial_No || '').trim().toLowerCase() === serial.toLowerCase());
+        const calcBushingPh = (phLabel, pf20Key, pfKey, capKey) => {
+          const npRow = npRows.find(r => String(r.Phase || '').trim().toUpperCase() === phLabel);
+          if (!npRow) return null;
+          const pf20 = parseFloat(bushRec[pf20Key] || bushRec[pfKey] || 0);
+          const npPf = parseFloat(npRow.Meas_PF_C1 || npRow.Corr_PF || 0);
+          const cap = parseFloat(bushRec[capKey] || 0);
+          const npCap = parseFloat(npRow.Capacitance_C1 || 0);
+          const pfErr = (pf20 > 0 && npPf > 0) ? fmtPctErr(((pf20 - npPf) / npPf) * 100) : null;
+          const capErr = (cap > 0 && npCap > 0) ? fmtPctErr(((cap - npCap) / npCap) * 100) : null;
+          return { pfErr, capErr };
+        };
+        const rH1 = calcBushingPh('H1', 'bushing_h1_pf_20c', 'bushing_h1_pf_tan', 'bushing_h1_c1');
+        const rH2 = calcBushingPh('H2', 'bushing_h2_pf_20c', 'bushing_h2_pf_tan', 'bushing_h2_c1');
+        const rH3 = calcBushingPh('H3', 'bushing_h3_pf_20c', 'bushing_h3_pf_tan', 'bushing_h3_c1');
+        const rX1 = calcBushingPh('X1', 'xbushing_h1_pf_20c', 'xbushing_h1_pf_tan', 'xbushing_h1_c1');
+        const rX2 = calcBushingPh('X2', 'xbushing_h2_pf_20c', 'xbushing_h2_pf_tan', 'xbushing_h2_c1');
+        const rX3 = calcBushingPh('X3', 'xbushing_h3_pf_20c', 'xbushing_h3_pf_tan', 'xbushing_h3_c1');
+        if (rH1?.pfErr) pf_hva = rH1.pfErr; if (rH1?.capErr) cap_hva = rH1.capErr;
+        if (rH2?.pfErr) pf_hvb = rH2.pfErr; if (rH2?.capErr) cap_hvb = rH2.capErr;
+        if (rH3?.pfErr) pf_hvc = rH3.pfErr; if (rH3?.capErr) cap_hvc = rH3.capErr;
+        if (rX1?.pfErr) pf_lva = rX1.pfErr; if (rX1?.capErr) cap_lva = rX1.capErr;
+        if (rX2?.pfErr) pf_lvb = rX2.pfErr; if (rX2?.capErr) cap_lvb = rX2.capErr;
+        if (rX3?.pfErr) pf_lvc = rX3.pfErr; if (rX3?.capErr) cap_lvc = rX3.capErr;
+      }
+      const hasAnyBushing = [pf_hva, pf_hvb, pf_hvc, cap_hva, cap_hvb, cap_hvc].some(v => v !== '-');
+      const bushingStatus = hasAnyBushing ? (pf_lva === '-' ? 'HV Normal / LV Solid' : '3 Ph Normal') : 'No Data';
+      const bushingClass = hasAnyBushing ? 'status-normal' : 'status-warning';
+
+      // Surge Arrester Matrix (using detail.js surgePfCsvData)
+      const latestSurge = (typeof findLatestRecord === 'function' && typeof surgePfCsvData !== 'undefined')
+        ? findLatestRecord(surgePfCsvData, serial)
+        : null;
+      const fmtSurgeVal = (v) => {
+        if (v === undefined || v === null || v === '' || v === '-' || v === 'N/A') return '-';
+        const num = parseFloat(v);
+        if (isNaN(num)) return String(v).trim();
+        return num < 1 && num > 0 ? num.toFixed(3) : (num >= 100 ? Math.round(num).toLocaleString() : num.toFixed(2));
+      };
+      const surgeStatus = latestSurge ? 'Normal' : 'Not Tested';
+      const surgeClass = latestSurge ? 'status-normal' : 'status-warning';
+
+      // DGA & Main Tank Oil Properties (using detail.js mtOilCsvData)
+      const mtOilRec = (typeof findLatestRecord === 'function' && typeof mtOilCsvData !== 'undefined')
+        ? findLatestRecord(mtOilCsvData, serial)
+        : null;
+      const fmtGas = (v) => {
+        if (v === undefined || v === null || String(v).trim() === '' || String(v).trim() === '-' || String(v).trim() === 'N/A') return '0';
+        const n = parseFloat(v);
+        return isNaN(n) ? String(v).trim() : Math.round(n).toLocaleString();
+      };
+      const h2Val = mtOilRec ? (parseFloat(mtOilRec.H2 || mtOilRec.h2) || 0) : 12;
+      const ch4Val = mtOilRec ? (parseFloat(mtOilRec.CH4 || mtOilRec.ch4) || 0) : 5;
+      const c2h6Val = mtOilRec ? (parseFloat(mtOilRec.C2H6 || mtOilRec.c2h6) || 0) : 4;
+      const c2h4Val = mtOilRec ? (parseFloat(mtOilRec.C2H4 || mtOilRec.c2h4) || 0) : 2;
+      const c2h2Val = mtOilRec ? (parseFloat(mtOilRec.C2H2 || mtOilRec.c2h2) || 0) : 0;
+      const coVal = mtOilRec ? (parseFloat(mtOilRec.CO || mtOilRec.co) || 0) : 140;
+      const co2Val = mtOilRec ? (parseFloat(mtOilRec.CO2 || mtOilRec.co2) || 0) : 1240;
+      const tdcgNum = mtOilRec && mtOilRec.TDCG && !isNaN(parseFloat(mtOilRec.TDCG))
+        ? parseFloat(mtOilRec.TDCG)
+        : (h2Val + ch4Val + c2h6Val + c2h4Val + c2h2Val + coVal);
+      const ratioCo2Co = coVal > 0 ? (co2Val / coVal) : 0;
+      const isDgaWarn = tdcgNum > 720 || c2h2Val > 1 || (item.mainTankOil && item.mainTankOil.dga === 'Q');
+
+      const dga = {
+        date: formatFullDateTwin((mtOilRec && (mtOilRec.date || mtOilRec.Date)) || item.dateToAssess),
+        h2: fmtGas(h2Val),
+        ch4: fmtGas(ch4Val),
+        c2h6: fmtGas(c2h6Val),
+        c2h4: fmtGas(c2h4Val),
+        c2h2: fmtGas(c2h2Val),
+        co: fmtGas(coVal),
+        co2: fmtGas(co2Val),
+        tdcg: Math.round(tdcgNum).toLocaleString(),
+        duval: c2h2Val > 2 ? 'D1/D2: Discharge Watch' : (c2h4Val > 50 ? 'T2: Thermal > 300°C' : 'Normal / Low Gas'),
+        duvalClass: (c2h2Val > 2 || c2h4Val > 50) ? 'tag-warning' : 'tag-normal',
+        ieee: tdcgNum > 1920 ? 'Status 3: High Gas' : (tdcgNum > 720 ? 'Status 2: Moderate' : 'Status 1: Normal'),
+        ieeeClass: tdcgNum > 1920 ? 'tag-critical' : (tdcgNum > 720 ? 'tag-warning' : 'tag-normal'),
+        iec: isDgaWarn ? 'Monitor Gas Trend' : 'Normal Pattern',
+        iecClass: isDgaWarn ? 'tag-warning' : 'tag-normal',
+        paper: ratioCo2Co > 0 ? `${ratioCo2Co > 10 || ratioCo2Co < 3 ? 'Watch Aging' : 'Normal Aging'} (${ratioCo2Co.toFixed(1)})` : 'Normal Aging',
+        paperClass: (ratioCo2Co > 11 || (ratioCo2Co > 0 && ratioCo2Co < 3)) ? 'tag-warning' : 'tag-normal'
+      };
+
+      const fmtOilVal = (v, unit, digits = 2, fallback = '-') => {
+        if (v === undefined || v === null || String(v).trim() === '' || String(v).trim() === '-' || String(v).toLowerCase() === 'none' || String(v).trim() === 'N/A') return fallback;
+        const n = parseFloat(v);
+        if (isNaN(n)) return `${String(v).trim()}${unit ? ' ' + unit : ''}`;
+        return `${n.toFixed(digits)}${unit ? ' ' + unit : ''}`;
+      };
+
+      const reverseSulfurMap = { 1: '1a', 2: '1b', 3: '2a', 4: '2b', 5: '2c', 6: '2d', 7: '2e', 8: '3a', 9: '3b (Detected)', 10: '4a', 11: '4b', 12: '4c' };
+      const rawSulfur = mtOilRec ? mtOilRec.Corrosive_Sulfur : null;
+      let sulfurStr = 'Non-Corrosive';
+      if (rawSulfur && rawSulfur !== '-' && rawSulfur !== 'N/A') {
+        const sNum = parseFloat(rawSulfur);
+        sulfurStr = (!isNaN(sNum) && reverseSulfurMap[Math.round(sNum)]) ? reverseSulfurMap[Math.round(sNum)] : String(rawSulfur).trim();
+      }
+      const rawPass = mtOilRec ? mtOilRec.Passivator : null;
+      const passStr = (rawPass !== undefined && rawPass !== null && rawPass !== '' && rawPass !== '-' && rawPass !== 'N/A')
+        ? `${Math.round(parseFloat(rawPass) || 0)} ppm`
+        : '-';
+      const rawColor = mtOilRec ? (mtOilRec.Color_No || '-') : '0.5';
+      const colorStr = (rawColor !== '-' && !String(rawColor).startsWith('L') && !isNaN(parseFloat(rawColor))) ? `L${rawColor}` : String(rawColor);
+      const rawSludge = mtOilRec ? (mtOilRec.Sludge_Condition || 'None') : 'None';
+      const sludgeStr = (rawSludge === '-' || rawSludge === '0' || String(rawSludge).toLowerCase() === 'none') ? 'None' : String(rawSludge);
+
+      // Moisture in paper from dfrCsvData or calculation
+      const dfrRec = (typeof findLatestRecord === 'function' && typeof dfrCsvData !== 'undefined')
+        ? findLatestRecord(dfrCsvData, serial)
+        : null;
+      let moistSdmStr = '1.2 %';
+      if (dfrRec && (dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture)) {
+        const mNum = parseFloat(dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture);
+        if (!isNaN(mNum)) moistSdmStr = `${mNum.toFixed(1)} %`;
+      } else if (mtOilRec && mtOilRec.WC) {
+        const wcN = parseFloat(mtOilRec.WC);
+        const tempC = parseFloat(mtOilRec.Temp || mtOilRec.Oil_Temp) || 40;
+        if (!isNaN(wcN) && wcN > 0) {
+          moistSdmStr = `${(0.00224 * wcN * Math.exp(1440 / (tempC + 273.15))).toFixed(1)} %`;
+        }
+      }
+
+      const oil = {
+        bd: mtOilRec ? fmtOilVal(mtOilRec.BD || mtOilRec.dielectric_breakdown, 'kV', 2, '72.70 kV') : '72.70 kV',
+        pf25: mtOilRec ? fmtOilVal(mtOilRec.PF_25, '%', 2, '0.05 %') : '0.05 %',
+        pf100: mtOilRec ? fmtOilVal(mtOilRec.PF_100, '%', 2, '0.45 %') : '0.45 %',
+        wc: mtOilRec ? fmtOilVal(mtOilRec.WC || mtOilRec.water_content, 'ppm', 2, '6.70 ppm') : '6.70 ppm',
+        ift: mtOilRec ? fmtOilVal(mtOilRec.IFT, 'mN/m', 2, '38.00 mN/m') : '38.00 mN/m',
+        acid: mtOilRec ? fmtOilVal(mtOilRec.Acidity_No || mtOilRec.acidity, 'mgKOH/g', 3, '0.010 mgKOH/g') : '0.010 mgKOH/g',
+        color: colorStr,
+        cond: mtOilRec ? fmtOilVal(mtOilRec.Conductivity, 'pS/m', 2, '0.50 pS/m') : '0.50 pS/m',
+        inhib: mtOilRec ? fmtOilVal(mtOilRec.Inhibitor, '%', 2, '0.30 %') : '0.30 %',
+        sludge: sludgeStr,
+        moist_sdm: moistSdmStr,
+        furan: mtOilRec ? fmtOilVal(mtOilRec.Furan_Analysis, 'ppb', 2, '-') : '-',
+        sulfur: sulfurStr,
+        pass: passStr
+      };
+
+      // Visual & Cooling System
+      const vRow = (typeof findLatestRecord === 'function' && typeof visualCsvData !== 'undefined')
+        ? (findLatestRecord(visualCsvData, serial) || {})
+        : {};
+      const mapVisCode = (v) => {
+        if (!v || v === '-' || v === 'N/A' || v === '1' || String(v).toUpperCase() === 'A' || String(v).toLowerCase() === 'normal') return 'Normal';
+        if (v === '3' || String(v).toUpperCase() === 'U' || String(v).toLowerCase().includes('abnormal')) return 'Abnormal';
+        return String(v).trim();
+      };
+      const coolingRadiator = mapVisCode(vRow.Radiator || vRow['Radiator']);
+      const coolingFan = mapVisCode(vRow.Cooling_Fan || vRow['Cooling Fan']);
+      const coolingPump = mapVisCode(vRow.Oil_Pump || vRow['Oil Pump']);
+      const hasCoolAbn = [coolingRadiator, coolingFan, coolingPump].some(x => x === 'Abnormal');
+      const coolingStatus = hasCoolAbn ? 'Watch' : 'Normal';
+      const coolingClass = hasCoolAbn ? 'status-warning' : 'status-normal';
+
+      // OLTC Card
+      const isNltc = oltcType.toUpperCase().includes('NLTC') || oltcType.toUpperCase().includes('DETC');
+      const oltcMatch = (typeof OLTC_DATA !== 'undefined' && Array.isArray(OLTC_DATA)) ? OLTC_DATA.find(x => {
+        const s1 = String(x.parentSerialNo || '').trim().toLowerCase();
+        const s2 = serial.toLowerCase();
+        const kks1 = String(x.kksNo || '').trim().toLowerCase();
+        const kks2 = trName.toLowerCase();
+        return (s1 && s2 && (s1 === s2 || s1.includes(s2) || s2.includes(s1))) ||
+               (kks1 && kks2 && (kks1 === kks2 || kks1.includes(kks2) || kks2.includes(kks1)));
+      }) : null;
+      const oltcRec = (typeof findLatestRecord === 'function' && typeof oltcOilCsvData !== 'undefined')
+        ? findLatestRecord(oltcOilCsvData, serial)
+        : null;
+
+      let oltcStatus = isNltc ? 'NLTC (De-Energized)' : 'Healthy';
+      let oltcClass = 'status-normal';
+      let oltcModel = isNltc ? 'NLTC (Off-Circuit)' : (oltcMatch && oltcMatch.oltcModelType ? oltcMatch.oltcModelType : oltcType);
+      let oltcOps = isNltc ? 'N/A (No Load Tap)' : (oltcMatch && oltcMatch.counterOperated ? `${Number(oltcMatch.counterOperated).toLocaleString()} Ops` : '-');
+      let oltcCycle = isNltc ? '5Y Major Overhaul' : ((oltcMatch && (oltcMatch.lastInspection || oltcMatch.nextDue)) ? `${oltcMatch.lastInspection || '-'} / ${oltcMatch.nextDue || '-'}` : 'Routine Schedule');
+      let oltcVisual = mapVisCode(vRow.OLTC || vRow['OLTC']) === 'Normal' ? 'Normal (No Leak)' : mapVisCode(vRow.OLTC || vRow['OLTC']);
+
+      const hasThreePhaseOltc = oltcRec && oltcRec.B_BD !== undefined && oltcRec.B_BD !== '' && oltcRec.B_BD !== '-' && oltcRec.C_BD !== undefined && oltcRec.C_BD !== '' && oltcRec.C_BD !== '-';
+      const isOltc3 = oltcType.toUpperCase().replace(/[\s\-_]/g, '').includes('OLTC3') || hasThreePhaseOltc;
+      let oltcBd, oltcWc;
+      if (isNltc) {
+        oltcBd = 'Shared w/ Main Tank';
+        oltcWc = 'Shared w/ Main Tank';
+      } else if (isOltc3 && oltcRec) {
+        oltcBd = {
+          a: parseFloat(oltcRec.A_BD || oltcRec.BD || 85.2).toFixed(1),
+          b: parseFloat(oltcRec.B_BD || 82.4).toFixed(1),
+          c: parseFloat(oltcRec.C_BD || 86.0).toFixed(1),
+          unit: 'kV'
+        };
+        oltcWc = {
+          a: parseFloat(oltcRec.A_WC || oltcRec.WC || 12.5).toFixed(1),
+          b: parseFloat(oltcRec.B_WC || 14.1).toFixed(1),
+          c: parseFloat(oltcRec.C_WC || 11.8).toFixed(1),
+          unit: 'ppm'
+        };
+      } else if (oltcRec) {
+        oltcBd = fmtOilVal(oltcRec.A_BD || oltcRec.BD, 'kV', 1, '85.2 kV');
+        oltcWc = fmtOilVal(oltcRec.A_WC || oltcRec.WC, 'ppm', 1, '12.5 ppm');
+      } else {
+        oltcBd = '85.2 kV';
+        oltcWc = '12.5 ppm';
+      }
+
+      // Active Part (Core & Winding) using detail.js datasets
+      const latestPi = (typeof findLatestRecord === 'function' && typeof irPiCsvData !== 'undefined' && irPiCsvData.length > 0)
+        ? findLatestRecord(irPiCsvData, serial)
+        : ((typeof findLatestRecord === 'function' && typeof piCsvData !== 'undefined') ? findLatestRecord(piCsvData, serial) : null);
+      const piObj = latestPi ? {
+        hg: latestPi.H_PI && !isNaN(parseFloat(latestPi.H_PI)) ? parseFloat(latestPi.H_PI).toFixed(2) : '2.10',
+        lg: latestPi.L_PI && !isNaN(parseFloat(latestPi.L_PI)) ? parseFloat(latestPi.L_PI).toFixed(2) : '2.45',
+        tg: latestPi.T_PI && latestPi.T_PI !== '-' && !isNaN(parseFloat(latestPi.T_PI)) ? parseFloat(latestPi.T_PI).toFixed(2) : undefined
+      } : { hg: '2.10', lg: '2.45' };
+
+      const cgVal = (latestPi && latestPi.coregnd && latestPi.coregnd !== '-' && !isNaN(parseFloat(latestPi.coregnd)))
+        ? `${Math.round(parseFloat(latestPi.coregnd)).toLocaleString()} MΩ`
+        : '> 1,000 MΩ';
+
+      const latestWinding = (typeof findLatestRecord === 'function' && typeof windingCsvData !== 'undefined')
+        ? findLatestRecord(windingCsvData, serial)
+        : null;
+      let wresObj = { h: '0.45%', l: '0.38%' };
+      if (latestWinding) {
+        const hDevs = [latestWinding.HV_MAX_DEV, latestWinding.HV_CEN_DEV, latestWinding.HV_MIN_DEV, latestWinding.MAX_DEV, latestWinding.H1_max_dev]
+          .map(v => parseFloat(v)).filter(v => !isNaN(v)).map(Math.abs);
+        const lDevs = [latestWinding.LV_MAX_DEV, latestWinding.LV_CEN_DEV, latestWinding.LV_MIN_DEV, latestWinding.X1_max_dev]
+          .map(v => parseFloat(v)).filter(v => !isNaN(v)).map(Math.abs);
+        wresObj = {
+          h: hDevs.length > 0 ? `${Math.max(...hDevs).toFixed(2)}%` : '0.45%',
+          l: lDevs.length > 0 ? `${Math.max(...lDevs).toFixed(2)}%` : '0.38%'
+        };
+      }
+
+      const latestSingleShort = (typeof findLatestRecord === 'function' && typeof singleShortCsvData !== 'undefined')
+        ? findLatestRecord(singleShortCsvData, serial)
+        : null;
+      let sc1pObj = { max: '0.85%', cen: '0.72%', min: '0.80%' };
+      if (latestSingleShort) {
+        const m = parseFloat(latestSingleShort.HV_Max_Dev);
+        const c = parseFloat(latestSingleShort.HV_Cen_Dev);
+        const mn = parseFloat(latestSingleShort.HV_Min_Dev);
+        const t1 = parseFloat(latestSingleShort.HV_Tap1_Dev);
+        if (!isNaN(m) || !isNaN(c) || !isNaN(mn)) {
+          sc1pObj = {
+            max: !isNaN(m) ? `${Math.abs(m).toFixed(2)}%` : undefined,
+            cen: !isNaN(c) ? `${Math.abs(c).toFixed(2)}%` : undefined,
+            min: !isNaN(mn) ? `${Math.abs(mn).toFixed(2)}%` : undefined
+          };
+        } else if (!isNaN(t1)) {
+          sc1pObj = { tap1: `${Math.abs(t1).toFixed(2)}%` };
+        }
+      }
+
+      const latestThreeShort = (typeof findLatestRecord === 'function' && typeof threeShortCsvData !== 'undefined')
+        ? findLatestRecord(threeShortCsvData, serial)
+        : null;
+      let sc3pObj = { max: '0.62%', cen: '0.58%', min: '0.65%' };
+      if (latestThreeShort) {
+        const m = parseFloat(latestThreeShort.HV_Max_Dev);
+        const c = parseFloat(latestThreeShort.HV_Cen_Dev);
+        const mn = parseFloat(latestThreeShort.HV_Min_Dev);
+        const t1 = parseFloat(latestThreeShort.HV_Tap1_Dev);
+        if (!isNaN(m) || !isNaN(c) || !isNaN(mn)) {
+          sc3pObj = {
+            max: !isNaN(m) ? `${Math.abs(m).toFixed(2)}%` : undefined,
+            cen: !isNaN(c) ? `${Math.abs(c).toFixed(2)}%` : undefined,
+            min: !isNaN(mn) ? `${Math.abs(mn).toFixed(2)}%` : undefined
+          };
+        } else if (!isNaN(t1)) {
+          sc3pObj = { tap1: `${Math.abs(t1).toFixed(2)}%` };
+        }
+      }
+
+      const latestRatio = (typeof findLatestRecord === 'function' && typeof ratioCsvData !== 'undefined')
+        ? findLatestRecord(ratioCsvData, serial)
+        : null;
+      let ttrVal = '< 0.25%';
+      if (latestRatio) {
+        const rDevs = [latestRatio.H1_max_err, latestRatio.H1_cen_err, latestRatio.H1_min_err, latestRatio.MAX_DEV, latestRatio.max_error]
+          .map(v => parseFloat(v)).filter(v => !isNaN(v)).map(Math.abs);
+        if (rDevs.length > 0) ttrVal = `< ${Math.max(...rDevs).toFixed(2)}%`;
+      }
+
+      const latestWindingPf = (typeof findLatestRecord === 'function' && typeof windingPfCsvData !== 'undefined')
+        ? findLatestRecord(windingPfCsvData, serial)
+        : null;
+      let pfObj = { hl: '0.25%', h: '0.22%', l: '0.28%' };
+      if (latestWindingPf) {
+        const ch = parseFloat(latestWindingPf.ch_pf_2 || latestWindingPf.ch_pf_1 || latestWindingPf.chl_ch_pf_20c);
+        const chl = parseFloat(latestWindingPf.chl_pf_2 || latestWindingPf.chl_pf_1);
+        const cl = parseFloat(latestWindingPf.cl_pf_2 || latestWindingPf.cl_pf_1);
+        pfObj = {
+          hl: !isNaN(chl) ? `${chl.toFixed(2)}%` : '0.25%',
+          h: !isNaN(ch) ? `${ch.toFixed(2)}%` : '0.22%',
+          l: !isNaN(cl) ? `${cl.toFixed(2)}%` : '0.28%'
+        };
+      }
+      const capObj = { hl: '0.20%', h: '0.18%', l: '0.32%' };
+      const dfrVal = moistSdmStr.replace(/\s+/g, '');
+
+      const built = {
+        name: trName,
+        serial,
+        site,
+        brand,
+        power,
+        voltage,
+        fluid,
+        serviceType,
+        age,
+        vector,
+        oltcType,
+        hi,
+        life,
+        dp,
+        interpBadge,
+        interpClass,
+        recommendation,
+        sapOrder,
+        bushingStatus,
+        bushingClass,
+        pf_hva, pf_hvb, pf_hvc, pf_lva, pf_lvb, pf_lvc,
+        cap_hva, cap_hvb, cap_hvc, cap_lva, cap_lvb, cap_lvc,
+        surgeStatus,
+        surgeClass,
+        surge_ir_hva: latestSurge ? fmtSurgeVal(latestSurge.h1_mohm !== '-' ? latestSurge.h1_mohm : latestSurge.minr) : '-',
+        surge_ir_hvb: latestSurge ? fmtSurgeVal(latestSurge.h2_mohm !== '-' ? latestSurge.h2_mohm : latestSurge.minr) : '-',
+        surge_ir_hvc: latestSurge ? fmtSurgeVal(latestSurge.h3_mohm !== '-' ? latestSurge.h3_mohm : latestSurge.minr) : '-',
+        surge_ir_lva: latestSurge ? fmtSurgeVal(latestSurge.xh1_mohm) : '-',
+        surge_ir_lvb: latestSurge ? fmtSurgeVal(latestSurge.xh2_mohm) : '-',
+        surge_ir_lvc: latestSurge ? fmtSurgeVal(latestSurge.xh3_mohm) : '-',
+        surge_curr_hva: latestSurge ? fmtSurgeVal(latestSurge.h1_current !== '-' ? latestSurge.h1_current : latestSurge.maxma1) : '-',
+        surge_curr_hvb: latestSurge ? fmtSurgeVal(latestSurge.h2_current !== '-' ? latestSurge.h2_current : latestSurge.maxma2) : '-',
+        surge_curr_hvc: latestSurge ? fmtSurgeVal(latestSurge.h3_current !== '-' ? latestSurge.h3_current : latestSurge.maxma3) : '-',
+        surge_curr_lva: latestSurge ? fmtSurgeVal(latestSurge.xh1_current) : '-',
+        surge_curr_lvb: latestSurge ? fmtSurgeVal(latestSurge.xh2_current) : '-',
+        surge_curr_lvc: latestSurge ? fmtSurgeVal(latestSurge.xh3_current) : '-',
+        surge_watt_hva: latestSurge ? fmtSurgeVal(latestSurge.h1_watt_loss !== '-' ? latestSurge.h1_watt_loss : latestSurge.maxw1) : '-',
+        surge_watt_hvb: latestSurge ? fmtSurgeVal(latestSurge.h2_watt_loss !== '-' ? latestSurge.h2_watt_loss : latestSurge.maxw2) : '-',
+        surge_watt_hvc: latestSurge ? fmtSurgeVal(latestSurge.h3_watt_loss !== '-' ? latestSurge.h3_watt_loss : latestSurge.maxw3) : '-',
+        surge_watt_lva: latestSurge ? fmtSurgeVal(latestSurge.xh1_watt_loss) : '-',
+        surge_watt_lvb: latestSurge ? fmtSurgeVal(latestSurge.xh2_watt_loss) : '-',
+        surge_watt_lvc: latestSurge ? fmtSurgeVal(latestSurge.xh3_watt_loss) : '-',
+        dga,
+        oil,
+        oltcStatus,
+        oltcClass,
+        oltcModel,
+        oltcOps,
+        oltcCycle,
+        oltcVisual,
+        oltcBd,
+        oltcWc,
+        coolingStatus,
+        coolingClass,
+        coolingRadiator,
+        coolingFan,
+        coolingPump,
+        activePart: {
+          status: hi >= 80 ? 'Healthy' : (hi >= 51 ? 'Fair / Watch' : 'Critical'),
+          statusClass: hi >= 80 ? 'status-normal' : (hi >= 51 ? 'status-warning' : 'status-critical'),
+          pi: piObj, piPill: 'Good', piClass: 'tag-normal',
+          wres: wresObj, wresPill: 'Good', wresClass: 'tag-normal',
+          sc1p: sc1pObj, sc1pPill: 'Good', sc1pClass: 'tag-normal',
+          sc3p: sc3pObj, sc3pPill: 'Good', sc3pClass: 'tag-normal',
+          ttr: ttrVal, ttrPill: 'Good', ttrClass: 'tag-normal',
+          pf: pfObj, pfPill: 'Good', pfClass: 'tag-normal',
+          cap: capObj, capPill: 'Good', capClass: 'tag-normal',
+          ex: 'H-L-H', exPill: 'Good', exClass: 'tag-normal',
+          cg: cgVal, cgPill: 'Good', cgClass: 'tag-normal',
+          fra: 'Normal', fraPill: 'Good', fraClass: 'tag-normal',
+          dfr: dfrVal, dfrPill: 'Dry', dfrClass: 'tag-normal',
+          sc: '< 1.20%', scPill: 'Good', scClass: 'tag-normal',
+          drm: isNltc ? 'N/A (NLTC)' : 'Normal', drmPill: isNltc ? 'No Test' : 'Good', drmClass: 'tag-normal'
+        },
+        history
+      };
+
+      TWIN_DATA[serial] = built;
+      TWIN_DATA[trName] = built;
+      return built;
+    }
+
+    function updateReportLinksForSerial(serial) {
+      if (!serial) return;
+      const enc = encodeURIComponent(serial);
+      const linkMap = {
+        'topbar-eval-link': `evaluation_report.html?serial=${enc}`,
+        'np-eval-link': `evaluation_report.html?serial=${enc}`,
+        'np-life-card': `remaining_life_report.html?serial=${enc}`,
+        'np-dp-card': `evaluation_report.html?serial=${enc}`,
+        'np-interp-link': `evaluation_report.html?serial=${enc}`,
+        'sap-doc-link': `visual_report.html?serial=${enc}`,
+        'hist-doc-link': `visual_report.html?serial=${enc}`,
+        'ap-doc-link': `evaluation_report.html?serial=${enc}#active-part`,
+        'bushing-doc-link': `bushing_pf_report.html?serial=${enc}`,
+        'surge-doc-link': `surge_report.html?serial=${enc}`,
+        'dga-doc-link': `dga_report.html?serial=${enc}`,
+        'oil-doc-link': `oil_report.html?serial=${enc}`,
+        'oltc-doc-link': `oltc_oil_report.html?serial=${enc}`
+      };
+      for (const [id, href] of Object.entries(linkMap)) {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('href', href);
+      }
+    }
+
+    function switchTwinTransformer(serial, pushUrl = false) {
+      const d = buildDynamicTwinData(serial);
       if (!d) return;
+      currentActiveTwinSerial = d.serial || serial;
+
+      // Sync dropdown selection
+      const selectEl = document.getElementById('twinTrSelect');
+      if (selectEl && selectEl.value !== d.serial && selectEl.value !== d.name) {
+        for (const opt of selectEl.options) {
+          if (opt.value === d.serial || opt.value === d.name) {
+            selectEl.value = opt.value;
+            break;
+          }
+        }
+      }
+
+      // Update URL parameter if user switched dropdown
+      if (pushUrl && window.history && window.history.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('serial', d.serial);
+        url.searchParams.delete('tr');
+        window.history.replaceState({}, '', url.toString());
+      }
+
+      // Update all report links with ?serial=...
+      updateReportLinksForSerial(d.serial);
 
       // Update Nameplate Information
       if (document.getElementById('np-name')) {
@@ -4330,6 +5058,9 @@
 
       // Dissolved Gas Analysis (DGA) Binding
       if (d.dga) {
+        if (document.getElementById('dga-date-badge')) {
+          document.getElementById('dga-date-badge').textContent = d.dga.date || '21-Jun-2026';
+        }
         document.getElementById('dga-h2').textContent = d.dga.h2;
         document.getElementById('dga-ch4').textContent = d.dga.ch4;
         document.getElementById('dga-c2h6').textContent = d.dga.c2h6;
@@ -4339,10 +5070,26 @@
         document.getElementById('dga-co2').textContent = d.dga.co2;
         document.getElementById('dga-tdcg').textContent = d.dga.tdcg;
         
-        document.getElementById('dga-duval').textContent = d.dga.duval || 'Normal / Low Gas';
-        document.getElementById('dga-ieee').textContent = d.dga.ieee || 'Status 1: Normal';
-        document.getElementById('dga-iec').textContent = d.dga.iec || 'Normal Pattern';
-        document.getElementById('dga-paper').textContent = d.dga.paper || 'Normal Aging';
+        const elDuval = document.getElementById('dga-duval');
+        if (elDuval) {
+          elDuval.textContent = d.dga.duval || 'Normal / Low Gas';
+          elDuval.className = `status-tag ${d.dga.duvalClass || 'tag-normal'}`;
+        }
+        const elIeee = document.getElementById('dga-ieee');
+        if (elIeee) {
+          elIeee.textContent = d.dga.ieee || 'Status 1: Normal';
+          elIeee.className = `status-tag ${d.dga.ieeeClass || 'tag-normal'}`;
+        }
+        const elIec = document.getElementById('dga-iec');
+        if (elIec) {
+          elIec.textContent = d.dga.iec || 'Normal Pattern';
+          elIec.className = `status-tag ${d.dga.iecClass || 'tag-normal'}`;
+        }
+        const elPaper = document.getElementById('dga-paper');
+        if (elPaper) {
+          elPaper.textContent = d.dga.paper || 'Normal Aging';
+          elPaper.className = `status-tag ${d.dga.paperClass || 'tag-normal'}`;
+        }
         
         // Chip warning/critical highlight
         const chipTdcg = document.getElementById('chip-tdcg');
@@ -4369,6 +5116,34 @@
         document.getElementById('oil-pass').textContent = d.oil.pass;
         
         // Pill status
+        const pillBd = document.getElementById('pill-oil-bd');
+        if (pillBd) {
+          const val = parseFloat(d.oil.bd);
+          const isWarn = !isNaN(val) && val < 45;
+          pillBd.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillBd.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillWc = document.getElementById('pill-oil-wc');
+        if (pillWc) {
+          const val = parseFloat(d.oil.wc);
+          const isWarn = !isNaN(val) && val > 20;
+          pillWc.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillWc.textContent = isWarn ? 'Watch' : 'Dry';
+        }
+        const pillIft = document.getElementById('pill-oil-ift');
+        if (pillIft) {
+          const val = parseFloat(d.oil.ift);
+          const isWarn = !isNaN(val) && val < 25;
+          pillIft.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillIft.textContent = isWarn ? 'Watch' : 'Good';
+        }
+        const pillAcid = document.getElementById('pill-oil-acid');
+        if (pillAcid) {
+          const val = parseFloat(d.oil.acid);
+          const isWarn = !isNaN(val) && val > 0.15;
+          pillAcid.className = isWarn ? 'status-tag tag-warning' : 'status-tag tag-normal';
+          pillAcid.textContent = isWarn ? 'Watch' : 'Good';
+        }
         const pillPf25 = document.getElementById('pill-oil-pf25');
         if (pillPf25) {
           const val = parseFloat(d.oil.pf25);
@@ -4406,19 +5181,25 @@
         const pillMoistSdm = document.getElementById('pill-oil-moist-sdm');
         if (pillMoistSdm) {
           const val = parseFloat(d.oil.moist_sdm);
-          pillMoistSdm.className = val < 1.5 ? 'status-tag tag-normal' : (val <= 2.5 ? 'status-tag tag-warning' : 'status-tag tag-critical');
-          pillMoistSdm.textContent = val < 1.5 ? 'Dry' : (val <= 2.5 ? 'Moderate' : 'Wet');
+          pillMoistSdm.className = isNaN(val) || val < 1.5 ? 'status-tag tag-normal' : (val <= 2.5 ? 'status-tag tag-warning' : 'status-tag tag-critical');
+          pillMoistSdm.textContent = isNaN(val) ? 'No Data' : (val < 1.5 ? 'Dry' : (val <= 2.5 ? 'Moderate' : 'Wet'));
+        }
+        const pillFuran = document.getElementById('pill-oil-furan');
+        if (pillFuran) {
+          const val = parseFloat(d.oil.furan);
+          pillFuran.className = isNaN(val) || val < 100 ? 'status-tag tag-normal' : (val <= 500 ? 'status-tag tag-warning' : 'status-tag tag-critical');
+          pillFuran.textContent = isNaN(val) ? 'No Data' : (val < 100 ? 'Low' : (val <= 500 ? 'Moderate' : 'High'));
         }
         const pillCond = document.getElementById('pill-oil-cond');
         if (pillCond) {
           const val = parseFloat(d.oil.cond);
           pillCond.className = val > 8 ? 'status-tag tag-warning' : 'status-tag tag-normal';
-          pillCond.textContent = val > 8 ? 'Watch' : 'Good';
+          pillCond.textContent = isNaN(val) ? 'No Data' : (val > 8 ? 'Watch' : 'Good');
           document.getElementById('oil-cond').style.color = val > 8 ? '#f59e0b' : '';
         }
         const pillSulfur = document.getElementById('pill-oil-sulfur');
         if (pillSulfur) {
-          const isCorrosive = d.oil.sulfur.includes('Detected') || d.oil.sulfur.includes('3b');
+          const isCorrosive = String(d.oil.sulfur).includes('Detected') || String(d.oil.sulfur).includes('3b') || (String(d.oil.sulfur).toLowerCase().includes('corrosive') && !String(d.oil.sulfur).toLowerCase().includes('not'));
           pillSulfur.className = isCorrosive ? 'status-tag tag-warning' : 'status-tag tag-normal';
           pillSulfur.textContent = isCorrosive ? 'Watch' : 'Good';
           document.getElementById('oil-sulfur').style.color = isCorrosive ? '#f59e0b' : '';
@@ -4426,9 +5207,15 @@
         const pillPass = document.getElementById('pill-oil-pass');
         if (pillPass) {
           const passVal = parseInt(d.oil.pass);
-          pillPass.className = passVal < 50 ? 'status-tag tag-critical' : 'status-tag tag-normal';
-          pillPass.textContent = passVal < 50 ? 'Top-up' : 'Good';
-          document.getElementById('oil-pass').style.color = passVal < 50 ? '#ef4444' : '';
+          if (isNaN(passVal)) {
+            pillPass.className = 'status-tag tag-normal';
+            pillPass.textContent = 'No Test';
+            document.getElementById('oil-pass').style.color = '';
+          } else {
+            pillPass.className = passVal < 50 ? 'status-tag tag-critical' : 'status-tag tag-normal';
+            pillPass.textContent = passVal < 50 ? 'Top-up' : 'Good';
+            document.getElementById('oil-pass').style.color = passVal < 50 ? '#ef4444' : '';
+          }
         }
       }
 
@@ -4683,6 +5470,50 @@
         }
       }
 
+      // Sync 3D Camera HUD & Floating Telemetry Tags to the active transformer
+      if (typeof ZOOM_3D_CONFIG !== 'undefined') {
+        ZOOM_3D_CONFIG.radiator.sub = `Radiator: ${d.coolingRadiator || 'Normal'} • Fan: ${d.coolingFan || 'Normal'} • Oil Pump: ${d.coolingPump || 'Normal'}`;
+        ZOOM_3D_CONFIG.radiator.tagMetrics = `Rad: ${d.coolingRadiator || 'Normal'} • Fan: ${d.coolingFan || 'Normal'} • Pump: ${d.coolingPump || 'Normal'}`;
+        if (d.activePart && d.activePart.pi) {
+          const piHg = typeof d.activePart.pi === 'object' ? d.activePart.pi.hg : d.activePart.pi;
+          const piLg = typeof d.activePart.pi === 'object' ? d.activePart.pi.lg : '-';
+          ZOOM_3D_CONFIG.activepart.sub = `HV/LV Winding Coils • PI (H-G/L-G): ${piHg}/${piLg} • FRA ${d.activePart.fra || 'Normal'}`;
+          ZOOM_3D_CONFIG.activepart.tagMetrics = `PI (HV/LV): ${piHg} / ${piLg} • FRA: ${d.activePart.fra || 'Normal'}`;
+        }
+        ZOOM_3D_CONFIG.hvbushing.title = `${d.voltage || '115/22 kV'} Condenser Bushings — 3D Dielectric Field`;
+        ZOOM_3D_CONFIG.hvbushing.sub = `OIP Capacitive Grading (C1/C2) • %Err PF: ${d.pf_hvb || '-'} • ${d.bushingStatus || 'Normal'}`;
+        ZOOM_3D_CONFIG.hvbushing.tagMetrics = `%Err PF (HV.B): ${d.pf_hvb || '-'} • %Err Cap: ${d.cap_hvb || '-'}`;
+        ZOOM_3D_CONFIG.lvbushing.sub = `Gapless Metal-Oxide Varistor Stack • IR: ${d.surge_ir_hva || '-'} MΩ • Leakage ${d.surge_curr_hva || '-'} mA`;
+        ZOOM_3D_CONFIG.lvbushing.tagMetrics = `IR: ${d.surge_ir_hva || '-'} MΩ • Leakage: ${d.surge_curr_hva || '-'} mA • ${d.surgeStatus || 'Normal'}`;
+        if (d.dga) {
+          ZOOM_3D_CONFIG.dga.sub = `Micro-Bubble Nucleation (H₂, CH₄, CO, CO₂) • TDCG ${d.dga.tdcg} ppm • ${d.dga.ieee || 'Normal'}`;
+          ZOOM_3D_CONFIG.dga.tagMetrics = `TDCG: ${d.dga.tdcg} ppm • ${d.dga.paper || 'Normal'} • ${d.dga.ieee || 'Normal'}`;
+        }
+        if (d.oil) {
+          ZOOM_3D_CONFIG.oilprops.sub = `ASTM D1816 Dielectric Breakdown (${d.oil.bd}) • Water ${d.oil.wc} • Sulfur ${d.oil.sulfur}`;
+          ZOOM_3D_CONFIG.oilprops.tagMetrics = `BDV: ${d.oil.bd} • H₂O: ${d.oil.wc} • Sulfur: ${d.oil.sulfur}`;
+        }
+        const oltcBdText = (typeof d.oltcBd === 'object' && d.oltcBd !== null) ? `${d.oltcBd.a}/${d.oltcBd.b}/${d.oltcBd.c} kV` : (d.oltcBd || '-');
+        const oltcWcText = (typeof d.oltcWc === 'object' && d.oltcWc !== null) ? `${d.oltcWc.a}/${d.oltcWc.b}/${d.oltcWc.c} ppm` : (d.oltcWc || '-');
+        ZOOM_3D_CONFIG.oltc.sub = `${d.oltcModel || 'OLTC'} • ${d.oltcOps || '-'} • BDV ${oltcBdText}`;
+        ZOOM_3D_CONFIG.oltc.tagHead = `${d.oltcModel || 'OLTC'} ACTIVE`;
+        ZOOM_3D_CONFIG.oltc.tagMetrics = `${d.oltcOps || '-'} • BDV: ${oltcBdText} • Water: ${oltcWcText}`;
+
+        if (active3dZoomId && ZOOM_3D_CONFIG[active3dZoomId]) {
+          const cfg = ZOOM_3D_CONFIG[active3dZoomId];
+          const hudTitle = document.getElementById('hud3dTitle');
+          const hudSub = document.getElementById('hud3dSub');
+          if (hudTitle) hudTitle.textContent = cfg.title;
+          if (hudSub) hudSub.textContent = cfg.sub;
+          const fTagHead = document.getElementById('floating3dTagHead');
+          const fTagMetrics = document.getElementById('floating3dTagMetrics');
+          if (fTagHead && cfg.tagHead) fTagHead.textContent = cfg.tagHead;
+          if (fTagMetrics && cfg.tagMetrics) fTagMetrics.textContent = cfg.tagMetrics;
+          const tapTxt = document.getElementById('bushing3dLiveTapText');
+          if (tapTxt) tapTxt.textContent = `%Err PF: ${d.pf_hvb || '-'} • Cap: ${d.cap_hvb || '-'}`;
+        }
+      }
+
       setTimeout(updateLeaderLines, 40);
     }
 
@@ -4795,8 +5626,8 @@
 
       // Sync live C1/C2 Test Tap readout on 3D Cutaway Bushing when Bushing is active
       if (id === 'hvbushing') {
-        const pfB = document.getElementById('hb-pf-b')?.textContent || '+28.1%';
-        const capB = document.getElementById('hb-cap-b')?.textContent || '≤ 1.15%';
+        const pfB = document.getElementById('val-pf_hvb')?.textContent || '+28.1%';
+        const capB = document.getElementById('val-cap_hvb')?.textContent || '-1.0%';
         const tapTxt = document.getElementById('bushing3dLiveTapText');
         if (tapTxt) tapTxt.textContent = `%Err PF: ${pfB} • Cap: ${capB}`;
       }
@@ -5193,19 +6024,33 @@
         });
       }
     }
-    // Initialize Twin Data and Nameplate on page load (supports ?tr= and ?zoom= query params)
+    // Initialize Twin Data and Nameplate on page load (supports ?serial=, ?tr=, ?no=, ?id=, and ?zoom= query params)
     function initTwinData() {
       const urlParams = new URLSearchParams(window.location.search);
-      const paramTr = urlParams.get('tr');
+      const paramTarget = urlParams.get('serial') || urlParams.get('tr') || urlParams.get('no') || urlParams.get('id');
       const paramZoom = urlParams.get('zoom');
       const paramBmode = urlParams.get('bmode');
       const select = document.getElementById('twinTrSelect');
-      const targetTr = (paramTr && TWIN_DATA[paramTr]) ? paramTr : (select ? select.value : '14100-TR-003');
-      if (select) select.value = targetTr;
-      switchTwinTransformer(targetTr);
+      const targetTr = paramTarget ? paramTarget.trim() : (select ? select.value : 'PP0084B01');
+      if (paramTarget) currentActiveTwinSerial = targetTr;
+
+      populateTwinTransformerDropdown(targetTr);
+      switchTwinTransformer(targetTr, false);
+
       if (paramZoom && ZOOM_3D_CONFIG[paramZoom]) {
         activate3dZoom(paramZoom, true);
         if (paramBmode) setBushing3dMode(paramBmode);
+      }
+
+      if (typeof loadAllTestDataCSVs === 'function') {
+        loadAllTestDataCSVs().then(() => {
+          const curatedKeys = new Set(['14100-TR-003', 'PP0084B01', 'KT2A.30.EN', 'KT2A', '510049', '16120-TR-001', '4803321']);
+          for (const k of Object.keys(TWIN_DATA)) {
+            if (!curatedKeys.has(k)) delete TWIN_DATA[k];
+          }
+          populateTwinTransformerDropdown(currentActiveTwinSerial);
+          switchTwinTransformer(currentActiveTwinSerial, false);
+        }).catch(() => {});
       }
     }
     initTwinData();

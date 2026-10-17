@@ -156,6 +156,8 @@ var dfrCsvData = [];
 var drmCsvData = [];
 var thermoScanCsvData = [];
 var factoryDataCsvData = [];
+var sapOrderCsvData = [];
+var trHistoryCsvData = [];
 
 // Auto-initialize assessmentData from HEALTH_INDEX_DATA if available
 if (typeof HEALTH_INDEX_DATA !== 'undefined' && Array.isArray(HEALTH_INDEX_DATA) && HEALTH_INDEX_DATA.length > 0) {
@@ -559,7 +561,9 @@ function loadAllTestDataCSVs() {
     { url: 'TestData/DFRData.csv', target: d => { dfrCsvData = d; if (typeof window !== 'undefined') window.dfrCsvData = d; } },
     { url: 'TestData/DRMData.csv', target: d => { drmCsvData = d; if (typeof window !== 'undefined') window.drmCsvData = d; } },
     { url: 'TestData/ThermoScanData.csv', target: d => { thermoScanCsvData = d; if (typeof window !== 'undefined') window.thermoScanCsvData = d; } },
-    { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } }
+    { url: 'TestData/FactoryData.csv', target: d => { factoryDataCsvData = d; if (typeof window !== 'undefined') window.factoryDataCsvData = d; } },
+    { url: 'TestData/SAPorder.csv', target: d => { sapOrderCsvData = d; if (typeof window !== 'undefined') window.sapOrderCsvData = d; } },
+    { url: 'TestData/TRHistory.csv', target: d => { trHistoryCsvData = d; if (typeof window !== 'undefined') window.trHistoryCsvData = d; } }
   ];
 
   return Promise.allSettled(
@@ -570,7 +574,12 @@ function loadAllTestDataCSVs() {
           if (txt) item.target(parseDgaCSV(txt));
         })
     )
-  );
+  ).then(res => {
+    if (typeof _latestRecordCacheDetail !== 'undefined' && _latestRecordCacheDetail) {
+      _latestRecordCacheDetail.clear();
+    }
+    return res;
+  });
 }
 
 // Main detail renderer
