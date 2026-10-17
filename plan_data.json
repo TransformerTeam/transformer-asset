@@ -69,7 +69,7 @@
       "wbs": "TO3",
       "sapMo": "30000079580",
       "parentId": null,
-      "task": "GTG16 3Y PM 2026",
+      "task": "CUP-1: GTG16 3Y PM 2026",
       "lead": "JIS",
       "tr": "GTG16 GSUT",
       "plant": "CUP-1",
@@ -117,7 +117,7 @@
       "wbs": "TO4",
       "sapMo": "30000081542",
       "parentId": null,
-      "task": "GT61 3Y PM 2026",
+      "task": "GEN: GT61 3Y PM 2026",
       "lead": "PIP",
       "tr": "GT61 GSUT",
       "plant": "GEN Ph.2",
@@ -131,9 +131,9 @@
     {
       "id": "TO5",
       "wbs": "TO5",
-      "sapMo": "30000083548",
+      "sapMo": "40001009",
       "parentId": null,
-      "task": "GT62 3Y PM 2026",
+      "task": "GEN: GT62 3Y PM 2026",
       "lead": "PIP",
       "tr": "GT62 GSUT",
       "plant": "GEN Ph.2",
@@ -142,12 +142,12 @@
       "end": "2026-02-14",
       "days": 5,
       "progress": 100,
-      "cost": 35280
+      "cost": 0
     },
     {
       "id": "TO5.1",
       "wbs": "TO5.1",
-      "sapMo": "1300019398",
+      "sapMo": "40001010",
       "parentId": "TO5",
       "task": "Install Scaffolding",
       "lead": "PIP",
@@ -158,12 +158,12 @@
       "end": "2026-02-11",
       "days": 2,
       "progress": 100,
-      "cost": 35280
+      "cost": 0
     },
     {
       "id": "TO5.2",
       "wbs": "TO5.2",
-      "sapMo": "",
+      "sapMo": "40001011",
       "parentId": "TO5",
       "task": "Preventive Program by EMM",
       "lead": "JIS",
@@ -179,23 +179,23 @@
     {
       "id": "TO6",
       "wbs": "TO6",
-      "sapMo": "30000083455",
+      "sapMo": "40001012",
       "parentId": null,
-      "task": "STG3C GSUT 3Y PM 2026",
+      "task": "GSPP2&3: STG3C GSUT 3Y PM 2026",
       "lead": "PIP",
-      "tr": "STG3C GSUT, STG3C UAT, CFB3 SUS11, CFB3 SUS12",
+      "tr": "STG3C GSUT",
       "plant": "GSPP2&3",
       "cat": "Transformer Outage",
-      "start": "2026-03-11",
-      "end": "2026-03-16",
-      "days": 6,
+      "start": "2026-03-03",
+      "end": "2026-03-07",
+      "days": 5,
       "progress": 100,
-      "cost": 39120
+      "cost": 0
     },
     {
       "id": "TO6.1",
       "wbs": "TO6.1",
-      "sapMo": "1300019803",
+      "sapMo": "40001013",
       "parentId": "TO6",
       "task": "Install Scaffolding",
       "lead": "PIP",
@@ -206,12 +206,12 @@
       "end": "2026-03-04",
       "days": 2,
       "progress": 100,
-      "cost": 39120
+      "cost": 0
     },
     {
       "id": "TO6.2",
       "wbs": "TO6.2",
-      "sapMo": "",
+      "sapMo": "40001014",
       "parentId": "TO6",
       "task": "Preventive Program by EMM",
       "lead": "JIS",
@@ -227,17 +227,17 @@
     {
       "id": "TO7",
       "wbs": "TO7",
-      "sapMo": "30000083850",
+      "sapMo": "40001015",
       "parentId": null,
-      "task": "TR141 3Y PM 2026",
+      "task": "GEN: GT2B 3Y PM 2026",
       "lead": "PIP",
-      "tr": "TR141",
-      "plant": "MTP-3",
+      "tr": "GT2B GSUT",
+      "plant": "GEN Ph.2",
       "cat": "Transformer Outage",
-      "start": "2026-03-14",
-      "end": "2026-03-14",
-      "days": 1,
-      "progress": 100,
+      "start": "2026-04-27",
+      "end": "2026-05-01",
+      "days": 5,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -285,7 +285,7 @@
       "start": "2026-01-01",
       "end": "2026-01-31",
       "days": 31,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -301,7 +301,7 @@
       "start": "2026-01-01",
       "end": "2026-01-31",
       "days": 31,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -317,7 +317,7 @@
       "start": "2026-04-01",
       "end": "2026-04-30",
       "days": 30,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -541,7 +541,7 @@
       "start": "2026-04-01",
       "end": "2026-04-30",
       "days": 30,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -557,7 +557,7 @@
       "start": "2026-10-01",
       "end": "2026-10-31",
       "days": 31,
-      "progress": 50,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -573,7 +573,7 @@
       "start": "2026-10-01",
       "end": "2026-10-31",
       "days": 31,
-      "progress": 100,
+      "progress": 0,
       "cost": 0
     },
     {
@@ -609,9 +609,25 @@
       "sapMo": ""
     },
     {
+      "id": "gen_1788620795344",
+      "wbs": "TO7.1",
+      "cat": "Transformer Outage",
+      "task": "Scaffolding",
+      "plant": "GEN Ph.2",
+      "tr": "GT2B GSUT",
+      "lead": "JIS",
+      "start": "2026-03-01",
+      "end": "2026-04-13",
+      "days": 44,
+      "progress": 0,
+      "cost": 0,
+      "parentId": "TO7",
+      "sapMo": ""
+    },
+    {
       "id": "gen_1788774044005",
       "wbs": "TO4.2",
-      "sapMo": "1300018946",
+      "sapMo": "",
       "cat": "Transformer Outage",
       "task": "Install Scaffolding",
       "plant": "GEN Ph.2",
@@ -637,7 +653,7 @@
       "end": "2026-03-25",
       "days": 7,
       "progress": 100,
-      "cost": 1176940,
+      "cost": 1128940,
       "parentId": null
     },
     {
@@ -812,8 +828,8 @@
       "start": "2026-05-04",
       "end": "2026-05-10",
       "days": 7,
-      "progress": 100,
-      "cost": 1600000,
+      "progress": 0,
+      "cost": 67000,
       "parentId": null
     },
     {
@@ -860,7 +876,7 @@
       "start": "2026-01-09",
       "end": "2026-01-12",
       "days": 4,
-      "progress": 100,
+      "progress": 0,
       "cost": 67000,
       "parentId": "gen_1788834063251"
     },
@@ -901,7 +917,7 @@
       "wbs": "TO12.2",
       "sapMo": "1300022158",
       "cat": "Transformer Outage",
-      "task": "Oil Regeneration by Power Int.",
+      "task": "(PR) Power Int: Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
       "lead": "PIP",
@@ -917,7 +933,7 @@
       "wbs": "TO12.3",
       "sapMo": "",
       "cat": "Transformer Outage",
-      "task": "(MOC) Oil Regen",
+      "task": "(MOC): Oil Regen",
       "plant": "GSPP11",
       "tr": "DT-3",
       "lead": "PIP",
@@ -940,105 +956,9 @@
       "start": "2026-05-04",
       "end": "2026-05-10",
       "days": 7,
-      "progress": 100,
-      "cost": 0,
-      "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788857458325",
-      "wbs": "TO11.3",
-      "sapMo": "1300019912",
-      "cat": "Transformer Outage",
-      "task": "TR3 Overhaul OLTC by Hitachi",
-      "plant": "GEN Ph.2",
-      "tr": "TR3",
-      "lead": "MMT",
-      "start": "2026-05-04",
-      "end": "2026-05-10",
-      "days": 7,
-      "progress": 100,
-      "cost": 546000,
-      "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788857996902",
-      "wbs": "TO11.4",
-      "sapMo": "1300019912",
-      "cat": "Transformer Outage",
-      "task": "Insulation paper sampling, re-gasket and oil processed by Hitachi",
-      "plant": "GEN Ph.2",
-      "tr": "TR3",
-      "lead": "MMT",
-      "start": "2026-05-04",
-      "end": "2026-05-10",
-      "days": 7,
-      "progress": 100,
-      "cost": 491000,
-      "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788858060246",
-      "wbs": "TO11.5",
-      "sapMo": "1200019021",
-      "cat": "Transformer Outage",
-      "task": "Transformer Life Assessment by KMITL",
-      "plant": "GEN Ph.2",
-      "tr": "TR3",
-      "lead": "MMT",
-      "start": "2026-05-04",
-      "end": "2026-05-10",
-      "days": 7,
-      "progress": 100,
-      "cost": 400000,
-      "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788861232308",
-      "wbs": "TO11.6",
-      "sapMo": "1300019912",
-      "cat": "Transformer Outage",
-      "task": "Add Passivator by Hitachi",
-      "plant": "GEN Ph.2",
-      "tr": "TR3",
-      "lead": "JIS",
-      "start": "2026-05-04",
-      "end": "2026-05-10",
-      "days": 7,
-      "progress": 100,
-      "cost": 96000,
-      "parentId": "gen_1788834063251"
-    },
-    {
-      "id": "gen_1788863252123",
-      "wbs": "TO8.7",
-      "sapMo": "",
-      "cat": "Transformer Outage",
-      "task": "OLTC oil top up by Hitachi",
-      "plant": "GEN Ph.2",
-      "tr": "TR2",
-      "lead": "JIS",
-      "start": "2026-03-19",
-      "end": "2026-03-25",
-      "days": 7,
-      "progress": 100,
-      "cost": 48000,
-      "parentId": "gen_1788797448102"
-    },
-    {
-      "id": "gen_1789642032802",
-      "wbs": "OA2.2",
-      "sapMo": "",
-      "cat": "Oil Analysis",
-      "task": "Submit report to plant",
-      "plant": "CUP-1",
-      "tr": "All TRs",
-      "lead": "PIP",
-      "start": "2026-10-01",
-      "end": "2026-10-31",
-      "days": 31,
       "progress": 0,
       "cost": 0,
-      "parentId": "OA2"
+      "parentId": "gen_1788834063251"
     }
   ],
   "deletedIds": [
@@ -1046,5 +966,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-09-17T10:47:45.561Z"
+  "timestamp": "2026-10-17T03:08:46.304Z"
 }
