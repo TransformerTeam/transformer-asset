@@ -1157,26 +1157,51 @@
       // 4. HV Winding Resistance Data Extraction
       const hvRows = [];
 
-      // Helper to compute corrected R if not in Object column
-      const getCorr = (meas, objVal) => {
-        if (!isNaN(pVal(objVal))) return pVal(objVal);
-        if (!isNaN(pVal(meas))) return pVal(meas) * kFactor;
-        return NaN;
+      // Helper to resolve [Measured @ Tw, Corrected @ 75°C]
+      // In WindingData.csv, Object1..Object21 store the raw Measured Resistance at Tw,
+      // while H1RMAX..TR3 store the Temperature-Corrected Resistance @ 75°C (R75 = Rmeas * (234.5 + 75) / (234.5 + Tw)).
+      const resolvePair = (hCol, objCol, facCol) => {
+        const hVal = pVal(hCol);
+        const oVal = pVal(objCol);
+        const fVal = pVal(facCol);
+        if (!isNaN(hVal) && !isNaN(oVal)) {
+          return tw <= 75.0
+            ? { meas: Math.min(hVal, oVal), corr: Math.max(hVal, oVal) }
+            : { meas: Math.max(hVal, oVal), corr: Math.min(hVal, oVal) };
+        }
+        if (!isNaN(hVal)) {
+          if (!isNaN(fVal) && fVal > 0) {
+            const diffAsCorr = Math.abs(hVal - fVal);
+            const diffAsMeas = Math.abs((hVal * kFactor) - fVal);
+            if (diffAsCorr <= diffAsMeas) {
+              return { meas: hVal / kFactor, corr: hVal };
+            }
+            return { meas: hVal, corr: hVal * kFactor };
+          }
+          if (!isNaN(pVal(rec.WINDINGTEMP))) {
+            return { meas: hVal / kFactor, corr: hVal };
+          }
+          return { meas: hVal, corr: hVal * kFactor };
+        }
+        if (!isNaN(oVal)) {
+          return { meas: oVal, corr: oVal * kFactor };
+        }
+        return { meas: NaN, corr: NaN };
       };
 
       // Tap Max
       if (!isNaN(pVal(rec.H1RMAX)) || !isNaN(pVal(rec.H2RMAX)) || !isNaN(pVal(rec.H3RMAX))) {
+        const f1 = pVal(fac.WindResist_A_Tap_Max || rec.H1COM1);
+        const f2 = pVal(fac.WindResist_B_Tap_Max || rec.H2COM1);
+        const f3 = pVal(fac.WindResist_C_Tap_Max || rec.H3COM1);
+        const p1 = resolvePair(rec.H1RMAX, rec.Object1, f1);
+        const p2 = resolvePair(rec.H2RMAX, rec.Object6, f2);
+        const p3 = resolvePair(rec.H3RMAX, rec.Object11, f3);
         hvRows.push({
           name: 'Tap Max',
-          r1: pVal(rec.H1RMAX),
-          r2: pVal(rec.H2RMAX),
-          r3: pVal(rec.H3RMAX),
-          c1: getCorr(rec.H1RMAX, rec.Object1),
-          c2: getCorr(rec.H2RMAX, rec.Object6),
-          c3: getCorr(rec.H3RMAX, rec.Object11),
-          f1: pVal(fac.WindResist_A_Tap_Max || rec.H1COM1),
-          f2: pVal(fac.WindResist_B_Tap_Max || rec.H2COM1),
-          f3: pVal(fac.WindResist_C_Tap_Max || rec.H3COM1),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVMAX),
           err1: pVal(rec.ERRH1MAX),
           err2: pVal(rec.ERRH2MAX),
@@ -1186,17 +1211,17 @@
 
       // Tap Center
       if (!isNaN(pVal(rec.H1RCENTER)) || !isNaN(pVal(rec.H2RCENTER)) || !isNaN(pVal(rec.H3RCENTER))) {
+        const f1 = pVal(fac.WindResist_A_Tap_Cen || rec.H1COM1);
+        const f2 = pVal(fac.WindResist_B_Tap_Cen || rec.H2COM1);
+        const f3 = pVal(fac.WindResist_C_Tap_Cen || rec.H3COM1);
+        const p1 = resolvePair(rec.H1RCENTER, rec.Object2, f1);
+        const p2 = resolvePair(rec.H2RCENTER, rec.Object7, f2);
+        const p3 = resolvePair(rec.H3RCENTER, rec.Object12, f3);
         hvRows.push({
           name: 'Tap Center (Service)',
-          r1: pVal(rec.H1RCENTER),
-          r2: pVal(rec.H2RCENTER),
-          r3: pVal(rec.H3RCENTER),
-          c1: getCorr(rec.H1RCENTER, rec.Object2),
-          c2: getCorr(rec.H2RCENTER, rec.Object7),
-          c3: getCorr(rec.H3RCENTER, rec.Object12),
-          f1: pVal(fac.WindResist_A_Tap_Cen || rec.H1COM1),
-          f2: pVal(fac.WindResist_B_Tap_Cen || rec.H2COM1),
-          f3: pVal(fac.WindResist_C_Tap_Cen || rec.H3COM1),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVCENTER),
           err1: pVal(rec.ERRH1CEN),
           err2: pVal(rec.ERRH2CEN),
@@ -1206,17 +1231,17 @@
 
       // Tap Min
       if (!isNaN(pVal(rec.H1RMIN)) || !isNaN(pVal(rec.H2RMIN)) || !isNaN(pVal(rec.H3RMIN))) {
+        const f1 = pVal(fac.WindResist_A_Tap_Min || rec.H1COM1);
+        const f2 = pVal(fac.WindResist_B_Tap_Min || rec.H2COM1);
+        const f3 = pVal(fac.WindResist_C_Tap_Min || rec.H3COM1);
+        const p1 = resolvePair(rec.H1RMIN, rec.Object3, f1);
+        const p2 = resolvePair(rec.H2RMIN, rec.Object8, f2);
+        const p3 = resolvePair(rec.H3RMIN, rec.Object13, f3);
         hvRows.push({
           name: 'Tap Min',
-          r1: pVal(rec.H1RMIN),
-          r2: pVal(rec.H2RMIN),
-          r3: pVal(rec.H3RMIN),
-          c1: getCorr(rec.H1RMIN, rec.Object3),
-          c2: getCorr(rec.H2RMIN, rec.Object8),
-          c3: getCorr(rec.H3RMIN, rec.Object13),
-          f1: pVal(fac.WindResist_A_Tap_Min || rec.H1COM1),
-          f2: pVal(fac.WindResist_B_Tap_Min || rec.H2COM1),
-          f3: pVal(fac.WindResist_C_Tap_Min || rec.H3COM1),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVMIN),
           err1: pVal(rec.ERRH1MIN),
           err2: pVal(rec.ERRH2MIN),
@@ -1227,17 +1252,17 @@
       // Tap 1 (H1TAP1 / H1RNO1)
       if (!isNaN(pVal(rec.H1RNO1)) || !isNaN(pVal(rec.H2RNO1)) || !isNaN(pVal(rec.H3RNO1))) {
         const tapLabel = rec.H1TAP1 && rec.H1TAP1 !== '-' ? `Tap ${rec.H1TAP1}` : 'Tap 1';
+        const f1 = pVal(rec.H1COM1 || fac.WindResist_A_Tap_Cen);
+        const f2 = pVal(rec.H2COM1 || fac.WindResist_B_Tap_Cen);
+        const f3 = pVal(rec.H3COM1 || fac.WindResist_C_Tap_Cen);
+        const p1 = resolvePair(rec.H1RNO1, rec.Object4, f1);
+        const p2 = resolvePair(rec.H2RNO1, rec.Object9, f2);
+        const p3 = resolvePair(rec.H3RNO1, rec.Object14, f3);
         hvRows.push({
           name: tapLabel,
-          r1: pVal(rec.H1RNO1),
-          r2: pVal(rec.H2RNO1),
-          r3: pVal(rec.H3RNO1),
-          c1: getCorr(rec.H1RNO1, rec.Object4),
-          c2: getCorr(rec.H2RNO1, rec.Object9),
-          c3: getCorr(rec.H3RNO1, rec.Object14),
-          f1: pVal(rec.H1COM1 || fac.WindResist_A_Tap_Cen),
-          f2: pVal(rec.H2COM1 || fac.WindResist_B_Tap_Cen),
-          f3: pVal(rec.H3COM1 || fac.WindResist_C_Tap_Cen),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVTAP1),
           err1: pVal(rec.ERRH1TAP1),
           err2: pVal(rec.ERRH2TAP1),
@@ -1248,17 +1273,17 @@
       // Tap 2 (H1TAP2 / H1RNO2)
       if (!isNaN(pVal(rec.H1RNO2)) || !isNaN(pVal(rec.H2RNO2)) || !isNaN(pVal(rec.H3RNO2))) {
         const tapLabel = rec.H1TAP2 && rec.H1TAP2 !== '-' ? `Tap ${rec.H1TAP2}` : 'Tap 2';
+        const f1 = pVal(rec.H1COM2 || fac.WindResist_A_Tap_Cen);
+        const f2 = pVal(rec.H2COM2 || fac.WindResist_B_Tap_Cen);
+        const f3 = pVal(rec.H3COM2 || fac.WindResist_C_Tap_Cen);
+        const p1 = resolvePair(rec.H1RNO2, rec.Object5, f1);
+        const p2 = resolvePair(rec.H2RNO2, rec.Object10, f2);
+        const p3 = resolvePair(rec.H3RNO2, rec.Object15, f3);
         hvRows.push({
           name: tapLabel,
-          r1: pVal(rec.H1RNO2),
-          r2: pVal(rec.H2RNO2),
-          r3: pVal(rec.H3RNO2),
-          c1: getCorr(rec.H1RNO2, rec.Object5),
-          c2: getCorr(rec.H2RNO2, rec.Object10),
-          c3: getCorr(rec.H3RNO2, rec.Object15),
-          f1: pVal(rec.H1COM2 || fac.WindResist_A_Tap_Cen),
-          f2: pVal(rec.H2COM2 || fac.WindResist_B_Tap_Cen),
-          f3: pVal(rec.H3COM2 || fac.WindResist_C_Tap_Cen),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVTAP2),
           err1: pVal(rec.ERRH1TAP2),
           err2: pVal(rec.ERRH2TAP2),
@@ -1348,17 +1373,17 @@
       const lvRows = [];
       // LV Winding
       if (!isNaN(pVal(rec.XR1)) || !isNaN(pVal(rec.XR2)) || !isNaN(pVal(rec.XR3))) {
+        const f1 = pVal(fac.WindResist_LV_A);
+        const f2 = pVal(fac.WindResist_LV_B);
+        const f3 = pVal(fac.WindResist_LV_C);
+        const p1 = resolvePair(rec.XR1, rec.Object16, f1);
+        const p2 = resolvePair(rec.XR2, rec.Object17, f2);
+        const p3 = resolvePair(rec.XR3, rec.Object18, f3);
         lvRows.push({
           name: 'LV Winding (X1 - X2 - X3)',
-          r1: pVal(rec.XR1),
-          r2: pVal(rec.XR2),
-          r3: pVal(rec.XR3),
-          c1: getCorr(rec.XR1, rec.Object16),
-          c2: getCorr(rec.XR2, rec.Object17),
-          c3: getCorr(rec.XR3, rec.Object18),
-          f1: pVal(fac.WindResist_LV_A),
-          f2: pVal(fac.WindResist_LV_B),
-          f3: pVal(fac.WindResist_LV_C),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVX),
           err1: pVal(rec.ERRX1MAX),
           err2: pVal(rec.ERRX2MAX),
@@ -1368,17 +1393,17 @@
 
       // TV Winding
       if (!isNaN(pVal(rec.TR1)) || !isNaN(pVal(rec.TR2)) || !isNaN(pVal(rec.TR3))) {
+        const f1 = pVal(fac.WindResist_TV_A);
+        const f2 = pVal(fac.WindResist_TV_B);
+        const f3 = pVal(fac.WindResist_TV_C);
+        const p1 = resolvePair(rec.TR1, rec.Object19, f1);
+        const p2 = resolvePair(rec.TR2, rec.Object20, f2);
+        const p3 = resolvePair(rec.TR3, rec.Object21, f3);
         lvRows.push({
           name: 'Tertiary (TV) Winding (Y1 - Y2 - Y3)',
-          r1: pVal(rec.TR1),
-          r2: pVal(rec.TR2),
-          r3: pVal(rec.TR3),
-          c1: getCorr(rec.TR1, rec.Object19),
-          c2: getCorr(rec.TR2, rec.Object20),
-          c3: getCorr(rec.TR3, rec.Object21),
-          f1: pVal(fac.WindResist_TV_A),
-          f2: pVal(fac.WindResist_TV_B),
-          f3: pVal(fac.WindResist_TV_C),
+          r1: p1.meas, r2: p2.meas, r3: p3.meas,
+          c1: p1.corr, c2: p2.corr, c3: p3.corr,
+          f1, f2, f3,
           devPh: pVal(rec.DEVT),
           err1: pVal(rec.ERRY1MAX),
           err2: pVal(rec.ERRY2MAX),
