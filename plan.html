@@ -1193,6 +1193,361 @@
       line-height: 1 !important;
     }
 
+    /* =========================================================================
+       SHIFT WORK / HORIZONTAL MONTH-ROW MATRIX CALENDAR (USER REFERENCE STYLE)
+       ========================================================================= */
+    .shift-cal-top-banner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 2px solid rgba(148, 163, 184, 0.35);
+      margin-bottom: 0.55rem;
+      flex-wrap: wrap;
+    }
+    [data-theme="light"] .shift-cal-top-banner,
+    [data-preset="slate-light"] .shift-cal-top-banner {
+      border-bottom: 2px solid #9ca3af;
+    }
+    .shift-cal-main-title {
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #f8fafc;
+      line-height: 1.1;
+    }
+    [data-theme="light"] .shift-cal-main-title,
+    [data-preset="slate-light"] .shift-cal-main-title {
+      color: #1f2937 !important;
+    }
+    .shift-cal-big-year {
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-size: 2.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #f8fafc;
+      line-height: 1;
+    }
+    [data-theme="light"] .shift-cal-big-year,
+    [data-preset="slate-light"] .shift-cal-big-year {
+      color: #1f2937 !important;
+    }
+    .shift-cal-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      padding-bottom: 0.45rem;
+    }
+    .shift-legend-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-left: auto;
+    }
+    .shift-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    [data-theme="light"] .shift-legend-item,
+    [data-preset="slate-light"] .shift-legend-item {
+      color: #1f2937 !important;
+    }
+    .shift-legend-swatch {
+      width: 22px;
+      height: 18px;
+      border-radius: 2px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      display: inline-block;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+    [data-theme="light"] .shift-legend-swatch,
+    [data-preset="slate-light"] .shift-legend-swatch {
+      border-color: #cbd5e1;
+    }
+
+    /* Month Matrix Table Wrapper */
+    .shift-month-block {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+    [data-theme="light"] .shift-month-block,
+    [data-preset="slate-light"] .shift-month-block {
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+    .shift-month-table {
+      width: 100%;
+      min-width: 980px;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+    }
+    [data-theme="light"] .shift-month-table,
+    [data-preset="slate-light"] .shift-month-table {
+      background: #ffffff !important;
+    }
+    .shift-col-name {
+      width: 225px;
+    }
+    /* Row 1 & 2 Left Month Header Cell (Dark Charcoal like Reference Image) */
+    .shift-th-month {
+      width: 225px;
+      background: #262626 !important;
+      color: #ffffff !important;
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 0 12px;
+      border: 1px solid #404040 !important;
+      letter-spacing: 0.01em;
+      vertical-align: middle;
+      user-select: none;
+    }
+    /* Row 1: Date Numbers (1..31) */
+    .shift-th-date {
+      background: #262626;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      height: 22px;
+      text-align: center;
+      border: 1px solid #52525b;
+      padding: 0;
+      user-select: none;
+    }
+    .shift-th-date.is-pad {
+      background: #333333;
+      border-color: #52525b;
+    }
+    [data-theme="light"] .shift-th-date,
+    [data-preset="slate-light"] .shift-th-date {
+      background: #262626 !important;
+      color: #ffffff !important;
+      border: 1px solid #737373 !important;
+    }
+    [data-theme="light"] .shift-th-date.is-pad,
+    [data-preset="slate-light"] .shift-th-date.is-pad {
+      background: #383838 !important;
+      border: 1px solid #737373 !important;
+    }
+    .shift-th-date.is-today-col {
+      background: #4f46e5 !important;
+      color: #ffffff !important;
+      box-shadow: inset 0 0 0 1px #a5b4fc;
+    }
+
+    /* Row 2: Day of Week Abbreviations (Su, Mo, Tu, We, Th, Fr, Sa) */
+    .shift-th-dow {
+      background: #52525b;
+      color: #f1f5f9;
+      font-size: 10px;
+      font-weight: 600;
+      height: 20px;
+      text-align: center;
+      border: 1px solid #71717a;
+      padding: 0;
+      user-select: none;
+    }
+    .shift-th-dow.is-pad {
+      background: #6b7280;
+      border-color: #8c8c8c;
+    }
+    [data-theme="light"] .shift-th-dow,
+    [data-preset="slate-light"] .shift-th-dow {
+      background: #6e6e6e !important;
+      color: #ffffff !important;
+      border: 1px solid #9ca3af !important;
+    }
+    [data-theme="light"] .shift-th-dow.is-pad,
+    [data-preset="slate-light"] .shift-th-dow.is-pad {
+      background: #8a8a8a !important;
+      border: 1px solid #9ca3af !important;
+    }
+
+    /* Body Rows: Left Task / Shift / Plant Label Cell */
+    .shift-td-label {
+      width: 225px;
+      height: 25px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+    }
+    .shift-td-label:hover {
+      filter: brightness(0.96);
+    }
+    [data-theme="light"] .shift-td-label,
+    [data-preset="slate-light"] .shift-td-label {
+      border: 1px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    .shift-label-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .shift-label-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(15, 23, 42, 0.15);
+      flex-shrink: 0;
+    }
+    [data-theme="light"] .shift-label-badge,
+    [data-preset="slate-light"] .shift-label-badge {
+      background: rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+    }
+
+    /* Body Rows: 37 Day Grid Cells */
+    .shift-td-day {
+      height: 25px;
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 9px;
+      font-weight: 700;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      transition: transform 0.1s ease, filter 0.12s ease;
+      position: relative;
+    }
+    .shift-td-day.is-weekend:not(.is-active) {
+      background: rgba(30, 41, 59, 0.55);
+    }
+    .shift-td-day.is-pad {
+      background: rgba(9, 13, 22, 0.55);
+      border-color: rgba(148, 163, 184, 0.14);
+    }
+    [data-theme="light"] .shift-td-day,
+    [data-preset="slate-light"] .shift-td-day {
+      background: #ffffff !important;
+      border: 1px solid #d4d4d8 !important;
+      color: #0f172a !important;
+    }
+    [data-theme="light"] .shift-td-day.is-weekend:not(.is-active),
+    [data-preset="slate-light"] .shift-td-day.is-weekend:not(.is-active) {
+      background: #fafafa !important;
+    }
+    [data-theme="light"] .shift-td-day.is-pad,
+    [data-preset="slate-light"] .shift-td-day.is-pad {
+      background: #f8fafc !important;
+      border: 1px solid #e4e4e7 !important;
+    }
+    .shift-td-day.is-active {
+      cursor: pointer;
+    }
+    .shift-td-day.is-active:hover {
+      filter: brightness(0.92);
+      z-index: 4;
+      box-shadow: inset 0 0 0 1.5px #1e293b;
+    }
+
+    /* =========================================================================
+       PASTEL & DARK-MODE TONES FOR SHIFT WORK CALENDAR (MATCHING REFERENCE)
+       ========================================================================= */
+    /* 1. Mint Green (Shift 1 / MMT / Plant Assessment) */
+    .shift-tone-mint {
+      background: rgba(52, 211, 153, 0.34) !important;
+      color: #ecfdf5 !important;
+    }
+    [data-theme="light"] .shift-tone-mint,
+    [data-preset="slate-light"] .shift-tone-mint {
+      background: #cbe8dc !important;
+      color: #0f172a !important;
+    }
+
+    /* 2. Sky Blue (Shift 2 / PIP / 3M Visual) */
+    .shift-tone-sky {
+      background: rgba(56, 189, 248, 0.36) !important;
+      color: #f0f9ff !important;
+    }
+    [data-theme="light"] .shift-tone-sky,
+    [data-preset="slate-light"] .shift-tone-sky {
+      background: #bee1f7 !important;
+      color: #0f172a !important;
+    }
+
+    /* 3. Lavender Purple (Shift 3 / JIS / Life Assessment) */
+    .shift-tone-lavender {
+      background: rgba(167, 139, 250, 0.38) !important;
+      color: #f5f3ff !important;
+    }
+    [data-theme="light"] .shift-tone-lavender,
+    [data-preset="slate-light"] .shift-tone-lavender {
+      background: #cccbf9 !important;
+      color: #0f172a !important;
+    }
+
+    /* 4. Soft Coral Rose (Transformer Outage) */
+    .shift-tone-rose {
+      background: rgba(251, 113, 133, 0.38) !important;
+      color: #fff1f2 !important;
+    }
+    [data-theme="light"] .shift-tone-rose,
+    [data-preset="slate-light"] .shift-tone-rose {
+      background: #fecdd3 !important;
+      color: #0f172a !important;
+    }
+
+    /* 5. Warm Amber (Oil Analysis) */
+    .shift-tone-amber {
+      background: rgba(251, 191, 36, 0.36) !important;
+      color: #fffbeb !important;
+    }
+    [data-theme="light"] .shift-tone-amber,
+    [data-preset="slate-light"] .shift-tone-amber {
+      background: #fde68a !important;
+      color: #0f172a !important;
+    }
+
+    /* 6. Soft Pink (OLTC Inspection) */
+    .shift-tone-pink {
+      background: rgba(244, 114, 182, 0.36) !important;
+      color: #fdf2f8 !important;
+    }
+    [data-theme="light"] .shift-tone-pink,
+    [data-preset="slate-light"] .shift-tone-pink {
+      background: #fbcfe8 !important;
+      color: #0f172a !important;
+    }
+
+    /* Neutral Empty Row */
+    .shift-tone-empty {
+      background: rgba(30, 41, 59, 0.5) !important;
+      color: #94a3b8 !important;
+      font-weight: 500 !important;
+      font-style: italic;
+    }
+    [data-theme="light"] .shift-tone-empty,
+    [data-preset="slate-light"] .shift-tone-empty {
+      background: #f8fafc !important;
+      color: #64748b !important;
+    }
+
     /* View Switcher & Range Span Action Buttons */
     .view-btn {
       display: inline-flex;
@@ -1597,64 +1952,73 @@
           </div>
         </section>
 
-        <!-- 1. CALENDAR VIEW -->
-        <div id="view-calendar" class="glass-card p-4 space-y-3">
+        <!-- 1. CALENDAR VIEW (SHIFT WORK / HORIZONTAL MONTH-ROW MATRIX) -->
+        <div id="view-calendar" class="glass-card p-5 space-y-3">
 
-          <!-- Calendar Range Span Selector & Nav Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/50">
-            <div class="flex items-center gap-3">
-              <h2 class="text-base font-bold text-white flex items-center gap-2">
-                <i class="fa-regular fa-calendar-check text-sky-400"></i>
-                <span id="cal-period-title">Year 2026 Schedule</span>
-              </h2>
+          <!-- Top Title Banner Matching Reference Image (Title Left, Large Year Right, Bottom Rule) -->
+          <div class="shift-cal-top-banner">
+            <div class="flex items-center gap-3 flex-wrap">
+              <h2 class="shift-cal-main-title">Maintenance Work Calendar</h2>
+              <span id="cal-period-title" class="text-xs font-bold px-2.5 py-1 rounded-md bg-slate-900/80 text-sky-400 border border-slate-700/60">January – June 2026</span>
               <div class="flex items-center gap-1 bg-slate-900/80 rounded-md p-0.5 border border-slate-700/50">
-                <button onclick="calNav(-1)" class="w-7 h-7 rounded flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition text-xs cursor-pointer">
+                <button onclick="calNav(-1)" class="w-7 h-7 rounded flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition text-xs cursor-pointer" title="Previous Period">
                   <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button onclick="calToday()" class="px-2 py-0.5 text-xs text-slate-300 hover:text-white font-medium cursor-pointer">Today</button>
-                <button onclick="calNav(1)" class="w-7 h-7 rounded flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition text-xs cursor-pointer">
+                <button onclick="calToday()" class="px-2.5 py-0.5 text-xs text-slate-300 hover:text-white font-semibold cursor-pointer">Today</button>
+                <button onclick="calNav(1)" class="w-7 h-7 rounded flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition text-xs cursor-pointer" title="Next Period">
                   <i class="fa-solid fa-chevron-right"></i>
                 </button>
               </div>
             </div>
+            <div class="shift-cal-big-year" id="cal-big-year">2026</div>
+          </div>
 
-            <!-- Calendar Range Span Buttons: Week, 1M, 3M, 6M, 12M -->
-            <div class="flex items-center gap-1.5 p-1 rounded-lg border border-slate-700/80 bg-slate-900/90">
-              <span class="text-[11px] font-bold px-2 flex items-center gap-1" style="color: var(--text-secondary);">
-                <i class="fa-solid fa-clock"></i> Range:
-              </span>
-              <button id="btn-span-week" onclick="setCalendarSpan('week')" class="span-btn">
-                1 Week
-              </button>
-              <button id="btn-span-1" onclick="setCalendarSpan(1)" class="span-btn active">
-                1 Month
-              </button>
-              <button id="btn-span-3" onclick="setCalendarSpan(3)" class="span-btn">
-                3 Months (Q)
-              </button>
-              <button id="btn-span-6" onclick="setCalendarSpan(6)" class="span-btn">
-                6 Months (Half)
-              </button>
-              <button id="btn-span-12" onclick="setCalendarSpan(12)" class="span-btn">
-                12 Months (Full Year)
-              </button>
+          <!-- Controls & Right-Aligned Swatch Legend Bar -->
+          <div class="shift-cal-controls-bar">
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Calendar Range Span Buttons: Week, 1M, 3M, 6M, 12M -->
+              <div class="flex items-center gap-1 p-1 rounded-lg border border-slate-700/80 bg-slate-900/90">
+                <span class="text-[11px] font-bold px-2 flex items-center gap-1" style="color: var(--text-secondary);">
+                  <i class="fa-solid fa-calendar-week"></i> Span:
+                </span>
+                <button id="btn-span-week" onclick="setCalendarSpan('week')" class="span-btn">1W</button>
+                <button id="btn-span-1" onclick="setCalendarSpan(1)" class="span-btn">1M</button>
+                <button id="btn-span-3" onclick="setCalendarSpan(3)" class="span-btn">3M (Q)</button>
+                <button id="btn-span-6" onclick="setCalendarSpan(6)" class="span-btn active">6M (Half)</button>
+                <button id="btn-span-12" onclick="setCalendarSpan(12)" class="span-btn">12M (Year)</button>
+              </div>
+
+              <!-- Row Grouping Switcher -->
+              <div class="flex items-center gap-1 p-1 rounded-lg border border-slate-700/80 bg-slate-900/90">
+                <span class="text-[11px] font-bold px-2 flex items-center gap-1" style="color: var(--text-secondary);">
+                  <i class="fa-solid fa-bars-staggered"></i> Rows:
+                </span>
+                <button id="btn-rowmode-tasks" onclick="setCalendarRowMode('tasks')" class="span-btn active" title="Show each scheduled task as a row under each month">
+                  Tasks
+                </button>
+                <button id="btn-rowmode-plants" onclick="setCalendarRowMode('plants')" class="span-btn" title="Group rows by Plant / Site">
+                  Plants
+                </button>
+                <button id="btn-rowmode-leads" onclick="setCalendarRowMode('leads')" class="span-btn" title="Show Lead Team rows (MMT, PIP, JIS) under every month">
+                  Lead Teams
+                </button>
+                <button id="btn-rowmode-cats" onclick="setCalendarRowMode('cats')" class="span-btn" title="Group rows by Maintenance Category">
+                  Categories
+                </button>
+              </div>
             </div>
 
-            <!-- Calendar Legend -->
-            <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 font-medium">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> Transformer Outage</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span> Life Assessment</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span> Plant Assessment</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span> Oil Analysis</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-sky-500"></span> 3M Visual</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-pink-500"></span> OLTC Inspection</span>
-              <span class="flex items-center gap-1.5 border-l border-slate-700/60 pl-2.5"><span class="w-2.5 h-2.5 rounded bg-slate-900 border border-slate-500 shadow-sm flex items-center justify-center text-[7px] text-emerald-400 font-bold"><i class="fa-solid fa-check"></i></span> Finished (Solid Color / 100%)</span>
+            <!-- Right-Aligned Swatch Legend Matching Reference Image (Label + Colored Square) -->
+            <div id="cal-shift-legend" class="shift-legend-row">
+              <span class="shift-legend-item">Lead MMT <span class="shift-legend-swatch shift-tone-mint"></span></span>
+              <span class="shift-legend-item">Lead PIP <span class="shift-legend-swatch shift-tone-sky"></span></span>
+              <span class="shift-legend-item">Lead JIS <span class="shift-legend-swatch shift-tone-lavender"></span></span>
             </div>
           </div>
 
           <!-- Multi-Month / Week Calendar Container -->
           <div id="calendar-container" class="space-y-4">
-            <!-- Dynamic calendar views -->
+            <!-- Dynamic Shift Work Matrix calendar views -->
           </div>
         </div>
 
@@ -3137,9 +3501,10 @@
 
     const initToday = new Date();
     let currentYear = initToday.getFullYear();
-    let startMonth = initToday.getMonth();
-    let currentWeekDate = new Date(initToday);
-    let calendarSpan = 1; // Default to 1 Month view
+    let startMonth = 0; // Start from January for Shift Work Calendar overview
+    let currentWeekDate = new Date(currentYear, 0, 1);
+    let calendarSpan = 6; // Default to 6 Months Shift Work Calendar view
+    let calendarRowMode = 'tasks'; // 'tasks' | 'plants' | 'leads' | 'cats'
     let collapsedParents = new Set();
 
     const STORAGE_KEY = 'GPSC_TRANSFORMER_PLAN_DATA_V5';
@@ -3455,6 +3820,58 @@
     }
  // Stores parent task IDs that are collapsed
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    function getShiftToneByCategory(cat, fallbackIdx = 0) {
+      const tones = ['shift-tone-mint', 'shift-tone-sky', 'shift-tone-lavender', 'shift-tone-rose', 'shift-tone-amber', 'shift-tone-pink'];
+      const c = (cat || '').replace(/^[0-9.]+\s*/, '').trim().toLowerCase();
+      if (c.includes('outage')) return 'shift-tone-rose';
+      if (c.includes('life')) return 'shift-tone-lavender';
+      if (c.includes('plant')) return 'shift-tone-mint';
+      if (c.includes('oil')) return 'shift-tone-amber';
+      if (c.includes('visual')) return 'shift-tone-sky';
+      if (c.includes('oltc')) return 'shift-tone-pink';
+      return tones[fallbackIdx % tones.length];
+    }
+
+    function updateShiftLegend() {
+      const legendEl = document.getElementById('cal-shift-legend');
+      if (!legendEl) return;
+      if (calendarRowMode === 'leads') {
+        legendEl.innerHTML = `
+          <div class="shift-legend-item"><span>Lead MMT</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
+          <div class="shift-legend-item"><span>Lead PIP</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
+          <div class="shift-legend-item"><span>Lead JIS</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
+        `;
+      } else if (calendarRowMode === 'plants') {
+        legendEl.innerHTML = `
+          <div class="shift-legend-item"><span>Plant Group A</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
+          <div class="shift-legend-item"><span>Plant Group B</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
+          <div class="shift-legend-item"><span>Plant Group C</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
+          <div class="shift-legend-item"><span>Plant Group D</span><span class="shift-legend-swatch shift-tone-amber"></span></div>
+        `;
+      } else {
+        legendEl.innerHTML = `
+          <div class="shift-legend-item"><span>Transformer Outage</span><span class="shift-legend-swatch shift-tone-rose"></span></div>
+          <div class="shift-legend-item"><span>Life Assessment</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
+          <div class="shift-legend-item"><span>Plant Assessment</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
+          <div class="shift-legend-item"><span>Oil Analysis</span><span class="shift-legend-swatch shift-tone-amber"></span></div>
+          <div class="shift-legend-item"><span>3M Visual</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
+          <div class="shift-legend-item"><span>OLTC Inspection</span><span class="shift-legend-swatch shift-tone-pink"></span></div>
+        `;
+      }
+    }
+
+    function setCalendarRowMode(mode) {
+      calendarRowMode = mode;
+      ['tasks', 'plants', 'leads', 'cats'].forEach(m => {
+        const btn = document.getElementById('btn-rowmode-' + m);
+        if (btn) {
+          btn.className = (m === mode) ? 'span-btn active' : 'span-btn';
+        }
+      });
+      updateShiftLegend();
+      renderCalendar();
+    }
 
     // Span Selector: 'week', 1, 3, 6, 12 Months
     function setCalendarSpan(span) {
@@ -5194,228 +5611,302 @@
             </div>
           </div>
         `;
+        const bigYearEl = document.getElementById('cal-big-year');
+        if (bigYearEl) bigYearEl.textContent = sunday.getFullYear();
         container.appendChild(weekCard);
         return;
       }
 
-      // === 2. MULTI-MONTH VIEW (1M, 3M, 6M, 12M) ===
-      const spanCount = typeof calendarSpan === 'number' ? calendarSpan : 3;
+      // === 2. SHIFT WORK CALENDAR MATRIX (1M, 3M, 6M, 12M) ===
+      const spanCount = typeof calendarSpan === 'number' ? calendarSpan : 6;
       const endMonth = startMonth + spanCount - 1;
       const endYear = currentYear + Math.floor(endMonth / 12);
       const normEndMonth = ((endMonth % 12) + 12) % 12;
 
+      const bigYearEl = document.getElementById('cal-big-year');
+      if (bigYearEl) bigYearEl.textContent = currentYear;
+
       if (spanCount === 1) {
-        document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} Schedule`;
+        document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear}`;
       } else if (spanCount === 12) {
-        document.getElementById('cal-period-title').textContent = `Full Year ${currentYear} (12 Months Plan)`;
+        document.getElementById('cal-period-title').textContent = `January – December ${currentYear} (12 Months)`;
       } else {
-        document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} - ${monthNames[normEndMonth]} ${endYear} (${spanCount} Months)`;
+        document.getElementById('cal-period-title').textContent = `${monthNames[startMonth]} ${currentYear} – ${monthNames[normEndMonth]} ${endYear} (${spanCount} Months)`;
       }
 
-      let gridCols = 'grid-cols-1';
-      let barVariantClass = '';
-      let autoRowHeight = 24;
-      let defaultRowHeight = 115;
-      let titleSize = 'text-xs md:text-sm';
+      updateShiftLegend();
 
-      if (spanCount === 1) {
-        gridCols = 'grid-cols-1';
-        barVariantClass = '';
-        autoRowHeight = 25;
-        defaultRowHeight = 115;
-        titleSize = 'text-sm md:text-base';
-      } else if (spanCount === 3) {
-        gridCols = 'grid-cols-1 md:grid-cols-3';
-        barVariantClass = 'gantt-bar-sm';
-        autoRowHeight = 20;
-        defaultRowHeight = 72;
-        titleSize = 'text-xs md:text-sm';
-      } else if (spanCount === 6) {
-        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-        barVariantClass = 'gantt-bar-xs';
-        autoRowHeight = 16;
-        defaultRowHeight = 56;
-        titleSize = 'text-xs';
-      } else if (spanCount === 12) {
-        gridCols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-        barVariantClass = 'gantt-bar-xs';
-        autoRowHeight = 16;
-        defaultRowHeight = 56;
-        titleSize = 'text-xs md:text-sm';
-      }
+      const dowShort = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+      const TOTAL_DAY_COLS = 37; // Max offset (6) + Max days (31) = 37 weekday-aligned columns
+      const plantTones = ['shift-tone-mint', 'shift-tone-sky', 'shift-tone-lavender', 'shift-tone-amber', 'shift-tone-rose', 'shift-tone-pink'];
 
-      const monthsGrid = document.createElement('div');
-      monthsGrid.className = `grid ${gridCols} gap-4 w-full`;
+      const stackWrapper = document.createElement('div');
+      stackWrapper.className = 'w-full space-y-2.5';
 
       for (let m = 0; m < spanCount; m++) {
         const absM = startMonth + m;
         const yIdx = currentYear + Math.floor(absM / 12);
         const mIdx = ((absM % 12) + 12) % 12;
 
-        const monthCard = document.createElement('div');
-        monthCard.className = spanCount === 1 ? 'month-calendar-card w-full' : 'month-calendar-card month-calendar-card-multi shadow-md space-y-2 flex flex-col justify-between';
+        const daysInMonth = new Date(yIdx, mIdx + 1, 0).getDate();
+        const firstDow = new Date(yIdx, mIdx, 1).getDay(); // 0 = Sunday .. 6 = Saturday
+        const mmStr = String(mIdx + 1).padStart(2, '0');
+        const mStartStr = `${yIdx}-${mmStr}-01`;
+        const mEndStr = `${yIdx}-${mmStr}-${String(daysInMonth).padStart(2, '0')}`;
 
-        const weekRows = getWeekRowsForMonth(yIdx, mIdx);
-
-        let rowsHTML = '';
-        weekRows.forEach((wRow, wIdx) => {
-          const isFirstRow = (wIdx === 0);
-          let cellsHTML = '';
-
-          wRow.forEach((cell, dIdx) => {
-            const d = cell.d;
-            const isDay1 = (d === 1);
-            const dObj = new Date(cell.dateStr + 'T00:00:00');
-            const shortMonth = monthNames[dObj.getMonth()].substring(0, 3);
-            const displayDateText = isDay1 ? `${shortMonth} 1` : `${d}`;
-
-            const isToday = (
-              cell.d === todayObj.getDate() &&
-              mIdx === todayObj.getMonth() &&
-              yIdx === todayObj.getFullYear() &&
-              cell.currentMonth
-            );
-
-            let displayDateHTML = '';
-            if (isToday) {
-              displayDateHTML = `<span class="cal-today-badge">${displayDateText}</span>`;
-            } else if (!cell.currentMonth) {
-              displayDateHTML = `<span class="cal-date-muted">${displayDateText}</span>`;
-            } else {
-              displayDateHTML = `<span>${displayDateText}</span>`;
-            }
-
-            let cellHeader = '';
-            if (isFirstRow) {
-              cellHeader = `
-                <div class="cal-header-row1">
-                  <div class="cal-day-name">${dayLabels[dIdx]}</div>
-                  <div class="cal-date-num">${displayDateHTML}</div>
-                </div>
-              `;
-            } else {
-              cellHeader = `
-                <div class="cal-header-rown">
-                  <div class="cal-date-num">${displayDateHTML}</div>
-                </div>
-              `;
-            }
-
-            cellsHTML += `
-              <div class="unified-cal-cell ${isToday ? 'is-today' : ''} ${!cell.currentMonth ? 'is-other-month' : ''}">
-                ${cellHeader}
-              </div>
-            `;
+        // Tasks overlapping this month
+        const monthTasks = filtered
+          .filter(t => t.start <= mEndStr && t.end >= mStartStr)
+          .sort((a, b) => {
+            if (a.start !== b.start) return a.start.localeCompare(b.start);
+            return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
           });
 
-          const weekDateStrs = wRow.map(x => x.dateStr);
-          const { placedTasks, trackCount } = computeWeekTaskTracks(weekDateStrs, filtered);
+        // Build 2 Header Rows (Row 1: Month Name + Date Numbers 1..31, Row 2: Weekday Abbreviations Su..Sa)
+        const monthHeaderLabel = (yIdx !== currentYear) ? `${monthNames[mIdx]} ${yIdx}` : `${monthNames[mIdx]}`;
+        let trDatesHTML = `<tr><th rowspan="2" class="shift-th-month">${monthHeaderLabel}</th>`;
+        let trDowsHTML = `<tr>`;
 
-          const baseHeaderHeight = isFirstRow ? (spanCount === 1 ? 48 : (spanCount === 3 ? 40 : 34)) : (spanCount === 1 ? 30 : (spanCount === 3 ? 24 : 20));
-          const rowMinHeight = Math.max(defaultRowHeight, baseHeaderHeight + (trackCount * (autoRowHeight + 3)) + 8);
+        const colMeta = [];
+        for (let col = 0; col < TOTAL_DAY_COLS; col++) {
+          const dayNum = col - firstDow + 1;
+          const isValid = (dayNum >= 1 && dayNum <= daysInMonth);
+          const dow = col % 7;
+          const isWeekend = (dow === 0 || dow === 6);
+          const dateStr = isValid ? `${yIdx}-${mmStr}-${String(dayNum).padStart(2, '0')}` : '';
+          const isToday = isValid && (
+            dayNum === todayObj.getDate() &&
+            mIdx === todayObj.getMonth() &&
+            yIdx === todayObj.getFullYear()
+          );
 
-          let barsHTML = '';
-          placedTasks.forEach(pt => {
-            const t = pt.task;
-            const isDone = t.progress >= 100;
-            const catClass = getGanttCategoryClass(t.cat);
-            const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
-            const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
-            const doneClass = isDone ? 'gantt-bar-finished' : '';
-            const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
+          colMeta.push({ col, dayNum, isValid, dow, isWeekend, dateStr, isToday });
 
-            let barContent = '';
-            if (spanCount === 1) {
-              barContent = `
-                <div class="flex items-center justify-between w-full overflow-hidden text-[11px] font-semibold gap-1.5">
-                  <div class="flex items-center gap-1.5 truncate">
-                    ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[8px] opacity-70"></i>' : ''}
-                    <span class="font-mono font-bold text-[11px]">${displayTitle}</span>
-                    ${t.tr ? `<span class="opacity-80 text-[9.5px] hidden sm:inline font-normal">(${t.tr})</span>` : ''}
-                  </div>
-                  <div class="flex items-center gap-1 shrink-0 ml-1 text-[9.5px]">
-                    <span class="font-bold opacity-90">${t.progress}%</span>
-                    ${isDone ? '<i class="fa-solid fa-check text-white text-[10px]"></i>' : ''}
-                    ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[8px] opacity-70"></i>' : ''}
-                  </div>
+          const thClasses = [
+            !isValid ? 'is-pad' : '',
+            (isValid && isWeekend) ? 'is-weekend' : '',
+            isToday ? 'is-today-col' : ''
+          ].filter(Boolean).join(' ');
+
+          trDatesHTML += `<th class="shift-th-date ${thClasses}">${isValid ? dayNum : ''}</th>`;
+          trDowsHTML += `<th class="shift-th-dow ${thClasses}">${isValid ? dowShort[dow] : ''}</th>`;
+        }
+        trDatesHTML += `</tr>`;
+        trDowsHTML += `</tr>`;
+
+        // Build Body Rows based on calendarRowMode ('tasks' | 'leads' | 'plants' | 'cats')
+        const rowModels = [];
+
+        if (calendarRowMode === 'leads') {
+          const leadDefs = [
+            { key: 'MMT', label: 'Lead MMT', tone: 'shift-tone-mint' },
+            { key: 'PIP', label: 'Lead PIP', tone: 'shift-tone-sky' },
+            { key: 'JIS', label: 'Lead JIS', tone: 'shift-tone-lavender' }
+          ];
+          leadDefs.forEach(ld => {
+            const lTasks = monthTasks.filter(t => (t.lead || '').toUpperCase().includes(ld.key));
+            rowModels.push({
+              toneClass: ld.tone,
+              labelHTML: `
+                <div class="shift-label-inner">
+                  <span class="truncate font-bold">${ld.label}</span>
+                  <span class="shift-label-badge">${lTasks.length}</span>
                 </div>
-              `;
-            } else if (spanCount === 3) {
-              barContent = `
-                <div class="flex items-center justify-between w-full overflow-hidden text-[9.5px] font-semibold gap-1">
-                  <div class="flex items-center gap-1 truncate">
-                    ${pt.isContinuationLeft ? '<i class="fa-solid fa-chevron-left text-[7px] opacity-70"></i>' : ''}
-                    <span class="font-mono font-bold">${pt.span >= 2 ? displayTitle : t.wbs}</span>
-                  </div>
-                  <div class="flex items-center gap-0.5 shrink-0 text-[8.5px]">
-                    ${isDone ? '<i class="fa-solid fa-check text-white text-[9px]"></i>' : `<span class="font-bold opacity-80">${t.progress}%</span>`}
-                    ${pt.isContinuationRight ? '<i class="fa-solid fa-chevron-right text-[7px] opacity-70"></i>' : ''}
-                  </div>
-                </div>
-              `;
-            } else {
-              barContent = `
-                <div class="flex items-center justify-between w-full overflow-hidden text-[8.5px] font-bold gap-0.5">
-                  <div class="flex items-center gap-0.5 truncate">
-                    ${pt.isContinuationLeft ? '<span class="text-[7px]">&lt;</span>' : ''}
-                    <span class="font-mono tracking-tighter truncate">${pt.span >= 2 ? (t.plant + ' ' + t.wbs) : t.wbs}</span>
-                  </div>
-                  ${pt.isContinuationRight ? '<span class="text-[7px]">&gt;</span>' : ''}
-                </div>
-              `;
-            }
-
-            barsHTML += `
-              <div onclick="openModal('edit', '${t.id}')"
-                   title="${t.wbs}: ${t.task} (${t.plant}) | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%"
-                   class="gantt-bar ${barVariantClass} ${catClass} ${doneClass} ${contLeftClass} ${contRightClass} group"
-                   style="grid-column: ${pt.startCol} / span ${pt.span}; grid-row: ${pt.trackRow + 1};">
-                ${barContent}
-              </div>
-            `;
+              `,
+              titleAttr: `${ld.label}: ${lTasks.length} task(s) in ${monthNames[mIdx]} ${yIdx}`,
+              clickId: lTasks.length === 1 ? lTasks[0].id : '',
+              getCell: (cm) => {
+                const activeList = lTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
+                if (activeList.length === 0) return { active: false };
+                const allDone = activeList.every(t => t.progress >= 100);
+                const tip = activeList.map(t => `${t.wbs} (${t.plant}): ${t.task} [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
+                return {
+                  active: true,
+                  toneClass: ld.tone,
+                  clickId: activeList[0].id,
+                  tooltip: tip,
+                  isDone: allDone,
+                  marker: activeList.length > 1 ? `${activeList.length}` : (allDone ? '✓' : '')
+                };
+              }
+            });
           });
-
-          const overlayTopClass = isFirstRow ? 'cal-overlay-row1' : 'cal-overlay-rown';
-          rowsHTML += `
-            <div class="unified-cal-row" style="min-height: ${rowMinHeight}px;">
-              ${cellsHTML}
-              <div class="cal-gantt-overlay ${overlayTopClass}">
-                <div class="cal-track-grid" style="grid-auto-rows: ${autoRowHeight}px; row-gap: 2.5px;">
-                  ${barsHTML}
+        } else if (calendarRowMode === 'plants') {
+          const uniquePlants = [...new Set(monthTasks.map(t => t.plant).filter(Boolean))].sort();
+          if (uniquePlants.length === 0) {
+            rowModels.push({
+              toneClass: 'shift-tone-empty',
+              labelHTML: `<div class="shift-label-inner"><span class="truncate italic">No scheduled tasks</span></div>`,
+              titleAttr: `No tasks in ${monthNames[mIdx]} ${yIdx}`,
+              clickId: '',
+              getCell: () => ({ active: false })
+            });
+          } else {
+            uniquePlants.forEach((pName, pIdx) => {
+              const pTasks = monthTasks.filter(t => t.plant === pName);
+              const pTone = plantTones[pIdx % plantTones.length];
+              rowModels.push({
+                toneClass: pTone,
+                labelHTML: `
+                  <div class="shift-label-inner">
+                    <span class="truncate font-bold">${pName}</span>
+                    <span class="shift-label-badge">${pTasks.length}</span>
+                  </div>
+                `,
+                titleAttr: `${pName}: ${pTasks.length} task(s) in ${monthNames[mIdx]} ${yIdx}`,
+                clickId: pTasks[0].id,
+                getCell: (cm) => {
+                  const activeList = pTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
+                  if (activeList.length === 0) return { active: false };
+                  const allDone = activeList.every(t => t.progress >= 100);
+                  const tip = activeList.map(t => `${t.wbs}: ${t.task} (${t.tr || 'TR'}) [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
+                  return {
+                    active: true,
+                    toneClass: pTone,
+                    clickId: activeList[0].id,
+                    tooltip: tip,
+                    isDone: allDone,
+                    marker: allDone ? '✓' : ''
+                  };
+                }
+              });
+            });
+          }
+        } else if (calendarRowMode === 'cats') {
+          const catDefs = [
+            { name: 'Transformer Outage', tone: 'shift-tone-rose' },
+            { name: 'Life Assessment', tone: 'shift-tone-lavender' },
+            { name: 'Plant Assessment', tone: 'shift-tone-mint' },
+            { name: 'Oil Analysis', tone: 'shift-tone-amber' },
+            { name: '3M Visual', tone: 'shift-tone-sky' },
+            { name: 'OLTC Inspection', tone: 'shift-tone-pink' }
+          ];
+          const activeCats = catDefs.filter(cd => monthTasks.some(t => matchCategory(cd.name, t.cat)));
+          const listToRender = activeCats.length > 0 ? activeCats : catDefs.slice(0, 3);
+          listToRender.forEach(cd => {
+            const cTasks = monthTasks.filter(t => matchCategory(cd.name, t.cat));
+            rowModels.push({
+              toneClass: cd.tone,
+              labelHTML: `
+                <div class="shift-label-inner">
+                  <span class="truncate font-bold">${cd.name}</span>
+                  <span class="shift-label-badge">${cTasks.length}</span>
                 </div>
-              </div>
-            </div>
-          `;
-        });
-
-        if (spanCount === 1) {
-          monthCard.innerHTML = `
-            <div class="unified-cal-wrapper">
-              <div class="unified-cal-table">
-                ${rowsHTML}
-              </div>
-            </div>
-          `;
+              `,
+              titleAttr: `${cd.name}: ${cTasks.length} task(s) in ${monthNames[mIdx]} ${yIdx}`,
+              clickId: cTasks.length > 0 ? cTasks[0].id : '',
+              getCell: (cm) => {
+                const activeList = cTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
+                if (activeList.length === 0) return { active: false };
+                const allDone = activeList.every(t => t.progress >= 100);
+                const tip = activeList.map(t => `${t.wbs} (${t.plant}): ${t.task} [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
+                return {
+                  active: true,
+                  toneClass: cd.tone,
+                  clickId: activeList[0].id,
+                  tooltip: tip,
+                  isDone: allDone,
+                  marker: allDone ? '✓' : ''
+                };
+              }
+            });
+          });
         } else {
-          monthCard.innerHTML = `
-            <div class="flex items-center justify-between pb-1.5 border-b border-slate-700/40 mb-2">
-              <h3 class="${titleSize} font-bold text-sky-400 flex items-center gap-1.5">
-                <i class="fa-regular fa-calendar text-sky-400"></i> ${monthNames[mIdx]} ${yIdx}
-              </h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700">Q${Math.floor(mIdx/3)+1}</span>
-            </div>
-            <div class="unified-cal-wrapper flex-1">
-              <div class="unified-cal-table">
-                ${rowsHTML}
-              </div>
-            </div>
-          `;
+          // Default: 'tasks' mode (Each scheduled task in the month is its own row)
+          if (monthTasks.length === 0) {
+            rowModels.push({
+              toneClass: 'shift-tone-empty',
+              labelHTML: `<div class="shift-label-inner"><span class="truncate italic">No scheduled tasks</span></div>`,
+              titleAttr: `No tasks scheduled in ${monthNames[mIdx]} ${yIdx}`,
+              clickId: '',
+              getCell: () => ({ active: false })
+            });
+          } else {
+            monthTasks.forEach((t, tIdx) => {
+              const tTone = getShiftToneByCategory(t.cat, tIdx);
+              const isDone = (t.progress >= 100);
+              const shortTask = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
+              const fullTip = `${t.wbs} | ${shortTask} (${t.tr || 'TR'}) | Lead: ${t.lead || '-'} | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%`;
+
+              rowModels.push({
+                toneClass: tTone,
+                labelHTML: `
+                  <div class="shift-label-inner">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="shift-label-badge">${t.wbs}</span>
+                      <span class="truncate font-bold">${shortTask}</span>
+                    </div>
+                    <span class="text-[9.5px] font-mono opacity-80 shrink-0">${isDone ? '✓' : (t.progress + '%')}</span>
+                  </div>
+                `,
+                titleAttr: fullTip,
+                clickId: t.id,
+                getCell: (cm) => {
+                  if (cm.dateStr < t.start || cm.dateStr > t.end) return { active: false };
+                  return {
+                    active: true,
+                    toneClass: tTone,
+                    clickId: t.id,
+                    tooltip: fullTip,
+                    isDone: isDone,
+                    marker: isDone ? '✓' : ''
+                  };
+                }
+              });
+            });
+          }
         }
 
-        monthsGrid.appendChild(monthCard);
+        // Render tbody rows
+        let tbodyHTML = '';
+        rowModels.forEach(rm => {
+          const labelClick = rm.clickId ? `onclick="openModal('edit', '${rm.clickId}')"` : '';
+          const safeLabelTitle = (rm.titleAttr || '').replace(/"/g, '&quot;');
+          let trHTML = `<tr><td class="shift-td-label ${rm.toneClass}" ${labelClick} title="${safeLabelTitle}">${rm.labelHTML}</td>`;
+
+          colMeta.forEach(cm => {
+            if (!cm.isValid) {
+              trHTML += `<td class="shift-td-day is-pad"></td>`;
+            } else {
+              const cellInfo = rm.getCell(cm);
+              const wkClass = cm.isWeekend ? 'is-weekend' : '';
+              const tdTodayClass = cm.isToday ? 'is-today-col' : '';
+              if (cellInfo && cellInfo.active) {
+                const cClick = cellInfo.clickId ? `onclick="openModal('edit', '${cellInfo.clickId}')"` : '';
+                const safeTip = (cellInfo.tooltip || '').replace(/"/g, '&quot;');
+                const doneClass = cellInfo.isDone ? 'is-done' : '';
+                trHTML += `<td class="shift-td-day ${cellInfo.toneClass} is-active ${doneClass} ${wkClass} ${tdTodayClass}" ${cClick} title="${safeTip}"></td>`;
+              } else {
+                trHTML += `<td class="shift-td-day ${wkClass} ${tdTodayClass}"></td>`;
+              }
+            }
+          });
+
+          trHTML += `</tr>`;
+          tbodyHTML += trHTML;
+        });
+
+        const monthBlock = document.createElement('div');
+        monthBlock.className = 'shift-month-block';
+        monthBlock.innerHTML = `
+          <table class="shift-month-table">
+            <colgroup>
+              <col style="width: 225px;" />
+              ${'<col />'.repeat(TOTAL_DAY_COLS)}
+            </colgroup>
+            <thead>
+              ${trDatesHTML}
+              ${trDowsHTML}
+            </thead>
+            <tbody>
+              ${tbodyHTML}
+            </tbody>
+          </table>
+        `;
+        stackWrapper.appendChild(monthBlock);
       }
 
-      container.appendChild(monthsGrid);
+      container.appendChild(stackWrapper);
     }
 
     // Format Date helper: YYYY-MM-DD -> dd-Mmm-yyyy (e.g. 05-Jan-2026)
@@ -5744,11 +6235,17 @@
       if (urlParams.has('plant')) {
         document.getElementById('filter-plant').value = urlParams.get('plant');
       }
+      if (urlParams.has('rowmode')) {
+        const rm = urlParams.get('rowmode');
+        if (['tasks', 'plants', 'leads', 'cats'].includes(rm)) {
+          setCalendarRowMode(rm);
+        }
+      }
       if (urlParams.has('span')) {
         const s = urlParams.get('span');
         setCalendarSpan(s === 'week' ? 'week' : parseInt(s));
       } else {
-        setCalendarSpan(1);
+        setCalendarSpan(6);
       }
       if (urlParams.has('cat')) {
         const catParam = urlParams.get('cat');
