@@ -866,16 +866,28 @@
         <span>Historical Trending Analysis</span>
       </div>
       <div class="trending-panel no-print" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 8px; margin-bottom: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
-          <span style="font-weight: 700; font-size: 11px; color: #1e3a8a;"><i class="fa-solid fa-chart-line"></i> Measurement Trend vs. Service History</span>
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 10.5px; font-weight: 600; color: #334155;">Insulation Mode:</span>
-            <select id="trend-winding-select" style="background: #f8fafc; color: #0f172a; border: 1.5px solid #94a3b8; font-weight: 600; padding: 3px 10px; border-radius: 4px; font-size: 10.5px; outline: none; cursor: pointer;" onchange="updateTrendChart()">
-              <!-- Options populated dynamically -->
-            </select>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
+          <span style="font-weight: 700; font-size: 11px; color: #1e3a8a;"><i class="fa-solid fa-chart-line"></i> Measurement Trend vs. Service History (All Insulation Modes)</span>
+          <div id="trend-mode-legend" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 9.5px; font-weight: 700; color: #1e293b;">
+            <!-- Mode color badges populated dynamically -->
           </div>
         </div>
-        <div id="trend-chart" style="min-height: 180px;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 8px 2px 8px; background: #ffffff;">
+            <div style="font-size: 9.5px; font-weight: 700; color: #1e3a8a; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;">
+              <span><i class="fa-solid fa-wave-square" style="color: #dc2626; margin-right: 4px;"></i>Power Factor at 20°C (%) Trend — All Modes</span>
+              <span style="font-size: 8.5px; color: #64748b; font-weight: 600;">Unit: % PF (20°C)</span>
+            </div>
+            <div id="trend-pf-chart" style="min-height: 195px;"></div>
+          </div>
+          <div style="border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 8px 2px 8px; background: #ffffff;">
+            <div style="font-size: 9.5px; font-weight: 700; color: #1e3a8a; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;">
+              <span><i class="fa-solid fa-bolt" style="color: #2563eb; margin-right: 4px;"></i>Capacitance (pF) Trend — All Modes</span>
+              <span style="font-size: 8.5px; color: #64748b; font-weight: 600;">Unit: pF</span>
+            </div>
+            <div id="trend-cap-chart" style="min-height: 195px;"></div>
+          </div>
+        </div>
       </div>
 
       <!-- 6. Standards, Mathematical Formulation & Evaluation Criteria -->
@@ -2283,54 +2295,48 @@
       });
     }
 
-    function populateTrendSelector(is3W) {
-      const trendSelect = document.getElementById('trend-winding-select');
-      if (!trendSelect) return;
-      const prevSelectedVal = trendSelect.value;
-      trendSelect.innerHTML = '';
+    let currentIs3W = false;
+    let trendPfChart = null;
+    let trendCapChart = null;
 
-      let trendOptions = ['CH+CHL', 'CH', 'CHL', 'CL+CLT', 'CL', 'CLT'];
-      if (!is3W) {
-        trendOptions = ['CH+CHL', 'CH', 'CHL', 'CL+CLH', 'CL', 'CLH'];
-      } else {
-        trendOptions = trendOptions.concat(['CT+CHT', 'CT', 'CHT']);
-      }
-
-      trendOptions.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        trendSelect.appendChild(option);
-      });
-
-      if (trendOptions.includes(prevSelectedVal)) {
-        trendSelect.value = prevSelectedVal;
-      } else {
-        trendSelect.value = trendOptions[0];
-      }
-
-      updateTrendChart();
-    }
+    const MODE_COLORS = {
+      'CH+CHL': '#dc2626',
+      'CH':     '#2563eb',
+      'CHL':    '#16a34a',
+      'CL+CLH': '#d97706',
+      'CL+CLT': '#d97706',
+      'CL':     '#7c3aed',
+      'CL(T)':  '#7c3aed',
+      'CLH':    '#0891b2',
+      'CLT':    '#0891b2',
+      'CT+CHT': '#db2777',
+      'CT':     '#4f46e5',
+      'CHT':    '#65a30d'
+    };
 
     const fieldMap = {
       'CH+CHL': { pf: 'chl_ch_pf_2', cap: 'chl_ch_cap' },
-      'CH': { pf: 'ch_pf_2', cap: 'ch_cap' },
-      'CHL': { pf: 'chl_pf_2', cap: 'chl_cap' },
+      'CH':     { pf: 'ch_pf_2',     cap: 'ch_cap' },
+      'CHL':    { pf: 'chl_pf_2',    cap: 'chl_cap' },
       'CL+CLT': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
       'CL+CLH': { pf: 'clh_cl_pf_2', cap: 'clh_cl_cap' },
-      'CL': { pf: 'cl_pf_2', cap: 'cl_cap' },
-      'CL(T)': { pf: 'cl_pf_2', cap: 'cl_cap' },
-      'CLT': { pf: 'clh_pf_2', cap: 'clh_cap' },
-      'CLH': { pf: 'clh_pf_2', cap: 'clh_cap' },
+      'CL':     { pf: 'cl_pf_2',     cap: 'cl_cap' },
+      'CL(T)':  { pf: 'cl_pf_2',     cap: 'cl_cap' },
+      'CLT':    { pf: 'clh_pf_2',    cap: 'clh_cap' },
+      'CLH':    { pf: 'clh_pf_2',    cap: 'clh_cap' },
       'CT+CHT': { pf: 'ct_cth_pf_2', cap: 'ct_cth_cap' },
-      'CT': { pf: 'ct_pf_2', cap: 'ct_cap' },
-      'CHT': { pf: 'cth_pf_2', cap: 'cth_cap' }
+      'CT':     { pf: 'ct_pf_2',     cap: 'ct_cap' },
+      'CHT':    { pf: 'cth_pf_2',    cap: 'cth_cap' }
     };
+
+    function populateTrendSelector(is3W) {
+      currentIs3W = Boolean(is3W);
+      updateTrendChart();
+    }
 
     function updateTrendChart() {
       const serial = currentSerial;
-      const selectWinding = document.getElementById('trend-winding-select')?.value;
-      if (!serial || !selectWinding || typeof pfDataList === 'undefined') return;
+      if (!serial || typeof pfDataList === 'undefined') return;
 
       const rawHistory = pfDataList.filter(x => matchSerial(x.serial, serial));
       const parseDate = (dStr) => {
@@ -2340,102 +2346,157 @@
 
       rawHistory.sort((a, b) => parseDate(a.date) - parseDate(b.date));
 
-      const fields = fieldMap[selectWinding];
-      if (!fields) return;
+      const candidateModes = currentIs3W
+        ? ['CH+CHL', 'CH', 'CHL', 'CL+CLT', 'CL', 'CLT', 'CT+CHT', 'CT', 'CHT']
+        : ['CH+CHL', 'CH', 'CHL', 'CL+CLH', 'CL', 'CLH'];
 
-      const dates = [];
-      const pfValues = [];
-      const capValues = [];
+      const dates = rawHistory.map(item => formatDate_ddMmmyyyy(item.date));
 
-      rawHistory.forEach(item => {
-        const formattedDate = formatDate_ddMmmyyyy(item.date);
-        dates.push(formattedDate);
+      const pfSeries = [];
+      const capSeries = [];
+      const pfColors = [];
+      const capColors = [];
+      const activeLegendModes = [];
 
-        const pfVal = parseFloat((item[fields.pf] || '').toString().replace(/,/g, ''));
-        pfValues.push(isNaN(pfVal) ? null : pfVal);
+      candidateModes.forEach(mode => {
+        const fields = fieldMap[mode];
+        if (!fields) return;
+        const color = MODE_COLORS[mode] || '#334155';
 
-        const capVal = parseFloat((item[fields.cap] || '').toString().replace(/,/g, ''));
-        capValues.push(isNaN(capVal) ? null : capVal);
+        const pfData = rawHistory.map(item => {
+          const v = parseFloat((item[fields.pf] || '').toString().replace(/,/g, ''));
+          return isNaN(v) ? null : v;
+        });
+        const capData = rawHistory.map(item => {
+          const v = parseFloat((item[fields.cap] || '').toString().replace(/,/g, ''));
+          return isNaN(v) ? null : v;
+        });
+
+        const hasPf = pfData.some(v => v !== null);
+        const hasCap = capData.some(v => v !== null);
+
+        if (hasPf || hasCap || ! mode.startsWith('CT')) {
+          activeLegendModes.push({ mode, color });
+          pfSeries.push({ name: mode, data: pfData });
+          pfColors.push(color);
+          capSeries.push({ name: mode, data: capData });
+          capColors.push(color);
+        }
       });
+
+      const legendEl = document.getElementById('trend-mode-legend');
+      if (legendEl) {
+        legendEl.innerHTML = activeLegendModes.map(m => `
+          <span style="display: inline-flex; align-items: center; gap: 4px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 999px; padding: 1.5px 7px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: ${m.color}; display: inline-block;"></span>
+            <span>${m.mode}</span>
+          </span>
+        `).join('');
+      }
 
       const textColor = '#0f172a';
       const labelColor = '#334155';
       const gridColor = '#e2e8f0';
 
-      const options = {
-        series: [
-          { name: 'Power Factor (%)', type: 'line', data: pfValues },
-          { name: 'Capacitance (pF)', type: 'line', data: capValues }
-        ],
+      const baseChartConfig = (series, colors, yTitle, yColor, yFormatter, tooltipFormatter) => ({
+        series,
         chart: {
-          height: 180,
+          height: 195,
           type: 'line',
           toolbar: { show: false },
           background: '#ffffff',
-          fontFamily: 'Inter, sans-serif'
+          fontFamily: 'Inter, sans-serif',
+          animations: { enabled: false }
         },
-        stroke: { width: [2.5, 2.5], curve: 'straight' },
-        colors: ['#dc2626', '#2563eb'],
-        markers: { size: 5, strokeWidth: 2, strokeColors: '#ffffff', hover: { size: 7 } },
+        stroke: {
+          width: series.map(() => 2.2),
+          curve: 'straight'
+        },
+        colors,
+        markers: {
+          size: 4.5,
+          strokeWidth: 1.5,
+          strokeColors: '#ffffff',
+          hover: { size: 6.5 }
+        },
         xaxis: {
           categories: dates,
-          labels: { 
-            style: { colors: labelColor, fontSize: '9.5px', fontWeight: 600 } 
+          labels: {
+            style: { colors: labelColor, fontSize: '9px', fontWeight: 600 }
           },
           axisBorder: { show: true, color: '#cbd5e1' },
           axisTicks: { show: true, color: '#cbd5e1' }
         },
-        yaxis: [
-          {
-            title: { 
-              text: 'Power Factor (%)', 
-              style: { color: '#dc2626', fontSize: '10.5px', fontWeight: 700 } 
-            },
-            labels: { 
-              style: { colors: '#dc2626', fontSize: '9.5px', fontWeight: 600 }, 
-              formatter: val => (val !== null && val !== undefined && !isNaN(val)) ? val.toFixed(3) + '%' : '' 
-            }
+        yaxis: {
+          title: {
+            text: yTitle,
+            style: { color: yColor, fontSize: '9.5px', fontWeight: 700 }
           },
-          {
-            opposite: true,
-            title: { 
-              text: 'Capacitance (pF)', 
-              style: { color: '#2563eb', fontSize: '10.5px', fontWeight: 700 } 
-            },
-            labels: { 
-              style: { colors: '#2563eb', fontSize: '9.5px', fontWeight: 600 }, 
-              formatter: val => (val !== null && val !== undefined && !isNaN(val)) ? val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '' 
-            }
+          labels: {
+            style: { colors: labelColor, fontSize: '9px', fontWeight: 600 },
+            formatter: yFormatter
           }
-        ],
-        grid: { borderColor: gridColor, strokeDashArray: 3, yaxis: { lines: { show: true } } },
-        legend: { 
-          labels: { colors: textColor }, 
-          fontSize: '11px', 
-          fontWeight: 600,
+        },
+        grid: {
+          borderColor: gridColor,
+          strokeDashArray: 3,
+          yaxis: { lines: { show: true } },
+          padding: { top: 0, right: 8, bottom: 0, left: 4 }
+        },
+        legend: {
+          show: true,
+          labels: { colors: textColor },
+          fontSize: '9.5px',
+          fontWeight: 700,
           position: 'top',
           horizontalAlign: 'center',
-          itemMargin: { horizontal: 12, vertical: 4 }
+          markers: { width: 8, height: 8, radius: 8 },
+          itemMargin: { horizontal: 6, vertical: 2 }
         },
         tooltip: {
           theme: 'light',
           shared: true,
           intersect: false,
           y: {
-            formatter: (val, opts) => {
-              if (val === null || val === undefined || isNaN(val)) return '-';
-              if (opts.seriesIndex === 0) return val.toFixed(3) + '%';
-              return val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' pF';
-            }
+            formatter: tooltipFormatter
           }
         }
-      };
+      });
 
-      const chartContainer = document.getElementById('trend-chart');
-      if (chartContainer) {
-        chartContainer.innerHTML = '';
-        trendChart = new ApexCharts(chartContainer, options);
-        trendChart.render();
+      const pfContainer = document.getElementById('trend-pf-chart');
+      if (pfContainer) {
+        if (trendPfChart) {
+          try { trendPfChart.destroy(); } catch (e) {}
+        }
+        pfContainer.innerHTML = '';
+        const pfOptions = baseChartConfig(
+          pfSeries,
+          pfColors,
+          'Power Factor (%)',
+          '#dc2626',
+          val => (val !== null && val !== undefined && !isNaN(val)) ? val.toFixed(3) + '%' : '',
+          val => (val !== null && val !== undefined && !isNaN(val)) ? val.toFixed(3) + '%' : '-'
+        );
+        trendPfChart = new ApexCharts(pfContainer, pfOptions);
+        trendPfChart.render();
+      }
+
+      const capContainer = document.getElementById('trend-cap-chart');
+      if (capContainer) {
+        if (trendCapChart) {
+          try { trendCapChart.destroy(); } catch (e) {}
+        }
+        capContainer.innerHTML = '';
+        const capOptions = baseChartConfig(
+          capSeries,
+          capColors,
+          'Capacitance (pF)',
+          '#2563eb',
+          val => (val !== null && val !== undefined && !isNaN(val)) ? val.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 }) : '',
+          val => (val !== null && val !== undefined && !isNaN(val)) ? val.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' pF' : '-'
+        );
+        trendCapChart = new ApexCharts(capContainer, capOptions);
+        trendCapChart.render();
       }
     }
 
