@@ -1273,6 +1273,29 @@
     [data-preset="slate-light"] .shift-legend-swatch {
       border-color: #cbd5e1;
     }
+    .shift-legend-dual {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      width: 26px;
+      height: 17px;
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
+      flex-shrink: 0;
+    }
+    .shift-legend-dual > span {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .shift-legend-dual > span:first-child {
+      border-right: 1px solid rgba(15, 23, 42, 0.18);
+    }
+    [data-theme="light"] .shift-legend-dual,
+    [data-preset="slate-light"] .shift-legend-dual {
+      border-color: #94a3b8;
+    }
 
     /* Month Matrix Table Wrapper */
     .shift-month-block {
@@ -1547,72 +1570,201 @@
     }
 
     /* =========================================================================
-       PASTEL & DARK-MODE TONES FOR SHIFT WORK CALENDAR (MATCHING REFERENCE)
+       PASTEL & DARK-MODE TONES FOR SHIFT WORK CALENDAR (WITH PROGRESS INTENSITY)
+       - .prog-plan   (0% Planned)     : Pale / Soft tint
+       - .prog-inprog (1-99% Progress) : Medium tint
+       - .prog-done   (100% Completed) : Vivid / Deep saturated tone
        ========================================================================= */
     /* 1. Mint Green (Shift 1 / MMT / Plant Assessment) */
-    .shift-tone-mint {
+    .shift-tone-mint,
+    .shift-tone-mint.prog-inprog {
       background: rgba(52, 211, 153, 0.34) !important;
       color: #ecfdf5 !important;
     }
+    .shift-tone-mint.prog-plan {
+      background: rgba(52, 211, 153, 0.14) !important;
+      color: #a7f3d0 !important;
+    }
+    .shift-tone-mint.prog-done {
+      background: rgba(16, 185, 129, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-mint,
-    [data-preset="slate-light"] .shift-tone-mint {
-      background: #cbe8dc !important;
+    [data-preset="slate-light"] .shift-tone-mint,
+    [data-theme="light"] .shift-tone-mint.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-mint.prog-inprog {
+      background: #b5e5d1 !important;
       color: #0f172a !important;
+    }
+    [data-theme="light"] .shift-tone-mint.prog-plan,
+    [data-preset="slate-light"] .shift-tone-mint.prog-plan {
+      background: #e6f7f0 !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-mint.prog-done,
+    [data-preset="slate-light"] .shift-tone-mint.prog-done {
+      background: #6ee7b7 !important;
+      color: #064e3b !important;
     }
 
     /* 2. Sky Blue (Shift 2 / PIP / 3M Visual) */
-    .shift-tone-sky {
+    .shift-tone-sky,
+    .shift-tone-sky.prog-inprog {
       background: rgba(56, 189, 248, 0.36) !important;
       color: #f0f9ff !important;
     }
+    .shift-tone-sky.prog-plan {
+      background: rgba(56, 189, 248, 0.14) !important;
+      color: #bae6fd !important;
+    }
+    .shift-tone-sky.prog-done {
+      background: rgba(14, 165, 233, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-sky,
-    [data-preset="slate-light"] .shift-tone-sky {
-      background: #bee1f7 !important;
+    [data-preset="slate-light"] .shift-tone-sky,
+    [data-theme="light"] .shift-tone-sky.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-sky.prog-inprog {
+      background: #bae0fd !important;
       color: #0f172a !important;
+    }
+    [data-theme="light"] .shift-tone-sky.prog-plan,
+    [data-preset="slate-light"] .shift-tone-sky.prog-plan {
+      background: #e8f5fe !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-sky.prog-done,
+    [data-preset="slate-light"] .shift-tone-sky.prog-done {
+      background: #7dd3fc !important;
+      color: #0c4a6e !important;
     }
 
     /* 3. Lavender Purple (Shift 3 / JIS / Life Assessment) */
-    .shift-tone-lavender {
-      background: rgba(167, 139, 250, 0.38) !important;
+    .shift-tone-lavender,
+    .shift-tone-lavender.prog-inprog {
+      background: rgba(167, 139, 250, 0.36) !important;
       color: #f5f3ff !important;
     }
+    .shift-tone-lavender.prog-plan {
+      background: rgba(167, 139, 250, 0.14) !important;
+      color: #ddd6fe !important;
+    }
+    .shift-tone-lavender.prog-done {
+      background: rgba(139, 92, 246, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-lavender,
-    [data-preset="slate-light"] .shift-tone-lavender {
-      background: #cccbf9 !important;
+    [data-preset="slate-light"] .shift-tone-lavender,
+    [data-theme="light"] .shift-tone-lavender.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-lavender.prog-inprog {
+      background: #cbcbfa !important;
       color: #0f172a !important;
+    }
+    [data-theme="light"] .shift-tone-lavender.prog-plan,
+    [data-preset="slate-light"] .shift-tone-lavender.prog-plan {
+      background: #eeedfe !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-lavender.prog-done,
+    [data-preset="slate-light"] .shift-tone-lavender.prog-done {
+      background: #a5b4fc !important;
+      color: #1e1b4b !important;
     }
 
     /* 4. Soft Coral Rose (Transformer Outage) */
-    .shift-tone-rose {
-      background: rgba(251, 113, 133, 0.38) !important;
+    .shift-tone-rose,
+    .shift-tone-rose.prog-inprog {
+      background: rgba(251, 113, 133, 0.36) !important;
       color: #fff1f2 !important;
     }
+    .shift-tone-rose.prog-plan {
+      background: rgba(251, 113, 133, 0.14) !important;
+      color: #fecdd3 !important;
+    }
+    .shift-tone-rose.prog-done {
+      background: rgba(244, 63, 94, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-rose,
-    [data-preset="slate-light"] .shift-tone-rose {
+    [data-preset="slate-light"] .shift-tone-rose,
+    [data-theme="light"] .shift-tone-rose.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-rose.prog-inprog {
       background: #fecdd3 !important;
       color: #0f172a !important;
     }
+    [data-theme="light"] .shift-tone-rose.prog-plan,
+    [data-preset="slate-light"] .shift-tone-rose.prog-plan {
+      background: #ffe8ec !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-rose.prog-done,
+    [data-preset="slate-light"] .shift-tone-rose.prog-done {
+      background: #fda4af !important;
+      color: #4c0519 !important;
+    }
 
     /* 5. Warm Amber (Oil Analysis) */
-    .shift-tone-amber {
+    .shift-tone-amber,
+    .shift-tone-amber.prog-inprog {
       background: rgba(251, 191, 36, 0.36) !important;
       color: #fffbeb !important;
     }
+    .shift-tone-amber.prog-plan {
+      background: rgba(251, 191, 36, 0.14) !important;
+      color: #fde68a !important;
+    }
+    .shift-tone-amber.prog-done {
+      background: rgba(245, 158, 11, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-amber,
-    [data-preset="slate-light"] .shift-tone-amber {
+    [data-preset="slate-light"] .shift-tone-amber,
+    [data-theme="light"] .shift-tone-amber.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-amber.prog-inprog {
       background: #fde68a !important;
       color: #0f172a !important;
     }
+    [data-theme="light"] .shift-tone-amber.prog-plan,
+    [data-preset="slate-light"] .shift-tone-amber.prog-plan {
+      background: #fef6d8 !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-amber.prog-done,
+    [data-preset="slate-light"] .shift-tone-amber.prog-done {
+      background: #fcd34d !important;
+      color: #451a03 !important;
+    }
 
     /* 6. Soft Pink (OLTC Inspection) */
-    .shift-tone-pink {
+    .shift-tone-pink,
+    .shift-tone-pink.prog-inprog {
       background: rgba(244, 114, 182, 0.36) !important;
       color: #fdf2f8 !important;
     }
+    .shift-tone-pink.prog-plan {
+      background: rgba(244, 114, 182, 0.14) !important;
+      color: #fbcfe8 !important;
+    }
+    .shift-tone-pink.prog-done {
+      background: rgba(236, 72, 153, 0.62) !important;
+      color: #ffffff !important;
+    }
     [data-theme="light"] .shift-tone-pink,
-    [data-preset="slate-light"] .shift-tone-pink {
+    [data-preset="slate-light"] .shift-tone-pink,
+    [data-theme="light"] .shift-tone-pink.prog-inprog,
+    [data-preset="slate-light"] .shift-tone-pink.prog-inprog {
       background: #fbcfe8 !important;
       color: #0f172a !important;
+    }
+    [data-theme="light"] .shift-tone-pink.prog-plan,
+    [data-preset="slate-light"] .shift-tone-pink.prog-plan {
+      background: #fdf2f8 !important;
+      color: #334155 !important;
+    }
+    [data-theme="light"] .shift-tone-pink.prog-done,
+    [data-preset="slate-light"] .shift-tone-pink.prog-done {
+      background: #f9a8d4 !important;
+      color: #500724 !important;
     }
 
     /* Neutral Empty Row */
@@ -3924,27 +4076,28 @@
     function updateShiftLegend() {
       const legendEl = document.getElementById('cal-shift-legend');
       if (!legendEl) return;
+      const dualSwatch = (tone) => `<span class="shift-legend-dual" title="ซ้าย (เข้ม) = Completed 100% | ขวา (จาง) = Planned 0%"><span class="${tone} prog-done"></span><span class="${tone} prog-plan"></span></span>`;
       if (calendarRowMode === 'leads') {
         legendEl.innerHTML = `
-          <div class="shift-legend-item"><span>Lead MMT</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
-          <div class="shift-legend-item"><span>Lead PIP</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
-          <div class="shift-legend-item"><span>Lead JIS</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
+          <div class="shift-legend-item"><span>Lead MMT</span>${dualSwatch('shift-tone-mint')}</div>
+          <div class="shift-legend-item"><span>Lead PIP</span>${dualSwatch('shift-tone-sky')}</div>
+          <div class="shift-legend-item"><span>Lead JIS</span>${dualSwatch('shift-tone-lavender')}</div>
         `;
       } else if (calendarRowMode === 'plants') {
         legendEl.innerHTML = `
-          <div class="shift-legend-item"><span>Plant Group A</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
-          <div class="shift-legend-item"><span>Plant Group B</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
-          <div class="shift-legend-item"><span>Plant Group C</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
-          <div class="shift-legend-item"><span>Plant Group D</span><span class="shift-legend-swatch shift-tone-amber"></span></div>
+          <div class="shift-legend-item"><span>Plant Group A</span>${dualSwatch('shift-tone-mint')}</div>
+          <div class="shift-legend-item"><span>Plant Group B</span>${dualSwatch('shift-tone-sky')}</div>
+          <div class="shift-legend-item"><span>Plant Group C</span>${dualSwatch('shift-tone-lavender')}</div>
+          <div class="shift-legend-item"><span>Plant Group D</span>${dualSwatch('shift-tone-amber')}</div>
         `;
       } else {
         legendEl.innerHTML = `
-          <div class="shift-legend-item"><span>Transformer Outage</span><span class="shift-legend-swatch shift-tone-rose"></span></div>
-          <div class="shift-legend-item"><span>Life Assessment</span><span class="shift-legend-swatch shift-tone-lavender"></span></div>
-          <div class="shift-legend-item"><span>Plant Assessment</span><span class="shift-legend-swatch shift-tone-mint"></span></div>
-          <div class="shift-legend-item"><span>Oil Analysis</span><span class="shift-legend-swatch shift-tone-amber"></span></div>
-          <div class="shift-legend-item"><span>3M Visual</span><span class="shift-legend-swatch shift-tone-sky"></span></div>
-          <div class="shift-legend-item"><span>OLTC Inspection</span><span class="shift-legend-swatch shift-tone-pink"></span></div>
+          <div class="shift-legend-item"><span>Transformer Outage</span>${dualSwatch('shift-tone-rose')}</div>
+          <div class="shift-legend-item"><span>Life Assessment</span>${dualSwatch('shift-tone-lavender')}</div>
+          <div class="shift-legend-item"><span>Plant Assessment</span>${dualSwatch('shift-tone-mint')}</div>
+          <div class="shift-legend-item"><span>Oil Analysis</span>${dualSwatch('shift-tone-amber')}</div>
+          <div class="shift-legend-item"><span>3M Visual</span>${dualSwatch('shift-tone-sky')}</div>
+          <div class="shift-legend-item"><span>OLTC Inspection</span>${dualSwatch('shift-tone-pink')}</div>
         `;
       }
     }
@@ -5808,6 +5961,7 @@
 
         // Build Body Rows based on calendarRowMode ('tasks' | 'leads' | 'plants' | 'cats')
         const rowModels = [];
+        const getProgTierClass = (prog) => (prog >= 100 ? 'prog-done' : (prog > 0 ? 'prog-inprog' : 'prog-plan'));
 
         if (calendarRowMode === 'leads') {
           const leadDefs = [
@@ -5817,8 +5971,9 @@
           ];
           leadDefs.forEach(ld => {
             const lTasks = monthTasks.filter(t => (t.lead || '').toUpperCase().includes(ld.key));
+            const avgLeadProg = lTasks.length > 0 ? Math.round(lTasks.reduce((s, x) => s + (x.progress || 0), 0) / lTasks.length) : 0;
             rowModels.push({
-              toneClass: ld.tone,
+              toneClass: `${ld.tone} ${lTasks.length > 0 ? getProgTierClass(avgLeadProg) : 'prog-plan'}`,
               labelHTML: `
                 <div class="shift-label-inner">
                   <span class="truncate font-bold">${ld.label}</span>
@@ -5830,11 +5985,12 @@
               getCell: (cm) => {
                 const activeList = lTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
                 if (activeList.length === 0) return { active: false };
+                const avgProg = Math.round(activeList.reduce((s, x) => s + (x.progress || 0), 0) / activeList.length);
                 const allDone = activeList.every(t => t.progress >= 100);
                 const tip = activeList.map(t => `${t.wbs} (${t.plant}): ${t.task} [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
                 return {
                   active: true,
-                  toneClass: ld.tone,
+                  toneClass: `${ld.tone} ${getProgTierClass(avgProg)}`,
                   clickId: activeList[0].id,
                   tooltip: tip,
                   isDone: allDone
@@ -5856,8 +6012,9 @@
             uniquePlants.forEach((pName, pIdx) => {
               const pTasks = monthTasks.filter(t => t.plant === pName);
               const pTone = plantTones[pIdx % plantTones.length];
+              const avgPlantProg = Math.round(pTasks.reduce((s, x) => s + (x.progress || 0), 0) / pTasks.length);
               rowModels.push({
-                toneClass: pTone,
+                toneClass: `${pTone} ${getProgTierClass(avgPlantProg)}`,
                 labelHTML: `
                   <div class="shift-label-inner">
                     <span class="truncate font-bold">${pName}</span>
@@ -5869,11 +6026,12 @@
                 getCell: (cm) => {
                   const activeList = pTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
                   if (activeList.length === 0) return { active: false };
+                  const avgProg = Math.round(activeList.reduce((s, x) => s + (x.progress || 0), 0) / activeList.length);
                   const allDone = activeList.every(t => t.progress >= 100);
                   const tip = activeList.map(t => `${t.wbs}: ${t.task} (${t.tr || 'TR'}) [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
                   return {
                     active: true,
-                    toneClass: pTone,
+                    toneClass: `${pTone} ${getProgTierClass(avgProg)}`,
                     clickId: activeList[0].id,
                     tooltip: tip,
                     isDone: allDone
@@ -5895,8 +6053,9 @@
           const listToRender = activeCats.length > 0 ? activeCats : catDefs.slice(0, 3);
           listToRender.forEach(cd => {
             const cTasks = monthTasks.filter(t => matchCategory(cd.name, t.cat));
+            const avgCatProg = cTasks.length > 0 ? Math.round(cTasks.reduce((s, x) => s + (x.progress || 0), 0) / cTasks.length) : 0;
             rowModels.push({
-              toneClass: cd.tone,
+              toneClass: `${cd.tone} ${cTasks.length > 0 ? getProgTierClass(avgCatProg) : 'prog-plan'}`,
               labelHTML: `
                 <div class="shift-label-inner">
                   <span class="truncate font-bold">${cd.name}</span>
@@ -5908,11 +6067,12 @@
               getCell: (cm) => {
                 const activeList = cTasks.filter(t => cm.dateStr >= t.start && cm.dateStr <= t.end);
                 if (activeList.length === 0) return { active: false };
+                const avgProg = Math.round(activeList.reduce((s, x) => s + (x.progress || 0), 0) / activeList.length);
                 const allDone = activeList.every(t => t.progress >= 100);
                 const tip = activeList.map(t => `${t.wbs} (${t.plant}): ${t.task} [${t.start} to ${t.end}] (${t.progress}%)`).join('\n');
                 return {
                   active: true,
-                  toneClass: cd.tone,
+                  toneClass: `${cd.tone} ${getProgTierClass(avgProg)}`,
                   clickId: activeList[0].id,
                   tooltip: tip,
                   isDone: allDone
@@ -5933,14 +6093,15 @@
           } else {
             monthTasks.forEach((t, tIdx) => {
               const tTone = getShiftToneByCategory(t.cat, tIdx);
-              const isDone = (t.progress >= 100);
+              const tProg = Number(t.progress) || 0;
+              const isDone = (tProg >= 100);
               const shortTask = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
               const allChildren = subTasksMap.get(t.id) || [];
               const monthChildren = allChildren.filter(c => c.start <= mEndStr && c.end >= mStartStr);
               const childrenForMonth = monthChildren.length > 0 ? monthChildren : allChildren;
               const hasSubs = childrenForMonth.length > 0;
               const isCollapsed = collapsedParents.has(t.id);
-              const fullTip = `${t.wbs} | ${shortTask} (${t.tr || 'TR'}) | Lead: ${t.lead || '-'} | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%${hasSubs ? ' | Sub-tasks: ' + childrenForMonth.length : ''}`;
+              const fullTip = `${t.wbs} | ${shortTask} (${t.tr || 'TR'}) | Lead: ${t.lead || '-'} | ${t.start} to ${t.end} (${t.days}d) | Progress: ${tProg}%${hasSubs ? ' | Sub-tasks: ' + childrenForMonth.length : ''}`;
 
               const toggleBtnHTML = hasSubs
                 ? `<button onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="${isCollapsed ? 'Expand ' + childrenForMonth.length + ' Sub-task(s)' : 'Collapse Sub-tasks'}" class="shift-collapse-btn"><i class="fa-solid ${isCollapsed ? 'fa-chevron-right' : 'fa-chevron-down'}"></i></button>`
@@ -5949,9 +6110,17 @@
               const doneIconParent = `<svg class="shift-done-circle" viewBox="0 0 24 24" title="Completed 100%"><circle cx="12" cy="12" r="11" fill="#009a17"/><path d="M5.8 12.3L10.0 16.5L18.4 8.1" fill="none" stroke="#ffffff" stroke-width="3.3" stroke-linecap="butt" stroke-linejoin="miter"/></svg>`;
               const doneIconSub = `<svg class="shift-done-circle is-sub" viewBox="0 0 24 24" title="Completed 100%"><circle cx="12" cy="12" r="11" fill="#009a17"/><path d="M5.8 12.3L10.0 16.5L18.4 8.1" fill="none" stroke="#ffffff" stroke-width="3.3" stroke-linecap="butt" stroke-linejoin="miter"/></svg>`;
 
+              // Precompute active dates in this month for proportional progress shading when 0 < tProg < 100
+              const parentActiveDates = colMeta
+                .filter(cm => cm.isValid && ((cm.dateStr >= t.start && cm.dateStr <= t.end) || monthChildren.some(c => cm.dateStr >= c.start && cm.dateStr <= c.end)))
+                .map(cm => cm.dateStr);
+              const parentFilledCount = (tProg > 0 && tProg < 100 && parentActiveDates.length >= 2)
+                ? Math.max(1, Math.round(parentActiveDates.length * (tProg / 100)))
+                : 0;
+
               rowModels.push({
                 isSub: false,
-                toneClass: tTone,
+                toneClass: `${tTone} ${getProgTierClass(tProg)}`,
                 labelHTML: `
                   <div class="shift-label-inner">
                     <div class="flex items-center gap-1 min-w-0">
@@ -5961,7 +6130,7 @@
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
                       ${hasSubs ? `<span class="shift-subcount-badge" onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="Click to ${isCollapsed ? 'expand' : 'collapse'} ${childrenForMonth.length} Sub-task(s)">+${childrenForMonth.length}</span>` : ''}
-                      ${isDone ? doneIconParent : `<span class="text-[9.5px] font-mono opacity-80">${t.progress}%</span>`}
+                      ${isDone ? doneIconParent : `<span class="text-[9.5px] font-mono font-bold opacity-85">${tProg}%</span>`}
                     </div>
                   </div>
                 `,
@@ -5971,9 +6140,16 @@
                   const parentActive = (cm.dateStr >= t.start && cm.dateStr <= t.end);
                   const childActive = !parentActive && monthChildren.some(c => cm.dateStr >= c.start && cm.dateStr <= c.end);
                   if (!parentActive && !childActive) return { active: false };
+
+                  let dayProgClass = getProgTierClass(tProg);
+                  if (tProg > 0 && tProg < 100 && parentActiveDates.length >= 2) {
+                    const dIdx = parentActiveDates.indexOf(cm.dateStr);
+                    dayProgClass = (dIdx !== -1 && dIdx < parentFilledCount) ? 'prog-done' : 'prog-plan';
+                  }
+
                   return {
                     active: true,
-                    toneClass: tTone,
+                    toneClass: `${tTone} ${dayProgClass}`,
                     clickId: t.id,
                     tooltip: fullTip,
                     isDone: isDone
@@ -5984,11 +6160,19 @@
               // Render expanded Sub-Task rows immediately underneath the parent row
               if (hasSubs && !isCollapsed) {
                 childrenForMonth.forEach(c => {
-                  const isChildDone = (c.progress >= 100);
-                  const childTip = `↳ ${c.wbs} (Sub of ${t.wbs}) | ${c.task} (${c.plant} - ${c.tr || 'TR'}) | Lead: ${c.lead || '-'} | ${c.start} to ${c.end} (${c.days}d) | Progress: ${c.progress}%`;
+                  const cProg = Number(c.progress) || 0;
+                  const isChildDone = (cProg >= 100);
+                  const childTip = `↳ ${c.wbs} (Sub of ${t.wbs}) | ${c.task} (${c.plant} - ${c.tr || 'TR'}) | Lead: ${c.lead || '-'} | ${c.start} to ${c.end} (${c.days}d) | Progress: ${cProg}%`;
+                  const childActiveDates = colMeta
+                    .filter(cm => cm.isValid && cm.dateStr >= c.start && cm.dateStr <= c.end)
+                    .map(cm => cm.dateStr);
+                  const childFilledCount = (cProg > 0 && cProg < 100 && childActiveDates.length >= 2)
+                    ? Math.max(1, Math.round(childActiveDates.length * (cProg / 100)))
+                    : 0;
+
                   rowModels.push({
                     isSub: true,
-                    toneClass: tTone,
+                    toneClass: `${tTone} ${getProgTierClass(cProg)}`,
                     labelHTML: `
                       <div class="shift-label-inner">
                         <div class="flex items-center gap-1 min-w-0">
@@ -5996,16 +6180,21 @@
                           <span class="shift-label-badge is-sub">${c.wbs}</span>
                           <span class="truncate font-medium">${c.task}</span>
                         </div>
-                        <span class="shrink-0 flex items-center">${isChildDone ? doneIconSub : `<span class="text-[9px] font-mono opacity-80">${c.progress}%</span>`}</span>
+                        <span class="shrink-0 flex items-center">${isChildDone ? doneIconSub : `<span class="text-[9px] font-mono font-bold opacity-85">${cProg}%</span>`}</span>
                       </div>
                     `,
                     titleAttr: childTip,
                     clickId: c.id,
                     getCell: (cm) => {
                       if (cm.dateStr < c.start || cm.dateStr > c.end) return { active: false };
+                      let cDayProgClass = getProgTierClass(cProg);
+                      if (cProg > 0 && cProg < 100 && childActiveDates.length >= 2) {
+                        const cIdx = childActiveDates.indexOf(cm.dateStr);
+                        cDayProgClass = (cIdx !== -1 && cIdx < childFilledCount) ? 'prog-done' : 'prog-plan';
+                      }
                       return {
                         active: true,
-                        toneClass: tTone,
+                        toneClass: `${tTone} ${cDayProgClass}`,
                         clickId: c.id,
                         tooltip: childTip,
                         isDone: isChildDone
