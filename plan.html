@@ -1464,6 +1464,18 @@
       border: 1px solid rgba(79, 70, 229, 0.35);
       color: #3730a3;
     }
+    .shift-done-circle {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.18));
+    }
+    .shift-done-circle.is-sub {
+      width: 13.5px;
+      height: 13.5px;
+    }
     .shift-label-badge {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 9.5px;
@@ -5934,6 +5946,9 @@
                 ? `<button onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="${isCollapsed ? 'Expand ' + childrenForMonth.length + ' Sub-task(s)' : 'Collapse Sub-tasks'}" class="shift-collapse-btn"><i class="fa-solid ${isCollapsed ? 'fa-chevron-right' : 'fa-chevron-down'}"></i></button>`
                 : `<span class="w-4 shrink-0 inline-block"></span>`;
 
+              const doneIconParent = `<svg class="shift-done-circle" viewBox="0 0 24 24" title="Completed 100%"><circle cx="12" cy="12" r="11" fill="#009a17"/><path d="M5.8 12.3L10.0 16.5L18.4 8.1" fill="none" stroke="#ffffff" stroke-width="3.3" stroke-linecap="butt" stroke-linejoin="miter"/></svg>`;
+              const doneIconSub = `<svg class="shift-done-circle is-sub" viewBox="0 0 24 24" title="Completed 100%"><circle cx="12" cy="12" r="11" fill="#009a17"/><path d="M5.8 12.3L10.0 16.5L18.4 8.1" fill="none" stroke="#ffffff" stroke-width="3.3" stroke-linecap="butt" stroke-linejoin="miter"/></svg>`;
+
               rowModels.push({
                 isSub: false,
                 toneClass: tTone,
@@ -5946,7 +5961,7 @@
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
                       ${hasSubs ? `<span class="shift-subcount-badge" onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="Click to ${isCollapsed ? 'expand' : 'collapse'} ${childrenForMonth.length} Sub-task(s)">+${childrenForMonth.length}</span>` : ''}
-                      <span class="text-[9.5px] font-mono opacity-80">${isDone ? '✓' : (t.progress + '%')}</span>
+                      ${isDone ? doneIconParent : `<span class="text-[9.5px] font-mono opacity-80">${t.progress}%</span>`}
                     </div>
                   </div>
                 `,
@@ -5981,7 +5996,7 @@
                           <span class="shift-label-badge is-sub">${c.wbs}</span>
                           <span class="truncate font-medium">${c.task}</span>
                         </div>
-                        <span class="text-[9px] font-mono opacity-80 shrink-0">${isChildDone ? '✓' : (c.progress + '%')}</span>
+                        <span class="shrink-0 flex items-center">${isChildDone ? doneIconSub : `<span class="text-[9px] font-mono opacity-80">${c.progress}%</span>`}</span>
                       </div>
                     `,
                     titleAttr: childTip,
