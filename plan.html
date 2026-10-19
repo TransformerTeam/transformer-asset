@@ -1299,11 +1299,11 @@
       background: #ffffff !important;
     }
     .shift-col-name {
-      width: 225px;
+      width: 245px;
     }
     /* Row 1 & 2 Left Month Header Cell (Dark Charcoal like Reference Image) */
     .shift-th-month {
-      width: 225px;
+      width: 245px;
       background: #262626 !important;
       color: #ffffff !important;
       font-family: 'Outfit', 'Inter', sans-serif;
@@ -1379,9 +1379,9 @@
 
     /* Body Rows: Left Task / Shift / Plant Label Cell */
     .shift-td-label {
-      width: 225px;
+      width: 245px;
       height: 25px;
-      padding: 0 10px;
+      padding: 0 8px;
       font-size: 11px;
       font-weight: 700;
       border: 1px solid rgba(148, 163, 184, 0.28);
@@ -1399,13 +1399,70 @@
       border: 1px solid #cbd5e1 !important;
       color: #0f172a !important;
     }
+    .shift-td-label.is-subtask {
+      height: 22px;
+      padding-left: 18px;
+      font-size: 10.5px;
+      font-weight: 600;
+      border-left: 3px solid #6366f1 !important;
+      filter: brightness(1.04);
+    }
+    [data-theme="light"] .shift-td-label.is-subtask,
+    [data-preset="slate-light"] .shift-td-label.is-subtask {
+      border-left: 3px solid #4f46e5 !important;
+      filter: brightness(1.03);
+    }
     .shift-label-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 5px;
       width: 100%;
       overflow: hidden;
+    }
+    .shift-collapse-btn {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.22);
+      color: inherit;
+      font-size: 9px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .shift-collapse-btn:hover {
+      background: rgba(79, 70, 229, 0.85);
+      color: #ffffff;
+    }
+    [data-theme="light"] .shift-collapse-btn,
+    [data-preset="slate-light"] .shift-collapse-btn {
+      background: rgba(15, 23, 42, 0.1);
+      color: #0f172a;
+    }
+    [data-theme="light"] .shift-collapse-btn:hover,
+    [data-preset="slate-light"] .shift-collapse-btn:hover {
+      background: #4f46e5;
+      color: #ffffff;
+    }
+    .shift-subcount-badge {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 0.5px 4px;
+      border-radius: 9999px;
+      background: rgba(79, 70, 229, 0.28);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      flex-shrink: 0;
+    }
+    [data-theme="light"] .shift-subcount-badge,
+    [data-preset="slate-light"] .shift-subcount-badge {
+      background: rgba(79, 70, 229, 0.12);
+      border: 1px solid rgba(79, 70, 229, 0.35);
+      color: #3730a3;
     }
     .shift-label-badge {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -1416,10 +1473,21 @@
       background: rgba(15, 23, 42, 0.15);
       flex-shrink: 0;
     }
+    .shift-label-badge.is-sub {
+      font-size: 9px;
+      background: rgba(99, 102, 241, 0.25);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
     [data-theme="light"] .shift-label-badge,
     [data-preset="slate-light"] .shift-label-badge {
       background: rgba(15, 23, 42, 0.08);
       color: #0f172a;
+    }
+    [data-theme="light"] .shift-label-badge.is-sub,
+    [data-preset="slate-light"] .shift-label-badge.is-sub {
+      background: rgba(79, 70, 229, 0.12);
+      border: 1px solid rgba(79, 70, 229, 0.3);
+      color: #312e81;
     }
 
     /* Body Rows: 37 Day Grid Cells */
@@ -2004,6 +2072,14 @@
                 </button>
                 <button id="btn-rowmode-cats" onclick="setCalendarRowMode('cats')" class="span-btn" title="Group rows by Maintenance Category">
                   Categories
+                </button>
+              </div>
+
+              <!-- Sub-Tasks Expand / Collapse All Toggle Button -->
+              <div class="flex items-center p-1 rounded-lg border border-slate-700/80 bg-slate-900/90">
+                <button id="cal-btn-toggle-subs" onclick="toggleAllExpand()" class="span-btn flex items-center gap-1.5" title="Expand or Collapse all WBS Sub-Tasks in Calendar">
+                  <i class="fa-solid fa-sitemap text-indigo-400"></i>
+                  <span id="cal-toggle-all-text">Expand All Subs</span>
                 </button>
               </div>
             </div>
@@ -4077,11 +4153,18 @@
     // Expand / Collapse Toggles
     let userToggledCollapseManually = false;
 
+    function syncToggleAllButtonsText() {
+      const label = (collapsedParents.size > 0) ? 'Expand All Subs' : 'Collapse All Subs';
+      const toggleBtnText = document.getElementById('toggle-all-text');
+      if (toggleBtnText) toggleBtnText.textContent = label;
+      const calToggleBtnText = document.getElementById('cal-toggle-all-text');
+      if (calToggleBtnText) calToggleBtnText.textContent = label;
+    }
+
     function collapseAllSubs() {
       const parentsWithChildren = tasks.filter(t => !t.parentId && tasks.some(c => c.parentId === t.id));
       parentsWithChildren.forEach(p => collapsedParents.add(p.id));
-      const toggleBtnText = document.getElementById('toggle-all-text');
-      if (toggleBtnText) toggleBtnText.textContent = 'Expand All Subs';
+      syncToggleAllButtonsText();
     }
 
     function toggleCollapse(parentId) {
@@ -4091,26 +4174,23 @@
       } else {
         collapsedParents.add(parentId);
       }
-      const toggleBtnText = document.getElementById('toggle-all-text');
-      if (toggleBtnText) {
-        toggleBtnText.textContent = (collapsedParents.size > 0) ? 'Expand All Subs' : 'Collapse All Subs';
-      }
+      syncToggleAllButtonsText();
       renderTable();
+      renderCalendar();
     }
 
     function toggleAllExpand() {
       userToggledCollapseManually = true;
-      const toggleBtnText = document.getElementById('toggle-all-text');
       const parentsWithChildren = tasks.filter(t => !t.parentId && tasks.some(c => c.parentId === t.id));
 
       if (collapsedParents.size > 0) {
         collapsedParents.clear();
-        if (toggleBtnText) toggleBtnText.textContent = 'Collapse All Subs';
       } else {
         parentsWithChildren.forEach(p => collapsedParents.add(p.id));
-        if (toggleBtnText) toggleBtnText.textContent = 'Expand All Subs';
       }
+      syncToggleAllButtonsText();
       renderTable();
+      renderCalendar();
     }
 
     // Helper: Recalculate parent progress and cost from subtasks
@@ -5495,9 +5575,24 @@
     function renderCalendar(filteredList = null) {
       const allFiltered = filteredList || getFilteredTasks();
       const filtered = allFiltered.filter(t => !t.parentId);
+      const subTasksMap = new Map();
+      allFiltered.filter(t => t.parentId).forEach(sub => {
+        if (!subTasksMap.has(sub.parentId)) subTasksMap.set(sub.parentId, []);
+        subTasksMap.get(sub.parentId).push(sub);
+      });
+      subTasksMap.forEach(children => {
+        children.sort((a, b) => {
+          const wbsComp = (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
+          if (wbsComp !== 0) return wbsComp;
+          return (a.start || '').localeCompare(b.start || '');
+        });
+      });
+
       const container = document.getElementById('calendar-container');
       if (!container) return;
       container.innerHTML = '';
+
+      syncToggleAllButtonsText();
 
       const dayLabels = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
       const todayObj = new Date();
@@ -5551,7 +5646,8 @@
           `;
         });
 
-        const { placedTasks, trackCount } = computeWeekTaskTracks(weekDates.map(x => x.dateStr), filtered);
+        const weekVisibleTasks = allFiltered.filter(t => !t.parentId || !collapsedParents.has(t.parentId));
+        const { placedTasks, trackCount } = computeWeekTaskTracks(weekDates.map(x => x.dateStr), weekVisibleTasks);
         const rowMinHeight = Math.max(380, 56 + (trackCount * 34) + 16);
 
         let barsHTML = '';
@@ -5569,7 +5665,7 @@
             const contLeftClass = pt.isContinuationLeft ? 'cont-left' : '';
             const contRightClass = pt.isContinuationRight ? 'cont-right' : '';
             const doneClass = isDone ? 'gantt-bar-finished' : '';
-            const displayTitle = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
+            const displayTitle = t.parentId ? `↳ ${t.wbs}: ${t.task}` : (t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`);
 
             barsHTML += `
               <div onclick="openModal('edit', '${t.id}')"
@@ -5654,9 +5750,13 @@
         const mStartStr = `${yIdx}-${mmStr}-01`;
         const mEndStr = `${yIdx}-${mmStr}-${String(daysInMonth).padStart(2, '0')}`;
 
-        // Tasks overlapping this month
+        // Parent tasks overlapping this month (or having sub-tasks overlapping this month)
         const monthTasks = filtered
-          .filter(t => t.start <= mEndStr && t.end >= mStartStr)
+          .filter(t => {
+            if (t.start <= mEndStr && t.end >= mStartStr) return true;
+            const subs = subTasksMap.get(t.id) || [];
+            return subs.some(s => s.start <= mEndStr && s.end >= mStartStr);
+          })
           .sort((a, b) => {
             if (a.start !== b.start) return a.start.localeCompare(b.start);
             return (a.wbs || '').localeCompare(b.wbs || '', undefined, { numeric: true });
@@ -5725,8 +5825,7 @@
                   toneClass: ld.tone,
                   clickId: activeList[0].id,
                   tooltip: tip,
-                  isDone: allDone,
-                  marker: activeList.length > 1 ? `${activeList.length}` : (allDone ? '✓' : '')
+                  isDone: allDone
                 };
               }
             });
@@ -5765,8 +5864,7 @@
                     toneClass: pTone,
                     clickId: activeList[0].id,
                     tooltip: tip,
-                    isDone: allDone,
-                    marker: allDone ? '✓' : ''
+                    isDone: allDone
                   };
                 }
               });
@@ -5805,14 +5903,13 @@
                   toneClass: cd.tone,
                   clickId: activeList[0].id,
                   tooltip: tip,
-                  isDone: allDone,
-                  marker: allDone ? '✓' : ''
+                  isDone: allDone
                 };
               }
             });
           });
         } else {
-          // Default: 'tasks' mode (Each scheduled task in the month is its own row)
+          // Default: 'tasks' mode (Parent tasks + collapsible WBS Sub-Tasks)
           if (monthTasks.length === 0) {
             rowModels.push({
               toneClass: 'shift-tone-empty',
@@ -5826,33 +5923,82 @@
               const tTone = getShiftToneByCategory(t.cat, tIdx);
               const isDone = (t.progress >= 100);
               const shortTask = t.task.startsWith(t.plant + ':') ? t.task : `${t.plant}: ${t.task}`;
-              const fullTip = `${t.wbs} | ${shortTask} (${t.tr || 'TR'}) | Lead: ${t.lead || '-'} | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%`;
+              const allChildren = subTasksMap.get(t.id) || [];
+              const monthChildren = allChildren.filter(c => c.start <= mEndStr && c.end >= mStartStr);
+              const childrenForMonth = monthChildren.length > 0 ? monthChildren : allChildren;
+              const hasSubs = childrenForMonth.length > 0;
+              const isCollapsed = collapsedParents.has(t.id);
+              const fullTip = `${t.wbs} | ${shortTask} (${t.tr || 'TR'}) | Lead: ${t.lead || '-'} | ${t.start} to ${t.end} (${t.days}d) | Progress: ${t.progress}%${hasSubs ? ' | Sub-tasks: ' + childrenForMonth.length : ''}`;
+
+              const toggleBtnHTML = hasSubs
+                ? `<button onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="${isCollapsed ? 'Expand ' + childrenForMonth.length + ' Sub-task(s)' : 'Collapse Sub-tasks'}" class="shift-collapse-btn"><i class="fa-solid ${isCollapsed ? 'fa-chevron-right' : 'fa-chevron-down'}"></i></button>`
+                : `<span class="w-4 shrink-0 inline-block"></span>`;
 
               rowModels.push({
+                isSub: false,
                 toneClass: tTone,
                 labelHTML: `
                   <div class="shift-label-inner">
-                    <div class="flex items-center gap-1.5 min-w-0">
+                    <div class="flex items-center gap-1 min-w-0">
+                      ${toggleBtnHTML}
                       <span class="shift-label-badge">${t.wbs}</span>
                       <span class="truncate font-bold">${shortTask}</span>
                     </div>
-                    <span class="text-[9.5px] font-mono opacity-80 shrink-0">${isDone ? '✓' : (t.progress + '%')}</span>
+                    <div class="flex items-center gap-1 shrink-0">
+                      ${hasSubs ? `<span class="shift-subcount-badge" onclick="event.stopPropagation(); toggleCollapse('${t.id}')" title="Click to ${isCollapsed ? 'expand' : 'collapse'} ${childrenForMonth.length} Sub-task(s)">+${childrenForMonth.length}</span>` : ''}
+                      <span class="text-[9.5px] font-mono opacity-80">${isDone ? '✓' : (t.progress + '%')}</span>
+                    </div>
                   </div>
                 `,
                 titleAttr: fullTip,
                 clickId: t.id,
                 getCell: (cm) => {
-                  if (cm.dateStr < t.start || cm.dateStr > t.end) return { active: false };
+                  const parentActive = (cm.dateStr >= t.start && cm.dateStr <= t.end);
+                  const childActive = !parentActive && monthChildren.some(c => cm.dateStr >= c.start && cm.dateStr <= c.end);
+                  if (!parentActive && !childActive) return { active: false };
                   return {
                     active: true,
                     toneClass: tTone,
                     clickId: t.id,
                     tooltip: fullTip,
-                    isDone: isDone,
-                    marker: isDone ? '✓' : ''
+                    isDone: isDone
                   };
                 }
               });
+
+              // Render expanded Sub-Task rows immediately underneath the parent row
+              if (hasSubs && !isCollapsed) {
+                childrenForMonth.forEach(c => {
+                  const isChildDone = (c.progress >= 100);
+                  const childTip = `↳ ${c.wbs} (Sub of ${t.wbs}) | ${c.task} (${c.plant} - ${c.tr || 'TR'}) | Lead: ${c.lead || '-'} | ${c.start} to ${c.end} (${c.days}d) | Progress: ${c.progress}%`;
+                  rowModels.push({
+                    isSub: true,
+                    toneClass: tTone,
+                    labelHTML: `
+                      <div class="shift-label-inner">
+                        <div class="flex items-center gap-1 min-w-0">
+                          <span class="text-[10px] font-mono opacity-75 shrink-0">↳</span>
+                          <span class="shift-label-badge is-sub">${c.wbs}</span>
+                          <span class="truncate font-medium">${c.task}</span>
+                        </div>
+                        <span class="text-[9px] font-mono opacity-80 shrink-0">${isChildDone ? '✓' : (c.progress + '%')}</span>
+                      </div>
+                    `,
+                    titleAttr: childTip,
+                    clickId: c.id,
+                    getCell: (cm) => {
+                      if (cm.dateStr < c.start || cm.dateStr > c.end) return { active: false };
+                      return {
+                        active: true,
+                        toneClass: tTone,
+                        clickId: c.id,
+                        tooltip: childTip,
+                        isDone: isChildDone
+                      };
+                    }
+                  });
+                });
+              }
             });
           }
         }
@@ -5862,7 +6008,8 @@
         rowModels.forEach(rm => {
           const labelClick = rm.clickId ? `onclick="openModal('edit', '${rm.clickId}')"` : '';
           const safeLabelTitle = (rm.titleAttr || '').replace(/"/g, '&quot;');
-          let trHTML = `<tr><td class="shift-td-label ${rm.toneClass}" ${labelClick} title="${safeLabelTitle}">${rm.labelHTML}</td>`;
+          const subLabelClass = rm.isSub ? 'is-subtask' : '';
+          let trHTML = `<tr><td class="shift-td-label ${rm.toneClass} ${subLabelClass}" ${labelClick} title="${safeLabelTitle}">${rm.labelHTML}</td>`;
 
           colMeta.forEach(cm => {
             if (!cm.isValid) {
@@ -5891,7 +6038,7 @@
         monthBlock.innerHTML = `
           <table class="shift-month-table">
             <colgroup>
-              <col style="width: 225px;" />
+              <col style="width: 245px;" />
               ${'<col />'.repeat(TOTAL_DAY_COLS)}
             </colgroup>
             <thead>
