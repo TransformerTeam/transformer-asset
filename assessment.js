@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        window.location.pathname.toLowerCase().includes('report') || 
                        document.getElementById('detail-paper') !== null ||
                        document.getElementById('eval-transformer-select') !== null ||
-                       document.getElementById('matrix-canvas') === null;
+                       document.getElementById('assessment-table') === null;
   if (!isStandalone) {
     initAssessment();
     setupListeners();
@@ -343,13 +343,35 @@ function initAssessment() {
   }
   
   populateFilterDropdowns();
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const qSite = params.get('site');
+    const qService = params.get('service');
+    const qStatus = params.get('status');
+    const qPm = params.get('pm');
+    const qSearch = params.get('search');
+    const elSite = document.getElementById('filter-site');
+    const elService = document.getElementById('filter-service');
+    const elStatus = document.getElementById('filter-health-status');
+    const elPm = document.getElementById('filter-pm-status');
+    const elSearch = document.getElementById('search-box');
+    if (qSite && elSite && !elSite.dataset.urlApplied) { elSite.value = qSite; elSite.dataset.urlApplied = '1'; }
+    if (qService && elService && !elService.dataset.urlApplied) { elService.value = qService; elService.dataset.urlApplied = '1'; }
+    if (qStatus && elStatus && !elStatus.dataset.urlApplied) { elStatus.value = qStatus; elStatus.dataset.urlApplied = '1'; }
+    if (qPm && elPm && !elPm.dataset.urlApplied) { elPm.value = qPm; elPm.dataset.urlApplied = '1'; }
+    if (qSearch && elSearch && !elSearch.dataset.urlApplied) { elSearch.value = qSearch; elSearch.dataset.urlApplied = '1'; }
+  } catch (e) {}
   
   const savedTheme = localStorage.getItem('tr-dashboard-theme') || 'dark';
   setTheme(savedTheme);
+  setupListeners();
   applyFilters();
 }
 
 function setupListeners() {
+  if (window._assessmentListenersBound) return;
+  window._assessmentListenersBound = true;
   // Listen for CSV test data completion to re-evaluate fleet with latest test values
   document.addEventListener('allTestDataLoaded', () => {
     const isReportOrDetail = window.location.pathname.toLowerCase().includes('evaluation') || 
@@ -606,6 +628,7 @@ function populateFilterDropdowns() {
 function fillDropdown(id, items) {
   const sel = document.getElementById(id);
   if (!sel || !sel.options || !sel.options[0]) return;
+  const prevVal = sel.value;
   const first = sel.options[0].outerHTML;
   sel.innerHTML = first;
   items.forEach(item => {
@@ -616,6 +639,9 @@ function fillDropdown(id, items) {
       sel.appendChild(opt);
     }
   });
+  if (prevVal && items.includes(prevVal)) {
+    sel.value = prevVal;
+  }
 }
 
 function hasParamValue(item, value) {
