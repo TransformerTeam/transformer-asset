@@ -4575,7 +4575,7 @@
       const dfrRec = (typeof findLatestRecord === 'function' && typeof dfrCsvData !== 'undefined')
         ? findLatestRecord(dfrCsvData, serial)
         : null;
-      let moistSdmStr = '1.2 %';
+      let moistSdmStr = String(serial).toUpperCase().includes('PP0158B01') ? '0.5 %' : '1.2 %';
       if (dfrRec && (dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture)) {
         const mNum = parseFloat(dfrRec['PercentMoisture (CHL)'] || dfrRec.PercentMoisture);
         if (!isNaN(mNum)) moistSdmStr = `${mNum.toFixed(1)} %`;
