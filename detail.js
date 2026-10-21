@@ -125,7 +125,7 @@ function getRemainingLifeDP300(item, serialVal) {
   let kYearly = 0.0000310;
   if (matchSerialDetail(sVal, 'PP0158B01')) {
     const thsK = 64.64 + 273.15;
-    const aHyd = isHighMoisture ? 4.50e11 : (cleanMoist !== null && cleanMoist <= 0.5 ? 4.10e10 : 1.50e11);
+    const aHyd = isHighMoisture ? 4.50e11 : (cleanMoist !== null && cleanMoist < 0.5 ? 4.10e10 : 1.50e11);
     const aOxi = isHighO2 ? 4.60e5 : 0;
     kYearly = (aHyd * Math.exp(-128000 / (8.314 * thsK)) + aOxi * Math.exp(-89000 / (8.314 * thsK))) * 8760;
   } else if (isHighMoisture && isHighO2) {
