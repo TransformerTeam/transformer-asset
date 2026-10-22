@@ -752,6 +752,7 @@ function renderRiskMatrix() {
   if (legendHigh) legendHigh.textContent = `${highCount} Units`;
   if (legendMed) legendMed.textContent = `${medCount} Units`;
   if (legendLow) legendLow.textContent = `${lowCount} Units`;
+  try { const om = new URLSearchParams(window.location.search).get('open_modal'); if (om) { const [p, c] = om.split('_').map(Number); if (matrixBuckets[p] && matrixBuckets[p][c]) showMatrixDetailModal(p, c, matrixBuckets[p][c]); } } catch (e) {}
 }
 
 /**
