@@ -649,7 +649,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 3.2mm 5mm;
+        margin: 3.5mm 5mm;
       }
       *, *::before, *::after {
         box-sizing: border-box !important;
@@ -695,100 +695,102 @@
         margin-top: 0 !important;
       }
       .report-header {
-        padding-bottom: 3px !important;
-        margin-bottom: 4px !important;
+        padding-bottom: 4px !important;
+        margin-bottom: 5px !important;
       }
       .report-title {
-        font-size: 1.05rem !important;
+        font-size: 1.08rem !important;
       }
       .report-subtitle {
-        font-size: 0.62rem !important;
+        font-size: 0.64rem !important;
       }
       .logo-container img {
-        height: 30px !important;
+        height: 32px !important;
       }
       .section-banner {
-        margin-top: 4px !important;
-        margin-bottom: 2.5px !important;
-        padding: 2px 6px !important;
-        font-size: 8px !important;
+        margin-top: 5px !important;
+        margin-bottom: 3px !important;
+        padding: 2.5px 7px !important;
+        font-size: 8.2px !important;
       }
       .kpi-grid {
-        gap: 5px !important;
-        margin: 3px 0 4px !important;
+        gap: 6px !important;
+        margin: 4px 0 5px !important;
       }
       .kpi-card {
-        padding: 3px 6px !important;
+        padding: 4px 7px !important;
       }
       .kpi-label {
-        font-size: 7px !important;
-      }
-      .kpi-val {
-        font-size: 12.5px !important;
-        margin-top: 0 !important;
-      }
-      .kpi-sub {
-        font-size: 7px !important;
-        margin-top: 0 !important;
-      }
-      .key-drivers-grid {
-        gap: 5px !important;
-        margin: 2.5px 0 4px !important;
-      }
-      .key-driver-card {
-        padding: 3px 6px !important;
-      }
-      .key-driver-label {
         font-size: 7.2px !important;
       }
+      .kpi-val {
+        font-size: 13px !important;
+        margin-top: 1px !important;
+      }
+      .kpi-sub {
+        font-size: 7.2px !important;
+        margin-top: 1px !important;
+      }
+      .key-drivers-grid {
+        gap: 6px !important;
+        margin: 3px 0 5px !important;
+      }
+      .key-driver-card {
+        padding: 4px 7px !important;
+      }
+      .key-driver-label {
+        font-size: 7.5px !important;
+      }
       .key-driver-val {
-        font-size: 12.5px !important;
+        font-size: 13px !important;
         margin: 1px 0 0 !important;
       }
       .key-driver-sub {
-        font-size: 6.8px !important;
+        font-size: 7px !important;
       }
       #card-moisture-sdmayer, #card-moisture-fds {
-        font-size: 11px !important;
+        font-size: 11.5px !important;
       }
       .charts-container {
-        gap: 5px !important;
-        margin: 3px 0 4px !important;
+        gap: 8px !important;
+        margin: 5px 0 0 !important;
         width: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
       }
       .chart-box {
-        padding: 4px 8px !important;
+        padding: 6px 10px !important;
         overflow: visible !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
       .chart-header {
-        padding-bottom: 2px !important;
-        margin-bottom: 3px !important;
+        padding-bottom: 3px !important;
+        margin-bottom: 5px !important;
       }
       .chart-title {
-        font-size: 8.8px !important;
+        font-size: 9.4px !important;
       }
       .custom-chart-legend {
         background: #f8fafc !important;
         border-color: #e2e8f0 !important;
         display: flex !important;
         flex-direction: column !important;
-        padding: 2.5px 7px !important;
-        margin-bottom: 3px !important;
-        gap: 2px !important;
+        padding: 4px 8px !important;
+        margin-bottom: 5px !important;
+        gap: 3.5px !important;
       }
       .legend-exec-top {
-        padding-bottom: 2.5px !important;
+        padding-bottom: 3px !important;
         border-bottom-color: #e2e8f0 !important;
       }
       .legend-tier-tag {
-        font-size: 6.8px !important;
+        font-size: 7px !important;
         color: #64748b !important;
       }
       .legend-pill {
-        font-size: 6.9px !important;
-        padding: 1px 5px !important;
+        font-size: 7.2px !important;
+        padding: 1.5px 6px !important;
         background: #ffffff !important;
         color: #334155 !important;
         border-color: #e2e8f0 !important;
@@ -828,65 +830,67 @@
         height: auto !important;
         max-width: 100% !important;
       }
-      .formula-container {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 3px !important;
+      #page-1 .formula-container {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+      }
+      #page-1 .formula-box {
+        padding: 6px 10px !important;
+        font-size: 8.2px !important;
+        line-height: 1.38 !important;
+      }
+      #page-1 .formula-title {
+        font-size: 8.8px !important;
         margin-bottom: 3px !important;
       }
-      .formula-box {
-        padding: 2.5px 6px !important;
-        font-size: 7.3px !important;
-        line-height: 1.22 !important;
+      #page-1 .formula-math {
+        font-size: 8.4px !important;
+        padding: 1.5px 6px !important;
       }
-      .formula-container .formula-box:first-child {
-        grid-column: 1 / -1 !important;
-      }
-      .formula-box-noop {
-        font-size: 7.3px !important;
-        line-height: 1.22 !important;
-      }
-      .formula-title {
-        font-size: 7.8px !important;
-        margin-bottom: 1px !important;
-      }
-      .formula-math {
-        font-size: 7.8px !important;
-        padding: 1px 4px !important;
-      }
-      .action-box {
-        padding: 3px 6px !important;
-        margin-bottom: 3px !important;
-        font-size: 7.4px !important;
-        line-height: 1.24 !important;
+      #page-1 .action-box {
+        padding: 7px 10px !important;
+        margin-bottom: 8px !important;
+        font-size: 8.2px !important;
+        line-height: 1.42 !important;
       }
       .report-table {
-        margin-bottom: 3px !important;
+        margin-bottom: 4px !important;
       }
       .report-table th, .report-table td {
-        padding: 1.5px 4px !important;
-        font-size: 7.4px !important;
-        line-height: 1.18 !important;
+        padding: 2.5px 5px !important;
+        font-size: 7.8px !important;
+        line-height: 1.25 !important;
+      }
+      #page-1 .charts-container ~ .report-table th,
+      #page-1 .charts-container ~ .report-table td {
+        padding: 4.5px 6px !important;
+        font-size: 8.2px !important;
+        line-height: 1.32 !important;
       }
       .status-badge {
-        font-size: 6.8px !important;
-        padding: 1px 4px !important;
+        font-size: 7.2px !important;
+        padding: 1.5px 5px !important;
       }
       .calc-step-card {
         padding: 3.5px 7px !important;
         margin-bottom: 4px !important;
       }
       .signature-table {
-        margin-top: 3px !important;
+        margin-top: 4px !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
       .signature-table th, .signature-table td {
-        padding: 1.5px 4px !important;
-        font-size: 7.5px !important;
+        padding: 2px 5px !important;
+        font-size: 7.8px !important;
       }
-      .sig-cell {
-        height: 12px !important;
+      #page-1 .sig-cell {
+        height: 28px !important;
+      }
+      #page-2 .sig-cell {
+        height: 14px !important;
       }
     }
 
@@ -3031,8 +3035,8 @@
         const wrapEl = document.getElementById('container-dp-degradation');
         if (!imgEl || !wrapEl) return;
 
-        const logicalW = 760;
-        const logicalH = 164;
+        const logicalW = 960;
+        const logicalH = 432;
         const offCanvas = document.createElement('canvas');
         offCanvas.width = logicalW;
         offCanvas.height = logicalH;
@@ -3070,8 +3074,8 @@
                 borderColor: '#2563eb',
                 backgroundColor: printGrad,
                 fill: true,
-                borderWidth: 3.0,
-                pointRadius: (c) => years[c.dataIndex] === 2025 ? 5 : 0,
+                borderWidth: 3.4,
+                pointRadius: (c) => years[c.dataIndex] === 2025 ? 5.5 : 0,
                 pointBackgroundColor: '#2563eb',
                 pointBorderColor: '#ffffff',
                 pointBorderWidth: 1.8,
@@ -3157,7 +3161,7 @@
             maintainAspectRatio: false,
             devicePixelRatio: 2.5,
             layout: {
-              padding: { top: 14, bottom: 6, left: 6, right: 18 }
+              padding: { top: 32, bottom: 22, left: 8, right: 25 }
             },
             plugins: {
               legend: { display: false },
@@ -3172,12 +3176,12 @@
                 title: {
                   display: true,
                   text: `Calendar Year (2025–${endChartYear} Projection)`,
-                  font: { size: 9, weight: '700', family: 'Inter' },
+                  font: { size: 9.5, weight: '700', family: 'Inter' },
                   color: '#475569',
-                  padding: { top: 6, bottom: 0 }
+                  padding: { top: 8, bottom: 4 }
                 },
                 ticks: {
-                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  font: { size: 9, weight: '500', family: 'Inter' },
                   color: '#64748b',
                   maxRotation: 0,
                   callback: function(val, index) {
@@ -3189,7 +3193,7 @@
                     return (y % 10 === 5 || y === 2025 || y === endChartYear) ? y : '';
                   }
                 },
-                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+                grid: { color: 'rgba(100, 116, 139, 0.08)' }
               },
               y: {
                 min: 0,
@@ -3197,15 +3201,15 @@
                 title: {
                   display: true,
                   text: 'Degree of Polymerization (DP)',
-                  font: { size: 8.5, weight: '700', family: 'Inter' },
+                  font: { size: 9, weight: '700', family: 'Inter' },
                   color: '#475569'
                 },
                 ticks: {
-                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  font: { size: 9, weight: '500', family: 'Inter' },
                   color: '#64748b',
                   stepSize: 200
                 },
-                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+                grid: { color: 'rgba(100, 116, 139, 0.08)' }
               }
             }
           }
@@ -3406,8 +3410,8 @@
         const wrapEl = document.getElementById('container-weibull-pof');
         if (!imgEl || !wrapEl) return;
 
-        const logicalW = 760;
-        const logicalH = 130;
+        const logicalW = 960;
+        const logicalH = 422;
         const offCanvas = document.createElement('canvas');
         offCanvas.width = logicalW;
         offCanvas.height = logicalH;
@@ -3467,7 +3471,7 @@
                 data: unitPointData,
                 borderColor: '#dc2626',
                 backgroundColor: '#dc2626',
-                pointRadius: 6,
+                pointRadius: 7,
                 showLine: false
               }
             ]
@@ -3478,7 +3482,7 @@
             animation: false,
             devicePixelRatio: 2.5,
             layout: {
-              padding: { top: 4, bottom: 4, left: 6, right: 18 }
+              padding: { top: 20, bottom: 14, left: 8, right: 25 }
             },
             plugins: {
               tooltip: { enabled: false },
@@ -3487,10 +3491,10 @@
                 labels: {
                   usePointStyle: true,
                   pointStyle: 'line',
-                  boxWidth: 18,
+                  boxWidth: 22,
                   color: '#475569',
-                  font: { size: 7.8, weight: '600', family: 'Inter' },
-                  padding: 5,
+                  font: { size: 8.2, weight: '600', family: 'Inter' },
+                  padding: 6,
                   filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
                 }
               }
@@ -3500,12 +3504,12 @@
                 title: {
                   display: true,
                   text: `Life-Cycle Timeline: Commissioning Year (${commissionYear}) → Current (${baseYear}) → 2125 Projection`,
-                  font: { size: 8.8, weight: '700', family: 'Inter' },
+                  font: { size: 9.5, weight: '700', family: 'Inter' },
                   color: '#475569',
-                  padding: { top: 4, bottom: 0 }
+                  padding: { top: 8, bottom: 4 }
                 },
                 ticks: {
-                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  font: { size: 9, weight: '500', family: 'Inter' },
                   color: '#64748b',
                   maxRotation: 0,
                   callback: function(val, index) {
@@ -3513,7 +3517,7 @@
                     return (y === commissionYear || y === baseYear || y === 2050 || y === 2075 || y === 2100 || y === endYear || y % 20 === 0) ? y : '';
                   }
                 },
-                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+                grid: { color: 'rgba(100, 116, 139, 0.08)' }
               },
               y: {
                 min: 0,
@@ -3521,15 +3525,15 @@
                 title: {
                   display: true,
                   text: 'Probability of Failure (%)',
-                  font: { size: 8.5, weight: '700', family: 'Inter' },
+                  font: { size: 9, weight: '700', family: 'Inter' },
                   color: '#475569'
                 },
                 ticks: {
-                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  font: { size: 9, weight: '500', family: 'Inter' },
                   color: '#64748b',
                   stepSize: 20
                 },
-                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+                grid: { color: 'rgba(100, 116, 139, 0.08)' }
               }
             }
           }
