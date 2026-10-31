@@ -425,6 +425,10 @@
       height: 350px;
     }
 
+    .print-chart-img {
+      display: none;
+    }
+
     /* Modern Two-Tier Categorized Executive Legend for DP Degradation Chart */
     .custom-chart-legend {
       display: flex;
@@ -641,78 +645,248 @@
       height: 30px;
     }
 
-    /* Print styles */
+    /* Print styles (Full-Scale High-DPI Charts & Exact 2-Page A4 Fit) */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 4mm 6mm;
+        margin: 3.2mm 5mm;
       }
-      body {
+      *, *::before, *::after {
+        box-sizing: border-box !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body {
         background: #ffffff !important;
+        color: #0f172a !important;
         padding: 0 !important;
         margin: 0 !important;
+        min-height: auto !important;
+        width: 100% !important;
       }
-      .control-bar {
+      .control-bar, .theme-editor-toggle, .theme-editor-panel {
         display: none !important;
       }
       .report-wrapper {
         max-width: 100% !important;
         width: 100% !important;
         gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       .report-page {
+        background: #ffffff !important;
+        color: #0f172a !important;
         box-shadow: none !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 3mm 4mm !important;
+        padding: 1mm 2mm !important;
         height: auto !important;
         width: 100% !important;
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
+        margin: 0 !important;
       }
       #page-1 {
         page-break-after: always !important;
         break-after: page !important;
       }
       #page-2 {
-        page-break-before: always !important;
-        break-before: page !important;
+        page-break-before: auto !important;
+        break-before: auto !important;
         margin-top: 0 !important;
       }
-      .chart-canvas-container {
-        height: 145px !important;
-      }
-      .summary-cards-grid {
-        gap: 4px !important;
+      .report-header {
+        padding-bottom: 3px !important;
         margin-bottom: 4px !important;
       }
-      .summary-card {
-        padding: 4px 6px !important;
+      .report-title {
+        font-size: 1.05rem !important;
       }
-      .summary-card-val {
-        font-size: 13px !important;
+      .report-subtitle {
+        font-size: 0.62rem !important;
       }
-      .formula-box {
+      .logo-container img {
+        height: 30px !important;
+      }
+      .section-banner {
+        margin-top: 4px !important;
+        margin-bottom: 2.5px !important;
+        padding: 2px 6px !important;
+        font-size: 8px !important;
+      }
+      .kpi-grid {
+        gap: 5px !important;
+        margin: 3px 0 4px !important;
+      }
+      .kpi-card {
         padding: 3px 6px !important;
       }
-      .action-box {
-        padding: 4px 6px !important;
-        margin-bottom: 4px !important;
+      .kpi-label {
+        font-size: 7px !important;
       }
-      .report-table th, .report-table td {
-        padding: 2px 4px !important;
-        font-size: 7.8px !important;
+      .kpi-val {
+        font-size: 12.5px !important;
+        margin-top: 0 !important;
       }
-      .calc-step-card {
+      .kpi-sub {
+        font-size: 7px !important;
+        margin-top: 0 !important;
+      }
+      .key-drivers-grid {
+        gap: 5px !important;
+        margin: 2.5px 0 4px !important;
+      }
+      .key-driver-card {
         padding: 3px 6px !important;
-        margin-bottom: 3px !important;
       }
-      .signature-table {
+      .key-driver-label {
+        font-size: 7.2px !important;
+      }
+      .key-driver-val {
+        font-size: 12.5px !important;
+        margin: 1px 0 0 !important;
+      }
+      .key-driver-sub {
+        font-size: 6.8px !important;
+      }
+      #card-moisture-sdmayer, #card-moisture-fds {
+        font-size: 11px !important;
+      }
+      .charts-container {
+        gap: 5px !important;
+        margin: 3px 0 4px !important;
+        width: 100% !important;
+      }
+      .chart-box {
+        padding: 4px 8px !important;
+        overflow: visible !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
       }
+      .chart-header {
+        padding-bottom: 2px !important;
+        margin-bottom: 3px !important;
+      }
+      .chart-title {
+        font-size: 8.8px !important;
+      }
+      .custom-chart-legend {
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 2.5px 7px !important;
+        margin-bottom: 3px !important;
+        gap: 2px !important;
+      }
+      .legend-exec-top {
+        padding-bottom: 2.5px !important;
+        border-bottom-color: #e2e8f0 !important;
+      }
+      .legend-tier-tag {
+        font-size: 6.8px !important;
+        color: #64748b !important;
+      }
+      .legend-pill {
+        font-size: 6.9px !important;
+        padding: 1px 5px !important;
+        background: #ffffff !important;
+        color: #334155 !important;
+        border-color: #e2e8f0 !important;
+      }
+      .legend-pill.hero {
+        background: #eff6ff !important;
+        border-color: #93c5fd !important;
+        color: #1d4ed8 !important;
+      }
+      .legend-pill.warning {
+        background: #fffbeb !important;
+        border-color: #fde68a !important;
+        color: #b45309 !important;
+      }
+      .legend-pill.critical {
+        background: #fef2f2 !important;
+        border-color: #fecaca !important;
+        color: #b91c1c !important;
+      }
+      .chart-canvas-container {
+        height: auto !important;
+        width: 100% !important;
+        overflow: visible !important;
+      }
+      .chart-canvas-container.has-print-img canvas {
+        display: none !important;
+      }
+      .chart-canvas-container.has-print-img .print-chart-img {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100% !important;
+      }
+      .chart-canvas-container:not(.has-print-img) canvas {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100% !important;
+      }
+      .formula-container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 3px !important;
+        margin-bottom: 3px !important;
+      }
+      .formula-box {
+        padding: 2.5px 6px !important;
+        font-size: 7.3px !important;
+        line-height: 1.22 !important;
+      }
+      .formula-container .formula-box:first-child {
+        grid-column: 1 / -1 !important;
+      }
+      .formula-box-noop {
+        font-size: 7.3px !important;
+        line-height: 1.22 !important;
+      }
+      .formula-title {
+        font-size: 7.8px !important;
+        margin-bottom: 1px !important;
+      }
+      .formula-math {
+        font-size: 7.8px !important;
+        padding: 1px 4px !important;
+      }
+      .action-box {
+        padding: 3px 6px !important;
+        margin-bottom: 3px !important;
+        font-size: 7.4px !important;
+        line-height: 1.24 !important;
+      }
+      .report-table {
+        margin-bottom: 3px !important;
+      }
+      .report-table th, .report-table td {
+        padding: 1.5px 4px !important;
+        font-size: 7.4px !important;
+        line-height: 1.18 !important;
+      }
+      .status-badge {
+        font-size: 6.8px !important;
+        padding: 1px 4px !important;
+      }
+      .calc-step-card {
+        padding: 3.5px 7px !important;
+        margin-bottom: 4px !important;
+      }
+      .signature-table {
+        margin-top: 3px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .signature-table th, .signature-table td {
+        padding: 1.5px 4px !important;
+        font-size: 7.5px !important;
+      }
       .sig-cell {
-        height: 22px !important;
+        height: 12px !important;
       }
     }
 
@@ -789,7 +963,7 @@
 
     <div style="display: flex; gap: 10px;">
       <a href="assessment.html" class="btn-action" id="btn-back-assessment"><i class="fa-solid fa-arrow-left"></i> Assessment</a>
-      <button class="btn-action btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+      <button class="btn-action btn-primary" onclick="printRemainingLifeReport()"><i class="fa-solid fa-print"></i> Print Report</button>
     </div>
   </div>
 
@@ -906,8 +1080,9 @@
             <span style="font-size: 8.2px; color: #64748b; font-weight: 600;" id="chart-dp-subtitle">CIGRE 761 / SINTEF Thermal-Chemical Ageing Model</span>
           </div>
           <div id="dp-custom-legend" class="custom-chart-legend"></div>
-          <div class="chart-canvas-container">
+          <div class="chart-canvas-container" id="container-dp-degradation">
             <canvas id="chart-dp-degradation"></canvas>
+            <img id="print-chart-dp" class="print-chart-img" alt="Cellulose Insulation Degradation Print Chart">
           </div>
         </div>
 
@@ -917,8 +1092,9 @@
             <span class="chart-title" id="chart-pof-title"><i class="fa-solid fa-shield-halved"></i> Failure Probability (Weibull PoF)</span>
             <span style="font-size: 8.2px; color: #64748b; font-weight: 600;" id="chart-pof-subtitle">CIGRE 761 Fleet Risk Model (α = 42.5 yrs, β = 3.0)</span>
           </div>
-          <div class="chart-canvas-container">
+          <div class="chart-canvas-container" id="container-weibull-pof">
             <canvas id="chart-weibull-pof"></canvas>
+            <img id="print-chart-pof" class="print-chart-img" alt="Weibull PoF Print Chart">
           </div>
         </div>
       </div>
@@ -2405,7 +2581,10 @@
           if (badgeX < xAxis.left + 6) badgeX = xAxis.left + 6;
           if (badgeX + badgeW > xAxis.right - 6) badgeX = xAxis.right - badgeW - 6;
 
-          const badgeY = yPos - 86;
+          const plotTopBound = (chart.chartArea && chart.chartArea.top) ? chart.chartArea.top : 24;
+          const availAboveHero = Math.max(40, yPos - plotTopBound - 4);
+          const heroStemLen = Math.min(86, Math.max(36, Math.round(availAboveHero * 0.56)));
+          const badgeY = yPos - heroStemLen;
 
           // Register Hero Badge AND its vertical pointer stem in occupiedBoxes so NO other label or line can cross it
           occupiedBoxes.push({ x: badgeX, y: badgeY, w: badgeW, h: badgeH });
@@ -2486,7 +2665,10 @@
           const currX = currentItem ? getXPixelForYear(currentItem.targetYear) : (xAxis.left + (xAxis.right - xAxis.left) * 0.45);
           const preferLeft = (xPos < currX) || (xPos > xAxis.right - pillW - 24);
           const candidateDirs = preferLeft ? [-1, 1] : [1, -1];
-          const candidateHeights = [24, 48, 66, 92, 114];
+          const plotTopScen = (chart.chartArea && chart.chartArea.top) ? chart.chartArea.top : 24;
+          const availAboveScen = Math.max(40, y300 - plotTopScen - 4);
+          const hScale = availAboveScen < 135 ? Math.max(0.55, availAboveScen / 140) : 1.0;
+          const candidateHeights = [24, 48, 66, 92, 114].map(h => Math.max(15, Math.round(h * hScale)));
 
           let bestPlacement = null;
 
@@ -2545,7 +2727,7 @@
             ctx.stroke();
 
             // Glassmorphic Theme-Aware Background Pill with subtle shadow and matching colored border
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const isDark = !(options && options.forceLight) && document.documentElement.getAttribute('data-theme') === 'dark';
             ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
             ctx.shadowBlur = 4;
@@ -2785,7 +2967,8 @@
           plugins: {
             legend: { display: false },
             dp300Callouts: {
-              intersections: intersections
+              intersections: intersections,
+              forceLight: false
             },
             tooltip: {
               backgroundColor: isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.88)',
@@ -2838,6 +3021,202 @@
           }
         }
       });
+
+      renderOffscreenPrintDPChart(years, unitDP, sdmDP, normalDP, highO2DP, highMoistDP, severeDP, limit300, limit200, yMax, endChartYear, intersections, sdMyersMoist, unitName);
+    }
+
+    function renderOffscreenPrintDPChart(years, unitDP, sdmDP, normalDP, highO2DP, highMoistDP, severeDP, limit300, limit200, yMax, endChartYear, intersections, sdMyersMoist, unitName) {
+      try {
+        const imgEl = document.getElementById('print-chart-dp');
+        const wrapEl = document.getElementById('container-dp-degradation');
+        if (!imgEl || !wrapEl) return;
+
+        const logicalW = 760;
+        const logicalH = 164;
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = logicalW;
+        offCanvas.height = logicalH;
+
+        let printGrad = 'rgba(37, 99, 235, 0.07)';
+        try {
+          const c2d = offCanvas.getContext('2d');
+          const g = c2d.createLinearGradient(0, 0, 0, logicalH);
+          g.addColorStop(0, 'rgba(37, 99, 235, 0.20)');
+          g.addColorStop(0.75, 'rgba(37, 99, 235, 0.03)');
+          g.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+          printGrad = g;
+        } catch (e) {}
+
+        const whiteBgPlugin = {
+          id: 'printWhiteBg',
+          beforeDraw(c) {
+            const cctx = c.ctx;
+            cctx.save();
+            cctx.fillStyle = '#ffffff';
+            cctx.fillRect(0, 0, c.width, c.height);
+            cctx.restore();
+          }
+        };
+
+        const tmpChart = new Chart(offCanvas, {
+          type: 'line',
+          plugins: [whiteBgPlugin, dp300CalloutPlugin],
+          data: {
+            labels: years,
+            datasets: [
+              {
+                label: unitName ? `Current Operating Condition (${unitName})` : 'Current Operating Condition',
+                data: unitDP,
+                borderColor: '#2563eb',
+                backgroundColor: printGrad,
+                fill: true,
+                borderWidth: 3.0,
+                pointRadius: (c) => years[c.dataIndex] === 2025 ? 5 : 0,
+                pointBackgroundColor: '#2563eb',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.8,
+                tension: 0.18
+              },
+              {
+                label: `SDMyers [Cal.] (${sdMyersMoist !== null ? sdMyersMoist.toFixed(1) + '%' : '-'} Moisture)`,
+                data: sdmDP,
+                borderColor: '#9333ea',
+                backgroundColor: 'transparent',
+                borderWidth: 1.8,
+                borderDash: [5, 3],
+                pointRadius: (c) => years[c.dataIndex] === 2025 ? 4.5 : 0,
+                pointBackgroundColor: '#9333ea',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 1.4,
+                tension: 0.18
+              },
+              {
+                label: '0.5-2.0% Moisture, O₂ < 7000 ppm (Normal)',
+                data: normalDP,
+                borderColor: '#10b981',
+                backgroundColor: 'transparent',
+                borderWidth: 1.5,
+                borderDash: [4, 4],
+                pointRadius: 0,
+                tension: 0.18
+              },
+              {
+                label: '0.5-2.0% Moisture, O₂ ≥ 7000 ppm (High O₂)',
+                data: highO2DP,
+                borderColor: '#0891b2',
+                backgroundColor: 'transparent',
+                borderWidth: 1.5,
+                borderDash: [5, 5],
+                borderDashOffset: 5,
+                pointRadius: 0,
+                tension: 0.18
+              },
+              {
+                label: '> 2.0% Moisture, O₂ < 7000 ppm (High Moisture)',
+                data: highMoistDP,
+                borderColor: '#92400e',
+                backgroundColor: 'transparent',
+                borderWidth: 1.5,
+                borderDash: [6, 3],
+                pointRadius: 0,
+                tension: 0.18
+              },
+              {
+                label: '> 2.0% Moisture, O₂ ≥ 7000 ppm (Severe)',
+                data: severeDP,
+                borderColor: '#1e293b',
+                backgroundColor: 'transparent',
+                borderWidth: 1.7,
+                borderDash: [2, 2.5],
+                pointRadius: 0,
+                tension: 0.18
+              },
+              {
+                label: 'Limit (DP = 300)',
+                data: limit300,
+                borderColor: '#f97316',
+                backgroundColor: 'transparent',
+                borderWidth: 1.2,
+                borderDash: [3, 3],
+                pointRadius: 0
+              },
+              {
+                label: 'Limit (DP = 200)',
+                data: limit200,
+                borderColor: '#dc2626',
+                backgroundColor: 'transparent',
+                borderWidth: 1.2,
+                borderDash: [3, 3],
+                pointRadius: 0
+              }
+            ]
+          },
+          options: {
+            animation: false,
+            responsive: false,
+            maintainAspectRatio: false,
+            devicePixelRatio: 2.5,
+            layout: {
+              padding: { top: 14, bottom: 6, left: 6, right: 18 }
+            },
+            plugins: {
+              legend: { display: false },
+              dp300Callouts: {
+                intersections: intersections,
+                forceLight: true
+              },
+              tooltip: { enabled: false }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: `Calendar Year (2025–${endChartYear} Projection)`,
+                  font: { size: 9, weight: '700', family: 'Inter' },
+                  color: '#475569',
+                  padding: { top: 6, bottom: 0 }
+                },
+                ticks: {
+                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  color: '#64748b',
+                  maxRotation: 0,
+                  callback: function(val, index) {
+                    const y = years[index];
+                    const cur = intersections.find(it => it.label === 'Current' || it.isCurrent);
+                    if (cur && cur.targetYear >= 2025 && cur.targetYear <= endChartYear && Math.abs(y - cur.targetYear) <= 2 && y !== cur.targetYear) {
+                      return '';
+                    }
+                    return (y % 10 === 5 || y === 2025 || y === endChartYear) ? y : '';
+                  }
+                },
+                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+              },
+              y: {
+                min: 0,
+                max: yMax,
+                title: {
+                  display: true,
+                  text: 'Degree of Polymerization (DP)',
+                  font: { size: 8.5, weight: '700', family: 'Inter' },
+                  color: '#475569'
+                },
+                ticks: {
+                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  color: '#64748b',
+                  stepSize: 200
+                },
+                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+              }
+            }
+          }
+        });
+
+        imgEl.src = offCanvas.toDataURL('image/png');
+        wrapEl.classList.add('has-print-img');
+        tmpChart.destroy();
+      } catch (err) {
+        console.error('Print DP chart render error:', err);
+      }
     }
 
     function renderWeibullChart(currentAge, baseYear, unitName = '') {
@@ -3017,7 +3396,161 @@
           }
         }
       });
+
+      renderOffscreenPrintWeibullChart(years, pofData, lowRiskBand, medRiskBand, highRiskBand, unitPointData, commissionYear, baseYear, endYear, currentAge, currentPofVal, unitName);
     }
+
+    function renderOffscreenPrintWeibullChart(years, pofData, lowRiskBand, medRiskBand, highRiskBand, unitPointData, commissionYear, baseYear, endYear, currentAge, currentPofVal, unitName) {
+      try {
+        const imgEl = document.getElementById('print-chart-pof');
+        const wrapEl = document.getElementById('container-weibull-pof');
+        if (!imgEl || !wrapEl) return;
+
+        const logicalW = 760;
+        const logicalH = 130;
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = logicalW;
+        offCanvas.height = logicalH;
+
+        const whiteBgPlugin = {
+          id: 'printWhiteBgPof',
+          beforeDraw(c) {
+            const cctx = c.ctx;
+            cctx.save();
+            cctx.fillStyle = '#ffffff';
+            cctx.fillRect(0, 0, c.width, c.height);
+            cctx.restore();
+          }
+        };
+
+        const tmpChart = new Chart(offCanvas, {
+          type: 'line',
+          plugins: [whiteBgPlugin],
+          data: {
+            labels: years,
+            datasets: [
+              {
+                label: `Weibull PoF Model (α = 42.5 yrs, β = 3.0, Comm. ${commissionYear})`,
+                data: pofData,
+                borderColor: '#0f172a',
+                fill: false,
+                borderWidth: 2.2,
+                pointRadius: 0,
+                tension: 0.25
+              },
+              {
+                label: 'Low Risk (<20%)',
+                data: lowRiskBand,
+                borderColor: 'transparent',
+                backgroundColor: 'rgba(34, 197, 94, 0.42)',
+                fill: true,
+                pointRadius: 0
+              },
+              {
+                label: 'Medium Risk (20%-50%)',
+                data: medRiskBand,
+                borderColor: 'transparent',
+                backgroundColor: 'rgba(234, 179, 8, 0.45)',
+                fill: true,
+                pointRadius: 0
+              },
+              {
+                label: 'High Risk (>=50%)',
+                data: highRiskBand,
+                borderColor: 'transparent',
+                backgroundColor: 'rgba(239, 68, 68, 0.45)',
+                fill: true,
+                pointRadius: 0
+              },
+              {
+                label: unitName ? `Current Operating Point: ${unitName} (${baseYear}: ${currentAge} yrs, PoF=${currentPofVal}%)` : `Current Operating Point (${baseYear}: ${currentAge} yrs, PoF=${currentPofVal}%)`,
+                data: unitPointData,
+                borderColor: '#dc2626',
+                backgroundColor: '#dc2626',
+                pointRadius: 6,
+                showLine: false
+              }
+            ]
+          },
+          options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            animation: false,
+            devicePixelRatio: 2.5,
+            layout: {
+              padding: { top: 4, bottom: 4, left: 6, right: 18 }
+            },
+            plugins: {
+              tooltip: { enabled: false },
+              legend: {
+                position: 'top',
+                labels: {
+                  usePointStyle: true,
+                  pointStyle: 'line',
+                  boxWidth: 18,
+                  color: '#475569',
+                  font: { size: 7.8, weight: '600', family: 'Inter' },
+                  padding: 5,
+                  filter: (item) => !item.text.includes('Risk') || item.text.includes('<20%') || item.text.includes('20%-50%') || item.text.includes('>=50%')
+                }
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: `Life-Cycle Timeline: Commissioning Year (${commissionYear}) → Current (${baseYear}) → 2125 Projection`,
+                  font: { size: 8.8, weight: '700', family: 'Inter' },
+                  color: '#475569',
+                  padding: { top: 4, bottom: 0 }
+                },
+                ticks: {
+                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  color: '#64748b',
+                  maxRotation: 0,
+                  callback: function(val, index) {
+                    const y = years[index];
+                    return (y === commissionYear || y === baseYear || y === 2050 || y === 2075 || y === 2100 || y === endYear || y % 20 === 0) ? y : '';
+                  }
+                },
+                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+              },
+              y: {
+                min: 0,
+                max: 100,
+                title: {
+                  display: true,
+                  text: 'Probability of Failure (%)',
+                  font: { size: 8.5, weight: '700', family: 'Inter' },
+                  color: '#475569'
+                },
+                ticks: {
+                  font: { size: 8.5, weight: '500', family: 'Inter' },
+                  color: '#64748b',
+                  stepSize: 20
+                },
+                grid: { color: 'rgba(100, 116, 139, 0.10)' }
+              }
+            }
+          }
+        });
+
+        imgEl.src = offCanvas.toDataURL('image/png');
+        wrapEl.classList.add('has-print-img');
+        tmpChart.destroy();
+      } catch (err) {
+        console.error('Print Weibull chart render error:', err);
+      }
+    }
+
+    function printRemainingLifeReport() {
+      window.print();
+    }
+
+    window.addEventListener('afterprint', () => {
+      if (dpChartInstance) dpChartInstance.resize();
+      if (pofChartInstance) pofChartInstance.resize();
+    });
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme');
