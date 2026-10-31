@@ -2024,29 +2024,57 @@
     
     let evalOilDataList = [];
     let evalDfrDataList = [];
+    let evalVisDataList = [];
 
     const parseEvalCSV = (text) => {
       if (!text) return [];
-      const lines = text.trim().split('\n');
-      if (lines.length < 2) return [];
-      const headers = lines[0].split(',').map(h => h.trim().replace(/^[\uFEFF\ufeff]/, ''));
-      return lines.slice(1).map(line => {
-        const cols = line.split(',');
+      const clean = text.replace(/^\uFEFF/, '');
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+      for (let i = 0; i < clean.length; i++) {
+        const ch = clean[i];
+        const nx = clean[i + 1];
+        if (ch === '"') {
+          if (inQuotes && nx === '"') { field += '"'; i++; }
+          else inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          row.push(field.trim());
+          field = '';
+        } else if ((ch === '\r' || ch === '\n') && !inQuotes) {
+          if (ch === '\r' && nx === '\n') i++;
+          row.push(field.trim());
+          field = '';
+          if (row.some(f => f.length > 0)) rows.push(row);
+          row = [];
+        } else {
+          field += ch;
+        }
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        if (row.some(f => f.length > 0)) rows.push(row);
+      }
+      if (rows.length < 2) return [];
+      const headers = rows[0].map(h => h.replace(/^[\uFEFF\ufeff]/, '').trim());
+      return rows.slice(1).map(cols => {
         const obj = {};
-        headers.forEach((h, i) => obj[h] = cols[i] ? cols[i].trim() : '');
-        obj.serial = obj.Serial_No || obj['Serial No.'] || obj['Serial No'] || obj.serial || obj.Serial || obj.SERIAL_NUMBER || '';
+        headers.forEach((h, i) => { if (h) obj[h] = cols[i] !== undefined ? cols[i] : ''; });
+        obj.serial = obj.Serial_No || obj.Serial_no || obj['Serial No.'] || obj['Serial No'] || obj.serial || obj.Serial || obj.SERIAL_NUMBER || '';
         obj.date = obj.Date || obj['Test Date'] || obj.date || obj.DATE || '';
         return obj;
-      });
+      }).filter(o => o.serial && !o.serial.startsWith('-'));
     };
 
     async function loadTestDatasetsForEval(forceRefresh = false) {
       try {
         const cacheBust = forceRefresh ? `?t=${Date.now()}` : '';
         const fetchOpt = forceRefresh ? { cache: 'no-store' } : {};
-        const [resOil, resDfr] = await Promise.all([
+        const [resOil, resDfr, resVis] = await Promise.all([
           fetch('TestData/MTOilData.csv' + cacheBust, fetchOpt).catch(() => null),
-          fetch('TestData/DFRData.csv' + cacheBust, fetchOpt).catch(() => null)
+          fetch('TestData/DFRData.csv' + cacheBust, fetchOpt).catch(() => null),
+          fetch('TestData/VisualData.csv' + cacheBust, fetchOpt).catch(() => null)
         ]);
         if (resOil && resOil.ok) {
           const text = await resOil.text();
@@ -2066,6 +2094,15 @@
             window.dfrCsvData = evalDfrDataList;
           }
         }
+        if (resVis && resVis.ok) {
+          const text = await resVis.text();
+          evalVisDataList = parseEvalCSV(text);
+          if (typeof window !== 'undefined') {
+            window.evalVisDataList = evalVisDataList;
+            visualCsvData = evalVisDataList;
+            window.visualCsvData = evalVisDataList;
+          }
+        }
       } catch (e) {
         console.warn('Dataset load warning:', e);
       }
@@ -2073,9 +2110,12 @@
 
     function matchEvalSerial(s1, s2) {
       if (!s1 || !s2) return false;
-      const str1 = String(s1).trim().toLowerCase();
-      const str2 = String(s2).trim().toLowerCase();
-      return str1 === str2 || str1.includes(str2) || str2.includes(str1);
+      const a = String(s1).trim().toLowerCase();
+      const b = String(s2).trim().toLowerCase();
+      if (a === b) return true;
+      const numA = a.replace(/[^a-z0-9]/g, '');
+      const numB = b.replace(/[^a-z0-9]/g, '');
+      return Boolean(numA && numB && (numA === numB || numA.includes(numB) || numB.includes(numA)));
     }
 
     function calcDominelliDP(furanPpb) {
@@ -2086,6 +2126,16 @@
       return Math.max(100, Math.min(1150, Math.round(dp)));
     }
 
+    function calcEvalSDMyersMoisture(wcPpm, tempC) {
+      if (wcPpm === null || isNaN(wcPpm) || wcPpm <= 0) return null;
+      const t = (tempC !== null && !isNaN(tempC) && tempC > 0) ? tempC : 50;
+      const tK = t + 273.15;
+      const sOil = Math.pow(10, 7.0895 - 1567 / tK);
+      const rs = (wcPpm / sOil) * 100;
+      const wp = 0.049 * Math.pow(rs, 0.77) * Math.exp(500 / tK);
+      return Math.max(0.1, Math.round(wp * 10) / 10);
+    }
+
     function calcRUL(startDP, targetDP, kRate) {
       if (!startDP || startDP <= targetDP || !kRate || kRate <= 0) return 0;
       return (1 / targetDP - 1 / startDP) / kRate;
@@ -2093,14 +2143,30 @@
 
     function getRemainingLifeDP300(item, serialVal) {
       const sVal = serialVal || (item && (item.serial || item.SERIAL_NUMBER || item['Serial No'])) || '';
-      
-      let oilRecords = evalOilDataList.filter(x => 
-        matchEvalSerial(x.serial || x.Serial_no || x['Serial No'], sVal) || 
-        matchEvalSerial(x.Equipment_name || x.name, sVal) || 
-        (item && matchEvalSerial(x.serial, item.serial)) || 
+      const trInfo = (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA))
+        ? (TR_DATA.find(x => matchEvalSerial(x.SERIAL_NUMBER || x.SERIAL_NO || x.serial, sVal)) || {})
+        : {};
+
+      const wi = String(trInfo.WINDING_INSULATION || '').trim().toUpperCase();
+      const ti = String(trInfo.TYPE_OF_INSULATION || (item && (item.fluidType || item['Fluid Type'])) || '').trim().toUpperCase();
+      const cool = String(trInfo.TYPE_OF_COOLING || '').trim().toUpperCase();
+      const std = String(trInfo.STANDARD || '').trim().toUpperCase();
+      const trRise = String(trInfo.TEMP_RISE_MAX || '').trim().toUpperCase();
+      const rem = String(trInfo.REMARK || '').trim().toUpperCase();
+      const dataCol = String(trInfo.DATA || '').trim().toUpperCase();
+      const modelCol = String(trInfo.MODEL_TYPE || '').trim().toUpperCase();
+
+      const isDryType = /RESIN|RASIN|DRY|CAST/.test(`${ti} ${rem} ${dataCol} ${modelCol}`) ||
+                        /^(AN|AA|AN\/AF|AA\/FA)$/.test(cool) ||
+                        /^(F|H|F\/F)$/.test(wi);
+      const isTUP = !isDryType && (ti.includes('ESTER') || cool.startsWith('K') || wi.includes('120') || wi.includes('TUP') ||
+                    ((std.includes('ANSI') || std.includes('IEEE')) && (wi === '65' || (trRise.includes('65') && wi !== '55' && wi !== '105'))));
+
+      let oilRecords = evalOilDataList.filter(x =>
+        matchEvalSerial(x.serial || x.Serial_No || x.Serial_no || x['Serial No'], sVal) ||
+        (item && matchEvalSerial(x.serial, item.serial)) ||
         (item && matchEvalSerial(x.serial, item['Serial No']))
       );
-
       if (oilRecords && oilRecords.length > 0) {
         oilRecords.sort((a, b) => {
           const dA = new Date(a.Date || a.date);
@@ -2118,9 +2184,7 @@
       if (dpVal === null && furanPpb !== null) {
         dpVal = calcDominelliDP(furanPpb);
       }
-      if (dpVal !== null) {
-        dpVal = Math.round(dpVal);
-      }
+      if (dpVal !== null) dpVal = Math.round(dpVal);
       const dp0 = dpVal !== null ? dpVal : 950;
 
       let rawO2 = latestOil.O2 || latestOil.O2_ppm || (item && (item.O2 || item.O2_ppm));
@@ -2128,9 +2192,12 @@
       if (matchEvalSerial(sVal, 'PP0158B01') && o2Val === null) o2Val = 13253;
       const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
-      let dfrRecords = evalDfrDataList.filter(x => 
-        matchEvalSerial(x.serial || x['Serial No.'] || x['Serial No'], sVal) || 
-        matchEvalSerial(x['Equipment Name'] || x.name, sVal) || 
+      let rawAcidity = latestOil.Acidity_No || latestOil.Acidity;
+      let acidityVal = (rawAcidity !== undefined && rawAcidity !== '' && rawAcidity !== '-' && !isNaN(parseFloat(rawAcidity))) ? parseFloat(rawAcidity) : null;
+      const initAcidBoost = (acidityVal !== null && acidityVal > 0.03) ? Math.min(0.80, (acidityVal - 0.03) * 3.5) : 0;
+
+      let dfrRecords = evalDfrDataList.filter(x =>
+        matchEvalSerial(x.serial || x['Serial No.'] || x['Serial No'], sVal) ||
         (item && matchEvalSerial(x.serial, item.serial))
       );
       if (dfrRecords && dfrRecords.length > 0) {
@@ -2141,31 +2208,77 @@
         });
       }
       const latestDfr = dfrRecords.length > 0 ? dfrRecords[0] : {};
-      let rawMoist = latestDfr['PercentMoisture (CHL)'] || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
+      let rawMoist = latestDfr['PercentMoisture (CHL)'] || latestDfr.PercentMoisture || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
       let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
-      if (matchEvalSerial(sVal, 'PP0158B01')) cleanMoist = 0.5;
-      const isHighMoisture = cleanMoist !== null ? cleanMoist > 2.0 : false;
+      if (matchEvalSerial(sVal, 'PP0158B01') && cleanMoist === null) cleanMoist = 0.5;
 
-      let kYearly = 0.0000310;
-      if (matchEvalSerial(sVal, 'PP0158B01')) {
-        const thsK = 64.64 + 273.15;
-        const aHyd = isHighMoisture ? 4.50e11 : (cleanMoist !== null && cleanMoist < 0.5 ? 4.10e10 : 1.50e11);
-        const aOxi = isHighO2 ? 4.60e5 : 0;
-        kYearly = (aHyd * Math.exp(-128000 / (8.314 * thsK)) + aOxi * Math.exp(-89000 / (8.314 * thsK))) * 8760;
-      } else if (isHighMoisture && isHighO2) {
-        kYearly = 0.0001200;
-      } else if (isHighO2) {
-        kYearly = 0.0000597;
-      } else if (isHighMoisture) {
-        kYearly = 0.0000780;
-      } else if (dp0 < 750) {
-        kYearly = 0.0000450;
+      const visSource = (evalVisDataList && evalVisDataList.length > 0) ? evalVisDataList : ((typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData)) ? visualCsvData : []);
+      let visRecords = visSource.filter(x => matchEvalSerial(x.serial || x.Serial_no || x.Serial_No, sVal));
+      if (visRecords && visRecords.length > 0) {
+        visRecords.sort((a, b) => {
+          const dA = new Date(a.Date || a.date);
+          const dB = new Date(b.Date || b.date);
+          return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+        });
       }
+      const latestVis = visRecords.length > 0 ? visRecords[0] : {};
 
-      const targetDP300 = 300;
-      const rul300 = Math.round(calcRUL(dp0, targetDP300, kYearly) * 10) / 10;
+      let rawLvTemp = latestVis.Winding_temp_LV || latestVis.Winding_temp_LV_max || latestVis.Winding_Temp || latestVis.Winding_temp_HV;
+      let lvTemp = (rawLvTemp !== undefined && rawLvTemp !== '' && rawLvTemp !== '-' && !isNaN(parseFloat(rawLvTemp))) ? parseFloat(rawLvTemp) : null;
+      let rawOilTemp = latestVis.Oil_temp || latestVis.Oil_temp_max || latestOil.Oil_Temp || latestOil.Oil_temp;
+      let oilTemp = (rawOilTemp !== undefined && rawOilTemp !== '' && rawOilTemp !== '-' && !isNaN(parseFloat(rawOilTemp))) ? parseFloat(rawOilTemp) : null;
+
+      let rawWc = latestOil.WC || latestOil.Water_Content || latestOil['Water Content'];
+      let oilWcPpm = (rawWc !== undefined && rawWc !== '' && rawWc !== '-' && !isNaN(parseFloat(rawWc))) ? parseFloat(rawWc) : null;
+      let sdMyersMoist = (oilWcPpm !== null) ? calcEvalSDMyersMoisture(oilWcPpm, oilTemp !== null ? oilTemp : (lvTemp !== null ? lvTemp : 50)) : null;
+
+      const activeMoist = cleanMoist !== null ? cleanMoist : (sdMyersMoist !== null ? sdMyersMoist : 1.0);
+
+      const svcStr = String((item && (item.serviceType || item['Service Type'])) || trInfo.Service_Type || '').toUpperCase();
+      let rawHs = 64.0;
+      if (matchEvalSerial(sVal, 'PP0158B01')) rawHs = 64.64;
+      else if (lvTemp !== null && lvTemp > 0) rawHs = lvTemp + 5.1;
+      else if (oilTemp !== null && oilTemp > 0) rawHs = oilTemp + 17.0;
+      else rawHs = svcStr.includes('GSUT') ? 68.0 : 64.0;
+
+      let eqHs = rawHs;
+      if (rawHs < 62.0) eqHs = 62.0;
+      else if (rawHs > 76.0) eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
+      eqHs = Math.round(eqHs * 100) / 100;
+
+      const R_GAS = 8.314;
+      const Tk = eqHs + 273.15;
+      const expHyd = Math.exp(-128000 / (R_GAS * Tk));
+      const expOxi = Math.exp(-89000 / (R_GAS * Tk));
+      const tupHyd = isTUP ? 0.65 : 1.0;
+      const tupAcid = isTUP ? 0.55 : 1.0;
+      const thDamp = eqHs > 72.0 ? Math.max(0.35, 1.0 - (eqHs - 72.0) * 0.045) : 1.0;
+      const wStart = Math.max(0.3, Math.min(4.5, activeMoist));
+      const aOxi = isHighO2 ? 4.60e5 : 0;
+
+      const dt = 0.25;
+      let invDP = 1.0 / dp0;
+      let rawRul300 = dp0 <= 300 ? 0 : null;
+      for (let step = 1; step <= 800; step++) {
+        const tMid = (step - 0.5) * dt;
+        const wT = Math.min(4.2, wStart + thDamp * (0.038 * tMid + 0.00075 * tMid * tMid));
+        const acidF = 1.0 + initAcidBoost + tupAcid * thDamp * 0.024 * tMid;
+        const aHydT = tupHyd * 1.18e11 * Math.pow(wT, 1.18) * acidF;
+        const kYr = (aHydT * expHyd + aOxi * expOxi) * 8760;
+        const prevDP = 1.0 / invDP;
+        invDP += kYr * dt;
+        const curDP = 1.0 / invDP;
+        if (rawRul300 === null && curDP <= 300) {
+          rawRul300 = (step - 1) * dt + dt * ((prevDP - 300) / Math.max(1e-9, prevDP - curDP));
+          break;
+        }
+      }
+      if (rawRul300 === null) rawRul300 = 200;
+
+      const rul300 = Math.round(rawRul300 * 10) / 10;
       const targetYear = Math.round(2025 + rul300);
-      return { dp: dp0, rul300: rul300, targetYear: targetYear, kYearly: kYearly };
+      const kYearly = (rul300 > 0 && dp0 > 300) ? ((1 / 300 - 1 / dp0) / rul300) : ((tupHyd * 1.18e11 * Math.pow(wStart, 1.18) * (1 + initAcidBoost) * expHyd + aOxi * expOxi) * 8760);
+      return { dp: dp0, rul300, targetYear, kYearly, isDryType, isTUP, eqHs };
     }
 
     function setElText(id, text) {

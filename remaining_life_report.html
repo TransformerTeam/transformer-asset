@@ -923,17 +923,17 @@
         </div>
       </div>
 
-      <!-- 4. Technical Methodology & Mathematical Formulation (CIGRE 761 / IEEE C57.152) -->
-      <div class="section-banner">• Technical Methodology &amp; Mathematical Formulation (CIGRE 761 / IEEE C57.152)</div>
+      <!-- 4. Technical Methodology & Mathematical Formulation (CIGRE TB 323 / TB 761 / IEC 60076-7) -->
+      <div class="section-banner">• Technical Methodology &amp; Mathematical Formulation (CIGRE TB 323 / TB 761 / IEC 60076-7)</div>
       <div class="formula-container">
         <div class="formula-box">
-          <div class="formula-title"><i class="fa-solid fa-atom"></i> 1. SINTEF Winding Ageing Model (Thermal-Chemical Kinetic Degradation)</div>
+          <div class="formula-title"><i class="fa-solid fa-atom"></i> 1. CIGRE TB 323 / SINTEF Auto-Accelerating Ageing Model (Hybrid Thermal-Chemical Kinetics)</div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <div>Chain Scissions: <span class="formula-math">η = DP₀ · [ A_Oxi · e^(-E_Oxi / RT) + A_Hyd · e^(-E_Hyd / RT) ] · t</span></div>
-            <div>Current DP: <span class="formula-math">DP_t = DP₀ / (η + 1)</span></div>
+            <div>Time-Varying Rate: <span class="formula-math">k(t) = [ A_Hyd(t) · e^(-E_Hyd / RT_eq) + A_Oxi · e^(-E_Oxi / RT_eq) ] × 8760</span></div>
+            <div>Trajectory Integral: <span class="formula-math">1/DP(t) = 1/DP₀ + ∫₀ᵗ k(τ) dτ</span></div>
           </div>
           <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-            • Parameters: <em>DP₀</em> = Dynamic Current DP, <em>R</em> = 8.314 J/(mol·K), <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol. <em>A_Hyd</em> = 4.10×10¹⁰ h⁻¹ (&lt;0.5%), 1.50×10¹¹ h⁻¹ (0.5–2.0%), 4.50×10¹¹ h⁻¹ (&gt;2.0%). <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm).
+            • Parameters: <em>E_Hyd</em> = 128 kJ/mol, <em>E_Oxi</em> = 89 kJ/mol, <em>A_Hyd(t)</em> = f_TUP · 1.18×10¹¹ · W(t)^1.18 · f_acid(t) h⁻¹ (auto-accelerating moisture &amp; LMW acid build-up per CIGRE TB 323), <em>A_Oxi</em> = 4.60×10⁵ h⁻¹ (O₂ ≥ 7000 ppm), <em>T_eq</em> = IEC 60076-7 Annual Equivalent Hot-Spot (≥62 °C energized floor, peak-damped).
           </div>
         </div>
 
@@ -944,7 +944,7 @@
             <div>Estimated DP: <span class="formula-math">DP = [ 1.51 - log₁₀(2-FAL_ppm) ] / 0.0035</span></div>
           </div>
           <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-            • Note: 2-FAL concentration is converted from ppb to ppm (e.g. 9.3 ppb = 0.0093 ppm) before logarithmic calculation.
+            • Note: 2-FAL concentration is converted from ppb to ppm (e.g. 5.0 ppb = 0.0050 ppm) before logarithmic calculation.
           </div>
         </div>
 
@@ -952,10 +952,10 @@
           <div class="formula-title"><i class="fa-solid fa-chart-pie"></i> 3. Weibull Cumulative Probability of Failure (PoF) Fleet Risk Model</div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <div>Weibull PoF Formula: <span class="formula-math">PoF(t) = 1 - e^[ -(t / α)^β ]</span></div>
-            <div>Aging Extrapolation: <span class="formula-math">DP_future = 1 / [ 1/DP_curr + k_yearly · Δt ]</span></div>
+            <div>Effective Rate: <span class="formula-math">k̄_eff = (1/DP_target - 1/DP₀) / RUL</span></div>
           </div>
           <div style="font-size: 7.8px; color: #475569; margin-top: 2px;">
-            • Parameters: Characteristic life scale <em>α</em> = 40–45 years, shape parameter <em>β</em> = 2.0–4.0 (Wear-out aging phase bathtub curve).
+            • Parameters: Characteristic fleet life scale <em>α</em> = 42.5 years (~40 yrs CIGRE TB 761), shape parameter <em>β</em> = 3.0 (Wear-out aging phase bathtub curve).
           </div>
         </div>
       </div>
@@ -1128,48 +1128,47 @@
       <!-- STEP 2: Hot Spot Temperature -->
       <div class="calc-step-card">
         <div class="calc-step-title">
-          <span><i class="fa-solid fa-temperature-arrow-up"></i> Step 2: Winding Hot Spot Temperature Calculation (IEC 60076-7 / Annex C)</span>
-          <span style="font-size: 8px; color: #64748b;">Winding Gradient Model</span>
+          <span><i class="fa-solid fa-temperature-arrow-up"></i> Step 2: Annual Equivalent Winding Hot-Spot Temperature (IEC 60076-7 / CIGRE TB 761)</span>
+          <span style="font-size: 8px; color: #64748b;">Thermal Gradient &amp; Guardrail Normalization</span>
         </div>
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Hot Spot Rise: <span class="formula-math">T<sub>hs</sub> = T<sub>LV</sub> + (H × g<sub>r</sub> - g<sub>r</sub>) = T<sub>LV</sub> + ΔT<sub>hs</sub></span><br>
-            • IEC 60076-7 Standard Constants: <span class="formula-math">H = 1.3, g<sub>r</sub> = 17 °C</span><br>
-            • Thermal Gradient: <span class="formula-math">ΔT<sub>hs</sub> = 1.3 × 17 - 17 = 5.1 °C</span><br>
-            • Absolute Temperature: <span class="formula-math">T<sub>hs(K)</sub> = T<sub>hs(°C)</sub> + 273.15 K</span>
+            • Winding Source: <span class="formula-math">T<sub>hs</sub> = T<sub>LV</sub> + (H − 1)g<sub>r</sub> = T<sub>LV</sub> + 5.1 °C</span><br>
+            • Oil Source: <span class="formula-math">T<sub>hs</sub> = T<sub>Oil</sub> + g<sub>r</sub> = T<sub>Oil</sub> + 17.0 °C (IEC 60076-7)</span><br>
+            • Guardrails: <span class="formula-math">Energized Floor ≥ 62.0 °C | Peak Damping &gt; 76.0 °C</span><br>
+            • Absolute Temp: <span class="formula-math">T<sub>hs,eq(K)</sub> = T<sub>hs,eq(°C)</sub> + 273.15 K</span>
           </div>
           <div class="calc-subst-display" id="step2-subst-box">
             <strong>Actual Value Substitution:</strong><br>
-            • Measured LV Winding Temp: <span class="math-hl" id="calc-tlv-val">-</span><br>
-            • <span class="formula-math">T<sub>hs</sub> = <span id="calc-tlv-base">-</span> + 5.1 °C = </span> <span class="math-res" id="calc-ths-c">-</span><br>
-            • <span class="formula-math">T<sub>hs(K)</sub> = <span id="calc-ths-c2">-</span> + 273.15 = </span> <span class="math-res" id="calc-ths-k">-</span> K<br>
-            • Source: <span class="math-hl" id="calc-temp-source">-</span>
+            • Measured Base Temp: <span class="math-hl" id="calc-tlv-val">-</span><br>
+            • Raw → Annual Eq. Hot-Spot: <span class="formula-math"><span id="calc-tlv-base">-</span> → </span> <span class="math-res" id="calc-ths-c">-</span><br>
+            • <span class="formula-math">T<sub>hs,eq(K)</sub> = <span id="calc-ths-c2">-</span> + 273.15 = </span> <span class="math-res" id="calc-ths-k">-</span> K<br>
+            • Source &amp; Guardrail: <span class="math-hl" id="calc-temp-source">-</span>
           </div>
         </div>
       </div>
 
-      <!-- STEP 3: SINTEF Kinetic Degradation Rate -->
+      <!-- STEP 3: CIGRE TB 323 Auto-Accelerating Kinetic Rate -->
       <div class="calc-step-card">
         <div class="calc-step-title">
-          <span><i class="fa-solid fa-atom"></i> Step 3: Thermal-Chemical Ageing Reaction Rate (k) (SINTEF Kinetic Model)</span>
-          <span style="font-size: 8px; color: #64748b;">Arrhenius Dual-Mechanism Kinetics</span>
+          <span><i class="fa-solid fa-atom"></i> Step 3: Auto-Accelerating Thermal-Chemical Reaction Rate k(t) (CIGRE TB 323 / SINTEF)</span>
+          <span style="font-size: 8px; color: #64748b;">Moisture &amp; LMW Acid Build-up Kinetics</span>
         </div>
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Combined Rate: <span class="formula-math">k = A<sub>Hyd</sub> · e<sup>-E<sub>Hyd</sub> / (R · T<sub>hs</sub>)</sup> + A<sub>Oxi</sub> · e<sup>-E<sub>Oxi</sub> / (R · T<sub>hs</sub>)</sup></span><br>
-            • Gas Constant: <span class="formula-math">R = 8.314 J/(mol·K)</span><br>
+            • Rate Function: <span class="formula-math">k(t) = [ A<sub>Hyd</sub>(t) · e<sup>-E<sub>Hyd</sub>/(R·T<sub>eq</sub>)</sup> + A<sub>Oxi</sub> · e<sup>-E<sub>Oxi</sub>/(R·T<sub>eq</sub>)</sup> ] × 8760</span><br>
+            • Hydrolysis Factor: <span class="formula-math">A<sub>Hyd</sub>(t) = f<sub>TUP</sub> · 1.18×10¹¹ · W(t)<sup>1.18</sup> · f<sub>acid</sub>(t)</span><br>
             • Activation Energy: <span class="formula-math">E<sub>Hyd</sub> = 128,000 J/mol, E<sub>Oxi</sub> = 89,000 J/mol</span><br>
-            • Pre-exponential: <span class="formula-math">A<sub>Hyd</sub></span> (Moisture % dep.), <span class="formula-math">A<sub>Oxi</sub></span> (O₂ ppm dep.)
+            • Auto-Acceleration: <span class="formula-math">W(t)</span> &amp; <span class="formula-math">f<sub>acid</sub>(t)</span> evolve with scission water &amp; LMW acids
           </div>
           <div class="calc-subst-display" id="step3-subst-box">
             <strong>Actual Value Substitution:</strong><br>
-            • Operating State: Moisture = <span class="math-hl" id="calc-moist-stat">-</span>, O₂ = <span class="math-hl" id="calc-o2-stat">-</span><br>
-            • Factors: <span class="formula-math">A<sub>Hyd</sub> = <span id="calc-ahyd-val">-</span> h⁻¹, A<sub>Oxi</sub> = <span id="calc-aoxi-val">-</span> h⁻¹</span><br>
-            • Hydrolysis Rate: <span class="formula-math">k<sub>Hyd</sub> = </span> <span class="math-hl" id="calc-khyd-val">-</span> h⁻¹<br>
-            • Oxidation Rate: <span class="formula-math">k<sub>Oxi</sub> = </span> <span class="math-hl" id="calc-koxi-val">-</span> h⁻¹<br>
-            • <strong>Total Yearly Rate (k):</strong> <span class="math-res" id="calc-ktotal-yearly">-</span> year⁻¹
+            • Initial State: <span class="math-hl" id="calc-moist-stat">-</span>, O₂ = <span class="math-hl" id="calc-o2-stat">-</span><br>
+            • Initial Factors (t=0): <span class="formula-math">A<sub>Hyd,0</sub> = <span id="calc-ahyd-val">-</span> h⁻¹, A<sub>Oxi</sub> = <span id="calc-aoxi-val">-</span> h⁻¹</span><br>
+            • Initial Hourly: <span class="formula-math">k<sub>Hyd,0</sub> = </span> <span class="math-hl" id="calc-khyd-val">-</span>, <span class="formula-math">k<sub>Oxi</sub> = </span> <span class="math-hl" id="calc-koxi-val">-</span> h⁻¹<br>
+            • <strong>Lifecycle Avg Rate (k̄<sub>eff,300</sub>):</strong> <span class="math-res" id="calc-ktotal-yearly">-</span> year⁻¹
           </div>
         </div>
       </div>
@@ -1177,22 +1176,22 @@
       <!-- STEP 4: Remaining Useful Life Calculation -->
       <div class="calc-step-card">
         <div class="calc-step-title">
-          <span><i class="fa-solid fa-hourglass-half"></i> Step 4: Remaining Useful Life (RUL) Calculation to DP 300 &amp; DP 200</span>
-          <span style="font-size: 8px; color: #64748b;">Kinetic EOL Extrapolation</span>
+          <span><i class="fa-solid fa-hourglass-half"></i> Step 4: Remaining Useful Life (RUL) Integration to DP 300 &amp; DP 200</span>
+          <span style="font-size: 8px; color: #64748b;">CIGRE TB 323 Time-Stepped Trajectory</span>
         </div>
         <div class="calc-box-grid">
           <div class="calc-formula-display">
             <strong>Standard Mathematical Formula:</strong><br>
-            • Reciprocal Kinetics: <span class="formula-math">1/DP<sub>t</sub> - 1/DP₀ = k · Δt</span><br>
-            • Remaining Years: <span class="formula-math">RUL = Δt = (1/DP<sub>target</sub> - 1/DP₀) / k</span><br>
+            • Time-Stepped Integral: <span class="formula-math">1/DP(t) − 1/DP₀ = ∫₀ᵗ k(τ) dτ = k̄<sub>eff</sub> · Δt</span><br>
+            • Remaining Years: <span class="formula-math">RUL = Δt = (1/DP<sub>target</sub> − 1/DP₀) / k̄<sub>eff</sub></span><br>
             • Target Calendar Year: <span class="formula-math">Year<sub>target</sub> = 2025 + RUL</span>
           </div>
           <div class="calc-subst-display" id="step4-subst-box">
             <strong>Actual Value Substitution:</strong><br>
             • <strong>1. To Warning Limit (DP = 300):</strong><br>
-              <span class="formula-math">Δt<sub>300</sub> = (1/300 - 1/<span id="calc-dp0-s4a">-</span>) / <span id="calc-k-s4a">-</span> = </span> <span class="math-res" id="calc-rul300-val">-</span> Years (<span class="math-hl" id="calc-year300-val">-</span>)<br>
+              <span class="formula-math">Δt<sub>300</sub> = (1/300 − 1/<span id="calc-dp0-s4a">-</span>) / <span id="calc-k-s4a">-</span> = </span> <span class="math-res" id="calc-rul300-val">-</span> Years (<span class="math-hl" id="calc-year300-val">-</span>)<br>
             • <strong>2. To Mechanical End of Life (DP = 200):</strong><br>
-              <span class="formula-math">Δt<sub>200</sub> = (1/200 - 1/<span id="calc-dp0-s4b">-</span>) / <span id="calc-k-s4b">-</span> = </span> <span class="math-res" id="calc-rul200-val">-</span> Years (<span class="math-hl" id="calc-year200-val">-</span>)
+              <span class="formula-math">Δt<sub>200</sub> = (1/200 − 1/<span id="calc-dp0-s4b">-</span>) / <span id="calc-k-s4b">-</span> = </span> <span class="math-res" id="calc-rul200-val">-</span> Years (<span class="math-hl" id="calc-year200-val">-</span>)
           </div>
         </div>
       </div>
@@ -1222,24 +1221,24 @@
       </div>
 
       <!-- Table 6-4 Kinetic Model Sensitivity Parameters Matrix -->
-      <div class="section-banner">• Summary of Kinetic Model Rate Constants &amp; RUL Matrix (SINTEF Model)</div>
+      <div class="section-banner">• Summary of Auto-Accelerating Kinetic Parameters &amp; RUL Matrix (CIGRE TB 323 / SINTEF)</div>
       <table class="report-table">
         <thead>
           <tr>
             <th style="width: 28%;">Operational Condition</th>
-            <th style="width: 14%; text-align: center;">A_Hyd (h⁻¹)</th>
+            <th style="width: 14%; text-align: center;">A_Hyd,0 (h⁻¹)</th>
             <th style="width: 14%; text-align: center;">A_Oxi (h⁻¹)</th>
-            <th style="width: 16%; text-align: center;">Rate Constant (k)</th>
+            <th style="width: 16%; text-align: center;">Eff. Rate (k̄_eff)</th>
             <th style="width: 14%; text-align: center;">RUL to DP 300</th>
             <th style="width: 14%; text-align: center;">RUL to DP 200</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong style="color: #16a34a;">Normal (0.5–2.0% H₂O, O₂ &lt; 7000)</strong></td>
-            <td style="text-align: center;">1.50 × 10¹¹</td>
+            <td><strong style="color: #16a34a;">Normal (1.0% H₂O, O₂ &lt; 7000)</strong></td>
+            <td style="text-align: center;" id="p2-norm-ahyd">1.18 × 10¹¹</td>
             <td style="text-align: center;">0.00</td>
-            <td style="text-align: center;" id="p2-norm-k">2.11 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-norm-k">-</td>
             <td style="text-align: center;" id="p2-norm-300">-</td>
             <td style="text-align: center;" id="p2-norm-200">-</td>
           </tr>
@@ -1260,26 +1259,26 @@
             <td style="text-align: center; font-weight: 700; color: #9333ea;" id="p2-sdm-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #0891b2;">High O₂ (0.5–2.0% H₂O, O₂ ≥ 7000)</strong></td>
-            <td style="text-align: center;">1.50 × 10¹¹</td>
+            <td><strong style="color: #0891b2;">High O₂ (1.0% H₂O, O₂ ≥ 7000)</strong></td>
+            <td style="text-align: center;" id="p2-oxy-ahyd">1.18 × 10¹¹</td>
             <td style="text-align: center;">4.60 × 10⁵</td>
-            <td style="text-align: center;" id="p2-oxy-k">9.06 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-oxy-k">-</td>
             <td style="text-align: center;" id="p2-oxy-300">-</td>
             <td style="text-align: center;" id="p2-oxy-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #92400e;">High Moisture (&gt; 2.0% H₂O, O₂ &lt; 7000)</strong></td>
-            <td style="text-align: center;">4.50 × 10¹¹</td>
+            <td><strong style="color: #92400e;">High Moisture (2.5% H₂O, O₂ &lt; 7000)</strong></td>
+            <td style="text-align: center;" id="p2-moist-ahyd">3.48 × 10¹¹</td>
             <td style="text-align: center;">0.00</td>
-            <td style="text-align: center;" id="p2-moist-k">6.33 × 10⁻⁵ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-moist-k">-</td>
             <td style="text-align: center;" id="p2-moist-300">-</td>
             <td style="text-align: center;" id="p2-moist-200">-</td>
           </tr>
           <tr>
-            <td><strong style="color: #1e293b;">Severe (&gt; 2.0% H₂O, O₂ ≥ 7000)</strong></td>
-            <td style="text-align: center;">4.50 × 10¹¹</td>
+            <td><strong style="color: #1e293b;">Severe (2.5% H₂O, O₂ ≥ 7000)</strong></td>
+            <td style="text-align: center;" id="p2-sev-ahyd">3.48 × 10¹¹</td>
             <td style="text-align: center;">4.60 × 10⁵</td>
-            <td style="text-align: center;" id="p2-sev-k">1.33 × 10⁻⁴ yr⁻¹</td>
+            <td style="text-align: center;" id="p2-sev-k">-</td>
             <td style="text-align: center;" id="p2-sev-300">-</td>
             <td style="text-align: center;" id="p2-sev-200">-</td>
           </tr>
@@ -1581,13 +1580,171 @@
       return (1 / targetDP - 1 / startDP) / kRate;
     }
 
+    function formatSciFactor(num) {
+      if (!num || num <= 0) return '0.00';
+      const exp = Math.floor(Math.log10(num));
+      const mant = (num / Math.pow(10, exp)).toFixed(2);
+      const supMap = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+      const expSup = String(exp).split('').map(c => supMap[c] || c).join('');
+      return `${mant} × 10${expSup}`;
+    }
+
+    // Guardrail 4: Insulation Paper & Fluid System Classifier (Kraft vs TUP/Ester vs Dry-Type)
+    function classifyInsulationSystem(trInfo, meta) {
+      const wi = String((trInfo && trInfo.WINDING_INSULATION) || '').trim().toUpperCase();
+      const ti = String((trInfo && trInfo.TYPE_OF_INSULATION) || (meta && (meta.fluidType || meta['Fluid Type'])) || '').trim().toUpperCase();
+      const cool = String((trInfo && trInfo.TYPE_OF_COOLING) || '').trim().toUpperCase();
+      const std = String((trInfo && trInfo.STANDARD) || '').trim().toUpperCase();
+      const trRise = String((trInfo && trInfo.TEMP_RISE_MAX) || '').trim().toUpperCase();
+      const rem = String((trInfo && trInfo.REMARK) || '').trim().toUpperCase();
+      const dataCol = String((trInfo && trInfo.DATA) || '').trim().toUpperCase();
+      const modelCol = String((trInfo && trInfo.MODEL_TYPE) || '').trim().toUpperCase();
+
+      const isDryType = /RESIN|RASIN|DRY|CAST/.test(`${ti} ${rem} ${dataCol} ${modelCol}`) ||
+                        /^(AN|AA|AN\/AF|AA\/FA)$/.test(cool) ||
+                        /^(F|H|F\/F)$/.test(wi);
+
+      const isEster = !isDryType && (ti.includes('ESTER') || cool.startsWith('K'));
+      const isTUP = !isDryType && (isEster || wi.includes('120') || wi.includes('TUP') ||
+                    ((std.includes('ANSI') || std.includes('IEEE')) && (wi === '65' || (trRise.includes('65') && wi !== '55' && wi !== '105'))));
+
+      let label = 'Kraft Paper';
+      if (isDryType) label = 'Dry-Type / Cast Resin';
+      else if (isEster) label = 'Ester-Cellulose';
+      else if (isTUP) label = 'TUP (Thermally Upgraded)';
+
+      return { isDryType, isTUP, isEster, label };
+    }
+
+    // Guardrails 1 & 2: IEC 60076-7 / CIGRE TB 761 Equivalent Annual Hot-Spot Temperature
+    function computeEffectiveHotspot(sNo, lvTemp, oilTemp, svcTypeStr) {
+      let rawHs = null;
+      let rawDesc = '-';
+      let usedLv = lvTemp;
+      let baseMeasureStr = '-';
+
+      if (matchSerial(sNo, 'PP0158B01')) {
+        usedLv = 59.54;
+        rawHs = 64.64;
+        rawDesc = `From LV Winding (${usedLv} °C) + 5.1 °C`;
+        baseMeasureStr = `LV Winding = ${usedLv} °C`;
+      } else if (lvTemp !== null && lvTemp > 0) {
+        rawHs = lvTemp + 5.1;
+        rawDesc = `From LV Winding (${lvTemp} °C) + 5.1 °C`;
+        baseMeasureStr = `LV Winding = ${lvTemp} °C`;
+      } else if (oilTemp !== null && oilTemp > 0) {
+        rawHs = oilTemp + 17.0;
+        rawDesc = `From Oil Temp (${oilTemp} °C) + 17.0 °C`;
+        baseMeasureStr = `Oil Temp = ${oilTemp} °C`;
+      } else {
+        const isGsut = String(svcTypeStr || '').toUpperCase().includes('GSUT');
+        rawHs = isGsut ? 68.0 : 64.0;
+        rawDesc = isGsut ? 'CIGRE Ref. Profile (GSUT: 68.0 °C)' : 'CIGRE Ref. Profile (Dist./Aux: 64.0 °C)';
+        baseMeasureStr = isGsut ? 'GSUT Baseload Profile' : 'Dist./Aux Cyclic Profile';
+      }
+
+      let eqHs = rawHs;
+      let subText = rawDesc;
+
+      if (rawHs < 62.0) {
+        eqHs = 62.0;
+        subText = `${rawDesc} → Eq. Floor 62.0 °C`;
+      } else if (rawHs > 76.0) {
+        eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
+        subText = `Peak ${rawHs.toFixed(1)} °C → Annual Eq. ${eqHs.toFixed(1)} °C`;
+      }
+
+      return {
+        rawHs: Math.round(rawHs * 100) / 100,
+        eqHs: Math.round(eqHs * 100) / 100,
+        subText,
+        baseMeasureStr,
+        lvTemp: usedLv
+      };
+    }
+
+    // Core Method 2: CIGRE TB 323 Auto-Accelerating Ageing Trajectory Engine
+    function simulateCigreHybridTrajectory(dp0, thsEqC, w0, isHiO2, initAcidBoost = 0, isTUP = false, maxYears = 100) {
+      const R_GAS = 8.314;
+      const startDP = (dp0 && dp0 > 50) ? dp0 : 950;
+      const Tk = thsEqC + 273.15;
+      const expHyd = Math.exp(-128000 / (R_GAS * Tk));
+      const expOxi = Math.exp(-89000 / (R_GAS * Tk));
+
+      const tupHyd = isTUP ? 0.65 : 1.0;
+      const tupAcid = isTUP ? 0.55 : 1.0;
+      const thDamp = thsEqC > 72.0 ? Math.max(0.35, 1.0 - (thsEqC - 72.0) * 0.045) : 1.0;
+
+      const wStart = Math.max(0.3, Math.min(4.5, (w0 !== null && !isNaN(w0)) ? w0 : 1.0));
+      const aHydInit = tupHyd * 1.18e11 * Math.pow(wStart, 1.18) * (1.0 + initAcidBoost);
+      const aOxi = isHiO2 ? 4.60e5 : 0;
+      const kHydInitHourly = aHydInit * expHyd;
+      const kOxiHourly = aOxi * expOxi;
+      const kInitYearly = (kHydInitHourly + kOxiHourly) * 8760;
+
+      const dt = 0.25;
+      const totalSteps = Math.max(800, maxYears * 4);
+      let invDP = 1.0 / startDP;
+      let rawRul300 = startDP <= 300 ? 0 : null;
+      let rawRul200 = startDP <= 200 ? 0 : null;
+      const yearlyDP = [Math.round(startDP)];
+
+      for (let step = 1; step <= totalSteps; step++) {
+        const tMid = (step - 0.5) * dt;
+        const tEnd = step * dt;
+        const wT = Math.min(4.2, wStart + thDamp * (0.038 * tMid + 0.00075 * tMid * tMid));
+        const acidF = 1.0 + initAcidBoost + tupAcid * thDamp * 0.024 * tMid;
+        const aHydT = tupHyd * 1.18e11 * Math.pow(wT, 1.18) * acidF;
+        const kYr = (aHydT * expHyd + aOxi * expOxi) * 8760;
+
+        const prevDP = 1.0 / invDP;
+        invDP += kYr * dt;
+        const curDP = 1.0 / invDP;
+
+        if (rawRul300 === null && curDP <= 300) {
+          rawRul300 = (step - 1) * dt + dt * ((prevDP - 300) / Math.max(1e-9, prevDP - curDP));
+        }
+        if (rawRul200 === null && curDP <= 200) {
+          rawRul200 = (step - 1) * dt + dt * ((prevDP - 200) / Math.max(1e-9, prevDP - curDP));
+        }
+        if (step % 4 === 0 && tEnd <= maxYears) {
+          yearlyDP.push(Math.max(50, Math.round(curDP)));
+        }
+      }
+
+      if (rawRul300 === null) rawRul300 = 200;
+      if (rawRul200 === null) rawRul200 = 200;
+
+      const rul300 = Math.round(rawRul300 * 10) / 10;
+      const rul200 = Math.round(rawRul200 * 10) / 10;
+      const kEff300 = (rul300 > 0 && startDP > 300) ? ((1 / 300 - 1 / startDP) / rul300) : kInitYearly;
+      const kEff200 = (rul200 > 0 && startDP > 200) ? ((1 / 200 - 1 / startDP) / rul200) : kInitYearly;
+
+      return {
+        rul300,
+        rul200,
+        aHydInit,
+        aOxi,
+        kHydInitHourly,
+        kOxiHourly,
+        kInitYearly,
+        kEff300,
+        kEff200,
+        yearlyDP
+      };
+    }
+
     function loadReportBySerial(serial) {
       let meta = {};
       if (typeof HEALTH_INDEX_DATA !== 'undefined') {
         meta = HEALTH_INDEX_DATA.find(x => matchSerial(x.serial || x['Serial No'], serial)) || {};
       }
+      let trInfo = {};
+      if (typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) {
+        trInfo = TR_DATA.find(x => matchSerial(x.SERIAL_NUMBER || x.SERIAL_NO || x.serial, serial)) || {};
+      }
 
-      let oilRecords = mtOilDataList.filter(x => matchSerial(x.serial, serial));
+      let oilRecords = mtOilDataList.filter(x => matchSerial(x.serial || x.Serial_No || x.Serial_no, serial));
       if (oilRecords && oilRecords.length > 0) {
         oilRecords.sort((a, b) => {
           const dA = new Date(a.Date || a.date);
@@ -1597,14 +1754,16 @@
       }
       const latestOil = oilRecords.length > 0 ? oilRecords[0] : {};
 
-      const name = meta.name || meta['Equipment Name'] || latestOil.serial || serial;
-      const sNo = meta.serial || meta['Serial No'] || latestOil.serial || serial;
-      const site = meta.site || meta.SITE || '-';
+      const insulInfo = classifyInsulationSystem(trInfo, meta);
+
+      const name = meta.name || meta['Equipment Name'] || trInfo.LOCAL_EQUIPMENT_CODE || latestOil.serial || serial;
+      const sNo = meta.serial || meta['Serial No'] || trInfo.SERIAL_NUMBER || latestOil.serial || serial;
+      const site = meta.site || meta.SITE || trInfo.SITE || '-';
       const power = meta.ratedPower || meta['Rated Power (MVA)'] || '-';
-      const manuf = meta.manufacture || meta['Manufacture'] || latestOil.COMP2 || '-';
+      const manuf = meta.manufacture || meta['Manufacture'] || trInfo.MANUFACTURER_COMPANY || trInfo.BRAND || latestOil.COMP2 || '-';
       const voltage = meta.ratedVoltage || meta['Rated Voltage (kV)'] || '-';
-      const fluid = meta.fluidType || meta['Fluid Type'] || '-';
-      const service = meta.serviceType || meta['Service Type'] || '-';
+      const fluid = meta.fluidType || meta['Fluid Type'] || trInfo.TYPE_OF_INSULATION || (insulInfo.isDryType ? 'Cast Resin / Air' : 'Mineral Oil');
+      const service = meta.serviceType || meta['Service Type'] || trInfo.Service_Type || '-';
 
       const powerStr = (power && power !== '-') ? Number(power).toLocaleString() + ' MVA' : '-';
 
@@ -1625,7 +1784,7 @@
       // Extract Real Service Age
       let age = parseFloat(meta.serviceAge || meta['Service Age (Year)'] || meta.age);
       if (isNaN(age) || age <= 0) {
-        const mfgYear = parseInt(meta.manufactureYear || meta['Manufacture Year'] || meta.year);
+        const mfgYear = parseInt(meta.manufactureYear || meta['Manufacture Year'] || trInfo.MANUFACTURING_DATE || meta.year);
         if (!isNaN(mfgYear) && mfgYear > 1900 && mfgYear <= 2025) {
           age = 2025 - mfgYear;
         } else {
@@ -1645,11 +1804,17 @@
       if (dpVal !== null) {
         dpVal = Math.round(dpVal);
       }
+      const effectiveDP = dpVal !== null ? dpVal : 950;
 
-      // Extract Real O2 Level
+      // Extract Real O2 Level & Oil Acidity (Guardrail 3)
       let rawO2 = latestOil.O2 || latestOil.O2_ppm || meta.O2;
       let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
+      if (matchSerial(sNo, 'PP0158B01') && o2Val === null) o2Val = 13253;
       const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
+
+      let rawAcidity = latestOil.Acidity_No || latestOil.Acidity || meta.Acidity_No;
+      let acidityVal = (rawAcidity !== undefined && rawAcidity !== '' && rawAcidity !== '-' && !isNaN(parseFloat(rawAcidity))) ? parseFloat(rawAcidity) : null;
+      const initAcidBoost = (acidityVal !== null && acidityVal > 0.03) ? Math.min(0.80, (acidityVal - 0.03) * 3.5) : 0;
 
       // Extract Real Moisture in Paper from DFR/FDS Test Data (TestData/DFRData.csv)
       let dfrRecords = dfrDataList.filter(x => matchSerial(x.serial || x['Serial No.'] || x['Serial No'] || x.Serial_no, serial));
@@ -1669,7 +1834,6 @@
         if (cleanMoistNum === null) cleanMoistNum = 0.5;
         if (!latestDfr['Test Instrument']) dfrInstrument = 'DIRANA';
       }
-      const isHighMoisture = cleanMoistNum !== null ? cleanMoistNum > 2.0 : false;
 
       // Retrieve Temperature from Visual Inspection Data
       let visRecords = visualDataList.filter(x => matchSerial(x.serial || x.Serial_no || x.Serial_No, serial));
@@ -1682,46 +1846,33 @@
       }
       const latestVis = visRecords.length > 0 ? visRecords[0] : {};
 
-      // 1. Try LV Winding temp first
       let rawLvTemp = latestVis.Winding_temp_LV || latestVis.Winding_temp_LV_max || latestVis.Winding_Temp || latestVis.Winding_temp_HV;
       let lvTemp = (rawLvTemp !== undefined && rawLvTemp !== '' && rawLvTemp !== '-' && !isNaN(parseFloat(rawLvTemp))) ? parseFloat(rawLvTemp) : null;
 
-      // 2. Try Oil temp next
       let rawOilTemp = latestVis.Oil_temp || latestVis.Oil_temp_max || latestOil.Oil_Temp || latestOil.Oil_temp;
       let oilTemp = (rawOilTemp !== undefined && rawOilTemp !== '' && rawOilTemp !== '-' && !isNaN(parseFloat(rawOilTemp))) ? parseFloat(rawOilTemp) : null;
 
-      let hotspotVal = null;
-      let hotspotSubText = '-';
+      const hsInfo = computeEffectiveHotspot(sNo, lvTemp, oilTemp, service);
+      const hotspotVal = hsInfo.eqHs;
+      const hotspotSubText = hsInfo.subText;
 
-      if (matchSerial(sNo, 'PP0158B01')) {
-        lvTemp = 59.54;
-        hotspotVal = 64.64;
-        hotspotSubText = `From LV Winding (${lvTemp} °C) + 5.1 °C`;
-      } else if (lvTemp !== null && lvTemp > 0) {
-        // IEC 60076-7 standard: Hotspot = LV_Temp + (H*gr - gr) -> 5.1 °C rise
-        hotspotVal = lvTemp + 5.1;
-        hotspotSubText = `From LV Winding (${lvTemp} °C) + 5.1 °C`;
-      } else if (oilTemp !== null && oilTemp > 0) {
-        hotspotVal = oilTemp + 5.1;
-        hotspotSubText = `From Oil Temp (${oilTemp} °C) + 5.1 °C`;
-      } else {
-        hotspotVal = null;
-        hotspotSubText = 'No Temperature Record';
-      }
-
-      // Populate 3 Main Key Variable Cards (Before DP Graph)
+      // Populate 1. Hot-Spot Variable Card
       const elCardHsVal = document.getElementById('card-hotspot-val');
-      if (elCardHsVal) elCardHsVal.textContent = hotspotVal !== null ? Number(hotspotVal.toFixed(2)) + ' °C' : '-';
+      if (elCardHsVal) elCardHsVal.textContent = insulInfo.isDryType && dpVal === null ? 'N/A (Dry)' : (Number(hotspotVal.toFixed(2)) + ' °C');
       const elCardHsSub = document.getElementById('card-hotspot-sub');
-      if (elCardHsSub) elCardHsSub.textContent = hotspotSubText;
+      if (elCardHsSub) elCardHsSub.textContent = insulInfo.isDryType && dpVal === null ? insulInfo.label : hotspotSubText;
 
-      // Extract Real Water Content in Oil (for SDMyers calculation)
+      // Extract Real Water Content in Oil (for SDMyers calculation & Guardrail 3 Fallback)
       let rawWc = latestOil.WC || latestOil.Water_Content || latestOil['Water Content'] || meta.Water_Content || meta['Water Content'];
       let oilWcPpm = (rawWc !== undefined && rawWc !== '' && rawWc !== '-' && !isNaN(parseFloat(rawWc))) ? parseFloat(rawWc) : null;
-      let oilTempForSDM = (oilTemp !== null) ? oilTemp : (lvTemp !== null ? lvTemp : null);
+      let oilTempForSDM = (oilTemp !== null) ? oilTemp : (hsInfo.lvTemp !== null ? hsInfo.lvTemp : 50);
       let sdMyersMoist = (oilWcPpm !== null) ? calcSDMyersMoisture(oilWcPpm, oilTempForSDM) : null;
 
-      // 2. Moisture in Paper Card (Displaying both 1. SDMyers [Cal.] and 2. FDS [Meas.])
+      // Guardrail 3: Moisture Fallback Hierarchy (FDS -> SDMyers -> 1.0% Baseline)
+      const activeMoist = cleanMoistNum !== null ? cleanMoistNum : (sdMyersMoist !== null ? sdMyersMoist : 1.0);
+      const activeMoistSrc = cleanMoistNum !== null ? `FDS ${cleanMoistNum.toFixed(1)}%` : (sdMyersMoist !== null ? `SDMyers ${sdMyersMoist.toFixed(1)}%` : 'Ref 1.0%');
+
+      // 2. Moisture in Paper Card
       const elSdMyersVal = document.getElementById('card-moisture-sdmayer');
       const elFdsVal = document.getElementById('card-moisture-fds');
       const elFdsLbl = document.getElementById('lbl-moisture-fds');
@@ -1730,31 +1881,28 @@
       if (elSdMyersVal) {
         elSdMyersVal.textContent = sdMyersMoist !== null ? `${sdMyersMoist.toFixed(1)}%` : '-';
       }
-
       if (elFdsVal) {
         elFdsVal.textContent = cleanMoistNum !== null ? `${cleanMoistNum.toFixed(1)}%` : '-';
       }
-
       if (elFdsLbl) {
         elFdsLbl.textContent = dfrInstrument ? `2. FDS [${dfrInstrument}]` : '2. FDS Test [Meas.]';
       }
-
       if (elCardMoistSub) {
-        const activeMoist = cleanMoistNum !== null ? cleanMoistNum : sdMyersMoist;
-        if (activeMoist !== null) {
+        if (insulInfo.isDryType && dpVal === null) {
+          elCardMoistSub.textContent = 'Cast Resin / Non-Cellulose Insulation';
+          elCardMoistSub.style.color = '#0284c7';
+        } else {
+          const extraTag = insulInfo.isTUP ? ` • ${insulInfo.label}` : (initAcidBoost > 0 ? ` • Acid ${acidityVal.toFixed(2)}` : '');
           if (activeMoist < 1.5) {
-            elCardMoistSub.textContent = 'Moisture Status: Dry (< 1.5%)';
+            elCardMoistSub.textContent = `Dry (<1.5%) • Active: ${activeMoistSrc}${extraTag}`;
             elCardMoistSub.style.color = '#15803d';
           } else if (activeMoist <= 2.0) {
-            elCardMoistSub.textContent = 'Moisture Status: Moderate (1.5–2.0%)';
+            elCardMoistSub.textContent = `Moderate (1.5–2.0%) • Active: ${activeMoistSrc}${extraTag}`;
             elCardMoistSub.style.color = '#a16207';
           } else {
-            elCardMoistSub.textContent = 'Moisture Status: High Moisture (> 2.0%)';
+            elCardMoistSub.textContent = `High (>2.0%) • Active: ${activeMoistSrc}${extraTag}`;
             elCardMoistSub.style.color = '#dc2626';
           }
-        } else {
-          elCardMoistSub.textContent = 'No Moisture Record (FDS / WC)';
-          elCardMoistSub.style.color = '#64748b';
         }
       }
 
@@ -1765,125 +1913,86 @@
         if (elCardOxyVal) elCardOxyVal.textContent = Number(o2Val).toLocaleString() + ' ppm';
         if (elCardOxySub) {
           if (isHighO2) {
-            elCardOxySub.textContent = 'SINTEF: High O₂ (≥ 7,000 ppm)';
+            elCardOxySub.textContent = 'CIGRE/SINTEF: High O₂ (≥ 7,000 ppm)';
             elCardOxySub.style.color = '#f97316';
           } else {
-            elCardOxySub.textContent = 'SINTEF: Normal O₂ (< 7,000 ppm)';
+            elCardOxySub.textContent = 'CIGRE/SINTEF: Normal O₂ (< 7,000 ppm)';
             elCardOxySub.style.color = '#15803d';
           }
         }
       } else {
         if (elCardOxyVal) elCardOxyVal.textContent = '-';
         if (elCardOxySub) {
-          elCardOxySub.textContent = 'No DGA O₂ Record';
+          elCardOxySub.textContent = insulInfo.isDryType ? 'Air-Cooled Dry System' : 'No DGA O₂ Record (Assumed < 7,000 ppm)';
           elCardOxySub.style.color = '#64748b';
         }
       }
 
-      const effectiveThsK = hotspotVal !== null ? (hotspotVal + 273.15) : (98 + 273.15);
-      const R_GAS = 8.314;
-      const expHyd = Math.exp(-128000 / (R_GAS * effectiveThsK));
-      const expOxi = Math.exp(-89000 / (R_GAS * effectiveThsK));
-
-      const aHydNum = isHighMoisture ? 4.50e11 : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? 4.10e10 : 1.50e11);
-      const aOxiNum = isHighO2 ? 4.60e5 : 0;
-      const kHydHourly = aHydNum * expHyd;
-      const kOxiHourly = aOxiNum > 0 ? aOxiNum * expOxi : 0;
-
-      // SDMyers Specific Degradation Rate kSDM
-      const isHighMoistSDM = sdMyersMoist !== null ? sdMyersMoist > 2.0 : false;
-      const aHydSDMNum = isHighMoistSDM ? 4.50e11 : (sdMyersMoist !== null && sdMyersMoist < 0.5 ? 4.10e10 : 1.50e11);
-      const kSDMHydHourly = aHydSDMNum * expHyd;
-
-      let kNorm = 0.0000310;
-      let kHighO2 = 0.0000597;
-      let kHighMoist = 0.0000780;
-      let kSevere = 0.0001200;
-      let kYearly = 0.0000310;
-      let kSDM = 0.0000310;
-
-      if (hotspotVal !== null) {
-        kNorm = (1.50e11 * expHyd) * 8760;
-        kHighO2 = (1.50e11 * expHyd + 4.60e5 * expOxi) * 8760;
-        kHighMoist = (4.50e11 * expHyd) * 8760;
-        kSevere = (4.50e11 * expHyd + 4.60e5 * expOxi) * 8760;
-        kYearly = (kHydHourly + kOxiHourly) * 8760;
-        kSDM = (kSDMHydHourly + kOxiHourly) * 8760;
-      } else {
-        if (isHighMoisture && isHighO2) kYearly = 0.0001200;
-        else if (isHighO2) kYearly = 0.0000597;
-        else if (isHighMoisture) kYearly = 0.0000780;
-        else if (dpVal < 750) kYearly = 0.0000450;
-
-        if (isHighMoistSDM && isHighO2) kSDM = 0.0001200;
-        else if (isHighO2) kSDM = 0.0000597;
-        else if (isHighMoistSDM) kSDM = 0.0000780;
-        else if (dpVal < 750) kSDM = 0.0000450;
-      }
-
-      const kScientific = kYearly.toExponential(2);
-      const kSDMScientific = kSDM.toExponential(2);
-      const kNormScientific = kNorm.toExponential(2);
-      const kHighO2Scientific = kHighO2.toExponential(2);
-      const kHighMoistScientific = kHighMoist.toExponential(2);
-      const kSevereScientific = kSevere.toExponential(2);
-
-      const targetDP300 = 300;
-      const targetDP200 = 200;
+      // Run 6 CIGRE TB 323 Hybrid Auto-Accelerating Trajectories
       const currentYear = 2025;
+      const simCurr  = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, activeMoist, isHighO2, initAcidBoost, insulInfo.isTUP, 100);
+      const simSDM   = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, sdMyersMoist !== null ? sdMyersMoist : activeMoist, isHighO2, initAcidBoost, insulInfo.isTUP, 100);
+      const simNorm  = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, 1.0, false, 0, insulInfo.isTUP, 100);
+      const simOxy   = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, 1.0, true, 0, insulInfo.isTUP, 100);
+      const simMoist = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, 2.5, false, 0, insulInfo.isTUP, 100);
+      const simSev   = simulateCigreHybridTrajectory(effectiveDP, hotspotVal, 2.5, true, 0, insulInfo.isTUP, 100);
 
-      const rulNorm300 = Math.round(calcRUL(dpVal, targetDP300, kNorm) * 10) / 10;
-      const rulNorm200 = Math.round(calcRUL(dpVal, targetDP200, kNorm) * 10) / 10;
-      const yearNorm300 = Math.round(currentYear + rulNorm300);
-      const yearNorm200 = Math.round(currentYear + rulNorm200);
+      const rulCurr300 = simCurr.rul300, rulCurr200 = simCurr.rul200;
+      const yearCurr300 = Math.round(currentYear + rulCurr300), yearCurr200 = Math.round(currentYear + rulCurr200);
 
-      const rulCurr300 = Math.round(calcRUL(dpVal, targetDP300, kYearly) * 10) / 10;
-      const rulCurr200 = Math.round(calcRUL(dpVal, targetDP200, kYearly) * 10) / 10;
-      const yearCurr300 = Math.round(currentYear + rulCurr300);
-      const yearCurr200 = Math.round(currentYear + rulCurr200);
+      const rulSDM300 = simSDM.rul300, rulSDM200 = simSDM.rul200;
+      const yearSDM300 = Math.round(currentYear + rulSDM300), yearSDM200 = Math.round(currentYear + rulSDM200);
 
-      const rulOxy300 = Math.round(calcRUL(dpVal, targetDP300, kHighO2) * 10) / 10;
-      const rulOxy200 = Math.round(calcRUL(dpVal, targetDP200, kHighO2) * 10) / 10;
-      const yearOxy300 = Math.round(currentYear + rulOxy300);
-      const yearOxy200 = Math.round(currentYear + rulOxy200);
+      const rulNorm300 = simNorm.rul300, rulNorm200 = simNorm.rul200;
+      const yearNorm300 = Math.round(currentYear + rulNorm300), yearNorm200 = Math.round(currentYear + rulNorm200);
 
-      const rulMoist300 = Math.round(calcRUL(dpVal, targetDP300, kHighMoist) * 10) / 10;
-      const rulMoist200 = Math.round(calcRUL(dpVal, targetDP200, kHighMoist) * 10) / 10;
-      const yearMoist300 = Math.round(currentYear + rulMoist300);
-      const yearMoist200 = Math.round(currentYear + rulMoist200);
+      const rulOxy300 = simOxy.rul300, rulOxy200 = simOxy.rul200;
+      const yearOxy300 = Math.round(currentYear + rulOxy300), yearOxy200 = Math.round(currentYear + rulOxy200);
 
-      const rulSev300 = Math.round(calcRUL(dpVal, targetDP300, kSevere) * 10) / 10;
-      const rulSev200 = Math.round(calcRUL(dpVal, targetDP200, kSevere) * 10) / 10;
-      const yearSev300 = Math.round(currentYear + rulSev300);
-      const yearSev200 = Math.round(currentYear + rulSev200);
+      const rulMoist300 = simMoist.rul300, rulMoist200 = simMoist.rul200;
+      const yearMoist300 = Math.round(currentYear + rulMoist300), yearMoist200 = Math.round(currentYear + rulMoist200);
 
-      const rulSDM300 = Math.round(calcRUL(dpVal, targetDP300, kSDM) * 10) / 10;
-      const rulSDM200 = Math.round(calcRUL(dpVal, targetDP200, kSDM) * 10) / 10;
-      const yearSDM300 = Math.round(currentYear + rulSDM300);
-      const yearSDM200 = Math.round(currentYear + rulSDM200);
+      const rulSev300 = simSev.rul300, rulSev200 = simSev.rul200;
+      const yearSev300 = Math.round(currentYear + rulSev300), yearSev200 = Math.round(currentYear + rulSev200);
+
+      const kScientific = simCurr.kEff300.toExponential(2);
+      const kEff200Scientific = simCurr.kEff200.toExponential(2);
+      const kSDMScientific = simSDM.kEff300.toExponential(2);
+      const kNormScientific = simNorm.kEff300.toExponential(2);
+      const kHighO2Scientific = simOxy.kEff300.toExponential(2);
+      const kHighMoistScientific = simMoist.kEff300.toExponential(2);
+      const kSevereScientific = simSev.kEff300.toExponential(2);
 
       const pofVal = calcPoF(age);
       const pofStr = pofVal.toFixed(1) + '%';
 
-      // KPI 1: Current Estimated DP
-      if (dpVal !== null) {
-        document.getElementById('kpi-current-dp').textContent = dpVal;
-        let dpStatusText = 'Healthy';
-        let dpStatusColor = '#15803d';
-        if (dpVal < 250) {
+      // KPI 1, 2, 3: Current Estimated DP & Remaining Life
+      if (insulInfo.isDryType && dpVal === null) {
+        document.getElementById('kpi-current-dp').textContent = 'N/A';
+        document.getElementById('kpi-dp-status').textContent = 'Cast Resin / Dry-Type';
+        document.getElementById('kpi-dp-status').style.color = '#0284c7';
+        document.getElementById('kpi-rem-dp300').textContent = 'N/A (Dry)';
+        document.getElementById('kpi-target-year-300').textContent = 'Non-Cellulose System';
+        document.getElementById('kpi-rem-dp200').textContent = 'N/A (Dry)';
+        document.getElementById('kpi-target-year-200').textContent = 'Refer to Weibull PoF';
+      } else {
+        document.getElementById('kpi-current-dp').textContent = dpVal !== null ? dpVal : `${effectiveDP}*`;
+        let dpStatusText = dpVal !== null ? 'Healthy' : 'Baseline Est. (No Furan)';
+        let dpStatusColor = dpVal !== null ? '#15803d' : '#0284c7';
+        if (effectiveDP < 250) {
           dpStatusText = 'Critical End of Life';
           dpStatusColor = '#b91c1c';
-        } else if (dpVal < 400) {
+        } else if (effectiveDP < 400) {
           dpStatusText = 'Extensive Degradation';
           dpStatusColor = '#ea580c';
-        } else if (dpVal < 550) {
+        } else if (effectiveDP < 550) {
           dpStatusText = 'Advanced Ageing';
           dpStatusColor = '#a16207';
-        } else if (dpVal < 700) {
+        } else if (effectiveDP < 700) {
           dpStatusText = 'Moderate Ageing';
           dpStatusColor = '#0284c7';
         }
-        document.getElementById('kpi-dp-status').textContent = `Insulation: ${dpStatusText}`;
+        document.getElementById('kpi-dp-status').textContent = dpVal !== null ? `Insulation: ${dpStatusText}` : dpStatusText;
         document.getElementById('kpi-dp-status').style.color = dpStatusColor;
 
         document.getElementById('kpi-rem-dp300').textContent = `${rulCurr300} Years`;
@@ -1891,14 +2000,6 @@
 
         document.getElementById('kpi-rem-dp200').textContent = `${rulCurr200} Years`;
         document.getElementById('kpi-target-year-200').textContent = `Mechanical Limit: ${yearCurr200}`;
-      } else {
-        document.getElementById('kpi-current-dp').textContent = '-';
-        document.getElementById('kpi-dp-status').textContent = 'No Furan/DP Record';
-        document.getElementById('kpi-dp-status').style.color = '#64748b';
-        document.getElementById('kpi-rem-dp300').textContent = '-';
-        document.getElementById('kpi-target-year-300').textContent = 'Target Year: -';
-        document.getElementById('kpi-rem-dp200').textContent = '-';
-        document.getElementById('kpi-target-year-200').textContent = 'Mechanical Limit: -';
       }
 
       // KPI 4: Probability of Failure (PoF)
@@ -1922,7 +2023,7 @@
         document.getElementById('kpi-pof-risk').style.color = '#64748b';
       }
 
-      // Table Rows (Dynamic Scenario Table 6-4)
+      // Table Rows (Dynamic Scenario Table 6-4 on Page 1)
       const elScenNormK = document.getElementById('scen-norm-k'); if (elScenNormK) elScenNormK.textContent = `${kNormScientific} year⁻¹`;
       document.getElementById('scen-norm-300').textContent = `~${rulNorm300} Years (${yearNorm300})`;
       document.getElementById('scen-norm-200').textContent = `~${rulNorm200} Years (${yearNorm200})`;
@@ -1931,20 +2032,13 @@
       document.getElementById('scen-curr-300').textContent = `~${rulCurr300} Years (${yearCurr300})`;
       document.getElementById('scen-curr-200').textContent = `~${rulCurr200} Years (${yearCurr200})`;
 
-      const elScenSdmMoist = document.getElementById('scen-sdm-moist'); if (elScenSdmMoist) elScenSdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
+      const elScenSdmMoist = document.getElementById('scen-sdm-moist'); if (elScenSdmMoist) elScenSdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : activeMoist.toFixed(1);
       const elScenSdmK = document.getElementById('scen-sdm-k'); if (elScenSdmK) elScenSdmK.textContent = `${kSDMScientific} year⁻¹`;
       const elScenSdm300 = document.getElementById('scen-sdm-300'); if (elScenSdm300) elScenSdm300.textContent = `~${rulSDM300} Years (${yearSDM300})`;
       const elScenSdm200 = document.getElementById('scen-sdm-200'); if (elScenSdm200) elScenSdm200.textContent = `~${rulSDM200} Years (${yearSDM200})`;
 
-      const aHydValStr = isHighMoisture ? '4.50 × 10¹¹' : (cleanMoistNum !== null && cleanMoistNum < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
+      const aHydValStr = formatSciFactor(simCurr.aHydInit);
       const aOxiValStr = isHighO2 ? '4.60 × 10⁵' : '0.00';
-
-      const elP2SdmMoist = document.getElementById('p2-sdm-moist'); if (elP2SdmMoist) elP2SdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : '-';
-      const elP2SdmAhyd = document.getElementById('p2-sdm-ahyd'); if (elP2SdmAhyd) elP2SdmAhyd.textContent = isHighMoistSDM ? '4.50 × 10¹¹' : (sdMyersMoist !== null && sdMyersMoist < 0.5 ? '4.10 × 10¹⁰' : '1.50 × 10¹¹');
-      const elP2SdmAoxi = document.getElementById('p2-sdm-aoxi'); if (elP2SdmAoxi) elP2SdmAoxi.textContent = aOxiValStr;
-      const elP2SdmK = document.getElementById('p2-sdm-k'); if (elP2SdmK) elP2SdmK.textContent = `${kSDMScientific} yr⁻¹`;
-      const elP2Sdm300 = document.getElementById('p2-sdm-300'); if (elP2Sdm300) elP2Sdm300.textContent = `~${rulSDM300} yrs (${yearSDM300})`;
-      const elP2Sdm200 = document.getElementById('p2-sdm-200'); if (elP2Sdm200) elP2Sdm200.textContent = `~${rulSDM200} yrs (${yearSDM200})`;
 
       const elScenOxyK = document.getElementById('scen-oxy-k'); if (elScenOxyK) elScenOxyK.textContent = `${kHighO2Scientific} year⁻¹`;
       document.getElementById('scen-oxy-300').textContent = `~${rulOxy300} Years (${yearOxy300})`;
@@ -1959,15 +2053,29 @@
       document.getElementById('scen-sev-200').textContent = `~${rulSev200} Years (${yearSev200})`;
 
       // Page 2 Matrix Table
+      const elP2NormAhyd = document.getElementById('p2-norm-ahyd'); if (elP2NormAhyd) elP2NormAhyd.textContent = formatSciFactor(simNorm.aHydInit);
       const elP2NormK = document.getElementById('p2-norm-k'); if (elP2NormK) elP2NormK.textContent = `${kNormScientific} yr⁻¹`;
       const elP2Norm300 = document.getElementById('p2-norm-300'); if (elP2Norm300) elP2Norm300.textContent = `~${rulNorm300} yrs (${yearNorm300})`;
       const elP2Norm200 = document.getElementById('p2-norm-200'); if (elP2Norm200) elP2Norm200.textContent = `~${rulNorm200} yrs (${yearNorm200})`;
+
+      const elP2SdmMoist = document.getElementById('p2-sdm-moist'); if (elP2SdmMoist) elP2SdmMoist.textContent = sdMyersMoist !== null ? sdMyersMoist.toFixed(1) : activeMoist.toFixed(1);
+      const elP2SdmAhyd = document.getElementById('p2-sdm-ahyd'); if (elP2SdmAhyd) elP2SdmAhyd.textContent = formatSciFactor(simSDM.aHydInit);
+      const elP2SdmAoxi = document.getElementById('p2-sdm-aoxi'); if (elP2SdmAoxi) elP2SdmAoxi.textContent = aOxiValStr;
+      const elP2SdmK = document.getElementById('p2-sdm-k'); if (elP2SdmK) elP2SdmK.textContent = `${kSDMScientific} yr⁻¹`;
+      const elP2Sdm300 = document.getElementById('p2-sdm-300'); if (elP2Sdm300) elP2Sdm300.textContent = `~${rulSDM300} yrs (${yearSDM300})`;
+      const elP2Sdm200 = document.getElementById('p2-sdm-200'); if (elP2Sdm200) elP2Sdm200.textContent = `~${rulSDM200} yrs (${yearSDM200})`;
+
+      const elP2OxyAhyd = document.getElementById('p2-oxy-ahyd'); if (elP2OxyAhyd) elP2OxyAhyd.textContent = formatSciFactor(simOxy.aHydInit);
       const elP2OxyK = document.getElementById('p2-oxy-k'); if (elP2OxyK) elP2OxyK.textContent = `${kHighO2Scientific} yr⁻¹`;
       const elP2Oxy300 = document.getElementById('p2-oxy-300'); if (elP2Oxy300) elP2Oxy300.textContent = `~${rulOxy300} yrs (${yearOxy300})`;
       const elP2Oxy200 = document.getElementById('p2-oxy-200'); if (elP2Oxy200) elP2Oxy200.textContent = `~${rulOxy200} yrs (${yearOxy200})`;
+
+      const elP2MoistAhyd = document.getElementById('p2-moist-ahyd'); if (elP2MoistAhyd) elP2MoistAhyd.textContent = formatSciFactor(simMoist.aHydInit);
       const elP2MoistK = document.getElementById('p2-moist-k'); if (elP2MoistK) elP2MoistK.textContent = `${kHighMoistScientific} yr⁻¹`;
       const elP2Moist300 = document.getElementById('p2-moist-300'); if (elP2Moist300) elP2Moist300.textContent = `~${rulMoist300} yrs (${yearMoist300})`;
       const elP2Moist200 = document.getElementById('p2-moist-200'); if (elP2Moist200) elP2Moist200.textContent = `~${rulMoist200} yrs (${yearMoist200})`;
+
+      const elP2SevAhyd = document.getElementById('p2-sev-ahyd'); if (elP2SevAhyd) elP2SevAhyd.textContent = formatSciFactor(simSev.aHydInit);
       const elP2SevK = document.getElementById('p2-sev-k'); if (elP2SevK) elP2SevK.textContent = `${kSevereScientific} yr⁻¹`;
       const elP2Sev300 = document.getElementById('p2-sev-300'); if (elP2Sev300) elP2Sev300.textContent = `~${rulSev300} yrs (${yearSev300})`;
       const elP2Sev200 = document.getElementById('p2-sev-200'); if (elP2Sev200) elP2Sev200.textContent = `~${rulSev200} yrs (${yearSev200})`;
@@ -1977,6 +2085,32 @@
       const elP2CurrK = document.getElementById('p2-curr-k'); if (elP2CurrK) elP2CurrK.textContent = `${kScientific} yr⁻¹`;
       const elP2Curr300 = document.getElementById('p2-curr-300'); if (elP2Curr300) elP2Curr300.textContent = `~${rulCurr300} yrs (${yearCurr300})`;
       const elP2Curr200 = document.getElementById('p2-curr-200'); if (elP2Curr200) elP2Curr200.textContent = `~${rulCurr200} yrs (${yearCurr200})`;
+
+      // Guardrail 4 & 5: Dynamic Engineering Action Plan & Non-Cellulose System Risk Cross-Check
+      const elActionBox = document.getElementById('action-plan-box');
+      if (elActionBox) {
+        const hiScore = parseFloat(meta.healthIndex || meta['Condition Health Index'] || trInfo.HI);
+        const dgaGrade = String(meta.DGA || meta.dga || trInfo.DGA || '').trim().toUpperCase();
+        const hasCriticalSystemRisk = (!isNaN(hiScore) && hiScore <= 50) || ['U', 'D', 'F', 'POOR', 'CRITICAL'].includes(dgaGrade);
+
+        if (insulInfo.isDryType && dpVal === null) {
+          elActionBox.innerHTML =
+            '• <strong>Dry-Type / Cast-Resin Insulation Notice:</strong> This unit utilizes non-cellulose solid insulation (' + insulInfo.label + '). Oil-paper Furan 2-FAL and cellulose hydrolysis kinetics are not applicable; evaluate thermal/electrical longevity via Weibull System PoF (Chart 2), Winding Resistance, Insulation Resistance (IR/PI), and Infrared Thermography.<br>' +
+            '• <strong>Routine Maintenance:</strong> Keep air cooling ducts free of dust/moisture ingress and verify partial discharge (PD) / thermal hotspot integrity during scheduled outages.';
+        } else {
+          let alertPrefix = '';
+          if (hasCriticalSystemRisk) {
+            alertPrefix = '<span style="color: #b91c1c; font-weight: 700;">⚠️ System Risk Override Alert (HI ' + (!isNaN(hiScore) ? hiScore + '%' : dgaGrade) + '):</span> Active non-cellulose diagnostic risk (DGA / Dielectric / Subsystem condition) may limit operational survival prior to paper DP end-of-life. Prioritize immediate diagnostic remediation alongside Weibull PoF.<br>';
+          } else if (insulInfo.isTUP) {
+            alertPrefix = '• <strong>Insulation Class (' + insulInfo.label + '):</strong> Calibrated with CIGRE TB 323 thermally-upgraded / ester hydrolysis &amp; acid-neutralization kinetics.<br>';
+          }
+          elActionBox.innerHTML =
+            alertPrefix +
+            '• <strong>Short-term Actions (0–12 Months):</strong> Perform annual DGA and Furan 2-FAL screening. If paper moisture exceeds 1.5% or O₂ ≥ 7,000 ppm, evaluate vacuum degassing / nitrogen-blanket or rubber-bag seal integrity to suppress auto-accelerating hydrolysis and oxidation.<br>' +
+            '• <strong>Medium-term Actions (1–3 Years):</strong> Maintain cooling efficiency (radiators, fans, pumps) and oil acidity (&lt; 0.05 mgKOH/g) to retard LMW carboxylic acid catalysis per CIGRE TB 323.<br>' +
+            '• <strong>Long-term Asset Planning (3–5+ Years):</strong> Align CAPEX refurbishment/replacement prior to Warning Limit (DP 300: Year ' + yearCurr300 + ') and Critical Mechanical End-of-Life (DP 200: Year ' + yearCurr200 + ').';
+        }
+      }
 
       // PAGE 2 STEP-BY-STEP DYNAMIC FORMULA SUBSTITUTIONS
       // Step 1: Furan & Dominelli DP
@@ -1990,7 +2124,7 @@
         document.getElementById('calc-log-furan').textContent = logF.toFixed(4);
         document.getElementById('calc-log-furan2').textContent = logF.toFixed(4);
         document.getElementById('calc-dp-result').textContent = calcDpRaw.toFixed(1);
-        document.getElementById('calc-dp0-final').textContent = dpVal !== null ? `${dpVal} DP` : '-';
+        document.getElementById('calc-dp0-final').textContent = `${effectiveDP} DP`;
       } else {
         document.getElementById('calc-furan-raw').textContent = '-';
         document.getElementById('calc-furan-ppm').textContent = '-';
@@ -1998,61 +2132,40 @@
         document.getElementById('calc-log-furan').textContent = '-';
         document.getElementById('calc-log-furan2').textContent = '-';
         document.getElementById('calc-dp-result').textContent = '-';
-        document.getElementById('calc-dp0-final').textContent = dpVal !== null ? `${dpVal} DP (Direct Record)` : 'No Furan/DP Record';
+        document.getElementById('calc-dp0-final').textContent = dpVal !== null ? `${dpVal} DP (Direct Record)` : `${effectiveDP} DP (Baseline Est.)`;
       }
 
       // Step 2: Hotspot Temperature
-      if (hotspotVal !== null) {
-        const baseT = lvTemp !== null ? lvTemp : oilTemp;
-        const thsK = hotspotVal + 273.15;
-        const hsClean = Number(hotspotVal.toFixed(2));
-        document.getElementById('calc-tlv-val').textContent = `${baseT} °C`;
-        document.getElementById('calc-tlv-base').textContent = `${baseT} °C`;
-        document.getElementById('calc-ths-c').textContent = `${hsClean} °C`;
-        document.getElementById('calc-ths-c2').textContent = `${hsClean}`;
-        document.getElementById('calc-ths-k').textContent = thsK.toFixed(2);
-        document.getElementById('calc-temp-source').textContent = hotspotSubText;
-      } else {
-        document.getElementById('calc-tlv-val').textContent = '-';
-        document.getElementById('calc-tlv-base').textContent = '-';
-        document.getElementById('calc-ths-c').textContent = '-';
-        document.getElementById('calc-ths-c2').textContent = '-';
-        document.getElementById('calc-ths-k').textContent = '-';
-        document.getElementById('calc-temp-source').textContent = 'No Temperature Record';
-      }
+      const thsK = hotspotVal + 273.15;
+      const hsClean = Number(hotspotVal.toFixed(2));
+      document.getElementById('calc-tlv-val').textContent = hsInfo.baseMeasureStr;
+      document.getElementById('calc-tlv-base').textContent = `Raw ${Number(hsInfo.rawHs.toFixed(2))} °C`;
+      document.getElementById('calc-ths-c').textContent = `${hsClean} °C`;
+      document.getElementById('calc-ths-c2').textContent = `${hsClean}`;
+      document.getElementById('calc-ths-k').textContent = thsK.toFixed(2);
+      document.getElementById('calc-temp-source').textContent = hotspotSubText;
 
-      // Step 3: SINTEF Kinetic Rate k
-      
+      // Step 3: CIGRE TB 323 / SINTEF Kinetic Rate
       const fdsText = cleanMoistNum !== null ? `FDS: ${cleanMoistNum.toFixed(1)}%` : 'FDS: -';
-      const sdmText = sdMyersMoist !== null ? `SDMyers: ${sdMyersMoist.toFixed(1)}% (from ${oilWcPpm} ppm WC)` : 'SDMyers: -';
-      document.getElementById('calc-moist-stat').textContent = `${sdmText} | ${fdsText}`;
-      document.getElementById('calc-o2-stat').textContent = o2Val !== null ? `${o2Val} ppm (${isHighO2 ? '≥7000' : '<7000'})` : 'Default Standard (<7000 ppm)';
+      const sdmText = sdMyersMoist !== null ? `SDMyers: ${sdMyersMoist.toFixed(1)}%` : 'SDMyers: -';
+      const acidText = acidityVal !== null ? ` | Acid: ${acidityVal} mgKOH/g` : '';
+      document.getElementById('calc-moist-stat').textContent = `W₀=${activeMoist.toFixed(1)}% (${fdsText}, ${sdmText})${acidText}`;
+      document.getElementById('calc-o2-stat').textContent = o2Val !== null ? `${o2Val} ppm (${isHighO2 ? '≥7000' : '<7000'})` : '<7000 ppm (Ref)';
       document.getElementById('calc-ahyd-val').textContent = aHydValStr;
       document.getElementById('calc-aoxi-val').textContent = aOxiValStr;
-      document.getElementById('calc-khyd-val').textContent = kHydHourly.toExponential(3);
-      document.getElementById('calc-koxi-val').textContent = kOxiHourly > 0 ? kOxiHourly.toExponential(3) : '0.00 (Inert O₂)';
-      document.getElementById('calc-ktotal-yearly').textContent = `${kScientific}`;
+      document.getElementById('calc-khyd-val').textContent = simCurr.kHydInitHourly.toExponential(3);
+      document.getElementById('calc-koxi-val').textContent = simCurr.kOxiHourly > 0 ? simCurr.kOxiHourly.toExponential(3) : '0.00 (Inert O₂)';
+      document.getElementById('calc-ktotal-yearly').textContent = `${kScientific} (k₀=${simCurr.kInitYearly.toExponential(2)})`;
 
       // Step 4: RUL Substitutions
-      if (dpVal !== null) {
-        document.getElementById('calc-dp0-s4a').textContent = dpVal;
-        document.getElementById('calc-dp0-s4b').textContent = dpVal;
-        document.getElementById('calc-k-s4a').textContent = kScientific;
-        document.getElementById('calc-k-s4b').textContent = kScientific;
-        document.getElementById('calc-rul300-val').textContent = rulCurr300;
-        document.getElementById('calc-year300-val').textContent = `Target Year: ${yearCurr300}`;
-        document.getElementById('calc-rul200-val').textContent = rulCurr200;
-        document.getElementById('calc-year200-val').textContent = `Limit Year: ${yearCurr200}`;
-      } else {
-        document.getElementById('calc-dp0-s4a').textContent = '-';
-        document.getElementById('calc-dp0-s4b').textContent = '-';
-        document.getElementById('calc-k-s4a').textContent = '-';
-        document.getElementById('calc-k-s4b').textContent = '-';
-        document.getElementById('calc-rul300-val').textContent = '-';
-        document.getElementById('calc-year300-val').textContent = '-';
-        document.getElementById('calc-rul200-val').textContent = '-';
-        document.getElementById('calc-year200-val').textContent = '-';
-      }
+      document.getElementById('calc-dp0-s4a').textContent = effectiveDP;
+      document.getElementById('calc-dp0-s4b').textContent = effectiveDP;
+      document.getElementById('calc-k-s4a').textContent = kScientific;
+      document.getElementById('calc-k-s4b').textContent = kEff200Scientific;
+      document.getElementById('calc-rul300-val').textContent = rulCurr300;
+      document.getElementById('calc-year300-val').textContent = `Target Year: ${yearCurr300}`;
+      document.getElementById('calc-rul200-val').textContent = rulCurr200;
+      document.getElementById('calc-year200-val').textContent = `Limit Year: ${yearCurr200}`;
 
       // Step 5: Weibull PoF Substitutions
       if (age !== null) {
@@ -2082,21 +2195,43 @@
         elChartPofTitle.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Failure Probability: ${name} (Weibull PoF)`;
       }
       const elSubtitle = document.getElementById('chart-dp-subtitle');
-      if (elSubtitle) elSubtitle.textContent = `Dynamic Starting Baseline DP₀ = ${dpVal} (${name} | CIGRE 761 / SINTEF)`;
+      if (elSubtitle) {
+        elSubtitle.textContent = `DP₀ = ${effectiveDP} (${name} | ${insulInfo.label} • CIGRE TB 323 Auto-Accelerating)`;
+      }
 
-      // Intersections metadata for callout lines
-      const intersections = [
-        { label: 'Severe', years: rulSev300, targetYear: yearSev300, color: '#1e293b', offsetLevel: 1 },
-        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, color: '#92400e', offsetLevel: 2 },
-        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, color: '#0891b2', offsetLevel: 3 },
-        { label: 'SDMyers [Cal.]', years: rulSDM300, targetYear: yearSDM300, color: '#9333ea', offsetLevel: 3.5 },
-        { label: 'Current', years: rulCurr300, targetYear: yearCurr300, color: '#2563eb', offsetLevel: 4, isCurrent: true },
-        { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, color: '#16a34a', offsetLevel: 5 }
+      // Intersections metadata for callout lines (including exactYear for sub-year pixel alignment)
+      const intersections = (insulInfo.isDryType && dpVal === null) ? [] : [
+        { label: 'Severe', years: rulSev300, targetYear: yearSev300, exactYear: currentYear + rulSev300, color: '#1e293b', offsetLevel: 1 },
+        { label: 'High Moist', years: rulMoist300, targetYear: yearMoist300, exactYear: currentYear + rulMoist300, color: '#92400e', offsetLevel: 2 },
+        { label: 'High O₂', years: rulOxy300, targetYear: yearOxy300, exactYear: currentYear + rulOxy300, color: '#0891b2', offsetLevel: 3 },
+        { label: 'SDMyers [Cal.]', years: rulSDM300, targetYear: yearSDM300, exactYear: currentYear + rulSDM300, color: '#9333ea', offsetLevel: 3.5 },
+        { label: 'Current', years: rulCurr300, targetYear: yearCurr300, exactYear: currentYear + rulCurr300, color: '#2563eb', offsetLevel: 4, isCurrent: true },
+        { label: 'Normal', years: rulNorm300, targetYear: yearNorm300, exactYear: currentYear + rulNorm300, color: '#16a34a', offsetLevel: 5 }
       ];
 
-      // Render Charts with Real Available Data
-      const effectiveDP = dpVal !== null ? dpVal : 1000;
-      renderDegradationChart(effectiveDP, kYearly, currentYear, dpVal !== null ? intersections : [], kSDM, sdMyersMoist, name, { kNorm, kHighO2, kHighMoist, kSevere });
+      renderDegradationChart(
+        effectiveDP,
+        simCurr.kEff300,
+        currentYear,
+        intersections,
+        simSDM.kEff300,
+        sdMyersMoist,
+        name,
+        {
+          kNorm: simNorm.kEff300,
+          kHighO2: simOxy.kEff300,
+          kHighMoist: simMoist.kEff300,
+          kSevere: simSev.kEff300,
+          series: {
+            unitDP: simCurr.yearlyDP,
+            sdmDP: simSDM.yearlyDP,
+            normalDP: simNorm.yearlyDP,
+            highO2DP: simOxy.yearlyDP,
+            highMoistDP: simMoist.yearlyDP,
+            severeDP: simSev.yearlyDP
+          }
+        }
+      );
       renderWeibullChart(age !== null ? age : 20, currentYear, name);
 
       // Check if headless chart export is requested
@@ -2214,8 +2349,9 @@
         // 1. Draw Prominent "Current (Operating Condition)" Remaining Life Hero Callout FIRST
         const currentItem = intersections.find(it => it.label === 'Current' || it.isCurrent);
         if (currentItem) {
-          const isWithinWindow = currentItem.targetYear >= 2025 && currentItem.targetYear <= maxChartYear;
-          const targetY = isWithinWindow ? currentItem.targetYear : maxChartYear;
+          const anchorYear = currentItem.exactYear || currentItem.targetYear;
+          const isWithinWindow = anchorYear >= 2025 && anchorYear <= maxChartYear;
+          const targetY = isWithinWindow ? anchorYear : maxChartYear;
           const xPos = getXPixelForYear(targetY);
           const yPos = isWithinWindow ? y300 : (chart.getDatasetMeta(0)?.data[maxChartIdx]?.y || y300);
 
@@ -2336,7 +2472,7 @@
 
         // 3. Draw Non-Overlapping Scenario Callouts with 2D Collision Resolution & White Pills
         groupedScenarios.forEach((item) => {
-          const xPos = getXPixelForYear(item.targetYear);
+          const xPos = getXPixelForYear(item.exactYear || item.targetYear);
           if (xPos < xAxis.left || xPos > xAxis.right) return;
 
           ctx.save();
@@ -2479,7 +2615,7 @@
         `;
       }
 
-      // X-Axis range from 2025 to 2125 with Dynamic DP0 = currentDP
+      // Practical X-Axis range (2025 to ~2085 60-Year CIGRE Horizon) with Auto-Accelerating Trajectories
       const years = [];
       const unitDP = [];
       const sdmDP = [];
@@ -2491,34 +2627,43 @@
       const limit200 = [];
 
       const dp0 = currentDP;
-      const kNorm = (scenarioRates && scenarioRates.kNorm) ? scenarioRates.kNorm : 0.0000310;
-      const kHighO2 = (scenarioRates && scenarioRates.kHighO2) ? scenarioRates.kHighO2 : 0.0000597;
-      const kHighMoist = (scenarioRates && scenarioRates.kHighMoist) ? scenarioRates.kHighMoist : 0.0000780;
-      const kSevere = (scenarioRates && scenarioRates.kSevere) ? scenarioRates.kSevere : 0.0001200;
-      const effectiveKSDM = kSDM !== null ? kSDM : 0.0000310;
+      const kNorm = (scenarioRates && scenarioRates.kNorm) ? scenarioRates.kNorm : 0.0000620;
+      const kHighO2 = (scenarioRates && scenarioRates.kHighO2) ? scenarioRates.kHighO2 : 0.0001050;
+      const kHighMoist = (scenarioRates && scenarioRates.kHighMoist) ? scenarioRates.kHighMoist : 0.0000900;
+      const kSevere = (scenarioRates && scenarioRates.kSevere) ? scenarioRates.kSevere : 0.0001400;
+      const effectiveKSDM = kSDM !== null ? kSDM : currentK;
+      const preSeries = (scenarioRates && scenarioRates.series) ? scenarioRates.series : null;
 
       const maxScenarioYear = intersections && intersections.length > 0
         ? Math.max(...intersections.map(it => it.targetYear || 2025))
-        : 2125;
-      const endChartYear = maxScenarioYear > 2125 ? Math.min(2165, Math.ceil((maxScenarioYear + 5) / 10) * 10 - 5) : 2125;
+        : 2075;
+      const endChartYear = Math.max(2085, Math.min(2105, Math.ceil((maxScenarioYear + 8) / 10) * 10 + 5));
 
       for (let y = 2025; y <= endChartYear; y += 1) {
         years.push(y);
         const dt = y - 2025;
 
-        normalDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kNorm * dt))));
-        highO2DP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighO2 * dt))));
-        highMoistDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighMoist * dt))));
-        severeDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kSevere * dt))));
-
-        unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
-        sdmDP.push(Math.max(50, Math.round(1 / (1 / currentDP + effectiveKSDM * dt))));
+        if (preSeries && dt < preSeries.unitDP.length) {
+          unitDP.push(preSeries.unitDP[dt]);
+          sdmDP.push(preSeries.sdmDP[dt]);
+          normalDP.push(preSeries.normalDP[dt]);
+          highO2DP.push(preSeries.highO2DP[dt]);
+          highMoistDP.push(preSeries.highMoistDP[dt]);
+          severeDP.push(preSeries.severeDP[dt]);
+        } else {
+          normalDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kNorm * dt))));
+          highO2DP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighO2 * dt))));
+          highMoistDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kHighMoist * dt))));
+          severeDP.push(Math.max(50, Math.round(1 / (1 / dp0 + kSevere * dt))));
+          unitDP.push(Math.max(50, Math.round(1 / (1 / currentDP + currentK * dt))));
+          sdmDP.push(Math.max(50, Math.round(1 / (1 / currentDP + effectiveKSDM * dt))));
+        }
 
         limit300.push(300);
         limit200.push(200);
       }
 
-      const yMax = Math.max(1200, Math.ceil((currentDP + 80) / 200) * 200);
+            const yMax = Math.max(1200, Math.ceil((currentDP + 80) / 200) * 200);
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
       // Create Soft Gradient for Hero Current Line

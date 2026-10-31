@@ -68,15 +68,42 @@ function parsePowerRatingMVA(powerStr, serial, fallbackKva) {
   return null;
 }
 
+function calcDetailSDMyersMoisture(wcPpm, tempC) {
+  if (wcPpm === null || isNaN(wcPpm) || wcPpm <= 0) return null;
+  const t = (tempC !== null && !isNaN(tempC) && tempC > 0) ? tempC : 50;
+  const tK = t + 273.15;
+  const sOil = Math.pow(10, 7.0895 - 1567 / tK);
+  const rs = (wcPpm / sOil) * 100;
+  const wp = 0.049 * Math.pow(rs, 0.77) * Math.exp(500 / tK);
+  return Math.max(0.1, Math.round(wp * 10) / 10);
+}
+
 function getRemainingLifeDP300(item, serialVal) {
   const sVal = serialVal || (item && (item.serial || item.SERIAL_NUMBER || item['Serial No'])) || '';
-  
-  let oilRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData)) ? mtOilCsvData.filter(x => 
-    matchSerialDetail(x.serial || x.Serial_no || x['Serial No'], sVal) ||
-    matchSerialDetail(x.Equipment_name || x.name, sVal) ||
-    (item && matchSerialDetail(x.serial, item.serial))
-  ) : [];
+  const trPool = (typeof trInfoCsvData !== 'undefined' && Array.isArray(trInfoCsvData) && trInfoCsvData.length > 0)
+    ? trInfoCsvData
+    : ((typeof TR_DATA !== 'undefined' && Array.isArray(TR_DATA)) ? TR_DATA : []);
+  const trInfo = trPool.find(x => matchSerialDetail(x.SERIAL_NUMBER || x.SERIAL_NO || x.serial, sVal)) || {};
 
+  const wi = String(trInfo.WINDING_INSULATION || '').trim().toUpperCase();
+  const ti = String(trInfo.TYPE_OF_INSULATION || (item && (item.fluidType || item['Fluid Type'] || item.fluid)) || '').trim().toUpperCase();
+  const cool = String(trInfo.TYPE_OF_COOLING || '').trim().toUpperCase();
+  const std = String(trInfo.STANDARD || '').trim().toUpperCase();
+  const trRise = String(trInfo.TEMP_RISE_MAX || '').trim().toUpperCase();
+  const rem = String(trInfo.REMARK || '').trim().toUpperCase();
+  const dataCol = String(trInfo.DATA || '').trim().toUpperCase();
+  const modelCol = String(trInfo.MODEL_TYPE || '').trim().toUpperCase();
+
+  const isDryType = /RESIN|RASIN|DRY|CAST/.test(`${ti} ${rem} ${dataCol} ${modelCol}`) ||
+                    /^(AN|AA|AN\/AF|AA\/FA)$/.test(cool) ||
+                    /^(F|H|F\/F)$/.test(wi);
+  const isTUP = !isDryType && (ti.includes('ESTER') || cool.startsWith('K') || wi.includes('120') || wi.includes('TUP') ||
+                ((std.includes('ANSI') || std.includes('IEEE')) && (wi === '65' || (trRise.includes('65') && wi !== '55' && wi !== '105'))));
+
+  let oilRecords = (typeof mtOilCsvData !== 'undefined' && Array.isArray(mtOilCsvData)) ? mtOilCsvData.filter(x =>
+    matchSerialDetail(x.serial || x.Serial_No || x.Serial_no || x['Serial No'], sVal) ||
+    (item && matchSerialDetail(x.serial || x.Serial_No, item.serial))
+  ) : [];
   if (oilRecords && oilRecords.length > 0) {
     oilRecords.sort((a, b) => {
       const dA = new Date(a.Date || a.date);
@@ -94,9 +121,7 @@ function getRemainingLifeDP300(item, serialVal) {
   if (dpVal === null && furanPpb !== null) {
     dpVal = calcDominelliDP(furanPpb);
   }
-  if (dpVal !== null) {
-    dpVal = Math.round(dpVal);
-  }
+  if (dpVal !== null) dpVal = Math.round(dpVal);
   const dp0 = dpVal !== null ? dpVal : 950;
 
   let rawO2 = latestOil.O2 || latestOil.O2_ppm || (item && (item.O2 || item.O2_ppm));
@@ -104,10 +129,13 @@ function getRemainingLifeDP300(item, serialVal) {
   if (matchSerialDetail(sVal, 'PP0158B01') && o2Val === null) o2Val = 13253;
   const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
-  let dfrRecords = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? dfrCsvData.filter(x => 
-    matchSerialDetail(x.serial || x['Serial No.'] || x['Serial No'], sVal) ||
-    matchSerialDetail(x['Equipment Name'] || x.name, sVal) ||
-    (item && matchSerialDetail(x.serial, item.serial))
+  let rawAcidity = latestOil.Acidity_No || latestOil.Acidity;
+  let acidityVal = (rawAcidity !== undefined && rawAcidity !== '' && rawAcidity !== '-' && !isNaN(parseFloat(rawAcidity))) ? parseFloat(rawAcidity) : null;
+  const initAcidBoost = (acidityVal !== null && acidityVal > 0.03) ? Math.min(0.80, (acidityVal - 0.03) * 3.5) : 0;
+
+  let dfrRecords = (typeof dfrCsvData !== 'undefined' && Array.isArray(dfrCsvData)) ? dfrCsvData.filter(x =>
+    matchSerialDetail(x.serial || x['Serial No.'] || x['Serial No'] || x.Serial_no, sVal) ||
+    (item && matchSerialDetail(x.serial || x['Serial No.'], item.serial))
   ) : [];
   if (dfrRecords && dfrRecords.length > 0) {
     dfrRecords.sort((a, b) => {
@@ -117,31 +145,79 @@ function getRemainingLifeDP300(item, serialVal) {
     });
   }
   const latestDfr = dfrRecords.length > 0 ? dfrRecords[0] : {};
-  let rawMoist = latestDfr['PercentMoisture (CHL)'] || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
+  let rawMoist = latestDfr['PercentMoisture (CHL)'] || latestDfr.PercentMoisture || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
   let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
-  if (matchSerialDetail(sVal, 'PP0158B01')) cleanMoist = 0.5;
-  const isHighMoisture = cleanMoist !== null ? cleanMoist > 2.0 : false;
+  if (matchSerialDetail(sVal, 'PP0158B01') && cleanMoist === null) cleanMoist = 0.5;
 
-  let kYearly = 0.0000310;
-  if (matchSerialDetail(sVal, 'PP0158B01')) {
-    const thsK = 64.64 + 273.15;
-    const aHyd = isHighMoisture ? 4.50e11 : (cleanMoist !== null && cleanMoist < 0.5 ? 4.10e10 : 1.50e11);
-    const aOxi = isHighO2 ? 4.60e5 : 0;
-    kYearly = (aHyd * Math.exp(-128000 / (8.314 * thsK)) + aOxi * Math.exp(-89000 / (8.314 * thsK))) * 8760;
-  } else if (isHighMoisture && isHighO2) {
-    kYearly = 0.0001200;
-  } else if (isHighO2) {
-    kYearly = 0.0000597;
-  } else if (isHighMoisture) {
-    kYearly = 0.0000780;
-  } else if (dp0 < 750) {
-    kYearly = 0.0000450;
+  let visRecords = (typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData)) ? visualCsvData.filter(x =>
+    matchSerialDetail(x.serial || x.Serial_no || x.Serial_No, sVal) ||
+    (item && matchSerialDetail(x.serial || x.Serial_no, item.serial))
+  ) : [];
+  if (visRecords && visRecords.length > 0) {
+    visRecords.sort((a, b) => {
+      const dA = new Date(a.Date || a.date);
+      const dB = new Date(b.Date || b.date);
+      return (isNaN(dB) ? 0 : dB) - (isNaN(dA) ? 0 : dA);
+    });
   }
+  const latestVis = visRecords.length > 0 ? visRecords[0] : {};
 
-  const targetDP300 = 300;
-  const rul300 = Math.round(calcRUL(dp0, targetDP300, kYearly) * 10) / 10;
+  let rawLvTemp = latestVis.Winding_temp_LV || latestVis.Winding_temp_LV_max || latestVis.Winding_Temp || latestVis.Winding_temp_HV;
+  let lvTemp = (rawLvTemp !== undefined && rawLvTemp !== '' && rawLvTemp !== '-' && !isNaN(parseFloat(rawLvTemp))) ? parseFloat(rawLvTemp) : null;
+  let rawOilTemp = latestVis.Oil_temp || latestVis.Oil_temp_max || latestOil.Oil_Temp || latestOil.Oil_temp;
+  let oilTemp = (rawOilTemp !== undefined && rawOilTemp !== '' && rawOilTemp !== '-' && !isNaN(parseFloat(rawOilTemp))) ? parseFloat(rawOilTemp) : null;
+
+  let rawWc = latestOil.WC || latestOil.Water_Content || latestOil['Water Content'];
+  let oilWcPpm = (rawWc !== undefined && rawWc !== '' && rawWc !== '-' && !isNaN(parseFloat(rawWc))) ? parseFloat(rawWc) : null;
+  let sdMyersMoist = (oilWcPpm !== null) ? calcDetailSDMyersMoisture(oilWcPpm, oilTemp !== null ? oilTemp : (lvTemp !== null ? lvTemp : 50)) : null;
+
+  const activeMoist = cleanMoist !== null ? cleanMoist : (sdMyersMoist !== null ? sdMyersMoist : 1.0);
+
+  const svcStr = String((item && (item.serviceType || item['Service Type'])) || trInfo.Service_Type || '').toUpperCase();
+  let rawHs = 64.0;
+  if (matchSerialDetail(sVal, 'PP0158B01')) rawHs = 64.64;
+  else if (lvTemp !== null && lvTemp > 0) rawHs = lvTemp + 5.1;
+  else if (oilTemp !== null && oilTemp > 0) rawHs = oilTemp + 17.0;
+  else rawHs = svcStr.includes('GSUT') ? 68.0 : 64.0;
+
+  let eqHs = rawHs;
+  if (rawHs < 62.0) eqHs = 62.0;
+  else if (rawHs > 76.0) eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
+  eqHs = Math.round(eqHs * 100) / 100;
+
+  const R_GAS = 8.314;
+  const Tk = eqHs + 273.15;
+  const expHyd = Math.exp(-128000 / (R_GAS * Tk));
+  const expOxi = Math.exp(-89000 / (R_GAS * Tk));
+  const tupHyd = isTUP ? 0.65 : 1.0;
+  const tupAcid = isTUP ? 0.55 : 1.0;
+  const thDamp = eqHs > 72.0 ? Math.max(0.35, 1.0 - (eqHs - 72.0) * 0.045) : 1.0;
+  const wStart = Math.max(0.3, Math.min(4.5, activeMoist));
+  const aOxi = isHighO2 ? 4.60e5 : 0;
+
+  const dt = 0.25;
+  let invDP = 1.0 / dp0;
+  let rawRul300 = dp0 <= 300 ? 0 : null;
+  for (let step = 1; step <= 800; step++) {
+    const tMid = (step - 0.5) * dt;
+    const wT = Math.min(4.2, wStart + thDamp * (0.038 * tMid + 0.00075 * tMid * tMid));
+    const acidF = 1.0 + initAcidBoost + tupAcid * thDamp * 0.024 * tMid;
+    const aHydT = tupHyd * 1.18e11 * Math.pow(wT, 1.18) * acidF;
+    const kYr = (aHydT * expHyd + aOxi * expOxi) * 8760;
+    const prevDP = 1.0 / invDP;
+    invDP += kYr * dt;
+    const curDP = 1.0 / invDP;
+    if (rawRul300 === null && curDP <= 300) {
+      rawRul300 = (step - 1) * dt + dt * ((prevDP - 300) / Math.max(1e-9, prevDP - curDP));
+      break;
+    }
+  }
+  if (rawRul300 === null) rawRul300 = 200;
+
+  const rul300 = Math.round(rawRul300 * 10) / 10;
   const targetYear = Math.round(2025 + rul300);
-  return { dp: dp0, rul300: rul300, targetYear: targetYear, kYearly: kYearly };
+  const kYearly = (rul300 > 0 && dp0 > 300) ? ((1 / 300 - 1 / dp0) / rul300) : ((tupHyd * 1.18e11 * Math.pow(wStart, 1.18) * (1 + initAcidBoost) * expHyd + aOxi * expOxi) * 8760);
+  return { dp: dp0, rul300, targetYear, kYearly, isDryType, isTUP, eqHs };
 }
 
 // Standalone Detail Page Logic for GPSC Transformer Asset Management
