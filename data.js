@@ -11912,10 +11912,10 @@
         "IOI": "15",
         "OLTCI": "20",
         "BI": "20",
-        "ARI": "20",
+        "ARI": "4",
         "DGA": "A",
         "HI": "88",
-        "Result_Date": "2026-02-26"
+        "Result_Date": "2026-10-31"
     },
     {
         "SERIAL_NUMBER": "PP0225B01",

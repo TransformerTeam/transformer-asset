@@ -252,9 +252,15 @@ async function runFullSync() {
       }
 
       const csvContent = extracted.content || '';
+      const firstLine = (csvContent.split(/\r?\n/)[0] || '').replace(/^\ufeff/, '').trim();
       if (!csvContent || extracted.rowCount < 2) {
         log(`[${i+1}/17] ${ep.name}: Insufficient data (${extracted.rowCount || 0} rows). Skipped file update.`, 'WARNING');
         continue;
+      }
+      if (!/^"?serial/i.test(firstLine)) {
+        log(`[${i+1}/17] ${ep.name}: Unexpected header "${firstLine.slice(0, 60)}" (possible SSO/AppProxy login or timeout page). Aborting sync safely without overwriting CSVs.`, 'WARNING');
+        edge.kill();
+        return false;
       }
 
       const targetPath = path.join(TEST_DATA_DIR, ep.file);
@@ -287,25 +293,29 @@ async function runFullSync() {
   const totalTime = ((Date.now() - overallStartTime) / 1000).toFixed(1);
   log(`Synced ${successCount}/17 AM-HV endpoints successfully in ${totalTime}s.`, 'SUCCESS');
 
-  // 2. Refresh downstream JavaScript data files
+  if (successCount === 0) {
+    log('No AM-HV endpoints were updated. Skipping post-sync evaluation.', 'WARNING');
+    return false;
+  }
+
+  // 2. Re-evaluate fleet Health Indices and synchronize HealthIndexSum.csv, health_data.js, TRInfo.csv, and data.js
   try {
-    log('Generating data.js, pi_data.js, visual_data.js, bushing_data.js, and pf_data.js...', 'INFO');
-    execSync('py convert_data_js.py', { cwd: BASE_DIR });
+    log('Recomputing fleet Health Indices via scripts/sync_evaluation.js...', 'INFO');
+    execSync('node scripts/sync_evaluation.js', { cwd: BASE_DIR, stdio: 'inherit' });
+    log('Health Index recomputation complete. HealthIndexSum.csv, health_data.js, TRInfo.csv, and data.js synchronized.', 'SUCCESS');
+  } catch (evalErr) {
+    log(`Error recomputing health indices: ${evalErr.message}`, 'ERROR');
+  }
+
+  // 3. Refresh downstream JavaScript data files
+  try {
+    log('Generating pi_data.js, visual_data.js, bushing_data.js, and pf_data.js...', 'INFO');
     execSync('py convert_pi_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_visual_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_bushing_data_js.py', { cwd: BASE_DIR });
     execSync('py convert_pf_data_js.py', { cwd: BASE_DIR });
   } catch (jsErr) {
     log(`Notice during JS generation: ${jsErr.message}`, 'WARNING');
-  }
-
-  // 3. Re-evaluate fleet Health Indices and update health_data.js
-  try {
-    log('Recomputing fleet Health Indices across all 253 transformers...', 'INFO');
-    execSync('py evaluate_all_health_index.py', { cwd: BASE_DIR });
-    log('Health Index recomputation complete. HealthIndexSum.csv and health_data.js synchronized.', 'SUCCESS');
-  } catch (evalErr) {
-    log(`Error recomputing health indices: ${evalErr.message}`, 'ERROR');
   }
 
   return true;
