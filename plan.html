@@ -5394,7 +5394,8 @@
       const categories = groupList.map(g => g.key);
       const rawMaxTasks = Math.max(...groupList.map(g => g.tasks.length), 5);
       const axisStep = rawMaxTasks <= 10 ? 1 : (rawMaxTasks <= 35 ? 5 : 10);
-      const maxTasks = Math.ceil(rawMaxTasks / axisStep) * axisStep;
+      // Reserve ~12% horizontal headroom on the right so the %complete label outside the longest bar never clips
+      const maxTasks = Math.ceil((rawMaxTasks * 1.12) / axisStep) * axisStep;
       const axisTickAmount = Math.round(maxTasks / axisStep);
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
@@ -5430,6 +5431,84 @@
         fillColor: trackBgColor
       }));
 
+      // Helper to render %complete badge right after the end of each horizontal bar
+      const renderPercentCompleteLabels = () => {
+        try {
+          const svg = container.querySelector('svg');
+          const inner = container.querySelector('.apexcharts-inner');
+          if (!svg || !inner) return;
+
+          // Remove any previous custom %complete labels
+          inner.querySelectorAll('.custom-bar-pct-group').forEach(el => el.remove());
+
+          const ns = 'http://www.w3.org/2000/svg';
+          const gWrap = document.createElementNS(ns, 'g');
+          gWrap.setAttribute('class', 'custom-bar-pct-group');
+
+          groupList.forEach((item, idx) => {
+            const paths = inner.querySelectorAll(`.apexcharts-bar-area[j="${idx}"]`);
+            if (!paths || paths.length === 0) return;
+
+            let maxRight = 0;
+            let centerY = 0;
+            let foundBox = false;
+
+            paths.forEach(p => {
+              try {
+                const box = p.getBBox();
+                if (box && box.height > 0) {
+                  const r = box.x + box.width;
+                  if (r > maxRight) maxRight = r;
+                  centerY = box.y + box.height / 2;
+                  foundBox = true;
+                }
+              } catch (e) {}
+            });
+
+            if (!foundBox) return;
+
+            // Also check data-label text elements on the same row so narrow 1-task bars never touch the % label
+            const dlTexts = inner.querySelectorAll('.apexcharts-datalabels text');
+            dlTexts.forEach(tEl => {
+              try {
+                const tBox = tEl.getBBox();
+                if (tBox && tBox.width > 0 && Math.abs((tBox.y + tBox.height / 2) - centerY) < 12) {
+                  const tr = tBox.x + tBox.width;
+                  if (tr > maxRight) maxRight = tr;
+                }
+              } catch (e) {}
+            });
+
+            const pct = item.tasks.length > 0
+              ? Math.round((item.completedTasks.length / item.tasks.length) * 100)
+              : 0;
+
+            let pctColor = isLight ? '#64748b' : '#94a3b8';
+            if (pct >= 100) {
+              pctColor = isLight ? '#059669' : '#34d399';
+            } else if (pct > 0) {
+              pctColor = isLight ? '#0284c7' : '#38bdf8';
+            }
+
+            const txt = document.createElementNS(ns, 'text');
+            txt.setAttribute('x', String(maxRight + 8));
+            txt.setAttribute('y', String(centerY));
+            txt.setAttribute('dominant-baseline', 'central');
+            txt.setAttribute('alignment-baseline', 'middle');
+            txt.setAttribute('fill', pctColor);
+            txt.setAttribute('font-family', 'Inter, Prompt, sans-serif');
+            txt.setAttribute('font-size', '11.5px');
+            txt.setAttribute('font-weight', '700');
+            txt.textContent = `${pct}%`;
+            gWrap.appendChild(txt);
+          });
+
+          inner.appendChild(gWrap);
+        } catch (err) {
+          console.warn('Could not render %complete labels:', err);
+        }
+      };
+
       const options = {
         series: [
           {
@@ -5448,7 +5527,15 @@
           toolbar: { show: false },
           background: 'transparent',
           fontFamily: 'Inter, Prompt, sans-serif',
-          animations: { enabled: false }
+          animations: { enabled: false },
+          events: {
+            mounted: function () {
+              setTimeout(renderPercentCompleteLabels, 0);
+            },
+            updated: function () {
+              setTimeout(renderPercentCompleteLabels, 0);
+            }
+          }
         },
         theme: { mode: isLight ? 'light' : 'dark' },
         plotOptions: {
@@ -5467,29 +5554,28 @@
             if (val === 0) return '';
             const idx = opts.dataPointIndex;
             const item = groupList[idx];
-            if (!item) return val + ' Tasks';
+            if (!item) return String(val);
             const rem = item.tasks.length - item.completedTasks.length;
-            // Place label on whichever segment is wider if the completed segment is very narrow (< 10% of maxTasks)
-            const completedTooNarrow = item.completedTasks.length > 0 && (item.completedTasks.length / maxTasks) < 0.10 && rem > item.completedTasks.length;
+            const completedTooNarrow = item.completedTasks.length > 0 && (item.completedTasks.length / maxTasks) < 0.05 && rem > item.completedTasks.length;
             if (opts.seriesIndex === 0) {
               if (completedTooNarrow) return '';
-              return `${item.completedTasks.length}/${item.tasks.length} Tasks`;
+              return `${item.completedTasks.length}/${item.tasks.length}`;
             } else {
               if (item.completedTasks.length === 0 || completedTooNarrow) {
-                return `${item.completedTasks.length}/${item.tasks.length} Tasks`;
+                return `${item.completedTasks.length}/${item.tasks.length}`;
               }
               return '';
             }
           },
           style: {
-            fontSize: '10.5px',
+            fontSize: '11px',
             fontWeight: 700,
             colors: [
               function ({ seriesIndex, dataPointIndex }) {
                 const item = groupList[dataPointIndex];
                 if (!item) return '#ffffff';
                 const totalRatio = item.tasks.length / maxTasks;
-                if (seriesIndex === 1 || item.completedTasks.length === 0 || totalRatio < 0.11) {
+                if (seriesIndex === 1 || item.completedTasks.length === 0 || totalRatio < 0.05) {
                   return isLight ? '#0f172a' : '#f8fafc';
                 }
                 return '#ffffff';
@@ -5516,7 +5602,7 @@
           max: maxTasks,
           tickAmount: axisTickAmount,
           labels: {
-            formatter: v => Math.round(v) + ' Tasks',
+            formatter: v => String(Math.round(v)),
             style: { colors: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           },
           title: {
@@ -5534,14 +5620,14 @@
           y: {
             formatter: function (val, { seriesIndex, dataPointIndex }) {
               const item = groupList[dataPointIndex];
-              if (!item) return val + ' Tasks';
+              if (!item) return String(val);
               const pct = item.tasks.length > 0 ? Math.round((item.completedTasks.length / item.tasks.length) * 100) : 0;
               const catsStr = Array.from(item.categories).join(', ');
               if (seriesIndex === 0) {
-                return `${item.completedTasks.length} of ${item.tasks.length} Tasks Completed (${pct}%) | Categories: ${catsStr}`;
+                return `${item.completedTasks.length}/${item.tasks.length} Completed (${pct}%) | Categories: ${catsStr}`;
               } else {
                 const rem = Math.max(0, item.tasks.length - item.completedTasks.length);
-                return `${rem} Tasks Remaining (${item.inProgTasks.length} In Progress, ${item.plannedTasks.length} Planned) | Categories: ${catsStr}`;
+                return `${rem} Remaining (${item.inProgTasks.length} In Progress, ${item.plannedTasks.length} Planned) | Categories: ${catsStr}`;
               }
             }
           }
@@ -5564,7 +5650,9 @@
       };
 
       outageChartInstance = new ApexCharts(container, options);
-      outageChartInstance.render();
+      outageChartInstance.render().then(() => {
+        renderPercentCompleteLabels();
+      });
     }
 
     // ==========================================
