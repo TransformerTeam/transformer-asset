@@ -686,12 +686,33 @@
       font-weight: 700 !important;
     }
 
-    /* Outage Filter Label */
+    /* Outage Filter Label & Task Chart Controls */
     [data-theme="light"] #outage-filter-label,
     [data-preset="slate-light"] #outage-filter-label {
       background: #f1f5f9 !important;
       color: #0f172a !important;
       border: 1px solid #cbd5e1 !important;
+      font-weight: 600 !important;
+    }
+    [data-theme="light"] #view-outage .task-chart-ctrl-group,
+    [data-preset="slate-light"] #view-outage .task-chart-ctrl-group {
+      background: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+    }
+    [data-theme="light"] #view-outage .task-chart-ctrl-btn:not(.active),
+    [data-preset="slate-light"] #view-outage .task-chart-ctrl-btn:not(.active) {
+      color: #475569 !important;
+    }
+    [data-theme="light"] #view-outage .task-chart-ctrl-btn:not(.active):hover,
+    [data-preset="slate-light"] #view-outage .task-chart-ctrl-btn:not(.active):hover {
+      color: #0f172a !important;
+      background: #e2e8f0 !important;
+    }
+    [data-theme="light"] #view-outage .bg-amber-950\/70,
+    [data-preset="slate-light"] #view-outage .bg-amber-950\/70 {
+      background: #fef3c7 !important;
+      color: #b45309 !important;
+      border: 1px solid #fcd34d !important;
       font-weight: 600 !important;
     }
 
@@ -1982,8 +2003,8 @@
           <button id="btn-view-tbl" onclick="switchView('tbl')" class="header-tab-btn" title="Switch to WBS Table View">
             <i class="fa-solid fa-table-list"></i> Table
           </button>
-          <button id="btn-view-outage" onclick="switchView('outage')" class="header-tab-btn" title="Switch to Outaged Transformers Analytics Chart">
-            <i class="fa-solid fa-chart-column text-amber-400"></i> Outage Chart
+          <button id="btn-view-outage" onclick="switchView('outage')" class="header-tab-btn" title="Switch to Maintenance Tasks Analytics Chart">
+            <i class="fa-solid fa-chart-column text-amber-400"></i> Task Chart
           </button>
           <button id="btn-view-scurve" onclick="switchView('scurve')" class="header-tab-btn" title="Switch to S-Curve Progress &amp; Cost Chart">
             <i class="fa-solid fa-chart-line"></i> S-Curve
@@ -2321,27 +2342,50 @@
           </div>
         </div>
 
-        <!-- 3. OUTAGED TRANSFORMERS ANALYTICS BY PLANT VIEW -->
+        <!-- 3. MAINTENANCE TASKS ANALYTICS CHART VIEW -->
         <div id="view-outage" class="glass-card p-4 space-y-4 hidden">
-          <!-- Outage View Header & Controls -->
+          <!-- Task Chart Header & Controls -->
           <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/50">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <h2 class="text-base font-bold text-white flex items-center gap-2">
-                  <i class="fa-solid fa-bolt text-amber-400"></i>
-                  <span>Outaged Transformers by Plant</span>
+                  <i class="fa-solid fa-list-check text-amber-400"></i>
+                  <span id="task-chart-main-title">Maintenance Tasks by Plant</span>
                 </h2>
                 <span id="outage-total-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  15 Transformers
+                  66 Tasks
                 </span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Summary of physical transformer units outaged and completed across fleet power plants
+              <p id="task-chart-subtitle" class="text-xs text-slate-400 mt-0.5">
+                Summary of all maintenance tasks planned, in-progress, and completed across fleet power plants &amp; categories
               </p>
             </div>
 
-            <!-- Active Filter Indication -->
-            <div class="flex items-center gap-2">
+            <!-- Interactive Grouping, WBS Scope & Active Filter Indication -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Group By Selector (By Plant / By Category / By Lead) -->
+              <div class="task-chart-ctrl-group inline-flex rounded-lg border border-slate-700 bg-slate-900/80 p-0.5 text-xs font-semibold">
+                <button type="button" id="task-group-plant" onclick="setTaskChartGroupBy('plant')" class="task-chart-ctrl-btn active px-2.5 py-1 rounded-md transition text-white bg-indigo-600 shadow-sm cursor-pointer">
+                  <i class="fa-solid fa-industry mr-1"></i> By Plant
+                </button>
+                <button type="button" id="task-group-cat" onclick="setTaskChartGroupBy('cat')" class="task-chart-ctrl-btn px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer">
+                  <i class="fa-solid fa-tags mr-1"></i> By Category
+                </button>
+                <button type="button" id="task-group-lead" onclick="setTaskChartGroupBy('lead')" class="task-chart-ctrl-btn px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer">
+                  <i class="fa-solid fa-user-gear mr-1"></i> By Lead
+                </button>
+              </div>
+
+              <!-- WBS Scope Selector (All Tasks vs Main WBS Only) -->
+              <div class="task-chart-ctrl-group inline-flex rounded-lg border border-slate-700 bg-slate-900/80 p-0.5 text-xs font-semibold">
+                <button type="button" id="task-scope-all" onclick="setTaskChartScope('all')" class="task-chart-ctrl-btn active px-2.5 py-1 rounded-md transition text-white bg-sky-600 shadow-sm cursor-pointer" title="Include both Main WBS Tasks and Sub-Tasks">
+                  All Tasks
+                </button>
+                <button type="button" id="task-scope-main" onclick="setTaskChartScope('main')" class="task-chart-ctrl-btn px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer" title="Show only Top-Level Main WBS Tasks">
+                  Main WBS Only
+                </button>
+              </div>
+
               <span id="outage-filter-label" class="text-xs text-slate-300 font-medium bg-slate-900/80 border border-slate-700/80 px-2.5 py-1 rounded-lg">
                 Showing: All Plants
               </span>
@@ -2352,60 +2396,60 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Total Outage TRs
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Total Planned Tasks
               </div>
-              <div id="outage-stat-total-trs" class="text-xl font-bold font-mono text-white mt-1">15 <span class="text-xs font-normal text-slate-400">Units</span></div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Across all plants in plan</div>
+              <div id="outage-stat-total-trs" class="text-xl font-bold font-mono text-white mt-1">66 <span class="text-xs font-normal text-slate-400">Tasks</span></div>
+              <div id="outage-stat-total-sub" class="text-[10px] text-slate-500 mt-0.5">25 Main WBS • 41 Sub-tasks</div>
             </div>
 
             <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed Outage
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Completed Tasks
               </div>
-              <div id="outage-stat-completed-trs" class="text-xl font-bold font-mono text-emerald-400 mt-1">15 <span class="text-xs font-normal text-slate-400">Units (100%)</span></div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Finished 100% Progress</div>
+              <div id="outage-stat-completed-trs" class="text-xl font-bold font-mono text-emerald-400 mt-1">50 <span class="text-xs font-normal text-slate-400">Tasks (76%)</span></div>
+              <div id="outage-stat-completed-sub" class="text-[10px] text-slate-500 mt-0.5">Finished 100% Progress</div>
             </div>
 
             <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Outage Main Tasks
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Active &amp; Remaining Tasks
               </div>
-              <div id="outage-stat-tasks" class="text-xl font-bold font-mono text-sky-400 mt-1">10 <span class="text-xs font-normal text-slate-400">Tasks</span></div>
-              <div class="text-[10px] text-slate-500 mt-0.5">WBS TO1 - TO10</div>
+              <div id="outage-stat-tasks" class="text-xl font-bold font-mono text-sky-400 mt-1">16 <span class="text-xs font-normal text-slate-400">Tasks</span></div>
+              <div id="outage-stat-tasks-sub" class="text-[10px] text-slate-500 mt-0.5">2 In Progress • 14 Planned</div>
             </div>
 
             <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
               <div class="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Outage Total Budget
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Total Task Budget
               </div>
               <div id="outage-stat-cost" class="text-xl font-bold font-mono text-amber-300 mt-1">0 <span class="text-xs font-normal text-slate-400">THB</span></div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Approved budget allocation</div>
+              <div id="outage-stat-cost-sub" class="text-[10px] text-slate-500 mt-0.5">Approved budget across plan</div>
             </div>
           </div>
 
-          <!-- Main Chart & Fleet Directory Side-by-Side -->
+          <!-- Main Chart & Task Directory Side-by-Side -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             <!-- Left: ApexChart Horizontal Bar -->
             <div class="lg:col-span-7 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2">
               <div class="flex items-center justify-between">
                 <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 outage-box-title">
                   <i class="fa-solid fa-chart-bar text-sky-400"></i>
-                  <span>Outaged Transformers: Plan vs Actual by Plant</span>
+                  <span id="task-chart-box-title">Maintenance Tasks: Plan vs Actual by Plant</span>
                 </h3>
               </div>
               <div id="outage-chart-container" class="w-full min-h-[330px]"></div>
             </div>
 
-            <!-- Right: Plant Transformers Directory Cards -->
+            <!-- Right: Maintenance Tasks Directory Cards -->
             <div class="lg:col-span-5 bg-slate-900/40 border border-slate-800/80 rounded-xl p-3.5 space-y-2.5">
               <div class="flex items-center justify-between">
                 <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 outage-box-title">
                   <i class="fa-solid fa-list-check text-emerald-400"></i>
-                  <span>Transformer Units Directory</span>
+                  <span id="task-dir-box-title">Maintenance Tasks Directory</span>
                 </h3>
               </div>
-              <div id="outage-plant-cards" class="space-y-2 max-h-[320px] overflow-y-auto custom-scrollbar pr-1">
-                <!-- Dynamically injected plant cards with TR chips -->
+              <div id="outage-plant-cards" class="space-y-2 max-h-[360px] overflow-y-auto custom-scrollbar pr-1">
+                <!-- Dynamically injected group cards with task chips -->
               </div>
             </div>
           </div>
@@ -5086,114 +5130,248 @@
     }
 
     // ==========================================
-    // OUTAGED TRANSFORMERS BY PLANT ANALYTICS ENGINE
+    // MAINTENANCE TASKS ANALYTICS ENGINE (ALL CATEGORIES & PLANTS)
     // ==========================================
     let outageChartInstance = null;
+    let taskChartGroupBy = 'plant'; // 'plant' | 'cat' | 'lead'
+    let taskChartScope = 'all';     // 'all' (Main + Sub) | 'main' (Main WBS only)
+
+    function setTaskChartGroupBy(mode) {
+      taskChartGroupBy = mode;
+      ['plant', 'cat', 'lead'].forEach(m => {
+        const btn = document.getElementById('task-group-' + m);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className = 'task-chart-ctrl-btn active px-2.5 py-1 rounded-md transition text-white bg-indigo-600 shadow-sm cursor-pointer';
+        } else {
+          btn.className = 'task-chart-ctrl-btn px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        }
+      });
+      renderOutageChart();
+    }
+
+    function setTaskChartScope(scope) {
+      taskChartScope = scope;
+      ['all', 'main'].forEach(s => {
+        const btn = document.getElementById('task-scope-' + s);
+        if (!btn) return;
+        if (s === scope) {
+          btn.className = 'task-chart-ctrl-btn active px-2.5 py-1 rounded-md transition text-white bg-sky-600 shadow-sm cursor-pointer';
+        } else {
+          btn.className = 'task-chart-ctrl-btn px-2.5 py-1 rounded-md transition text-slate-400 hover:text-white cursor-pointer';
+        }
+      });
+      renderOutageChart();
+    }
 
     function renderOutageChart(filteredList = null) {
       const container = document.getElementById('outage-chart-container');
       if (!container) return;
 
-      // Extract Outage tasks
-      const allTasks = tasks.filter(t => !t.parentId && (t.cat || '').toLowerCase().includes('outage'));
-      const activePlantFilter = document.getElementById('filter-plant') ? document.getElementById('filter-plant').value : 'ALL';
+      // Use active filtered tasks across ALL categories (Outage, 3M Visual, Oil Analysis, Plant/Life Assessment, etc.)
+      const baseFiltered = Array.isArray(filteredList) ? filteredList : getFilteredTasks();
+      const scopedTasks = taskChartScope === 'main'
+        ? baseFiltered.filter(t => !t.parentId)
+        : baseFiltered;
 
-      // Group by plant
-      const plantMap = {};
-      allTasks.forEach(t => {
-        if (activePlantFilter !== 'ALL' && t.plant !== activePlantFilter) return;
-        const p = t.plant || 'Unknown';
-        if (!plantMap[p]) {
-          plantMap[p] = {
-            plant: p,
-            trs: new Set(),
-            completedTrs: new Set(),
-            inProgTrs: new Set(),
+      const activePlantFilter = document.getElementById('filter-plant') ? document.getElementById('filter-plant').value : 'ALL';
+      const activeCatFilter = document.getElementById('filter-cat') ? document.getElementById('filter-cat').value : 'ALL';
+      const activeLeadFilter = document.getElementById('filter-lead') ? document.getElementById('filter-lead').value : 'ALL';
+      const activeStatusFilter = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'ALL';
+
+      // Dynamic Titles based on GroupBy
+      const mainTitleEl = document.getElementById('task-chart-main-title');
+      const boxTitleEl = document.getElementById('task-chart-box-title');
+      const dirTitleEl = document.getElementById('task-dir-box-title');
+      if (taskChartGroupBy === 'cat') {
+        if (mainTitleEl) mainTitleEl.textContent = 'Maintenance Tasks by Category';
+        if (boxTitleEl) boxTitleEl.textContent = 'Maintenance Tasks: Plan vs Actual by Category';
+        if (dirTitleEl) dirTitleEl.textContent = 'Tasks Directory by Category';
+      } else if (taskChartGroupBy === 'lead') {
+        if (mainTitleEl) mainTitleEl.textContent = 'Maintenance Tasks by Lead Team';
+        if (boxTitleEl) boxTitleEl.textContent = 'Maintenance Tasks: Plan vs Actual by Lead Team';
+        if (dirTitleEl) dirTitleEl.textContent = 'Tasks Directory by Lead Team';
+      } else {
+        if (mainTitleEl) mainTitleEl.textContent = 'Maintenance Tasks by Plant';
+        if (boxTitleEl) boxTitleEl.textContent = 'Maintenance Tasks: Plan vs Actual by Plant';
+        if (dirTitleEl) dirTitleEl.textContent = 'Maintenance Tasks Directory';
+      }
+
+      // Compute non-double-counted budget across baseFiltered
+      const allFilteredIds = new Set(baseFiltered.map(t => t.id));
+      const totalBudget = baseFiltered.reduce((sum, t) => {
+        if (t.parentId && allFilteredIds.has(t.parentId)) return sum;
+        return sum + (Number(t.cost) || 0);
+      }, 0);
+
+      // Group tasks by selected dimension (Plant / Category / Lead)
+      const groupMap = {};
+      scopedTasks.forEach(t => {
+        let key = 'Unspecified';
+        if (taskChartGroupBy === 'cat') {
+          key = t.cat || 'Other';
+        } else if (taskChartGroupBy === 'lead') {
+          key = t.lead || 'Unassigned';
+        } else {
+          key = t.plant || 'Unknown';
+        }
+
+        if (!groupMap[key]) {
+          groupMap[key] = {
+            key: key,
             tasks: [],
-            cost: 0
+            completedTasks: [],
+            inProgTasks: [],
+            plannedTasks: [],
+            mainCount: 0,
+            subCount: 0,
+            categories: new Set(),
+            plants: new Set(),
+            trs: new Set()
           };
         }
-        plantMap[p].tasks.push(t);
-        plantMap[p].cost += (Number(t.cost) || 0);
+        const g = groupMap[key];
+        g.tasks.push(t);
+        if (t.parentId) g.subCount++;
+        else g.mainCount++;
 
-        const trList = (t.tr || '').split(',').map(s => s.trim()).filter(s => s && s !== '-' && s !== 'N/A' && s !== 'All TRs');
-        trList.forEach(tr => {
-          plantMap[p].trs.add(tr);
-          if (t.progress >= 100) plantMap[p].completedTrs.add(tr);
-          else if (t.progress > 0) plantMap[p].inProgTrs.add(tr);
-        });
+        const prog = Number(t.progress) || 0;
+        if (prog >= 100) g.completedTasks.push(t);
+        else if (prog > 0) g.inProgTasks.push(t);
+        else g.plannedTasks.push(t);
+
+        if (t.cat) g.categories.add(t.cat);
+        if (t.plant) g.plants.add(t.plant);
+
+        const trList = (t.tr || '').split(',').map(s => s.trim()).filter(s => s && s !== '-' && s !== 'N/A');
+        trList.forEach(tr => g.trs.add(tr));
       });
 
-      // Sort plants by number of TRs desc
-      const plantList = Object.values(plantMap).sort((a, b) => b.trs.size - a.trs.size);
-
-      // Calculate totals
-      const totalUniqueTrs = new Set();
-      const completedUniqueTrs = new Set();
-      let totalTasksCount = 0;
-      let totalCost = 0;
-
-      plantList.forEach(p => {
-        p.trs.forEach(tr => totalUniqueTrs.add(tr));
-        p.completedTrs.forEach(tr => completedUniqueTrs.add(tr));
-        totalTasksCount += p.tasks.length;
-        totalCost += p.cost;
+      // Sort groups by total tasks descending
+      const groupList = Object.values(groupMap).sort((a, b) => {
+        if (b.tasks.length !== a.tasks.length) return b.tasks.length - a.tasks.length;
+        return b.completedTasks.length - a.completedTasks.length;
       });
 
-      // Update Top Stats
+      // Overall Totals in current scope
+      const totalTasksCount = scopedTasks.length;
+      const completedTasksCount = scopedTasks.filter(t => (Number(t.progress) || 0) >= 100).length;
+      const inProgTasksCount = scopedTasks.filter(t => (Number(t.progress) || 0) > 0 && (Number(t.progress) || 0) < 100).length;
+      const plannedTasksCount = Math.max(0, totalTasksCount - completedTasksCount - inProgTasksCount);
+      const remainingTasksCount = inProgTasksCount + plannedTasksCount;
+      const mainCountTotal = baseFiltered.filter(t => !t.parentId).length;
+      const subCountTotal = baseFiltered.filter(t => !!t.parentId).length;
+      const uniquePlantsCount = new Set( scopedTasks.map(t => t.plant).filter(Boolean) ).size;
+      const uniqueCatsCount = new Set( scopedTasks.map(t => t.cat).filter(Boolean) ).size;
+
+      // Update Top Badge & Filter Label
       const badge = document.getElementById('outage-total-badge');
-      if (badge) badge.textContent = `${totalUniqueTrs.size} Transformers`;
+      if (badge) {
+        badge.textContent = taskChartScope === 'main'
+          ? `${totalTasksCount} Main Tasks`
+          : `${totalTasksCount} Tasks`;
+      }
 
       const filterLbl = document.getElementById('outage-filter-label');
-      if (filterLbl) filterLbl.textContent = 'Showing: ' + (activePlantFilter === 'ALL' ? 'All Plants' : `Plant ${activePlantFilter}`);
+      if (filterLbl) {
+        const parts = [];
+        parts.push(activePlantFilter === 'ALL' ? 'All Plants' : `Plant ${activePlantFilter}`);
+        if (activeCatFilter !== 'ALL') parts.push(activeCatFilter);
+        else parts.push('All Categories');
+        if (activeLeadFilter !== 'ALL') parts.push(`Lead ${activeLeadFilter}`);
+        if (activeStatusFilter !== 'ALL') parts.push(activeStatusFilter);
+        filterLbl.textContent = 'Showing: ' + parts.join(' • ');
+      }
 
+      // Update 4 Stat Cards
       const statTotal = document.getElementById('outage-stat-total-trs');
-      if (statTotal) statTotal.innerHTML = `${totalUniqueTrs.size} <span class="text-xs font-normal text-slate-400">Units</span>`;
+      if (statTotal) {
+        statTotal.innerHTML = `${totalTasksCount} <span class="text-xs font-normal text-slate-400">${taskChartScope === 'main' ? 'Main Tasks' : 'Tasks'}</span>`;
+      }
+      const statTotalSub = document.getElementById('outage-stat-total-sub');
+      if (statTotalSub) {
+        statTotalSub.textContent = taskChartScope === 'main'
+          ? `Top-level WBS across ${uniquePlantsCount} Plants & ${uniqueCatsCount} Categories`
+          : `${mainCountTotal} Main WBS • ${subCountTotal} Sub-tasks (${uniquePlantsCount} Plants)`;
+      }
 
       const statDone = document.getElementById('outage-stat-completed-trs');
       if (statDone) {
-        const pct = totalUniqueTrs.size > 0 ? Math.round((completedUniqueTrs.size / totalUniqueTrs.size) * 100) : 0;
-        statDone.innerHTML = `${completedUniqueTrs.size} <span class="text-xs font-normal text-slate-400">Units (${pct}%)</span>`;
+        const pct = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
+        statDone.innerHTML = `${completedTasksCount} <span class="text-xs font-normal text-slate-400">Tasks (${pct}%)</span>`;
+      }
+      const statDoneSub = document.getElementById('outage-stat-completed-sub');
+      if (statDoneSub) {
+        statDoneSub.textContent = `Finished 100% Progress (${uniqueCatsCount} Categories)`;
       }
 
       const statTasks = document.getElementById('outage-stat-tasks');
-      if (statTasks) statTasks.innerHTML = `${totalTasksCount} <span class="text-xs font-normal text-slate-400">Tasks</span>`;
+      if (statTasks) {
+        const remPct = totalTasksCount > 0 ? Math.round((remainingTasksCount / totalTasksCount) * 100) : 0;
+        statTasks.innerHTML = `${remainingTasksCount} <span class="text-xs font-normal text-slate-400">Tasks (${remPct}%)</span>`;
+      }
+      const statTasksSub = document.getElementById('outage-stat-tasks-sub');
+      if (statTasksSub) {
+        statTasksSub.textContent = `${inProgTasksCount} In Progress • ${plannedTasksCount} Planned (0%)`;
+      }
 
       const statCost = document.getElementById('outage-stat-cost');
-      if (statCost) statCost.innerHTML = totalCost.toLocaleString() + ' <span class="text-xs font-normal text-slate-400">THB</span>';
+      if (statCost) {
+        statCost.innerHTML = totalBudget.toLocaleString() + ' <span class="text-xs font-normal text-slate-400">THB</span>';
+      }
+      const statCostSub = document.getElementById('outage-stat-cost-sub');
+      if (statCostSub) {
+        statCostSub.textContent = `Approved budget across ${uniqueCatsCount} categories`;
+      }
 
-      // Render Directory Cards
+      // Render Right-Side Directory Cards (#outage-plant-cards)
       const dirContainer = document.getElementById('outage-plant-cards');
       if (dirContainer) {
-        if (plantList.length === 0) {
-          dirContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">No Outage tasks found for current plant.</div>';
+        if (groupList.length === 0) {
+          dirContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">No tasks found for current filter selection.</div>';
         } else {
-          dirContainer.innerHTML = plantList.map(p => {
-            const trChips = Array.from(p.trs).map(tr => {
-              const isDone = p.completedTrs.has(tr);
+          dirContainer.innerHTML = groupList.map(g => {
+            const pct = g.tasks.length > 0 ? Math.round((g.completedTasks.length / g.tasks.length) * 100) : 0;
+            const catSummary = Array.from(g.categories).join(', ');
+            const taskChips = g.tasks.map(t => {
+              const prog = Number(t.progress) || 0;
+              const isDone = prog >= 100;
+              const isProg = prog > 0 && prog < 100;
+              const wbsCode = t.wbs || t.id || '-';
+              const shortTask = (t.task || '').length > 26 ? (t.task || '').slice(0, 24) + '…' : (t.task || '-');
+              const badgeClass = isDone
+                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/70'
+                : (isProg ? 'bg-amber-950/70 text-amber-300 border border-amber-700/70' : 'bg-slate-900 text-slate-300 border border-slate-700');
+              const dotClass = isDone
+                ? 'bg-emerald-400'
+                : (isProg ? 'bg-amber-400 animate-pulse' : 'bg-slate-400');
+              const progSuffix = isProg ? ` (${prog}%)` : '';
+              const tooltipText = `[${wbsCode}] ${t.task || ''} | Plant: ${t.plant || '-'} | Cat: ${t.cat || '-'} | TR: ${t.tr || '-'} | Progress: ${prog}%`.replace(/"/g, '&quot;');
               return `
-                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium ${isDone ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/70' : 'bg-slate-900 text-slate-300 border border-slate-700'}">
-                  <span class="w-1.5 h-1.5 rounded-full ${isDone ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}"></span>
-                  ${tr}
-                </span>
+                <button type="button" onclick="openModal('edit', '${t.id}')" title="${tooltipText}" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium cursor-pointer hover:opacity-85 transition ${badgeClass}">
+                  <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+                  <span class="font-bold">${wbsCode}:</span>
+                  <span class="font-sans">${shortTask}${progSuffix}</span>
+                </button>
               `;
             }).join('');
 
             return `
               <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 hover:border-indigo-500/50 transition">
                 <div class="flex items-center justify-between gap-2 mb-1.5">
-                  <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
-                      ${p.plant}
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60 shrink-0">
+                      ${g.key}
                     </span>
-                    <span class="text-xs font-semibold text-white outage-plant-units">${p.trs.size} Units</span>
+                    <span class="text-xs font-semibold text-white outage-plant-units shrink-0">${g.tasks.length} Tasks</span>
+                    <span class="text-[10px] text-slate-400 truncate" title="${catSummary}">• ${catSummary}</span>
                   </div>
-                  <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.2 rounded border border-emerald-800/50">
-                    <i class="fa-solid fa-check mr-0.5"></i> ${p.completedTrs.size}/${p.trs.size} Done
+                  <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.2 rounded border border-emerald-800/50 shrink-0">
+                    <i class="fa-solid fa-check mr-0.5"></i> ${g.completedTasks.length}/${g.tasks.length} Done
                   </span>
                 </div>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  ${trChips}
+                  ${taskChips}
                 </div>
               </div>
             `;
@@ -5201,50 +5379,54 @@
         }
       }
 
-      // Render ApexCharts
+      // Render ApexCharts Horizontal Stacked Bar
       if (typeof ApexCharts === 'undefined') return;
       if (outageChartInstance) {
         outageChartInstance.destroy();
         outageChartInstance = null;
       }
 
-      if (plantList.length === 0) {
-        container.innerHTML = '<div class="text-xs text-slate-500 py-12 text-center">No data to display in chart.</div>';
+      if (groupList.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-500 py-12 text-center">No tasks to display in chart.</div>';
         return;
       }
 
-      const categories = plantList.map(p => p.plant);
-      const maxUnits = Math.max(...plantList.map(p => p.trs.size), 10);
+      const categories = groupList.map(g => g.key);
+      const rawMaxTasks = Math.max(...groupList.map(g => g.tasks.length), 5);
+      const axisStep = rawMaxTasks <= 10 ? 1 : (rawMaxTasks <= 35 ? 5 : 10);
+      const maxTasks = Math.ceil(rawMaxTasks / axisStep) * axisStep;
+      const axisTickAmount = Math.round(maxTasks / axisStep);
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.documentElement.getAttribute('data-preset') === 'slate-light';
       const textColor = isLight ? '#0f172a' : '#cbd5e1';
       const gridColor = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
-      // Gray track color for uncompleted planned transformers (varying length per plant)
       const trackBgColor = isLight ? '#cbd5e1' : '#475569';
 
-      // Palette matching user reference: Pink/Red, Amber/Orange, Mint/Green, Sky Blue, Purple, Cyan
+      // Palette matching executive reference: Rose, Amber, Emerald, Sky, Violet, Cyan, Pink, Teal, Orange, Indigo
       const palette = [
-        '#f43f5e', // Red / Rose
-        '#f59e0b', // Amber / Orange
-        '#10b981', // Emerald / Mint
+        '#f43f5e', // Rose
+        '#f59e0b', // Amber
+        '#10b981', // Emerald
         '#0ea5e9', // Sky Blue
-        '#8b5cf6', // Violet / Purple
+        '#8b5cf6', // Violet
         '#06b6d4', // Cyan
         '#ec4899', // Pink
-        '#14b8a6'  // Teal
+        '#14b8a6', // Teal
+        '#f97316', // Orange
+        '#6366f1'  // Indigo
       ];
 
-      // Actual completed units per plant (Colored)
-      const actualSeriesData = plantList.map((p, idx) => ({
-        x: p.plant,
-        y: p.completedTrs.size,
+      // Series 1: Actual (Completed 100%)
+      const actualSeriesData = groupList.map((g, idx) => ({
+        x: g.key,
+        y: g.completedTasks.length,
         fillColor: palette[idx % palette.length]
       }));
 
-      // Remaining planned units per plant (Gray bar representing the plan length)
-      const remainingSeriesData = plantList.map(p => ({
-        x: p.plant,
-        y: Math.max(0, p.trs.size - p.completedTrs.size),
+      // Series 2: Plan (Remaining = In Progress + Planned)
+      const remainingSeriesData = groupList.map(g => ({
+        x: g.key,
+        y: Math.max(0, g.tasks.length - g.completedTasks.length),
         fillColor: trackBgColor
       }));
 
@@ -5261,7 +5443,7 @@
         ],
         chart: {
           type: 'bar',
-          height: Math.max(320, plantList.length * 48 + 35),
+          height: Math.max(330, groupList.length * 42 + 45),
           stacked: true,
           toolbar: { show: false },
           background: 'transparent',
@@ -5273,7 +5455,10 @@
           bar: {
             horizontal: true,
             borderRadius: 4,
-            barHeight: '68%'
+            barHeight: '68%',
+            dataLabels: {
+              hideOverflowingLabels: false
+            }
           }
         },
         dataLabels: {
@@ -5281,25 +5466,30 @@
           formatter: function (val, opts) {
             if (val === 0) return '';
             const idx = opts.dataPointIndex;
-            const item = plantList[idx];
-            if (!item) return val + ' Units';
+            const item = groupList[idx];
+            if (!item) return val + ' Tasks';
+            const rem = item.tasks.length - item.completedTasks.length;
+            // Place label on whichever segment is wider if the completed segment is very narrow (< 10% of maxTasks)
+            const completedTooNarrow = item.completedTasks.length > 0 && (item.completedTasks.length / maxTasks) < 0.10 && rem > item.completedTasks.length;
             if (opts.seriesIndex === 0) {
-              return `${item.completedTrs.size}/${item.trs.size} Units`;
+              if (completedTooNarrow) return '';
+              return `${item.completedTasks.length}/${item.tasks.length} Tasks`;
             } else {
-              // Only show label on gray bar if no actual units completed
-              if (item.completedTrs.size === 0) {
-                return `0/${item.trs.size} Units`;
+              if (item.completedTasks.length === 0 || completedTooNarrow) {
+                return `${item.completedTasks.length}/${item.tasks.length} Tasks`;
               }
               return '';
             }
           },
           style: {
-            fontSize: '11px',
+            fontSize: '10.5px',
             fontWeight: 700,
             colors: [
               function ({ seriesIndex, dataPointIndex }) {
-                const item = plantList[dataPointIndex];
-                if (seriesIndex === 1 || (item && item.completedTrs.size === 0)) {
+                const item = groupList[dataPointIndex];
+                if (!item) return '#ffffff';
+                const totalRatio = item.tasks.length / maxTasks;
+                if (seriesIndex === 1 || item.completedTasks.length === 0 || totalRatio < 0.11) {
                   return isLight ? '#0f172a' : '#f8fafc';
                 }
                 return '#ffffff';
@@ -5323,14 +5513,14 @@
         xaxis: {
           categories: categories,
           min: 0,
-          max: maxUnits,
-          tickAmount: Math.min(maxUnits, 10),
+          max: maxTasks,
+          tickAmount: axisTickAmount,
           labels: {
-            formatter: v => Math.round(v) + ' Units',
+            formatter: v => Math.round(v) + ' Tasks',
             style: { colors: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           },
           title: {
-            text: 'Number of Transformers (Units)',
+            text: 'Number of Maintenance Tasks',
             style: { color: isLight ? '#64748b' : '#94a3b8', fontSize: '11px', fontWeight: 600 }
           }
         },
@@ -5343,16 +5533,15 @@
           theme: isLight ? 'light' : 'dark',
           y: {
             formatter: function (val, { seriesIndex, dataPointIndex }) {
-              const item = plantList[dataPointIndex];
-              if (!item) return val + ' Units';
-              const trsStr = Array.from(item.trs).join(', ');
-              const doneStr = Array.from(item.completedTrs).join(', ');
-              const pct = item.trs.size > 0 ? Math.round((item.completedTrs.size / item.trs.size) * 100) : 0;
+              const item = groupList[dataPointIndex];
+              if (!item) return val + ' Tasks';
+              const pct = item.tasks.length > 0 ? Math.round((item.completedTasks.length / item.tasks.length) * 100) : 0;
+              const catsStr = Array.from(item.categories).join(', ');
               if (seriesIndex === 0) {
-                return `${item.completedTrs.size} of ${item.trs.size} Units Completed (${pct}%)\nDone: ${doneStr || 'None'}`;
+                return `${item.completedTasks.length} of ${item.tasks.length} Tasks Completed (${pct}%) | Categories: ${catsStr}`;
               } else {
-                const rem = Math.max(0, item.trs.size - item.completedTrs.size);
-                return `${rem} of ${item.trs.size} Units Remaining in Plan\nPlanned: ${trsStr}`;
+                const rem = Math.max(0, item.tasks.length - item.completedTasks.length);
+                return `${rem} Tasks Remaining (${item.inProgTasks.length} In Progress, ${item.plannedTasks.length} Planned) | Categories: ${catsStr}`;
               }
             }
           }
