@@ -1087,6 +1087,22 @@
       "progress": 80,
       "cost": 0,
       "parentId": null
+    },
+    {
+      "id": "gen_1793779030650",
+      "wbs": "LA4",
+      "sapMo": "",
+      "cat": "Life Assessment",
+      "task": "CUP-2 (GTG22) Transformer Life Assessment",
+      "plant": "CUP-2",
+      "tr": "23902-TR-012 (GTG22)",
+      "lead": "MMT",
+      "start": "2026-07-01",
+      "end": "2026-09-30",
+      "days": 92,
+      "progress": 0,
+      "cost": 0,
+      "parentId": null
     }
   ],
   "deletedIds": [
@@ -1094,5 +1110,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-11-04T05:51:01.926Z"
+  "timestamp": "2026-11-04T07:57:11.657Z"
 }
