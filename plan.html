@@ -427,13 +427,41 @@
     [data-preset="slate-light"] #wbs-tbody tr.hover\:bg-slate-900\/70:hover {
       background: #f8fafc !important;
     }
+    /* Dark Mode Completed Row High-Contrast Emerald Tint */
+    #wbs-tbody tr.bg-emerald-950\/20 {
+      background: rgba(5, 150, 105, 0.48) !important;
+      border-left: 4px solid #10b981 !important;
+    }
+    #wbs-tbody tr.bg-emerald-950\/20:hover {
+      background: rgba(5, 150, 105, 0.62) !important;
+    }
+    #wbs-tbody tr.bg-emerald-950\/10 {
+      background: rgba(5, 150, 105, 0.36) !important;
+      border-left: 4px solid #34d399 !important;
+    }
+    #wbs-tbody tr.bg-emerald-950\/10:hover {
+      background: rgba(5, 150, 105, 0.50) !important;
+    }
+
+    /* Light Mode Completed Row Distinct Emerald Fill */
     [data-theme="light"] #wbs-tbody tr.bg-emerald-950\/20,
     [data-preset="slate-light"] #wbs-tbody tr.bg-emerald-950\/20 {
-      background: #f0fdf4 !important;
+      background: #a7f3d0 !important;
+      border-top: 1px solid #34d399 !important;
+      border-left: 5px solid #059669 !important;
     }
     [data-theme="light"] #wbs-tbody tr.bg-emerald-950\/20:hover,
     [data-preset="slate-light"] #wbs-tbody tr.bg-emerald-950\/20:hover {
-      background: #dcfce7 !important;
+      background: #6ee7b7 !important;
+    }
+    [data-theme="light"] #wbs-tbody tr.bg-emerald-950\/20 td:nth-child(6) span,
+    [data-preset="slate-light"] #wbs-tbody tr.bg-emerald-950\/20 td:nth-child(6) span {
+      background: #ffffff !important;
+      border-color: #34d399 !important;
+    }
+    [data-theme="light"] #wbs-tbody .bg-emerald-400,
+    [data-preset="slate-light"] #wbs-tbody .bg-emerald-400 {
+      background: #059669 !important;
     }
     [data-theme="light"] #wbs-tbody tr.hover\:bg-slate-900\/70 td:nth-child(1),
     [data-preset="slate-light"] #wbs-tbody tr.hover\:bg-slate-900\/70 td:nth-child(1) {
@@ -513,11 +541,13 @@
     }
     [data-theme="light"] #wbs-tbody tr.bg-emerald-950\/10,
     [data-preset="slate-light"] #wbs-tbody tr.bg-emerald-950\/10 {
-      background: #f0fdf4 !important;
+      background: #bbf7d0 !important;
+      border-top: 1px solid #4ade80 !important;
+      border-left: 5px solid #10b981 !important;
     }
     [data-theme="light"] #wbs-tbody tr.bg-emerald-950\/10:hover,
     [data-preset="slate-light"] #wbs-tbody tr.bg-emerald-950\/10:hover {
-      background: #dcfce7 !important;
+      background: #86efac !important;
     }
     [data-theme="light"] #wbs-tbody .bg-indigo-950\/80,
     [data-preset="slate-light"] #wbs-tbody .bg-indigo-950\/80 {
@@ -633,14 +663,14 @@
     }
     [data-theme="light"] #wbs-tbody .bg-emerald-500\/20,
     [data-preset="slate-light"] #wbs-tbody .bg-emerald-500\/20 {
-      background: #dcfce7 !important;
-      color: #15803d !important;
-      border: 1px solid #86efac !important;
+      background: #059669 !important;
+      color: #ffffff !important;
+      border: 1px solid #047857 !important;
     }
     [data-theme="light"] #wbs-tbody .bg-emerald-500\/20:hover,
     [data-preset="slate-light"] #wbs-tbody .bg-emerald-500\/20:hover {
-      background: #bbf7d0 !important;
-      color: #166534 !important;
+      background: #047857 !important;
+      color: #ffffff !important;
     }
 
     /* Outage & S-Curve Stats in Light Theme */
@@ -1599,182 +1629,182 @@
     /* 1. Mint Green (Shift 1 / MMT / Plant Assessment) */
     .shift-tone-mint,
     .shift-tone-mint.prog-inprog {
-      background: rgba(52, 211, 153, 0.34) !important;
+      background: rgba(52, 211, 153, 0.28) !important;
       color: #ecfdf5 !important;
     }
     .shift-tone-mint.prog-plan {
-      background: rgba(52, 211, 153, 0.14) !important;
+      background: rgba(52, 211, 153, 0.12) !important;
       color: #a7f3d0 !important;
     }
     .shift-tone-mint.prog-done {
-      background: rgba(16, 185, 129, 0.62) !important;
+      background: rgba(16, 185, 129, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-mint,
     [data-preset="slate-light"] .shift-tone-mint,
     [data-theme="light"] .shift-tone-mint.prog-inprog,
     [data-preset="slate-light"] .shift-tone-mint.prog-inprog {
-      background: #b5e5d1 !important;
+      background: #d1fae5 !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-mint.prog-plan,
     [data-preset="slate-light"] .shift-tone-mint.prog-plan {
-      background: #e6f7f0 !important;
+      background: #ecfdf5 !important;
       color: #334155 !important;
     }
     [data-theme="light"] .shift-tone-mint.prog-done,
     [data-preset="slate-light"] .shift-tone-mint.prog-done {
-      background: #6ee7b7 !important;
-      color: #064e3b !important;
+      background: #34d399 !important;
+      color: #022c22 !important;
     }
 
     /* 2. Sky Blue (Shift 2 / PIP / 3M Visual) */
     .shift-tone-sky,
     .shift-tone-sky.prog-inprog {
-      background: rgba(56, 189, 248, 0.36) !important;
+      background: rgba(56, 189, 248, 0.28) !important;
       color: #f0f9ff !important;
     }
     .shift-tone-sky.prog-plan {
-      background: rgba(56, 189, 248, 0.14) !important;
+      background: rgba(56, 189, 248, 0.12) !important;
       color: #bae6fd !important;
     }
     .shift-tone-sky.prog-done {
-      background: rgba(14, 165, 233, 0.62) !important;
+      background: rgba(14, 165, 233, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-sky,
     [data-preset="slate-light"] .shift-tone-sky,
     [data-theme="light"] .shift-tone-sky.prog-inprog,
     [data-preset="slate-light"] .shift-tone-sky.prog-inprog {
-      background: #bae0fd !important;
+      background: #dbeafe !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-sky.prog-plan,
     [data-preset="slate-light"] .shift-tone-sky.prog-plan {
-      background: #e8f5fe !important;
+      background: #f0f9ff !important;
       color: #334155 !important;
     }
     [data-theme="light"] .shift-tone-sky.prog-done,
     [data-preset="slate-light"] .shift-tone-sky.prog-done {
-      background: #7dd3fc !important;
-      color: #0c4a6e !important;
+      background: #38bdf8 !important;
+      color: #082f49 !important;
     }
 
     /* 3. Lavender Purple (Shift 3 / JIS / Life Assessment) */
     .shift-tone-lavender,
     .shift-tone-lavender.prog-inprog {
-      background: rgba(167, 139, 250, 0.36) !important;
+      background: rgba(167, 139, 250, 0.28) !important;
       color: #f5f3ff !important;
     }
     .shift-tone-lavender.prog-plan {
-      background: rgba(167, 139, 250, 0.14) !important;
+      background: rgba(167, 139, 250, 0.12) !important;
       color: #ddd6fe !important;
     }
     .shift-tone-lavender.prog-done {
-      background: rgba(139, 92, 246, 0.62) !important;
+      background: rgba(139, 92, 246, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-lavender,
     [data-preset="slate-light"] .shift-tone-lavender,
     [data-theme="light"] .shift-tone-lavender.prog-inprog,
     [data-preset="slate-light"] .shift-tone-lavender.prog-inprog {
-      background: #cbcbfa !important;
+      background: #e0e7ff !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-lavender.prog-plan,
     [data-preset="slate-light"] .shift-tone-lavender.prog-plan {
-      background: #eeedfe !important;
+      background: #f5f3ff !important;
       color: #334155 !important;
     }
     [data-theme="light"] .shift-tone-lavender.prog-done,
     [data-preset="slate-light"] .shift-tone-lavender.prog-done {
-      background: #a5b4fc !important;
+      background: #818cf8 !important;
       color: #1e1b4b !important;
     }
 
     /* 4. Soft Coral Rose (Transformer Outage) */
     .shift-tone-rose,
     .shift-tone-rose.prog-inprog {
-      background: rgba(251, 113, 133, 0.36) !important;
+      background: rgba(251, 113, 133, 0.28) !important;
       color: #fff1f2 !important;
     }
     .shift-tone-rose.prog-plan {
-      background: rgba(251, 113, 133, 0.14) !important;
+      background: rgba(251, 113, 133, 0.12) !important;
       color: #fecdd3 !important;
     }
     .shift-tone-rose.prog-done {
-      background: rgba(244, 63, 94, 0.62) !important;
+      background: rgba(244, 63, 94, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-rose,
     [data-preset="slate-light"] .shift-tone-rose,
     [data-theme="light"] .shift-tone-rose.prog-inprog,
     [data-preset="slate-light"] .shift-tone-rose.prog-inprog {
-      background: #fecdd3 !important;
+      background: #ffe4e6 !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-rose.prog-plan,
     [data-preset="slate-light"] .shift-tone-rose.prog-plan {
-      background: #ffe8ec !important;
+      background: #fff1f2 !important;
       color: #334155 !important;
     }
     [data-theme="light"] .shift-tone-rose.prog-done,
     [data-preset="slate-light"] .shift-tone-rose.prog-done {
-      background: #fda4af !important;
+      background: #fb7185 !important;
       color: #4c0519 !important;
     }
 
     /* 5. Warm Amber (Oil Analysis) */
     .shift-tone-amber,
     .shift-tone-amber.prog-inprog {
-      background: rgba(251, 191, 36, 0.36) !important;
+      background: rgba(251, 191, 36, 0.28) !important;
       color: #fffbeb !important;
     }
     .shift-tone-amber.prog-plan {
-      background: rgba(251, 191, 36, 0.14) !important;
+      background: rgba(251, 191, 36, 0.12) !important;
       color: #fde68a !important;
     }
     .shift-tone-amber.prog-done {
-      background: rgba(245, 158, 11, 0.62) !important;
+      background: rgba(245, 158, 11, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-amber,
     [data-preset="slate-light"] .shift-tone-amber,
     [data-theme="light"] .shift-tone-amber.prog-inprog,
     [data-preset="slate-light"] .shift-tone-amber.prog-inprog {
-      background: #fde68a !important;
+      background: #fef3c7 !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-amber.prog-plan,
     [data-preset="slate-light"] .shift-tone-amber.prog-plan {
-      background: #fef6d8 !important;
+      background: #fffbeb !important;
       color: #334155 !important;
     }
     [data-theme="light"] .shift-tone-amber.prog-done,
     [data-preset="slate-light"] .shift-tone-amber.prog-done {
-      background: #fcd34d !important;
+      background: #fbbf24 !important;
       color: #451a03 !important;
     }
 
     /* 6. Soft Pink (OLTC Inspection) */
     .shift-tone-pink,
     .shift-tone-pink.prog-inprog {
-      background: rgba(244, 114, 182, 0.36) !important;
+      background: rgba(244, 114, 182, 0.28) !important;
       color: #fdf2f8 !important;
     }
     .shift-tone-pink.prog-plan {
-      background: rgba(244, 114, 182, 0.14) !important;
+      background: rgba(244, 114, 182, 0.12) !important;
       color: #fbcfe8 !important;
     }
     .shift-tone-pink.prog-done {
-      background: rgba(236, 72, 153, 0.62) !important;
+      background: rgba(236, 72, 153, 0.78) !important;
       color: #ffffff !important;
     }
     [data-theme="light"] .shift-tone-pink,
     [data-preset="slate-light"] .shift-tone-pink,
     [data-theme="light"] .shift-tone-pink.prog-inprog,
     [data-preset="slate-light"] .shift-tone-pink.prog-inprog {
-      background: #fbcfe8 !important;
+      background: #fce7f3 !important;
       color: #0f172a !important;
     }
     [data-theme="light"] .shift-tone-pink.prog-plan,
@@ -1784,7 +1814,7 @@
     }
     [data-theme="light"] .shift-tone-pink.prog-done,
     [data-preset="slate-light"] .shift-tone-pink.prog-done {
-      background: #f9a8d4 !important;
+      background: #f472b6 !important;
       color: #500724 !important;
     }
 
