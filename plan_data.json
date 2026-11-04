@@ -1125,10 +1125,10 @@
       "wbs": "LA5",
       "sapMo": "",
       "cat": "Life Assessment",
-      "task": "GSPP11: (DT-3) Transformer Life Assessment",
-      "plant": "GSPP11",
-      "tr": "DT-3",
-      "lead": "PIP",
+      "task": "CUP-2: (STG21) Transformer Life Assessment",
+      "plant": "CUP-2",
+      "tr": "23911-TR-010 (STG21)",
+      "lead": "MMT",
       "start": "2026-07-01",
       "end": "2026-09-30",
       "days": 92,
@@ -1142,5 +1142,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-11-04T08:01:02.540Z"
+  "timestamp": "2026-11-04T08:02:00.337Z"
 }
