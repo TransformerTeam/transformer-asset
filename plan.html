@@ -6678,7 +6678,7 @@
           <td class="py-2.5 px-3 font-semibold text-white">
             <div class="flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full ${getCategoryColorDot(p.cat)}"></span>
-              <span class="${isDone ? 'line-through opacity-70' : ''}">${p.task}</span>
+              <span>${p.task}</span>
             </div>
           </td>
           <td class="py-2.5 px-2 text-center text-slate-300 font-semibold">${p.lead || '-'}</td>
@@ -6748,7 +6748,7 @@
               <td class="py-2 px-3 text-slate-200">
                 <div class="flex items-center gap-2">
                   <span class="text-[9px] uppercase px-1.5 py-0.2 rounded bg-indigo-900/60 text-indigo-200 border border-indigo-700/40 font-bold">Sub</span>
-                  <span class="${isChildDone ? 'line-through opacity-70 text-slate-400' : 'text-slate-200'}">${c.task}</span>
+                  <span class="text-slate-200">${c.task}</span>
                 </div>
               </td>
               <td class="py-2 px-2 text-center text-slate-400 text-[11px]">${c.lead || '-'}</td>
