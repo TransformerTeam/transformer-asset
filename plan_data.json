@@ -1103,6 +1103,22 @@
       "progress": 0,
       "cost": 0,
       "parentId": null
+    },
+    {
+      "id": "gen_1793779101002",
+      "wbs": "TO13",
+      "sapMo": "",
+      "cat": "Transformer Outage",
+      "task": "CUP-2 (STG21) Transformer Life Assessment",
+      "plant": "CUP-2",
+      "tr": "23911-TR-010 (STG21)",
+      "lead": "MMT",
+      "start": "2026-07-01",
+      "end": "2026-09-30",
+      "days": 92,
+      "progress": 0,
+      "cost": 0,
+      "parentId": null
     }
   ],
   "deletedIds": [
@@ -1110,5 +1126,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-11-04T07:57:11.657Z"
+  "timestamp": "2026-11-04T07:58:22.146Z"
 }
