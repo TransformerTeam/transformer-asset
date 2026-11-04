@@ -1055,6 +1055,22 @@
       "progress": 0,
       "cost": 0,
       "parentId": "OA2"
+    },
+    {
+      "id": "gen_1793770931135",
+      "wbs": "LA2",
+      "sapMo": "",
+      "cat": "Life Assessment",
+      "task": "CUP-3 (TR-001) Transformer Life Assessment",
+      "plant": "CUP-3",
+      "tr": "34101-TR-001",
+      "lead": "JIS",
+      "start": "2026-07-01",
+      "end": "2026-09-30",
+      "days": 92,
+      "progress": 100,
+      "cost": 0,
+      "parentId": null
     }
   ],
   "deletedIds": [
@@ -1062,5 +1078,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-11-04T05:37:05.302Z"
+  "timestamp": "2026-11-04T05:42:12.230Z"
 }
