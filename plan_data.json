@@ -1119,22 +1119,6 @@
       "progress": 0,
       "cost": 0,
       "parentId": null
-    },
-    {
-      "id": "gen_1793779192097",
-      "wbs": "LA5",
-      "sapMo": "",
-      "cat": "Life Assessment",
-      "task": "GSPP11: (DT-3) Transformer Life Assessment",
-      "plant": "GSPP11",
-      "tr": "DT-3",
-      "lead": "PIP",
-      "start": "2026-07-01",
-      "end": "2026-09-30",
-      "days": 92,
-      "progress": 0,
-      "cost": 0,
-      "parentId": null
     }
   ],
   "deletedIds": [
@@ -1142,5 +1126,5 @@
     "gen_1788843000750",
     "gen_1788842740896"
   ],
-  "timestamp": "2026-11-04T08:00:26.673Z"
+  "timestamp": "2026-11-04T08:00:55.897Z"
 }
