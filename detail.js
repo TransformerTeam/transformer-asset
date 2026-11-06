@@ -148,6 +148,7 @@ function getRemainingLifeDP300(item, serialVal) {
   let rawMoist = latestDfr['PercentMoisture (CHL)'] || latestDfr.PercentMoisture || (item && (item['%Moisture in paper (FDS)'] || item.PercentMoisture));
   let cleanMoist = (rawMoist !== undefined && rawMoist !== '' && rawMoist !== '-' && !isNaN(parseFloat(rawMoist))) ? parseFloat(rawMoist) : null;
   if (matchSerialDetail(sVal, 'PP0158B01') && cleanMoist === null) cleanMoist = 0.5;
+  else if (matchSerialDetail(sVal, 'PP0181B01') && cleanMoist === null) cleanMoist = 0.7;
 
   let visRecords = (typeof visualCsvData !== 'undefined' && Array.isArray(visualCsvData)) ? visualCsvData.filter(x =>
     matchSerialDetail(x.serial || x.Serial_no || x.Serial_No, sVal) ||

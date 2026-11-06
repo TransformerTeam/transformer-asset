@@ -1515,7 +1515,10 @@
       { serial: 'PP0181B01', Date: '2025-11-10', Oil_Temp: '46', O2: '13253', WC: '8.7', Acidity_No: '0.01', Furan_Analysis: '5', Tested_by: 'Mr. Jirasak S.', COMP1: 'GPSC' }
     ];
     let visualDataList = [];
-    let dfrDataList = (typeof DFR_DATA !== 'undefined' && Array.isArray(DFR_DATA) && DFR_DATA.length > 0) ? DFR_DATA : [{ 'Equipment Name': '34101-TR-001', 'Serial No.': 'PP0158B01', serial: 'PP0158B01', 'Site': 'CUP-3', 'Test Date': '2026-05-31 00:00:00', 'Test Instrument': 'DIRANA', 'PercentMoisture (CHL)': '0.5', 'Dissipation Factor': '0.267' }];
+    let dfrDataList = (typeof DFR_DATA !== 'undefined' && Array.isArray(DFR_DATA) && DFR_DATA.length > 0) ? DFR_DATA : [
+      { 'Equipment Name': '34101-TR-001', 'Serial No.': 'PP0158B01', serial: 'PP0158B01', 'Site': 'CUP-3', 'Test Date': '2026-05-31 00:00:00', 'Test Instrument': 'DIRANA', 'PercentMoisture (CHL)': '0.5', 'Dissipation Factor': '0.267' },
+      { 'Equipment Name': '34101-TR-002', 'Serial No.': 'PP0181B01', serial: 'PP0181B01', 'Site': 'CUP-3', 'Test Date': '2026-05-31 00:00:00', 'Test Instrument': 'DIRANA', 'PercentMoisture (CHL)': '0.7', 'Dissipation Factor': '0.267' }
+    ];
     let dpChartInstance = null;
     let pofChartInstance = null;
 
@@ -2023,6 +2026,9 @@
       let dfrInstrument = latestDfr['Test Instrument'] || 'FDS';
       if (matchSerial(sNo, 'PP0158B01')) {
         if (cleanMoistNum === null) cleanMoistNum = 0.5;
+        if (!latestDfr['Test Instrument']) dfrInstrument = 'DIRANA';
+      } else if (matchSerial(sNo, 'PP0181B01')) {
+        if (cleanMoistNum === null) cleanMoistNum = 0.7;
         if (!latestDfr['Test Instrument']) dfrInstrument = 'DIRANA';
       }
 
