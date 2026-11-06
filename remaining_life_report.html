@@ -1510,7 +1510,10 @@
   <script src="health_data.js"></script>
 
   <script>
-    let mtOilDataList = [{ serial: 'PP0158B01', Date: '2026-05-26', Oil_Temp: '46', O2: '13253', WC: '8.7', Furan_Analysis: '5', Tested_by: 'Mr. Jirasak S.', COMP1: 'GPSC' }];
+    let mtOilDataList = [
+      { serial: 'PP0158B01', Date: '2026-05-26', Oil_Temp: '46', O2: '13253', WC: '8.7', Furan_Analysis: '5', Tested_by: 'Mr. Jirasak S.', COMP1: 'GPSC' },
+      { serial: 'PP0181B01', Date: '2025-11-10', Oil_Temp: '46', O2: '13253', WC: '8.7', Acidity_No: '0.01', Furan_Analysis: '5', Tested_by: 'Mr. Jirasak S.', COMP1: 'GPSC' }
+    ];
     let visualDataList = [];
     let dfrDataList = (typeof DFR_DATA !== 'undefined' && Array.isArray(DFR_DATA) && DFR_DATA.length > 0) ? DFR_DATA : [{ 'Equipment Name': '34101-TR-001', 'Serial No.': 'PP0158B01', serial: 'PP0158B01', 'Site': 'CUP-3', 'Test Date': '2026-05-31 00:00:00', 'Test Instrument': 'DIRANA', 'PercentMoisture (CHL)': '0.5', 'Dissipation Factor': '0.267' }];
     let dpChartInstance = null;
@@ -1802,12 +1805,20 @@
       let rawDesc = '-';
       let usedLv = lvTemp;
       let baseMeasureStr = '-';
+      let isVerifiedProfile = false;
 
       if (matchSerial(sNo, 'PP0158B01')) {
         usedLv = 59.54;
         rawHs = 64.64;
         rawDesc = `From LV Winding (${usedLv} °C) + 5.1 °C`;
         baseMeasureStr = `LV Winding = ${usedLv} °C`;
+        isVerifiedProfile = true;
+      } else if (matchSerial(sNo, 'PP0181B01')) {
+        usedLv = 47.91;
+        rawHs = 53.01;
+        rawDesc = `From LV Winding (${usedLv} °C) + 5.1 °C (Peak 31.83 MVA / Top-Oil 41.52 °C)`;
+        baseMeasureStr = `LV Winding = ${usedLv} °C (Top-Oil 41.52 °C)`;
+        isVerifiedProfile = true;
       } else if (lvTemp !== null && lvTemp > 0) {
         rawHs = lvTemp + 5.1;
         rawDesc = `From LV Winding (${lvTemp} °C) + 5.1 °C`;
@@ -1826,10 +1837,10 @@
       let eqHs = rawHs;
       let subText = rawDesc;
 
-      if (rawHs < 62.0) {
+      if (!isVerifiedProfile && rawHs < 62.0) {
         eqHs = 62.0;
         subText = `${rawDesc} → Eq. Floor 62.0 °C`;
-      } else if (rawHs > 76.0) {
+      } else if (!isVerifiedProfile && rawHs > 76.0) {
         eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
         subText = `Peak ${rawHs.toFixed(1)} °C → Annual Eq. ${eqHs.toFixed(1)} °C`;
       }
@@ -1989,7 +2000,7 @@
       // Extract Real O2 Level & Oil Acidity (Guardrail 3)
       let rawO2 = latestOil.O2 || latestOil.O2_ppm || meta.O2;
       let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
-      if (matchSerial(sNo, 'PP0158B01') && o2Val === null) o2Val = 13253;
+      if ((matchSerial(sNo, 'PP0158B01') || matchSerial(sNo, 'PP0181B01')) && o2Val === null) o2Val = 13253;
       const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
       let rawAcidity = latestOil.Acidity_No || latestOil.Acidity || meta.Acidity_No;

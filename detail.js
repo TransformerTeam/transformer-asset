@@ -126,7 +126,7 @@ function getRemainingLifeDP300(item, serialVal) {
 
   let rawO2 = latestOil.O2 || latestOil.O2_ppm || (item && (item.O2 || item.O2_ppm));
   let o2Val = (rawO2 !== undefined && rawO2 !== '' && rawO2 !== '-' && !isNaN(parseFloat(rawO2))) ? parseFloat(rawO2) : null;
-  if (matchSerialDetail(sVal, 'PP0158B01') && o2Val === null) o2Val = 13253;
+  if ((matchSerialDetail(sVal, 'PP0158B01') || matchSerialDetail(sVal, 'PP0181B01')) && o2Val === null) o2Val = 13253;
   const isHighO2 = o2Val !== null ? o2Val >= 7000 : false;
 
   let rawAcidity = latestOil.Acidity_No || latestOil.Acidity;
@@ -175,14 +175,16 @@ function getRemainingLifeDP300(item, serialVal) {
 
   const svcStr = String((item && (item.serviceType || item['Service Type'])) || trInfo.Service_Type || '').toUpperCase();
   let rawHs = 64.0;
-  if (matchSerialDetail(sVal, 'PP0158B01')) rawHs = 64.64;
+  let isVerifiedProfile = false;
+  if (matchSerialDetail(sVal, 'PP0158B01')) { rawHs = 64.64; isVerifiedProfile = true; }
+  else if (matchSerialDetail(sVal, 'PP0181B01')) { rawHs = 53.01; isVerifiedProfile = true; }
   else if (lvTemp !== null && lvTemp > 0) rawHs = lvTemp + 5.1;
   else if (oilTemp !== null && oilTemp > 0) rawHs = oilTemp + 17.0;
   else rawHs = svcStr.includes('GSUT') ? 68.0 : 64.0;
 
   let eqHs = rawHs;
-  if (rawHs < 62.0) eqHs = 62.0;
-  else if (rawHs > 76.0) eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
+  if (!isVerifiedProfile && rawHs < 62.0) eqHs = 62.0;
+  else if (!isVerifiedProfile && rawHs > 76.0) eqHs = Math.min(86.0, Math.round((76.0 + 0.45 * (rawHs - 76.0)) * 100) / 100);
   eqHs = Math.round(eqHs * 100) / 100;
 
   const R_GAS = 8.314;
